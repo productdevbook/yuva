@@ -195,6 +195,9 @@ const inboxSupportLinks = `-- name: InboxSupportLinks :one
 SELECT
     coalesce((SELECT array_agg(DISTINCT ch.kind ORDER BY ch.kind) FROM channels ch
               WHERE ch.workspace_id = $1 AND ch.inbox_id = $2 AND ch.kind <> 'email'), '{}')::text[] AS channel_kinds,
+    coalesce((SELECT array_agg(DISTINCT c.channel_kind ORDER BY c.channel_kind) FROM conversations c
+              WHERE c.workspace_id = $1 AND c.inbox_id = $2 AND c.trashed_at IS NULL
+                AND c.channel_kind <> 'email'), '{}')::text[] AS conversation_kinds,
     EXISTS (SELECT 1 FROM help_centers h WHERE h.workspace_id = $1 AND h.inbox_id = $2)::bool AS help_center,
     EXISTS (SELECT 1 FROM status_pages sp WHERE sp.workspace_id = $1 AND sp.inbox_id = $2)::bool AS status_page,
     EXISTS (SELECT 1 FROM roadmap_boards rb WHERE rb.workspace_id = $1 AND rb.inbox_id = $2)::bool AS roadmap_board,
@@ -208,12 +211,13 @@ type InboxSupportLinksParams struct {
 }
 
 type InboxSupportLinksRow struct {
-	ChannelKinds []string
-	HelpCenter   bool
-	StatusPage   bool
-	RoadmapBoard bool
-	WhatsNew     bool
-	SlaPolicy    bool
+	ChannelKinds      []string
+	ConversationKinds []string
+	HelpCenter        bool
+	StatusPage        bool
+	RoadmapBoard      bool
+	WhatsNew          bool
+	SlaPolicy         bool
 }
 
 func (q *Queries) InboxSupportLinks(ctx context.Context, arg InboxSupportLinksParams) (InboxSupportLinksRow, error) {
@@ -221,6 +225,7 @@ func (q *Queries) InboxSupportLinks(ctx context.Context, arg InboxSupportLinksPa
 	var i InboxSupportLinksRow
 	err := row.Scan(
 		&i.ChannelKinds,
+		&i.ConversationKinds,
 		&i.HelpCenter,
 		&i.StatusPage,
 		&i.RoadmapBoard,
@@ -624,6 +629,46 @@ func (q *Queries) SetInboxIdentitySecret(ctx context.Context, arg SetInboxIdenti
 		return 0, err
 	}
 	return result.RowsAffected(), nil
+}
+
+const shareInbox = `-- name: ShareInbox :one
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE
+`
+
+type ShareInboxParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) ShareInbox(ctx context.Context, arg ShareInboxParams) (Inbox, error) {
+	row := q.db.QueryRow(ctx, shareInbox, arg.WorkspaceID, arg.ID)
+	var i Inbox
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Name,
+		&i.Slug,
+		&i.Branding,
+		&i.DefaultLocale,
+		&i.Timezone,
+		&i.Mode,
+		&i.ExpectedReplyMinutes,
+		&i.BusinessHours,
+		&i.IdentitySecret,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.AskForRating,
+		&i.RatingSince,
+		&i.SenderLegalName,
+		&i.SenderPostalAddress,
+		&i.SenderRegistration,
+		&i.SenderContact,
+		&i.FeedbackCategories,
+		&i.AssignmentMode,
+		&i.AssignmentCap,
+		&i.Purpose,
+	)
+	return i, err
 }
 
 const shareInboxFeedbackCategories = `-- name: ShareInboxFeedbackCategories :one

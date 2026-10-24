@@ -325,7 +325,7 @@ type assignPool struct {
 }
 
 func (s *Server) poolOf(ctx context.Context, q *store.Queries, c store.Conversation) (assignPool, error) {
-	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: c.WorkspaceID, ID: c.InboxID})
+	in, err := q.ShareInbox(ctx, store.ShareInboxParams{WorkspaceID: c.WorkspaceID, ID: c.InboxID})
 	if err != nil {
 		return assignPool{}, err
 	}

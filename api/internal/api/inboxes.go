@@ -291,6 +291,16 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 	b := req.Body
 	var out oas.Inbox
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		if b.Purpose != nil && *b.Purpose == oas.InboxPurposeMail {
+			// SLA writers hold their conversation before the inbox's share lock, so these go first.
+			early, err := q.ListInboxSLAConversations(ctx, store.ListInboxSLAConversationsParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
+			if err != nil {
+				return err
+			}
+			if err := lockSLAConversations(ctx, q, p.workspaceID, early); err != nil {
+				return err
+			}
+		}
 		cur, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId})
 		if store.IsNotFound(err) {
 			return errInboxGone

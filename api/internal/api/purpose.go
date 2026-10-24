@@ -61,6 +61,9 @@ func mailBlockers(ctx context.Context, q *store.Queries, workspaceID, inboxID uu
 	for _, k := range l.ChannelKinds {
 		blocks = append(blocks, "a "+k+" channel")
 	}
+	for _, k := range l.ConversationKinds {
+		blocks = append(blocks, k+" conversations")
+	}
 	for _, b := range []struct {
 		on   bool
 		what string

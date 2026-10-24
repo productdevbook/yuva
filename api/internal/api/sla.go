@@ -523,13 +523,13 @@ func (s *Server) syncConversationSLA(ctx context.Context, q *store.Queries, ws, 
 	if err != nil {
 		return err
 	}
+	in, err := q.ShareInbox(ctx, store.ShareInboxParams{WorkspaceID: ws, ID: c.InboxID})
+	if err != nil {
+		return err
+	}
 	row, err := q.LockConversationSLA(ctx, store.LockConversationSLAParams{WorkspaceID: ws, ConversationID: id})
 	exists := err == nil
 	if err != nil && !store.IsNotFound(err) {
-		return err
-	}
-	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ws, ID: c.InboxID})
-	if err != nil {
 		return err
 	}
 	now := s.now()

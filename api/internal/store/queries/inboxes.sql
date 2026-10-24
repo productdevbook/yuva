@@ -13,6 +13,9 @@ SELECT * FROM inboxes WHERE workspace_id = $1 AND id = $2;
 -- name: LockInbox :one
 SELECT * FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 
+-- name: ShareInbox :one
+SELECT * FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE;
+
 -- name: ListInboxes :many
 SELECT i.* FROM inboxes i
 WHERE i.workspace_id = @workspace_id
@@ -98,6 +101,9 @@ SELECT id, purpose FROM inboxes WHERE workspace_id = @workspace_id AND id = ANY(
 SELECT
     coalesce((SELECT array_agg(DISTINCT ch.kind ORDER BY ch.kind) FROM channels ch
               WHERE ch.workspace_id = @workspace_id AND ch.inbox_id = @inbox_id AND ch.kind <> 'email'), '{}')::text[] AS channel_kinds,
+    coalesce((SELECT array_agg(DISTINCT c.channel_kind ORDER BY c.channel_kind) FROM conversations c
+              WHERE c.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND c.trashed_at IS NULL
+                AND c.channel_kind <> 'email'), '{}')::text[] AS conversation_kinds,
     EXISTS (SELECT 1 FROM help_centers h WHERE h.workspace_id = @workspace_id AND h.inbox_id = @inbox_id)::bool AS help_center,
     EXISTS (SELECT 1 FROM status_pages sp WHERE sp.workspace_id = @workspace_id AND sp.inbox_id = @inbox_id)::bool AS status_page,
     EXISTS (SELECT 1 FROM roadmap_boards rb WHERE rb.workspace_id = @workspace_id AND rb.inbox_id = @inbox_id)::bool AS roadmap_board,

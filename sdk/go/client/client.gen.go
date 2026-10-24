@@ -13447,9 +13447,11 @@ type Conversation struct {
 	Spam bool `json:"spam"`
 
 	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
-	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
-	// `conversation.updated` event a member's own star change sends to their connections;
-	// absent for API keys, in webhooks and in other events.
+	// only in the caller's own reads (list items and `GET /v1/conversations/{id}` for member
+	// sessions) and in the `conversation.updated` event a member's own star change sends to
+	// their connections. Absent from shared events: the ordinary `conversation.updated` and
+	// other conversation events go to everyone and leave it out, so keep the value you have
+	// when an event omits it. Absent for API keys and in webhooks.
 	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
@@ -13776,9 +13778,11 @@ type ConversationListItem struct {
 	Spam bool `json:"spam"`
 
 	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
-	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
-	// `conversation.updated` event a member's own star change sends to their connections;
-	// absent for API keys, in webhooks and in other events.
+	// only in the caller's own reads (list items and `GET /v1/conversations/{id}` for member
+	// sessions) and in the `conversation.updated` event a member's own star change sends to
+	// their connections. Absent from shared events: the ordinary `conversation.updated` and
+	// other conversation events go to everyone and leave it out, so keep the value you have
+	// when an event omits it. Absent for API keys and in webhooks.
 	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
@@ -17726,8 +17730,9 @@ type InboxUpdate struct {
 
 	// Purpose `mail` to `support` is always allowed. `support` to `mail` answers `409
 	// purpose_mismatch`, naming what blocks it, while the inbox has a `chat`, `app` or `api`
-	// channel, a help center, status page, roadmap board or What's new, or is named in an SLA
-	// policy's `inbox_ids`, or while `assignment_mode` is not `off` (send `assignment_mode:
+	// channel, an untrashed conversation whose `channel_kind` is not `email` (moved in, or
+	// left by a deleted channel), a help center, status page, roadmap board or What's new, or
+	// is named in an SLA policy's `inbox_ids`, or while `assignment_mode` is not `off` (send `assignment_mode:
 	// off` in the same request). Teams granted the inbox do not block it. Conversations of
 	// the inbox lose their running SLA targets at once. Audited as `inbox.purpose_changed`.
 	Purpose *InboxPurpose `json:"purpose,omitempty"`
@@ -22418,9 +22423,11 @@ type StatusIncidentConversation struct {
 	Spam bool `json:"spam"`
 
 	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
-	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
-	// `conversation.updated` event a member's own star change sends to their connections;
-	// absent for API keys, in webhooks and in other events.
+	// only in the caller's own reads (list items and `GET /v1/conversations/{id}` for member
+	// sessions) and in the `conversation.updated` event a member's own star change sends to
+	// their connections. Absent from shared events: the ordinary `conversation.updated` and
+	// other conversation events go to everyone and leave it out, so keep the value you have
+	// when an event omits it. Absent for API keys and in webhooks.
 	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`

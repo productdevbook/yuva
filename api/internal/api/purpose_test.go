@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 )
@@ -134,6 +135,36 @@ func TestMoveIntoMailInbox(t *testing.T) {
 	plain := ct.conversation(ct.owner)
 	if r := ct.owner.expect(http.StatusOK, "POST", "/v1/conversations/"+plain+"/move", map[string]any{"inbox_id": mail}); r.body["inbox_purpose"] != "mail" {
 		t.Fatalf("moved: %s", r.raw)
+	}
+}
+
+func TestMailBlockedByChatConversations(t *testing.T) {
+	h := newHarness(t)
+	ct := newChatTeam(t, h, "live", true)
+	o := ct.owner
+	cs := ct.session(h, map[string]any{})
+	chat := cs.start("hi from the widget")
+	plain := o.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Plain", "slug": unique("plain")}).body["inbox"].(map[string]any)["id"].(string)
+	o.expect(http.StatusOK, "POST", "/v1/conversations/"+chat+"/move", map[string]any{"inbox_id": plain})
+
+	refused := func(inbox, want string) string {
+		t.Helper()
+		r := o.do("PATCH", "/v1/inboxes/"+inbox, map[string]any{"purpose": "mail"})
+		if r.status != http.StatusConflict || r.body["code"] != "purpose_mismatch" || !strings.Contains(r.body["detail"].(string), want) {
+			t.Fatalf("PATCH %s to mail: %d %s", inbox, r.status, r.raw)
+		}
+		return r.body["detail"].(string)
+	}
+	refused(plain, "chat conversations")
+	o.expect(http.StatusOK, "DELETE", "/v1/conversations/"+chat, nil)
+	if r := o.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+plain, map[string]any{"purpose": "mail"}); r.body["purpose"] != "mail" {
+		t.Fatalf("a trashed chat conversation still blocks: %s", r.raw)
+	}
+
+	cs.start("second question")
+	o.expect(http.StatusNoContent, "DELETE", "/v1/channels/"+ct.channel, nil)
+	if d := refused(ct.chatInbox, "chat conversations"); strings.Contains(d, "chat channel") {
+		t.Fatalf("a deleted channel is still named: %s", d)
 	}
 }
 
