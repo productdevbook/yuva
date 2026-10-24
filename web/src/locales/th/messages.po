@@ -1401,6 +1401,10 @@ msgstr "ข้อความถูกลบออกจากการสนท
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "ชื่อที่คุณควบคุม เช่น {example} Yuva จะแสดงเรคคอร์ด DNS สองรายการให้เพิ่ม และหน้านี้จะตอบบนโดเมนทันทีที่เห็นเรคคอร์ดเหล่านั้น"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "รหัสใหม่กำลังส่งไป"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "ผลิตภัณฑ์ใหม่"
@@ -1706,6 +1710,7 @@ msgstr "กิจกรรม"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "เพิ่มการดำเนินการ"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "เพิ่มที่อยู่"
 
@@ -2019,6 +2025,10 @@ msgstr "เพิ่มโดเมน {domain} สำหรับการล�
 msgid "Address"
 msgstr "ที่อยู่"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "อนุมัติที่อยู่แล้ว"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "ที่อยู่หลุดมือ"
@@ -2035,6 +2045,18 @@ msgstr "ที่อยู่หรือชื่อ"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "การพิสูจน์ที่อยู่"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "ยืนยันที่อยู่แล้ว"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "ที่อยู่ที่ {name} เพิ่มไว้เพื่อส่งอีเมล ที่อยู่ที่รออนุมัติต้องให้เจ้าของหรือผู้ดูแลอนุมัติ"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "ที่อยู่สำหรับส่งอีเมล"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "ไม่สามารถลบเจ้าของได้ โป�
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "เจ้าของหรือผู้ดูแลอนุญาตให้ผู้ช่วยส่งเองได้ด้วย อนุญาตให้บอทส่ง"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "เจ้าของหรือผู้ดูแลต้องอนุมัติที่อยู่นี้ เพราะอีเมลที่ส่งถึงโดเมนของที่อยู่นี้จะเข้ากล่องจดหมายที่ใช้ร่วมกัน"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "เจ้าของหรือผู้ดูแลเปิดการลงนามเมื่อเผยแพร่ระเบียนแล้ว"
@@ -2804,8 +2830,13 @@ msgstr "มีผลกับอีเมลฉบับถัดไป"
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "อนุมัติ"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "อนุมัติ {address}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "เรคคอร์ด CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "โค้ด"
@@ -4228,6 +4260,10 @@ msgstr "โค้ด"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "ส่งรหัสแล้ว"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "พบในโฟลเดอร์ส่งแล้วของคุ
 msgid "Friday"
 msgstr "วันศุกร์"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "อีเมลเข้าช่องทางอีเมล “{chan
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "อีเมลไม่ได้ลงนามด้วยคีย์ของโดเมนผู้ส่งเอง ซึ่ง Gmail และ Yahoo คาดหวังให้มี"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "อีเมลที่รอคิวจากที่อยู่นี้จะล้มเหลว แทนที่จะส่งออกจากที่อยู่อื่น"
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "รูปภาพระยะไกลอาจบอกผู้ส่
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "นำ {0} ออก"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "ลบ {0} หรือไม่"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "ลบ {address}"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "ลบ {address} หรือไม่"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "ส่งข้อความจากแอปของคุณ"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "ส่งเหตุการณ์ไปยังเซิร์ฟเ
 msgid "Send feedback from a page"
 msgstr "ส่งความคิดเห็นจากหน้า"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "ส่งจาก"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "ส่งคำเชิญ"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "ส่งอีเมลจากที่อยู่ของคุณเอง"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "ส่งอีเมลจากที่อยู่ของคุณเองแทนที่อยู่ของกล่องจดหมาย ยืนยันด้วยรหัส และโดเมนของกล่องจดหมายต้องตั้งค่าให้ส่งด้วยที่อยู่นั้นได้"
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "ส่งคำเชิญถึง {0} อีกครั้ง"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "ส่งการตอบกลับ"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "ส่งคำตอบจากหนึ่งในที่อยู่ของคุณ"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "การนำเข้าล้มเหลว และไม่ม�
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "การนำเข้าไม่ได้รอเริ่มอีกต่อไป ดูสถานะของการนำเข้า"
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "ที่อยู่ของกล่องจดหมาย"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "เปลี่ยนกล่องข้อความภายหลังไม่ได้"
@@ -18365,6 +18437,10 @@ msgstr "ที่อยู่นี้ยังไม่มีบัญชี SM
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "ที่อยู่นี้พิสูจน์แล้ว"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "ที่อยู่นี้ถูกใช้กับอีเมลในพื้นที่ทำงานนี้แล้ว"
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "ค่าถูกเก็บแบบเข้ารหัสและ
 msgid "Values of condition {n}, separated by commas"
 msgstr "ค่าของเงื่อนไข {n} คั่นด้วยจุลภาค"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "ยืนยันแล้ว"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "ยืนยันโดเมน {domain} สำหรับการลงชื่อเข้าใช้ครั้งเดียว"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "กำลังรอเพื่อนร่วมทีมที่ว
 msgid "waiting for approval"
 msgstr "รออนุมัติ"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "รออนุมัติ"
 
@@ -19917,6 +19997,10 @@ msgstr "กำลังรอรหัสยืนยันของ Google…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "กำลังรอให้ถึง"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "รอรหัส"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "เราส่งรหัสใช้ครั้งเดียวใ
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "เราส่งรหัสใช้ครั้งเดียวให้ทางอีเมล ไม่ต้องจำรหัสผ่าน"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "เราส่งรหัส 6 หลักไปยังที่อยู่นี้แล้ว ใช้ได้ 10 นาที"
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "คุณปิดหน้าต่างนี้แล้วกลั
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "คุณยกเลิกการเชื่อมต่อได้ทุกเมื่อในการตั้งค่า ภายใต้แอปที่เชื่อมต่อ"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "เก็บที่อยู่ได้สูงสุด 10 ที่อยู่ ลบหนึ่งที่อยู่ก่อน"
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "คุณออกจากหน้านี้ได้ การนำเข้ายังดำเนินต่อ"
@@ -20686,6 +20778,10 @@ msgstr "คุณเปลี่ยนบทบาทของตัวเอง
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "คุณลบตัวเองไม่ได้"
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "คุณส่งจากที่อยู่นี้ผ่านช่องทางนี้ไม่ได้"
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "คุณสร้างพื้นที่ทำงานครบต
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "คุณยังไม่มีพาสคีย์"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "คุณยังไม่ได้เพิ่มที่อยู่"
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "บัญชีของคุณ"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "ที่อยู่ของคุณ"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

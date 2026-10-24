@@ -409,6 +409,7 @@ export function useErrorText() {
   const { t } = useLingui()
   return (err: unknown): string => {
     if (!(err instanceof ApiError)) return t`Could not reach the server. Check your connection and try again.`
+    if (err.code === "from_not_allowed") return err.detail ?? t`You cannot send from this address through this channel.`
     if (err.code === "slack_not_configured") return t`This server has no Slack app set up.`
     if (err.code === "slack_not_connected") return t`Slack is not connected to this workspace.`
     if (err.code === "slack_failed") return t`Slack refused the request or did not answer. Try again in a moment.`

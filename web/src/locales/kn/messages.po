@@ -1401,6 +1401,10 @@ msgstr "ಸಂಭಾಷಣೆಯಿಂದ ಒಂದು ಸಂದೇಶವನ್�
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "ನೀವು ನಿಯಂತ್ರಿಸುವ ಹೆಸರು, ಉದಾ. {example}. Yuva ನಿಮಗೆ ಸೇರಿಸಲು ಎರಡು DNS ದಾಖಲೆಗಳನ್ನು ತೋರಿಸುತ್ತದೆ, ಅವು ಕಂಡ ಕೂಡಲೇ ಪುಟ ಡೊಮೇನ್‌ನಲ್ಲಿ ಉತ್ತರಿಸುತ್ತದೆ."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "ಹೊಸ ಕೋಡ್ ಬರುತ್ತಿದೆ"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "ಒಂದು ಹೊಸ ಉತ್ಪನ್ನ"
@@ -1706,6 +1710,7 @@ msgstr "ಚಟುವಟಿಕೆ"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "ಕ್ರಿಯೆಯನ್ನು ಸೇರಿಸಿ"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "ವಿಳಾಸ ಸೇರಿಸಿ"
 
@@ -2019,6 +2025,10 @@ msgstr "ಸಿಂಗಲ್ ಸೈನ್-ಆನ್‌ಗಾಗಿ ಡೊಮೇನ
 msgid "Address"
 msgstr "ವಿಳಾಸ"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "ವಿಳಾಸ ಅನುಮೋದಿಸಲಾಗಿದೆ"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "ವಿಳಾಸ ಕಳೆದುಹೋಗಿದೆ"
@@ -2035,6 +2045,18 @@ msgstr "ವಿಳಾಸ ಅಥವಾ ಹೆಸರು"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "ವಿಳಾಸದ ಸಾಬೀತು"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "ವಿಳಾಸ ಪರಿಶೀಲಿಸಲಾಗಿದೆ"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "ಮೇಲ್ ಕಳುಹಿಸಲು {name} ಸೇರಿಸಿದ ವಿಳಾಸಗಳು. ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿರುವವುಗಳಿಗೆ ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಬೇಕು."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "ಕಳುಹಿಸುವ ವಿಳಾಸಗಳು"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "ಮಾಲೀಕರನ್ನು ತೆಗೆದುಹಾಕಲಾಗು�
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಬಾಟ್‌ಗಳು ಕಳುಹಿಸಬಹುದು ಮೂಲಕ ಸಹಾಯಕರು ತಾವೇ ಕಳುಹಿಸಲು ಅನುಮತಿಸಬಹುದು."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಈ ವಿಳಾಸವನ್ನು ಅನುಮೋದಿಸಬೇಕು, ಏಕೆಂದರೆ ಅದರ ಡೊಮೇನ್‌ಗೆ ಬರುವ ಮೇಲ್ ಹಂಚಿದ ಇನ್‌ಬಾಕ್ಸ್‌ಗೆ ಹೋಗುತ್ತದೆ."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "ರೆಕಾರ್ಡ್ ಪ್ರಕಟವಾದ ನಂತರ ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಸೈನಿಂಗ್ ಅನ್ನು ಆನ್ ಮಾಡುತ್ತಾರೆ."
@@ -2804,8 +2830,13 @@ msgstr "ಮುಂದಿನ ಮೇಲ್‌ಗೆ ಅನ್ವಯಿಸುತ್�
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "ಅನುಮೋದಿಸಿ"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "{address} ಅನುಮೋದಿಸಿ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME ದಾಖಲೆ"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "ಕೋಡ್"
@@ -4228,6 +4260,10 @@ msgstr "ಕೋಡ್"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "ಕೋಡ್ ಕಳುಹಿಸಲಾಗಿದೆ"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "ನಿಮ್ಮ ಕಳುಹಿಸಿದ ಫೋಲ್ಡರ್‌ಗಳ�
 msgid "Friday"
 msgstr "ಶುಕ್ರವಾರ"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "ಮೇಲ್ {address} ಸ್ವೀಕರಿಸುವ “{channelName}�
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "ಮೇಲ್‌ಗೆ ಕಳುಹಿಸುವವರ ಸ್ವಂತ ಡೊಮೇನ್‌ನ ಕೀಲಿಯಿಂದ ಸಹಿ ಮಾಡಲಾಗಿಲ್ಲ; Gmail ಮತ್ತು Yahoo ಇದನ್ನು ನಿರೀಕ್ಷಿಸುತ್ತವೆ."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "ಈ ವಿಳಾಸದಿಂದ ಸರತಿಯಲ್ಲಿರುವ ಮೇಲ್ ಬೇರೆ ವಿಳಾಸದಿಂದ ಹೋಗುವ ಬದಲು ವಿಫಲವಾಗುತ್ತದೆ."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "ರಿಮೋಟ್ ಚಿತ್ರಗಳು ನೀವು ಮೇಲ್ �
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "{0} ತೆಗೆದುಹಾಕಿ"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} ತೆಗೆಯಬೇಕೆ?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "{address} ತೆಗೆದುಹಾಕಿ"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "{address} ತೆಗೆದುಹಾಕಬೇಕೇ?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "ನಿಮ್ಮ ಆ್ಯಪ್‌ನಿಂದ ಸಂದೇಶ ಕಳುಹಿಸಿ"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "ನಿಮ್ಮ ಸ್ವಂತ ಸರ್ವರ್‌ಗೆ ಈವೆಂ
 msgid "Send feedback from a page"
 msgstr "ಪುಟದಿಂದ ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "ಇದರಿಂದ ಕಳುಹಿಸಿ"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "ಆಹ್ವಾನ ಕಳುಹಿಸಿ"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "ನಿಮ್ಮ ಸ್ವಂತ ವಿಳಾಸದಿಂದ ಮೇಲ್ ಕಳುಹಿಸಿ"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "ಇನ್‌ಬಾಕ್ಸ್‌ನ ವಿಳಾಸದ ಬದಲು ನಿಮ್ಮ ಸ್ವಂತ ವಿಳಾಸದಿಂದ ಮೇಲ್ ಕಳುಹಿಸಿ. ಕೋಡ್‌ನಿಂದ ಪರಿಶೀಲಿಸಿ; ಇನ್‌ಬಾಕ್ಸ್‌ನ ಡೊಮೇನ್ ಅದರಿಂದ ಕಳುಹಿಸಲು ಹೊಂದಿಸಿರಬೇಕು."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "{0} ಗೆ ಆಹ್ವಾನವನ್ನು ಮತ್ತೆ ಕಳು�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "ಉತ್ತರ ಕಳುಹಿಸಿ"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "ಉತ್ತರವನ್ನು ನಿಮ್ಮ ವಿಳಾಸಗಳಲ್ಲಿ ಒಂದರಿಂದ ಕಳುಹಿಸಿ"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "ಆಮದು ವಿಫಲವಾಯಿತು, ಮತ್ತು ಫೈಲ�
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "ಆಮದು ಇನ್ನು ಆರಂಭಕ್ಕಾಗಿ ಕಾಯುತ್ತಿಲ್ಲ. ಅದರ ಸ್ಥಿತಿ ನೋಡಿ."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "ಇನ್‌ಬಾಕ್ಸ್‌ನ ವಿಳಾಸ"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "ಇನ್‌ಬಾಕ್ಸ್ ಅನ್ನು ನಂತರ ಬದಲಾಯಿಸಲಾಗದು."
@@ -18365,6 +18437,10 @@ msgstr "ಈ ವಿಳಾಸಕ್ಕೆ ಇನ್ನೂ SMTP ಖಾತೆ ಇಲ
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "ಈ ವಿಳಾಸ ಈಗಾಗಲೇ ಸಾಬೀತಾಗಿದೆ."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "ಈ ವಿಳಾಸವನ್ನು ಈ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನಲ್ಲಿ ಈಗಾಗಲೇ ಮೇಲ್‌ಗೆ ಬಳಸಲಾಗುತ್ತಿದೆ."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "ಮೌಲ್ಯಗಳನ್ನು ಎನ್‌ಕ್ರಿಪ್ಟ್ �
 msgid "Values of condition {n}, separated by commas"
 msgstr "ಷರತ್ತು {n} ರ ಮೌಲ್ಯಗಳು, ಅಲ್ಪವಿರಾಮದಿಂದ ಬೇರ್ಪಡಿಸಿ"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "ಪರಿಶೀಲಿತ"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "ಸಿಂಗಲ್ ಸೈನ್-ಆನ್‌ಗಾಗಿ ಡೊಮೇನ್ {domain} ಪರಿಶೀಲಿಸಿದರು"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "{since} ರಿಂದ ಲಭ್ಯ ಸಹೋದ್ಯೋಗಿಗಾಗ�
 msgid "waiting for approval"
 msgstr "ಅನುಮೋದನೆಗೆ ಕಾಯುತ್ತಿದೆ"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "ಅನುಮೋದನೆಗೆ ಕಾಯುತ್ತಿದೆ"
 
@@ -19917,6 +19997,10 @@ msgstr "Google ನ ದೃಢೀಕರಣ ಕೋಡ್‌ಗಾಗಿ ಕಾಯ�
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "ಅದು ತಲುಪಲು ಕಾಯಲಾಗುತ್ತಿದೆ"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "ಕೋಡ್‌ಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "ನಾವು ನಿಮಗೆ ಒಂದು ಬಾರಿಯ ಕೋಡ್ �
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "ನಾವು ನಿಮಗೆ ಒಂದು ಬಾರಿಯ ಕೋಡ್ ಇಮೇಲ್ ಮಾಡುತ್ತೇವೆ. ನೆನಪಿಡಲು ಪಾಸ್‌ವರ್ಡ್ ಇಲ್ಲ."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "ನಾವು ಈ ವಿಳಾಸಕ್ಕೆ 6 ಅಂಕಿಯ ಕೋಡ್ ಕಳುಹಿಸಿದ್ದೇವೆ. ಇದು 10 ನಿಮಿಷ ಮಾನ್ಯ."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "ನೀವು ಈ ವಿಂಡೋವನ್ನು ಮುಚ್ಚಿ {host
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "ನೀವು ಅದನ್ನು ಯಾವಾಗ ಬೇಕಾದರೂ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ, ಸಂಪರ್ಕಿತ ಆ್ಯಪ್‌ಗಳ ಅಡಿಯಲ್ಲಿ ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಬಹುದು."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "ನೀವು ಗರಿಷ್ಠ 10 ವಿಳಾಸಗಳನ್ನು ಇಟ್ಟುಕೊಳ್ಳಬಹುದು. ಮೊದಲು ಒಂದನ್ನು ತೆಗೆದುಹಾಕಿ."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "ನೀವು ಈ ಪುಟ ಬಿಡಬಹುದು; ಆಮದು ಮುಂದುವರಿಯುತ್ತದೆ."
@@ -20686,6 +20778,10 @@ msgstr "ನೀವು ನಿಮ್ಮ ಸ್ವಂತ ಪಾತ್ರವನ್ನ
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "ನೀವು ನಿಮ್ಮನ್ನು ತೆಗೆದುಹಾಕಲಾಗುವುದಿಲ್ಲ."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "ಈ ಚಾನಲ್ ಮೂಲಕ ನೀವು ಈ ವಿಳಾಸದಿಂದ ಕಳುಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "ಈ ಸರ್ವರ್ ಅನುಮತಿಸುವಷ್ಟು ವರ್
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "ನಿಮಗೆ ಇನ್ನೂ ಪಾಸ್‌ಕೀಗಳಿಲ್ಲ."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "ನೀವು ಇನ್ನೂ ಯಾವುದೇ ವಿಳಾಸ ಸೇರಿಸಿಲ್ಲ."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "ನಿಮ್ಮ ಖಾತೆ"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "ನಿಮ್ಮ ವಿಳಾಸಗಳು"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

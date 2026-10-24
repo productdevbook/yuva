@@ -1401,6 +1401,10 @@ msgstr "உரையாடலிலிருந்து ஒரு செய்�
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "நீங்கள் கட்டுப்படுத்தும் பெயர், எ.கா. {example}. சேர்க்க வேண்டிய இரண்டு DNS பதிவுகளை Yuva காட்டும்; அவற்றைப் பார்த்ததும் பக்கம் அந்த டொமைனில் பதிலளிக்கும்."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "புதிய குறியீடு வருகிறது"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "ஒரு புதிய தயாரிப்பு"
@@ -1706,6 +1710,7 @@ msgstr "செயல்பாடு"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "செயலைச் சேர்"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "முகவரியைச் சேர்"
 
@@ -2019,6 +2025,10 @@ msgstr "ஒற்றை உள்நுழைவுக்காக {domain} ட�
 msgid "Address"
 msgstr "முகவரி"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "முகவரி அங்கீகரிக்கப்பட்டது"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "முகவரி இழந்தது"
@@ -2035,6 +2045,18 @@ msgstr "முகவரி அல்லது பெயர்"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "முகவரி நிரூபணம்"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "முகவரி சரிபார்க்கப்பட்டது"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "அஞ்சல் அனுப்ப {name} சேர்த்த முகவரிகள். ஒப்புதலுக்குக் காத்திருப்பவற்றுக்கு உரிமையாளர் அல்லது நிர்வாகி தேவை."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "அனுப்பும் முகவரிகள்"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "உரிமையாளரை நீக்க முடியாது.
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "உரிமையாளர் அல்லது நிர்வாகி “பாட்கள் அனுப்பலாம்” மூலம் உதவியாளர்கள் தாமாக அனுப்ப அனுமதிக்கலாம்."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "இந்த முகவரியின் டொமைனுக்கு வரும் அஞ்சல் பகிரப்பட்ட இன்பாக்ஸில் சேர்வதால், உரிமையாளர் அல்லது நிர்வாகி இதை அங்கீகரிக்க வேண்டும்."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "பதிவு வெளியிடப்பட்டதும் உரிமையாளர் அல்லது நிர்வாகி கையொப்பமிடுதலை இயக்குவார்."
@@ -2804,8 +2830,13 @@ msgstr "அடுத்த அஞ்சலுக்குப் பொருந�
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "ஒப்புதல் அளி"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "{address} அங்கீகரிக்கவும்"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME பதிவு"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "குறியீடு"
@@ -4228,6 +4260,10 @@ msgstr "குறியீடு"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "குறியீடு அனுப்பப்பட்டது"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "உங்கள் Sent கோப்புறைகளில் கண�
 msgid "Friday"
 msgstr "வெள்ளிக்கிழமை"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "அஞ்சல் {address}-ஐப் பெறும் “{channelNam
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "அஞ்சல் அனுப்புநரின் சொந்த டொமைனின் விசையால் கையொப்பமிடப்படவில்லை; Gmail மற்றும் Yahoo இதை எதிர்பார்க்கின்றன."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "இந்த முகவரியிலிருந்து வரிசையில் உள்ள அஞ்சல் வேறு முகவரியிலிருந்து செல்லாமல் தோல்வியடையும்."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "தொலைநிலைப் படங்கள் நீங்கள�
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "{0}-ஐ அகற்று"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} ஐ நீக்கவா?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "{address} நீக்கு"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "{address} நீக்கலாமா?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "உங்கள் ஆப்பிலிருந்து செய்தி அனுப்புங்கள்"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "உங்கள் சொந்தச் சேவையகத்து�
 msgid "Send feedback from a page"
 msgstr "பக்கத்திலிருந்து கருத்தை அனுப்புங்கள்"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "இதிலிருந்து அனுப்பு"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "அழைப்பை அனுப்பு"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "உங்கள் சொந்த முகவரியிலிருந்து அஞ்சல் அனுப்புங்கள்"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "இன்பாக்ஸின் முகவரிக்குப் பதிலாக உங்கள் சொந்த முகவரியிலிருந்து அஞ்சல் அனுப்புங்கள். குறியீட்டால் சரிபார்க்கவும்; இன்பாக்ஸின் டொமைன் அதிலிருந்து அனுப்ப அமைக்கப்பட்டிருக்க வேண்டும்."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "{0} க்கு அழைப்பை மீண்டும் அன�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "பதிலை அனுப்பு"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "பதிலை உங்கள் முகவரிகளில் ஒன்றிலிருந்து அனுப்பு"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "இறக்குமதி தோல்வியடைந்தது, 
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "இறக்குமதி இனி தொடங்கக் காத்திருக்கவில்லை. அதன் நிலையைப் பாருங்கள்."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "இன்பாக்ஸின் முகவரி"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "இன்பாக்ஸை பின்னர் மாற்ற முடியாது."
@@ -18365,6 +18437,10 @@ msgstr "இந்த முகவரிக்கு இன்னும் SMTP �
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "இந்த முகவரி ஏற்கனவே நிரூபிக்கப்பட்டுள்ளது."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "இந்த முகவரி இந்த பணியிடத்தில் ஏற்கனவே அஞ்சலுக்குப் பயன்படுத்தப்படுகிறது."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "மதிப்புகள் குறியாக்கம் செ�
 msgid "Values of condition {n}, separated by commas"
 msgstr "நிபந்தனை {n}-இன் மதிப்புகள், காற்புள்ளிகளால் பிரிக்கப்பட்டவை"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "சரிபார்க்கப்பட்டது"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "ஒற்றை உள்நுழைவுக்காக {domain} டொமைனைச் சரிபார்த்தார்"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "{since} முதல் கிடைக்கும் சக ஊழி�
 msgid "waiting for approval"
 msgstr "ஒப்புதலுக்காகக் காத்திருக்கிறது"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "ஒப்புதலுக்காகக் காத்திருக்கிறது"
 
@@ -19917,6 +19997,10 @@ msgstr "Google-இன் உறுதிப்படுத்தல் குற
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "வந்து சேர்வதற்காகக் காத்திருக்கிறது"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "குறியீட்டுக்காகக் காத்திருக்கிறது"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "ஒருமுறை பயன்படுத்தும் குற�
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "ஒருமுறை பயன்படுத்தும் குறியீட்டை மின்னஞ்சலில் அனுப்புவோம். நினைவில் வைக்க கடவுச்சொல் இல்லை."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "இந்த முகவரிக்கு 6 இலக்கக் குறியீட்டை அனுப்பினோம். இது 10 நிமிடங்கள் செல்லும்."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "இந்தச் சாளரத்தை மூடி {host}-க்�
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "அமைப்புகளில், இணைக்கப்பட்ட ஆப்கள் பகுதியில் எப்போது வேண்டுமானாலும் இதைத் துண்டிக்கலாம்."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "அதிகபட்சம் 10 முகவரிகளை வைத்திருக்கலாம். முதலில் ஒன்றை நீக்கவும்."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "இந்தப் பக்கத்தை விட்டுச் செல்லலாம்; இறக்குமதி தொடரும்."
@@ -20686,6 +20778,10 @@ msgstr "உங்கள் சொந்தப் பங்கை மாற்ற
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "உங்களை நீங்களே நீக்க முடியாது."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "இந்த சேனல் வழியாக இந்த முகவரியிலிருந்து அனுப்ப முடியாது."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "இந்தச் சேவையகம் அனுமதிக்க�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "உங்களிடம் இன்னும் பாஸ்கீகள் இல்லை."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "நீங்கள் இன்னும் முகவரி எதையும் சேர்க்கவில்லை."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "உங்கள் கணக்கு"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "உங்கள் முகவரிகள்"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

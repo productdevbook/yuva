@@ -6,6 +6,7 @@ import { useNavigate } from "react-router"
 
 import { Kbd, toast } from "@/components/common"
 import { AddressChips } from "@/components/common/AddressChips"
+import { FromPicker, sendingAddress, useOwnSenders } from "@/components/common/FromPicker"
 import { mod } from "@/components/common/ShortcutSheet"
 import { SignatureHtml } from "@/components/common/SignatureHtml"
 import { formatBytes, useErrorText } from "@/components/common/text"
@@ -37,6 +38,8 @@ type Draft = {
   signature: boolean
   draft: boolean
   clientId: string
+  fromAddress?: string
+  channelId?: string
 }
 
 function post({ draft, files, ...d }: Draft) {
@@ -50,6 +53,8 @@ function post({ draft, files, ...d }: Draft) {
     signature: d.signature ? undefined : false,
     draft: draft || undefined,
     client_id: d.clientId,
+    from_address: d.fromAddress,
+    channel_id: d.channelId,
   }
   if (files.length === 0) return unwrap(api.POST("/v1/conversations/mail", { body }))
   return unwrap(
@@ -83,7 +88,10 @@ function ComposeError({ error }: { error: unknown }) {
         <Trans>{address} bounced or complained before. Remove it, or clear it on its contact to write to it.</Trans>
       </p>
     )
-  const detail = error instanceof ApiError && error.code === "validation_failed" ? error.detail : undefined
+  const detail =
+    error instanceof ApiError && (error.code === "validation_failed" || error.code === "from_not_allowed")
+      ? error.detail
+      : undefined
   return (
     <p role="alert" className="text-caption text-destructive" data-testid="compose-error">
       {detail ?? text(error)}
@@ -116,6 +124,14 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
   }, [inboxes, channels])
   const [picked, setPicked] = useState<string>()
   const inboxId = picked ?? (options.find((i) => i.id === box) ?? options[0])?.id
+  const [pickedFrom, setPickedFrom] = useState("")
+  const inboxChannels = useMemo(
+    () => [...channels.values()].filter((c) => c.kind === "email" && c.inbox_id === inboxId),
+    [channels, inboxId]
+  )
+  const senders = useOwnSenders(inboxChannels.map((c) => c.id))
+  const sender = senders.find((a) => a.address === pickedFrom)
+  const senderChannel = sender && inboxChannels.find((c) => sender.usable_channel_ids.includes(c.id))
   const [to, setTo] = useState<string[]>([])
   const [cc, setCc] = useState<string[]>([])
   const [bcc, setBcc] = useState<string[]>([])
@@ -146,7 +162,20 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
   const run = (draft: boolean) => {
     if (!inboxId || (draft ? !ready : !canSend)) return
     submit.mutate(
-      { inboxId, to, cc, bcc, subject, body, files, signature: !noSignature, draft, clientId: clientId.current },
+      {
+        inboxId,
+        to,
+        cc,
+        bcc,
+        subject,
+        body,
+        files,
+        signature: !noSignature,
+        draft,
+        clientId: clientId.current,
+        fromAddress: sender?.address,
+        channelId: senderChannel?.id,
+      },
       {
         onSuccess: (data) => {
           onClose()
@@ -202,20 +231,30 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto py-2">
         <Row label={<Trans>From</Trans>}>
-          <NativeSelect
-            className="w-full"
-            size="sm"
-            value={inboxId ?? ""}
-            aria-label={t`From`}
-            onChange={(e) => setPicked(e.target.value)}
-            data-testid="compose-from"
-          >
-            {options.map((i) => (
-              <NativeSelectOption key={i.id} value={i.id}>
-                {i.name}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
+          <div className="flex flex-wrap gap-1.5">
+            <NativeSelect
+              className="min-w-40 flex-1"
+              size="sm"
+              value={inboxId ?? ""}
+              aria-label={t`From`}
+              onChange={(e) => setPicked(e.target.value)}
+              data-testid="compose-from"
+            >
+              {options.map((i) => (
+                <NativeSelectOption key={i.id} value={i.id}>
+                  {i.name}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+            <FromPicker
+              className="min-w-40 flex-1"
+              channelAddress={sendingAddress(inboxChannels[0])}
+              senders={senders}
+              value={pickedFrom}
+              onChange={setPickedFrom}
+              testId="compose-send-as"
+            />
+          </div>
         </Row>
         <Row label={<Trans>To</Trans>}>
           <div className="flex items-start gap-1">

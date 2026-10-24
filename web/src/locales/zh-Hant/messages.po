@@ -1401,6 +1401,10 @@ msgstr "一則訊息已從對話中移除"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "你控制的名稱，例如 {example}。Yuva 會顯示兩筆需要新增的 DNS 記錄，看到記錄後頁面就會在該網域上回應。"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "新的驗證碼正在傳送"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "新產品"
@@ -1706,6 +1710,7 @@ msgstr "活動"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "新增動作"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "新增地址"
 
@@ -2019,6 +2025,10 @@ msgstr "已為單一登入新增網域 {domain}"
 msgid "Address"
 msgstr "地址"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "地址已核准"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "位址已失效"
@@ -2035,6 +2045,18 @@ msgstr "地址或名稱"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "位址驗證"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "地址已驗證"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "{name} 為寄送郵件新增的地址。等待核准的地址需要擁有者或管理員處理。"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "用於寄送的地址"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "無法移除擁有者。請先變更其角色。"
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "所有者或管理員可以透過「允許機器人傳送」讓助手自行傳送。"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "擁有者或管理員必須核准此地址，因為寄往其網域的郵件會進入共用收件匣。"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "記錄釋出後,由所有者或管理員開啟簽名。"
@@ -2804,8 +2830,13 @@ msgstr "對下一封郵件生效。"
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "批准"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "核准 {address}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME 記錄"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "程式碼"
@@ -4228,6 +4260,10 @@ msgstr "程式碼"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "驗證碼已傳送"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "在你的已傳送資料夾中找到"
 msgid "Friday"
 msgstr "星期五"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "郵件會進入接收 {address} 的郵件頻道「{channelName}」。"
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "郵件未使用寄件者自有網域的金鑰簽署,而 Gmail 和 Yahoo 要求這麼做。"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "從此地址排隊的郵件會失敗，而不會從其他地址寄出。"
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "遠端圖片可能會讓發件人知道你已開啟郵件。"
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "移除 {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "移除 {0}？"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "移除 {address}"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "移除 {address}？"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "從你的應用程式傳送訊息"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "把事件傳送到你自己的伺服器"
 msgid "Send feedback from a page"
 msgstr "從頁面傳送反饋"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "寄件者"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "寄出邀請"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "用你自己的地址寄送郵件"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "用你自己的地址取代收件匣的地址寄送郵件。以驗證碼驗證；收件匣的網域必須已設定為可用該地址寄送。"
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "重新寄送邀請給 {0}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "傳送回覆"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "用你自己的某個地址寄送回覆"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "匯入失敗,檔案中沒有新增任何內容。"
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "該匯入不再等待開始。請檢視其狀態。"
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "收件匣的地址"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "收件匣之後無法更改。"
@@ -18365,6 +18437,10 @@ msgstr "此地址還沒有 SMTP 帳號。請在第一次群發前在收件匣設
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "此位址已驗證。"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "此地址已在這個工作區中用於郵件。"
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "值以加密方式儲存,不會再次顯示。要修改,請取代它。"
 msgid "Values of condition {n}, separated by commas"
 msgstr "條件 {n} 的值,用逗號分隔"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "已驗證"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "已為單一登入驗證網域 {domain}"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "自 {since} 起等待有空的同事"
 msgid "waiting for approval"
 msgstr "等待稽覈"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "等待稽覈"
 
@@ -19917,6 +19997,10 @@ msgstr "正在等待 Google 的確認碼…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "等待送達"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "等待驗證碼"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "我們會透過郵件傳送一次性驗證碼。新地址會建立新帳
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "我們會透過郵件傳送一次性驗證碼。無需記住密碼。"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "我們已向此地址傳送 6 位數驗證碼，10 分鐘內有效。"
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "你可以關閉此視窗並回到 {host}。"
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "你可以隨時在「設定」的「已連線的應用程式」中斷開連線。"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "最多可保留 10 個地址。請先移除一個。"
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "你可以離開此頁面;匯入會繼續進行。"
@@ -20686,6 +20778,10 @@ msgstr "你無法變更自己的角色。"
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "你無法移除自己。"
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "你無法透過此管道使用該地址寄送。"
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "你建立的工作區已達到此伺服器允許的數量。請刪除一
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "你還沒有通行金鑰。"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "你還沒有新增地址。"
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "你的帳號"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "你的地址"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

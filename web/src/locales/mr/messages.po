@@ -1401,6 +1401,10 @@ msgstr "संभाषणातून एक संदेश काढून �
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "तुमच्या नियंत्रणातील नाव, उदा. {example}. Yuva तुम्हाला जोडण्यासाठी दोन DNS रेकॉर्ड दाखवतो, आणि ते दिसताच पेज त्या डोमेनवर उत्तर देते."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "नवीन कोड येत आहे"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "नवीन उत्पादन"
@@ -1706,6 +1710,7 @@ msgstr "क्रियाकलाप"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "कृती जोडा"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "पत्ता जोडा"
 
@@ -2019,6 +2025,10 @@ msgstr "सिंगल साइन-ऑनसाठी डोमेन {domain}
 msgid "Address"
 msgstr "पत्ता"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "पत्ता मंजूर झाला"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "पत्ता गमावला"
@@ -2035,6 +2045,18 @@ msgstr "पत्ता किंवा नाव"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "पत्त्याचा पुरावा"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "पत्ता सत्यापित झाला"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "मेल पाठवण्यासाठी {name} ने जोडलेले पत्ते. मंजुरीची वाट पाहणाऱ्या पत्त्यांसाठी मालक किंवा अ‍ॅडमिन लागतो."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "पाठवण्याचे पत्ते"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "मालकाला काढता येत नाही. आधी 
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "ओनर किंवा ॲडमिन “बॉट पाठवू शकतात” ने असिस्टंटना स्वतः पाठवू देऊ शकतो."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "मालक किंवा अ‍ॅडमिनने हा पत्ता मंजूर करावा, कारण त्याच्या डोमेनवर येणारा मेल सामायिक इनबॉक्समध्ये जातो."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "रेकॉर्ड प्रकाशित झाल्यावर ओनर किंवा ॲडमिन साइनिंग चालू करतो."
@@ -2804,8 +2830,13 @@ msgstr "पुढच्या मेलला लागू होते."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "मंजूर करा"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "{address} मंजूर करा"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME रेकॉर्ड"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "कोड"
@@ -4228,6 +4260,10 @@ msgstr "कोड"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "कोड पाठवला"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "तुमच्या Sent फोल्डरमध्ये साप�
 msgid "Friday"
 msgstr "शुक्रवार"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "मेल ई-मेल चॅनेल “{channelName}” मध्य
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "मेलवर पाठवणाऱ्याच्या स्वतःच्या डोमेनच्या कीने स्वाक्षरी केलेली नाही, जी Gmail आणि Yahoo ला अपेक्षित असते."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "या पत्त्यावरून रांगेत असलेला मेल दुसऱ्या पत्त्यावरून जाण्याऐवजी अयशस्वी होतो."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "रिमोट इमेज प्रेषकाला कळवू �
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "{0} काढा"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} काढायचे?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "{address} काढा"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "{address} काढायचा?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "तुमच्या ॲपमधून संदेश पाठवा"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "तुमच्या स्वतःच्या सर्व्हर�
 msgid "Send feedback from a page"
 msgstr "पेजवरून फीडबॅक पाठवा"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "यावरून पाठवा"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "आमंत्रण पाठवा"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "तुमच्या स्वतःच्या पत्त्यावरून मेल पाठवा"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "इनबॉक्सच्या पत्त्याऐवजी तुमच्या स्वतःच्या पत्त्यावरून मेल पाठवा. कोडने सत्यापित करा; इनबॉक्सचे डोमेन त्यावरून पाठवण्यासाठी सेट केलेले असावे."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "{0} ला आमंत्रण पुन्हा पाठवा"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "उत्तर पाठवा"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "उत्तर तुमच्या एका पत्त्यावरून पाठवा"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "इम्पोर्ट अयशस्वी झाले, आणि �
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "इम्पोर्ट आता सुरू होण्याची वाट पाहत नाही. त्याची अवस्था पाहा."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "इनबॉक्सचा पत्ता"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "इनबॉक्स नंतर बदलता येत नाही."
@@ -18365,6 +18437,10 @@ msgstr "या पत्त्याचे अजून SMTP खाते ना
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "हा पत्ता आधीच सिद्ध झाला आहे."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "हा पत्ता या वर्कस्पेसमध्ये आधीच मेलसाठी वापरला जात आहे."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "किमती एन्क्रिप्ट करून साठव
 msgid "Values of condition {n}, separated by commas"
 msgstr "अट {n} च्या व्हॅल्यूज, स्वल्पविरामाने विभक्त"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "सत्यापित"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "सिंगल साइन-ऑनसाठी डोमेन {domain} सत्यापित केले"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "{since} पासून उपलब्ध सहकाऱ्याच�
 msgid "waiting for approval"
 msgstr "मंजुरीच्या प्रतीक्षेत"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "मंजुरीच्या प्रतीक्षेत"
 
@@ -19917,6 +19997,10 @@ msgstr "Google च्या पुष्टी कोडची प्रती�
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "पोहोचण्याची प्रतीक्षा आहे"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "कोडची वाट पाहत आहे"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "आम्ही तुम्हाला एकदाच वापरा
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "आम्ही तुम्हाला एकदाच वापरायचा कोड ई-मेल करतो. लक्षात ठेवायला पासवर्ड नाही."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "आम्ही या पत्त्यावर 6 अंकी कोड पाठवला आहे. तो 10 मिनिटे वैध आहे."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "तुम्ही ही विंडो बंद करून {host} 
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "तुम्ही हे कधीही Settings मध्ये, कनेक्टेड ॲप्स अंतर्गत, डिस्कनेक्ट करू शकता."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "तुम्ही जास्तीत जास्त 10 पत्ते ठेवू शकता. आधी एक काढा."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "तुम्ही हे पेज सोडू शकता; इम्पोर्ट चालू राहतो."
@@ -20686,6 +20778,10 @@ msgstr "तुम्ही तुमची स्वतःची भूमिक
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "तुम्ही स्वतःला काढू शकत नाही."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "या चॅनेलवरून तुम्ही या पत्त्यावरून पाठवू शकत नाही."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "हा सर्व्हर परवानगी देतो ति�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "तुमची अजून पासकी नाही."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "तुम्ही अजून कोणताही पत्ता जोडलेला नाही."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "तुमचे खाते"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "तुमचे पत्ते"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

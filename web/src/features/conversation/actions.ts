@@ -172,6 +172,7 @@ export type SendRequest = {
   cc?: string[]
   bcc?: string[]
   signature?: boolean
+  fromAddress?: string
 }
 
 export function useConversationActions(c: Conversation, contactName: string) {
@@ -194,7 +195,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
   const addMessage = (m: Message) => applyEvent(qc, ctx, { type: "message.created", data: m })
 
   const deliver = async (
-    { body, files, suggestion, articles = [], macro, close, cc, bcc, signature }: SendRequest,
+    { body, files, suggestion, articles = [], macro, close, cc, bcc, signature, fromAddress }: SendRequest,
     clientId = newId(),
     onSent?: () => void
   ) => {
@@ -206,7 +207,10 @@ export function useConversationActions(c: Conversation, contactName: string) {
           api.PATCH("/v1/messages/{messageId}", { ...path, body: suggestion.html ? { body, html: null } : { body } })
         )
       sent = await unwrap(
-        api.POST("/v1/messages/{messageId}/send", { ...path, body: cc || bcc ? { cc, bcc } : undefined })
+        api.POST("/v1/messages/{messageId}/send", {
+          ...path,
+          body: cc || bcc || fromAddress ? { cc, bcc, from_address: fromAddress } : undefined,
+        })
       )
     } else {
       sent = await postMessage(c.id, {
@@ -219,6 +223,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         cc,
         bcc,
         signature,
+        from_address: fromAddress,
         // oxlint-disable-next-line unicorn/no-thenable -- the API names this field `then`
         then: macro ? macroThen(c, macro, close) : undefined,
       })

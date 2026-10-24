@@ -1401,6 +1401,10 @@ msgstr "Wiadomość została usunięta z rozmowy"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "Nazwa, którą kontrolujesz, np. {example}. Yuva pokaże dwa rekordy DNS do dodania, a strona zacznie odpowiadać pod domeną, gdy je zobaczy."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "Nowy kod jest w drodze"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "Nowy produkt"
@@ -1706,6 +1710,7 @@ msgstr "Aktywność"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "Dodaj akcję"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "Dodaj adres"
 
@@ -2019,6 +2025,10 @@ msgstr "Dodano domenę {domain} do logowania jednokrotnego"
 msgid "Address"
 msgstr "Adres"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "Adres zatwierdzony"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "Adres utracony"
@@ -2035,6 +2045,18 @@ msgstr "Adres lub nazwa"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "Potwierdzenie adresu"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "Adres zweryfikowany"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "Adresy, które {name} dodał(a), by wysyłać pocztę. Te czekające na zatwierdzenie wymagają właściciela lub administratora."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "Adresy, z których wysyłasz"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "Właściciela nie można usunąć. Najpierw zmień jego rolę."
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "Właściciel lub administrator może pozwolić asystentom wysyłać samodzielnie za pomocą opcji Boty mogą wysyłać."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "Właściciel lub administrator musi zatwierdzić ten adres, bo poczta na jego domenę trafia do wspólnej skrzynki."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Właściciel lub administrator włącza podpisywanie po opublikowaniu rekordu."
@@ -2804,8 +2830,13 @@ msgstr "Dotyczy następnej wiadomości."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "Zatwierdź"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "Zatwierdź {address}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "Rekord CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Kod"
@@ -4228,6 +4260,10 @@ msgstr "Kod"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "Kod wysłany"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "Znaleziono w Twoich folderach Wysłane"
 msgid "Friday"
 msgstr "Piątek"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "Poczta trafia do kanału e-mail „{channelName}”, który odbiera {add
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Wiadomości nie są podpisane kluczem domeny nadawcy, a tego oczekują Gmail i Yahoo."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "Poczta z tego adresu czekająca w kolejce nie wyjdzie z innego adresu, tylko zakończy się błędem."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "Zdalne obrazy mogą poinformować nadawcę, że otworzyłeś(-aś) wiado
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "Usuń {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Usunąć {0}?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "Usuń {address}"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "Usunąć {address}?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "Wyślij wiadomość ze swojej aplikacji"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "Wysyłaj zdarzenia na własny serwer"
 msgid "Send feedback from a page"
 msgstr "Wysyłaj opinie ze strony"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "Wyślij z"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Wyślij zaproszenie"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "Wysyłaj pocztę z własnego adresu"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "Wysyłaj pocztę z własnego adresu zamiast adresu skrzynki. Zweryfikuj go kodem; domena skrzynki musi być skonfigurowana do wysyłania z niego."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "Wyślij ponownie zaproszenie do {0}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "Wyślij odpowiedź"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "Wyślij odpowiedź z jednego ze swoich adresów"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "Import nie powiódł się i nic nie zostało dodane z pliku."
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "Import już nie czeka na rozpoczęcie. Sprawdź jego stan."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "Adres skrzynki"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Skrzynki nie można zmienić później."
@@ -18365,6 +18437,10 @@ msgstr "Ten adres nie ma jeszcze konta SMTP. Dodaj je w ustawieniach skrzynki pr
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "Ten adres jest już potwierdzony."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "Ten adres jest już używany do poczty w tej przestrzeni roboczej."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "Wartości są przechowywane w postaci zaszyfrowanej i nigdy więcej nie 
 msgid "Values of condition {n}, separated by commas"
 msgstr "Wartości warunku {n}, oddzielone przecinkami"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "Zweryfikowana"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "Zweryfikowano domenę {domain} dla logowania jednokrotnego"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "Czeka na dostępnego kolegę od {since}"
 msgid "waiting for approval"
 msgstr "czeka na zatwierdzenie"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "Czeka na zatwierdzenie"
 
@@ -19917,6 +19997,10 @@ msgstr "Oczekiwanie na kod potwierdzenia od Google…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Oczekiwanie na dotarcie"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "Czeka na kod"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "Wyślemy Ci e-mailem jednorazowy kod. Nowy adres dostaje nowe konto; bez
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "Wyślemy Ci e-mailem jednorazowy kod. Bez hasła do zapamiętania."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "Wysłaliśmy 6-cyfrowy kod na ten adres. Jest ważny 10 minut."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "Możesz zamknąć to okno i wrócić do {host}."
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Możesz go odłączyć w dowolnym momencie w Ustawieniach, w sekcji Połączone aplikacje."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "Możesz mieć najwyżej 10 adresów. Najpierw usuń jeden."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "Możesz opuścić tę stronę; import trwa dalej."
@@ -20686,6 +20778,10 @@ msgstr "Nie możesz zmienić własnej roli."
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "Nie możesz usunąć samego siebie."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "Nie możesz wysyłać z tego adresu przez ten kanał."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "Utworzyłeś(-aś) tyle obszarów roboczych, ile pozwala ten serwer. Usu
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Nie masz jeszcze kluczy dostępu."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "Nie dodałeś(-aś) jeszcze żadnego adresu."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "ty@firma.pl"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "ty@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "Twoje konto"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "Twoje adresy"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

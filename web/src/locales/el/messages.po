@@ -1401,6 +1401,10 @@ msgstr "Ένα μήνυμα αφαιρέθηκε από τη συζήτηση"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "Ένα όνομα που ελέγχετε, όπως {example}. Το Yuva σας δείχνει δύο εγγραφές DNS για προσθήκη και η σελίδα απαντά στο domain μόλις τις δει."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "Ένας νέος κωδικός είναι καθ' οδόν"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "Ένα νέο προϊόν"
@@ -1706,6 +1710,7 @@ msgstr "Δραστηριότητα"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "Προσθήκη ενέργειας"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "Προσθήκη διεύθυνσης"
 
@@ -2019,6 +2025,10 @@ msgstr "Πρόσθεσε το domain {domain} για ενιαία σύνδεση
 msgid "Address"
 msgstr "Διεύθυνση"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "Η διεύθυνση εγκρίθηκε"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "Χαμένη διεύθυνση"
@@ -2035,6 +2045,18 @@ msgstr "Διεύθυνση ή όνομα"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "Απόδειξη διεύθυνσης"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "Η διεύθυνση επαληθεύτηκε"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "Διευθύνσεις που πρόσθεσε ο/η {name} για αποστολή αλληλογραφίας. Όσες περιμένουν έγκριση χρειάζονται κάτοχο ή διαχειριστή."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "Διευθύνσεις αποστολής"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "Ένας ιδιοκτήτης δεν μπορεί να αφαιρεθε�
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "Ένας ιδιοκτήτης ή διαχειριστής μπορεί να αφήσει τους βοηθούς να στέλνουν μόνοι τους με την επιλογή «Επιτρέπεται η αποστολή από bots»."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "Ένας κάτοχος ή διαχειριστής πρέπει να εγκρίνει αυτή τη διεύθυνση, επειδή η αλληλογραφία προς το domain της καταλήγει σε κοινόχρηστο εισερχόμενο."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Ένας ιδιοκτήτης ή διαχειριστής ενεργοποιεί την υπογραφή μόλις δημοσιευτεί η εγγραφή."
@@ -2804,8 +2830,13 @@ msgstr "Ισχύει για το επόμενο μήνυμα."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "Έγκριση"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "Έγκριση του {address}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "Εγγραφή CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Κωδικός"
@@ -4228,6 +4260,10 @@ msgstr "Κωδικός"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "Ο κωδικός στάλθηκε"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "Βρέθηκε στους φακέλους Απεσταλμένων σα
 msgid "Friday"
 msgstr "Παρασκευή"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "Η αλληλογραφία μπαίνει στο κανάλι e-mail «
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Η αλληλογραφία δεν είναι υπογεγραμμένη με κλειδί του δικού τους τομέα του αποστολέα, κάτι που αναμένουν το Gmail και το Yahoo."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "Η αλληλογραφία σε ουρά από αυτή τη διεύθυνση αποτυγχάνει αντί να φύγει από άλλη διεύθυνση."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "Οι απομακρυσμένες εικόνες μπορούν να π�
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "Αφαίρεση {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Αφαίρεση του {0};"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "Αφαίρεση του {address}"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "Αφαίρεση του {address};"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "Στείλτε ένα μήνυμα από την εφαρμογή σας"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "Αποστολή συμβάντων στον δικό σας διακο�
 msgid "Send feedback from a page"
 msgstr "Αποστολή σχολίων από σελίδα"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "Αποστολή από"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Αποστολή πρόσκλησης"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "Στείλτε αλληλογραφία από τη δική σας διεύθυνση"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "Στείλτε αλληλογραφία από τη δική σας διεύθυνση αντί για αυτή του εισερχομένου. Επαληθεύστε την με κωδικό· το domain του εισερχομένου πρέπει να είναι ρυθμισμένο για αποστολή με αυτήν."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "Νέα αποστολή της πρόσκλησης στο {0}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "Αποστολή της απάντησης"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "Αποστολή της απάντησης από μία από τις δικές σας διευθύνσεις"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "Η εισαγωγή απέτυχε και τίποτα δεν προστ
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "Η εισαγωγή δεν περιμένει πλέον να ξεκινήσει. Δείτε την κατάστασή της."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "Η διεύθυνση του εισερχομένου"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Τα εισερχόμενα δεν αλλάζουν αργότερα."
@@ -18365,6 +18437,10 @@ msgstr "Αυτή η διεύθυνση δεν έχει ακόμη λογαρια
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "Αυτή η διεύθυνση έχει ήδη αποδειχθεί."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "Αυτή η διεύθυνση χρησιμοποιείται ήδη για αλληλογραφία σε αυτόν τον χώρο εργασίας."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "Οι τιμές αποθηκεύονται κρυπτογραφημέν�
 msgid "Values of condition {n}, separated by commas"
 msgstr "Τιμές της συνθήκης {n}, χωρισμένες με κόμματα"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "Επαληθευμένο"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "Επαλήθευσε το domain {domain} για ενιαία σύνδεση"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "Αναμονή για διαθέσιμο συνάδελφο από {sinc
 msgid "waiting for approval"
 msgstr "περιμένουν έγκριση"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "Σε αναμονή έγκρισης"
 
@@ -19917,6 +19997,10 @@ msgstr "Αναμονή για τον κωδικό επιβεβαίωσης τη�
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Αναμονή να φτάσει"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "Αναμονή κωδικού"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "Σας στέλνουμε έναν κωδικό μίας χρήσης. �
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "Σας στέλνουμε έναν κωδικό μίας χρήσης. Δεν χρειάζεται να θυμάστε κωδικό πρόσβασης."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "Στείλαμε έναν εξαψήφιο κωδικό σε αυτή τη διεύθυνση. Ισχύει για 10 λεπτά."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "Μπορείτε να κλείσετε αυτό το παράθυρο κ
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Μπορείτε να το αποσυνδέσετε οποιαδήποτε στιγμή στις Ρυθμίσεις, στις Συνδεδεμένες εφαρμογές."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "Μπορείτε να έχετε έως 10 διευθύνσεις. Αφαιρέστε πρώτα μία."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "Μπορείτε να φύγετε από αυτή τη σελίδα· η εισαγωγή συνεχίζεται."
@@ -20686,6 +20778,10 @@ msgstr "Δεν μπορείτε να αλλάξετε τον δικό σας ρ�
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "Δεν μπορείτε να αφαιρέσετε τον εαυτό σας."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "Δεν μπορείτε να στείλετε από αυτή τη διεύθυνση μέσω αυτού του καναλιού."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "Έχετε δημιουργήσει όσους χώρους εργασί
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Δεν έχετε ακόμη passkeys."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "Δεν έχετε προσθέσει ακόμη διεύθυνση."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "Ο λογαριασμός σας"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "Οι διευθύνσεις σας"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

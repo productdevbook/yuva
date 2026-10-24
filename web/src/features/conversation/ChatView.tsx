@@ -490,6 +490,7 @@ function Loaded({
     article: () => reply.current?.article(),
     recipients: () => reply.current?.recipients(),
     signature: () => reply.current?.signature(),
+    sendAs: () => reply.current?.sendAs(),
     trash: () => canManage && trash(),
   }
   useInsertHandler((choice) => !trashed && reply.current?.insert(choice))
@@ -536,6 +537,7 @@ function Loaded({
           [SHORTCUTS.article]: handlers.article,
           [SHORTCUTS.recipients]: handlers.recipients,
           [SHORTCUTS.signature]: handlers.signature,
+          [SHORTCUTS.sendAs]: handlers.sendAs,
           [SHORTCUTS.trash]: handlers.trash,
         }
   )

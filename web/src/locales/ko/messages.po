@@ -1401,6 +1401,10 @@ msgstr "대화에서 메시지가 삭제되었습니다"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "직접 관리하는 이름입니다(예: {example}). Yuva가 추가할 DNS 레코드 두 개를 보여 주고, 레코드가 확인되면 페이지가 그 도메인에서 응답합니다."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "새 코드를 보내는 중입니다"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "신제품"
@@ -1706,6 +1710,7 @@ msgstr "활동"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "작업 추가"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "주소 추가"
 
@@ -2019,6 +2025,10 @@ msgstr "싱글 사인온용 도메인 {domain}을(를) 추가했습니다"
 msgid "Address"
 msgstr "주소"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "주소를 승인했습니다"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "주소 상실"
@@ -2035,6 +2045,18 @@ msgstr "주소 또는 이름"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "주소 증명"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "주소를 확인했습니다"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "{name}님이 메일 발송용으로 추가한 주소입니다. 승인을 기다리는 주소는 소유자나 관리자가 필요합니다."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "발송에 사용할 주소"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "소유자는 제거할 수 없습니다. 먼저 역할을 변경하세�
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "소유자 또는 관리자는 봇 발송 허용으로 어시스턴트가 직접 보내도록 허용할 수 있습니다."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "이 주소의 도메인으로 오는 메일은 공유 받은편지함에 도착하므로 소유자나 관리자가 승인해야 합니다."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "레코드를 게시하면 소유자 또는 관리자가 서명을 켭니다."
@@ -2804,8 +2830,13 @@ msgstr "다음 메일부터 적용됩니다."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "승인"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "{address} 승인"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME 레코드"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "코드"
@@ -4228,6 +4260,10 @@ msgstr "코드"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "코드를 보냈습니다"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "보낸 편지함에서 찾았습니다"
 msgid "Friday"
 msgstr "금요일"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "메일은 {address}을(를) 받는 이메일 채널 \"{channelName}\"로
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Gmail과 Yahoo에서 요구하는 발신자 자체 도메인 키로 메일이 서명되지 않았습니다."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "이 주소로 대기 중인 메일은 다른 주소로 나가지 않고 실패합니다."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 �
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "{0} 제거"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0}을(를) 제거할까요?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "{address} 삭제"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "{address}을(를) 삭제할까요?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "앱에서 메시지 보내기"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "내 서버로 이벤트 보내기"
 msgid "Send feedback from a page"
 msgstr "페이지에서 의견 보내기"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "보내는 주소"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "초대 보내기"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "내 주소로 메일 보내기"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "받은편지함 주소 대신 내 주소로 메일을 보냅니다. 코드로 확인하며, 받은편지함의 도메인이 해당 주소로 발송할 수 있게 설정되어 있어야 합니다."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "{0}에게 초대 다시 보내기"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "답장 보내기"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "내 주소 중 하나로 답장 보내기"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "가져오기에 실패했으며 파일에서 아무것도 추가되지 �
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "가져오기가 더 이상 시작을 기다리고 있지 않습니다. 상태를 확인하세요."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "받은편지함 주소"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "받은 편지함은 나중에 변경할 수 없습니다."
@@ -18365,6 +18437,10 @@ msgstr "이 주소에는 아직 SMTP 계정이 없습니다. 첫 일괄 발송 �
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "이 주소는 이미 증명되었습니다."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "이 주소는 이 워크스페이스에서 이미 메일에 사용 중입니다."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "값은 암호화되어 저장되며 다시 표시되지 않습니다. �
 msgid "Values of condition {n}, separated by commas"
 msgstr "조건 {n}의 값, 쉼표로 구분"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "확인됨"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "싱글 사인온용 도메인 {domain}을(를) 인증했습니다"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "{since}부터 가능한 팀원을 기다리는 중"
 msgid "waiting for approval"
 msgstr "승인 대기 중"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "승인 대기 중"
 
@@ -19917,6 +19997,10 @@ msgstr "Google의 확인 코드를 기다리는 중…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "도착을 기다리는 중"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "코드 대기 중"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "일회용 코드를 이메일로 보내 드립니다. 새 주소는 새 
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "일회용 코드를 이메일로 보내 드립니다. 기억할 비밀번호가 없습니다."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "이 주소로 6자리 코드를 보냈습니다. 10분 동안 유효합니다."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "이 창을 닫고 {host}(으)로 돌아가도 됩니다."
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "설정의 연결된 앱에서 언제든 연결을 해제할 수 있습니다."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "주소는 최대 10개까지 둘 수 있습니다. 먼저 하나를 삭제하세요."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "이 페이지를 떠나도 됩니다. 가져오기는 계속됩니다."
@@ -20686,6 +20778,10 @@ msgstr "자신의 역할은 변경할 수 없습니다."
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "자기 자신은 제거할 수 없습니다."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "이 채널에서는 이 주소로 보낼 수 없습니다."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "이 서버가 허용하는 만큼 워크스페이스를 만들었습니�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "아직 패스키가 없습니다."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "아직 추가한 주소가 없습니다."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "내 계정"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "내 주소"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

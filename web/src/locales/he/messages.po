@@ -1401,6 +1401,10 @@ msgstr "הודעה הוסרה משיחה"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "שם שבשליטתך, למשל {example}. Yuva יציג שתי רשומות DNS להוספה, והעמוד יענה בדומיין ברגע שיראה אותן."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "קוד חדש בדרך"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "מוצר חדש"
@@ -1706,6 +1710,7 @@ msgstr "פעילות"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "הוספת פעולה"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "הוספת כתובת"
 
@@ -2019,6 +2025,10 @@ msgstr "הוסיף/ה את הדומיין {domain} להתחברות יחידה"
 msgid "Address"
 msgstr "כתובת"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "הכתובת אושרה"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "הכתובת אבדה"
@@ -2035,6 +2045,18 @@ msgstr "כתובת או שם"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "הוכחת הכתובת"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "הכתובת אומתה"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "כתובות ש-{name} הוסיף/ה לשליחת דואר. כתובות שממתינות לאישור דורשות בעלים או מנהל."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "כתובות לשליחה"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "אי אפשר להסיר בעלים. שנו קודם את התפקיד �
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "בעלים או מנהל יכולים לאפשר לעוזרים לשלוח בעצמם באמצעות „מותר לבוטים לשלוח”."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "בעלים או מנהל צריכים לאשר כתובת זו, כי דואר לדומיין שלה מגיע לתיבת דואר משותפת."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "בעלים או מנהל מפעילים חתימה אחרי שהרשומה פורסמה."
@@ -2804,8 +2830,13 @@ msgstr "חל על הדואר הבא."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "אישור"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "אישור {address}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "רשומת CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "קוד"
@@ -4228,6 +4260,10 @@ msgstr "קוד"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "הקוד נשלח"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "נמצא בתיקיות הדואר שנשלח שלך"
 msgid "Friday"
 msgstr "יום שישי"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "הדואר נכנס לערוץ האימייל „{channelName}”, שמ�
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "הדואר אינו חתום במפתח של הדומיין של השולח, כפי ש-Gmail ו-Yahoo מצפים."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "דואר שממתין בתור מכתובת זו ייכשל במקום לצאת מכתובת אחרת."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "תמונות מרוחקות יכולות לומר לשולח שפתחת 
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "הסרת {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "להסיר את {0}?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "הסרת {address}"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "להסיר את {address}?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "שלח הודעה מהאפליקציה שלך"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "שלח אירועים לשרת שלך"
 msgid "Send feedback from a page"
 msgstr "שלח משוב מדף"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "שליחה מ"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "שליחת ההזמנה"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "שלחו דואר מהכתובת שלכם"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "שלחו דואר מהכתובת שלכם במקום מכתובת תיבת הדואר. אמתו אותה בקוד; הדומיין של תיבת הדואר חייב להיות מוגדר לשליחה ממנה."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "שליחת ההזמנה ל-{0} שוב"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "שליחת התשובה"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "שליחת התשובה מאחת הכתובות שלכם"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "הייבוא נכשל, ושום דבר לא נוסף מהקובץ."
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "הייבוא כבר לא ממתין להתחלה. עיין במצב שלו."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "הכתובת של תיבת הדואר"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "אי אפשר לשנות את תיבת הדואר אחר כך."
@@ -18365,6 +18437,10 @@ msgstr "לכתובת הזאת עדיין אין חשבון SMTP. הוסף אחד
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "הכתובת הזו כבר הוכחה."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "כתובת זו כבר משמשת לדואר בסביבת עבודה זו."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "ערכים נשמרים מוצפנים ולא מוצגים שוב. כד�
 msgid "Values of condition {n}, separated by commas"
 msgstr "ערכים של תנאי {n}, מופרדים בפסיקים"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "אומת"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "אימת/ה את הדומיין {domain} להתחברות יחידה"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "ממתינה לעמית זמין מאז {since}"
 msgid "waiting for approval"
 msgstr "ממתינים לאישור"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "ממתינים לאישור"
 
@@ -19917,6 +19997,10 @@ msgstr "ממתין לקוד האישור של Google…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "ממתין שיגיע"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "ממתין לקוד"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "אנחנו שולחים לך קוד חד-פעמי באימייל. כתו
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "אנחנו שולחים לך קוד חד-פעמי באימייל. אין סיסמה לזכור."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "שלחנו קוד בן 6 ספרות לכתובת זו. הוא תקף ל-10 דקות."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "אפשר לסגור את החלון הזה ולחזור אל {host}."
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "אפשר לנתק אותו בכל עת בהגדרות, תחת אפליקציות מחוברות."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "אפשר להחזיק עד 10 כתובות. הסירו אחת קודם."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "אפשר לעזוב את הדף הזה; הייבוא נמשך."
@@ -20686,6 +20778,10 @@ msgstr "אי אפשר לשנות את התפקיד שלך."
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "אי אפשר להסיר את עצמך."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "אי אפשר לשלוח מכתובת זו דרך ערוץ זה."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "יצרת כמה שיותר סביבות עבודה שהשרת הזה מ�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "עדיין אין לך מפתחות גישה."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "עדיין לא הוספתם כתובת."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "החשבון שלך"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "הכתובות שלכם"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

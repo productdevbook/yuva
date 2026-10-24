@@ -1401,6 +1401,10 @@ msgstr "Bir ileti konuşmadan kaldırıldı"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "Sahibi olduğunuz bir ad, örneğin {example}. Yuva size eklemeniz gereken iki DNS kaydını gösterir; kayıtları görünce sayfa bu alan adında yayın yapar."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "Yeni bir kod yolda"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "Yeni bir ürün"
@@ -1706,6 +1710,7 @@ msgstr "Etkinlik"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "Eylem ekle"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "Adres ekle"
 
@@ -2019,6 +2025,10 @@ msgstr "{domain} alan adı tek oturum açma için eklendi"
 msgid "Address"
 msgstr "Adres"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "Adres onaylandı"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "Adres kaybedildi"
@@ -2035,6 +2045,18 @@ msgstr "Adres ya da ad"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "Adres doğrulama"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "Adres doğrulandı"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "{name} kişisinin mail göndermek için eklediği adresler. Onay bekleyenler için bir sahip ya da yönetici gerekir."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "Gönderilecek adresler"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "Sahip kaldırılamaz. Önce rolünü değiştirin."
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "Bir sahip ya da yönetici, Botlar gönderebilir ayarıyla asistanların kendi başına göndermesine izin verebilir."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "Bir sahip ya da yönetici bu adresi onaylamalı, çünkü alan adına gelen mailler ortak bir gelen kutusuna düşüyor."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Kayıt yayımlanınca imzalamayı bir sahip ya da yönetici açar."
@@ -2804,8 +2830,13 @@ msgstr "Bir sonraki postadan itibaren geçerli olur."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "Onayla"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "{address} adresini onayla"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME kaydı"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Kod"
@@ -4228,6 +4260,10 @@ msgstr "Kod"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Slack'ten gelen kod"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "Kod gönderildi"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "Gönderilenler klasörlerinizde bulunan adresler"
 msgid "Friday"
 msgstr "Cuma"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "E-postalar, {address} adresini alan “{channelName}” e-posta kanalın
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "E-postalar gönderenin kendi alan adının anahtarıyla imzalanmıyor; Gmail ve Yahoo bunu bekler."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "Bu adresten kuyruğa alınan mail, başka bir adresten çıkmak yerine başarısız olur."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "{0} öğesini kaldır"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} kaldırılsın mı?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "{address} adresini kaldır"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "{address} adresi kaldırılsın mı?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "Uygulamanızdan bir mesaj gönderin"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "Olayları kendi sunucuna gönder"
 msgid "Send feedback from a page"
 msgstr "Bir sayfadan geri bildirim gönderin"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "Gönderen adres"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Daveti gönder"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "Kendi adresinden mail gönder"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "Gelen kutusunun adresi yerine kendi adresinden mail gönder. Adresi bir kodla doğrula; gelen kutusunun alan adı da bu adresle göndermeye hazır olmalı."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "{0} için daveti yeniden gönder"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "Yanıtı gönder"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "Yanıtı kendi adreslerinden biriyle gönder"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "İçe aktarma başarısız oldu; dosyadan hiçbir şey eklenmedi."
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "İçe aktarma artık başlatılmayı beklemiyor. Durumuna bakın."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "Gelen kutusunun adresi"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Gelen kutusu sonradan değiştirilemez."
@@ -18365,6 +18437,10 @@ msgstr "Bu adresin henüz SMTP hesabı yok. İlk bültenden önce gelen kutusu a
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "Bu adres zaten doğrulanmış."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "Bu adres bu çalışma alanında zaten mail için kullanılıyor."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "Değerler şifreli saklanır ve bir daha gösterilmez. Birini değiştir
 msgid "Values of condition {n}, separated by commas"
 msgstr "{n}. koşulun değerleri, virgülle ayrılmış"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "Doğrulandı"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "{domain} alan adını tek oturum açma için doğruladı"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "{since} tarihinden beri uygun bir takım arkadaşı bekleniyor"
 msgid "waiting for approval"
 msgstr "onay bekliyor"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "Onay bekliyor"
 
@@ -19917,6 +19997,10 @@ msgstr "Google'ın onay kodu bekleniyor…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Gelmesi bekleniyor"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "Kod bekleniyor"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "Size e-postayla tek kullanımlık bir kod göndeririz. Yeni bir adresle 
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "Size e-postayla tek kullanımlık bir kod göndeririz. Hatırlamanız gereken bir parola yok."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "Bu adrese 6 haneli bir kod gönderdik. 10 dakika geçerli."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "Bu pencereyi kapatıp {host} sitesine dönebilirsiniz."
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Bağlantıyı istediğiniz zaman Ayarlar'da, Bağlı uygulamalar altında kaldırabilirsiniz."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "En fazla 10 adres tutabilirsin. Önce birini kaldır."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "Bu sayfadan çıkabilirsiniz; içe aktarma sürer."
@@ -20686,6 +20778,10 @@ msgstr "Kendi rolünüzü değiştiremezsiniz."
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "Kendinizi kaldıramazsınız."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "Bu kanal üzerinden bu adresle gönderemezsin."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "Bu sunucunun izin verdiği sayıda çalışma alanı oluşturdunuz. Art�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Henüz geçiş anahtarınız yok."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "Henüz bir adres eklemedin."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "siz@sirket.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "siz@ornek.com"
 
@@ -20782,6 +20883,11 @@ msgstr "Hesabınız"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Hesabınız Yuva'yı kullanabilen bir grupta değil. Yöneticinizden sizi eklemesini isteyin."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "Adreslerin"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

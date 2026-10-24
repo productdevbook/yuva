@@ -23,6 +23,7 @@ export type CommandName =
   | "article"
   | "recipients"
   | "signature"
+  | "sendAs"
   | "idea"
   | "createIssue"
   | "linkIssue"

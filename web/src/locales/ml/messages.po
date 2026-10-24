@@ -1401,6 +1401,10 @@ msgstr "സംഭാഷണത്തിൽ നിന്ന് ഒരു സന്
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "നിങ്ങൾ നിയന്ത്രിക്കുന്ന ഒരു പേര്, ഉദാ. {example}. ചേർക്കാനുള്ള രണ്ട് DNS റെക്കോർഡുകൾ Yuva കാണിക്കും, അവ കണ്ടാലുടൻ പേജ് ഡൊമെയ്നിൽ പ്രതികരിക്കും."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "പുതിയ കോഡ് വരുന്നു"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "ഒരു പുതിയ ഉൽപ്പന്നം"
@@ -1706,6 +1710,7 @@ msgstr "പ്രവർത്തനം"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "പ്രവർത്തനം ചേർക്കുക"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "വിലാസം ചേർക്കുക"
 
@@ -2019,6 +2025,10 @@ msgstr "സിംഗിൾ സൈൻ-ഓണിനായി ഡൊമെയ്ൻ
 msgid "Address"
 msgstr "വിലാസം"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "വിലാസം അംഗീകരിച്ചു"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "വിലാസം നഷ്ടപ്പെട്ടു"
@@ -2035,6 +2045,18 @@ msgstr "വിലാസം അല്ലെങ്കിൽ പേര്"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "വിലാസത്തിന്റെ തെളിവ്"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "വിലാസം സ്ഥിരീകരിച്ചു"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "മെയിൽ അയയ്ക്കാൻ {name} ചേർത്ത വിലാസങ്ങൾ. അംഗീകാരത്തിനായി കാത്തിരിക്കുന്നവയ്ക്ക് ഉടമയോ അഡ്മിനോ വേണം."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "അയയ്ക്കാനുള്ള വിലാസങ്ങൾ"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "ഉടമയെ നീക്കം ചെയ്യാൻ കഴിയി
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "ഉടമയ്‌ക്കോ അഡ്മിനോ ബോട്ടുകൾക്ക് അയയ്ക്കാം വഴി അസിസ്റ്റന്റുകളെ സ്വയം അയയ്ക്കാൻ അനുവദിക്കാം."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "ഒരു ഉടമയോ അഡ്മിനോ ഈ വിലാസം അംഗീകരിക്കണം, കാരണം അതിന്റെ ഡൊമെയ്‌നിലേക്കുള്ള മെയിൽ പങ്കിട്ട ഇൻബോക്സിൽ എത്തുന്നു."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "റെക്കോർഡ് പ്രസിദ്ധീകരിച്ച ശേഷം ഉടമയോ അഡ്മിനോ സൈനിംഗ് ഓണാക്കുന്നു."
@@ -2804,8 +2830,13 @@ msgstr "അടുത്ത മെയിലിന് ബാധകമാണ്."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "അംഗീകരിക്കുക"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "{address} അംഗീകരിക്കുക"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME റെക്കോർഡ്"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "കോഡ്"
@@ -4228,6 +4260,10 @@ msgstr "കോഡ്"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "കോഡ് അയച്ചു"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "നിങ്ങളുടെ അയച്ച ഫോൾഡറുകളി�
 msgid "Friday"
 msgstr "വെള്ളിയാഴ്ച"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "മെയിൽ {address} സ്വീകരിക്കുന്ന “
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "മെയിൽ അയച്ചയാളുടെ സ്വന്തം ഡൊമെയ്‌നിന്റെ കീ ഉപയോഗിച്ച് സൈൻ ചെയ്തിട്ടില്ല; Gmail-ഉം Yahoo-യും ഇത് പ്രതീക്ഷിക്കുന്നു."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "ഈ വിലാസത്തിൽ നിന്ന് ക്യൂവിലുള്ള മെയിൽ മറ്റൊരു വിലാസത്തിൽ നിന്ന് പോകുന്നതിനു പകരം പരാജയപ്പെടും."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "റിമോട്ട് ചിത്രങ്ങൾക്ക് നി�
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "{0} നീക്കം ചെയ്യുക"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} നീക്കം ചെയ്യണോ?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "{address} നീക്കം ചെയ്യുക"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "{address} നീക്കം ചെയ്യണോ?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "നിങ്ങളുടെ ആപ്പിൽ നിന്ന് ഒരു സന്ദേശം അയയ്ക്കുക"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "നിങ്ങളുടെ സ്വന്തം സെർവറില�
 msgid "Send feedback from a page"
 msgstr "ഒരു പേജിൽ നിന്ന് ഫീഡ്ബാക്ക് അയയ്ക്കുക"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "ഇതിൽ നിന്ന് അയയ്ക്കുക"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "ക്ഷണം അയയ്ക്കുക"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "നിങ്ങളുടെ സ്വന്തം വിലാസത്തിൽ നിന്ന് മെയിൽ അയയ്ക്കുക"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "ഇൻബോക്സിന്റെ വിലാസത്തിനു പകരം നിങ്ങളുടെ സ്വന്തം വിലാസത്തിൽ നിന്ന് മെയിൽ അയയ്ക്കുക. കോഡ് ഉപയോഗിച്ച് സ്ഥിരീകരിക്കുക; ഇൻബോക്സിന്റെ ഡൊമെയ്ൻ അതിൽ നിന്ന് അയയ്ക്കാൻ സജ്ജമാക്കിയിരിക്കണം."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "{0} ന് ക്ഷണം വീണ്ടും അയയ്ക്ക�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "മറുപടി അയയ്ക്കുക"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "മറുപടി നിങ്ങളുടെ ഒരു വിലാസത്തിൽ നിന്ന് അയയ്ക്കുക"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "ഇറക്കുമതി പരാജയപ്പെട്ടു, ഫ
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "ഇറക്കുമതി ഇനി ആരംഭിക്കാൻ കാത്തിരിക്കുന്നില്ല. അതിന്റെ അവസ്ഥ നോക്കുക."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "ഇൻബോക്സിന്റെ വിലാസം"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "ഇൻബോക്സ് പിന്നീട് മാറ്റാൻ കഴിയില്ല."
@@ -18365,6 +18437,10 @@ msgstr "ഈ വിലാസത്തിന് ഇതുവരെ SMTP അക്�
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "ഈ വിലാസം ഇതിനകം തെളിയിച്ചിട്ടുണ്ട്."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "ഈ വിലാസം ഈ വർക്ക്‌സ്‌പേസിൽ ഇതിനകം മെയിലിനായി ഉപയോഗിക്കുന്നു."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "മൂല്യങ്ങൾ എൻക്രിപ്റ്റ് ചെ�
 msgid "Values of condition {n}, separated by commas"
 msgstr "നിബന്ധന {n}-ന്റെ മൂല്യങ്ങൾ, കോമ കൊണ്ട് വേർതിരിച്ച്"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "പരിശോധിച്ചു"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "സിംഗിൾ സൈൻ-ഓണിനായി ഡൊമെയ്ൻ {domain} സ്ഥിരീകരിച്ചു"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "{since} മുതൽ ലഭ്യമായ സഹപ്രവർത്�
 msgid "waiting for approval"
 msgstr "അംഗീകാരത്തിനായി കാത്തിരിക്കുന്നു"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "അംഗീകാരത്തിനായി കാത്തിരിക്കുന്നു"
 
@@ -19917,6 +19997,10 @@ msgstr "Google-ന്റെ സ്ഥിരീകരണ കോഡിനായി
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "എത്താൻ കാത്തിരിക്കുന്നു"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "കോഡിനായി കാത്തിരിക്കുന്നു"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "ഞങ്ങൾ നിങ്ങൾക്ക് ഒറ്റത്തവ�
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "ഞങ്ങൾ നിങ്ങൾക്ക് ഒറ്റത്തവണ കോഡ് ഇമെയിൽ ചെയ്യും. ഓർമ്മിക്കാൻ പാസ്‌വേഡ് ഇല്ല."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "ഞങ്ങൾ ഈ വിലാസത്തിലേക്ക് 6 അക്ക കോഡ് അയച്ചു. 10 മിനിറ്റ് സാധുവാണ്."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "നിങ്ങൾക്ക് ഈ വിൻഡോ അടച്ച് {h
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "നിങ്ങൾക്ക് എപ്പോൾ വേണമെങ്കിലും ക്രമീകരണങ്ങളിൽ, കണക്റ്റ് ചെയ്ത ആപ്പുകൾക്ക് കീഴിൽ ഇത് വിച്ഛേദിക്കാം."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "നിങ്ങൾക്ക് പരമാവധി 10 വിലാസങ്ങൾ സൂക്ഷിക്കാം. ആദ്യം ഒന്ന് നീക്കം ചെയ്യുക."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "നിങ്ങൾക്ക് ഈ പേജ് വിടാം; ഇറക്കുമതി തുടരും."
@@ -20686,6 +20778,10 @@ msgstr "നിങ്ങളുടെ സ്വന്തം റോൾ മാറ്
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "നിങ്ങളെ തന്നെ നീക്കം ചെയ്യാൻ കഴിയില്ല."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "ഈ ചാനലിലൂടെ നിങ്ങൾക്ക് ഈ വിലാസത്തിൽ നിന്ന് അയയ്ക്കാനാവില്ല."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "ഈ സെർവർ അനുവദിക്കുന്നത്രയ�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "നിങ്ങൾക്ക് ഇതുവരെ പാസ്‌കീകളില്ല."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "നിങ്ങൾ ഇതുവരെ വിലാസമൊന്നും ചേർത്തിട്ടില്ല."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "നിങ്ങളുടെ അക്കൗണ്ട്"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "നിങ്ങളുടെ വിലാസങ്ങൾ"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

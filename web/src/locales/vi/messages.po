@@ -1401,6 +1401,10 @@ msgstr "Một tin nhắn đã bị gỡ khỏi cuộc trò chuyện"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "Một tên bạn kiểm soát, ví dụ {example}. Yuva sẽ cho bạn thấy hai bản ghi DNS cần thêm, và trang sẽ trả lời trên tên miền ngay khi thấy chúng."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "Một mã mới đang được gửi"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "Một sản phẩm mới"
@@ -1706,6 +1710,7 @@ msgstr "Hoạt động"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "Thêm hành động"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "Thêm địa chỉ"
 
@@ -2019,6 +2025,10 @@ msgstr "Đã thêm tên miền {domain} cho đăng nhập một lần"
 msgid "Address"
 msgstr "Địa chỉ"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "Đã duyệt địa chỉ"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "Mất địa chỉ"
@@ -2035,6 +2045,18 @@ msgstr "Địa chỉ hoặc tên"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "Chứng minh địa chỉ"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "Đã xác minh địa chỉ"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "Các địa chỉ {name} đã thêm để gửi thư. Địa chỉ chờ duyệt cần chủ sở hữu hoặc quản trị viên."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "Địa chỉ để gửi thư"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "Không thể xóa chủ sở hữu. Hãy đổi vai trò của họ trư
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "Chủ sở hữu hoặc quản trị viên có thể cho phép trợ lý tự gửi bằng Cho phép bot gửi."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "Chủ sở hữu hoặc quản trị viên phải duyệt địa chỉ này, vì thư gửi đến tên miền của nó rơi vào hộp thư chung."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Chủ sở hữu hoặc quản trị viên bật ký sau khi bản ghi đã được đăng."
@@ -2804,8 +2830,13 @@ msgstr "Áp dụng cho thư tiếp theo."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "Duyệt"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "Duyệt {address}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "Bản ghi CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Mã"
@@ -4228,6 +4260,10 @@ msgstr "Mã"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "Đã gửi mã"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "Tìm thấy trong các thư mục Đã gửi của bạn"
 msgid "Friday"
 msgstr "Thứ Sáu"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "Thư đi vào kênh email “{channelName}”, kênh nhận {address}."
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Thư chưa được ký bằng khóa của chính tên miền người gửi, điều mà Gmail và Yahoo yêu cầu."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "Thư đang chờ gửi từ địa chỉ này sẽ thất bại thay vì đi ra từ địa chỉ khác."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "Hình ảnh từ xa có thể cho người gửi biết bạn đã mở 
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "Gỡ {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Xóa {0}?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "Xóa {address}"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "Xóa {address}?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "Gửi tin nhắn từ ứng dụng của bạn"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "Gửi sự kiện tới máy chủ của chính bạn"
 msgid "Send feedback from a page"
 msgstr "Gửi phản hồi từ một trang"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "Gửi từ"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Gửi lời mời"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "Gửi thư từ địa chỉ của riêng bạn"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "Gửi thư từ địa chỉ của riêng bạn thay vì địa chỉ của hộp thư. Xác minh bằng mã; tên miền của hộp thư phải được thiết lập để gửi bằng địa chỉ đó."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "Gửi lại lời mời cho {0}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "Gửi phản hồi"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "Gửi câu trả lời từ một trong các địa chỉ của bạn"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "Lần nhập thất bại, và không có gì từ tệp được thêm.
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "Lần nhập không còn chờ bắt đầu. Hãy xem trạng thái của nó."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "Địa chỉ của hộp thư"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Hộp thư không thể đổi sau này."
@@ -18365,6 +18437,10 @@ msgstr "Địa chỉ này chưa có tài khoản SMTP. Hãy thêm trong cài đ�
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "Địa chỉ này đã được chứng minh."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "Địa chỉ này đã được dùng cho thư trong không gian làm việc này."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "Giá trị được lưu đã mã hóa và không bao giờ hiển thị
 msgid "Values of condition {n}, separated by commas"
 msgstr "Các giá trị của điều kiện {n}, phân tách bằng dấu phẩy"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "Đã xác minh"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "Đã xác minh tên miền {domain} cho đăng nhập một lần"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "Đang chờ đồng nghiệp rảnh từ {since}"
 msgid "waiting for approval"
 msgstr "đang chờ duyệt"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "Đang chờ duyệt"
 
@@ -19917,6 +19997,10 @@ msgstr "Đang chờ mã xác nhận của Google…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Đang chờ thư đến"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "Đang chờ mã"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "Chúng tôi gửi email cho bạn một mã dùng một lần. Địa ch
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "Chúng tôi gửi email cho bạn một mã dùng một lần. Không cần nhớ mật khẩu."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "Chúng tôi đã gửi mã gồm 6 chữ số đến địa chỉ này. Mã có hiệu lực trong 10 phút."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "Bạn có thể đóng cửa sổ này và quay lại {host}."
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Bạn có thể ngắt kết nối bất cứ lúc nào trong Cài đặt, mục Ứng dụng đã kết nối."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "Bạn có thể giữ tối đa 10 địa chỉ. Hãy xóa một địa chỉ trước."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "Bạn có thể rời trang này; quá trình nhập vẫn tiếp tục."
@@ -20686,6 +20778,10 @@ msgstr "Bạn không thể đổi vai trò của chính mình."
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "Bạn không thể tự xóa mình."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "Bạn không thể gửi từ địa chỉ này qua kênh này."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "Bạn đã tạo số không gian làm việc tối đa mà máy chủ n
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Bạn chưa có khóa truy cập nào."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "Bạn chưa thêm địa chỉ nào."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "Tài khoản của bạn"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "Địa chỉ của bạn"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

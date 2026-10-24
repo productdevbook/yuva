@@ -1401,6 +1401,10 @@ msgstr "Zpráva byla odebrána z konverzace"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "Název, který ovládáte, např. {example}. Yuva vám ukáže dva DNS záznamy k přidání a stránka začne na doméně odpovídat, jakmile je uvidí."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "Nový kód je na cestě"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "Nový produkt"
@@ -1706,6 +1710,7 @@ msgstr "Aktivita"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "Přidat akci"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "Přidat adresu"
 
@@ -2019,6 +2025,10 @@ msgstr "Přidal(a) doménu {domain} pro jednotné přihlašování"
 msgid "Address"
 msgstr "Adresa"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "Adresa schválena"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "Adresa ztracena"
@@ -2035,6 +2045,18 @@ msgstr "Adresa nebo jméno"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "Ověření adresy"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "Adresa ověřena"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "Adresy, které {name} přidal(a) pro odesílání pošty. Ty čekající na schválení potřebují vlastníka nebo správce."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "Adresy, ze kterých se odesílá"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "Vlastníka nelze odebrat. Nejdřív mu změňte roli."
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "Vlastník nebo správce může asistentům dovolit odesílat samostatně volbou Boti smějí odesílat."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "Vlastník nebo správce musí tuto adresu schválit, protože pošta na její doménu končí ve sdílené schránce."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Vlastník nebo správce zapne podepisování po zveřejnění záznamu."
@@ -2804,8 +2830,13 @@ msgstr "Platí pro další zprávu."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "Schválit"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "Schválit {address}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "Záznam CNAME"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Kód"
@@ -4228,6 +4260,10 @@ msgstr "Kód"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "Kód odeslán"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "Nalezeno ve vašich složkách Odeslané"
 msgid "Friday"
 msgstr "Pátek"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "Pošta jde do e-mailového kanálu „{channelName}“, který přijím�
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "E-mail není podepsán klíčem vlastní domény odesílatele, což Gmail a Yahoo očekávají."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "Pošta ve frontě z této adresy selže, místo aby odešla z jiné adresy."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "Vzdálené obrázky mohou odesílateli prozradit, že jste zprávu otev�
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "Odebrat {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Odebrat {0}?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "Odebrat {address}"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "Odebrat {address}?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "Pošlete zprávu ze své aplikace"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "Posílat události na vlastní server"
 msgid "Send feedback from a page"
 msgstr "Posílat zpětnou vazbu ze stránky"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "Odeslat z"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Odeslat pozvánku"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "Posílejte poštu z vlastní adresy"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "Posílejte poštu z vlastní adresy místo adresy schránky. Ověřte ji kódem; doména schránky musí být nastavená, aby z ní šlo odesílat."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "Znovu odeslat pozvánku pro {0}"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "Odeslat odpověď"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "Odeslat odpověď z jedné z vašich adres"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "Import selhal a ze souboru nebylo nic přidáno."
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "Import už nečeká na spuštění. Podívejte se na jeho stav."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "Adresa schránky"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Schránku nelze později změnit."
@@ -18365,6 +18437,10 @@ msgstr "Tato adresa zatím nemá účet SMTP. Před první hromadnou zprávou ho
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "Tato adresa je již ověřena."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "Tato adresa se v tomto pracovním prostoru už používá pro poštu."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "Hodnoty se ukládají šifrovaně a už se nezobrazují. Chcete-li hodno
 msgid "Values of condition {n}, separated by commas"
 msgstr "Hodnoty podmínky {n}, oddělené čárkami"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "Ověřeno"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "Ověřil(a) doménu {domain} pro jednotné přihlašování"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "Čeká na dostupného kolegu od {since}"
 msgid "waiting for approval"
 msgstr "čeká na schválení"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "Čeká na schválení"
 
@@ -19917,6 +19997,10 @@ msgstr "Čeká se na potvrzovací kód od Googlu…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Čeká se na doručení"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "Čeká na kód"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "Pošleme vám e-mailem jednorázový kód. Nová adresa dostane nový ú
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "Pošleme vám e-mailem jednorázový kód. Žádné heslo k zapamatování."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "Na tuto adresu jsme poslali šestimístný kód. Platí 10 minut."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "Toto okno můžete zavřít a vrátit se na {host}."
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Kdykoli ho můžete odpojit v Nastavení, v části Připojené aplikace."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "Můžete mít nejvýše 10 adres. Nejdřív jednu odeberte."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "Tuto stránku můžete opustit; import pokračuje."
@@ -20686,6 +20778,10 @@ msgstr "Nemůžete změnit vlastní roli."
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "Nemůžete odebrat sami sebe."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "Přes tento kanál z této adresy odesílat nemůžete."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "Vytvořili jste tolik pracovních prostorů, kolik tento server povoluje
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Zatím nemáte žádné přístupové klíče."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "Zatím jste nepřidali žádnou adresu."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "vy@firma.cz"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "vy@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "Váš účet"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "Vaše adresy"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

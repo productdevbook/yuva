@@ -34,6 +34,7 @@ import {
   Section,
   StatTile,
 } from "@/features/settings/ui"
+import { MemberAddresses } from "@/features/team/MemberAddresses"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { locales } from "@/i18n"
 import { api, unwrap, type Invite, type Locale, type Member, type Role } from "@/lib/api"
@@ -447,6 +448,7 @@ function MemberDetail({ member: m, load, products }: Detail) {
           </Button>
         )}
       </Section>
+      {canManage && <MemberAddresses memberId={m.id} name={name} />}
       {canManage && (
         <div className="flex flex-wrap items-center gap-3 rounded-xl border bg-card px-4 py-3.5">
           <span className="flex min-w-48 flex-1 flex-col leading-[1.35]">

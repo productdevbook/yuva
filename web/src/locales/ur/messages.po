@@ -1401,6 +1401,10 @@ msgstr "گفتگو سے ایک پیغام ہٹا دیا گیا"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "ایک نام جو آپ کے قبضے میں ہو، جیسے {example}۔ Yuva آپ کو شامل کرنے کے لیے دو DNS ریکارڈ دکھاتا ہے، اور انہیں دیکھتے ہی صفحہ ڈومین پر جواب دینے لگتا ہے۔"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "نیا کوڈ آ رہا ہے"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "ایک نئی پروڈکٹ"
@@ -1706,6 +1710,7 @@ msgstr "سرگرمی"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "عمل شامل کریں"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "پتا شامل کریں"
 
@@ -2019,6 +2025,10 @@ msgstr "سنگل سائن آن کے لیے ڈومین {domain} شامل کیا"
 msgid "Address"
 msgstr "پتہ"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "پتہ منظور ہو گیا"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "پتہ کھو گیا"
@@ -2035,6 +2045,18 @@ msgstr "پتہ یا نام"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "پتے کا ثبوت"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "پتہ تصدیق شدہ ہو گیا"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "وہ پتے جو {name} نے میل بھیجنے کے لیے شامل کیے۔ منظوری کے منتظر پتوں کے لیے مالک یا ایڈمن درکار ہے۔"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "بھیجنے کے پتے"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "مالک کو ہٹایا نہیں جا سکتا۔ پہلے ان کا ک�
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "مالک یا ایڈمن «بوٹس بھیج سکتے ہیں» سے اسسٹنٹس کو خود بھیجنے دے سکتا ہے۔"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "مالک یا ایڈمن کو یہ پتہ منظور کرنا ہوگا، کیونکہ اس کے ڈومین پر آنے والی میل مشترکہ ان باکس میں جاتی ہے۔"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "ریکارڈ شائع ہونے کے بعد مالک یا ایڈمن دستخط آن کرتا ہے۔"
@@ -2804,8 +2830,13 @@ msgstr "اگلی میل پر لاگو ہوتا ہے۔"
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "منظور کریں"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "{address} منظور کریں"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME ریکارڈ"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "کوڈ"
@@ -4228,6 +4260,10 @@ msgstr "کوڈ"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "کوڈ بھیج دیا گیا"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "آپ کے Sent فولڈرز میں ملا"
 msgid "Friday"
 msgstr "جمعہ"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "میل ای میل چینل «{channelName}» میں جاتی ہے، ج�
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "میل بھیجنے والے کے اپنے ڈومین کی کلید سے دستخط شدہ نہیں ہے، جس کی Gmail اور Yahoo توقع کرتے ہیں۔"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "اس پتے سے قطار میں موجود میل کسی اور پتے سے جانے کے بجائے ناکام ہو جاتی ہے۔"
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "ریموٹ تصاویر بھیجنے والے کو بتا سکتی ہی�
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "{0} ہٹائیں"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} ہٹائیں؟"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "{address} ہٹائیں"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "{address} ہٹائیں؟"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "اپنی ایپ سے پیغام بھیجیں"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "اپنے سرور کو واقعات بھیجیں"
 msgid "Send feedback from a page"
 msgstr "صفحے سے رائے بھیجیں"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "یہاں سے بھیجیں"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "دعوت بھیجیں"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "اپنے پتے سے میل بھیجیں"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "ان باکس کے پتے کی بجائے اپنے پتے سے میل بھیجیں۔ اسے کوڈ سے تصدیق کریں؛ ان باکس کا ڈومین اس سے بھیجنے کے لیے سیٹ ہونا چاہیے۔"
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "{0} کو دعوت نامہ دوبارہ بھیجیں"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "جواب بھیجیں"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "جواب اپنے پتوں میں سے کسی ایک سے بھیجیں"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "درآمد ناکام ہوئی، اور فائل سے کچھ شامل ن
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "درآمد اب شروع ہونے کی منتظر نہیں۔ اس کی حالت دیکھیں۔"
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "ان باکس کا پتہ"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "ان باکس بعد میں نہیں بدلا جا سکتا۔"
@@ -18365,6 +18437,10 @@ msgstr "اس پتے کا ابھی SMTP اکاؤنٹ نہیں۔ پہلے براڈ
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "یہ پتہ پہلے ہی ثابت ہو چکا ہے۔"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "یہ پتہ اس ورک اسپیس میں پہلے ہی میل کے لیے استعمال ہو رہا ہے۔"
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "قدریں خفیہ کر کے محفوظ ہوتی ہیں اور دوبا
 msgid "Values of condition {n}, separated by commas"
 msgstr "شرط {n} کی قدریں، کاما سے جدا"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "تصدیق شدہ"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "سنگل سائن آن کے لیے ڈومین {domain} کی تصدیق کی"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "{since} سے دستیاب ساتھی کا انتظار"
 msgid "waiting for approval"
 msgstr "منظوری کے منتظر"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "منظوری کے منتظر"
 
@@ -19917,6 +19997,10 @@ msgstr "Google کے تصدیقی کوڈ کا انتظار ہے…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "پہنچنے کا انتظار ہے"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "کوڈ کا انتظار"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "ہم آپ کو ایک بار کا کوڈ ای میل کرتے ہیں۔ �
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "ہم آپ کو ایک بار کا کوڈ ای میل کرتے ہیں۔ یاد رکھنے کو کوئی پاس ورڈ نہیں۔"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "ہم نے اس پتے پر 6 ہندسوں کا کوڈ بھیجا ہے۔ یہ 10 منٹ تک درست ہے۔"
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "آپ یہ ونڈو بند کر کے {host} پر واپس جا سکتے �
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "آپ اسے کسی بھی وقت ترتیبات میں، منسلک ایپس کے تحت، منقطع کر سکتے ہیں۔"
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "آپ زیادہ سے زیادہ 10 پتے رکھ سکتے ہیں۔ پہلے ایک ہٹائیں۔"
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "آپ یہ صفحہ چھوڑ سکتے ہیں؛ درآمد جاری رہتی ہے۔"
@@ -20686,6 +20778,10 @@ msgstr "آپ اپنا کردار تبدیل نہیں کر سکتے۔"
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "آپ خود کو نہیں ہٹا سکتے۔"
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "آپ اس چینل سے اس پتے سے نہیں بھیج سکتے۔"
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "آپ نے جتنے ورک اسپیس یہ سرور اجازت دیتا �
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "آپ کی ابھی کوئی پاس کی نہیں۔"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "آپ نے ابھی تک کوئی پتہ شامل نہیں کیا۔"
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "آپ کا اکاؤنٹ"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "آپ کے پتے"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

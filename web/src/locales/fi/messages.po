@@ -1401,6 +1401,10 @@ msgstr "Viesti poistettiin keskustelusta"
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "Nimi, jota hallitset, esimerkiksi {example}. Yuva näyttää kaksi lisättävää DNS-tietuetta, ja sivu vastaa verkkotunnuksella heti, kun ne näkyvät."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "Uusi koodi on tulossa"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "Uusi tuote"
@@ -1706,6 +1710,7 @@ msgstr "Toiminta"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "Lisää toiminto"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "Lisää osoite"
 
@@ -2019,6 +2025,10 @@ msgstr "Lisäsi verkkotunnuksen {domain} kertakirjautumiseen"
 msgid "Address"
 msgstr "Osoite"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "Osoite hyväksytty"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "Osoite menetetty"
@@ -2035,6 +2045,18 @@ msgstr "Osoite tai nimi"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "Osoitteen todentaminen"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "Osoite vahvistettu"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "Osoitteet, jotka {name} lisäsi sähköpostin lähettämistä varten. Hyväksyntää odottavat tarvitsevat omistajan tai ylläpitäjän."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "Osoitteet, joista lähetetään"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "Omistajaa ei voi poistaa. Vaihda ensin hänen roolinsa."
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "Omistaja tai ylläpitäjä voi antaa avustajien lähettää itse asetuksella Botit saavat lähettää."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "Omistajan tai ylläpitäjän on hyväksyttävä tämä osoite, koska sen verkkotunnukseen tuleva posti päätyy jaettuun postilaatikkoon."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "Omistaja tai ylläpitäjä ottaa allekirjoituksen käyttöön, kun tietue on julkaistu."
@@ -2804,8 +2830,13 @@ msgstr "Koskee seuraavaa viestiä."
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "Hyväksy"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "Hyväksy {address}"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME-tietue"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "Koodi"
@@ -4228,6 +4260,10 @@ msgstr "Koodi"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "Koodi lähetetty"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "Löytyi Lähetetyt-kansioistasi"
 msgid "Friday"
 msgstr "Perjantai"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "Posti menee sähköpostikanavaan ”{channelName}”, joka vastaanottaa 
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Viestiä ei ole allekirjoitettu lähettäjän oman verkkotunnuksen avaimella, jota Gmail ja Yahoo edellyttävät."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "Tästä osoitteesta jonossa oleva posti epäonnistuu sen sijaan, että lähtisi toisesta osoitteesta."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "Etäkuvat voivat kertoa lähettäjälle, että avasit viestin."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "Poista {0}"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "Poistetaanko {0}?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "Poista {address}"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "Poistetaanko {address}?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "Lähetä viesti sovelluksestasi"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "Lähetä tapahtumia omalle palvelimellesi"
 msgid "Send feedback from a page"
 msgstr "Lähetä palautetta sivulta"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "Lähettäjä"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Lähetä kutsu"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "Lähetä sähköpostia omasta osoitteestasi"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "Lähetä sähköpostia omasta osoitteestasi postilaatikon osoitteen sijaan. Vahvista se koodilla; postilaatikon verkkotunnus on määritettävä lähettämään sillä."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "Lähetä kutsu osoitteeseen {0} uudelleen"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "Lähetä vastaus"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "Lähetä vastaus jostakin omasta osoitteestasi"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "Tuonti epäonnistui, eikä tiedostosta lisätty mitään."
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "Tuonti ei enää odota alkamista. Katso sen tila."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "Postilaatikon osoite"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "Postilaatikkoa ei voi muuttaa myöhemmin."
@@ -18365,6 +18437,10 @@ msgstr "Tällä osoitteella ei vielä ole SMTP-tiliä. Lisää sellainen postila
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "Tämä osoite on jo todennettu."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "Tätä osoitetta käytetään jo sähköpostiin tässä työtilassa."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "Arvot tallennetaan salattuina, eikä niitä näytetä enää. Vaihda arv
 msgid "Values of condition {n}, separated by commas"
 msgstr "Ehdon {n} arvot, pilkuilla eroteltuina"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "Vahvistettu"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "Vahvisti verkkotunnuksen {domain} kertakirjautumiseen"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "Odottaa vapaata kollegaa {since} alkaen"
 msgid "waiting for approval"
 msgstr "odottaa hyväksyntää"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "Odottaa hyväksyntää"
 
@@ -19917,6 +19997,10 @@ msgstr "Odotetaan Googlen vahvistuskoodia …"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Odotetaan sen saapumista"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "Odottaa koodia"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "Lähetämme sinulle kertakäyttökoodin sähköpostitse. Uusi osoite saa
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "Lähetämme sinulle kertakäyttökoodin sähköpostitse. Ei salasanaa muistettavana."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "Lähetimme tähän osoitteeseen 6-numeroisen koodin. Se on voimassa 10 minuuttia."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "Voit sulkea tämän ikkunan ja palata sivustolle {host}."
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Voit katkaista yhteyden milloin tahansa Asetuksissa, kohdassa Yhdistetyt sovellukset."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "Voit pitää enintään 10 osoitetta. Poista ensin yksi."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "Voit poistua tältä sivulta; tuonti jatkuu."
@@ -20686,6 +20778,10 @@ msgstr "Et voi vaihtaa omaa rooliasi."
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "Et voi poistaa itseäsi."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "Et voi lähettää tästä osoitteesta tämän kanavan kautta."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "Olet luonut niin monta työtilaa kuin tämä palvelin sallii. Poista yks
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Sinulla ei vielä ole pääsyavaimia."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "Et ole vielä lisännyt osoitetta."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "sinä@yritys.fi"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "sinä@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "Tilisi"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "Osoitteesi"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"

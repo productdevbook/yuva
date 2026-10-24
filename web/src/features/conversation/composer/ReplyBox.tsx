@@ -15,6 +15,7 @@ import {
   useReplyChoices,
   type ReplyChoice,
 } from "@/features/conversation/composer/CannedMenu"
+import { FromPicker, sendingAddress, useOwnSenders } from "@/components/common/FromPicker"
 import { SignatureHtml } from "@/components/common/SignatureHtml"
 import { useMySignatures } from "@/features/settings/signature/queries"
 import { Recipients } from "@/features/conversation/composer/Recipients"
@@ -28,7 +29,7 @@ import type { Conversation, Member, Message } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { useTypingSender } from "@/lib/typing"
 import { cn } from "@/lib/utils"
-import { useAssignableMembers } from "@/lib/workspace"
+import { useAssignableMembers, useChannelMap } from "@/lib/workspace"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -48,6 +49,7 @@ export type ReplyHandle = {
   insert: (choice: ReplyChoice) => void
   recipients: () => void
   signature: () => void
+  sendAs: () => void
   replyAll: (all: boolean) => void
 }
 
@@ -147,6 +149,8 @@ export const ReplyBox = forwardRef<
   const [ccOpen, setCcOpen] = useState(false)
   const [bccOpen, setBccOpen] = useState(false)
   const [noSignature, setNoSignature] = useState(false)
+  const [pickedFrom, setPickedFrom] = useState("")
+  const fromSelect = useRef<HTMLSelectElement>(null)
   const ccInput = useRef<HTMLInputElement>(null)
   const bccInput = useRef<HTMLInputElement>(null)
   const textarea = useRef<HTMLTextAreaElement>(null)
@@ -166,6 +170,9 @@ export const ReplyBox = forwardRef<
   const signature = useMySignatures().data?.find((s) => s.inbox_id === c.inbox_id)?.html
   const signed = !note && !blocked && !!emailTo && !!signature
   const first = firstName(contactName)
+  const channel = useChannelMap().get(c.channel_id ?? "")
+  const senders = useOwnSenders(emailTo && c.channel_id ? [c.channel_id] : [])
+  const sender = senders.find((a) => a.address === pickedFrom)
   const articleKey = keyLabel(SHORTCUTS.article).join("")
   const signatureKey = keyLabel(SHORTCUTS.signature).join("")
 
@@ -286,6 +293,10 @@ export const ReplyBox = forwardRef<
     signature: () => {
       if (signed) setNoSignature((x) => !x)
     },
+    sendAs: () => {
+      if (!emailTo || note || blocked || senders.length === 0) return
+      fromSelect.current?.focus()
+    },
     replyAll: (all) => {
       setCcEdit(all ? undefined : [])
       setCcOpen(all && defaultCc.length > 0)
@@ -326,6 +337,7 @@ export const ReplyBox = forwardRef<
         articles,
         macro,
         signature: signed && noSignature ? false : undefined,
+        fromAddress: sender?.address,
         ...recipients,
       })
       ?.catch(() => {
@@ -463,6 +475,22 @@ export const ReplyBox = forwardRef<
           ccRef={ccInput}
           bccRef={bccInput}
         />
+      )}
+      {recipientsShown && senders.length > 0 && (
+        <div className="flex items-center gap-1 px-3 pb-1.5" data-testid="composer-from">
+          <span className="min-w-7 shrink-0 pe-1 text-caption text-faint">
+            <Trans>From</Trans>
+          </span>
+          <FromPicker
+            ref={fromSelect}
+            className="min-w-0 max-w-full flex-1"
+            channelAddress={sendingAddress(channel)}
+            senders={senders}
+            value={pickedFrom}
+            onChange={setPickedFrom}
+            testId="composer-from-picker"
+          />
+        </div>
       )}
       {blocked && (
         <p

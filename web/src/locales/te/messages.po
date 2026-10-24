@@ -1401,6 +1401,10 @@ msgstr "సంభాషణ నుండి ఒక సందేశం తొల�
 msgid "A name you control, like {example}. Yuva then shows you two DNS records to add, and the page answers on the domain once it has seen them."
 msgstr "మీరు నియంత్రించే పేరు, ఉదా. {example}. జోడించాల్సిన రెండు DNS రికార్డులను Yuva చూపిస్తుంది, వాటిని చూడగానే పేజీ డొమైన్‌లో స్పందిస్తుంది."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "A new code is on its way"
+msgstr "కొత్త కోడ్ వస్తోంది"
+
 #: src/features/setup/StartStep.tsx
 msgid "A new product"
 msgstr "కొత్త ఉత్పత్తి"
@@ -1706,6 +1710,7 @@ msgstr "కార్యకలాపం"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/Participants.tsx
 #: src/features/migrations/MapStep.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Add"
@@ -1808,6 +1813,7 @@ msgstr "చర్యను జోడించండి"
 
 #: src/components/common/AddressChips.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Add an address"
 msgstr "చిరునామా జోడించు"
 
@@ -2019,6 +2025,10 @@ msgstr "సింగిల్ సైన్-ఆన్ కోసం డొమై�
 msgid "Address"
 msgstr "చిరునామా"
 
+#: src/features/team/MemberAddresses.tsx
+msgid "Address approved"
+msgstr "చిరునామా ఆమోదించబడింది"
+
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Address lost"
 msgstr "చిరునామా కోల్పోయింది"
@@ -2035,6 +2045,18 @@ msgstr "చిరునామా లేదా పేరు"
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Address proof"
 msgstr "చిరునామా రుజువు"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Address verified"
+msgstr "చిరునామా ధృవీకరించబడింది"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses {name} added to send mail from. Those waiting for approval need an owner or admin."
+msgstr "మెయిల్ పంపడానికి {name} జోడించిన చిరునామాలు. ఆమోదం కోసం వేచి ఉన్నవాటికి యజమాని లేదా అడ్మిన్ కావాలి."
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Addresses to send from"
+msgstr "పంపే చిరునామాలు"
 
 #: src/components/common/text.ts
 #: src/features/settings/sso/SsoPage.tsx
@@ -2490,6 +2512,10 @@ msgstr "యజమానిని తొలగించలేరు. ముంద
 msgid "An owner or admin can let assistants send on their own with Bots may send."
 msgstr "యజమాని లేదా అడ్మిన్ “బాట్‌లు పంపవచ్చు” తో అసిస్టెంట్‌లు స్వయంగా పంపడానికి అనుమతించవచ్చు."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "An owner or admin must approve this address, because mail to its domain lands in a shared inbox."
+msgstr "యజమాని లేదా అడ్మిన్ ఈ చిరునామాను ఆమోదించాలి, ఎందుకంటే దాని డొమైన్‌కు వచ్చే మెయిల్ షేర్డ్ ఇన్‌బాక్స్‌లోకి వెళ్తుంది."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "An owner or admin turns signing on once the record is published."
 msgstr "రికార్డ్ ప్రచురించబడిన తర్వాత యజమాని లేదా అడ్మిన్ సైనింగ్‌ను ఆన్ చేస్తారు."
@@ -2804,8 +2830,13 @@ msgstr "తదుపరి మెయిల్‌కు వర్తిస్త�
 
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
+#: src/features/team/MemberAddresses.tsx
 msgid "Approve"
 msgstr "ఆమోదించండి"
+
+#: src/features/team/MemberAddresses.tsx
+msgid "Approve {address}"
+msgstr "{address} ఆమోదించండి"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Approve or show the selected post"
@@ -4221,6 +4252,7 @@ msgid "CNAME record"
 msgstr "CNAME రికార్డ్"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Code"
 msgstr "కోడ్"
@@ -4228,6 +4260,10 @@ msgstr "కోడ్"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Code sent"
+msgstr "కోడ్ పంపబడింది"
 
 #: src/features/mail/MailThread.tsx
 msgid "Collapse"
@@ -7135,6 +7171,7 @@ msgstr "మీ Sent ఫోల్డర్‌లలో కనుగొనబడ�
 msgid "Friday"
 msgstr "శుక్రవారం"
 
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -9274,6 +9311,10 @@ msgstr "మెయిల్ {address} ను అందుకునే “{channel
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "మెయిల్‌పై పంపినవారి సొంత డొమైన్ కీతో సంతకం లేదు; Gmail, Yahoo దీన్ని ఆశిస్తాయి."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Mail queued from it fails instead of going out from another address."
+msgstr "ఈ చిరునామా నుండి క్యూలో ఉన్న మెయిల్ మరొక చిరునామా నుండి వెళ్లకుండా విఫలమవుతుంది."
 
 #: src/features/mail/Compose.tsx
 msgid "Mail sent"
@@ -13940,6 +13981,7 @@ msgstr "రిమోట్ చిత్రాలు మీరు మెయిల
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/sections.tsx
@@ -13971,6 +14013,14 @@ msgstr "{0} ను తొలగించండి"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Remove {0}?"
 msgstr "{0} తీసివేయాలా?"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}"
+msgstr "{address} తీసివేయండి"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Remove {address}?"
+msgstr "{address} తీసివేయాలా?"
 
 #: src/components/common/AddressChips.tsx
 msgid "Remove {email}"
@@ -15310,6 +15360,7 @@ msgid "Send a message from your app"
 msgstr "మీ యాప్ నుండి సందేశం పంపండి"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Send a new code"
@@ -15375,9 +15426,21 @@ msgstr "మీ స్వంత సర్వర్‌కు ఈవెంట్‌
 msgid "Send feedback from a page"
 msgstr "పేజీ నుండి అభిప్రాయాన్ని పంపండి"
 
+#: src/components/common/FromPicker.tsx
+msgid "Send from"
+msgstr "దీని నుండి పంపండి"
+
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "ఆహ్వానం పంపండి"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "Send mail from your own address"
+msgstr "మీ సొంత చిరునామా నుండి మెయిల్ పంపండి"
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "Send mail from your own address instead of the inbox's. Verify it with a code, and the inbox's domain must be set up to send as it."
+msgstr "ఇన్‌బాక్స్ చిరునామాకు బదులుగా మీ సొంత చిరునామా నుండి మెయిల్ పంపండి. కోడ్‌తో ధృవీకరించండి; ఇన్‌బాక్స్ డొమైన్ దానితో పంపడానికి సెట్ చేయబడి ఉండాలి."
 
 #: src/features/auth/SignInForm.tsx
 #: src/features/settings/slack/SlackAccount.tsx
@@ -15433,6 +15496,11 @@ msgstr "{0} కు ఆహ్వానాన్ని మళ్లీ పంప�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Send the reply"
 msgstr "జవాబును పంపండి"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the reply from one of your own addresses"
+msgstr "సమాధానాన్ని మీ చిరునామాలలో ఒకదాని నుండి పంపండి"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "Send this file from the start"
@@ -17607,6 +17675,10 @@ msgstr "దిగుమతి విఫలమైంది, మరియు ఫ�
 msgid "The import is no longer waiting to start. Look at its state."
 msgstr "దిగుమతి ఇకపై ప్రారంభం కోసం వేచి లేదు. దాని స్థితిని చూడండి."
 
+#: src/components/common/FromPicker.tsx
+msgid "The inbox address"
+msgstr "ఇన్‌బాక్స్ చిరునామా"
+
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "The inbox cannot be changed later."
 msgstr "ఇన్‌బాక్స్‌ను తర్వాత మార్చలేరు."
@@ -18365,6 +18437,10 @@ msgstr "ఈ చిరునామాకు ఇంకా SMTP ఖాతా లే
 #: src/components/common/text.ts
 msgid "This address is already proven."
 msgstr "ఈ చిరునామా ఇప్పటికే నిరూపితమైంది."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "This address is already used for mail in this workspace."
+msgstr "ఈ చిరునామా ఈ వర్క్‌స్పేస్‌లో ఇప్పటికే మెయిల్ కోసం ఉపయోగించబడుతోంది."
 
 #: src/features/status/monitorErrors.ts
 msgid "This address is private, loopback or link-local. Checks only reach public addresses."
@@ -19737,6 +19813,7 @@ msgstr "విలువలు ఎన్‌క్రిప్ట్ చేసి 
 msgid "Values of condition {n}, separated by commas"
 msgstr "షరతు {n} విలువలు, కామాలతో వేరు చేయబడినవి"
 
+#: src/components/common/AddressState.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verified"
@@ -19746,6 +19823,7 @@ msgstr "ధృవీకరించబడింది"
 msgid "Verified the domain {domain} for single sign-on"
 msgstr "సింగిల్ సైన్-ఆన్ కోసం డొమైన్ {domain} ధృవీకరించారు"
 
+#: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/channels/email/AddressProof.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Verify"
@@ -19888,12 +19966,14 @@ msgstr "{since} నుండి అందుబాటులో ఉన్న స�
 msgid "waiting for approval"
 msgstr "ఆమోదం కోసం వేచి ఉంది"
 
+#: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "Waiting for approval"
 msgstr "ఆమోదం కోసం వేచి ఉంది"
 
@@ -19917,6 +19997,10 @@ msgstr "Google నిర్ధారణ కోడ్ కోసం వేచి �
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "చేరడం కోసం వేచి ఉంది"
+
+#: src/components/common/AddressState.tsx
+msgid "Waiting for the code"
+msgstr "కోడ్ కోసం వేచి ఉంది"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Waiting for the customer"
@@ -19989,6 +20073,10 @@ msgstr "మేము మీకు ఒకసారి వాడే కోడ్�
 #: src/features/auth/SignInPage.tsx
 msgid "We e-mail you a one-time code. No password to remember."
 msgstr "మేము మీకు ఒకసారి వాడే కోడ్‌ను ఇమెయిల్ చేస్తాము. గుర్తుంచుకోవడానికి పాస్‌వర్డ్ లేదు."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "We mailed a 6-digit code to this address. It is valid for 10 minutes."
+msgstr "మేము ఈ చిరునామాకు 6 అంకెల కోడ్ పంపాము. ఇది 10 నిమిషాలు చెల్లుతుంది."
 
 #: src/features/auth/SignInForm.tsx
 msgid "We sent a 6-digit code to <0>{email}</0>. It is valid for 10 minutes."
@@ -20659,6 +20747,10 @@ msgstr "మీరు ఈ విండోను మూసివేసి {host} �
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "మీరు దీన్ని ఎప్పుడైనా Settings లో, Connected apps కింద డిస్‌కనెక్ట్ చేయవచ్చు."
 
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You can keep at most 10 addresses. Remove one first."
+msgstr "మీరు గరిష్టంగా 10 చిరునామాలు ఉంచుకోవచ్చు. ముందు ఒకదాన్ని తీసివేయండి."
+
 #: src/features/broadcasts/Import.tsx
 msgid "You can leave this page; the import goes on."
 msgstr "మీరు ఈ పేజీని వదిలి వెళ్లవచ్చు; దిగుమతి కొనసాగుతుంది."
@@ -20686,6 +20778,10 @@ msgstr "మీరు మీ స్వంత పాత్రను మార్�
 #: src/features/team/TeamPage.tsx
 msgid "You cannot remove yourself."
 msgstr "మీరు మిమ్మల్ని తొలగించుకోలేరు."
+
+#: src/components/common/text.ts
+msgid "You cannot send from this address through this channel."
+msgstr "ఈ ఛానెల్ ద్వారా మీరు ఈ చిరునామా నుండి పంపలేరు."
 
 #: src/features/account/AccountPage.tsx
 msgid "You follow no discussions. You follow the ones you start or reply to."
@@ -20718,6 +20814,10 @@ msgstr "ఈ సర్వర్ అనుమతించినన్ని వర
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "మీకు ఇంకా పాస్‌కీలు లేవు."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+msgid "You have not added an address yet."
+msgstr "మీరు ఇంకా ఏ చిరునామా జోడించలేదు."
 
 #: src/features/mail/MailList.tsx
 msgid "You have not sent any mail yet."
@@ -20768,6 +20868,7 @@ msgid "you@company.com"
 msgstr "you@company.com"
 
 #: src/features/auth/SignInForm.tsx
+#: src/features/settings/addresses/AddressesPage.tsx
 msgid "you@example.com"
 msgstr "you@example.com"
 
@@ -20782,6 +20883,11 @@ msgstr "మీ ఖాతా"
 #: src/features/auth/ssoError.ts
 msgid "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
+
+#: src/features/settings/addresses/AddressesPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+msgid "Your addresses"
+msgstr "మీ చిరునామాలు"
 
 #: src/features/migrations/text.ts
 msgid "Your admin allowed Yuva"
