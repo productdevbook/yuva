@@ -19,6 +19,7 @@ msgstr "Nilai “{name}” tidak sepadan dengan medan"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“Adakah halaman ini membantu?”, maklum balas dan perbincangan pada dokumentasi anda"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "Satu idea pelan hala tuju berpindah ke peringkat lain"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Peraturan yang dimatikan tidak pernah dijalankan. Peraturan dijalankan mengikut susunan senarai."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "E-mel yang dijadualkan tidak dapat dihantar"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "Nama kempen"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "Nama kempen"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "Batalkan pemindahan {address}?"
 msgid "Cancel moving from {provider}?"
 msgstr "Batalkan pemindahan dari {provider}?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "Batalkan penjadualan"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "Batalkan siaran sebelum memadamnya."
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "Batalkan pemindahan"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "Batalkan penjadualan dan edit e-mel semula"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "Tukar pemajuan itu ke alamat di bawah, supaya mel {address} sampai ke Yu
 msgid "Change the choice"
 msgstr "Tukar pilihan"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "Tukar masa"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "Tukar masa e-mel yang dijadualkan"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "Ubah ruang kerja dan baca penggunaan"
@@ -3764,6 +3788,11 @@ msgstr "Ubah ruang kerja dan baca penggunaan"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "Ubah ini pada halaman kunci API."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "Tukar masa"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "Menyalin {percent}%"
 msgid "Copying {provider}"
 msgstr "Menyalin {provider}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "Tidak dapat dihantar"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "Tidak dapat menyalin"
@@ -5211,6 +5244,7 @@ msgstr "Data sehingga {builtText}"
 msgid "Database upgrade"
 msgstr "Naik taraf pangkalan data"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "ID Direktori (penyewa), pilihan"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "Muat turun baris yang ditinggalkan"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "Draf dipadam"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Draf disimpan"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "Teks draf"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Draf:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "Draf"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Draf"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "Masing-masing dengan semua mesej dan notanya"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "Sunting monitor"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "Edit draf yang dijadualkan atau belum dihantar"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "Sunting tajuk"
@@ -6281,6 +6330,14 @@ msgstr "Sunting, atau pratonton pada desktop, telefon atau dalam mod gelap"
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "disunting"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "Mengedit draf yang tidak dapat dihantar"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "Mengedit mesej yang dijadualkan pada {editingWhen}"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "Diserahkan kepada {name}"
 msgid "Has an open conversation"
 msgstr "Ada perbualan terbuka"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "Ada lampiran"
@@ -8511,10 +8569,6 @@ msgstr "Kekalkan pemajuan, penghalaan atau MX seperti sedia ada: begitulah mel s
 msgid "Keep the name only"
 msgstr "Simpan nama sahaja"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "Simpan mel ini sebagai draf?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Biarkan halaman ini terbuka. Jika sambungan terputus, muat naik diteruskan apabila ia kembali; selepas muat semula, pilih fail yang sama dan hanya bahagian yang tiada dihantar."
@@ -8790,6 +8844,10 @@ msgstr "Kependaman"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "Kemudian"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "Lewat hari ini"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "Muatkan imej"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "Disederhanakan"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Isnin"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "Isnin pagi"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "Belum ada makro"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "Tiada e-mel dijadualkan. Pilih Hantar kemudian untuk menghantar e-mel pada masa yang anda pilih."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "Tiada mel sepadan dengan carian anda."
 
@@ -11424,6 +11491,11 @@ msgstr "tidak dijalankan"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "Tidak dijalankan"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "Tidak disimpan"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "Pilih penghantar dalam tetapan"
 msgid "Pick a team"
 msgstr "Pilih pasukan"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "Pilih masa sekurang-kurangnya seminit dari sekarang."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Pilih masa dalam 90 hari akan datang, dalam zon waktu anda, {zone}."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "Pilih masa dalam masa setahun."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "Pilih masa…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "penerima"
 msgid "Recipients"
 msgstr "Penerima"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "Penerima dan subjek kekal seperti yang disimpan."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "Wajib untuk menutup"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "Jadualkan semula"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Hantar semula"
@@ -14926,6 +15018,7 @@ msgstr "Sabtu"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "Simpan balasan bersama perkara yang perlu berlaku pada perbualan apabila
 msgid "Save and close"
 msgstr "Simpan dan tutup"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "Simpan dan jadualkan semula"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "Simpan perubahan"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Simpan draf"
 
@@ -15005,6 +15101,8 @@ msgstr "Simpan senarai sebagai paparan"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "Menyimpan mengalih keluar kata laluan yang disimpan."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "Menyimpan…"
 
@@ -15076,6 +15176,7 @@ msgstr "Mengimbas"
 msgid "Scanning the headers…"
 msgstr "Mengimbas pengepala…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "Jadualkan"
@@ -15083,6 +15184,12 @@ msgstr "Jadualkan"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "Jadualkan dan hantar siaran, apabila ruang kerja membenarkan kunci dan pembantu menghantarnya"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "Penjadualan dibatalkan"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "Jadualkan entri"
 msgid "Scheduled"
 msgstr "Dijadualkan"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "Dijadualkan"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Dijadualkan oleh"
@@ -15104,6 +15216,21 @@ msgstr "Dijadualkan oleh"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Dijadualkan pada {due}"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "Dijadualkan pada {when}"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "Mesej yang dijadualkan"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "Menjadualkan…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "Hantar pemberitahuan ujian"
 msgid "Send a test notification to {name}"
 msgstr "Hantar pemberitahuan ujian kepada {name}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "Hantar semula"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "Hantar balasan automatik"
@@ -15433,6 +15564,22 @@ msgstr "Hantar dari"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Hantar jemputan"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "Hantar kemudian"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "Hantar kemudian ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "Hantar kemudian, dalam balasan e-mel"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "Hantar pengesahan"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "Hantar pengesahan semula"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "Hantar semula draf yang tidak dapat dihantar"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "Senarai ini persendirian, jadi borang tidak menawarkannya. Jadikan awam 
 msgid "This mail is not available"
 msgstr "Mel ini tidak tersedia"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "E-mel ini memerlukan penerima, subjek dan sedikit teks untuk disimpan sebagai draf."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "Peti mel ini hanya bersambung dengan “Log masuk dengan Microsoft”, yang tidak ditawarkan pelayan Yuva ini. Minta pengendalinya menyediakannya."
@@ -18936,6 +19091,7 @@ msgstr "Tandakan alamat yang pasukan anda tulis daripadanya, supaya mel mereka t
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "Tiket datang bersama balasan, nota, teg, status dan penerima tugasannya. Masukkan alamat sokongan anda di atas."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "Untuk membenarkan pembantu menghantar sendiri, hidupkan <0>Bot boleh men
 msgid "To: {emailTo}"
 msgstr "Kepada: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "Kepada: {who}"
@@ -19023,6 +19180,10 @@ msgstr "esok pada {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "Esok pada {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "Esok pagi"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "Peranti tidak diketahui"
 msgid "unknown reason"
 msgstr "sebab tidak diketahui"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "Pengirim tidak diketahui"
@@ -20309,6 +20471,10 @@ msgstr "Bila"
 msgid "When {first} writes again"
 msgstr "Apabila {first} menulis semula"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "Apabila mesej yang dijadualkan kekal sebagai draf kerana ditolak."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "Apabila mesej baharu tiba, ia akan ada dalam senarai."
@@ -20810,6 +20976,11 @@ msgstr "Semasa menyimpan, anda mendapat alamat yang dipanggil sistem amaran anda
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "Anda telah mencipta sebanyak mana ruang kerja yang dibenarkan pelayan ini. Padam satu yang tidak lagi anda gunakan, atau minta dijemput ke yang lain."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "Anda tiada draf. E-mel yang anda mula tulis disimpan di sini."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

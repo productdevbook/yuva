@@ -19,6 +19,7 @@ msgstr "“{name}” har en værdi, der ikke passer"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“Var denne side nyttig?”, feedback og diskussioner i din dokumentation"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "En idé på køreplanen er flyttet til et andet trin"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "En slået-fra regel kører aldrig. Reglerne kører i listens rækkefølge."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "En planlagt mail kunne ikke sendes"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "Kampagnenavn"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "Kampagnenavn"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "Annullér flytningen af {address}?"
 msgid "Cancel moving from {provider}?"
 msgstr "Annullér flytningen fra {provider}?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "Annuller planlægning"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "Annullér udsendelsen, før du sletter den."
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "Annullér migreringen"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "Annuller planlægningen og redigér mailen igen"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "Skift den videresendelse til adressen nedenfor, så mailen fra {address}
 msgid "Change the choice"
 msgstr "Skift valget"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "Skift tidspunkt"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "Skift tidspunktet for den planlagte mail"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "Ændre arbejdsområdet og læse forbrug"
@@ -3764,6 +3788,11 @@ msgstr "Ændre arbejdsområdet og læse forbrug"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "Ændr dette på siden API-nøgler."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "Skift tidspunkt"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "Kopierer {percent} %"
 msgid "Copying {provider}"
 msgstr "Kopierer {provider}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "Kunne ikke sendes"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "Kunne ikke kopiere"
@@ -5211,6 +5244,7 @@ msgstr "Data til og med {builtText}"
 msgid "Database upgrade"
 msgstr "Databaseopgradering"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "Mappe-ID (tenant), valgfrit"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "Download de udeladte rækker"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "Kladde slettet"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Kladde gemt"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "Kladdetekst"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Kladde:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "Kladder"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Kladder"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "Hver med alle sine beskeder og noter"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "Redigér monitoren"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "Redigér den planlagte eller usendte kladde"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "Redigér titlen"
@@ -6281,6 +6330,14 @@ msgstr "Redigér, eller se et eksempel på en computer, en telefon eller i mørk
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "redigeret"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "Redigerer en kladde, der ikke kunne sendes"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "Redigerer beskeden planlagt til {editingWhen}"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "Givet videre til {name}"
 msgid "Has an open conversation"
 msgstr "Har en åben samtale"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "Har vedhæftninger"
@@ -8511,10 +8569,6 @@ msgstr "Lad videresendelsen, routingen eller MX blive, som den er: sådan når m
 msgid "Keep the name only"
 msgstr "Behold kun navnet"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "Gem denne mail som kladde?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Hold denne side åben. Hvis forbindelsen falder ud, fortsætter uploaden, når den er tilbage; efter en genindlæsning skal du vælge den samme fil, og kun de manglende dele sendes."
@@ -8790,6 +8844,10 @@ msgstr "Latenstid"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "Senere"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "Senere i dag"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "Indlæs billeder"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "Modereret"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Mandag"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "Mandag morgen"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "Ingen makroer endnu"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "Ingen mails er planlagt. Vælg Send senere for at sende en mail på et tidspunkt, du vælger."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "Ingen mails matcher din søgning."
 
@@ -11424,6 +11491,11 @@ msgstr "ikke kørt"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "Ikke kørt"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "Ikke gemt"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "Vælg en afsender i indstillingerne"
 msgid "Pick a team"
 msgstr "Vælg et team"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "Vælg et tidspunkt mindst et minut fra nu."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Vælg et tidspunkt inden for de næste 90 dage, i din tidszone, {zone}."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "Vælg et tidspunkt inden for et år."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "Vælg et tidspunkt…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "modtagere"
 msgid "Recipients"
 msgstr "Modtagere"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "Modtagere og emne forbliver som gemt."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "Påkrævet for at lukke"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "Planlæg igen"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Send igen"
@@ -14926,6 +15018,7 @@ msgstr "Lørdag"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "Gem et svar sammen med det, der skal ske med samtalen, når du sender de
 msgid "Save and close"
 msgstr "Gem og luk"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "Gem og planlæg igen"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "Gem ændringer"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Gem kladde"
 
@@ -15005,6 +15101,8 @@ msgstr "Gem listen som visning"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "Når du gemmer, fjernes den gemte adgangskode."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "Gemmer…"
 
@@ -15076,6 +15176,7 @@ msgstr "Scanner"
 msgid "Scanning the headers…"
 msgstr "Scanner hovederne…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "Planlæg"
@@ -15083,6 +15184,12 @@ msgstr "Planlæg"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "Planlæg og send udsendelser, når arbejdsområdet lader nøgler og assistenter sende dem"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "Planlægning annulleret"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "Planlæg indlægget"
 msgid "Scheduled"
 msgstr "Planlagt"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "Planlagt"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Planlagt af"
@@ -15104,6 +15216,21 @@ msgstr "Planlagt af"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Planlagt til {due}"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "Planlagt til {when}"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "Planlagt besked"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "Planlægger…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "Send en testnotifikation"
 msgid "Send a test notification to {name}"
 msgstr "Send en testnotifikation til {name}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "Send igen"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "Send et autosvar"
@@ -15433,6 +15564,22 @@ msgstr "Send fra"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Send invitation"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "Send senere"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "Send senere ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "Send senere, i et mailsvar"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "Send bekræftelsen"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "Send bekræftelsen igen"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "Send den kladde, der ikke kunne sendes, igen"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "Denne liste er privat, så formularer tilbyder den ikke. Gør den offent
 msgid "This mail is not available"
 msgstr "Denne mail er ikke tilgængelig"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "Denne mail skal have en modtager, et emne og noget tekst for at kunne gemmes som kladde."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "Denne postkasse forbinder kun med “Log ind med Microsoft”, som denne Yuva-server ikke tilbyder. Bed dens operatør om at opsætte det."
@@ -18936,6 +19091,7 @@ msgstr "Afkryds de adresser, dit team skriver fra, så deres mail ikke importere
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "Sager følger med deres svar, noter, tags, status og ansvarlig. Indtast din supportadresse ovenfor."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "For at lade assistenter sende på egen hånd, slå <0>Bots må sende</0>
 msgid "To: {emailTo}"
 msgstr "Til: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "Til: {who}"
@@ -19023,6 +19180,10 @@ msgstr "i morgen kl. {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "I morgen kl. {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "I morgen tidlig"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "Ukendt enhed"
 msgid "unknown reason"
 msgstr "ukendt årsag"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "Ukendt afsender"
@@ -20309,6 +20471,10 @@ msgstr "Hvornår"
 msgid "When {first} writes again"
 msgstr "Når {first} skriver igen"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "Når en planlagt besked bliver en kladde, fordi den blev afvist."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "Når en ny besked ankommer, vil den være på listen."
@@ -20810,6 +20976,11 @@ msgstr "Du får adressen, som din alarmering kalder, når du gemmer, til Alertma
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "Du har oprettet så mange arbejdsområder, som denne server tillader. Slet et, du ikke længere bruger, eller bed om at blive inviteret til et andet."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "Du har ingen kladder. Mails, du begynder at skrive, gemmes her."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

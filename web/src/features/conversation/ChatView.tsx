@@ -38,6 +38,7 @@ import { readDraft, useConversationActions, useDraftRevision, usePendingReplies 
 import { Beaten, TypingCollision } from "@/features/conversation/Collision"
 import { useCommandHandlers, useInsertHandler } from "@/features/conversation/commands"
 import { ReplyBox, type ReplyHandle } from "@/features/conversation/composer/ReplyBox"
+import { isOwnDraft, isShownDraft } from "@/features/conversation/ownDraft"
 import { ConversationMenu, type MenuView } from "@/features/conversation/ConversationMenu"
 import { TrashBanner } from "@/features/conversation/Trash"
 import { CategoryChip, ProgressStrip } from "@/features/conversation/Feedback"
@@ -68,6 +69,7 @@ import { Status, Watchers } from "@/features/conversation/ConversationStatus"
 import { SlaPopover } from "@/features/conversation/SlaPopover"
 import {
   useConversation,
+  useDraftActions,
   useMarkRead,
   useMessages,
   useParticipants,
@@ -248,8 +250,8 @@ function Loaded({
   useEffect(() => {
     if (focusMissing && hasNextPage && !isFetchingNextPage) void fetchNextPage()
   }, [focusMissing, hasNextPage, isFetchingNextPage, fetchNextPage])
-  const suggestion = items.findLast((m) => m.draft && m.kind !== "forward")
-  const shown = items.filter((m) => m !== suggestion)
+  const suggestion = items.findLast((m) => m.draft && m.kind !== "forward" && !isOwnDraft(m, me))
+  const shown = items.filter((m) => m !== suggestion && (!isOwnDraft(m, me) || isShownDraft(m, me)))
   const inbound = shown.filter((m) => m.kind === "message" && m.direction !== "out")
   const lastInbound = inbound.at(-1)
   const feedbackId = c.kind === "feedback" && !messages.hasNextPage ? inbound[0]?.id : undefined
@@ -297,6 +299,15 @@ function Loaded({
         }),
     })
   }
+  const draftActions = useDraftActions()
+  const cancelSchedule = (m: Message) =>
+    draftActions.unschedule.mutate(m, {
+      onSuccess: (draft) => {
+        reply.current?.adopt(draft)
+        toast(t`Schedule cancelled`)
+      },
+      onError: (err) => toast(errorText(err)),
+    })
   const participants = useParticipants(c.id, c.channel_kind === "email")
   const ctx: ThreadContext = {
     members,
@@ -315,6 +326,8 @@ function Loaded({
     onForwardMail: (m) => setForwarding({ target: m }),
     onRemove: remove,
     canRemove,
+    onEditDraft: (m) => reply.current?.edit(m),
+    onCancelSchedule: cancelSchedule,
   }
   const pageLine = !!conversationPage(c)
   const [discussing, setDiscussing] = useState(false)

@@ -1,12 +1,20 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { LifeBuoyIcon, PaperclipIcon, SlashIcon, SmileIcon, SparklesIcon, XIcon } from "lucide-react"
+import { ClockIcon, LifeBuoyIcon, PaperclipIcon, SlashIcon, SmileIcon, SparklesIcon, XIcon } from "lucide-react"
 import { forwardRef, lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 
 import { BotAvatar, ErrorLine, Kbd, toast } from "@/components/common"
-import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
+import { formatWhen, SendLaterMenu } from "@/components/common/SendLater"
+import { alt, keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatBytes } from "@/components/common/text"
 import { popupClass } from "@/components/ui/dropdown-menu"
-import { firstName, readDraft, writeDraft, type ConversationActions } from "@/features/conversation/actions"
+import {
+  firstName,
+  readDraft,
+  usePendingReplies,
+  writeDraft,
+  type ConversationActions,
+  type SendRequest,
+} from "@/features/conversation/actions"
 import { ArticlePicker, type HelpPick } from "@/features/conversation/composer/ArticlePicker"
 import {
   CannedMenu,
@@ -23,6 +31,14 @@ import { MacroChips } from "@/features/conversation/composer/MacroChips"
 import type { MacroPick } from "@/features/conversation/macros"
 import { MentionMenu, mentionToken } from "@/features/conversation/composer/MentionMenu"
 import { useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
+import {
+  adoptDraft,
+  isOwnDraft,
+  savedDraftId,
+  takeSavedDraft,
+  useOwnDrafts,
+  useReplyAutosave,
+} from "@/features/conversation/ownDraft"
 import { useDraftActions, useParticipants } from "@/features/conversation/queries"
 import { useHelpCenters } from "@/features/help/queries"
 import type { Conversation, Member, Message } from "@/lib/api"
@@ -51,6 +67,8 @@ export type ReplyHandle = {
   signature: () => void
   sendAs: () => void
   replyAll: (all: boolean) => void
+  edit: (m: Message) => void
+  adopt: (m: Message) => void
 }
 
 export const MAX_FILES = 10
@@ -150,13 +168,19 @@ export const ReplyBox = forwardRef<
   const [bccOpen, setBccOpen] = useState(false)
   const [noSignature, setNoSignature] = useState(false)
   const [pickedFrom, setPickedFrom] = useState("")
+  const [editing, setEditing] = useState<Message | null>(null)
+  const [laterOpen, setLaterOpen] = useState(false)
+  const stash = useRef("")
+  const sending = useRef(false)
+  const [restored, setRestored] = useState(false)
+  const [adopting, setAdopting] = useState<{ draft: Message; unsigned: boolean } | null>(null)
   const fromSelect = useRef<HTMLSelectElement>(null)
   const ccInput = useRef<HTMLInputElement>(null)
   const bccInput = useRef<HTMLInputElement>(null)
   const textarea = useRef<HTMLTextAreaElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
   const typing = useTypingSender(c.id)
-  const { discard } = useDraftActions()
+  const { discard, save: saveDraft, reschedule } = useDraftActions()
   const { membership } = useSession()
   const choices = useReplyChoices()
   const helpCenter = (useHelpCenters().data ?? []).find((h) => h.inbox_id === c.inbox_id)
@@ -167,7 +191,8 @@ export const ReplyBox = forwardRef<
     .map((p) => p.email)
   const cc = ccEdit ?? defaultCc
   const blocked = !note && !!undeliverable
-  const signature = useMySignatures().data?.find((s) => s.inbox_id === c.inbox_id)?.html
+  const mySignatures = useMySignatures()
+  const signature = mySignatures.data?.find((s) => s.inbox_id === c.inbox_id)?.html
   const signed = !note && !blocked && !!emailTo && !!signature
   const first = firstName(contactName)
   const channel = useChannelMap().get(c.channel_id ?? "")
@@ -175,11 +200,42 @@ export const ReplyBox = forwardRef<
   const sender = senders.find((a) => a.address === pickedFrom)
   const articleKey = keyLabel(SHORTCUTS.article).join("")
   const signatureKey = keyLabel(SHORTCUTS.signature).join("")
+  const editingWhen = editing?.scheduled_at ? formatWhen(editing.scheduled_at, i18n.locale) : ""
+  const laterKey = `${alt}↵`
 
-  useEffect(
-    () => writeDraft(c.id, { body, mode, files, articles, macro, cc: ccEdit, bcc }),
-    [c.id, body, mode, files, articles, macro, ccEdit, bcc]
-  )
+  const mailing = !!emailTo && !actions.chat
+  const plainText = files.length === 0 && articles.length === 0 && !macro
+  const autosaveOn = mailing && !note && !blocked && plainText && !editing
+  const unsigned = signed && noSignature
+  const autosave = useReplyAutosave(c.id, autosaveOn, body, unsigned)
+  const own = useOwnDrafts(c.id, mailing)
+  const queued = usePendingReplies(c.id)
+
+  useEffect(() => {
+    if (editing) return
+    writeDraft(c.id, { body, mode, files, articles, macro, cc: ccEdit, bcc })
+  }, [c.id, body, mode, files, articles, macro, ccEdit, bcc, editing])
+  if (!restored && own.data && !own.isFetching && mySignatures.data) {
+    setRestored(true)
+    const mine = own.data.items
+      .map((i) => i.draft)
+      .find(
+        (d) =>
+          isOwnDraft(d, membership.member_id) &&
+          !d.scheduled_at &&
+          !d.send_error &&
+          !queued.some((p) => p.messageId === d.id)
+      )
+    if (mine && !savedDraftId(c.id) && !body.trim()) {
+      const wasUnsigned = !!signature && !mine.signature_html
+      setBody(mine.body)
+      setNoSignature(wasUnsigned)
+      setAdopting({ draft: mine, unsigned: wasUnsigned })
+    }
+  }
+  useEffect(() => {
+    if (adopting) adoptDraft(c.id, adopting.draft.id, adopting.draft.body, adopting.unsigned)
+  }, [adopting, c.id])
   const stopTyping = typing.stop
   useEffect(() => {
     if (note) stopTyping()
@@ -302,6 +358,24 @@ export const ReplyBox = forwardRef<
       setCcOpen(all && defaultCc.length > 0)
       focus("message")
     },
+    edit: (m) => {
+      if (!editing) stash.current = body
+      setEditing(m)
+      setMode("message")
+      setBody(m.body)
+      setFiles([])
+      requestAnimationFrame(() => textarea.current?.focus())
+    },
+    adopt: (m) => {
+      if (body.trim()) {
+        setBody((b) => `${b.trimEnd()}\n\n${m.body}`)
+        discard.mutate(m)
+      } else {
+        adoptDraft(c.id, m.id, m.body)
+        setBody(m.body)
+      }
+      requestAnimationFrame(() => textarea.current?.focus())
+    },
   }))
   const hasContent = body.trim() !== "" || files.length > 0 || articles.length > 0
   const notified = mentioned.filter((x) => body.includes(`@${x.label}`))
@@ -322,9 +396,39 @@ export const ReplyBox = forwardRef<
     setBccOpen(false)
     setNoSignature(false)
   }
-  const send = (close: boolean) => {
-    if (!hasContent || note || blocked) return
+  const leaveEdit = () => {
+    setBody(stash.current)
+    stash.current = ""
+    setEditing(null)
+  }
+  const commitEdit = (at?: Date) => {
+    if (!editing || !body.trim() || saveDraft.isPending || reschedule.isPending) return
+    setError(null)
+    saveDraft
+      .mutateAsync({ m: editing, body })
+      .then((saved) => (at ? reschedule.mutateAsync({ m: saved, at }) : saved))
+      .then((saved) => {
+        leaveEdit()
+        const when = saved.scheduled_at ? formatWhen(saved.scheduled_at, i18n.locale) : ""
+        toast(saved.scheduled_at ? t`Scheduled for ${when}` : t`Draft saved`)
+      })
+      .catch(setError)
+  }
+  const send = async (close: boolean, sendAt?: Date) => {
+    if (!hasContent || note || blocked || sending.current) return
+    if (editing) {
+      commitEdit()
+      return
+    }
+    sending.current = true
     typing.stop()
+    let draft: SendRequest["draft"]
+    if (mailing) {
+      let fresh = autosaveOn
+      if (fresh) await autosave.flush().catch(() => (fresh = false))
+      const id = takeSavedDraft(c.id)
+      if (id) draft = { id, fresh }
+    }
     const linkedDraft = suggestion && linked === suggestion.id ? suggestion : undefined
     const saved = { body, files, articles, macro }
     const recipients = emailTo ? { cc: ccEdit, bcc: bcc.length ? bcc : undefined } : {}
@@ -332,12 +436,14 @@ export const ReplyBox = forwardRef<
       .send({
         body,
         files,
-        close,
+        close: close && !sendAt,
         suggestion: linkedDraft,
         articles,
         macro,
-        signature: signed && noSignature ? false : undefined,
+        signature: unsigned ? false : undefined,
         fromAddress: sender?.address,
+        draft,
+        sendAt,
         ...recipients,
       })
       ?.catch(() => {
@@ -347,6 +453,7 @@ export const ReplyBox = forwardRef<
         setMacro((m) => m ?? saved.macro)
       })
     reset()
+    sending.current = false
   }
   const addNote = () => {
     if (!hasContent || noting) return
@@ -406,16 +513,21 @@ export const ReplyBox = forwardRef<
       applySuggestion()
       return
     }
+    if (e.key === "Enter" && e.altKey && mailing && !note && !blocked && !editing) {
+      e.preventDefault()
+      setLaterOpen(true)
+      return
+    }
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault()
       if (note) addNote()
-      else send(!e.shiftKey)
+      else void send(!e.shiftKey)
       return
     }
     if (e.key === "Enter" && actions.chat && !e.shiftKey && !e.altKey && !e.nativeEvent.isComposing) {
       e.preventDefault()
       if (note) addNote()
-      else send(false)
+      else void send(false)
       return
     }
     if (e.key === "Escape") {
@@ -498,6 +610,19 @@ export const ReplyBox = forwardRef<
           data-testid="composer-undeliverable"
         >
           <Trans>This address is undeliverable. Clear it in the contact details before you reply.</Trans>
+        </p>
+      )}
+      {editing && (
+        <p
+          className="mx-3 mt-2 flex items-center gap-1.5 rounded-lg bg-warning/8 px-3 py-1.5 text-small"
+          data-testid="composer-editing"
+        >
+          <ClockIcon className="size-3.5 shrink-0 text-warning" />
+          {editing.scheduled_at ? (
+            <Trans>Editing the message scheduled for {editingWhen}</Trans>
+          ) : (
+            <Trans>Editing a draft that could not be sent</Trans>
+          )}
         </p>
       )}
       {menuOpen && <CannedMenu items={matches} active={pick} onPick={insertSlash} />}
@@ -719,16 +844,79 @@ export const ReplyBox = forwardRef<
           </Popover>
         )}
         <span className="flex-1" />
+        {!editing && autosave.state !== "idle" && !note && body.trim() !== "" && (
+          <span
+            className={cn("me-1.5 text-caption", autosave.state === "failed" ? "text-destructive" : "text-faint")}
+            aria-live="polite"
+            data-testid="composer-saved"
+          >
+            {autosave.state === "saving" ? (
+              <Trans>Saving…</Trans>
+            ) : autosave.state === "saved" ? (
+              <Trans>Saved</Trans>
+            ) : (
+              <Trans>Not saved</Trans>
+            )}
+          </span>
+        )}
         <span className="me-1.5 text-caption text-faint @max-md/composer:hidden">{actions.chat ? "↵" : `${mod}↵`}</span>
-        {note ? (
+        {editing ? (
+          <>
+            <Button variant="ghost" onClick={leaveEdit} data-testid="composer-edit-cancel">
+              <Trans>Cancel</Trans>
+            </Button>
+            <SendLaterMenu
+              trigger={
+                <Button
+                  variant="outline"
+                  disabled={!body.trim() || saveDraft.isPending}
+                  data-testid="composer-edit-time"
+                />
+              }
+              title={<Trans>Change the time</Trans>}
+              confirm={<Trans>Save and reschedule</Trans>}
+              initial={editing.scheduled_at ? new Date(editing.scheduled_at) : undefined}
+              onPick={commitEdit}
+            >
+              <ClockIcon />
+              <Trans>Change time</Trans>
+            </SendLaterMenu>
+            <Button
+              onClick={() => commitEdit()}
+              disabled={!body.trim() || saveDraft.isPending}
+              data-testid="composer-edit-save"
+            >
+              <Trans>Save</Trans>
+            </Button>
+          </>
+        ) : note ? (
           <Button onClick={addNote} disabled={!hasContent || noting} data-testid="composer-note">
             <Trans>Add note</Trans>
           </Button>
         ) : (
           <>
+            {mailing && !blocked && (
+              <SendLaterMenu
+                open={laterOpen}
+                onOpenChange={setLaterOpen}
+                trigger={
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    disabled={!hasContent}
+                    aria-label={t`Send later`}
+                    title={t`Send later (${laterKey})`}
+                    data-testid="composer-send-later"
+                  />
+                }
+                onPick={(at) => void send(false, at)}
+              >
+                <ClockIcon />
+              </SendLaterMenu>
+            )}
             <Button
               variant={actions.chat ? "default" : "outline"}
-              onClick={() => send(false)}
+              onClick={() => void send(false)}
               disabled={!hasContent || blocked}
               data-testid="composer-send"
             >
@@ -736,7 +924,7 @@ export const ReplyBox = forwardRef<
             </Button>
             <Button
               variant={actions.chat ? "outline" : "default"}
-              onClick={() => send(true)}
+              onClick={() => void send(true)}
               disabled={!hasContent || blocked}
               data-testid="composer-send-close"
             >

@@ -19,6 +19,7 @@ msgstr "Kentän “{name}” arvo ei sovi"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "”Oliko tästä sivusta apua?”, palaute ja keskustelut dokumentaatiossasi"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "Tiekartan idea siirtyi toiseen vaiheeseen"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Pois päältä oleva sääntö ei koskaan suoriteta. Säännöt suoritetaan luettelon järjestyksessä."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "Ajastettua viestiä ei voitu lähettää"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "Kampanjan nimi"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "Kampanjan nimi"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "Peruutetaanko osoitteen {address} siirto?"
 msgid "Cancel moving from {provider}?"
 msgstr "Peruutetaanko siirto palvelusta {provider}?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "Peruuta ajastus"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "Peruuta joukkolähetys ennen sen poistamista."
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "Peruuta siirto"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "Peruuta ajastus ja muokkaa viestiä uudelleen"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "Muuta se ohjaus alla olevaan osoitteeseen, jotta osoitteen {address} pos
 msgid "Change the choice"
 msgstr "Muuta valintaa"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "Vaihda aikaa"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "Vaihda ajastetun viestin aikaa"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "Muuta työtilaa ja lue käyttöä"
@@ -3764,6 +3788,11 @@ msgstr "Muuta työtilaa ja lue käyttöä"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "Muuta tämä API-avaimet-sivulla."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "Vaihda aikaa"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "Kopioidaan {percent} %"
 msgid "Copying {provider}"
 msgstr "Kopioidaan {provider}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "Lähettäminen ei onnistunut"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "Kopiointi epäonnistui"
@@ -5211,6 +5244,7 @@ msgstr "Tiedot {builtText} asti"
 msgid "Database upgrade"
 msgstr "Tietokannan päivitys"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "Hakemiston (tenantin) tunnus, valinnainen"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "Lataa pois jätetyt rivit"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "Luonnos poistettu"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Luonnos tallennettu"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "Luonnoksen teksti"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Luonnos:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "Luonnokset"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Luonnokset"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "Jokainen kaikkine viesteineen ja muistiinpanoineen"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "Muokkaa valvontaa"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "Muokkaa ajastettua tai lähettämätöntä luonnosta"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "Muokkaa otsikkoa"
@@ -6281,6 +6330,14 @@ msgstr "Muokkaa tai esikatsele työpöydällä, puhelimessa tai tummassa tilassa
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "muokattu"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "Muokataan luonnosta, jota ei voitu lähettää"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "Muokataan viestiä, joka on ajastettu ajalle {editingWhen}"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "Luovutettu henkilölle {name}"
 msgid "Has an open conversation"
 msgstr "On avoin keskustelu"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "Sisältää liitteitä"
@@ -8511,10 +8569,6 @@ msgstr "Jätä ohjaus, reititys tai MX ennalleen: näin posti saapuu nyt Yuvaan.
 msgid "Keep the name only"
 msgstr "Säilytä vain nimi"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "Tallennetaanko viesti luonnoksena?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Pidä tämä sivu auki. Jos yhteys katkeaa, lataus jatkuu sen palattua; uudelleenlatauksen jälkeen valitse sama tiedosto, niin vain puuttuvat osat lähetetään."
@@ -8790,6 +8844,10 @@ msgstr "Viive"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "Myöhemmin"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "Myöhemmin tänään"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "Lataa kuvat"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "Moderoitu"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Maanantai"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "Maanantaiaamuna"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "Ei vielä makroja"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "Yhtään viestiä ei ole ajastettu. Valitse Lähetä myöhemmin, niin viesti lähtee valitsemanasi aikana."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "Mikään viesti ei vastaa hakuasi."
 
@@ -11424,6 +11491,11 @@ msgstr "ei suoritettu"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "Ei ajettu"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "Ei tallennettu"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "Valitse lähettäjä asetuksissa"
 msgid "Pick a team"
 msgstr "Valitse tiimi"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "Valitse aika, joka on vähintään minuutin päässä."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Valitse aika seuraavan 90 päivän ajalta aikavyöhykkeessäsi, {zone}."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "Valitse aika vuoden sisällä."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "Valitse aika…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "vastaanottajat"
 msgid "Recipients"
 msgstr "Vastaanottajat"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "Vastaanottajat ja aihe pysyvät tallennettuina."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "Pakollinen sulkiessa"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "Ajasta uudelleen"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Lähetä uudelleen"
@@ -14926,6 +15018,7 @@ msgstr "Lauantai"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "Tallenna vastaus ja se, mitä keskustelulle tapahtuu, kun lähetät sen.
 msgid "Save and close"
 msgstr "Tallenna ja sulje"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "Tallenna ja ajasta uudelleen"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "Tallenna muutokset"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Tallenna luonnos"
 
@@ -15005,6 +15101,8 @@ msgstr "Tallenna lista näkymäksi"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "Tallentaminen poistaa tallennetun salasanan."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "Tallennetaan …"
 
@@ -15076,6 +15176,7 @@ msgstr "Skannataan"
 msgid "Scanning the headers…"
 msgstr "Skannataan otsikoita …"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "Ajasta"
@@ -15083,6 +15184,12 @@ msgstr "Ajasta"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "Ajasta ja lähetä joukkolähetyksiä, kun työtila sallii avainten ja avustajien lähettää ne"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "Ajastus peruttu"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "Ajasta merkintä"
 msgid "Scheduled"
 msgstr "Ajastettu"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "Ajastetut"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Ajastaja"
@@ -15104,6 +15216,21 @@ msgstr "Ajastaja"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Ajastettu: {due}"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "Ajastettu ajalle {when}"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "Ajastettu viesti"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "Ajastetaan…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "Lähetä testi-ilmoitus"
 msgid "Send a test notification to {name}"
 msgstr "Lähetä testi-ilmoitus henkilölle {name}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "Lähetä uudelleen"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "Lähetä automaattivastaus"
@@ -15433,6 +15564,22 @@ msgstr "Lähettäjä"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Lähetä kutsu"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "Lähetä myöhemmin"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "Lähetä myöhemmin ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "Lähetä myöhemmin, sähköpostivastauksessa"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "Lähetä vahvistus"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "Lähetä vahvistus uudelleen"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "Lähetä uudelleen luonnos, jota ei voitu lähettää"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "Tämä lista on yksityinen, joten lomakkeet eivät tarjoa sitä. Tee sii
 msgid "This mail is not available"
 msgstr "Tämä viesti ei ole saatavilla"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "Viesti tarvitsee vastaanottajan, aiheen ja jonkin verran tekstiä, jotta se voidaan tallentaa luonnoksena."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "Tämä postilaatikko yhdistyy vain ”Kirjaudu Microsoftilla” -tavalla, jota tämä Yuva-palvelin ei tarjoa. Pyydä ylläpitäjää ottamaan se käyttöön."
@@ -18936,6 +19091,7 @@ msgstr "Rastita osoitteet, joista tiimisi kirjoittaa, jotta heidän postiaan ei 
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "Tiketit tulevat mukaan vastauksineen, muistiinpanoineen, tunnisteineen, tiloineen ja vastuuhenkilöineen. Anna tukiosoitteesi yllä."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "Jotta avustajat voivat lähettää itse, ota käyttöön <0>Botit saavat
 msgid "To: {emailTo}"
 msgstr "Vastaanottaja: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "Vastaanottaja: {who}"
@@ -19023,6 +19180,10 @@ msgstr "huomenna klo {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "Huomenna klo {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "Huomenna aamulla"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "Tuntematon laite"
 msgid "unknown reason"
 msgstr "tuntematon syy"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "Tuntematon lähettäjä"
@@ -20309,6 +20471,10 @@ msgstr "Milloin"
 msgid "When {first} writes again"
 msgstr "Kun {first} kirjoittaa uudelleen"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "Kun ajastettu viesti jää luonnokseksi, koska se hylättiin."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "Kun uusi viesti saapuu, se on listassa."
@@ -20810,6 +20976,11 @@ msgstr "Tallennettaessa saat osoitteen, jota hälytysjärjestelmäsi kutsuu, Ale
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "Olet luonut niin monta työtilaa kuin tämä palvelin sallii. Poista yksi, jota et enää käytä, tai pyydä kutsua toiseen."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "Sinulla ei ole luonnoksia. Kirjoittamasi viestit säilyvät täällä."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

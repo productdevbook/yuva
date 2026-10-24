@@ -12,7 +12,13 @@ import type {
 
 export type ConversationFilters = Omit<ConversationQuery, "cursor" | "limit"> & { fields?: Record<string, string> }
 
-export type DraftFilters = { inbox_id?: string; author?: DraftAuthorKind }
+export type DraftFilters = {
+  inbox_id?: string
+  author?: DraftAuthorKind
+  conversation_id?: string
+  mine?: boolean
+  scheduled?: boolean
+}
 
 export type DocsDays = 7 | 30 | 90
 

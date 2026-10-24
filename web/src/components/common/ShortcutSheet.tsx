@@ -78,6 +78,10 @@ export const MAIL_KEYS = {
   quoted: "q",
   expand: "o",
   select: "x",
+  editScheduled: "d",
+  changeTime: "l",
+  cancelSchedule: "L",
+  sendAgain: "D",
 } as const
 
 export const DISCUSSION_KEYS = {
@@ -281,6 +285,7 @@ export function ShortcutSheet({
         [[mod, "↵"], t`Send and close`],
         [["⇧", mod, "↵"], t`Send only`],
         [["↵"], t`Send or add the note, in a chat or app conversation (⇧↵ for a new line)`],
+        [[alt, "↵"], t`Send later, in an e-mail reply`],
         [["Tab"], t`Use the suggested reply`],
         [k(SHORTCUTS.discardSuggestion), t`Discard the suggested reply`],
         [k(SHORTCUTS.attach), t`Attach files`],
@@ -357,6 +362,11 @@ export function ShortcutSheet({
         [k(MAIL_KEYS.expand), t`Expand or collapse every message`],
         [[k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Open the next or previous mail`],
         [k(MAIL_KEYS.select), t`Select the mail under the cursor`],
+        [k(MAIL_KEYS.editScheduled), t`Edit the scheduled or unsent draft`],
+        [k(MAIL_KEYS.changeTime), t`Change the time of the scheduled mail`],
+        [k(MAIL_KEYS.cancelSchedule), t`Cancel the schedule and edit the mail again`],
+        [k(MAIL_KEYS.sendAgain), t`Send the draft that could not be sent again`],
+        [[alt, "↵"], t`Send later`],
         [["Esc"], t`Clear the selection`],
       ],
     },

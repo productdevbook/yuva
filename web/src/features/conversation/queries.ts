@@ -231,7 +231,16 @@ export function useDraftActions() {
     mutationFn: (m: Message) => unwrap(api.DELETE("/v1/messages/{messageId}", path(m))).then(() => m),
     onSuccess: (data) => applyEvent(qc, live, { type: "draft.deleted", data }),
   })
-  return { send, save, discard }
+  const reschedule = useMutation({
+    mutationFn: ({ m, at }: { m: Message; at: Date }) =>
+      unwrap(api.PATCH("/v1/messages/{messageId}", { ...path(m), body: { send_at: at.toISOString() } })),
+    onSuccess: (data) => applyEvent(qc, live, { type: "draft.updated", data }),
+  })
+  const unschedule = useMutation({
+    mutationFn: (m: Message) => unwrap(api.DELETE("/v1/messages/{messageId}/schedule", path(m))),
+    onSuccess: (data) => applyEvent(qc, live, { type: "draft.updated", data }),
+  })
+  return { send, save, discard, reschedule, unschedule }
 }
 
 export function useForward(conversationId: string) {

@@ -281,7 +281,8 @@ export interface paths {
          *     follows go, and in each workspace the contact linked to them is deleted when it has no
          *     conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
          *     person is the only owner of a workspace: make someone else an owner or delete that
-         *     workspace first. Needs a member session; the body repeats the person's e-mail address. A
+         *     workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+         *     personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
          *     session made through single sign-on is refused with `403 sso_session_scope`.
          */
         delete: operations["deleteMe"];
@@ -1281,7 +1282,8 @@ export interface paths {
         /**
          * Remove a member
          * @description Owners and admins only, with a member session; only an owner removes an owner. The last
-         *     owner cannot be removed.
+         *     owner cannot be removed. A member who owns personal mailboxes answers `409
+         *     personal_mailbox` with their ids in `inbox_ids` until each is deleted.
          */
         delete: operations["removeMember"];
         options?: never;
@@ -1401,7 +1403,8 @@ export interface paths {
          * @description Owners and admins only, with a member session. The secret is returned once and stored
          *     only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
          *     `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-         *     `audit:read` (`403 forbidden`).
+         *     `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+         *     personal_mailbox`: keys never reach one.
          */
         post: operations["createApiKey"];
         delete?: never;
@@ -1446,6 +1449,11 @@ export interface paths {
          * @description Owners, admins and API keys see every inbox; agents see the inboxes they were given access
          *     to, and API keys limited to inboxes those inboxes.
          *
+         *     A personal mailbox (`owner_member_id` set) is listed to its owner as any inbox they read,
+         *     and to owners, admins and API keys not limited to inboxes as metadata only: its id, name,
+         *     purpose, owner and `mailbox` (addresses, conversation count, storage), with an empty
+         *     `signature` and no `import` or `ses_tenant`. Nobody but its owner reads its content.
+         *
          *     Scope: `inboxes:read`.
          */
         get: operations["listInboxes"];
@@ -1455,6 +1463,13 @@ export interface paths {
          * @description Owners, admins and API keys. A new identity secret is generated; it is
          *     returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
          *     given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
+         *
+         *     With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+         *     `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+         *     a member session or their own OAuth token; owners and admins create one for any member.
+         *     API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+         *     owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+         *     the channel, DKIM, deliverability and forwarding-address endpoints).
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1474,7 +1489,9 @@ export interface paths {
         };
         /**
          * Get an inbox
-         * @description An inbox the caller cannot see answers `404`.
+         * @description An inbox the caller cannot see answers `404`. A personal mailbox answers its owner in
+         *     full and owners, admins and API keys not limited to inboxes with its metadata only (see
+         *     `GET /v1/inboxes`).
          *
          *     Scope: `inboxes:read`.
          */
@@ -1486,6 +1503,11 @@ export interface paths {
          * @description Owners, admins and API keys. Deletes its channels, conversations,
          *     messages and attachments, and its Amazon SES tenant, when the server manages one.
          *
+         *     A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
+         *     who delete it without reading it; API keys and other members get `404`. Audited as
+         *     `inbox.deleted`. Its migrations are deleted with it; while one is scanning, copying,
+         *     syncing or removing history the delete answers `409 migration_state`.
+         *
          *     Scope: `inboxes:manage`.
          */
         delete: operations["deleteInbox"];
@@ -1495,6 +1517,10 @@ export interface paths {
          * Update an inbox
          * @description Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
          *     inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
+         *
+         *     A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+         *     for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+         *     and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1514,6 +1540,7 @@ export interface paths {
          * Rotate the identity secret
          * @description Owners, admins and API keys. Replaces the inbox's identity secret, which
          *     host backends use to sign identity tokens; tokens signed with the old secret stop working.
+         *     A personal mailbox: its owner only (`404` for everyone else).
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1535,6 +1562,7 @@ export interface paths {
          * List members with access
          * @description Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
          *     Owners and admins see every inbox without a grant and are not listed unless granted.
+         *     A personal mailbox lists its owner (`via: direct`); it answers `404` to anyone else.
          *
          *     Scope: `inboxes:read`.
          */
@@ -1558,7 +1586,8 @@ export interface paths {
         /**
          * Give a member access
          * @description Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
-         *     the member's access flips (not when a team already gave it).
+         *     the member's access flips (not when a team already gave it). A personal mailbox answers
+         *     `409 personal_mailbox`: only its owner reads it.
          *
          *     Scope: `inboxes:manage`.
          */
@@ -1688,7 +1717,8 @@ export interface paths {
          * Give a team access to an inbox
          * @description Owners, admins and API keys not limited to inboxes. Every member of the team gains the
          *     inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
-         *     sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+         *     sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`). A
+         *     personal mailbox answers `409 personal_mailbox`.
          *
          *     Scope: `inboxes:manage`.
          */
@@ -2655,7 +2685,13 @@ export interface paths {
          *     nothing is delivered until `POST /v1/messages/{id}/send`, which sends exactly this mail:
          *     every `to` in `To`, the `cc`, the `bcc` as envelope recipients only, the subject without
          *     `Re:` and no `In-Reply-To`. `cc` or `bcc` given there replace the kept lists. Deleting a
-         *     contact removes its addresses from the kept lists too.
+         *     contact removes its addresses from the kept lists too. A member's draft is private to
+         *     them, and so is the conversation it made: it is not listed, counted, found or readable for
+         *     anyone else (`404`), and no `conversation.created` is emitted, until the draft is sent;
+         *     sending emits `conversation.created` before `message.created`.
+         *
+         *     `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
+         *     `POST /v1/messages/{id}/send` with `send_at` describes.
          *
          *     A repeated `client_id` in the same inbox returns the conversation and message stored with
          *     it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -3112,7 +3148,12 @@ export interface paths {
          *     `draft: true` stores an outgoing message as a draft: nothing is delivered, and
          *     `draft.created` is emitted instead of `message.created`. Edit it with
          *     `PATCH /v1/messages/{id}`, discard it with `DELETE /v1/messages/{id}` and deliver it with
-         *     `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message.
+         *     `POST /v1/messages/{id}/send`. A draft cannot be a note or an `in` message. A member's
+         *     draft is seen only by its author; one written with an API key by every member who sees the
+         *     conversation.
+         *
+         *     `send_at` (member sessions only) stores the message as a draft that is sent at that time,
+         *     with its `cc`, `bcc` and `from_address` kept for then; see `POST /v1/messages/{id}/send`.
          *
          *     Send `multipart/form-data` to attach files: the fields of `MessageCreate` as form fields
          *     and up to 10 `files` parts. Each file must be within the conversation's channel's limits
@@ -3543,6 +3584,14 @@ export interface paths {
          *     the panel. The page carries `total`, the number of drafts matching the filters over all
          *     pages, for a badge.
          *
+         *     A draft written by a member (in the panel or through a connected app) is private: only
+         *     its author sees it, here, in the message list, in `draft.*` events and in MCP; anyone else
+         *     gets `404`. Drafts written with an API key (author `bot`) are seen by every member who
+         *     sees the conversation.
+         *
+         *     `conversation_id` and `mine=true` find the caller's own draft of a reply to restore it on
+         *     any device; `scheduled` keeps only scheduled (`true`) or unscheduled (`false`) drafts.
+         *
          *     Scope: `conversations:read`.
          *
          *     Realtime: `draft.created`, `draft.updated` and `draft.deleted` carry the draft; a sent
@@ -3595,8 +3644,9 @@ export interface paths {
         post?: never;
         /**
          * Discard a draft
-         * @description Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
-         *     answers `409 not_a_draft`.
+         * @description Deletes a draft with its attachments; emits `draft.deleted`. A scheduled draft is not sent.
+         *     Anything that is not a draft answers `409 not_a_draft`; another member's draft answers
+         *     `404`.
          *
          *     Scope: `messages:write`.
          */
@@ -3605,8 +3655,9 @@ export interface paths {
         head?: never;
         /**
          * Edit a draft
-         * @description Changes a draft's text; emits `draft.updated`. Anything that is not a draft answers
-         *     `409 not_a_draft`.
+         * @description Changes a draft's text, or with `send_at` (member sessions only) schedules it or moves its
+         *     time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
+         *     draft answers `409 not_a_draft`; another member's draft answers `404`.
          *
          *     Scope: `messages:write`.
          */
@@ -3640,11 +3691,50 @@ export interface paths {
          *     `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
          *     `createMessage`.
          *
-         *     Members always may. An API key needs `drafts:send` and `messages:write`, and the
+         *     Members always may, their own drafts and those written with an API key (another member's
+         *     draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
          *     workspace's `bots_may_send` (`403 bot_sending_disabled`).
+         *
+         *     `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
+         *     sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+         *     `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
+         *     `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
+         *     recipients and the checks above are applied at that moment. It emits `draft.updated` now
+         *     and `message.created` when it goes. Until then it can be edited
+         *     (`PATCH /v1/messages/{id}`, also to move `send_at`), turned back into a plain draft
+         *     (`DELETE /v1/messages/{id}/schedule`) or discarded. When it cannot go (the member left the
+         *     workspace or lost the inbox, the address or recipients were refused, or a temporary error
+         *     persisted) it stays a draft with `send_error`, loses `scheduled_at`, and the member gets
+         *     the `scheduled_send_failed` notification. A draft written with an API key cannot be
+         *     scheduled (`400 validation_failed`).
          */
         post: operations["sendMessage"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messages/{messageId}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Cancel a scheduled send
+         * @description Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
+         *     `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+         *     scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
+         *     another member's draft answers `404`.
+         *
+         *     Member sessions only.
+         */
+        delete: operations["unscheduleMessage"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5810,7 +5900,8 @@ export interface paths {
         };
         /**
          * List migrations
-         * @description Newest first. `state` may be repeated.
+         * @description Newest first. `state` may be repeated. A migration into a personal mailbox is listed only
+         *     to those who read that mailbox.
          *
          *     Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
          */
@@ -5838,7 +5929,10 @@ export interface paths {
          *
          *     `inbox_id` and `channel_id` name where the history goes: an inbox and one of its e-mail
          *     channels whose address is the mailbox address (`400 validation_failed` otherwise). Both can
-         *     be set later; a channel names its inbox.
+         *     be set later; a channel names its inbox. A personal mailbox (`owner_member_id`) is a target
+         *     for its owner only (`404` for everyone else); such a migration writes to that mailbox alone
+         *     (`options.inboxes` naming another personal mailbox, or another inbox from it, answers `409
+         *     personal_mailbox`), and it and its events reach only those who read the mailbox.
          *
          *     A source this server does not offer answers `422 hosted_limit` (the operator's
          *     `YUVA_MIGRATION_SOURCES`); `microsoft` answers `409 provider_not_configured` when the
@@ -5918,7 +6012,8 @@ export interface paths {
         /**
          * A migration
          * @description State, options, counts, the actions allowed now and, while credentials are stored, their
-         *     kind and server (never the password).
+         *     kind and server (never the password). A migration into a personal mailbox answers `404` to
+         *     everyone who does not read that mailbox, here and on every action below.
          *
          *     Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
          */
@@ -5943,6 +6038,8 @@ export interface paths {
          *     rule, originals, team addresses, people and labels. Only in `draft`, `connected` and
          *     `ready` (`409 migration_state`); `source_address` and `preset` only in `draft`. Any change
          *     sends a `ready` migration back to `connected`: scan again for a dry run of the new choice.
+         *     A migration into a personal mailbox keeps that target (`409 personal_mailbox`); a personal
+         *     mailbox the caller does not read answers `404`.
          *
          *     Owners, admins and API keys without an inbox limit. Scope: `migrations:manage`.
          */
@@ -6700,7 +6797,10 @@ export interface paths {
          * Add a webhook endpoint
          * @description Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
          *     whole workspace; with it, only those of that inbox (contact events for contacts with an
-         *     external id or a conversation there). The signing secret is returned once.
+         *     external id or a conversation there). The signing secret is returned once. A personal
+         *     mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+         *     events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+         *     cannot read it).
          *
          *     Scope: `webhooks:manage`.
          *
@@ -11125,7 +11225,8 @@ export interface paths {
          * @description Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
          *     (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
          *     nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-         *     `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+         *     `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+         *     mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
          */
         put: operations["setInboxSlack"];
         post?: never;
@@ -11874,7 +11975,8 @@ export interface webhooks {
         put?: never;
         /**
          * A draft was written
-         * @description A bot or a member stored an outgoing message as a draft; nothing was delivered.
+         * @description A bot stored an outgoing message as a draft; nothing was delivered. Members' drafts are
+         *     private and never sent to webhooks.
          */
         post: operations["webhookDraftCreated"];
         delete?: never;
@@ -12684,7 +12786,7 @@ export interface components {
          *       `address`, by `operator`, when the server's operator vouched for the address with
          *       `yuva channel prove`.
          *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
-         *       `from`, `to`.
+         *       `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
          *     - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
          *       `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
          *       `inbox_name`.
@@ -12753,7 +12855,7 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.deleted" | "inbox.purpose_changed" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.created" | "inbox.deleted" | "inbox.purpose_changed" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed";
         /** @enum {string} */
         AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
         AuditTarget: {
@@ -13384,6 +13486,7 @@ export interface components {
             sla_warning: components["schemas"]["NotificationChannels"];
             sla_breached: components["schemas"]["NotificationChannels"];
             forward_answer: components["schemas"]["NotificationChannels"];
+            scheduled_send_failed: components["schemas"]["NotificationChannels"];
         };
         /** @description Some events and their channels. */
         NotificationEventsUpdate: {
@@ -13396,6 +13499,7 @@ export interface components {
             sla_warning?: components["schemas"]["NotificationChannels"];
             sla_breached?: components["schemas"]["NotificationChannels"];
             forward_answer?: components["schemas"]["NotificationChannels"];
+            scheduled_send_failed?: components["schemas"]["NotificationChannels"];
         };
         NotificationSettings: {
             events: components["schemas"]["NotificationEvents"];
@@ -13430,7 +13534,7 @@ export interface components {
              * @description What caused it (see the `notifications` tag), or `test`.
              * @enum {string}
              */
-            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "sla_warning" | "sla_breached" | "forward_answer" | "test";
+            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "sla_warning" | "sla_breached" | "forward_answer" | "scheduled_send_failed" | "test";
             /**
              * @description The inbox name and the contact's name.
              * @example Support · Ayşe Yılmaz
@@ -13564,6 +13668,15 @@ export interface components {
             name: string;
             slug: components["schemas"]["Slug"];
             purpose: components["schemas"]["InboxPurpose"];
+            /**
+             * Format: uuid
+             * @description The member whose personal mailbox this is; `null` for a shared inbox. Only that member
+             *     reads its conversations, messages, attachments, drafts and events: owners, admins,
+             *     API keys, webhooks, automation rules and other members' OAuth tokens get `404` or
+             *     nothing, as for an inbox they cannot see. Set on creation only.
+             */
+            owner_member_id: string | null;
+            mailbox?: components["schemas"]["InboxMailbox"];
             branding: components["schemas"]["InboxBranding"];
             default_locale: components["schemas"]["LanguageTag"];
             /**
@@ -13600,6 +13713,24 @@ export interface components {
             updated_at: string;
         };
         /**
+         * @description A personal mailbox's size and addresses, the part of it owners and admins see. Present on
+         *     personal mailboxes only.
+         */
+        InboxMailbox: {
+            /** @description The addresses of its e-mail channels. */
+            addresses: string[];
+            /**
+             * Format: int64
+             * @description Its conversations, trashed ones included.
+             */
+            conversations: number;
+            /**
+             * Format: int64
+             * @description The size of its attachments and stored raw e-mails.
+             */
+            storage_bytes: number;
+        };
+        /**
          * @description A migration is filling the inbox with the history of an old mailbox: while it scans,
          *     copies or syncs, and while a copy that has started is paused or needs attention. Absent
          *     otherwise. Everyone who can see the inbox sees it; the migration itself, its counts and
@@ -13629,8 +13760,13 @@ export interface components {
         InboxCreate: {
             name: string;
             slug: components["schemas"]["Slug"];
-            /** @description Defaults to `support`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`. */
+            /** @description Defaults to `support`, or `mail` with `owner_member_id`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`. */
             purpose?: components["schemas"]["InboxPurpose"];
+            /**
+             * Format: uuid
+             * @description Makes the inbox this member's personal mailbox (see `POST /v1/inboxes`).
+             */
+            owner_member_id?: string;
             branding?: components["schemas"]["InboxBranding"];
             default_locale?: components["schemas"]["LanguageTag"];
             /** @description Defaults to `UTC`. */
@@ -15804,9 +15940,16 @@ export interface components {
             /**
              * @description An outgoing message that is not delivered until it is sent
              *     (`POST /v1/messages/{id}/send`). Drafts are shown only on `/v1`: never to contacts,
-             *     never e-mailed, notified, counted as unread, previewed or found by search.
+             *     never e-mailed, notified, counted as unread, previewed or found by search. A member's
+             *     draft is shown only to its author.
              */
             draft: boolean;
+            /**
+             * Format: date-time
+             * @description When a scheduled draft is sent; absent for drafts that are not scheduled and for sent messages.
+             */
+            scheduled_at?: string;
+            send_error?: components["schemas"]["MessageSendError"];
             /** @description Who sent a draft (`member` or `bot`); absent for messages that were never drafts. */
             sent_by?: components["schemas"]["MessageAuthor"];
             /** @description Members a note mentions (notes only; absent when it mentions nobody). */
@@ -15848,6 +15991,18 @@ export interface components {
              * @description For a sent draft, when it was sent.
              */
             created_at: string;
+        };
+        /**
+         * @description Why a scheduled draft could not be sent; shown to its author. Absent otherwise, and cleared
+         *     when the draft is scheduled again or sent.
+         */
+        MessageSendError: {
+            /**
+             * @description The problem code the send answered (e.g. `from_not_allowed`, `no_recipient`, `member_inactive`).
+             * @example from_not_allowed
+             */
+            code: string;
+            detail: string;
         };
         /** @description The member or API key that removed a message's content; empty when it is gone. */
         MessageRedactedBy: {
@@ -15991,6 +16146,12 @@ export interface components {
              *     `createMessage`.
              */
             from_address?: components["schemas"]["Email"];
+            /**
+             * Format: date-time
+             * @description Member sessions only: store as a draft and send it at this time, at least 1 minute and
+             *     at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+             */
+            send_at?: string;
         };
         ConversationForward: {
             to: components["schemas"]["Email"][];
@@ -16034,6 +16195,13 @@ export interface components {
              *     `createMessage`.
              */
             from_address?: components["schemas"]["Email"];
+            /**
+             * Format: date-time
+             * @description Member sessions only: schedule the draft instead of sending it now, at least 1 minute
+             *     and at most 366 days ahead (`400 invalid_send_at`); `cc`, `bcc` and `from_address` are
+             *     kept for then.
+             */
+            send_at?: string;
         };
         ComposeMail: {
             /** Format: uuid */
@@ -16067,6 +16235,12 @@ export interface components {
              *     `createMessage`.
              */
             from_address?: components["schemas"]["Email"];
+            /**
+             * Format: date-time
+             * @description Member sessions only: store as a draft and send it at this time, at least 1 minute and
+             *     at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+             */
+            send_at?: string;
         };
         ComposeMailMultipart: {
             /** Format: uuid */
@@ -16086,6 +16260,8 @@ export interface components {
             draft?: boolean;
             client_id?: string;
             from_address?: components["schemas"]["Email"];
+            /** Format: date-time */
+            send_at?: string;
             files?: string[];
         };
         ComposedMail: {
@@ -16115,6 +16291,8 @@ export interface components {
             /** @description Repeat the field once per address. */
             bcc?: components["schemas"]["Email"][];
             from_address?: components["schemas"]["Email"];
+            /** Format: date-time */
+            send_at?: string;
             files?: string[];
         };
         /** @description Only the fields sent change. */
@@ -16122,6 +16300,12 @@ export interface components {
             body?: string;
             /** @description Sanitized before it is stored; `null` removes it. */
             html?: string | null;
+            /**
+             * Format: date-time
+             * @description Member sessions only: schedule the draft or move its time, at least 1 minute and at
+             *     most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
+             */
+            send_at?: string;
         };
         MessagePage: {
             items: components["schemas"]["Message"][];
@@ -17731,7 +17915,7 @@ export interface components {
         };
         /**
          * @description A draft was written, edited or discarded (`data` is the draft as it was). Sending a draft
-         *     emits `message.created`.
+         *     emits `message.created`. A member's draft's events reach only that member's connections.
          */
         DraftEvent: {
             /** Format: int64 */
@@ -26530,6 +26714,8 @@ export interface components {
              *     one it acts in. Sign in with a code or a passkey to work in another workspace.
              */
             sso_workspace_id?: string;
+            /** @description `personal_mailbox` on removing a member: the member's personal mailboxes. */
+            inbox_ids?: string[];
             detail?: string;
         };
         SlackConnection: {
@@ -28800,6 +28986,7 @@ export interface operations {
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     revokeApiKey: {
@@ -29090,6 +29277,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     revokeInboxAccess: {
@@ -29344,6 +29532,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     revokeTeamInboxAccess: {
@@ -30787,6 +30976,12 @@ export interface operations {
                  */
                 sent?: "mine";
                 /**
+                 * @description `mine` lists only the conversations holding a message the calling member scheduled, the
+                 *     Scheduled folder, ordered by the earliest `scheduled_at` among them (not with
+                 *     `sort=sla_due`). Member sessions only (`400 validation_failed` for API keys).
+                 */
+                scheduled?: "mine";
+                /**
                  * @description `last_activity` (the default): most recent activity first. `sla_due`: conversations
                  *     with a running SLA target first, the earliest `sla.due_at` first (so breached ones
                  *     lead), then the others by most recent activity. A cursor continues only the order it
@@ -31904,6 +32099,12 @@ export interface operations {
                 /** @description Only drafts in this inbox. An inbox the caller cannot see answers `404`. */
                 inbox_id?: string;
                 author?: components["schemas"]["DraftAuthorKind"];
+                /** @description Only drafts in this conversation. */
+                conversation_id?: string;
+                /** @description `true`: only drafts the calling member wrote (none for API keys). */
+                mine?: boolean;
+                /** @description `true`: only drafts scheduled to be sent (`scheduled_at` set); `false`: only those that are not. */
+                scheduled?: boolean;
                 /** @description The `next_cursor` of the previous page. */
                 cursor?: components["parameters"]["Cursor"];
                 /** @description Page size, 1 to 100; 25 by default. */
@@ -32063,6 +32264,36 @@ export interface operations {
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
             429: components["responses"]["Problem"];
+        };
+    };
+    unscheduleMessage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                messageId: components["parameters"]["MessageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The draft. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     redactMessage: {
@@ -36671,6 +36902,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     getWebhook: {

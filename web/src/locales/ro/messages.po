@@ -19,6 +19,7 @@ msgstr "Valoarea din „{name}” nu se potrivește"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„Ți-a fost utilă această pagină?”, feedback și discuții în documentația ta"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "O idee din foaia de parcurs a trecut la altă etapă"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "O regulă dezactivată nu rulează niciodată. Regulile rulează în ordinea din listă."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "Un e-mail programat nu a putut fi trimis"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "Nume campanie"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "Nume campanie"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "Anulezi mutarea {address}?"
 msgid "Cancel moving from {provider}?"
 msgstr "Anulezi mutarea din {provider}?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "Anulează programarea"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "Anulează mesajul în masă înainte de a-l șterge."
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "Anulează migrarea"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "Anulează programarea și editează din nou e-mailul"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "Schimbă acea redirecționare la adresa de mai jos, ca e-mailul pentru {
 msgid "Change the choice"
 msgstr "Schimbă alegerea"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "Schimbă ora"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "Schimbă ora e-mailului programat"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "Modifică spațiul de lucru și citește utilizarea"
@@ -3764,6 +3788,11 @@ msgstr "Modifică spațiul de lucru și citește utilizarea"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "Schimbă asta pe pagina cheilor API."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "Schimbă ora"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "Se copiază {percent}%"
 msgid "Copying {provider}"
 msgstr "Se copiază {provider}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "Nu a putut fi trimis"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "Nu s-a putut copia"
@@ -5211,6 +5244,7 @@ msgstr "Date până la {builtText}"
 msgid "Database upgrade"
 msgstr "Actualizarea bazei de date"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "ID de director (tenant), opțional"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "Descarcă rândurile omise"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "Ciornă ștearsă"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Ciornă salvată"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "Textul ciornei"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Ciornă:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "Ciorne"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Ciorne"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "Fiecare cu toate mesajele și notele sale"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "Editează monitorul"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "Editează ciorna programată sau netrimisă"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "Editează titlul"
@@ -6281,6 +6330,14 @@ msgstr "Editează sau previzualizează pe desktop, pe telefon sau în mod întun
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "editat"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "Se editează o ciornă care nu a putut fi trimisă"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "Se editează mesajul programat pentru {editingWhen}"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "Predat lui {name}"
 msgid "Has an open conversation"
 msgstr "Are o conversație deschisă"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "Are atașamente"
@@ -8511,10 +8569,6 @@ msgstr "Lasă redirecționarea, rutarea sau MX-ul așa cum sunt: așa ajunge acu
 msgid "Keep the name only"
 msgstr "Păstrează doar numele"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "Păstrezi acest mesaj ca ciornă?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Ține această pagină deschisă. Dacă conexiunea cade, încărcarea continuă când revine; după o reîncărcare, alege același fișier și sunt trimise doar părțile lipsă."
@@ -8790,6 +8844,10 @@ msgstr "Latență"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "Mai târziu"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "Mai târziu azi"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "Încarcă imaginile"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "Moderat"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Luni"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "Luni dimineața"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "Încă nu există macrouri"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "Niciun e-mail nu este programat. Alege Trimite mai târziu pentru a trimite un e-mail la ora aleasă."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "Niciun e-mail nu se potrivește căutării."
 
@@ -11424,6 +11491,11 @@ msgstr "nerulat"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "Nerulat"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "Nesalvat"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "Alege un expeditor în setări"
 msgid "Pick a team"
 msgstr "Alege o echipă"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "Alege o oră la cel puțin un minut de acum."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Alege o oră în următoarele 90 de zile, în fusul tău orar, {zone}."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "Alege o oră în decurs de un an."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "Alege o oră…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "destinatari"
 msgid "Recipients"
 msgstr "Destinatari"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "Destinatarii și subiectul rămân cum au fost salvați."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "Obligatoriu pentru închidere"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "Reprogramează"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Retrimite"
@@ -14926,6 +15018,7 @@ msgstr "Sâmbătă"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "Salvează un răspuns împreună cu ce trebuie să se întâmple cu conv
 msgid "Save and close"
 msgstr "Salvează și închide"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "Salvează și reprogramează"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "Salvează modificările"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Salvează ciorna"
 
@@ -15005,6 +15101,8 @@ msgstr "Salvează lista ca vizualizare"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "Salvarea elimină parola stocată."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "Se salvează…"
 
@@ -15076,6 +15176,7 @@ msgstr "Se scanează"
 msgid "Scanning the headers…"
 msgstr "Se scanează antetele…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "Programează"
@@ -15083,6 +15184,12 @@ msgstr "Programează"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "Programează și trimite mesaje în masă, când spațiul de lucru lasă cheile și asistenții să le trimită"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "Programare anulată"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "Programează intrarea"
 msgid "Scheduled"
 msgstr "Programat"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "Programate"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Programat de"
@@ -15104,6 +15216,21 @@ msgstr "Programat de"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Programat pentru {due}"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "Programat pentru {when}"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "Mesaj programat"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "Se programează…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "Trimite o notificare de test"
 msgid "Send a test notification to {name}"
 msgstr "Trimite o notificare de test lui {name}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "Trimite din nou"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "Trimite un răspuns automat"
@@ -15433,6 +15564,22 @@ msgstr "Trimite de la"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Trimite invitația"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "Trimite mai târziu"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "Trimite mai târziu ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "Trimite mai târziu, într-un răspuns prin e-mail"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "Trimite confirmarea"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "Trimite din nou confirmarea"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "Trimite din nou ciorna care nu a putut fi trimisă"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "Această listă este privată, deci formularele nu o oferă. Fă-o publi
 msgid "This mail is not available"
 msgstr "Acest e-mail nu este disponibil"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "Acest e-mail are nevoie de un destinatar, un subiect și puțin text ca să fie păstrat ca ciornă."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "Această căsuță se conectează doar cu „Conectează-te cu Microsoft”, pe care acest server Yuva nu îl oferă. Roagă operatorul lui să îl configureze."
@@ -18936,6 +19091,7 @@ msgstr "Bifează adresele de la care scrie echipa ta, ca e-mailul lor să nu fie
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "Tichetele vin cu răspunsurile, notele, tagurile, starea și persoana atribuită. Introdu mai sus adresa ta de suport."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "Ca asistenții să poată trimite singuri, activează <0>Boții pot trim
 msgid "To: {emailTo}"
 msgstr "Către: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "Către: {who}"
@@ -19023,6 +19180,10 @@ msgstr "mâine la {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "Mâine la {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "Mâine dimineață"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "Dispozitiv necunoscut"
 msgid "unknown reason"
 msgstr "motiv necunoscut"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "Expeditor necunoscut"
@@ -20309,6 +20471,10 @@ msgstr "Când"
 msgid "When {first} writes again"
 msgstr "Când {first} scrie din nou"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "Când un mesaj programat rămâne ciornă pentru că a fost refuzat."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "Când sosește un mesaj nou, va fi în listă."
@@ -20810,6 +20976,11 @@ msgstr "La salvare primești adresa pe care o apelează sistemul tău de alertar
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "Ai creat atâtea spații de lucru câte permite acest server. Șterge unul pe care nu îl mai folosești sau cere să fii invitat în altul."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "Nu ai ciorne. E-mailurile pe care începi să le scrii sunt păstrate aici."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

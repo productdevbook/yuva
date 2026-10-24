@@ -13,6 +13,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 
 import { ErrorLine, Kbd, toast } from "@/components/common"
 import { MAIL_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
+import { formatWhen } from "@/components/common/SendLater"
 import { formatShort, useErrorText, usePreviewText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
 import { Button } from "@/components/ui/button"
@@ -31,7 +32,7 @@ import { useSnoozeTimes } from "@/features/conversation/HeaderActions"
 import { look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
 import { useListCursor } from "@/features/inbox/listCursor"
-import { useBulkUpdateConversations, useConversations } from "@/features/inbox/queries"
+import { useBulkUpdateConversations, useConversations, useDrafts } from "@/features/inbox/queries"
 import { mailFilters, type Folder } from "@/features/mail/folders"
 import { useStar } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
@@ -61,6 +62,7 @@ function Row({
   selecting,
   checked,
   showInbox,
+  scheduledAt,
   onOpen,
   onStar,
 }: {
@@ -71,6 +73,7 @@ function Row({
   selecting: boolean
   checked: boolean
   showInbox: boolean
+  scheduledAt?: string
   onOpen: () => void
   onStar: () => void
 }) {
@@ -135,7 +138,7 @@ function Row({
               className={cn("min-w-0 flex-1 truncate text-body", c.unread ? "font-semibold" : "font-medium")}
               data-testid="mail-sender"
             >
-              {folder === "sent" ? t`To: ${who}` : who}
+              {folder === "sent" || folder === "scheduled" ? t`To: ${who}` : who}
             </span>
             {c.has_attachments && (
               <PaperclipIcon
@@ -154,12 +157,23 @@ function Row({
                 data-testid="row-unread"
               />
             )}
-            <time
-              className={cn("shrink-0 text-caption", c.unread ? "font-semibold text-foreground" : "text-faint")}
-              dateTime={c.last_activity_at}
-            >
-              {formatShort(c.last_activity_at, i18n.locale)}
-            </time>
+            {scheduledAt ? (
+              <time
+                className="flex shrink-0 items-center gap-1 text-caption text-warning"
+                dateTime={scheduledAt}
+                data-testid="mail-scheduled-at"
+              >
+                <ClockIcon className="size-3" />
+                {formatWhen(scheduledAt, i18n.locale)}
+              </time>
+            ) : (
+              <time
+                className={cn("shrink-0 text-caption", c.unread ? "font-semibold text-foreground" : "text-faint")}
+                dateTime={c.last_activity_at}
+              >
+                {formatShort(c.last_activity_at, i18n.locale)}
+              </time>
+            )}
           </span>
           <span
             className={cn(
@@ -232,6 +246,17 @@ export function MailList({
   const [selecting, setSelecting] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const list = useConversations(mailFilters(box, folder, q))
+  const scheduledDrafts = useDrafts({ mine: true, scheduled: true }, folder === "scheduled")
+  const scheduledAt = useMemo(() => {
+    const at = new Map<string, string>()
+    for (const p of scheduledDrafts.data?.pages ?? [])
+      for (const i of p.items) {
+        const when = i.draft.scheduled_at
+        const known = at.get(i.conversation.id)
+        if (when && (!known || when < known)) at.set(i.conversation.id, when)
+      }
+    return at
+  }, [scheduledDrafts.data])
   const rows = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, active, scroller)
   const star = useStar()
@@ -565,6 +590,8 @@ export function MailList({
     starred: <Trans>Star a mail to keep it here.</Trans>,
     snoozed: <Trans>Nothing is snoozed.</Trans>,
     sent: <Trans>You have not sent any mail yet.</Trans>,
+    drafts: <Trans>You have no drafts. Mail you start writing is kept here.</Trans>,
+    scheduled: <Trans>No mail is scheduled. Pick Send later to send mail at a time you choose.</Trans>,
     archive: <Trans>Nothing is archived yet.</Trans>,
     trash: <Trans>The Trash is empty.</Trans>,
   }
@@ -611,6 +638,7 @@ export function MailList({
               selecting={selecting}
               checked={selected.has(c.id)}
               showInbox={box === "all"}
+              scheduledAt={folder === "scheduled" ? scheduledAt.get(c.id) : undefined}
               onOpen={() => (selecting ? toggle(c.id) : onOpen(c.id))}
               onStar={() => star([c.id], !c.starred)}
             />

@@ -19,6 +19,7 @@ msgstr "“{name}” alanındaki değer alana uymuyor"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "Dokümanlarınızda “Bu sayfa yararlı oldu mu?”, geri bildirim ve tartışmalar"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "Bir yol haritası fikri başka bir aşamaya geçti"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Kapalı bir kural hiç çalışmaz. Kurallar listedeki sırayla çalışır."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "Zamanlanmış bir posta gönderilemedi"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "Kampanya adı"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "Kampanya adı"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "{address} taşınması iptal edilsin mi?"
 msgid "Cancel moving from {provider}?"
 msgstr "{provider} taşıması iptal edilsin mi?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "Zamanlamayı iptal et"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "Silmeden önce bülteni iptal edin."
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "Taşımayı iptal et"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "Zamanlamayı iptal et ve postayı yeniden düzenle"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "Bu yönlendirmeyi aşağıdaki adrese çevirin; böylece {address} adres
 msgid "Change the choice"
 msgstr "Seçimi değiştir"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "Zamanı değiştir"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "Zamanlanmış postanın zamanını değiştir"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "Çalışma alanını değiştirme ve kullanımı görme"
@@ -3764,6 +3788,11 @@ msgstr "Çalışma alanını değiştirme ve kullanımı görme"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "Bunu API anahtarları sayfasından değiştirin."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "Zamanı değiştir"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "Kopyalanıyor %{percent}"
 msgid "Copying {provider}"
 msgstr "{provider} kopyalanıyor"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "Gönderilemedi"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "Kopyalanamadı"
@@ -5211,6 +5244,7 @@ msgstr "Verilerin güncel olduğu an: {builtText}"
 msgid "Database upgrade"
 msgstr "Veritabanı yükseltmesi"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "Directory (tenant) ID, isteğe bağlı"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "Dışarıda kalan satırları indir"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "Taslak silindi"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Taslak kaydedildi"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "Taslak metni"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Taslak:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "Taslaklar"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Taslaklar"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "Her biri tüm mesajları ve notlarıyla"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "Monitörü düzenle"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "Zamanlanmış veya gönderilemeyen taslağı düzenle"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "Başlığı düzenle"
@@ -6281,6 +6330,14 @@ msgstr "Düzenle ya da masaüstünde, telefonda veya koyu modda önizle"
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "düzenlendi"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "Gönderilemeyen bir taslak düzenleniyor"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "{editingWhen} için zamanlanmış ileti düzenleniyor"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "Verildi: {name}"
 msgid "Has an open conversation"
 msgstr "Açık konuşması olan"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "Ek dosya var"
@@ -8511,10 +8569,6 @@ msgstr "Yönlendirmeyi ya da MX kayıtlarını olduğu gibi bırakın: e-postala
 msgid "Keep the name only"
 msgstr "Yalnızca adı koru"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "Bu postayı taslak olarak saklayalım mı?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Bu sayfayı açık tutun. Bağlantı koparsa yükleme bağlantı geri gelince sürer; sayfa yenilenirse aynı dosyayı seçin, yalnızca eksik parçalar gönderilir."
@@ -8790,6 +8844,10 @@ msgstr "Süre"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "Sonra"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "Bugün ilerleyen saatte"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "Görselleri yükle"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "Denetimli"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Pazartesi"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "Pazartesi sabahı"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "Henüz makro yok"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "Zamanlanmış posta yok. Postayı seçtiğiniz bir zamanda göndermek için Sonra gönder'i seçin."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "Aramanızla eşleşen e-posta yok."
 
@@ -11424,6 +11491,11 @@ msgstr "çalışmadı"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "Çalıştırılmadı"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "Kaydedilmedi"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "Ayarlardan bir gönderen seçin"
 msgid "Pick a team"
 msgstr "Bir ekip seçin"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "Şu andan en az bir dakika sonrasını seçin."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Önümüzdeki 90 gün içinde, kendi saat diliminizde ({zone}) bir zaman seçin."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "Bir yıl içinde bir zaman seçin."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "Zaman seç…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "alıcı"
 msgid "Recipients"
 msgstr "Alıcılar"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "Alıcılar ve konu kaydedildiği gibi kalır."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Tek oturum açmayı zorunlu kıl"
 msgid "Required to close"
 msgstr "Kapatmak için gerekli"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "Yeniden zamanla"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Yeniden gönder"
@@ -14926,6 +15018,7 @@ msgstr "Cumartesi"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "Bir yanıtı, gönderdiğinizde konuşmaya olacakların yanında kaydedi
 msgid "Save and close"
 msgstr "Kaydet ve kapat"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "Kaydet ve yeniden zamanla"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "Değişiklikleri kaydet"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Taslağı kaydet"
 
@@ -15005,6 +15101,8 @@ msgstr "Listeyi görünüm olarak kaydet"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "Kaydedince kayıtlı parola silinir."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "Kaydediliyor…"
 
@@ -15076,6 +15176,7 @@ msgstr "Taranıyor"
 msgid "Scanning the headers…"
 msgstr "Başlıklar taranıyor…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "Zamanla"
@@ -15083,6 +15184,12 @@ msgstr "Zamanla"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "Çalışma alanı anahtarların ve asistanların göndermesine izin veriyorsa bültenleri planlama ve gönderme"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "Zamanlama iptal edildi"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "Kaydı zamanla"
 msgid "Scheduled"
 msgstr "Zamanlandı"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "Zamanlanmış"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Zamanlayan"
@@ -15104,6 +15216,21 @@ msgstr "Zamanlayan"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "{due} için planlandı"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "{when} için zamanlandı"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "Zamanlanmış ileti"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "Zamanlanıyor…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "Deneme bildirimi gönder"
 msgid "Send a test notification to {name}"
 msgstr "{name} cihazına deneme bildirimi gönder"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "Yeniden gönder"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "Otomatik yanıt gönder"
@@ -15433,6 +15564,22 @@ msgstr "Gönderen adres"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Daveti gönder"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "Sonra gönder"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "Sonra gönder ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "Sonra gönder, e-posta yanıtında"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "Onay e-postasını gönder"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "Onay e-postasını yeniden gönder"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "Gönderilemeyen taslağı yeniden gönder"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "Bu liste özel olduğu için formlar onu sunmaz. Form kullanmak için ay
 msgid "This mail is not available"
 msgstr "Bu e-posta kullanılamıyor"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "Bu postanın taslak olarak saklanabilmesi için bir alıcı, bir konu ve biraz metin gerekir."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "Bu posta kutusu yalnızca “Microsoft ile oturum aç” ile bağlanır ve bu Yuva sunucusu bunu sunmuyor. Sunucuyu işletenden bunu kurmasını isteyin."
@@ -18936,6 +19091,7 @@ msgstr "Ekibinizin yazdığı adresleri işaretleyin; böylece bu adreslerden ge
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "Talepler yanıtları, notları, etiketleri, durumu ve atanan kişiyle birlikte gelir. Destek adresinizi yukarıya girin."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "Asistanların kendi başına göndermesi için <0>Botlar gönderebilir</
 msgid "To: {emailTo}"
 msgstr "Kime: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "Alıcı: {who}"
@@ -19023,6 +19180,10 @@ msgstr "yarın saat {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "Yarın saat {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "Yarın sabah"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "Bilinmeyen cihaz"
 msgid "unknown reason"
 msgstr "bilinmeyen neden"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "Bilinmeyen gönderen"
@@ -20309,6 +20471,10 @@ msgstr "Ne zaman"
 msgid "When {first} writes again"
 msgstr "{first} tekrar yazınca"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "Zamanladığınız bir ileti reddedildiği için taslak olarak kaldığında."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "Yeni bir mesaj geldiğinde listede olacak."
@@ -20810,6 +20976,11 @@ msgstr "Kaydettiğinizde, uyarı sisteminizin çağıracağı adresi alırsını
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "Bu sunucunun izin verdiği sayıda çalışma alanı oluşturdunuz. Artık kullanmadığınız birini silin ya da başka birine davet isteyin."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "Taslağınız yok. Yazmaya başladığınız postalar burada tutulur."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

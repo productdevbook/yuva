@@ -50,7 +50,9 @@ export function useEntries(): Entry[] {
   const unread = useUnreadCount()
   const feedback = Number(useCounts().data?.feedback ?? 0)
   const unseen = Number(useMentions().data?.pages[0]?.unseen ?? 0)
-  const drafts = Number(useDrafts({}).data?.pages[0]?.total ?? 0)
+  const botDrafts = Number(useDrafts({ author: "bot" }).data?.pages[0]?.total ?? 0)
+  const assistantDrafts = Number(useDrafts({ author: "assistant" }).data?.pages[0]?.total ?? 0)
+  const drafts = botDrafts + assistantDrafts
   const analytics = useAnalyticsVisible()
   const mail = useMailInboxes().length > 0
   const mailUnread = useMailUnread()

@@ -6,15 +6,17 @@ import type { ConversationFilters } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useInboxes } from "@/lib/workspace"
 
-export type Folder = "inbox" | "starred" | "snoozed" | "sent" | "archive" | "trash"
+export type Folder = "inbox" | "starred" | "snoozed" | "sent" | "drafts" | "scheduled" | "archive" | "trash"
 
-export const FOLDERS: Folder[] = ["inbox", "starred", "snoozed", "sent", "archive", "trash"]
+export const FOLDERS: Folder[] = ["inbox", "starred", "snoozed", "sent", "drafts", "scheduled", "archive", "trash"]
 
 const folderFilters: Record<Folder, ConversationFilters> = {
   inbox: { status: ["open"] },
   starred: { starred: true },
   snoozed: { status: ["snoozed"] },
   sent: { sent: "mine" },
+  drafts: {},
+  scheduled: { scheduled: "mine" },
   archive: { status: ["closed"] },
   trash: { trashed: true },
 }
@@ -49,6 +51,8 @@ export function useFolderLabels(): Record<Folder, string> {
     starred: t({ message: "Starred", context: "mail folder" }),
     snoozed: t({ message: "Snoozed", context: "mail folder" }),
     sent: t({ message: "Sent", context: "mail folder" }),
+    drafts: t({ message: "Drafts", context: "mail folder" }),
+    scheduled: t({ message: "Scheduled", context: "mail folder" }),
     archive: t({ message: "Archive", context: "mail folder" }),
     trash: t({ message: "Trash", context: "mail folder" }),
   }

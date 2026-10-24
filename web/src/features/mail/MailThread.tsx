@@ -46,10 +46,13 @@ import { useAuthorName, type ThreadContext } from "@/features/conversation/messa
 import { DeliveryState } from "@/features/conversation/messages/DeliveryState"
 import { MailBody, MailControls, useMail } from "@/features/conversation/messages/EmailBody"
 import { EventLine } from "@/features/conversation/messages/EventLine"
+import { OwnDraftCard } from "@/features/conversation/messages/OwnDraftCard"
+import { isOwnDraft, isShownDraft } from "@/features/conversation/ownDraft"
 import { RedactedLine } from "@/features/conversation/messages/Redacted"
 import { TrashBanner } from "@/features/conversation/Trash"
 import {
   useConversation,
+  useDraftActions,
   useMarkRead,
   useMessages,
   useParticipants,
@@ -309,7 +312,8 @@ function MailSnooze({
 function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; contact?: Contact }) {
   const { t } = useLingui()
   const errorText = useErrorText()
-  const { canManage } = useSession()
+  const { canManage, membership } = useSession()
+  const me = membership.member_id
   const members = useMemberMap()
   const labels = useLabels().data ?? []
   const inboxes = useInboxes().data ?? []
@@ -324,7 +328,10 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
   const star = useStar()
   const [confirm, confirmDialog] = useConfirm()
   const reply = useRef<ReplyHandle>(null)
+  const scroller = useRef<HTMLDivElement>(null)
   const [snoozing, setSnoozing] = useState(false)
+  const [timing, setTiming] = useState<string | null>(null)
+  const draftActions = useDraftActions()
   const [expandQuoted, setExpandQuoted] = useState(false)
   const fine = useMediaQuery("(pointer: fine)")
   const revision = useDraftRevision(c.id)
@@ -337,8 +344,23 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
     () => (messages.data?.pages ?? []).toReversed().flatMap((p) => p.items.toReversed()),
     [messages.data]
   )
-  const suggestion = items.findLast((m) => m.draft && m.kind !== "forward")
+  const suggestion = items.findLast((m) => m.draft && m.kind !== "forward" && !isOwnDraft(m, me))
   const shown = items.filter((m) => !m.draft)
+  const cards = useMemo(
+    () =>
+      items
+        .filter((m) => isShownDraft(m, me))
+        .toSorted((a, b) => (a.scheduled_at ?? "~").localeCompare(b.scheduled_at ?? "~")),
+    [items, me]
+  )
+  const nextCard = cards[0]
+  const cardCount = cards.length
+  useEffect(() => {
+    if (cardCount === 0) return
+    const down = () => scroller.current?.scrollTo({ top: scroller.current.scrollHeight })
+    const timers = [0, 200, 600].map((ms) => setTimeout(down, ms))
+    return () => timers.forEach(clearTimeout)
+  }, [cardCount])
   const mails = shown.filter((m) => m.kind === "message" || m.kind === "forward")
   const lastMail = mails.at(-1)
   const [opened, setOpened] = useState<Set<string>>(new Set())
@@ -427,6 +449,27 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
   const replyTo = (all: boolean) => {
     reply.current?.replyAll(all)
   }
+  const editDraft = (m: Message) => reply.current?.edit(m)
+  const cancelSchedule = (m: Message) =>
+    draftActions.unschedule.mutate(m, {
+      onSuccess: (draft) => {
+        reply.current?.adopt(draft)
+        toast(t`Schedule cancelled`)
+      },
+      onError: fail,
+    })
+  const cardKeys: Record<string, () => void> = nextCard
+    ? nextCard.scheduled_at
+      ? {
+          [MAIL_KEYS.editScheduled]: () => editDraft(nextCard),
+          [MAIL_KEYS.changeTime]: () => setTiming(nextCard.id),
+          [MAIL_KEYS.cancelSchedule]: () => cancelSchedule(nextCard),
+        }
+      : {
+          [MAIL_KEYS.editScheduled]: () => editDraft(nextCard),
+          [MAIL_KEYS.sendAgain]: () => draftActions.send.mutate(nextCard, { onError: fail }),
+        }
+    : {}
 
   useHotkeys(
     trashed
@@ -447,6 +490,7 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
           [MAIL_KEYS.snooze]: () => setSnoozing(true),
           [MAIL_KEYS.quoted]: () => setExpandQuoted((x) => !x),
           [MAIL_KEYS.expand]: () => setAllOpen((x) => !x),
+          ...cardKeys,
         }
   )
 
@@ -538,7 +582,7 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
         </div>
       </header>
       {trashed && <TrashBanner c={c} onRestore={restore} busy={trasher.isPending} />}
-      <div className="min-h-0 flex-1 overflow-y-auto bg-surface" data-testid="mail-messages">
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto bg-surface" data-testid="mail-messages">
         <div className="mx-auto flex max-w-[880px] flex-col gap-2 px-4 py-4 phone:px-2">
           {messages.hasNextPage && (
             <Button
@@ -570,6 +614,26 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
               />
             )
           )}
+          {cards.map((m) => (
+            <OwnDraftCard
+              key={m.id}
+              m={m}
+              keys={
+                m.id === nextCard?.id
+                  ? {
+                      edit: MAIL_KEYS.editScheduled,
+                      time: MAIL_KEYS.changeTime,
+                      cancel: MAIL_KEYS.cancelSchedule,
+                      again: MAIL_KEYS.sendAgain,
+                    }
+                  : undefined
+              }
+              timeOpen={timing === m.id}
+              onTimeOpenChange={(open) => setTiming(open ? m.id : null)}
+              onEdit={editDraft}
+              onCancel={cancelSchedule}
+            />
+          ))}
           {queued.map((p) => (
             <div
               key={p.key}
@@ -578,7 +642,13 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
             >
               <p className="text-reading break-words whitespace-pre-wrap">{p.body}</p>
               <p className="mt-1 text-caption text-faint">
-                {p.close ? <Trans>Sending, then archiving…</Trans> : <Trans>Sending…</Trans>}
+                {p.sendAt ? (
+                  <Trans>Scheduling…</Trans>
+                ) : p.close ? (
+                  <Trans>Sending, then archiving…</Trans>
+                ) : (
+                  <Trans>Sending…</Trans>
+                )}
               </p>
             </div>
           ))}

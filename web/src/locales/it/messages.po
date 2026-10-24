@@ -19,6 +19,7 @@ msgstr "«{name}» contiene un valore non valido"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«Questa pagina ti è stata utile?», feedback e discussioni sulla tua documentazione"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "Un'idea della roadmap è passata a un'altra fase"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Una regola disattivata non viene mai eseguita. Le regole vengono eseguite nell'ordine dell'elenco."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "Non è stato possibile inviare una mail programmata"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "Nome della campagna"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "Nome della campagna"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "Annullare lo spostamento di {address}?"
 msgid "Cancel moving from {provider}?"
 msgstr "Annullare lo spostamento da {provider}?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "Annulla programmazione"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "Annulla l’invio prima di eliminarlo."
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "Annulla la migrazione"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "Annulla la programmazione e modifica di nuovo la mail"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "Cambia quell’inoltro all’indirizzo qui sotto, così la posta di {add
 msgid "Change the choice"
 msgstr "Cambia la scelta"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "Cambia orario"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "Cambia l'orario della mail programmata"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "Modificare lo spazio di lavoro e leggere l’utilizzo"
@@ -3764,6 +3788,11 @@ msgstr "Modificare lo spazio di lavoro e leggere l’utilizzo"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "Cambialo nella pagina delle chiavi API."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "Cambia orario"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "Copia {percent}%"
 msgid "Copying {provider}"
 msgstr "Copia di {provider}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "Impossibile inviare"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "Impossibile copiare"
@@ -5211,6 +5244,7 @@ msgstr "Dati fino al {builtText}"
 msgid "Database upgrade"
 msgstr "Aggiornamento del database"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "ID directory (tenant), facoltativo"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "Scarica le righe escluse"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "Bozza eliminata"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Bozza salvata"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "Testo della bozza"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Bozza:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "Bozze"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Bozze"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "Ognuna con tutti i suoi messaggi e note"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "Modifica il monitor"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "Modifica la bozza programmata o non inviata"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "Modifica il titolo"
@@ -6281,6 +6330,14 @@ msgstr "Modifica, o visualizza su desktop, telefono o in modalità scura"
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "modificato"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "Modifica di una bozza che non è stato possibile inviare"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "Modifica del messaggio programmato per {editingWhen}"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "Passata a {name}"
 msgid "Has an open conversation"
 msgstr "Ha una conversazione aperta"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "Ha allegati"
@@ -8511,10 +8569,6 @@ msgstr "Lascia inoltro, instradamento o MX com’è: è così che la posta arriv
 msgid "Keep the name only"
 msgstr "Conserva solo il nome"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "Tenere questo messaggio come bozza?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Tieni aperta questa pagina. Se la connessione cade, il caricamento riprende al ritorno; dopo un ricaricamento, scegli lo stesso file e vengono inviate solo le parti mancanti."
@@ -8790,6 +8844,10 @@ msgstr "Latenza"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "Più tardi"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "Più tardi oggi"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "Carica immagini"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "Moderate"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Lunedì"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "Lunedì mattina"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "Ancora nessuna macro"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "Nessuna mail è programmata. Scegli Invia più tardi per inviare una mail all'ora che preferisci."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "Nessuna e-mail corrisponde alla ricerca."
 
@@ -11424,6 +11491,11 @@ msgstr "non eseguita"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "Non eseguito"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "Non salvato"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "Scegli un mittente nelle impostazioni"
 msgid "Pick a team"
 msgstr "Scegli un team"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "Scegli un orario almeno un minuto da adesso."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Scegli un orario nei prossimi 90 giorni, nel tuo fuso orario, {zone}."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "Scegli un orario entro un anno."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "Scegli un orario…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "destinatari"
 msgid "Recipients"
 msgstr "Destinatari"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "Destinatari e oggetto restano come salvati."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "Obbligatorio per chiudere"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "Riprogramma"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Reinvia"
@@ -14926,6 +15018,7 @@ msgstr "Sabato"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "Salva una risposta insieme a ciò che deve accadere alla conversazione q
 msgid "Save and close"
 msgstr "Salva e chiudi"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "Salva e riprogramma"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "Salva le modifiche"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Salva bozza"
 
@@ -15005,6 +15101,8 @@ msgstr "Salva l’elenco come vista"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "Salvare rimuove la password memorizzata."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "Salvataggio…"
 
@@ -15076,6 +15176,7 @@ msgstr "Analisi in corso"
 msgid "Scanning the headers…"
 msgstr "Analisi degli header…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "Pianifica"
@@ -15083,6 +15184,12 @@ msgstr "Pianifica"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "Pianificare e inviare invii, quando lo spazio di lavoro lascia che chiavi e assistenti li inviino"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "Programmazione annullata"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "Pianifica la voce"
 msgid "Scheduled"
 msgstr "Pianificato"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "Programmate"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Pianificato da"
@@ -15104,6 +15216,21 @@ msgstr "Pianificato da"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Programmato per {due}"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "Programmata per {when}"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "Messaggio programmato"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "Programmazione…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "Invia una notifica di prova"
 msgid "Send a test notification to {name}"
 msgstr "Invia una notifica di prova a {name}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "Invia di nuovo"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "Invia una risposta automatica"
@@ -15433,6 +15564,22 @@ msgstr "Invia da"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Invia invito"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "Invia più tardi"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "Invia più tardi ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "Invia più tardi, in una risposta e-mail"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "Invia la conferma"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "Invia di nuovo la conferma"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "Invia di nuovo la bozza che non è stato possibile inviare"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "Questa lista è privata, quindi i moduli non la offrono. Rendila pubblic
 msgid "This mail is not available"
 msgstr "Questa e-mail non è disponibile"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "Questa mail ha bisogno di un destinatario, un oggetto e del testo per essere conservata come bozza."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "Questa casella si connette solo con «Accedi con Microsoft», che questo server Yuva non offre. Chiedi al suo operatore di configurarlo."
@@ -18936,6 +19091,7 @@ msgstr "Spunta gli indirizzi da cui scrive il tuo team, così la loro posta non 
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "I ticket arrivano con le loro risposte, note, tag, stato e assegnatario. Inserisci qui sopra il tuo indirizzo di supporto."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "Per lasciare che gli assistenti inviino da soli, attiva <0>I bot possono
 msgid "To: {emailTo}"
 msgstr "A: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "A: {who}"
@@ -19023,6 +19180,10 @@ msgstr "domani alle {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "Domani alle {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "Domani mattina"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "Dispositivo sconosciuto"
 msgid "unknown reason"
 msgstr "motivo sconosciuto"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "Mittente sconosciuto"
@@ -20309,6 +20471,10 @@ msgstr "Quando"
 msgid "When {first} writes again"
 msgstr "Quando {first} scrive di nuovo"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "Quando un messaggio programmato resta una bozza perché è stato rifiutato."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "Quando arriva un nuovo messaggio, sarà nella lista."
@@ -20810,6 +20976,11 @@ msgstr "Al salvataggio ricevi l’indirizzo che il tuo sistema di allerta chiama
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "Hai creato tanti spazi di lavoro quanti ne consente questo server. Elimina uno che non usi più, o chiedi di essere invitato in un altro."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "Non hai bozze. Le mail che inizi a scrivere sono conservate qui."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

@@ -15,6 +15,7 @@ export const EVENTS: EventName[] = [
   "sla_warning",
   "sla_breached",
   "forward_answer",
+  "scheduled_send_failed",
 ]
 
 export const DELAYS = [5, 15, 30, 60, 120, 240, 1440]
@@ -51,6 +52,10 @@ export function useEventText(): Record<EventName, { label: string; hint: string 
     forward_answer: {
       label: t`Someone answers a forward`,
       hint: t`For forwards I sent, and for conversations assigned to me.`,
+    },
+    scheduled_send_failed: {
+      label: t`A scheduled mail could not be sent`,
+      hint: t`When a message you scheduled stays a draft because it was refused.`,
     },
   }
 }

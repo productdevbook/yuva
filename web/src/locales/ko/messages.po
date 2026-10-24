@@ -19,6 +19,7 @@ msgstr "“{name}”의 값이 필드에 맞지 않습니다"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "\"이 페이지가 도움이 되었나요?\", 문서에 대한 의견과 토론"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "로드맵 아이디어가 다른 단계로 이동했습니다"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "꺼진 규칙은 실행되지 않습니다. 규칙은 목록 순서대로 실행됩니다."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "예약한 메일을 보내지 못했습니다"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "캠페인 이름"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "캠페인 이름"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "{address} 이전을 취소할까요?"
 msgid "Cancel moving from {provider}?"
 msgstr "{provider}에서의 이전을 취소할까요?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "예약 취소"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "삭제하기 전에 일괄 발송을 취소하세요."
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "이전 취소"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "예약을 취소하고 메일을 다시 편집"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "전달을 아래 주소로 바꾸어 {address}의 메일이 {provider} �
 msgid "Change the choice"
 msgstr "선택 변경"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "시간 변경"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "예약한 메일의 시간 변경"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "워크스페이스 변경 및 사용량 보기"
@@ -3764,6 +3788,11 @@ msgstr "워크스페이스 변경 및 사용량 보기"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "API 키 페이지에서 변경하세요."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "시간 변경"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "복사 중 {percent}%"
 msgid "Copying {provider}"
 msgstr "{provider} 복사 중"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "보내지 못했습니다"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "복사하지 못했습니다"
@@ -5211,6 +5244,7 @@ msgstr "{builtText}까지의 데이터"
 msgid "Database upgrade"
 msgstr "데이터베이스 업그레이드"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "디렉터리(테넌트) ID(선택)"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "제외된 행 다운로드"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "초안을 삭제했습니다"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "초안을 저장했습니다"
@@ -5958,15 +5995,22 @@ msgid "Draft text"
 msgstr "초안 본문"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "초안:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Drafts"
 msgstr "초안"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Drafts"
+msgstr "임시 보관함"
 
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "각각 모든 메시지와 메모 포함"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "모니터 편집"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "예약했거나 보내지 못한 임시 보관 메일 편집"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "제목 편집"
@@ -6281,6 +6330,14 @@ msgstr "편집하거나 데스크톱, 휴대폰, 다크 모드로 미리 보기"
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "편집됨"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "보내지 못한 임시 보관 메일 편집 중"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "{editingWhen}에 예약된 메시지 편집 중"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "{name}님에게 넘겼습니다"
 msgid "Has an open conversation"
 msgstr "열린 대화 있음"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "첨부파일 있음"
@@ -8511,10 +8569,6 @@ msgstr "전달, 라우팅, MX는 그대로 두세요. 지금은 그 경로로 �
 msgid "Keep the name only"
 msgstr "이름만 유지"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "이 메일을 임시 보관함에 저장할까요?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "이 페이지를 열어 두세요. 연결이 끊겨도 복구되면 업로드가 계속되며, 새로 고친 경우 같은 파일을 선택하면 빠진 부분만 전송됩니다."
@@ -8790,6 +8844,10 @@ msgstr "지연 시간"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "나중에"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "오늘 늦게"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "이미지 불러오기"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "승인제"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "월요일"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "월요일 아침"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "아직 매크로가 없습니다"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "예약된 메일이 없습니다. 나중에 보내기를 선택하면 원하는 시간에 메일을 보낼 수 있습니다."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "검색과 일치하는 메일이 없습니다."
 
@@ -11424,6 +11491,11 @@ msgstr "실행되지 않음"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "실행 안 함"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "저장되지 않음"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "설정에서 발신자 선택"
 msgid "Pick a team"
 msgstr "팀 선택"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "지금부터 1분 이상 뒤의 시간을 선택하세요."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "앞으로 90일 이내의 시각을 내 시간대 {zone}으로 선택하세요."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "1년 이내의 시간을 선택하세요."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "시간 선택…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "수신자"
 msgid "Recipients"
 msgstr "수신자"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "받는 사람과 제목은 저장된 그대로 유지됩니다."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "닫을 때 필수"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "다시 예약"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "다시 보내기"
@@ -14926,6 +15018,7 @@ msgstr "토요일"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "답변을 보낼 때 대화에 일어날 일과 함께 저장하세요."
 msgid "Save and close"
 msgstr "저장하고 닫기"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "저장하고 다시 예약"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "변경 사항 저장"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "초안 저장"
 
@@ -15005,6 +15101,8 @@ msgstr "목록을 보기로 저장"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "저장하면 저장된 비밀번호가 삭제됩니다."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "저장 중…"
 
@@ -15076,6 +15176,7 @@ msgstr "스캔 중"
 msgid "Scanning the headers…"
 msgstr "헤더를 스캔하는 중…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "예약"
@@ -15083,6 +15184,12 @@ msgstr "예약"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "워크스페이스가 키와 어시스턴트의 발송을 허용하는 경우 일괄 발송 예약 및 발송"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "예약이 취소되었습니다"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "항목 예약"
 msgid "Scheduled"
 msgstr "예약됨"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "예약됨"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "예약한 사람"
@@ -15104,6 +15216,21 @@ msgstr "예약한 사람"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "{due} 예정"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "{when}에 예약됨"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "예약된 메시지"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "예약 중…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "테스트 알림 보내기"
 msgid "Send a test notification to {name}"
 msgstr "{name}님에게 테스트 알림 보내기"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "다시 보내기"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "자동 응답 보내기"
@@ -15433,6 +15564,22 @@ msgstr "보내는 주소"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "초대 보내기"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "나중에 보내기"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "나중에 보내기 ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "나중에 보내기, 이메일 답장에서"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "확인 메일 보내기"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "확인 메일 다시 보내기"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "보내지 못한 임시 보관 메일 다시 보내기"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "이 리스트는 비공개라 양식에 표시되지 않습니다. 양�
 msgid "This mail is not available"
 msgstr "이 메일을 사용할 수 없습니다"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "이 메일을 임시 보관하려면 받는 사람, 제목, 본문이 필요합니다."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "이 메일함은 \"Microsoft로 로그인\"으로만 연결되는데 이 Yuva 서버는 이를 지원하지 않습니다. 운영자에게 설정을 요청하세요."
@@ -18936,6 +19091,7 @@ msgstr "팀이 메일을 보내는 주소를 선택하면 그 메일이 고객�
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "티켓은 답글, 메모, 태그, 상태, 담당자와 함께 가져옵니다. 위에 지원 주소를 입력하세요."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "어시스턴트가 직접 보내게 하려면 <0>봇 발송 허용</0>�
 msgid "To: {emailTo}"
 msgstr "받는 사람: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "받는 사람: {who}"
@@ -19023,6 +19180,10 @@ msgstr "내일 {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "내일 {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "내일 아침"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "알 수 없는 기기"
 msgid "unknown reason"
 msgstr "알 수 없는 이유"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "알 수 없는 보낸 사람"
@@ -20309,6 +20471,10 @@ msgstr "시각"
 msgid "When {first} writes again"
 msgstr "{first}님이 다시 글을 쓰면"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "예약한 메시지가 거부되어 임시 보관 상태로 남을 때."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "새 메시지가 도착하면 목록에 나타납니다."
@@ -20810,6 +20976,11 @@ msgstr "저장하면 Alertmanager, Grafana 또는 직접 만든 스크립트 같
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "이 서버가 허용하는 만큼 워크스페이스를 만들었습니다. 쓰지 않는 것을 삭제하거나 다른 워크스페이스에 초대를 요청하세요."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "임시 보관 메일이 없습니다. 작성을 시작한 메일이 여기에 보관됩니다."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

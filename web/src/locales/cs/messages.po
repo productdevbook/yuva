@@ -19,6 +19,7 @@ msgstr "Hodnota pole „{name}“ neodpovídá"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„Byla tato stránka užitečná?“, zpětná vazba a diskuse ve vaší dokumentaci"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "Nápad z plánu vývoje přešel do další fáze"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Vypnuté pravidlo se nikdy nespustí. Pravidla se spouštějí v pořadí seznamu."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "Naplánovaný e-mail se nepodařilo odeslat"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "Název kampaně"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "Název kampaně"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "Zrušit přenos {address}?"
 msgid "Cancel moving from {provider}?"
 msgstr "Zrušit přenos z {provider}?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "Zrušit naplánování"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "Před smazáním hromadnou zprávu zrušte."
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "Zrušit migraci"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "Zrušit naplánování a znovu upravit e-mail"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "Změňte přeposílání na níže uvedenou adresu, aby pošta {address}
 msgid "Change the choice"
 msgstr "Změnit volbu"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "Změnit čas"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "Změnit čas naplánovaného e-mailu"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "Měnit pracovní prostor a číst využití"
@@ -3764,6 +3788,11 @@ msgstr "Měnit pracovní prostor a číst využití"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "Změňte to na stránce klíčů API."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "Změnit čas"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "Kopíruje se {percent} %"
 msgid "Copying {provider}"
 msgstr "Kopíruje se {provider}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "Nepodařilo se odeslat"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "Nepodařilo se zkopírovat"
@@ -5211,6 +5244,7 @@ msgstr "Data do {builtText}"
 msgid "Database upgrade"
 msgstr "Upgrade databáze"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "ID adresáře (tenanta), volitelné"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "Stáhnout vynechané řádky"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "Koncept smazán"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Koncept uložen"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "Text konceptu"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Koncept:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "Koncepty"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Koncepty"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "Každá se všemi svými zprávami a poznámkami"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "Upravit monitor"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "Upravit naplánovaný nebo neodeslaný koncept"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "Upravit název"
@@ -6281,6 +6330,14 @@ msgstr "Upravit, nebo zobrazit náhled na počítači, telefonu či v tmavém re
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "upraveno"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "Úprava konceptu, který se nepodařilo odeslat"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "Úprava zprávy naplánované na {editingWhen}"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "Předáno uživateli {name}"
 msgid "Has an open conversation"
 msgstr "Má otevřenou konverzaci"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "Obsahuje přílohy"
@@ -8511,10 +8569,6 @@ msgstr "Ponechte přeposílání, směrování nebo MX tak, jak je: takto pošta
 msgid "Keep the name only"
 msgstr "Ponechat jen jméno"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "Uložit tento e-mail jako koncept?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Nechte tuto stránku otevřenou. Pokud se spojení přeruší, nahrávání pokračuje po jeho obnovení; po načtení stránky znovu vyberte stejný soubor a odešlou se jen chybějící části."
@@ -8790,6 +8844,10 @@ msgstr "Latence"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "Později"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "Později dnes"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "Načíst obrázky"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "Moderováno"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Pondělí"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "V pondělí ráno"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "Zatím žádná makra"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "Žádný e-mail není naplánovaný. Zvolte Odeslat později a e-mail odešlete v čase, který si vyberete."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "Hledání neodpovídá žádný e-mail."
 
@@ -11424,6 +11491,11 @@ msgstr "neprovedeno"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "Nespuštěno"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "Neuloženo"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "Vyberte odesílatele v nastavení"
 msgid "Pick a team"
 msgstr "Vyberte tým"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "Vyberte čas alespoň minutu od teď."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Vyberte čas v příštích 90 dnech ve svém časovém pásmu, {zone}."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "Vyberte čas do jednoho roku."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "Vybrat čas…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "příjemci"
 msgid "Recipients"
 msgstr "Příjemci"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "Příjemci a předmět zůstávají, jak byly uloženy."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "Povinné k zavření"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "Naplánovat znovu"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Odeslat znovu"
@@ -14926,6 +15018,7 @@ msgstr "Sobota"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "Uložte odpověď spolu s tím, co se má stát s konverzací po jejím 
 msgid "Save and close"
 msgstr "Uložit a zavřít"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "Uložit a naplánovat znovu"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "Uložit změny"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Uložit koncept"
 
@@ -15005,6 +15101,8 @@ msgstr "Uložit seznam jako pohled"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "Uložení odebere uložené heslo."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "Ukládá se…"
 
@@ -15076,6 +15176,7 @@ msgstr "Prohledává se"
 msgid "Scanning the headers…"
 msgstr "Prohledávají se hlavičky…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "Naplánovat"
@@ -15083,6 +15184,12 @@ msgstr "Naplánovat"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "Plánovat a odesílat hromadné zprávy, když pracovní prostor dovolí klíčům a asistentům je odesílat"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "Naplánování zrušeno"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "Naplánovat záznam"
 msgid "Scheduled"
 msgstr "Naplánováno"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "Naplánované"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Naplánoval(a)"
@@ -15104,6 +15216,21 @@ msgstr "Naplánoval(a)"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Naplánováno na {due}"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "Naplánováno na {when}"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "Naplánovaná zpráva"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "Plánování…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "Odeslat testovací oznámení"
 msgid "Send a test notification to {name}"
 msgstr "Odeslat testovací oznámení uživateli {name}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "Odeslat znovu"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "Odeslat automatickou odpověď"
@@ -15433,6 +15564,22 @@ msgstr "Odeslat z"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Odeslat pozvánku"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "Odeslat později"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "Odeslat později ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "Odeslat později, v odpovědi e-mailem"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "Odeslat potvrzení"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "Odeslat potvrzení znovu"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "Znovu odeslat koncept, který se nepodařilo odeslat"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "Tato skupina je soukromá, takže ji formuláře nenabízejí. Pro použ
 msgid "This mail is not available"
 msgstr "Tento e-mail není dostupný"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "Aby se e-mail uložil jako koncept, potřebuje příjemce, předmět a nějaký text."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "Tato schránka se připojuje jen přes „Přihlásit se přes Microsoft“, což tento server Yuvy nenabízí. Požádejte jeho provozovatele o nastavení."
@@ -18936,6 +19091,7 @@ msgstr "Zaškrtněte adresy, ze kterých váš tým píše, aby se jeho pošta n
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "Tikety přijdou s odpověďmi, poznámkami, tagy, stavem a přiřazenou osobou. Výše zadejte adresu podpory."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "Aby asistenti mohli odesílat sami, zapněte <0>Boti smějí odesílat</
 msgid "To: {emailTo}"
 msgstr "Komu: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "Komu: {who}"
@@ -19023,6 +19180,10 @@ msgstr "zítra v {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "Zítra v {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "Zítra ráno"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "Neznámé zařízení"
 msgid "unknown reason"
 msgstr "neznámý důvod"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "Neznámý odesílatel"
@@ -20309,6 +20471,10 @@ msgstr "Kdy"
 msgid "When {first} writes again"
 msgstr "Když {first} znovu napíše"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "Když naplánovaná zpráva zůstane konceptem, protože byla odmítnuta."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "Když přijde nová zpráva, bude v seznamu."
@@ -20810,6 +20976,11 @@ msgstr "Po uložení získáte adresu, kterou volá váš systém upozornění, 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "Vytvořili jste tolik pracovních prostorů, kolik tento server povoluje. Smažte jeden, který už nepoužíváte, nebo požádejte o pozvání do jiného."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "Nemáte žádné koncepty. E-maily, které začnete psát, se uchovají tady."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

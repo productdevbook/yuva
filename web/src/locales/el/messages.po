@@ -19,6 +19,7 @@ msgstr "Το «{name}» έχει τιμή που δεν ταιριάζει"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«Σας φάνηκε χρήσιμη αυτή η σελίδα;», σχόλια και συζητήσεις στην τεκμηρίωσή σας"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "Μια ιδέα του οδικού χάρτη μετακινήθηκε 
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "Ένας κανόνας που είναι ανενεργός δεν εκτελείται ποτέ. Οι κανόνες εκτελούνται με τη σειρά της λίστας."
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "Ένα προγραμματισμένο μήνυμα δεν μπόρεσε να σταλεί"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "Όνομα καμπάνιας"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "Όνομα καμπάνιας"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "Ακύρωση μεταφοράς του {address};"
 msgid "Cancel moving from {provider}?"
 msgstr "Ακύρωση μεταφοράς από το {provider};"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "Ακύρωση προγραμματισμού"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "Ακυρώστε τη μαζική αποστολή πριν τη δια
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "Ακύρωση της μεταφοράς"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "Ακύρωση του προγραμματισμού και νέα επεξεργασία του μηνύματος"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "Αλλάξτε αυτή την προώθηση στη διεύθυνσ�
 msgid "Change the choice"
 msgstr "Αλλαγή επιλογής"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "Αλλαγή ώρας"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "Αλλαγή της ώρας του προγραμματισμένου μηνύματος"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "Αλλαγή του χώρου εργασίας και ανάγνωση χρήσης"
@@ -3764,6 +3788,11 @@ msgstr "Αλλαγή του χώρου εργασίας και ανάγνωση 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "Αλλάξτε το στη σελίδα των κλειδιών API."
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "Αλλαγή ώρας"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "Αντιγραφή {percent}%"
 msgid "Copying {provider}"
 msgstr "Αντιγραφή του {provider}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "Δεν μπόρεσε να σταλεί"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "Δεν ήταν δυνατή η αντιγραφή"
@@ -5211,6 +5244,7 @@ msgstr "Δεδομένα έως {builtText}"
 msgid "Database upgrade"
 msgstr "Αναβάθμιση βάσης δεδομένων"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "Αναγνωριστικό καταλόγου (μισθωτή), προαιρετικό"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "Λήψη των γραμμών που παραλείφθηκαν"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "Το πρόχειρο διαγράφηκε"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Το πρόχειρο αποθηκεύτηκε"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "Κείμενο πρόχειρου"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Πρόχειρο:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "Πρόχειρα"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Πρόχειρα"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "Καθεμία με όλα της τα μηνύματα και τις σημειώσεις"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "Επεξεργασία παρακολούθησης"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "Επεξεργασία του προγραμματισμένου ή μη σταλμένου πρόχειρου"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "Επεξεργασία του τίτλου"
@@ -6281,6 +6330,14 @@ msgstr "Επεξεργασία ή προεπισκόπηση σε υπολογι
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "επεξεργάστηκε"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "Επεξεργασία πρόχειρου που δεν μπόρεσε να σταλεί"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "Επεξεργασία του μηνύματος που είναι προγραμματισμένο για {editingWhen}"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "Παραδόθηκε στον/στην {name}"
 msgid "Has an open conversation"
 msgstr "Έχει ανοιχτή συνομιλία"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "Έχει συνημμένα"
@@ -8511,10 +8569,6 @@ msgstr "Κρατήστε την προώθηση, τη δρομολόγηση ή
 msgid "Keep the name only"
 msgstr "Διατήρηση μόνο του ονόματος"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "Να κρατηθεί αυτό το μήνυμα ως πρόχειρο;"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Κρατήστε αυτή τη σελίδα ανοιχτή. Αν πέσει η σύνδεση, η μεταφόρτωση συνεχίζεται όταν επανέλθει· μετά από επαναφόρτωση, επιλέξτε το ίδιο αρχείο και στέλνονται μόνο τα μέρη που λείπουν."
@@ -8790,6 +8844,10 @@ msgstr "Καθυστέρηση"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "Αργότερα"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "Αργότερα σήμερα"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "Φόρτωση εικόνων"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "Με εποπτεία"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "Δευτέρα"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "Δευτέρα το πρωί"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "Δεν υπάρχουν μακροεντολές ακόμη"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "Κανένα μήνυμα δεν είναι προγραμματισμένο. Επιλέξτε Αποστολή αργότερα για να στείλετε ένα μήνυμα τη στιγμή που θα διαλέξετε."
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "Κανένα e-mail δεν ταιριάζει με την αναζήτηση."
 
@@ -11424,6 +11491,11 @@ msgstr "δεν εκτελέστηκε"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "Δεν εκτελέστηκε"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "Δεν αποθηκεύτηκε"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "Επιλέξτε αποστολέα στις ρυθμίσεις"
 msgid "Pick a team"
 msgstr "Επιλέξτε μια ομάδα"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "Επιλέξτε ώρα τουλάχιστον ένα λεπτό από τώρα."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "Επιλέξτε ώρα στις επόμενες 90 ημέρες, στη ζώνη ώρας σας, {zone}."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "Επιλέξτε ώρα μέσα σε ένα χρόνο."
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "Επιλογή ώρας…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "παραλήπτες"
 msgid "Recipients"
 msgstr "Παραλήπτες"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "Οι παραλήπτες και το θέμα μένουν όπως αποθηκεύτηκαν."
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "Απαραίτητο για το κλείσιμο"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "Νέος προγραμματισμός"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "Επαναποστολή"
@@ -14926,6 +15018,7 @@ msgstr "Σάββατο"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "Αποθηκεύστε μια απάντηση μαζί με ό,τι π�
 msgid "Save and close"
 msgstr "Αποθήκευση και κλείσιμο"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "Αποθήκευση και νέος προγραμματισμός"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "Αποθήκευση αλλαγών"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Αποθήκευση πρόχειρου"
 
@@ -15005,6 +15101,8 @@ msgstr "Αποθήκευση της λίστας ως προβολή"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "Η αποθήκευση αφαιρεί τον αποθηκευμένο κωδικό."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "Αποθήκευση…"
 
@@ -15076,6 +15176,7 @@ msgstr "Σάρωση"
 msgid "Scanning the headers…"
 msgstr "Σάρωση των κεφαλίδων…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "Προγραμματισμός"
@@ -15083,6 +15184,12 @@ msgstr "Προγραμματισμός"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "Προγραμματισμός και αποστολή μαζικών αποστολών, όταν ο χώρος εργασίας αφήνει κλειδιά και βοηθούς να τις στέλνουν"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "Ο προγραμματισμός ακυρώθηκε"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "Προγραμματισμός της καταχώρισης"
 msgid "Scheduled"
 msgstr "Προγραμματισμένη"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "Προγραμματισμένα"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Προγραμματίστηκε από"
@@ -15104,6 +15216,21 @@ msgstr "Προγραμματίστηκε από"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "Προγραμματίστηκε για {due}"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "Προγραμματισμένο για {when}"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "Προγραμματισμένο μήνυμα"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "Προγραμματισμός…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "Αποστολή δοκιμαστικής ειδοποίησης"
 msgid "Send a test notification to {name}"
 msgstr "Αποστολή δοκιμαστικής ειδοποίησης στον/στην {name}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "Αποστολή ξανά"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "Αποστολή αυτόματης απάντησης"
@@ -15433,6 +15564,22 @@ msgstr "Αποστολή από"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Αποστολή πρόσκλησης"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "Αποστολή αργότερα"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "Αποστολή αργότερα ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "Αποστολή αργότερα, σε απάντηση email"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "Αποστολή της επιβεβαίωσης"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "Αποστολή της επιβεβαίωσης ξανά"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "Αποστολή ξανά του πρόχειρου που δεν μπόρεσε να σταλεί"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "Αυτή η λίστα είναι ιδιωτική, οπότε οι φό
 msgid "This mail is not available"
 msgstr "Αυτό το e-mail δεν είναι διαθέσιμο"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "Αυτό το μήνυμα χρειάζεται παραλήπτη, θέμα και λίγο κείμενο για να φυλαχθεί ως πρόχειρο."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "Αυτό το γραμματοκιβώτιο συνδέεται μόνο με «Σύνδεση με Microsoft», που αυτός ο διακομιστής Yuva δεν προσφέρει. Ζητήστε από τον διαχειριστή του να το ρυθμίσει."
@@ -18936,6 +19091,7 @@ msgstr "Τσεκάρετε τις διευθύνσεις από τις οποί�
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "Τα tickets έρχονται με τις απαντήσεις, τις σημειώσεις, τις ετικέτες, την κατάσταση και τον υπεύθυνό τους. Εισαγάγετε παραπάνω τη διεύθυνση υποστήριξής σας."
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "Για να στέλνουν οι βοηθοί μόνοι τους, εν
 msgid "To: {emailTo}"
 msgstr "Προς: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "Προς: {who}"
@@ -19023,6 +19180,10 @@ msgstr "αύριο στις {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "Αύριο στις {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "Αύριο το πρωί"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "Άγνωστη συσκευή"
 msgid "unknown reason"
 msgstr "άγνωστος λόγος"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "Άγνωστος αποστολέας"
@@ -20309,6 +20471,10 @@ msgstr "Πότε"
 msgid "When {first} writes again"
 msgstr "Όταν γράψει ξανά ο/η {first}"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "Όταν ένα προγραμματισμένο μήνυμα μένει πρόχειρο επειδή απορρίφθηκε."
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "Όταν φτάσει νέο μήνυμα, θα είναι στη λίστα."
@@ -20810,6 +20976,11 @@ msgstr "Κατά την αποθήκευση λαμβάνετε τη διεύθ�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "Έχετε δημιουργήσει όσους χώρους εργασίας επιτρέπει αυτός ο διακομιστής. Διαγράψτε έναν που δεν χρησιμοποιείτε ή ζητήστε να σας προσκαλέσουν σε άλλον."
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "Δεν έχετε πρόχειρα. Τα μηνύματα που αρχίζετε να γράφετε φυλάσσονται εδώ."
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

@@ -124,9 +124,10 @@ export function useMarkAllMentionsSeen() {
   })
 }
 
-export function useDrafts(filters: DraftFilters) {
+export function useDrafts(filters: DraftFilters, enabled = true) {
   const { workspaceId: ws } = useSession()
   return useInfiniteQuery({
+    enabled,
     queryKey: keys.drafts(ws, filters),
     queryFn: ({ pageParam }) =>
       unwrap(api.GET("/v1/drafts", { params: { query: { ...filters, cursor: pageParam, limit: 50 } } })),

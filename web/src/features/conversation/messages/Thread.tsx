@@ -41,6 +41,8 @@ import { MailBody, MailControls, mailSurface, useMail } from "@/features/convers
 import { RedactedLine } from "@/features/conversation/messages/Redacted"
 import { EventLine } from "@/features/conversation/messages/EventLine"
 import { Highlight, MessageActions, Ticks } from "@/features/conversation/messages/MessageActions"
+import { OwnDraftCard } from "@/features/conversation/messages/OwnDraftCard"
+import { isOwnDraft } from "@/features/conversation/ownDraft"
 import { useDraftActions } from "@/features/conversation/queries"
 import { useLatest } from "@/hooks/use-latest"
 import { rawMessageUrl, type Conversation, type Feedback, type Message } from "@/lib/api"
@@ -1119,6 +1121,8 @@ function ThreadView({
     if (m.kind === "event") return <EventLine m={m} ctx={ctx} />
     if (m.kind === "note") return <Note m={m} ctx={ctx} name={name} me={me} />
     if (m.kind === "forward") return m.draft ? <ForwardDraft m={m} ctx={ctx} /> : <Forward m={m} ctx={ctx} />
+    if (m.draft && isOwnDraft(m, me))
+      return <OwnDraftCard m={m} onEdit={(d) => ctx.onEditDraft?.(d)} onCancel={(d) => ctx.onCancelSchedule?.(d)} />
     if (m.draft) return <Draft m={m} ctx={ctx} />
     if (m.id === feedbackId && conversation.feedback)
       return <FeedbackMessage m={m} ctx={ctx} name={name} feedback={conversation.feedback} />

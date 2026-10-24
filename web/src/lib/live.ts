@@ -131,7 +131,7 @@ function updateLists(qc: QueryClient, ctx: LiveContext, c: Conversation, patch: 
       void qc.invalidateQueries({ queryKey: key, exact: true })
       continue
     }
-    if (f.q || f.fields || f.sent || f.team === "mine" || (!base && matches(c, f, ctx.memberId))) {
+    if (f.q || f.fields || f.sent || f.scheduled || f.team === "mine" || (!base && matches(c, f, ctx.memberId))) {
       void qc.invalidateQueries({ queryKey: key, exact: true })
       continue
     }
@@ -361,12 +361,16 @@ function refreshMentions(qc: QueryClient, ws: string) {
 
 function refreshDrafts(qc: QueryClient, ws: string) {
   void qc.invalidateQueries({ queryKey: keys.draftLists(ws) })
+  for (const [key] of listCaches(qc, ws)) {
+    if ((key as QueryKey)[3] && ((key as QueryKey)[3] as ConversationFilters).scheduled)
+      void qc.invalidateQueries({ queryKey: key, exact: true })
+  }
 }
 
 function listsDraftsOf(qc: QueryClient, ws: string, test: (item: DraftItem) => boolean) {
   return qc
     .getQueriesData<InfiniteData<{ items: DraftItem[] }, string | undefined>>({ queryKey: keys.draftLists(ws) })
-    .some(([, data]) => data?.pages.some((p) => p.items.some(test)))
+    .some(([, data]) => !!data?.pages && data.pages.some((p) => p.items.some(test)))
 }
 
 type BroadcastPages = InfiniteData<{ items: Broadcast[]; next_cursor?: string }, string | undefined>

@@ -19,6 +19,7 @@ msgstr "「{name}」の値がフィールドに合っていません"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "「このページは役に立ちましたか?」、ドキュメントへのフィードバックとディスカッション"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "ロードマップのアイデアが別のステージに移りました
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "オフのルールは実行されません。ルールはリストの順に実行されます。"
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "予約したメールを送信できませんでした"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "キャンペーン名"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "キャンペーン名"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "{address} の移行をキャンセルしますか?"
 msgid "Cancel moving from {provider}?"
 msgstr "{provider} からの移行をキャンセルしますか?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "予約を取り消す"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "削除する前に一斉配信をキャンセルしてください。"
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "移行をキャンセル"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "予約を取り消してメールをもう一度編集する"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "下のアドレスへの転送に変更し、{address} のメールが {
 msgid "Change the choice"
 msgstr "選択を変更"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "時刻を変更"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "予約したメールの時刻を変更する"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "ワークスペースの変更と利用状況の閲覧"
@@ -3764,6 +3788,11 @@ msgstr "ワークスペースの変更と利用状況の閲覧"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "API キーのページで変更してください。"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "時刻を変更"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "コピー中 {percent}%"
 msgid "Copying {provider}"
 msgstr "{provider} をコピー中"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "送信できませんでした"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "コピーできませんでした"
@@ -5211,6 +5244,7 @@ msgstr "{builtText}までのデータ"
 msgid "Database upgrade"
 msgstr "データベースのアップグレード"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "ディレクトリ(テナント)ID(任意)"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "除外した行をダウンロード"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "下書きを削除しました"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "ドラフトを保存しました"
@@ -5958,15 +5995,22 @@ msgid "Draft text"
 msgstr "ドラフトの本文"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "ドラフト:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Drafts"
 msgstr "ドラフト"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Drafts"
+msgstr "下書き"
 
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "すべてのメッセージとメモを含む各会話"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "モニターを編集"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "予約済みまたは未送信の下書きを編集する"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "タイトルを編集"
@@ -6281,6 +6330,14 @@ msgstr "編集するか、デスクトップ・スマートフォン・ダーク
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "編集済み"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "送信できなかった下書きを編集中"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "{editingWhen} に予約されたメッセージを編集中"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "{name} に引き継ぎました"
 msgid "Has an open conversation"
 msgstr "未完了の会話あり"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "添付ファイルあり"
@@ -8511,10 +8569,6 @@ msgstr "転送、ルーティング、MX はそのままにしてください。
 msgid "Keep the name only"
 msgstr "名前のみ保持"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "このメールを下書きとして残しますか？"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "このページを開いたままにしてください。接続が切れても、復旧後にアップロードが続きます。再読み込みした場合は同じファイルを選ぶと、足りない部分だけが送信されます。"
@@ -8790,6 +8844,10 @@ msgstr "レイテンシ"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "後で"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "今日の後ほど"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "画像を読み込む"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "承認制"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "月曜日"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "月曜日の朝"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "マクロはまだありません"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "予約されたメールはありません。「あとで送信」を選ぶと、好きな時刻にメールを送れます。"
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "検索に一致するメールはありません。"
 
@@ -11424,6 +11491,11 @@ msgstr "未実行"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "未実行"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "保存されていません"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "設定で送信元を選択"
 msgid "Pick a team"
 msgstr "チームを選択"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "今から1分以上先の時刻を選んでください。"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "今後 90 日以内の時刻を、あなたのタイムゾーン {zone} で選択してください。"
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "1年以内の時刻を選んでください。"
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "時刻を選ぶ…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "宛先"
 msgid "Recipients"
 msgstr "宛先"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "宛先と件名は保存されたままです。"
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "閉じるときに必須"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "予約し直す"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "再送信"
@@ -14926,6 +15018,7 @@ msgstr "土曜日"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "返信と、送信時に会話に起こることをまとめて保存し
 msgid "Save and close"
 msgstr "保存して閉じる"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "保存して予約し直す"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "変更を保存"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "ドラフトを保存"
 
@@ -15005,6 +15101,8 @@ msgstr "リストをビューとして保存"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "保存すると、保存されているパスワードが削除されます。"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "保存中…"
 
@@ -15076,6 +15176,7 @@ msgstr "スキャン中"
 msgid "Scanning the headers…"
 msgstr "ヘッダーをスキャン中…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "予約"
@@ -15083,6 +15184,12 @@ msgstr "予約"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "ワークスペースがキーとアシスタントによる送信を許可している場合に、一斉配信を予約・送信"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "予約を取り消しました"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "エントリを予約"
 msgid "Scheduled"
 msgstr "予約済み"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "予約済み"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "予約者"
@@ -15104,6 +15216,21 @@ msgstr "予約者"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "{due}に送信予定"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "{when} に予約"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "予約済みのメッセージ"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "予約中…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "テスト通知を送信"
 msgid "Send a test notification to {name}"
 msgstr "{name} にテスト通知を送信"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "もう一度送信"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "自動返信を送る"
@@ -15433,6 +15564,22 @@ msgstr "送信元"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "招待を送信"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "あとで送信"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "あとで送信 ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "あとで送信、メール返信で"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "確認メールを送信"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "確認メールを再送信"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "送信できなかった下書きをもう一度送信する"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "このリストは非公開のため、フォームには表示されま
 msgid "This mail is not available"
 msgstr "このメールは利用できません"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "このメールを下書きとして残すには、宛先、件名、本文が必要です。"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "このメールボックスは「Microsoft でサインイン」でのみ接続できますが、この Yuva サーバーは対応していません。運用担当者に設定を依頼してください。"
@@ -18936,6 +19091,7 @@ msgstr "チームが送信に使うアドレスにチェックを入れてくだ
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "チケットは、返信、メモ、タグ、ステータス、担当者とともに取り込まれます。上にサポート用アドレスを入力してください。"
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "アシスタントが自分で送信できるようにするには、<0>
 msgid "To: {emailTo}"
 msgstr "宛先: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "宛先: {who}"
@@ -19023,6 +19180,10 @@ msgstr "明日 {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "明日 {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "明日の朝"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "不明なデバイス"
 msgid "unknown reason"
 msgstr "不明な理由"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "不明な送信者"
@@ -20309,6 +20471,10 @@ msgstr "日時"
 msgid "When {first} writes again"
 msgstr "{first} が再度書き込んだとき"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "予約したメッセージが拒否されて下書きのままになったとき。"
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "新しいメッセージが届くと、リストに表示されます。"
@@ -20810,6 +20976,11 @@ msgstr "保存すると、Alertmanager、Grafana、または独自スクリプ�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "このサーバーで許可されている数のワークスペースを作成済みです。使っていないものを削除するか、別のワークスペースへの招待を依頼してください。"
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "下書きはありません。書き始めたメールはここに保存されます。"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

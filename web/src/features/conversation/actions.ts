@@ -3,10 +3,12 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useSyncExternalStore } from "react"
 
 import { toast } from "@/components/common"
+import { formatWhen } from "@/components/common/SendLater"
 import { useErrorText } from "@/components/common/text"
 import type { HelpPick } from "@/features/conversation/composer/ArticlePicker"
 import { useIsChat, useIsLive } from "@/features/conversation/liveness"
 import { macroSetsStatus, macroThen, type MacroPick } from "@/features/conversation/macros"
+import { adoptDraft } from "@/features/conversation/ownDraft"
 import { patchConversation, postMessage } from "@/features/conversation/queries"
 import { api, unwrap, type Conversation, type ConversationUpdate, type Member, type Message } from "@/lib/api"
 import { keys } from "@/lib/keys"
@@ -59,6 +61,7 @@ function restoreDraftOf(id: string, req: SendRequest) {
     cc: now.cc ?? req.cc,
     bcc: now.bcc?.length ? now.bcc : req.bcc,
   })
+  if (req.draft) adoptDraft(id, req.draft.id, req.body, req.signature === false)
   revisions.set(id, (revisions.get(id) ?? 0) + 1)
   draftListeners.forEach((l) => l())
 }
@@ -82,6 +85,7 @@ export type PendingReply = {
   close: boolean
   clientId: string
   messageId?: string
+  sendAt?: Date
 }
 
 const pending = new Map<string, PendingReply[]>()
@@ -108,7 +112,7 @@ export function usePendingReplies(id: string) {
 
 const lines = new Map<string, Promise<unknown>>()
 
-function inLine(id: string, run: () => Promise<void>) {
+function inLine(id: string, run: () => Promise<unknown>) {
   const next = (lines.get(id) ?? Promise.resolve()).catch(() => undefined).then(run)
   lines.set(id, next)
   return next
@@ -173,10 +177,12 @@ export type SendRequest = {
   bcc?: string[]
   signature?: boolean
   fromAddress?: string
+  draft?: { id: string; fresh: boolean }
+  sendAt?: Date
 }
 
 export function useConversationActions(c: Conversation, contactName: string) {
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const qc = useQueryClient()
   const ctx = useLiveContext()
   const errorText = useErrorText()
@@ -195,22 +201,37 @@ export function useConversationActions(c: Conversation, contactName: string) {
   const addMessage = (m: Message) => applyEvent(qc, ctx, { type: "message.created", data: m })
 
   const deliver = async (
-    { body, files, suggestion, articles = [], macro, close, cc, bcc, signature, fromAddress }: SendRequest,
+    {
+      body,
+      files,
+      suggestion,
+      articles = [],
+      macro,
+      close,
+      cc,
+      bcc,
+      signature,
+      fromAddress,
+      draft,
+      sendAt,
+    }: SendRequest,
     clientId = newId(),
     onSent?: () => void
-  ) => {
+  ): Promise<Message> => {
+    const plain = files.length === 0 && articles.length === 0 && !macro
+    const send_at = sendAt?.toISOString()
+    const recipients = cc || bcc || fromAddress || send_at ? { cc, bcc, from_address: fromAddress, send_at } : undefined
     let sent: Message
-    if (suggestion && files.length === 0 && articles.length === 0 && !macro) {
+    if (suggestion && plain) {
       const path = { params: { path: { messageId: suggestion.id } } }
       if (body.trim() !== suggestion.body.trim())
         await unwrap(
           api.PATCH("/v1/messages/{messageId}", { ...path, body: suggestion.html ? { body, html: null } : { body } })
         )
+      sent = await unwrap(api.POST("/v1/messages/{messageId}/send", { ...path, body: recipients }))
+    } else if (draft?.fresh && plain) {
       sent = await unwrap(
-        api.POST("/v1/messages/{messageId}/send", {
-          ...path,
-          body: cc || bcc || fromAddress ? { cc, bcc, from_address: fromAddress } : undefined,
-        })
+        api.POST("/v1/messages/{messageId}/send", { params: { path: { messageId: draft.id } }, body: recipients })
       )
     } else {
       sent = await postMessage(c.id, {
@@ -224,20 +245,24 @@ export function useConversationActions(c: Conversation, contactName: string) {
         bcc,
         signature,
         from_address: fromAddress,
+        send_at,
         // oxlint-disable-next-line unicorn/no-thenable -- the API names this field `then`
         then: macro ? macroThen(c, macro, close) : undefined,
       })
     }
-    addMessage(sent)
+    if (sent.draft) {
+      applyEvent(qc, ctx, { type: "draft.updated", data: sent })
+      applyEvent(qc, ctx, { type: "draft.created", data: sent })
+    } else addMessage(sent)
     onSent?.()
     if (macro) {
       void qc.invalidateQueries({ queryKey: keys.conversation(ctx.ws, c.id) })
       void qc.invalidateQueries({ queryKey: keys.conversationLists(ctx.ws) })
     }
-    if (suggestion && (files.length > 0 || articles.length > 0 || macro))
-      await api
-        .DELETE("/v1/messages/{messageId}", { params: { path: { messageId: suggestion.id } } })
-        .catch(() => undefined)
+    const leftover = [suggestion?.id, draft?.id].filter((id): id is string => !!id && id !== sent.id)
+    for (const id of leftover)
+      await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: id } } }).catch(() => undefined)
+    return sent
   }
   const notSent = (req: SendRequest, err: unknown) => {
     restoreDraftOf(c.id, req)
@@ -286,10 +311,12 @@ export function useConversationActions(c: Conversation, contactName: string) {
       writeDraft(c.id, { body: "", mode: "message", files: [], articles: [] })
       const settled = !!req.macro && (close || macroSetsStatus(req.macro))
       if (live && !close) {
-        return inLine(c.id, () => deliver(req)).catch((err) => {
-          toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
-          throw err
-        })
+        return inLine(c.id, () => deliver(req))
+          .then(() => undefined)
+          .catch((err) => {
+            toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
+            throw err
+          })
       }
       if (live) {
         inLine(c.id, () => deliver(req)).then(
@@ -306,18 +333,18 @@ export function useConversationActions(c: Conversation, contactName: string) {
         return undefined
       }
       const key = `${c.id}:${newId()}`
+      const scheduled = !!req.sendAt
       const status = close ? "closed" : mail ? c.status : "pending"
       const clientId = newId()
+      const plain = req.files.length === 0 && !req.articles?.length && !req.macro
       const entry: PendingReply = {
         key,
         body: req.body,
         files: req.files,
         close,
         clientId,
-        messageId:
-          req.suggestion && req.files.length === 0 && !req.articles?.length && !req.macro
-            ? req.suggestion.id
-            : undefined,
+        messageId: plain ? (req.suggestion?.id ?? (req.draft?.fresh ? req.draft.id : undefined)) : undefined,
+        sendAt: req.sendAt,
       }
       const drop = () => {
         if (pending.get(c.id)?.some((p) => p.key === key))
@@ -326,35 +353,54 @@ export function useConversationActions(c: Conversation, contactName: string) {
             (pending.get(c.id) ?? []).filter((p) => p.key !== key)
           )
       }
+      let delivered: Promise<Message | undefined> = Promise.resolve(undefined)
       setPending(c.id, [...(pending.get(c.id) ?? []), entry])
       hold(key, () => {
-        deliver(req, clientId, drop).then(
-          () => {
-            if (!settled && c.status !== status) patch({ status }).catch(failed)
+        delivered = deliver(req, clientId, drop).then(
+          (sent) => {
+            if (!scheduled && !settled && c.status !== status) patch({ status }).catch(failed)
+            return sent
           },
           (err) => {
             drop()
             notSent(req, err)
+            return undefined
           }
         )
       })
-      toast(
-        close
-          ? c.kind === "feedback"
-            ? t`Sent to ${first} and resolved`
-            : mail
-              ? t`Sent to ${first} and archived`
-              : t`Sent to ${first} and closed`
-          : t`Sent to ${first}`,
-        () => {
-          if (cancel(key)) {
-            drop()
-            restoreDraftOf(c.id, req)
-          } else {
-            patch(revertOf(c)).catch(failed)
-          }
+      const undo = () => {
+        if (cancel(key)) {
+          drop()
+          restoreDraftOf(c.id, req)
+        } else if (scheduled) {
+          void delivered.then((sent) => {
+            if (!sent) return
+            unwrap(api.DELETE("/v1/messages/{messageId}/schedule", { params: { path: { messageId: sent.id } } })).then(
+              (draft) => {
+                applyEvent(qc, ctx, { type: "draft.updated", data: draft })
+                restoreDraftOf(c.id, { ...req, draft: { id: draft.id, fresh: true }, sendAt: undefined })
+              },
+              failed
+            )
+          })
+        } else {
+          patch(revertOf(c)).catch(failed)
         }
-      )
+      }
+      if (req.sendAt) {
+        const when = formatWhen(req.sendAt, i18n.locale)
+        toast(t`Scheduled for ${when}`, undo)
+      } else
+        toast(
+          close
+            ? c.kind === "feedback"
+              ? t`Sent to ${first} and resolved`
+              : mail
+                ? t`Sent to ${first} and archived`
+                : t`Sent to ${first} and closed`
+            : t`Sent to ${first}`,
+          undo
+        )
       return undefined
     },
   }

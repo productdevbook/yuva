@@ -19,6 +19,7 @@ msgstr "“{name}” ਦਾ ਮੁੱਲ ਫੀਲਡ ਨਾਲ ਮੇਲ ਨਹ
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“ਕੀ ਇਹ ਪੰਨਾ ਮਦਦਗਾਰ ਸੀ?”, ਤੁਹਾਡੇ ਡੌਕਸ ਉੱਤੇ ਫੀਡਬੈਕ ਅਤੇ ਚਰਚਾਵਾਂ"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "ਰੋਡਮੈਪ ਦਾ ਇੱਕ ਵਿਚਾਰ ਦੂਜੇ ਪੜ�
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "ਬੰਦ ਨਿਯਮ ਕਦੇ ਨਹੀਂ ਚੱਲਦਾ। ਨਿਯਮ ਸੂਚੀ ਦੇ ਕ੍ਰਮ ਵਿੱਚ ਚੱਲਦੇ ਹਨ।"
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "ਸ਼ਡਿਊਲ ਕੀਤਾ ਮੇਲ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "ਮੁਹਿੰਮ ਦਾ ਨਾਮ"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "ਮੁਹਿੰਮ ਦਾ ਨਾਮ"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "{address} ਨੂੰ ਲਿਜਾਣਾ ਰੱਦ ਕਰਨਾ ਹੈ?"
 msgid "Cancel moving from {provider}?"
 msgstr "{provider} ਤੋਂ ਲਿਜਾਣਾ ਰੱਦ ਕਰਨਾ ਹੈ?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "ਸ਼ਡਿਊਲ ਰੱਦ ਕਰੋ"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "ਮਿਟਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਬ੍ਰਾਡਕਾਸ
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "ਮਾਈਗ੍ਰੇਸ਼ਨ ਰੱਦ ਕਰੋ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "ਸ਼ਡਿਊਲ ਰੱਦ ਕਰੋ ਅਤੇ ਮੇਲ ਨੂੰ ਦੁਬਾਰਾ ਸੋਧੋ"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "ਉਸ ਫਾਰਵਰਡਿੰਗ ਨੂੰ ਹੇਠਾਂ ਦਿੱ�
 msgid "Change the choice"
 msgstr "ਚੋਣ ਬਦਲੋ"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "ਸਮਾਂ ਬਦਲੋ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "ਸ਼ਡਿਊਲ ਕੀਤੇ ਮੇਲ ਦਾ ਸਮਾਂ ਬਦਲੋ"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "ਵਰਕਸਪੇਸ ਬਦਲੋ ਅਤੇ ਵਰਤੋਂ ਪੜ੍ਹੋ"
@@ -3764,6 +3788,11 @@ msgstr "ਵਰਕਸਪੇਸ ਬਦਲੋ ਅਤੇ ਵਰਤੋਂ ਪੜ੍�
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "ਇਸਨੂੰ API ਕੁੰਜੀਆਂ ਪੰਨੇ ਉੱਤੇ ਬਦਲੋ।"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "ਸਮਾਂ ਬਦਲੋ"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "{percent}% ਕਾਪੀ ਹੋਇਆ"
 msgid "Copying {provider}"
 msgstr "{provider} ਕਾਪੀ ਹੋ ਰਿਹਾ ਹੈ"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "ਕਾਪੀ ਨਹੀਂ ਹੋ ਸਕਿਆ"
@@ -5211,6 +5244,7 @@ msgstr "{builtText} ਤੱਕ ਦਾ ਡਾਟਾ"
 msgid "Database upgrade"
 msgstr "ਡਾਟਾਬੇਸ ਅੱਪਗ੍ਰੇਡ"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "Directory (tenant) ID, ਵਿਕਲਪਿਕ"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "ਛੱਡੀਆਂ ਕਤਾਰਾਂ ਡਾਊਨਲੋਡ ਕਰੋ"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "ਡਰਾਫ਼ਟ ਹਟਾਇਆ ਗਿਆ"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "ਡਰਾਫਟ ਸੇਵ ਕੀਤਾ ਗਿਆ"
@@ -5958,15 +5995,22 @@ msgid "Draft text"
 msgstr "ਡਰਾਫਟ ਟੈਕਸਟ"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "ਡਰਾਫਟ:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Drafts"
 msgstr "ਡਰਾਫਟ"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Drafts"
+msgstr "ਡਰਾਫ਼ਟ"
 
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "ਹਰ ਇੱਕ ਆਪਣੇ ਸਾਰੇ ਸੁਨੇਹਿਆਂ ਅਤੇ ਨੋਟਾਂ ਸਮੇਤ"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "ਮਾਨੀਟਰ ਸੰਪਾਦਿਤ ਕਰੋ"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "ਸ਼ਡਿਊਲ ਕੀਤਾ ਜਾਂ ਨਾ ਭੇਜਿਆ ਡਰਾਫ਼ਟ ਸੋਧੋ"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "ਸਿਰਲੇਖ ਸੰਪਾਦਿਤ ਕਰੋ"
@@ -6281,6 +6330,14 @@ msgstr "ਸੰਪਾਦਿਤ ਕਰੋ, ਜਾਂ ਡੈਸਕਟਾਪ, ਫ਼
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "ਸੰਪਾਦਿਤ"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "ਉਹ ਡਰਾਫ਼ਟ ਸੋਧਿਆ ਜਾ ਰਿਹਾ ਹੈ ਜੋ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "{editingWhen} ਲਈ ਸ਼ਡਿਊਲ ਕੀਤਾ ਸੁਨੇਹਾ ਸੋਧਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "{name} ਨੂੰ ਸੌਂਪਿਆ ਗਿਆ"
 msgid "Has an open conversation"
 msgstr "ਖੁੱਲ੍ਹੀ ਗੱਲਬਾਤ ਹੈ"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "ਅਟੈਚਮੈਂਟ ਹਨ"
@@ -8511,10 +8569,6 @@ msgstr "ਫਾਰਵਰਡਿੰਗ, ਰੂਟਿੰਗ ਜਾਂ MX ਨੂੰ �
 msgid "Keep the name only"
 msgstr "ਸਿਰਫ਼ ਨਾਮ ਰੱਖੋ"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "ਇਸ ਮੇਲ ਨੂੰ ਖਰੜੇ ਵਜੋਂ ਰੱਖਣਾ ਹੈ?"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "ਇਸ ਪੰਨੇ ਨੂੰ ਖੁੱਲ੍ਹਾ ਰੱਖੋ। ਕਨੈਕਸ਼ਨ ਟੁੱਟੇ ਤਾਂ ਵਾਪਸ ਆਉਣ ਉੱਤੇ ਅੱਪਲੋਡ ਜਾਰੀ ਰਹਿੰਦਾ ਹੈ; ਰੀਲੋਡ ਤੋਂ ਬਾਅਦ ਉਹੀ ਫ਼ਾਈਲ ਚੁਣੋ ਅਤੇ ਸਿਰਫ਼ ਬਾਕੀ ਹਿੱਸੇ ਭੇਜੇ ਜਾਂਦੇ ਹਨ।"
@@ -8790,6 +8844,10 @@ msgstr "ਲੇਟੈਂਸੀ"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "ਬਾਅਦ ਵਿੱਚ"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "ਅੱਜ ਬਾਅਦ ਵਿੱਚ"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "ਚਿੱਤਰ ਲੋਡ ਕਰੋ"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "ਮਾਡਰੇਟਿਡ"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "ਸੋਮਵਾਰ"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "ਸੋਮਵਾਰ ਸਵੇਰੇ"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "ਅਜੇ ਕੋਈ ਮੈਕਰੋ ਨਹੀਂ"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "ਕੋਈ ਮੇਲ ਸ਼ਡਿਊਲ ਨਹੀਂ ਹੈ। ਆਪਣੀ ਚੁਣੀ ਹੋਈ ਵੇਲੇ ਮੇਲ ਭੇਜਣ ਲਈ ਬਾਅਦ ਵਿੱਚ ਭੇਜੋ ਚੁਣੋ।"
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਕੋਈ ਮੇਲ ਨਹੀਂ ਮਿਲੀ।"
 
@@ -11424,6 +11491,11 @@ msgstr "ਨਹੀਂ ਚੱਲਿਆ"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "ਚਲਾਇਆ ਨਹੀਂ ਗਿਆ"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "ਸੰਭਾਲਿਆ ਨਹੀਂ ਗਿਆ"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਭੇਜਣ ਵਾਲਾ ਚੁ�
 msgid "Pick a team"
 msgstr "ਟੀਮ ਚੁਣੋ"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "ਹੁਣ ਤੋਂ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਮਿੰਟ ਬਾਅਦ ਦਾ ਸਮਾਂ ਚੁਣੋ।"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "ਅਗਲੇ 90 ਦਿਨਾਂ ਵਿੱਚ, ਆਪਣੇ ਸਮਾਂ ਖੇਤਰ {zone} ਵਿੱਚ, ਇੱਕ ਸਮਾਂ ਚੁਣੋ।"
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "ਇੱਕ ਸਾਲ ਦੇ ਅੰਦਰ ਦਾ ਸਮਾਂ ਚੁਣੋ।"
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "ਸਮਾਂ ਚੁਣੋ…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "ਪ੍ਰਾਪਤਕਰਤਾ"
 msgid "Recipients"
 msgstr "ਪ੍ਰਾਪਤਕਰਤਾ"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "ਪ੍ਰਾਪਤਕਰਤਾ ਅਤੇ ਵਿਸ਼ਾ ਸੰਭਾਲੇ ਅਨੁਸਾਰ ਹੀ ਰਹਿੰਦੇ ਹਨ।"
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "ਬੰਦ ਕਰਨ ਲਈ ਲਾਜ਼ਮੀ"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "ਦੁਬਾਰਾ ਸ਼ਡਿਊਲ ਕਰੋ"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "ਮੁੜ ਭੇਜੋ"
@@ -14926,6 +15018,7 @@ msgstr "ਸ਼ਨੀਵਾਰ"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "ਜਵਾਬ ਦੇ ਨਾਲ ਇਹ ਵੀ ਸੰਭਾਲੋ ਕਿ �
 msgid "Save and close"
 msgstr "ਸੰਭਾਲੋ ਅਤੇ ਬੰਦ ਕਰੋ"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "ਸੰਭਾਲੋ ਅਤੇ ਦੁਬਾਰਾ ਸ਼ਡਿਊਲ ਕਰੋ"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "ਤਬਦੀਲੀਆਂ ਸੇਵ ਕਰੋ"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "ਡਰਾਫਟ ਸੇਵ ਕਰੋ"
 
@@ -15005,6 +15101,8 @@ msgstr "ਸੂਚੀ ਨੂੰ ਵਿਊ ਵਜੋਂ ਸੰਭਾਲੋ"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "ਸੇਵ ਕਰਨ ਨਾਲ ਸਟੋਰ ਕੀਤਾ ਪਾਸਵਰਡ ਹਟ ਜਾਂਦਾ ਹੈ।"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "ਸੇਵ ਹੋ ਰਿਹਾ ਹੈ…"
 
@@ -15076,6 +15176,7 @@ msgstr "ਸਕੈਨ ਹੋ ਰਿਹਾ ਹੈ"
 msgid "Scanning the headers…"
 msgstr "ਹੈਡਰ ਸਕੈਨ ਹੋ ਰਹੇ ਹਨ…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "ਸ਼ਡਿਊਲ ਕਰੋ"
@@ -15083,6 +15184,12 @@ msgstr "ਸ਼ਡਿਊਲ ਕਰੋ"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "ਬ੍ਰਾਡਕਾਸਟ ਸ਼ਡਿਊਲ ਕਰੋ ਅਤੇ ਭੇਜੋ, ਜਦੋਂ ਵਰਕਸਪੇਸ ਕੁੰਜੀਆਂ ਅਤੇ ਅਸਿਸਟੈਂਟਾਂ ਨੂੰ ਭੇਜਣ ਦੇਵੇ"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "ਸ਼ਡਿਊਲ ਰੱਦ ਕੀਤਾ ਗਿਆ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "ਐਂਟਰੀ ਸ਼ਡਿਊਲ ਕਰੋ"
 msgid "Scheduled"
 msgstr "ਸ਼ਡਿਊਲ ਕੀਤਾ ਗਿਆ"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "ਸ਼ਡਿਊਲ ਕੀਤੇ"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "ਸ਼ਡਿਊਲ ਕਰਨ ਵਾਲਾ"
@@ -15104,6 +15216,21 @@ msgstr "ਸ਼ਡਿਊਲ ਕਰਨ ਵਾਲਾ"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "{due} ਲਈ ਨਿਰਧਾਰਤ"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "{when} ਲਈ ਸ਼ਡਿਊਲ ਕੀਤਾ"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "ਸ਼ਡਿਊਲ ਕੀਤਾ ਸੁਨੇਹਾ"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "ਸ਼ਡਿਊਲ ਹੋ ਰਿਹਾ ਹੈ…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "ਟੈਸਟ ਨੋਟੀਫਿਕੇਸ਼ਨ ਭੇਜੋ"
 msgid "Send a test notification to {name}"
 msgstr "{name} ਨੂੰ ਟੈਸਟ ਨੋਟੀਫਿਕੇਸ਼ਨ ਭੇਜੋ"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "ਦੁਬਾਰਾ ਭੇਜੋ"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "ਆਟੋ-ਰਿਪਲਾਈ ਭੇਜੋ"
@@ -15433,6 +15564,22 @@ msgstr "ਇਸ ਤੋਂ ਭੇਜੋ"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "ਸੱਦਾ ਭੇਜੋ"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "ਬਾਅਦ ਵਿੱਚ ਭੇਜੋ"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "ਬਾਅਦ ਵਿੱਚ ਭੇਜੋ ({laterKey})"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "ਬਾਅਦ ਵਿੱਚ ਭੇਜੋ, ਈਮੇਲ ਜਵਾਬ ਵਿੱਚ"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "ਪੁਸ਼ਟੀ ਭੇਜੋ"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "ਪੁਸ਼ਟੀ ਦੁਬਾਰਾ ਭੇਜੋ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "ਜੋ ਡਰਾਫ਼ਟ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ ਉਸਨੂੰ ਦੁਬਾਰਾ ਭੇਜੋ"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "ਇਹ ਲਿਸਟ ਨਿੱਜੀ ਹੈ, ਇਸ ਲਈ ਫਾਰਮ �
 msgid "This mail is not available"
 msgstr "ਇਹ ਮੇਲ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "ਇਸ ਮੇਲ ਨੂੰ ਡਰਾਫ਼ਟ ਵਜੋਂ ਰੱਖਣ ਲਈ ਇੱਕ ਪ੍ਰਾਪਤਕਰਤਾ, ਵਿਸ਼ਾ ਅਤੇ ਕੁਝ ਲਿਖਤ ਚਾਹੀਦੀ ਹੈ।"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "ਇਹ ਮੇਲਬਾਕਸ ਸਿਰਫ਼ “Microsoft ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ” ਰਾਹੀਂ ਕਨੈਕਟ ਹੁੰਦਾ ਹੈ, ਜੋ ਇਹ Yuva ਸਰਵਰ ਨਹੀਂ ਦਿੰਦਾ। ਉਸਦੇ ਆਪਰੇਟਰ ਨੂੰ ਇਸਨੂੰ ਸੈੱਟ ਅੱਪ ਕਰਨ ਲਈ ਕਹੋ।"
@@ -18936,6 +19091,7 @@ msgstr "ਉਹ ਪਤੇ ਟਿੱਕ ਕਰੋ ਜਿਨ੍ਹਾਂ ਤੋਂ 
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "ਟਿਕਟਾਂ ਆਪਣੇ ਜਵਾਬ, ਨੋਟ, ਟੈਗ, ਸਥਿਤੀ ਅਤੇ ਸੌਂਪੇ ਵਿਅਕਤੀ ਨਾਲ ਆਉਂਦੀਆਂ ਹਨ। ਉੱਪਰ ਆਪਣਾ ਸਹਾਇਤਾ ਪਤਾ ਦਿਓ।"
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "ਅਸਿਸਟੈਂਟਾਂ ਨੂੰ ਆਪ ਭੇਜਣ ਦੇਣ �
 msgid "To: {emailTo}"
 msgstr "ਨੂੰ: {emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "ਵੱਲ: {who}"
@@ -19023,6 +19180,10 @@ msgstr "ਕੱਲ੍ਹ {at} ਵਜੇ"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "ਕੱਲ੍ਹ {at} ਵਜੇ"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "ਕੱਲ੍ਹ ਸਵੇਰੇ"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "ਅਣਜਾਣ ਡਿਵਾਈਸ"
 msgid "unknown reason"
 msgstr "ਅਣਜਾਣ ਕਾਰਨ"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "ਅਣਜਾਣ ਭੇਜਣ ਵਾਲਾ"
@@ -20309,6 +20471,10 @@ msgstr "ਕਦੋਂ"
 msgid "When {first} writes again"
 msgstr "ਜਦੋਂ {first} ਦੁਬਾਰਾ ਲਿਖਦਾ ਹੈ"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "ਜਦੋਂ ਸ਼ਡਿਊਲ ਕੀਤਾ ਸੁਨੇਹਾ ਰੱਦ ਹੋਣ ਕਾਰਨ ਡਰਾਫ਼ਟ ਰਹਿ ਜਾਂਦਾ ਹੈ।"
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "ਜਦੋਂ ਨਵਾਂ ਸੁਨੇਹਾ ਆਵੇਗਾ, ਉਹ ਸੂਚੀ ਵਿੱਚ ਹੋਵੇਗਾ।"
@@ -20810,6 +20976,11 @@ msgstr "ਸੇਵ ਕਰਨ ਤੇ ਤੁਹਾਡਾ ਅਲਰਟਿੰਗ ਸ�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "ਤੁਸੀਂ ਓਨੇ ਵਰਕਸਪੇਸ ਬਣਾ ਲਏ ਹਨ ਜਿੰਨੇ ਇਹ ਸਰਵਰ ਇਜਾਜ਼ਤ ਦਿੰਦਾ ਹੈ। ਜੋ ਹੁਣ ਨਹੀਂ ਵਰਤਦੇ ਉਹ ਮਿਟਾਓ, ਜਾਂ ਕਿਸੇ ਹੋਰ ਵਿੱਚ ਸੱਦੇ ਜਾਣ ਲਈ ਕਹੋ।"
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "ਤੁਹਾਡੇ ਕੋਲ ਕੋਈ ਡਰਾਫ਼ਟ ਨਹੀਂ ਹੈ। ਜੋ ਮੇਲ ਤੁਸੀਂ ਲਿਖਣੇ ਸ਼ੁਰੂ ਕਰਦੇ ਹੋ ਉਹ ਇੱਥੇ ਰੱਖੇ ਜਾਂਦੇ ਹਨ।"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."

@@ -1,13 +1,13 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { useMutation } from "@tanstack/react-query"
-import { PaperclipIcon, XIcon } from "lucide-react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { ClockIcon, PaperclipIcon, XIcon } from "lucide-react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { Kbd, toast } from "@/components/common"
 import { AddressChips } from "@/components/common/AddressChips"
 import { FromPicker, sendingAddress, useOwnSenders } from "@/components/common/FromPicker"
-import { mod } from "@/components/common/ShortcutSheet"
+import { formatWhen, SendLaterMenu } from "@/components/common/SendLater"
+import { alt, mod } from "@/components/common/ShortcutSheet"
 import { SignatureHtml } from "@/components/common/SignatureHtml"
 import { formatBytes, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -19,13 +19,15 @@ import { useSuggestions } from "@/features/conversation/composer/Recipients"
 import { look } from "@/features/inbox/PageFrame"
 import { mailPath } from "@/features/mail/folders"
 import { useMySignatures } from "@/features/settings/signature/queries"
+import { useLatest } from "@/hooks/use-latest"
 import { useIsPhone } from "@/hooks/use-media-query"
-import { api, ApiError, unwrap } from "@/lib/api"
+import { api, ApiError, unwrap, type DraftItem } from "@/lib/api"
 import { cn, newId } from "@/lib/utils"
 import { useChannelMap, useInboxes } from "@/lib/workspace"
 
 const MAX_RECIPIENTS = 50
 const EMAIL = /[^\s@,;<>"()]+@[^\s@,;<>"()]+\.[^\s@,;<>"()]+/
+const AUTOSAVE_MS = 1500
 
 type Draft = {
   inboxId: string
@@ -36,13 +38,11 @@ type Draft = {
   body: string
   files: File[]
   signature: boolean
-  draft: boolean
   clientId: string
-  fromAddress?: string
   channelId?: string
 }
 
-function post({ draft, files, ...d }: Draft) {
+function post({ files, ...d }: Draft) {
   const body = {
     inbox_id: d.inboxId,
     to: d.to,
@@ -51,9 +51,8 @@ function post({ draft, files, ...d }: Draft) {
     subject: d.subject.trim(),
     body: d.body.trim() || undefined,
     signature: d.signature ? undefined : false,
-    draft: draft || undefined,
+    draft: true,
     client_id: d.clientId,
-    from_address: d.fromAddress,
     channel_id: d.channelId,
   }
   if (files.length === 0) return unwrap(api.POST("/v1/conversations/mail", { body }))
@@ -111,18 +110,31 @@ function Row({ label, children }: { label: React.ReactNode; children: React.Reac
   )
 }
 
-export function Compose({ box, onClose }: { box: string; onClose: () => void }) {
+type Saved = {
+  id: string
+  conversationId: string
+  inboxId: string
+  structure: string
+  body: string
+  locked: boolean
+}
+
+type SaveState = "idle" | "saving" | "saved" | "failed"
+
+export function Compose({ box, onClose, draft }: { box: string; onClose: () => void; draft?: DraftItem }) {
   const { t, i18n } = useLingui()
+  const errorText = useErrorText()
   const navigate = useNavigate()
   const phone = useIsPhone()
   const inboxes = useInboxes().data
   const channels = useChannelMap()
+  const locked = !!draft
   const options = useMemo(() => {
     const withEmail = new Set([...channels.values()].filter((c) => c.kind === "email").map((c) => c.inbox_id))
     const usable = (inboxes ?? []).filter((i) => withEmail.has(i.id))
     return [...usable.filter((i) => i.purpose === "mail"), ...usable.filter((i) => i.purpose !== "mail")]
   }, [inboxes, channels])
-  const [picked, setPicked] = useState<string>()
+  const [picked, setPicked] = useState<string | undefined>(draft?.conversation.inbox_id)
   const inboxId = picked ?? (options.find((i) => i.id === box) ?? options[0])?.id
   const [pickedFrom, setPickedFrom] = useState("")
   const inboxChannels = useMemo(
@@ -132,73 +144,211 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
   const senders = useOwnSenders(inboxChannels.map((c) => c.id))
   const sender = senders.find((a) => a.address === pickedFrom)
   const senderChannel = sender && inboxChannels.find((c) => sender.usable_channel_ids.includes(c.id))
-  const [to, setTo] = useState<string[]>([])
+  const [to, setTo] = useState<string[]>(() =>
+    draft?.conversation.contact.email ? [draft.conversation.contact.email] : []
+  )
   const [cc, setCc] = useState<string[]>([])
   const [bcc, setBcc] = useState<string[]>([])
   const [ccOpen, setCcOpen] = useState(false)
   const [bccOpen, setBccOpen] = useState(false)
-  const [subject, setSubject] = useState("")
-  const [body, setBody] = useState("")
+  const [subject, setSubject] = useState(draft?.conversation.subject ?? "")
+  const [body, setBody] = useState(draft?.draft.body ?? "")
   const [files, setFiles] = useState<File[]>([])
   const [noSignature, setNoSignature] = useState(false)
   const [asking, setAsking] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<unknown>(null)
+  const [state, setState] = useState<SaveState>(locked ? "saved" : "idle")
+  const [laterOpen, setLaterOpen] = useState(false)
   const toHints = useSuggestions()
   const ccHints = useSuggestions()
   const bccHints = useSuggestions()
-  const clientId = useRef(newId())
   const fileInput = useRef<HTMLInputElement>(null)
   const toInput = useRef<HTMLInputElement>(null)
   const signature = useMySignatures().data?.find((s) => s.inbox_id === inboxId)?.html
+  const kept = draft?.draft.attachments ?? []
 
-  const submit = useMutation({ mutationFn: post })
-  const pending = submit.isPending
+  const saved = useRef<Saved | null>(
+    draft
+      ? {
+          id: draft.draft.id,
+          conversationId: draft.conversation.id,
+          inboxId: draft.conversation.inbox_id,
+          structure: "",
+          body: draft.draft.body.trim(),
+          locked: true,
+        }
+      : null
+  )
+  const chain = useRef<Promise<unknown>>(Promise.resolve())
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
   const hasContent =
     to.length + cc.length + bcc.length > 0 || subject.trim() !== "" || body.trim() !== "" || files.length > 0
-  const ready = !!inboxId && to.length > 0 && subject.trim() !== "" && !pending
-  const canSend = ready && (body.trim() !== "" || files.length > 0)
+  const ready = !!inboxId && to.length > 0 && subject.trim() !== ""
+  const saveable = ready && (body.trim() !== "" || files.length > 0 || kept.length > 0)
+  const canSend = saveable && !busy
+  const structure = JSON.stringify([
+    inboxId,
+    senderChannel?.id,
+    to,
+    cc,
+    bcc,
+    subject.trim(),
+    noSignature,
+    files.map((f) => `${f.name}:${f.size}:${f.lastModified}`),
+  ])
+  const latest = useLatest({
+    inboxId,
+    channelId: senderChannel?.id,
+    to,
+    cc,
+    bcc,
+    subject,
+    body,
+    files,
+    noSignature,
+    structure,
+    saveable,
+  })
+
+  const run = useCallback(async () => {
+    const cur = latest.current
+    if (!cur.saveable || !cur.inboxId) return
+    const text = cur.body.trim()
+    const rec = saved.current
+    if (rec && (rec.locked || rec.structure === cur.structure)) {
+      if (rec.body === text) return
+      await unwrap(
+        api.PATCH("/v1/messages/{messageId}", { params: { path: { messageId: rec.id } }, body: { body: text } })
+      )
+      saved.current = { ...rec, body: text }
+      return
+    }
+    const made = await post({
+      inboxId: cur.inboxId,
+      to: cur.to,
+      cc: cur.cc,
+      bcc: cur.bcc,
+      subject: cur.subject,
+      body: cur.body,
+      files: cur.files,
+      signature: !cur.noSignature,
+      clientId: newId(),
+      channelId: cur.channelId,
+    })
+    saved.current = {
+      id: made.message.id,
+      conversationId: made.conversation.id,
+      inboxId: cur.inboxId,
+      structure: cur.structure,
+      body: text,
+      locked: false,
+    }
+    if (rec) await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: rec.id } } })
+  }, [latest])
+  const save = useCallback(() => {
+    setState("saving")
+    const next = chain.current
+      .catch(() => undefined)
+      .then(run)
+      .then(
+        () => setState(saved.current ? "saved" : "idle"),
+        (e: unknown) => {
+          setState("failed")
+          throw e
+        }
+      )
+    chain.current = next
+    return next
+  }, [run, setState])
 
   useEffect(() => toInput.current?.focus(), [])
+  useEffect(() => {
+    if (!saveable) return
+    const rec = saved.current
+    if (rec && (rec.locked || rec.structure === structure) && rec.body === body.trim()) return
+    timer.current = setTimeout(() => {
+      timer.current = undefined
+      void save().catch(() => undefined)
+    }, AUTOSAVE_MS)
+    return () => clearTimeout(timer.current)
+  }, [saveable, structure, body, save])
 
-  const run = (draft: boolean) => {
-    if (!inboxId || (draft ? !ready : !canSend)) return
-    submit.mutate(
-      {
-        inboxId,
-        to,
-        cc,
-        bcc,
-        subject,
-        body,
-        files,
-        signature: !noSignature,
-        draft,
-        clientId: clientId.current,
-        fromAddress: sender?.address,
-        channelId: senderChannel?.id,
-      },
-      {
-        onSuccess: (data) => {
-          onClose()
-          if (draft) toast(t`Draft saved`)
-          else
-            toast(
-              t`Mail sent`,
-              () => navigate(mailPath(data.conversation.inbox_id, "sent", data.conversation.id)),
-              t`View`
-            )
-        },
-      }
-    )
+  const go = async (at?: Date) => {
+    if (!canSend) return
+    setBusy(true)
+    setError(null)
+    try {
+      clearTimeout(timer.current)
+      timer.current = undefined
+      await save()
+      const rec = saved.current
+      if (!rec) return
+      const sent = await unwrap(
+        api.POST("/v1/messages/{messageId}/send", {
+          params: { path: { messageId: rec.id } },
+          body: { from_address: sender?.address, send_at: at?.toISOString() },
+        })
+      )
+      saved.current = null
+      onClose()
+      if (at) {
+        const when = formatWhen(at, i18n.locale)
+        toast(t`Scheduled for ${when}`, () =>
+          unwrap(api.DELETE("/v1/messages/{messageId}/schedule", { params: { path: { messageId: sent.id } } })).then(
+            () => toast(t`Schedule cancelled`),
+            (e: unknown) => toast(errorText(e))
+          )
+        )
+      } else toast(t`Mail sent`, () => navigate(mailPath(rec.inboxId, "sent", rec.conversationId)), t`View`)
+    } catch (e) {
+      setError(e)
+    } finally {
+      setBusy(false)
+    }
   }
-  const close = () => {
-    if (pending) return
-    if (hasContent && !asking) setAsking(true)
-    else onClose()
+  const discard = async () => {
+    clearTimeout(timer.current)
+    timer.current = undefined
+    setBusy(true)
+    try {
+      await chain.current.catch(() => undefined)
+      const rec = saved.current
+      if (rec) await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: rec.id } } })
+      saved.current = null
+      onClose()
+    } catch (e) {
+      setError(e)
+    } finally {
+      setBusy(false)
+    }
+  }
+  const close = async () => {
+    if (busy) return
+    setBusy(true)
+    setError(null)
+    try {
+      clearTimeout(timer.current)
+      timer.current = undefined
+      if (saveable) await save()
+      if (saved.current) {
+        onClose()
+        toast(t`Draft saved`)
+      } else if (hasContent && !asking) setAsking(true)
+      else onClose()
+    } catch (e) {
+      setError(e)
+    } finally {
+      setBusy(false)
+    }
   }
 
-  const flagged = failedAddress(submit.error)
+  const flagged = failedAddress(error)
   const addFiles = (more: File[]) => setFiles((f) => [...f, ...more].slice(0, MAX_FILES))
   const sendKey = `${mod}↵`
+  const laterKey = `${alt}↵`
+  const inboxName = options.find((i) => i.id === inboxId)?.name ?? ""
 
   return (
     <div
@@ -214,38 +364,66 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
       onKeyDown={(e) => {
         if (e.key === "Escape" && !e.defaultPrevented) {
           e.stopPropagation()
-          close()
+          void close()
+        } else if (e.key === "Enter" && e.altKey) {
+          e.preventDefault()
+          if (canSend) setLaterOpen(true)
         } else if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
           e.preventDefault()
-          run(false)
+          void go()
         }
       }}
     >
       <div className="flex items-center gap-2 border-b bg-surface px-3 py-2">
-        <h2 className="flex-1 text-body font-medium">
-          <Trans>New mail</Trans>
-        </h2>
-        <Button variant="ghost" size="icon-sm" aria-label={t`Close`} onClick={close} data-testid="compose-close">
+        <h2 className="flex-1 text-body font-medium">{locked ? <Trans>Draft</Trans> : <Trans>New mail</Trans>}</h2>
+        {state !== "idle" && (
+          <span
+            className={cn("text-caption", state === "failed" ? "text-destructive" : "text-faint")}
+            aria-live="polite"
+            data-testid="compose-saved"
+          >
+            {state === "saving" ? (
+              <Trans>Saving…</Trans>
+            ) : state === "saved" ? (
+              <Trans>Saved</Trans>
+            ) : (
+              <Trans>Not saved</Trans>
+            )}
+          </span>
+        )}
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={t`Close`}
+          onClick={() => void close()}
+          data-testid="compose-close"
+        >
           <XIcon />
         </Button>
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto py-2">
         <Row label={<Trans>From</Trans>}>
           <div className="flex flex-wrap gap-1.5">
-            <NativeSelect
-              className="min-w-40 flex-1"
-              size="sm"
-              value={inboxId ?? ""}
-              aria-label={t`From`}
-              onChange={(e) => setPicked(e.target.value)}
-              data-testid="compose-from"
-            >
-              {options.map((i) => (
-                <NativeSelectOption key={i.id} value={i.id}>
-                  {i.name}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
+            {locked ? (
+              <span className="min-w-40 flex-1 truncate pt-1.5 text-body" data-testid="compose-from">
+                {inboxName}
+              </span>
+            ) : (
+              <NativeSelect
+                className="min-w-40 flex-1"
+                size="sm"
+                value={inboxId ?? ""}
+                aria-label={t`From`}
+                onChange={(e) => setPicked(e.target.value)}
+                data-testid="compose-from"
+              >
+                {options.map((i) => (
+                  <NativeSelectOption key={i.id} value={i.id}>
+                    {i.name}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            )}
             <FromPicker
               className="min-w-40 flex-1"
               channelAddress={sendingAddress(inboxChannels[0])}
@@ -256,83 +434,103 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
             />
           </div>
         </Row>
-        <Row label={<Trans>To</Trans>}>
-          <div className="flex items-start gap-1">
-            <AddressChips
-              ref={toInput}
-              label={t`To`}
-              value={to}
-              onChange={setTo}
-              max={MAX_RECIPIENTS}
-              flagged={flagged ? [flagged] : []}
-              below
-              testId="compose-to"
-              className="flex-1"
-              {...toHints}
-            />
-            {!ccOpen && (
-              <button
-                type="button"
-                className={toggleClass}
-                onClick={() => setCcOpen(true)}
-                data-testid="compose-cc-toggle"
-              >
-                <Trans>Cc</Trans>
-              </button>
+        {locked ? (
+          <>
+            <Row label={<Trans>To</Trans>}>
+              <p className="pt-1.5 text-body break-words" data-testid="compose-to">
+                {to.join(", ")}
+              </p>
+              <p className="pt-1 text-caption text-faint">
+                <Trans>Recipients and subject stay as saved.</Trans>
+              </p>
+            </Row>
+            <Row label={<Trans>Subject</Trans>}>
+              <p className="pt-1.5 text-body break-words" data-testid="compose-subject">
+                {subject}
+              </p>
+            </Row>
+          </>
+        ) : (
+          <>
+            <Row label={<Trans>To</Trans>}>
+              <div className="flex items-start gap-1">
+                <AddressChips
+                  ref={toInput}
+                  label={t`To`}
+                  value={to}
+                  onChange={setTo}
+                  max={MAX_RECIPIENTS}
+                  flagged={flagged ? [flagged] : []}
+                  below
+                  testId="compose-to"
+                  className="flex-1"
+                  {...toHints}
+                />
+                {!ccOpen && (
+                  <button
+                    type="button"
+                    className={toggleClass}
+                    onClick={() => setCcOpen(true)}
+                    data-testid="compose-cc-toggle"
+                  >
+                    <Trans>Cc</Trans>
+                  </button>
+                )}
+                {!bccOpen && (
+                  <button
+                    type="button"
+                    className={toggleClass}
+                    onClick={() => setBccOpen(true)}
+                    data-testid="compose-bcc-toggle"
+                  >
+                    <Trans>Bcc</Trans>
+                  </button>
+                )}
+              </div>
+            </Row>
+            {ccOpen && (
+              <Row label={<Trans>Cc</Trans>}>
+                <AddressChips
+                  label={t`Cc`}
+                  value={cc}
+                  onChange={setCc}
+                  max={MAX_RECIPIENTS}
+                  flagged={flagged ? [flagged] : []}
+                  below
+                  testId="compose-cc"
+                  {...ccHints}
+                />
+              </Row>
             )}
-            {!bccOpen && (
-              <button
-                type="button"
-                className={toggleClass}
-                onClick={() => setBccOpen(true)}
-                data-testid="compose-bcc-toggle"
-              >
-                <Trans>Bcc</Trans>
-              </button>
+            {bccOpen && (
+              <Row label={<Trans>Bcc</Trans>}>
+                <AddressChips
+                  label={t`Bcc`}
+                  value={bcc}
+                  onChange={setBcc}
+                  max={MAX_RECIPIENTS}
+                  flagged={flagged ? [flagged] : []}
+                  below
+                  testId="compose-bcc"
+                  {...bccHints}
+                />
+                <p className="pt-1 text-caption text-faint">
+                  <Trans>Bcc recipients get the mail but are hidden from everyone else.</Trans>
+                </p>
+              </Row>
             )}
-          </div>
-        </Row>
-        {ccOpen && (
-          <Row label={<Trans>Cc</Trans>}>
-            <AddressChips
-              label={t`Cc`}
-              value={cc}
-              onChange={setCc}
-              max={MAX_RECIPIENTS}
-              flagged={flagged ? [flagged] : []}
-              below
-              testId="compose-cc"
-              {...ccHints}
-            />
-          </Row>
+            <Row label={<Trans>Subject</Trans>}>
+              <Input
+                value={subject}
+                maxLength={500}
+                aria-label={t`Subject`}
+                onChange={(e) => setSubject(e.target.value)}
+                className="h-8"
+                data-testid="compose-subject"
+              />
+            </Row>
+          </>
         )}
-        {bccOpen && (
-          <Row label={<Trans>Bcc</Trans>}>
-            <AddressChips
-              label={t`Bcc`}
-              value={bcc}
-              onChange={setBcc}
-              max={MAX_RECIPIENTS}
-              flagged={flagged ? [flagged] : []}
-              below
-              testId="compose-bcc"
-              {...bccHints}
-            />
-            <p className="pt-1 text-caption text-faint">
-              <Trans>Bcc recipients get the mail but are hidden from everyone else.</Trans>
-            </p>
-          </Row>
-        )}
-        <Row label={<Trans>Subject</Trans>}>
-          <Input
-            value={subject}
-            maxLength={500}
-            aria-label={t`Subject`}
-            onChange={(e) => setSubject(e.target.value)}
-            className="h-8"
-            data-testid="compose-subject"
-          />
-        </Row>
         <Textarea
           value={body}
           maxLength={65536}
@@ -340,6 +538,7 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
           placeholder={t`Write your mail…`}
           onChange={(e) => setBody(e.target.value)}
           onPaste={(e) => {
+            if (locked) return
             const pasted = Array.from(e.clipboardData.files)
             if (pasted.length === 0) return
             e.preventDefault()
@@ -348,7 +547,7 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
           className="min-h-40 flex-1 resize-none rounded-none border-0 bg-transparent px-4 py-2 text-reading shadow-none hover:border-0 focus-visible:ring-0 md:text-reading dark:bg-transparent"
           data-testid="compose-body"
         />
-        {signature && (
+        {signature && !locked && (
           <div className="mx-4 flex items-start gap-3 border-t pt-2" data-testid="compose-signature">
             <div className={cn("min-w-0 flex-1 opacity-70", noSignature && "line-through opacity-40")}>
               <SignatureHtml html={signature} className="max-h-24 overflow-y-auto" />
@@ -365,8 +564,18 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
             </Button>
           </div>
         )}
-        {files.length > 0 && (
+        {(kept.length > 0 || files.length > 0) && (
           <ul className="flex flex-wrap gap-1.5 px-4">
+            {kept.map((a) => (
+              <li
+                key={a.id}
+                className="flex max-w-full items-center gap-1.5 rounded-lg border bg-background py-0.5 ps-2 pe-2 text-caption"
+              >
+                <PaperclipIcon className="size-3 shrink-0 text-faint" />
+                <span className="max-w-48 truncate">{a.filename}</span>
+                <span className="text-faint">{formatBytes(a.size, i18n.locale)}</span>
+              </li>
+            ))}
             {files.map((f, i) => (
               <li
                 key={`${f.name}-${i}`}
@@ -390,20 +599,17 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
         )}
       </div>
       <div className="flex flex-col gap-1.5 border-t px-3 py-2">
-        <ComposeError error={submit.error} />
+        <ComposeError error={error} />
         {asking ? (
           <div className="flex flex-wrap items-center gap-2" data-testid="compose-ask">
             <span className="flex-1 text-small phone:basis-full">
-              <Trans>Keep this mail as a draft?</Trans>
+              <Trans>This mail needs a recipient, a subject and some text before it can be kept as a draft.</Trans>
             </span>
             <Button variant="ghost" size="sm" onClick={() => setAsking(false)}>
               <Trans>Keep writing</Trans>
             </Button>
             <Button variant="outline" size="sm" onClick={onClose} data-testid="compose-discard">
               <Trans>Discard</Trans>
-            </Button>
-            <Button size="sm" disabled={!ready} onClick={() => run(true)} data-testid="compose-ask-save">
-              <Trans>Save draft</Trans>
             </Button>
           </div>
         ) : (
@@ -419,27 +625,46 @@ export function Compose({ box, onClose }: { box: string; onClose: () => void }) 
                 e.target.value = ""
               }}
             />
+            {!locked && (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="text-faint hover:bg-muted"
+                aria-label={t`Attach files`}
+                title={t`Attach files`}
+                onClick={() => fileInput.current?.click()}
+              >
+                <PaperclipIcon />
+              </Button>
+            )}
             <Button
               variant="ghost"
-              size="icon-sm"
-              className="text-faint hover:bg-muted"
-              aria-label={t`Attach files`}
-              title={t`Attach files`}
-              onClick={() => fileInput.current?.click()}
+              className={cn(look.btn, "text-faint hover:bg-muted")}
+              disabled={busy || !hasContent}
+              onClick={() => void discard()}
+              data-testid="compose-discard"
             >
-              <PaperclipIcon />
+              <Trans>Discard</Trans>
             </Button>
             <span className="flex-1" />
-            <Button
-              variant="outline"
-              className={look.btn}
-              disabled={!ready}
-              onClick={() => run(true)}
-              data-testid="compose-draft"
+            <SendLaterMenu
+              open={laterOpen}
+              onOpenChange={setLaterOpen}
+              trigger={
+                <Button
+                  variant="outline"
+                  className={cn(look.btn, "w-[34px] px-0")}
+                  disabled={!canSend}
+                  aria-label={t`Send later`}
+                  title={t`Send later (${laterKey})`}
+                  data-testid="compose-send-later"
+                />
+              }
+              onPick={(at) => void go(at)}
             >
-              <Trans>Save draft</Trans>
-            </Button>
-            <Button className={look.btnInk} disabled={!canSend} onClick={() => run(false)} data-testid="compose-send">
+              <ClockIcon />
+            </SendLaterMenu>
+            <Button className={look.btnInk} disabled={!canSend} onClick={() => void go()} data-testid="compose-send">
               <Trans>Send</Trans>
               <Kbd className="phone:hidden bg-background/15 text-background">{sendKey}</Kbd>
             </Button>

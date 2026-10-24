@@ -19,6 +19,8 @@ export type ThreadContext = {
   onForwardMail?: (m: Message) => void
   onRemove?: (m: Message) => void
   canRemove?: (m: Message) => boolean
+  onEditDraft?: (m: Message) => void
+  onCancelSchedule?: (m: Message) => void
 }
 
 function nameOf(a: MessageAuthor, ctx: ThreadContext, t: ReturnType<typeof useLingui>["t"], from?: string) {

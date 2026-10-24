@@ -27,10 +27,12 @@ import {
 } from "@/features/mail/folders"
 import { Compose } from "@/features/mail/Compose"
 import { COMPOSE_EVENT } from "@/features/mail/compose"
+import { MailDrafts } from "@/features/mail/MailDrafts"
 import { MailList } from "@/features/mail/MailList"
 import { MailThread } from "@/features/mail/MailThread"
 import { useMailCounts } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import type { DraftItem } from "@/lib/api"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { useViewing } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
@@ -152,17 +154,30 @@ export function MailPage() {
   const open = useCallback((next: string) => navigate(mailPath(box, folder, next)), [navigate, box, folder])
   const leave = useCallback(() => navigate(mailPath(box, folder)), [navigate, box, folder])
   useViewing(id ?? undefined)
-  const [composing, setComposing] = useState(false)
+  const [composing, setComposing] = useState<{ draft?: DraftItem } | null>(null)
   useEffect(() => {
-    const on = () => setComposing(true)
+    const on = () => setComposing({})
     window.addEventListener(COMPOSE_EVENT, on)
     return () => window.removeEventListener(COMPOSE_EVENT, on)
   }, [])
-  useHotkeys({ [MAIL_KEYS.compose]: () => setComposing(true) }, inboxes.length > 0 && !composing)
+  useHotkeys({ [MAIL_KEYS.compose]: () => setComposing({}) }, inboxes.length > 0 && !composing)
 
   const canonical = mailPath(box, folders.includes(folder) ? folder : "inbox", id ?? undefined)
   if (inboxes.length === 0) return <NoMailInboxes />
   if (pathname !== canonical) return <Navigate to={canonical} replace />
+
+  const list = (currentId: string | null) =>
+    folder === "drafts" ? (
+      <MailDrafts
+        box={box}
+        currentId={currentId}
+        onOpen={open}
+        onCompose={(draft) => setComposing({ draft })}
+        active={!composing}
+      />
+    ) : (
+      <MailList box={box} folder={folder} currentId={currentId} onOpen={open} active />
+    )
 
   const boxName = box === "all" ? t`All mail` : (inboxes.find((i) => i.id === box)?.name ?? "")
   const tabs = folders.map((f) => ({
@@ -189,7 +204,7 @@ export function MailPage() {
           action={
             <>
               <BoxPicker box={box} folder={folder} />
-              <ComposeButton onClick={() => setComposing(true)} />
+              <ComposeButton onClick={() => setComposing({})} />
             </>
           }
         >
@@ -205,8 +220,15 @@ export function MailPage() {
             }))}
           />
         </ListHead>
-        <MailList box={box} folder={folder} currentId={null} onOpen={open} active />
-        {composing && <Compose box={box} onClose={() => setComposing(false)} />}
+        {list(null)}
+        {composing && (
+          <Compose
+            key={composing.draft?.draft.id}
+            box={box}
+            draft={composing.draft}
+            onClose={() => setComposing(null)}
+          />
+        )}
       </main>
     )
   }
@@ -219,7 +241,7 @@ export function MailPage() {
         actions={
           <>
             <BoxPicker box={box} folder={folder} />
-            <ComposeButton onClick={() => setComposing(true)} />
+            <ComposeButton onClick={() => setComposing({})} />
           </>
         }
         tabs={<FrameTabs label={t`Folders`} value={folder} items={tabs} />}
@@ -239,14 +261,16 @@ export function MailPage() {
           maxSize={600}
           groupResizeBehavior="preserve-pixel-size"
         >
-          <MailList box={box} folder={folder} currentId={id} onOpen={open} active />
+          {list(id)}
         </ResizablePanel>
         <ResizableHandle withHandle className={handle} />
         <ResizablePanel id="thread" className="flex flex-col" minSize={440}>
           {id ? <Thread id={id} onLeave={leave} /> : <EmptyThread />}
         </ResizablePanel>
       </ResizablePanelGroup>
-      {composing && <Compose box={box} onClose={() => setComposing(false)} />}
+      {composing && (
+        <Compose key={composing.draft?.draft.id} box={box} draft={composing.draft} onClose={() => setComposing(null)} />
+      )}
     </main>
   )
 }

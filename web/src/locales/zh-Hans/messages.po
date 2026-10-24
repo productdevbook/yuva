@@ -19,6 +19,7 @@ msgstr "“{name}”的值与字段不符"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“此页面对您有帮助吗?”、文档上的反馈和讨论"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -1504,6 +1505,10 @@ msgstr "一个路线图想法进入了另一个阶段"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "A rule that is off never runs. Rules run in the order of the list."
 msgstr "已关闭的规则永远不会运行。规则按列表顺序运行。"
+
+#: src/features/settings/notifications/events.ts
+msgid "A scheduled mail could not be sent"
+msgstr "一封定时邮件未能发送"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "A secret is set. Paste a new one to replace it."
@@ -3575,6 +3580,7 @@ msgstr "活动名称"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/account/ConnectPage.tsx
@@ -3587,6 +3593,7 @@ msgstr "活动名称"
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsPage.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/discussions/FromConversation.tsx
@@ -3641,6 +3648,10 @@ msgstr "取消迁移 {address}?"
 msgid "Cancel moving from {provider}?"
 msgstr "取消从 {provider} 迁移?"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Cancel schedule"
+msgstr "取消定时"
+
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Cancel the broadcast"
@@ -3653,6 +3664,10 @@ msgstr "删除前请先取消群发。"
 #: src/features/migrations/parts.tsx
 msgid "Cancel the migration"
 msgstr "取消迁移"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Cancel the schedule and edit the mail again"
+msgstr "取消定时并重新编辑邮件"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Cancel this import?"
@@ -3757,6 +3772,15 @@ msgstr "把该转发改为下面的地址,让 {address} 的邮件到达 Yuva 而
 msgid "Change the choice"
 msgstr "更改选择"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change the time"
+msgstr "更改时间"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Change the time of the scheduled mail"
+msgstr "更改定时邮件的时间"
+
 #: src/components/common/text.ts
 msgid "Change the workspace and read usage"
 msgstr "更改工作区并查看用量"
@@ -3764,6 +3788,11 @@ msgstr "更改工作区并查看用量"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Change this on the API keys page."
 msgstr "请在 API 密钥页面更改。"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Change time"
+msgstr "更改时间"
 
 #: src/components/common/text.ts
 msgid "Change, delete and merge contacts"
@@ -4896,6 +4925,10 @@ msgstr "正在复制 {percent}%"
 msgid "Copying {provider}"
 msgstr "正在复制 {provider}"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Could not be sent"
+msgstr "无法发送"
+
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Could not copy"
 msgstr "无法复制"
@@ -5211,6 +5244,7 @@ msgstr "数据截至 {builtText}"
 msgid "Database upgrade"
 msgstr "数据库升级"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/fields/value.ts
 msgid "Date"
@@ -5646,6 +5680,7 @@ msgid "Directory (tenant) ID, optional"
 msgstr "目录(租户)ID,可选"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
 msgid "Discard"
@@ -5920,6 +5955,7 @@ msgid "Download the rows left out"
 msgstr "下载被排除的行"
 
 #: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/LinkIncidentDialog.tsx
@@ -5949,6 +5985,7 @@ msgid "Draft deleted"
 msgstr "草稿已删除"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "草稿已保存"
@@ -5958,13 +5995,20 @@ msgid "Draft text"
 msgstr "草稿文本"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "草稿:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
+msgid "Drafts"
+msgstr "草稿"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Drafts"
 msgstr "草稿"
 
@@ -6159,6 +6203,7 @@ msgid "Each with all its messages and notes"
 msgstr "每个都包含其所有消息和备注"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/automation/AutomationPage.tsx
@@ -6260,6 +6305,10 @@ msgid "Edit the monitor"
 msgstr "编辑监控"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Edit the scheduled or unsent draft"
+msgstr "编辑定时或未发送的草稿"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Edit the title"
 msgstr "编辑标题"
@@ -6281,6 +6330,14 @@ msgstr "编辑,或在桌面、手机和深色模式下预览"
 #: src/features/status/IncidentDetail.tsx
 msgid "edited"
 msgstr "已编辑"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing a draft that could not be sent"
+msgstr "正在编辑一份未能发送的草稿"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Editing the message scheduled for {editingWhen}"
+msgstr "正在编辑定于 {editingWhen} 发送的消息"
 
 #: src/features/status/IncidentDialog.tsx
 msgid "Elevated API errors"
@@ -7469,6 +7526,7 @@ msgstr "已交给 {name}"
 msgid "Has an open conversation"
 msgstr "有未关闭的对话"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Has attachments"
 msgstr "有附件"
@@ -8511,10 +8569,6 @@ msgstr "请保持转发、路由或 MX 不变:邮件现在就是这样到达 Yuv
 msgid "Keep the name only"
 msgstr "仅保留名称"
 
-#: src/features/mail/Compose.tsx
-msgid "Keep this mail as a draft?"
-msgstr "将这封邮件保存为草稿吗？"
-
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "请保持此页面打开。如果连接中断,恢复后上传会继续;刷新后,选择同一个文件,只会发送缺少的部分。"
@@ -8790,6 +8844,10 @@ msgstr "延迟"
 #: src/components/common/ServiceWorkerBridge.tsx
 msgid "Later"
 msgstr "稍后"
+
+#: src/components/common/SendLater.tsx
+msgid "Later today"
+msgstr "今天晚些时候"
 
 #: src/components/common/Linked.tsx
 msgid "Latest reply"
@@ -9137,6 +9195,7 @@ msgstr "加载图片"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/mail/MailDrafts.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/LinkConversationsDialog.tsx
@@ -9849,6 +9908,10 @@ msgstr "需审核"
 #: src/components/common/text.ts
 msgid "Monday"
 msgstr "星期一"
+
+#: src/components/common/SendLater.tsx
+msgid "Monday morning"
+msgstr "周一早上"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
@@ -10978,6 +11041,10 @@ msgid "No macros yet"
 msgstr "还没有宏"
 
 #: src/features/mail/MailList.tsx
+msgid "No mail is scheduled. Pick Send later to send mail at a time you choose."
+msgstr "没有定时邮件。选择“稍后发送”，即可在你选定的时间发送邮件。"
+
+#: src/features/mail/MailList.tsx
 msgid "No mail matches your search."
 msgstr "没有符合搜索的邮件。"
 
@@ -11424,6 +11491,11 @@ msgstr "未运行"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Not run"
 msgstr "未运行"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Not saved"
+msgstr "未保存"
 
 #: src/features/status/Notices.tsx
 msgid "Not sent"
@@ -12999,9 +13071,21 @@ msgstr "在设置中选择发件人"
 msgid "Pick a team"
 msgstr "选择一个团队"
 
+#: src/components/common/SendLater.tsx
+msgid "Pick a time at least a minute from now."
+msgstr "请选择至少一分钟之后的时间。"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Pick a time in the next 90 days, in your time zone, {zone}."
 msgstr "请在未来 90 天内选择一个时间,按你的时区 {zone}。"
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time within a year."
+msgstr "请选择一年之内的时间。"
+
+#: src/components/common/SendLater.tsx
+msgid "Pick a time…"
+msgstr "选择时间…"
 
 #: src/features/settings/channels/email/form.ts
 msgid "Pick a TLS mode."
@@ -13890,6 +13974,10 @@ msgstr "收件人"
 msgid "Recipients"
 msgstr "收件人"
 
+#: src/features/mail/Compose.tsx
+msgid "Recipients and subject stay as saved."
+msgstr "收件人和主题保持已保存的样子。"
+
 #. placeholder {0}: c.recipients
 #: src/features/status/Notices.tsx
 msgid "Recipients: {0}"
@@ -14548,6 +14636,10 @@ msgstr "Require single sign-on"
 msgid "Required to close"
 msgstr "关闭时必填"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Reschedule"
+msgstr "重新定时"
+
 #: src/features/team/TeamPage.tsx
 msgid "Resend"
 msgstr "重新发送"
@@ -14926,6 +15018,7 @@ msgstr "星期六"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/settings/api-keys/ApiKeyDialog.tsx
@@ -14958,6 +15051,10 @@ msgstr "把一条回复和发送时会对会话执行的操作一起保存。"
 msgid "Save and close"
 msgstr "保存并关闭"
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Save and reschedule"
+msgstr "保存并重新定时"
+
 #: src/features/settings/sso/SamlForm.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Save and test"
@@ -14978,7 +15075,6 @@ msgstr "保存更改"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "保存草稿"
 
@@ -15005,6 +15101,8 @@ msgstr "将列表保存为视图"
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/app/PushSection.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -15046,6 +15144,8 @@ msgid "Saving removes the stored password."
 msgstr "保存会移除已存储的密码。"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Saving…"
 msgstr "保存中…"
 
@@ -15076,6 +15176,7 @@ msgstr "扫描中"
 msgid "Scanning the headers…"
 msgstr "正在扫描标头…"
 
+#: src/components/common/SendLater.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Schedule"
 msgstr "安排发送"
@@ -15083,6 +15184,12 @@ msgstr "安排发送"
 #: src/components/common/text.ts
 msgid "Schedule and send broadcasts, when the workspace lets keys and assistants send them"
 msgstr "在工作区允许密钥和助手发送时,安排并发送群发"
+
+#: src/features/conversation/ChatView.tsx
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Schedule cancelled"
+msgstr "已取消定时"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Schedule the entry"
@@ -15096,6 +15203,11 @@ msgstr "安排条目"
 msgid "Scheduled"
 msgstr "已安排"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Scheduled"
+msgstr "定时"
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "安排者"
@@ -15104,6 +15216,21 @@ msgstr "安排者"
 #: src/features/status/StatusPages.tsx
 msgid "Scheduled for {due}"
 msgstr "计划于 {due} 发送"
+
+#: src/features/conversation/actions.ts
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/conversation/messages/OwnDraftCard.tsx
+#: src/features/mail/Compose.tsx
+msgid "Scheduled for {when}"
+msgstr "定于 {when} 发送"
+
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Scheduled message"
+msgstr "定时消息"
+
+#: src/features/mail/MailThread.tsx
+msgid "Scheduling…"
+msgstr "正在定时…"
 
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -15389,6 +15516,10 @@ msgstr "发送测试通知"
 msgid "Send a test notification to {name}"
 msgstr "向 {name} 发送测试通知"
 
+#: src/features/conversation/messages/OwnDraftCard.tsx
+msgid "Send again"
+msgstr "重新发送"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Send an auto-reply"
 msgstr "发送自动回复"
@@ -15433,6 +15564,22 @@ msgstr "发件人"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "发送邀请"
+
+#: src/components/common/SendLater.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later"
+msgstr "稍后发送"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
+msgid "Send later ({laterKey})"
+msgstr "稍后发送（{laterKey}）"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send later, in an e-mail reply"
+msgstr "稍后发送，用于邮件回复"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Send mail from your own address"
@@ -15483,6 +15630,10 @@ msgstr "发送确认邮件"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Send the confirmation again"
 msgstr "再次发送确认邮件"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send the draft that could not be sent again"
+msgstr "重新发送未能发送的草稿"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Send the e-mail after"
@@ -18714,6 +18865,10 @@ msgstr "此列表是私有的,因此表单不会提供它。要使用表单,请�
 msgid "This mail is not available"
 msgstr "这封邮件不可用"
 
+#: src/features/mail/Compose.tsx
+msgid "This mail needs a recipient, a subject and some text before it can be kept as a draft."
+msgstr "这封邮件需要收件人、主题和一些正文才能保存为草稿。"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
 msgstr "此邮箱只能通过“使用 Microsoft 登录”连接,而此 Yuva 服务器不提供该方式。请让其运维人员设置。"
@@ -18936,6 +19091,7 @@ msgstr "勾选你的团队用来发信的地址,这样他们的邮件就不会�
 msgid "Tickets come over with their replies, notes, tags, status and assignee. Enter your support address above."
 msgstr "工单会连同其回复、备注、标签、状态和负责人一起导入。请在上面输入你的支持地址。"
 
+#: src/components/common/SendLater.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
@@ -18984,6 +19140,7 @@ msgstr "要让助手自行发送,请开启<0>允许机器人发送</0>。"
 msgid "To: {emailTo}"
 msgstr "收件人:{emailTo}"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "To: {who}"
 msgstr "收件人：{who}"
@@ -19023,6 +19180,10 @@ msgstr "明天 {at}"
 #: src/features/conversation/HeaderActions.tsx
 msgid "Tomorrow at {at}"
 msgstr "明天 {at}"
+
+#: src/components/common/SendLater.tsx
+msgid "Tomorrow morning"
+msgstr "明天早上"
 
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
@@ -19314,6 +19475,7 @@ msgstr "未知设备"
 msgid "unknown reason"
 msgstr "未知原因"
 
+#: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
 msgid "Unknown sender"
 msgstr "未知发件人"
@@ -20309,6 +20471,10 @@ msgstr "时间"
 msgid "When {first} writes again"
 msgstr "当 {first} 再次发言时"
 
+#: src/features/settings/notifications/events.ts
+msgid "When a message you scheduled stays a draft because it was refused."
+msgstr "当定时消息因被拒绝而保留为草稿时。"
+
 #: src/features/inbox/ChatsPage.tsx
 msgid "When a new message arrives, it will be in the list."
 msgstr "新消息到达时,会出现在列表中。"
@@ -20810,6 +20976,11 @@ msgstr "保存时会得到告警系统（Alertmanager、Grafana 或你自己的�
 #: src/features/auth/CreateWorkspace.tsx
 msgid "You have created as many workspaces as this server allows. Delete one you no longer use, or ask to be invited to another."
 msgstr "你创建的工作区已达到此服务器允许的数量。请删除一个不再使用的,或请求受邀加入另一个。"
+
+#: src/features/mail/MailDrafts.tsx
+#: src/features/mail/MailList.tsx
+msgid "You have no drafts. Mail you start writing is kept here."
+msgstr "你没有草稿。你开始撰写的邮件会保存在这里。"
 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
