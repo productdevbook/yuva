@@ -37,7 +37,9 @@ func searchQuery(q *string) (*string, error) {
 		return nil, nil
 	}
 	if len([]rune(v)) > 200 {
-		return nil, errValidation("q must be at most 200 characters")
+		e := errValidation("q must be at most 200 characters")
+		e.Field = "q"
+		return nil, e
 	}
 	return &v, nil
 }
