@@ -41,6 +41,7 @@ import { SlaPage } from "@/features/settings/sla/SlaPage"
 import { TeamsPage } from "@/features/settings/teams/TeamsPage"
 import { NotificationsPage } from "@/features/settings/notifications/NotificationsPage"
 import { ProfilePage } from "@/features/settings/profile/ProfilePage"
+import { SignaturePage } from "@/features/settings/signature/SignaturePage"
 import { MembersReport, RatingsReport, ReportsPane, TodayReport } from "@/features/reports/ReportPages"
 import { TrendsReport } from "@/features/reports/TrendsReport"
 import { SettingsHome, SettingsPane } from "@/features/settings/SettingsColumn"
@@ -283,6 +284,7 @@ export function AppRoutes() {
             <Route index element={<SettingsHome />} />
             <Route element={<SettingsPane />}>
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="signature" element={<SignaturePage />} />
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="appearance" element={<AppearancePage />} />
               <Route path="workspace" element={<WorkspacePage />} />

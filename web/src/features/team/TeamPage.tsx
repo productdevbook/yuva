@@ -377,6 +377,11 @@ function MemberDetail({ member: m, load, products }: Detail) {
           <h2 className="text-title break-words" data-testid="member-name">
             {you ? t`${name} (you)` : name}
           </h2>
+          {m.title && (
+            <span className="text-muted-foreground" data-testid="member-title">
+              {m.title}
+            </span>
+          )}
           <span className="text-muted-foreground">{m.email}</span>
           <span className="text-caption text-faint">
             {text.role[m.role]} · {s.text}

@@ -22,6 +22,7 @@ export type CommandName =
   | "forward"
   | "article"
   | "recipients"
+  | "signature"
   | "idea"
   | "createIssue"
   | "linkIssue"

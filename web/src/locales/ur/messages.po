@@ -1833,6 +1833,14 @@ msgstr "گروپ شامل کریں"
 msgid "Add header"
 msgstr "ہیڈر شامل کریں"
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Add image"
+msgstr "Add image"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Add it back"
+msgstr "Add it back"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "لیبل {labelName} شامل کریں"
@@ -3185,6 +3193,11 @@ msgstr "بھیجنے سے پہلے"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Best regards,"
+msgstr "Best regards,"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
@@ -5090,6 +5103,10 @@ msgstr "طے کریں کہ بحثوں میں کون لکھ سکتا ہے"
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "براڈکاسٹ بھیجنے کی درخواست مسترد کی"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Default signature"
+msgstr "Default signature"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Default target"
@@ -7766,6 +7783,11 @@ msgstr "درآمد ہو رہا ہے…"
 msgid "Imports run one at a time in the workspace. Try again when the other one ends."
 msgstr "ورک اسپیس میں درآمدات ایک وقت میں ایک چلتی ہیں۔ دوسری ختم ہونے پر دوبارہ کوشش کریں۔"
 
+#. placeholder {0}: membership.workspace.name
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "In {0} only. Your signature can show it."
+msgstr "In {0} only. Your signature can show it."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "in {contact}"
 msgstr "{contact} کے ساتھ"
@@ -7913,6 +7935,10 @@ msgstr "ان باکس تک رسائی"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "ان باکس کا رنگ"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Inbox default"
+msgstr "Inbox default"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Inbox for {name}"
@@ -8285,6 +8311,10 @@ msgstr "اس کا متن اور فائلیں ہمیشہ کے لیے حذف ہو 
 msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
 msgstr "اس کی قدریں پس منظر میں تمام گفتگو سے مٹا دی جاتی ہیں۔ اسے واپس نہیں کیا جا سکتا۔"
 
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Job title"
+msgstr "Job title"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role} کے طور پر ورک اسپیس میں شامل ہوئے"
@@ -8610,6 +8640,10 @@ msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api
 msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave it out"
+msgstr "Leave it out"
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "اسے {name} پر چھوڑ دیں"
@@ -8621,6 +8655,15 @@ msgstr "اسے اس ساتھی پر چھوڑ دیں جو لکھ رہا ہے"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave the text, then the block"
 msgstr "متن رہنے دیں، پھر بلاک"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave your signature off this reply ({signatureKey})"
+msgstr "Leave your signature off this reply ({signatureKey})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Leave your signature off this reply, or put it back"
+msgstr "Leave your signature off this reply, or put it back"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Left off the public page and its overall state."
@@ -9272,6 +9315,10 @@ msgstr "اس پوسٹ کو اسپام نشان زد کریں؟"
 #: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown کام کرتا ہے۔"
+
+#: src/components/common/SignatureEditor.tsx
+msgid "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
+msgstr "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10793,6 +10840,10 @@ msgstr "ابھی کوئی بھیجنے والا نہیں"
 msgid "No settings"
 msgstr "کوئی ترتیب نہیں"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "No signature"
+msgstr "No signature"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "no SMTP account"
 msgstr "کوئی SMTP اکاؤنٹ نہیں"
@@ -11351,6 +11402,10 @@ msgstr "اس مدت میں کچھ ناپا نہیں گیا۔"
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "یہاں کچھ کھولا، جواب دیا یا بند نہیں کیا گیا۔ لمبی مدت یا دوسرے فلٹر آزمائیں۔"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Nothing. Replies from this inbox go out without a signature."
+msgstr "Nothing. Replies from this inbox go out without a signature."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -13945,6 +14000,10 @@ msgstr "جوابات اور بندشیں"
 msgid "Replies and ratings"
 msgstr "جوابات اور ریٹنگز"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+msgstr "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Replies cannot go out until you add a reply account."
 msgstr "جب تک آپ جوابی اکاؤنٹ شامل نہ کریں جوابات نہیں جا سکتے۔"
@@ -14529,6 +14588,7 @@ msgstr "ہفتہ"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -14601,6 +14661,7 @@ msgstr "فہرست کو ویو کے طور پر محفوظ کریں"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -15785,6 +15846,13 @@ msgstr "سائن اپ"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Sign-up sheet at the spring fair"
 msgstr "بہار میلے میں سائن اپ شیٹ"
+
+#: src/app/Palette.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Signature"
+msgstr "Signature"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Signed HTTP calls to your backend for conversations, messages and feedback. Each endpoint can listen to one product or to all."
@@ -18946,6 +19014,10 @@ msgstr "اس کی جگہ Takeout فائل اپ لوڈ کریں"
 msgid "Upload an .mbox file, or a .zip of .eml files or of a Maildir. Yuva needs no access to the mailbox."
 msgstr ".mbox فائل، یا .eml فائلوں یا Maildir کی .zip اپ لوڈ کریں۔ Yuva کو میل باکس تک رسائی نہیں چاہیے۔"
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Upload an image and put it at the cursor"
+msgstr "Upload an image and put it at the cursor"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "اپ لوڈ اور جانچ"
@@ -19091,6 +19163,10 @@ msgstr "نمونے کی قدریں استعمال کریں"
 msgid "Use the current list"
 msgstr "موجودہ فہرست استعمال کریں"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Use the inbox default"
+msgstr "Use the inbox default"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "میل باکس کا صارف نام اور پاس ورڈ استعمال کریں، یا اگر آپ کا فراہم کنندہ دے تو ایپ پاس ورڈ۔"
@@ -19146,6 +19222,10 @@ msgstr "صارف نام"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
 msgstr "صارف نام"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Using the inbox default"
+msgstr "Using the inbox default"
 
 #: src/features/setup/previews.tsx
 msgid "Usually replies within a day"
@@ -19637,6 +19717,14 @@ msgstr "کیا جائے گا"
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "جو آپ اکثر لکھتے ہیں"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "What your e-mailed replies end with"
+msgstr "What your e-mailed replies end with"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20297,6 +20385,10 @@ msgstr "آپ کی تنظیم نے سائن ان بلاک کر دیا"
 msgid "Your organization's admin must allow Yuva"
 msgstr "آپ کی تنظیم کے ایڈمن کو Yuva کی اجازت دینی ہوگی"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your own"
+msgstr "Your own"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "آپ کی اپنی نگرانی اپنی حالت بھیجتی ہے، بشمول Alertmanager اور Grafana کے الرٹس۔"
@@ -20321,6 +20413,10 @@ msgstr "آپ کی پروڈکٹ"
 msgid "Your product."
 msgstr "آپ کی مصنوعات۔"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your replies by e-mail end with"
+msgstr "Your replies by e-mail end with"
+
 #: src/features/setup/previews.tsx
 msgid "Your replies go out from this address"
 msgstr "آپ کے جوابات اس پتے سے جاتے ہیں"
@@ -20341,6 +20437,10 @@ msgstr "Your service provider details"
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."
 msgstr "آپ کا سیشن ختم ہو گیا۔ دوبارہ سائن ان کریں۔"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your signature"
+msgstr "Your signature"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your support address"

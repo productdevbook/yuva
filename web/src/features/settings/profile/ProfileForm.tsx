@@ -8,14 +8,33 @@ import { Input } from "@/components/ui/input"
 import { Card, ChoiceSelect, Rows, Section, SettingRow } from "@/features/settings/ui"
 import { activate, locales } from "@/i18n"
 import { api, unwrap, type Locale } from "@/lib/api"
+import { keys } from "@/lib/keys"
 import { meKey, useSession } from "@/lib/session"
+import { useMembers } from "@/lib/workspace"
 
 export function ProfileForm() {
   const { t } = useLingui()
   const qc = useQueryClient()
   const errorText = useErrorText()
-  const { me } = useSession()
+  const { me, membership, workspaceId: ws } = useSession()
   const [name, setName] = useState(me.person.name)
+  const mine = useMembers().data?.find((m) => m.id === membership.member_id)
+  const [title, setTitle] = useState<string | null>(null)
+  const saveTitle = useMutation({
+    mutationFn: (value: string) =>
+      unwrap(
+        api.PATCH("/v1/members/{memberId}", {
+          params: { path: { memberId: membership.member_id } },
+          body: { title: value },
+        })
+      ),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: keys.members(ws) })
+      setTitle(null)
+      toast(t`Saved`)
+    },
+    onError: (e) => toast(errorText(e)),
+  })
   const save = useMutation({
     mutationFn: (body: { name?: string; locale?: Locale }) => unwrap(api.PATCH("/v1/me", { body })),
     onSuccess: (data) => {
@@ -41,6 +60,21 @@ export function ProfileForm() {
               className="h-9 w-60 rounded-[10px] bg-background phone:w-40"
               onChange={(e) => setName(e.target.value)}
               onBlur={() => name.trim() !== me.person.name && save.mutate({ name: name.trim() })}
+            />
+          </SettingRow>
+          <SettingRow
+            title={<Trans>Job title</Trans>}
+            hint={<Trans>In {membership.workspace.name} only. Your signature can show it.</Trans>}
+            htmlFor="job-title"
+          >
+            <Input
+              id="job-title"
+              value={title ?? mine?.title ?? ""}
+              maxLength={100}
+              disabled={!mine}
+              className="h-9 w-60 rounded-[10px] bg-background phone:w-40"
+              onChange={(e) => setTitle(e.target.value)}
+              onBlur={() => title !== null && title.trim() !== (mine?.title ?? "") && saveTitle.mutate(title.trim())}
             />
           </SettingRow>
           <SettingRow title={<Trans>E-mail</Trans>}>

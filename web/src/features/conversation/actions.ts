@@ -171,6 +171,7 @@ export type SendRequest = {
   macro?: MacroPick
   cc?: string[]
   bcc?: string[]
+  signature?: boolean
 }
 
 export function useConversationActions(c: Conversation, contactName: string) {
@@ -192,7 +193,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
   const addMessage = (m: Message) => applyEvent(qc, ctx, { type: "message.created", data: m })
 
   const deliver = async (
-    { body, files, suggestion, articles = [], macro, close, cc, bcc }: SendRequest,
+    { body, files, suggestion, articles = [], macro, close, cc, bcc, signature }: SendRequest,
     clientId = newId(),
     onSent?: () => void
   ) => {
@@ -216,6 +217,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         macro_id: macro?.macro.id,
         cc,
         bcc,
+        signature,
         // oxlint-disable-next-line unicorn/no-thenable -- the API names this field `then`
         then: macro ? macroThen(c, macro, close) : undefined,
       })

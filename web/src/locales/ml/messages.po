@@ -1833,6 +1833,14 @@ msgstr "ഗ്രൂപ്പ് ചേർക്കുക"
 msgid "Add header"
 msgstr "ഹെഡർ ചേർക്കുക"
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Add image"
+msgstr "Add image"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Add it back"
+msgstr "Add it back"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "ലേബൽ {labelName} ചേർക്കുക"
@@ -3185,6 +3193,11 @@ msgstr "അയയ്ക്കുന്നതിന് മുമ്പ്"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Best regards,"
+msgstr "Best regards,"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
@@ -5090,6 +5103,10 @@ msgstr "ചർച്ചകളിൽ ആർക്ക് എഴുതാം എന
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "ബ്രോഡ്‌കാസ്റ്റ് അയയ്ക്കാനുള്ള അഭ്യർത്ഥന നിരസിച്ചു"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Default signature"
+msgstr "Default signature"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Default target"
@@ -7766,6 +7783,11 @@ msgstr "ഇറക്കുമതി ചെയ്യുന്നു…"
 msgid "Imports run one at a time in the workspace. Try again when the other one ends."
 msgstr "വർക്ക്സ്പേസിൽ ഇറക്കുമതികൾ ഒന്നൊന്നായി പ്രവർത്തിക്കുന്നു. മറ്റേത് തീരുമ്പോൾ വീണ്ടും ശ്രമിക്കുക."
 
+#. placeholder {0}: membership.workspace.name
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "In {0} only. Your signature can show it."
+msgstr "In {0} only. Your signature can show it."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "in {contact}"
 msgstr "{contact} നൊപ്പം"
@@ -7913,6 +7935,10 @@ msgstr "ഇൻബോക്സ് ആക്സസ്"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "ഇൻബോക്സ് നിറം"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Inbox default"
+msgstr "Inbox default"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Inbox for {name}"
@@ -8285,6 +8311,10 @@ msgstr "അതിലെ വാചകവും ഫയലുകളും എന്
 msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
 msgstr "അതിന്റെ മൂല്യങ്ങൾ എല്ലാ സംഭാഷണങ്ങളിൽ നിന്നും പശ്ചാത്തലത്തിൽ മായ്ക്കപ്പെടും. ഇത് തിരികെ വരുത്താനാകില്ല."
 
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Job title"
+msgstr "Job title"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role} ആയി വർക്ക്‌സ്‌പേസിൽ ചേർന്നു"
@@ -8610,6 +8640,10 @@ msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api
 msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave it out"
+msgstr "Leave it out"
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "{name}-ന് വിടുക"
@@ -8621,6 +8655,15 @@ msgstr "ടൈപ്പ് ചെയ്യുന്ന സഹപ്രവർത�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave the text, then the block"
 msgstr "ടെക്സ്റ്റ് വിടുക, പിന്നെ ബ്ലോക്ക്"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave your signature off this reply ({signatureKey})"
+msgstr "Leave your signature off this reply ({signatureKey})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Leave your signature off this reply, or put it back"
+msgstr "Leave your signature off this reply, or put it back"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Left off the public page and its overall state."
@@ -9272,6 +9315,10 @@ msgstr "ഈ പോസ്റ്റ് സ്പാം ആയി അടയാള�
 #: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown പ്രവർത്തിക്കും."
+
+#: src/components/common/SignatureEditor.tsx
+msgid "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
+msgstr "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10793,6 +10840,10 @@ msgstr "ഇതുവരെ അയയ്ക്കുന്നയാളില്�
 msgid "No settings"
 msgstr "ക്രമീകരണങ്ങളില്ല"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "No signature"
+msgstr "No signature"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "no SMTP account"
 msgstr "SMTP അക്കൗണ്ട് ഇല്ല"
@@ -11351,6 +11402,10 @@ msgstr "ഈ കാലയളവിൽ ഒന്നും അളന്നിട്
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "ഇവിടെ ഒന്നും തുറക്കുകയോ മറുപടി നൽകുകയോ അടയ്ക്കുകയോ ചെയ്തിട്ടില്ല. ദൈർഘ്യമേറിയ കാലയളവോ മറ്റ് ഫിൽട്ടറുകളോ പരീക്ഷിക്കുക."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Nothing. Replies from this inbox go out without a signature."
+msgstr "Nothing. Replies from this inbox go out without a signature."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -13945,6 +14000,10 @@ msgstr "മറുപടികളും അടയ്ക്കലുകളും"
 msgid "Replies and ratings"
 msgstr "മറുപടികളും റേറ്റിംഗുകളും"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+msgstr "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Replies cannot go out until you add a reply account."
 msgstr "നിങ്ങൾ ഒരു മറുപടി അക്കൗണ്ട് ചേർക്കുന്നതുവരെ മറുപടികൾ പോകില്ല."
@@ -14529,6 +14588,7 @@ msgstr "ശനിയാഴ്ച"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -14601,6 +14661,7 @@ msgstr "പട്ടിക കാഴ്ചയായി സേവ് ചെയ്
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -15785,6 +15846,13 @@ msgstr "സൈൻ-അപ്പ്"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Sign-up sheet at the spring fair"
 msgstr "വസന്തകാല മേളയിലെ സൈൻ-അപ്പ് ഷീറ്റ്"
+
+#: src/app/Palette.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Signature"
+msgstr "Signature"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Signed HTTP calls to your backend for conversations, messages and feedback. Each endpoint can listen to one product or to all."
@@ -18946,6 +19014,10 @@ msgstr "പകരം ഒരു Takeout ഫയൽ അപ്‌ലോഡ് ചെ
 msgid "Upload an .mbox file, or a .zip of .eml files or of a Maildir. Yuva needs no access to the mailbox."
 msgstr "ഒരു .mbox ഫയൽ, അല്ലെങ്കിൽ .eml ഫയലുകളുടെയോ Maildir-ന്റെയോ .zip അപ്‌ലോഡ് ചെയ്യുക. Yuva-യ്ക്ക് മെയിൽബോക്സ് ആക്‌സസ് ആവശ്യമില്ല."
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Upload an image and put it at the cursor"
+msgstr "Upload an image and put it at the cursor"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "അപ്‌ലോഡ് ചെയ്ത് പരിശോധിക്കുക"
@@ -19091,6 +19163,10 @@ msgstr "സാമ്പിൾ മൂല്യങ്ങൾ ഉപയോഗിക�
 msgid "Use the current list"
 msgstr "നിലവിലെ പട്ടിക ഉപയോഗിക്കുക"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Use the inbox default"
+msgstr "Use the inbox default"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "മെയിൽബോക്സിന്റെ ഉപയോക്തൃനാമവും പാസ്‌വേഡും ഉപയോഗിക്കുക, അല്ലെങ്കിൽ നിങ്ങളുടെ ദാതാവ് നൽകുന്നുണ്ടെങ്കിൽ ആപ്പ് പാസ്‌വേഡ് ഉപയോഗിക്കുക."
@@ -19146,6 +19222,10 @@ msgstr "ഉപയോക്തൃനാമം"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
 msgstr "ഉപയോക്തൃനാമം"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Using the inbox default"
+msgstr "Using the inbox default"
 
 #: src/features/setup/previews.tsx
 msgid "Usually replies within a day"
@@ -19637,6 +19717,14 @@ msgstr "എന്ത് പോകും"
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "നിങ്ങൾ പതിവായി എഴുതുന്നത്"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "What your e-mailed replies end with"
+msgstr "What your e-mailed replies end with"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20297,6 +20385,10 @@ msgstr "നിങ്ങളുടെ ഓർഗനൈസേഷൻ സൈൻ-ഇൻ
 msgid "Your organization's admin must allow Yuva"
 msgstr "നിങ്ങളുടെ ഓർഗനൈസേഷന്റെ അഡ്മിൻ Yuva-യെ അനുവദിക്കണം"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your own"
+msgstr "Your own"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "നിങ്ങളുടെ സ്വന്തം നിരീക്ഷണം അതിന്റെ അവസ്ഥ അയയ്ക്കുന്നു, Alertmanager, Grafana അലേർട്ടുകൾ ഉൾപ്പെടെ."
@@ -20321,6 +20413,10 @@ msgstr "നിങ്ങളുടെ ഉൽപ്പന്നം"
 msgid "Your product."
 msgstr "നിങ്ങളുടെ ഉൽപ്പന്നം."
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your replies by e-mail end with"
+msgstr "Your replies by e-mail end with"
+
 #: src/features/setup/previews.tsx
 msgid "Your replies go out from this address"
 msgstr "നിങ്ങളുടെ മറുപടികൾ ഈ വിലാസത്തിൽ നിന്ന് പോകുന്നു"
@@ -20341,6 +20437,10 @@ msgstr "Your service provider details"
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."
 msgstr "നിങ്ങളുടെ സെഷൻ അവസാനിച്ചു. വീണ്ടും സൈൻ ഇൻ ചെയ്യുക."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your signature"
+msgstr "Your signature"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your support address"

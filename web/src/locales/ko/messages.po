@@ -1833,6 +1833,14 @@ msgstr "그룹 추가"
 msgid "Add header"
 msgstr "헤더 추가"
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Add image"
+msgstr "Add image"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Add it back"
+msgstr "Add it back"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "라벨 {labelName} 추가"
@@ -3185,6 +3193,11 @@ msgstr "보내기 전에"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Best regards,"
+msgstr "Best regards,"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
@@ -5090,6 +5103,10 @@ msgstr "토론에 글을 쓸 수 있는 사람 정하기"
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "일괄 발송 요청을 거절했습니다"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Default signature"
+msgstr "Default signature"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Default target"
@@ -7766,6 +7783,11 @@ msgstr "가져오는 중…"
 msgid "Imports run one at a time in the workspace. Try again when the other one ends."
 msgstr "가져오기는 워크스페이스에서 한 번에 하나씩 실행됩니다. 다른 가져오기가 끝난 뒤 다시 시도하세요."
 
+#. placeholder {0}: membership.workspace.name
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "In {0} only. Your signature can show it."
+msgstr "In {0} only. Your signature can show it."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "in {contact}"
 msgstr "{contact}에서"
@@ -7913,6 +7935,10 @@ msgstr "받은 편지함 접근"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "받은 편지함 색상"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Inbox default"
+msgstr "Inbox default"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Inbox for {name}"
@@ -8285,6 +8311,10 @@ msgstr "텍스트와 파일이 영구적으로 삭제되고, 대화에는 삭제
 msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
 msgstr "값이 모든 대화에서 백그라운드로 지워집니다. 되돌릴 수 없습니다."
 
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Job title"
+msgstr "Job title"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role}(으)로 워크스페이스에 참여했습니다"
@@ -8610,6 +8640,10 @@ msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api
 msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave it out"
+msgstr "Leave it out"
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "{name}님에게 맡기기"
@@ -8621,6 +8655,15 @@ msgstr "입력 중인 팀원에게 맡기기"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave the text, then the block"
 msgstr "텍스트는 두고 블록 삭제"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave your signature off this reply ({signatureKey})"
+msgstr "Leave your signature off this reply ({signatureKey})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Leave your signature off this reply, or put it back"
+msgstr "Leave your signature off this reply, or put it back"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Left off the public page and its overall state."
@@ -9272,6 +9315,10 @@ msgstr "이 게시물을 스팸으로 표시할까요?"
 #: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown을 사용할 수 있습니다."
+
+#: src/components/common/SignatureEditor.tsx
+msgid "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
+msgstr "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10793,6 +10840,10 @@ msgstr "아직 발신자가 없습니다"
 msgid "No settings"
 msgstr "설정 없음"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "No signature"
+msgstr "No signature"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "no SMTP account"
 msgstr "SMTP 계정 없음"
@@ -11351,6 +11402,10 @@ msgstr "이 기간에는 측정된 것이 없습니다."
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "여기서는 열리거나 답변되거나 닫힌 항목이 없습니다. 더 긴 기간이나 다른 필터를 사용해 보세요."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Nothing. Replies from this inbox go out without a signature."
+msgstr "Nothing. Replies from this inbox go out without a signature."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -13945,6 +14000,10 @@ msgstr "답장과 종료"
 msgid "Replies and ratings"
 msgstr "답장 및 평가"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+msgstr "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Replies cannot go out until you add a reply account."
 msgstr "답장 계정을 추가하기 전에는 답장을 보낼 수 없습니다."
@@ -14529,6 +14588,7 @@ msgstr "토요일"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -14601,6 +14661,7 @@ msgstr "목록을 보기로 저장"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -15785,6 +15846,13 @@ msgstr "가입"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Sign-up sheet at the spring fair"
 msgstr "봄 박람회의 신청서"
+
+#: src/app/Palette.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Signature"
+msgstr "Signature"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Signed HTTP calls to your backend for conversations, messages and feedback. Each endpoint can listen to one product or to all."
@@ -18946,6 +19014,10 @@ msgstr "대신 Takeout 파일 업로드"
 msgid "Upload an .mbox file, or a .zip of .eml files or of a Maildir. Yuva needs no access to the mailbox."
 msgstr ".mbox 파일, 또는 .eml 파일이나 Maildir의 .zip을 업로드하세요. Yuva는 메일함에 대한 접근이 필요 없습니다."
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Upload an image and put it at the cursor"
+msgstr "Upload an image and put it at the cursor"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "업로드 및 확인"
@@ -19091,6 +19163,10 @@ msgstr "샘플 값 사용"
 msgid "Use the current list"
 msgstr "현재 목록 사용"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Use the inbox default"
+msgstr "Use the inbox default"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "메일함의 사용자 이름과 비밀번호를 사용하세요. 제공업체가 앱 비밀번호를 제공하면 그것을 쓰세요."
@@ -19146,6 +19222,10 @@ msgstr "사용자 이름"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
 msgstr "사용자 이름"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Using the inbox default"
+msgstr "Using the inbox default"
 
 #: src/features/setup/previews.tsx
 msgid "Usually replies within a day"
@@ -19637,6 +19717,14 @@ msgstr "발송될 것"
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "자주 쓰는 말"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "What your e-mailed replies end with"
+msgstr "What your e-mailed replies end with"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20297,6 +20385,10 @@ msgstr "조직이 로그인을 차단했습니다"
 msgid "Your organization's admin must allow Yuva"
 msgstr "조직의 관리자가 Yuva를 허용해야 합니다"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your own"
+msgstr "Your own"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "자체 모니터링 도구가 상태를 보냅니다. Alertmanager와 Grafana 알림도 포함됩니다."
@@ -20321,6 +20413,10 @@ msgstr "내 제품"
 msgid "Your product."
 msgstr "내 제품."
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your replies by e-mail end with"
+msgstr "Your replies by e-mail end with"
+
 #: src/features/setup/previews.tsx
 msgid "Your replies go out from this address"
 msgstr "답장이 이 주소에서 나갑니다"
@@ -20341,6 +20437,10 @@ msgstr "Your service provider details"
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."
 msgstr "세션이 종료되었습니다. 다시 로그인하세요."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your signature"
+msgstr "Your signature"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your support address"

@@ -89,6 +89,7 @@ function useItems(open: boolean): Item[] {
       act("forward", t`Forward by e-mail…`, SHORTCUTS.forward)
       act("article", t`Send a help article`, SHORTCUTS.article)
       act("recipients", t`Cc and Bcc the reply`, SHORTCUTS.recipients)
+      act("signature", t`Leave your signature off this reply, or put it back`, SHORTCUTS.signature)
       act("idea", t`Link to a roadmap idea`, SHORTCUTS.idea)
       if (pathname.startsWith("/feedback/")) {
         act("createIssue", t`Create a GitHub or Linear issue`, SHORTCUTS.createIssue)
@@ -140,6 +141,7 @@ function useItems(open: boolean): Item[] {
     go(t`E-mail designs`, "/broadcasts/designs")
     go(t`Settings`, "/settings", [mod, ","])
     go(t`Profile`, "/settings/profile")
+    go(t`Signature`, "/settings/signature")
     go(t`Notifications`, "/settings/notifications")
     go(t`Appearance`, "/settings/appearance")
     go(t`Members`, "/settings/members")

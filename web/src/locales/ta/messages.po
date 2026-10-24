@@ -1833,6 +1833,14 @@ msgstr "குழுவைச் சேர்"
 msgid "Add header"
 msgstr "தலைப்பைச் சேர்"
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Add image"
+msgstr "Add image"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Add it back"
+msgstr "Add it back"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "லேபிள் {labelName} ஐச் சேர்"
@@ -3185,6 +3193,11 @@ msgstr "அனுப்பும் முன்"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Best regards,"
+msgstr "Best regards,"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
@@ -5090,6 +5103,10 @@ msgstr "விவாதங்களில் யார் எழுதலாம�
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "ஒளிபரப்புகளை அனுப்பும் கோரிக்கையை நிராகரித்தார்"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Default signature"
+msgstr "Default signature"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Default target"
@@ -7766,6 +7783,11 @@ msgstr "இறக்குமதி செய்கிறது…"
 msgid "Imports run one at a time in the workspace. Try again when the other one ends."
 msgstr "பணியிடத்தில் இறக்குமதிகள் ஒரு நேரத்தில் ஒன்று ஓடும். மற்றது முடிந்ததும் மீண்டும் முயலுங்கள்."
 
+#. placeholder {0}: membership.workspace.name
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "In {0} only. Your signature can show it."
+msgstr "In {0} only. Your signature can show it."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "in {contact}"
 msgstr "{contact} உடன்"
@@ -7913,6 +7935,10 @@ msgstr "இன்பாக்ஸ் அணுகல்"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "இன்பாக்ஸ் நிறம்"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Inbox default"
+msgstr "Inbox default"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Inbox for {name}"
@@ -8285,6 +8311,10 @@ msgstr "அதன் உரையும் கோப்புகளும் ந
 msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
 msgstr "அதன் மதிப்புகள் எல்லா உரையாடல்களிலிருந்தும் பின்னணியில் அழிக்கப்படும். இதைத் திரும்பப் பெற முடியாது."
 
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Job title"
+msgstr "Job title"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "{role} ஆக பணியிடத்தில் சேர்ந்தார்"
@@ -8610,6 +8640,10 @@ msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api
 msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave it out"
+msgstr "Leave it out"
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "அதை {name}-க்கு விடு"
@@ -8621,6 +8655,15 @@ msgstr "தட்டச்சு செய்யும் குழு உறு
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave the text, then the block"
 msgstr "உரையை விடு, பிறகு தொகுதி"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave your signature off this reply ({signatureKey})"
+msgstr "Leave your signature off this reply ({signatureKey})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Leave your signature off this reply, or put it back"
+msgstr "Leave your signature off this reply, or put it back"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Left off the public page and its overall state."
@@ -9272,6 +9315,10 @@ msgstr "இந்த இடுகையை ஸ்பேம் எனக் க�
 #: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown வேலை செய்யும்."
+
+#: src/components/common/SignatureEditor.tsx
+msgid "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
+msgstr "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10793,6 +10840,10 @@ msgstr "இன்னும் அனுப்புநர் இல்லை"
 msgid "No settings"
 msgstr "அமைப்புகள் இல்லை"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "No signature"
+msgstr "No signature"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "no SMTP account"
 msgstr "SMTP கணக்கு இல்லை"
@@ -11351,6 +11402,10 @@ msgstr "இந்தக் காலத்தில் எதுவும் அ
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "இங்கே எதுவும் திறக்கப்படவில்லை, பதிலளிக்கப்படவில்லை, மூடப்படவில்லை. நீண்ட காலம் அல்லது வேறு வடிகட்டிகளை முயற்சிக்கவும்."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Nothing. Replies from this inbox go out without a signature."
+msgstr "Nothing. Replies from this inbox go out without a signature."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -13945,6 +14000,10 @@ msgstr "பதில்களும் மூடல்களும்"
 msgid "Replies and ratings"
 msgstr "பதில்களும் மதிப்பீடுகளும்"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+msgstr "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Replies cannot go out until you add a reply account."
 msgstr "நீங்கள் பதில் கணக்கைச் சேர்க்கும் வரை பதில்கள் செல்ல முடியாது."
@@ -14529,6 +14588,7 @@ msgstr "சனிக்கிழமை"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -14601,6 +14661,7 @@ msgstr "பட்டியலைக் காட்சியாகச் சே�
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -15785,6 +15846,13 @@ msgstr "பதிவு"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Sign-up sheet at the spring fair"
 msgstr "வசந்தக் கண்காட்சியில் பதிவுத் தாள்"
+
+#: src/app/Palette.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Signature"
+msgstr "Signature"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Signed HTTP calls to your backend for conversations, messages and feedback. Each endpoint can listen to one product or to all."
@@ -18946,6 +19014,10 @@ msgstr "அதற்குப் பதிலாக Takeout கோப்பை�
 msgid "Upload an .mbox file, or a .zip of .eml files or of a Maildir. Yuva needs no access to the mailbox."
 msgstr ".mbox கோப்பு, அல்லது .eml கோப்புகள் அல்லது Maildir-இன் .zip-ஐப் பதிவேற்றுங்கள். Yuva-வுக்கு அஞ்சல்பெட்டி அணுகல் தேவையில்லை."
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Upload an image and put it at the cursor"
+msgstr "Upload an image and put it at the cursor"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "பதிவேற்றிச் சரிபார்"
@@ -19091,6 +19163,10 @@ msgstr "மாதிரி மதிப்புகளைப் பயன்ப�
 msgid "Use the current list"
 msgstr "தற்போதைய பட்டியலைப் பயன்படுத்து"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Use the inbox default"
+msgstr "Use the inbox default"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "அஞ்சல்பெட்டியின் பயனர் பெயர், கடவுச்சொல்லைப் பயன்படுத்துங்கள், அல்லது உங்கள் வழங்குநர் வழங்கினால் ஆப் கடவுச்சொல்."
@@ -19146,6 +19222,10 @@ msgstr "பயனர் பெயர்"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
 msgstr "பயனர் பெயர்"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Using the inbox default"
+msgstr "Using the inbox default"
 
 #: src/features/setup/previews.tsx
 msgid "Usually replies within a day"
@@ -19637,6 +19717,14 @@ msgstr "செல்லவிருப்பது"
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "நீங்கள் அடிக்கடி எழுதுவது"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "What your e-mailed replies end with"
+msgstr "What your e-mailed replies end with"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20297,6 +20385,10 @@ msgstr "உங்கள் நிறுவனம் உள்நுழைவை�
 msgid "Your organization's admin must allow Yuva"
 msgstr "உங்கள் நிறுவனத்தின் நிர்வாகி Yuva-வை அனுமதிக்க வேண்டும்"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your own"
+msgstr "Your own"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "உங்கள் சொந்தக் கண்காணிப்பு தன் நிலையை அனுப்புகிறது, Alertmanager மற்றும் Grafana எச்சரிக்கைகள் உட்பட."
@@ -20321,6 +20413,10 @@ msgstr "உங்கள் தயாரிப்பு"
 msgid "Your product."
 msgstr "உங்கள் தயாரிப்பு."
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your replies by e-mail end with"
+msgstr "Your replies by e-mail end with"
+
 #: src/features/setup/previews.tsx
 msgid "Your replies go out from this address"
 msgstr "உங்கள் பதில்கள் இந்த முகவரியிலிருந்து செல்லும்"
@@ -20341,6 +20437,10 @@ msgstr "Your service provider details"
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."
 msgstr "உங்கள் அமர்வு முடிந்தது. மீண்டும் உள்நுழையுங்கள்."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your signature"
+msgstr "Your signature"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your support address"

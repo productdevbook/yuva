@@ -36,6 +36,7 @@ import { ArticleCards, withoutCardLines } from "@/features/conversation/messages
 import { Attachments } from "@/features/conversation/messages/Attachments"
 import { baseSubject, timeOf, useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
 import { DeliveryState } from "@/features/conversation/messages/DeliveryState"
+import { SignatureHtml } from "@/components/common/SignatureHtml"
 import { MailBody, MailControls, mailSurface, useMail } from "@/features/conversation/messages/EmailBody"
 import { RedactedLine } from "@/features/conversation/messages/Redacted"
 import { EventLine } from "@/features/conversation/messages/EventLine"
@@ -274,6 +275,14 @@ function Delivery({ m }: { m: Message }) {
   )
 }
 
+function Signed({ html, framed }: { html: string; framed?: boolean }) {
+  return (
+    <div className={cn("mt-2 border-t pt-2 opacity-80", framed && "mx-3 mb-2")} data-testid="message-signature">
+      <SignatureHtml html={html} />
+    </div>
+  )
+}
+
 function Line({ m, ctx, name, me, last }: { m: Message; ctx: ThreadContext; name: string; me: string; last: boolean }) {
   const side = sideOf(m, me)
   const out = side !== "in"
@@ -298,6 +307,7 @@ function Line({ m, ctx, name, me, last }: { m: Message; ctx: ThreadContext; name
               <div className="text-reading break-words whitespace-pre-wrap">
                 <Highlight text={text} query={ctx.find?.query} />
               </div>
+              {m.signature_html && <Signed html={m.signature_html} />}
             </BubbleContent>
           </Bubble>
         )}
@@ -394,6 +404,7 @@ function Mail({
               </div>
             )}
             <MailBody mail={mail} />
+            {m.signature_html && <Signed html={m.signature_html} framed={framed} />}
           </BubbleContent>
         </Bubble>
         <Attachments items={mail.listed} outgoing={out} />

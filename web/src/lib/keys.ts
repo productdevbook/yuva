@@ -76,6 +76,7 @@ export const keys = {
   analyticsData: (ws: string, id: string) => ["ws", ws, "analytics", "data", id] as const,
   workspace: (ws: string) => ["ws", ws, "workspace"] as const,
   members: (ws: string) => ["ws", ws, "members"] as const,
+  signatures: (ws: string) => ["ws", ws, "signatures"] as const,
   invites: (ws: string) => ["ws", ws, "invites"] as const,
   auditLog: (ws: string, filters: string) => ["ws", ws, "audit-log", filters] as const,
   apiKeys: (ws: string) => ["ws", ws, "api-keys"] as const,

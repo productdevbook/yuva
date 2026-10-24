@@ -22,6 +22,7 @@ export function useSaveInbox(inbox: Inbox) {
     onSuccess: (data) => {
       qc.setQueryData([...keys.inboxes(ws), inbox.id], data)
       void qc.invalidateQueries({ queryKey: keys.inboxes(ws), exact: true })
+      void qc.invalidateQueries({ queryKey: keys.signatures(ws) })
     },
   })
 }

@@ -1833,6 +1833,14 @@ msgstr "Gruppe hinzufügen"
 msgid "Add header"
 msgstr "Header hinzufügen"
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Add image"
+msgstr "Bild hinzufügen"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Add it back"
+msgstr "Wieder hinzufügen"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "Label {labelName} hinzufügen"
@@ -3185,6 +3193,11 @@ msgstr "Vor dem Senden"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Zusätzlich zu openid, email und profile. Okta braucht groups für Gruppenprüfungen."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Best regards,"
+msgstr "Viele Grüße"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
@@ -5090,6 +5103,10 @@ msgstr "Festlegen, wer in Diskussionen schreiben darf"
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "Die Anfrage für Broadcasts abgelehnt"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Default signature"
+msgstr "Standardsignatur"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Default target"
@@ -7766,6 +7783,11 @@ msgstr "Import läuft …"
 msgid "Imports run one at a time in the workspace. Try again when the other one ends."
 msgstr "Importe laufen im Workspace nacheinander. Versuchen Sie es erneut, wenn der andere endet."
 
+#. placeholder {0}: membership.workspace.name
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "In {0} only. Your signature can show it."
+msgstr "Gilt nur in {0}. Deine Signatur kann sie anzeigen."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "in {contact}"
 msgstr "bei {contact}"
@@ -7913,6 +7935,10 @@ msgstr "Zugriff auf Postfächer"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "Postfachfarbe"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Inbox default"
+msgstr "Standard des Posteingangs"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Inbox for {name}"
@@ -8285,6 +8311,10 @@ msgstr "Text und Dateien werden endgültig gelöscht, und die Unterhaltung zeigt
 msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
 msgstr "Die Werte werden im Hintergrund aus allen Unterhaltungen entfernt. Das lässt sich nicht rückgängig machen."
 
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Job title"
+msgstr "Position"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Dem Workspace als {role} beigetreten"
@@ -8610,6 +8640,10 @@ msgstr "Für github.com leer lassen. Sonst die API des Servers, https://host/api
 msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leer lassen, wenn die NameID die E-Mail-Adresse ist."
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave it out"
+msgstr "Weglassen"
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "{name} überlassen"
@@ -8621,6 +8655,15 @@ msgstr "Dem tippenden Teammitglied überlassen"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave the text, then the block"
 msgstr "Erst den Text, dann den Block lassen"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave your signature off this reply ({signatureKey})"
+msgstr "Deine Signatur bei dieser Antwort weglassen ({signatureKey})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Leave your signature off this reply, or put it back"
+msgstr "Deine Signatur bei dieser Antwort weglassen oder wieder einfügen"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Left off the public page and its overall state."
@@ -9272,6 +9315,10 @@ msgstr "Diesen Beitrag als Spam markieren?"
 #: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown funktioniert."
+
+#: src/components/common/SignatureEditor.tsx
+msgid "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
+msgstr "Markdown. {NAME} und {TITLE} werden durch Name und Position des Autors ersetzt."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10793,6 +10840,10 @@ msgstr "Noch kein Absender"
 msgid "No settings"
 msgstr "Keine Einstellungen"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "No signature"
+msgstr "Keine Signatur"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "no SMTP account"
 msgstr "kein SMTP-Konto"
@@ -11351,6 +11402,10 @@ msgstr "In diesem Zeitraum wurde nichts gemessen."
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "Hier wurde nichts geöffnet, beantwortet oder geschlossen. Versuchen Sie einen längeren Zeitraum oder andere Filter."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Nothing. Replies from this inbox go out without a signature."
+msgstr "Nichts. Antworten aus diesem Posteingang gehen ohne Signatur raus."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -13945,6 +14000,10 @@ msgstr "Antworten und Schließungen"
 msgid "Replies and ratings"
 msgstr "Antworten und Bewertungen"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+msgstr "Antworten per E-Mail aus diesem Posteingang enden damit, außer das Mitglied hat eine eigene Signatur. Chat-Antworten und Notizen haben keine."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Replies cannot go out until you add a reply account."
 msgstr "Antworten können erst raus, wenn Sie ein Antwortkonto hinzufügen."
@@ -14529,6 +14588,7 @@ msgstr "Samstag"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -14601,6 +14661,7 @@ msgstr "Liste als Ansicht speichern"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -15785,6 +15846,13 @@ msgstr "Anmeldung"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Sign-up sheet at the spring fair"
 msgstr "Anmeldeliste auf der Frühjahrsmesse"
+
+#: src/app/Palette.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Signature"
+msgstr "Signatur"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Signed HTTP calls to your backend for conversations, messages and feedback. Each endpoint can listen to one product or to all."
@@ -18946,6 +19014,10 @@ msgstr "Stattdessen eine Takeout-Datei hochladen"
 msgid "Upload an .mbox file, or a .zip of .eml files or of a Maildir. Yuva needs no access to the mailbox."
 msgstr "Laden Sie eine .mbox-Datei hoch oder eine .zip-Datei mit .eml-Dateien oder einem Maildir. Yuva braucht keinen Zugriff auf das Postfach."
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Upload an image and put it at the cursor"
+msgstr "Ein Bild hochladen und an der Cursorposition einfügen"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Hochladen und prüfen"
@@ -19091,6 +19163,10 @@ msgstr "Beispielwerte verwenden"
 msgid "Use the current list"
 msgstr "Aktuelle Liste verwenden"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Use the inbox default"
+msgstr "Standard des Posteingangs verwenden"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Verwenden Sie Benutzername und Passwort des Postfachs oder ein App-Passwort, wenn Ihr Anbieter welche anbietet."
@@ -19146,6 +19222,10 @@ msgstr "Benutzername"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
 msgstr "Benutzername"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Using the inbox default"
+msgstr "Standard des Posteingangs wird verwendet"
 
 #: src/features/setup/previews.tsx
 msgid "Usually replies within a day"
@@ -19637,6 +19717,14 @@ msgstr "Was rausgeht"
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "Was Sie oft schreiben"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "What your e-mailed replies end with"
+msgstr "Womit deine E-Mail-Antworten enden"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+msgstr "Womit deine E-Mail-Antworten enden, pro Posteingang. Chat-Antworten und Notizen haben keine."
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20297,6 +20385,10 @@ msgstr "Ihre Organisation hat die Anmeldung blockiert"
 msgid "Your organization's admin must allow Yuva"
 msgstr "Der Admin Ihrer Organisation muss Yuva zulassen"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your own"
+msgstr "Deine eigene"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "Ihr eigenes Monitoring sendet seinen Zustand, auch Alertmanager- und Grafana-Alarme."
@@ -20321,6 +20413,10 @@ msgstr "Ihr Produkt"
 msgid "Your product."
 msgstr "Ihr Produkt."
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your replies by e-mail end with"
+msgstr "Deine E-Mail-Antworten enden mit"
+
 #: src/features/setup/previews.tsx
 msgid "Your replies go out from this address"
 msgstr "Ihre Antworten gehen von dieser Adresse raus"
@@ -20341,6 +20437,10 @@ msgstr "Angaben zu Ihrem Service Provider"
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."
 msgstr "Ihre Sitzung ist beendet. Melden Sie sich erneut an."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your signature"
+msgstr "Deine Signatur"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your support address"

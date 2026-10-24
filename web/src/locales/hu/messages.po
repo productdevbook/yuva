@@ -1833,6 +1833,14 @@ msgstr "Csoport hozzáadása"
 msgid "Add header"
 msgstr "Fejléc hozzáadása"
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Add image"
+msgstr "Add image"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Add it back"
+msgstr "Add it back"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "A(z) {labelName} címke hozzáadása"
@@ -3185,6 +3193,11 @@ msgstr "Küldés előtt"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "Besides openid, email and profile. Okta needs groups for group checks."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Best regards,"
+msgstr "Best regards,"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
@@ -5090,6 +5103,10 @@ msgstr "Döntsd el, ki írhat a vitákban"
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "Elutasította a körlevélküldési kérelmet"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Default signature"
+msgstr "Default signature"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Default target"
@@ -7766,6 +7783,11 @@ msgstr "Importálás…"
 msgid "Imports run one at a time in the workspace. Try again when the other one ends."
 msgstr "A munkaterületben az importok egyenként futnak. Próbáld újra, ha a másik véget ér."
 
+#. placeholder {0}: membership.workspace.name
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "In {0} only. Your signature can show it."
+msgstr "In {0} only. Your signature can show it."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "in {contact}"
 msgstr "– {contact}"
@@ -7913,6 +7935,10 @@ msgstr "Postafiók-hozzáférés"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "Postafiók színe"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Inbox default"
+msgstr "Inbox default"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Inbox for {name}"
@@ -8285,6 +8311,10 @@ msgstr "A szövege és a fájljai véglegesen törlődnek, a beszélgetésben pe
 msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
 msgstr "Az értékei a háttérben törlődnek az összes beszélgetésből. Ez nem vonható vissza."
 
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Job title"
+msgstr "Job title"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Csatlakozott a munkaterülethez, szerepkör: {role}"
@@ -8610,6 +8640,10 @@ msgstr "Leave empty for github.com. Otherwise the server's API, https://host/api
 msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave it out"
+msgstr "Leave it out"
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "Hagyd rá: {name}"
@@ -8621,6 +8655,15 @@ msgstr "Hagyd arra a kollégára, aki éppen ír"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave the text, then the block"
 msgstr "A szöveg marad, utána a blokk"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave your signature off this reply ({signatureKey})"
+msgstr "Leave your signature off this reply ({signatureKey})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Leave your signature off this reply, or put it back"
+msgstr "Leave your signature off this reply, or put it back"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Left off the public page and its overall state."
@@ -9272,6 +9315,10 @@ msgstr "Spamnek jelölöd ezt a bejegyzést?"
 #: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "A Markdown működik."
+
+#: src/components/common/SignatureEditor.tsx
+msgid "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
+msgstr "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10793,6 +10840,10 @@ msgstr "Még nincs feladó"
 msgid "No settings"
 msgstr "Nincsenek beállítások"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "No signature"
+msgstr "No signature"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "no SMTP account"
 msgstr "nincs SMTP-fiók"
@@ -11351,6 +11402,10 @@ msgstr "Ebben az időszakban nem mértek semmit."
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "Itt semmit sem nyitottak meg, válaszoltak meg vagy zártak le. Próbáljon hosszabb időszakot vagy más szűrőket."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Nothing. Replies from this inbox go out without a signature."
+msgstr "Nothing. Replies from this inbox go out without a signature."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -13945,6 +14000,10 @@ msgstr "Válaszok és lezárások"
 msgid "Replies and ratings"
 msgstr "Válaszok és értékelések"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+msgstr "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Replies cannot go out until you add a reply account."
 msgstr "A válaszok nem mehetnek ki, amíg nem adsz hozzá válaszfiókot."
@@ -14529,6 +14588,7 @@ msgstr "Szombat"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -14601,6 +14661,7 @@ msgstr "A lista mentése nézetként"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -15785,6 +15846,13 @@ msgstr "Feliratkozás"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Sign-up sheet at the spring fair"
 msgstr "Jelentkezési lap a tavaszi vásáron"
+
+#: src/app/Palette.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Signature"
+msgstr "Signature"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Signed HTTP calls to your backend for conversations, messages and feedback. Each endpoint can listen to one product or to all."
@@ -18946,6 +19014,10 @@ msgstr "Inkább egy Takeout-fájlt töltök fel"
 msgid "Upload an .mbox file, or a .zip of .eml files or of a Maildir. Yuva needs no access to the mailbox."
 msgstr "Tölts fel egy .mbox fájlt, vagy egy .zip-et .eml fájlokkal vagy Maildirrel. A Yuvának nincs szüksége hozzáférésre a postafiókhoz."
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Upload an image and put it at the cursor"
+msgstr "Upload an image and put it at the cursor"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Feltöltés és ellenőrzés"
@@ -19091,6 +19163,10 @@ msgstr "Mintaértékek használata"
 msgid "Use the current list"
 msgstr "A jelenlegi lista használata"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Use the inbox default"
+msgstr "Use the inbox default"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Használd a postafiók felhasználónevét és jelszavát, vagy alkalmazásjelszót, ha a szolgáltatód kínál ilyet."
@@ -19146,6 +19222,10 @@ msgstr "Felhasználónév"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
 msgstr "Felhasználónév"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Using the inbox default"
+msgstr "Using the inbox default"
 
 #: src/features/setup/previews.tsx
 msgid "Usually replies within a day"
@@ -19637,6 +19717,14 @@ msgstr "Mi fog kimenni"
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "Amit gyakran írsz"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "What your e-mailed replies end with"
+msgstr "What your e-mailed replies end with"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20297,6 +20385,10 @@ msgstr "A szervezeted blokkolta a bejelentkezést"
 msgid "Your organization's admin must allow Yuva"
 msgstr "A szervezeted adminjának engedélyeznie kell a Yuvát"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your own"
+msgstr "Your own"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "A saját felügyelete elküldi az állapotát, az Alertmanager és a Grafana riasztásait is beleértve."
@@ -20321,6 +20413,10 @@ msgstr "A terméked"
 msgid "Your product."
 msgstr "A terméked."
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your replies by e-mail end with"
+msgstr "Your replies by e-mail end with"
+
 #: src/features/setup/previews.tsx
 msgid "Your replies go out from this address"
 msgstr "A válaszaid erről a címről mennek ki"
@@ -20341,6 +20437,10 @@ msgstr "Your service provider details"
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."
 msgstr "A munkameneted véget ért. Jelentkezz be újra."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your signature"
+msgstr "Your signature"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your support address"

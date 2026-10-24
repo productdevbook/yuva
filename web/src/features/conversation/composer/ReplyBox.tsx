@@ -15,6 +15,8 @@ import {
   useReplyChoices,
   type ReplyChoice,
 } from "@/features/conversation/composer/CannedMenu"
+import { SignatureHtml } from "@/components/common/SignatureHtml"
+import { useMySignatures } from "@/features/settings/signature/queries"
 import { Recipients } from "@/features/conversation/composer/Recipients"
 import { MacroChips } from "@/features/conversation/composer/MacroChips"
 import type { MacroPick } from "@/features/conversation/macros"
@@ -45,6 +47,7 @@ export type ReplyHandle = {
   addFiles: (files: File[]) => void
   insert: (choice: ReplyChoice) => void
   recipients: () => void
+  signature: () => void
 }
 
 const MAX_FILES = 10
@@ -142,6 +145,7 @@ export const ReplyBox = forwardRef<
   const [bcc, setBcc] = useState<string[]>(initial.bcc ?? [])
   const [ccOpen, setCcOpen] = useState(false)
   const [bccOpen, setBccOpen] = useState(false)
+  const [noSignature, setNoSignature] = useState(false)
   const ccInput = useRef<HTMLInputElement>(null)
   const bccInput = useRef<HTMLInputElement>(null)
   const textarea = useRef<HTMLTextAreaElement>(null)
@@ -158,8 +162,11 @@ export const ReplyBox = forwardRef<
     .map((p) => p.email)
   const cc = ccEdit ?? defaultCc
   const blocked = !note && !!undeliverable
+  const signature = useMySignatures().data?.find((s) => s.inbox_id === c.inbox_id)?.html
+  const signed = !note && !blocked && !!emailTo && !!signature
   const first = firstName(contactName)
   const articleKey = keyLabel(SHORTCUTS.article).join("")
+  const signatureKey = keyLabel(SHORTCUTS.signature).join("")
 
   useEffect(
     () => writeDraft(c.id, { body, mode, files, articles, macro, cc: ccEdit, bcc }),
@@ -275,6 +282,9 @@ export const ReplyBox = forwardRef<
       setCcOpen(true)
       requestAnimationFrame(() => ccInput.current?.focus())
     },
+    signature: () => {
+      if (signed) setNoSignature((x) => !x)
+    },
   }))
   const hasContent = body.trim() !== "" || files.length > 0 || articles.length > 0
   const notified = mentioned.filter((x) => body.includes(`@${x.label}`))
@@ -293,6 +303,7 @@ export const ReplyBox = forwardRef<
     setBcc([])
     setCcOpen(false)
     setBccOpen(false)
+    setNoSignature(false)
   }
   const send = (close: boolean) => {
     if (!hasContent || note || blocked) return
@@ -300,12 +311,23 @@ export const ReplyBox = forwardRef<
     const linkedDraft = suggestion && linked === suggestion.id ? suggestion : undefined
     const saved = { body, files, articles, macro }
     const recipients = emailTo ? { cc: ccEdit, bcc: bcc.length ? bcc : undefined } : {}
-    actions.send({ body, files, close, suggestion: linkedDraft, articles, macro, ...recipients })?.catch(() => {
-      setBody((b) => b || saved.body)
-      setFiles((f) => (f.length ? f : saved.files))
-      setArticles((a) => (a.length ? a : saved.articles))
-      setMacro((m) => m ?? saved.macro)
-    })
+    actions
+      .send({
+        body,
+        files,
+        close,
+        suggestion: linkedDraft,
+        articles,
+        macro,
+        signature: signed && noSignature ? false : undefined,
+        ...recipients,
+      })
+      ?.catch(() => {
+        setBody((b) => b || saved.body)
+        setFiles((f) => (f.length ? f : saved.files))
+        setArticles((a) => (a.length ? a : saved.articles))
+        setMacro((m) => m ?? saved.macro)
+      })
     reset()
   }
   const addNote = () => {
@@ -474,6 +496,24 @@ export const ReplyBox = forwardRef<
           onSelect={(e) => setCaret(e.currentTarget.selectionStart)}
           onKeyDown={onKeyDown}
         />
+      )}
+      {signed && (
+        <div className="mx-4 mb-2 flex items-start gap-3 border-t pt-2" data-testid="composer-signature">
+          <div className={cn("min-w-0 flex-1 opacity-70", noSignature && "line-through opacity-40")}>
+            <SignatureHtml html={signature} className="max-h-24 overflow-y-auto" />
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 shrink-0 px-2 text-caption text-faint hover:bg-muted"
+            aria-pressed={noSignature}
+            title={t`Leave your signature off this reply (${signatureKey})`}
+            onClick={() => setNoSignature((x) => !x)}
+            data-testid="composer-signature-toggle"
+          >
+            {noSignature ? <Trans>Add it back</Trans> : <Trans>Leave it out</Trans>}
+          </Button>
+        </div>
       )}
       {note && notified.length > 0 && (
         <p className="px-4 pb-1 text-caption text-note-ink" data-testid="composer-notify">

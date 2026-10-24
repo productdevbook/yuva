@@ -9,6 +9,7 @@ import {
   KeyRoundIcon,
   MessageSquareIcon,
   PaletteIcon,
+  PenLineIcon,
   PlugIcon,
   PlusIcon,
   QuoteIcon,
@@ -153,6 +154,12 @@ export function SettingsColumn() {
         <NavRow to="/settings/profile" testId="settings-profile">
           <RowIcon>{initials(name)}</RowIcon>
           <RowText title={name} detail={me.person.email} />
+        </NavRow>
+        <NavRow to="/settings/signature">
+          <RowIcon>
+            <PenLineIcon />
+          </RowIcon>
+          <RowText title={<Trans>Signature</Trans>} detail={<Trans>What your e-mailed replies end with</Trans>} />
         </NavRow>
         <NavRow to="/settings/notifications">
           <RowIcon>

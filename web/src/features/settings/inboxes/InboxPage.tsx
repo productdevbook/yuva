@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router"
 import { ChannelIcon, ErrorLine, Notice, toast } from "@/components/common"
 import { AssignmentFields, capValid } from "@/components/common/AssignmentFields"
 import { ChipGroup } from "@/components/common/ChipGroup"
+import { SignatureEditor } from "@/components/common/SignatureEditor"
 import { SaveBar } from "@/components/common/SaveBar"
 import { formatRelative, useEnumText, useErrorText, WEEKDAYS } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -78,6 +79,7 @@ type Draft = {
   categories: InboxFeedbackCategory[]
   assignMode: AssignmentMode
   assignCap: string
+  signature: string
 }
 
 function uniform(h: BusinessHours) {
@@ -117,6 +119,7 @@ function draftOf(inbox: Inbox): Draft {
     categories: inbox.feedback_categories,
     assignMode: inbox.assignment_mode,
     assignCap: inbox.assignment_cap ? String(inbox.assignment_cap) : "",
+    signature: inbox.signature,
   }
 }
 
@@ -154,6 +157,7 @@ function changes(inbox: Inbox, d: Draft): InboxUpdate {
   if (d.assignMode !== base.assignMode) body.assignment_mode = d.assignMode
   if (d.assignCap !== base.assignCap && capValid(d.assignCap))
     body.assignment_cap = d.assignCap === "" ? null : Number(d.assignCap)
+  if (d.signature !== base.signature) body.signature = d.signature
   const categories = cleanCategories(d.categories)
   if (JSON.stringify(categories) !== JSON.stringify(cleanCategories(base.categories)))
     body.feedback_categories = categories
@@ -700,6 +704,25 @@ function MailTab({ d, set, inbox, locked }: Form) {
             <p className="text-center text-caption whitespace-pre-line text-muted-foreground">{footer.join("\n")}</p>
           </div>
         )}
+      </Block>
+      <Block
+        title={<Trans>Signature</Trans>}
+        description={
+          <Trans>
+            Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry
+            none.
+          </Trans>
+        }
+      >
+        <BlockRow label={<Trans>Default signature</Trans>} htmlFor="inbox-signature">
+          <SignatureEditor
+            id="inbox-signature"
+            value={d.signature}
+            disabled={locked}
+            placeholder={t`Best regards,`}
+            onChange={(signature) => set({ signature })}
+          />
+        </BlockRow>
       </Block>
       <SesTenant inbox={inbox} />
     </div>

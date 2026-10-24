@@ -1833,6 +1833,14 @@ msgstr "Grup ekle"
 msgid "Add header"
 msgstr "Başlık ekle"
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Add image"
+msgstr "Görsel ekle"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Add it back"
+msgstr "Geri ekle"
+
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Add label {labelName}"
 msgstr "{labelName} etiketini ekle"
@@ -3185,6 +3193,11 @@ msgstr "Göndermeden önce"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Besides openid, email and profile. Okta needs groups for group checks."
 msgstr "openid, email ve profile dışında. Okta, grup denetimleri için groups ister."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Best regards,"
+msgstr "Saygılarımla,"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Between 1 and 500, counted across the workspace. Assigning by hand ignores it. Leave empty for no limit."
@@ -5090,6 +5103,10 @@ msgstr "Tartışmalara kimin yazabileceğine karar verin"
 #: src/features/settings/audit/sentence.ts
 msgid "Declined the request to send broadcasts"
 msgstr "Bülten gönderme isteğini reddetti"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Default signature"
+msgstr "Varsayılan imza"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Default target"
@@ -7766,6 +7783,11 @@ msgstr "İçe aktarılıyor…"
 msgid "Imports run one at a time in the workspace. Try again when the other one ends."
 msgstr "Çalışma alanında içe aktarmalar sırayla çalışır. Diğeri bitince yeniden deneyin."
 
+#. placeholder {0}: membership.workspace.name
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "In {0} only. Your signature can show it."
+msgstr "Yalnızca {0} içinde geçerli. İmzanız bunu gösterebilir."
+
 #: src/features/inbox/SidePanels.tsx
 msgid "in {contact}"
 msgstr "{contact} ile"
@@ -7913,6 +7935,10 @@ msgstr "Gelen kutusu erişimi"
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Inbox color"
 msgstr "Gelen kutusu rengi"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Inbox default"
+msgstr "Gelen kutusu varsayılanı"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Inbox for {name}"
@@ -8285,6 +8311,10 @@ msgstr "Metni ve dosyaları kalıcı olarak silinir ve konuşmada sizin kaldırd
 msgid "Its values are cleared from every conversation, in the background. This cannot be undone."
 msgstr "Değerleri tüm görüşmelerden arka planda temizlenir. Bu geri alınamaz."
 
+#: src/features/settings/profile/ProfileForm.tsx
+msgid "Job title"
+msgstr "Unvan"
+
 #: src/features/settings/audit/sentence.ts
 msgid "Joined the workspace as {role}"
 msgstr "Çalışma alanına {role} olarak katıldı"
@@ -8610,6 +8640,10 @@ msgstr "github.com için boş bırakın. Aksi halde sunucunun API'si: https://ho
 msgid "Leave empty when the NameID is the e-mail address."
 msgstr "NameID e-posta adresiyse boş bırakın."
 
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave it out"
+msgstr "Çıkar"
+
 #: src/features/conversation/Collision.tsx
 msgid "Leave it to {name}"
 msgstr "Bırak, {name} yanıtlasın"
@@ -8621,6 +8655,15 @@ msgstr "Yazan ekip arkadaşına bırak"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Leave the text, then the block"
 msgstr "Önce metinden, sonra bloktan çık"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Leave your signature off this reply ({signatureKey})"
+msgstr "İmzanı bu yanıttan çıkar ({signatureKey})"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Leave your signature off this reply, or put it back"
+msgstr "İmzanı bu yanıttan çıkar ya da geri koy"
 
 #: src/features/status/ComponentDialogs.tsx
 msgid "Left off the public page and its overall state."
@@ -9272,6 +9315,10 @@ msgstr "Bu gönderi spam olarak işaretlensin mi?"
 #: src/features/issues/IssueDialog.tsx
 msgid "Markdown works."
 msgstr "Markdown kullanabilirsiniz."
+
+#: src/components/common/SignatureEditor.tsx
+msgid "Markdown. {NAME} and {TITLE} are replaced with the author's name and title."
+msgstr "Markdown. {NAME} ve {TITLE}, yazarın adı ve unvanıyla değiştirilir."
 
 #: src/features/conversation/ChatView.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -10793,6 +10840,10 @@ msgstr "Henüz gönderici yok"
 msgid "No settings"
 msgstr "Ayar yok"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "No signature"
+msgstr "İmza yok"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "no SMTP account"
 msgstr "SMTP hesabı yok"
@@ -11351,6 +11402,10 @@ msgstr "Bu dönemde ölçülen bir şey yok."
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was opened, replied to or closed here. Try a longer period or other filters."
 msgstr "Burada hiçbir şey açılmadı, yanıtlanmadı veya kapatılmadı. Daha uzun bir dönem veya başka filtreler deneyin."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Nothing. Replies from this inbox go out without a signature."
+msgstr "Hiçbir şey. Bu gelen kutusundan giden yanıtlar imzasız gider."
 
 #: src/features/status/Notices.tsx
 msgid "Notices to subscribers"
@@ -13945,6 +14000,10 @@ msgstr "Yanıtlar ve kapanışlar"
 msgid "Replies and ratings"
 msgstr "Yanıtlar ve puanlar"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Replies by e-mail from this inbox end with it, unless the member has their own. Chat replies and notes carry none."
+msgstr "Bu gelen kutusundan e-postayla giden yanıtlar, üyenin kendi imzası yoksa bununla biter. Sohbet yanıtlarında ve notlarda imza olmaz."
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Replies cannot go out until you add a reply account."
 msgstr "Bir yanıt hesabı ekleyene kadar yanıtlar gönderilemez."
@@ -14529,6 +14588,7 @@ msgstr "Cumartesi"
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/labels/LabelDialog.tsx
 #: src/features/settings/macros/MacroDialog.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -14601,6 +14661,7 @@ msgstr "Listeyi görünüm olarak kaydet"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
@@ -15785,6 +15846,13 @@ msgstr "Abonelik"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Sign-up sheet at the spring fair"
 msgstr "Bahar fuarındaki kayıt formu"
+
+#: src/app/Palette.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Signature"
+msgstr "İmza"
 
 #: src/features/settings/webhooks/WebhookList.tsx
 msgid "Signed HTTP calls to your backend for conversations, messages and feedback. Each endpoint can listen to one product or to all."
@@ -18946,6 +19014,10 @@ msgstr "Bunun yerine Takeout dosyası yükleyin"
 msgid "Upload an .mbox file, or a .zip of .eml files or of a Maildir. Yuva needs no access to the mailbox."
 msgstr "Bir .mbox dosyası ya da .eml dosyalarının veya bir Maildir'in .zip'ini yükleyin. Yuva'nın posta kutusuna erişmesi gerekmez."
 
+#: src/components/common/SignatureEditor.tsx
+msgid "Upload an image and put it at the cursor"
+msgstr "Bir görsel yükle ve imlecin olduğu yere koy"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Upload and check"
 msgstr "Yükle ve denetle"
@@ -19091,6 +19163,10 @@ msgstr "Örnek değerleri kullan"
 msgid "Use the current list"
 msgstr "Şu anki listeyi kullan"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Use the inbox default"
+msgstr "Gelen kutusu varsayılanını kullan"
+
 #: src/features/migrations/text.ts
 msgid "Use the mailbox's user name and password, or an app password if your provider offers them."
 msgstr "Posta kutusunun kullanıcı adını ve şifresini, sağlayıcınız sunuyorsa bir uygulama şifresini kullanın."
@@ -19146,6 +19222,10 @@ msgstr "Kullanıcı adı"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Username"
 msgstr "Kullanıcı adı"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Using the inbox default"
+msgstr "Gelen kutusu varsayılanı kullanılıyor"
 
 #: src/features/setup/previews.tsx
 msgid "Usually replies within a day"
@@ -19637,6 +19717,14 @@ msgstr "Ne gönderilecek"
 #: src/features/settings/SettingsColumn.tsx
 msgid "What you write often"
 msgstr "Sık yazdıkların"
+
+#: src/features/settings/SettingsColumn.tsx
+msgid "What your e-mailed replies end with"
+msgstr "E-postayla giden yanıtlarının sonu"
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "What your e-mailed replies end with, per inbox. Chat replies and notes carry none."
+msgstr "E-postayla giden yanıtlarının sonunda ne yazacağı, gelen kutusu başına. Sohbet yanıtlarında ve notlarda imza olmaz."
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
@@ -20297,6 +20385,10 @@ msgstr "Kuruluşunuz oturum açmayı engelledi"
 msgid "Your organization's admin must allow Yuva"
 msgstr "Kuruluşunuzun yöneticisinin Yuva'ya izin vermesi gerekiyor"
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your own"
+msgstr "Kendi imzan"
+
 #: src/features/status/MonitorDialog.tsx
 msgid "Your own monitoring sends its state, including Alertmanager and Grafana alerts."
 msgstr "Kendi izleme sisteminiz durumunu gönderir; Alertmanager ve Grafana uyarıları dahil."
@@ -20321,6 +20413,10 @@ msgstr "Ürününüz"
 msgid "Your product."
 msgstr "Ürününüz."
 
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your replies by e-mail end with"
+msgstr "E-posta yanıtların şununla biter"
+
 #: src/features/setup/previews.tsx
 msgid "Your replies go out from this address"
 msgstr "Yanıtlarınız bu adresten gider"
@@ -20341,6 +20437,10 @@ msgstr "Hizmet sağlayıcı bilgileriniz"
 #: src/components/common/text.ts
 msgid "Your session has ended. Sign in again."
 msgstr "Oturumunuz sona erdi. Yeniden giriş yapın."
+
+#: src/features/settings/signature/SignaturePage.tsx
+msgid "Your signature"
+msgstr "İmzan"
 
 #: src/features/migrations/Wizard.tsx
 msgid "Your support address"
