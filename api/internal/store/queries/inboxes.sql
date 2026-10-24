@@ -131,6 +131,46 @@ SELECT i.id,
 FROM inboxes i
 WHERE i.workspace_id = @workspace_id AND i.id = ANY(@ids::uuid[]) AND i.owner_member_id IS NOT NULL;
 
+-- name: MailboxDelegateAccess :one
+SELECT d.access FROM mailbox_delegates d
+JOIN inboxes i ON i.workspace_id = d.workspace_id AND i.id = d.inbox_id AND i.owner_member_id IS NOT NULL
+WHERE d.workspace_id = @workspace_id AND d.inbox_id = @inbox_id AND d.member_id = @member_id;
+
+-- name: ListMailboxDelegateAccess :many
+SELECT d.inbox_id, d.access FROM mailbox_delegates d
+WHERE d.workspace_id = @workspace_id AND d.member_id = @member_id AND d.inbox_id = ANY(@inbox_ids::uuid[]);
+
+-- name: MemberWritesInbox :one
+SELECT (i.owner_member_id IS NULL OR i.owner_member_id = @member_id::uuid OR EXISTS (
+    SELECT 1 FROM mailbox_delegates d
+    WHERE d.workspace_id = i.workspace_id AND d.inbox_id = i.id AND d.member_id = @member_id AND d.access = 'send'))::bool AS writes
+FROM inboxes i WHERE i.workspace_id = @workspace_id AND i.id = @inbox_id;
+
+-- name: ListMailboxDelegates :many
+SELECT d.member_id, d.access, d.created_at, p.name, p.email
+FROM mailbox_delegates d
+JOIN members m ON m.workspace_id = d.workspace_id AND m.id = d.member_id
+JOIN people p ON p.id = m.person_id
+WHERE d.workspace_id = @workspace_id AND d.inbox_id = @inbox_id
+ORDER BY d.created_at, d.member_id;
+
+-- name: LockMailboxDelegate :one
+SELECT * FROM mailbox_delegates
+WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND member_id = @member_id FOR UPDATE;
+
+-- name: InsertMailboxDelegate :one
+INSERT INTO mailbox_delegates (workspace_id, inbox_id, member_id, access, granted_by, created_at)
+VALUES (@workspace_id, @inbox_id, @member_id, @access, @granted_by, @now)
+RETURNING *;
+
+-- name: SetMailboxDelegateAccess :one
+UPDATE mailbox_delegates SET access = @access, granted_by = @granted_by
+WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND member_id = @member_id
+RETURNING *;
+
+-- name: DeleteMailboxDelegate :execrows
+DELETE FROM mailbox_delegates WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND member_id = @member_id;
+
 
 -- name: SetInboxFeedbackCategories :one
 UPDATE inboxes SET feedback_categories = @feedback_categories, updated_at = @now

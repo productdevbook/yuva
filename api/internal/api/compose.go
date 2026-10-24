@@ -311,7 +311,7 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 	if len(toIn) == 0 {
 		return nil, errValidation("to needs at least one address")
 	}
-	if _, err := visibleInbox(ctx, s.st.Queries, p, inboxID); err != nil {
+	if _, err := writableInbox(ctx, s.st.Queries, p, inboxID); err != nil {
 		return nil, err
 	}
 	if prev, err := s.repeatedCompose(ctx, p, inboxID, in.clientID); err != nil || prev != nil {
@@ -365,7 +365,7 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 	}
 	var out oas.ComposedMail
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		inbox, err := visibleInbox(ctx, q, p, inboxID)
+		inbox, err := writableInbox(ctx, q, p, inboxID)
 		if err != nil {
 			return err
 		}
@@ -436,6 +436,9 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 			Html: in.html, ClientID: in.clientID, CreatedAt: now, Draft: in.draft, Via: p.viaClient(),
 		}
 		arg.AuthorType, arg.AuthorMemberID, arg.AuthorApiKeyID = authorFor(p)
+		if arg.OnBehalfOfMemberID, err = onBehalfOf(ctx, q, p, c.InboxID); err != nil {
+			return err
+		}
 		if plan != nil {
 			queued := deliveryQueued
 			arg.DeliveryState = &queued

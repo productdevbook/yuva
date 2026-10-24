@@ -450,6 +450,7 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 		out.Cards = &cards
 	}
 	out.ImportedAt = m.ImportedAt
+	out.OnBehalfOfMemberId = m.OnBehalfOfMemberID
 	if m.RedactedAt != nil {
 		out.RedactedAt = m.RedactedAt
 		out.RedactedBy = &oas.MessageRedactedBy{MemberId: m.RedactedByMemberID, ApiKeyId: m.RedactedByApiKeyID}
@@ -732,6 +733,11 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			arg.AuthorType, arg.AuthorContactID = string(oas.AuthorTypeContact), &c.ContactID
 		} else {
 			arg.AuthorType, arg.AuthorMemberID, arg.AuthorApiKeyID = authorFor(p)
+			if in.kind == string(oas.MessageKindMessage) {
+				if arg.OnBehalfOfMemberID, err = onBehalfOf(ctx, q, p, c.InboxID); err != nil {
+					return err
+				}
+			}
 		}
 		if plan != nil {
 			queued := deliveryQueued

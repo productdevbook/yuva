@@ -1664,6 +1664,15 @@ type Macro struct {
 	UpdatedAt     time.Time
 }
 
+type MailboxDelegate struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	MemberID    uuid.UUID
+	Access      string
+	GrantedBy   *uuid.UUID
+	CreatedAt   time.Time
+}
+
 type MailingList struct {
 	ID          uuid.UUID
 	WorkspaceID uuid.UUID
@@ -1781,6 +1790,7 @@ type Message struct {
 	ScheduledBcc       []string
 	ScheduledFrom      *string
 	SendError          []byte
+	OnBehalfOfMemberID *uuid.UUID
 }
 
 type MessageEmail struct {

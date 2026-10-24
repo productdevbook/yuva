@@ -805,7 +805,7 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 	}
 	var out oas.Conversation
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		if _, err := visibleInbox(ctx, q, p, b.InboxId); err != nil {
+		if _, err := writableInbox(ctx, q, p, b.InboxId); err != nil {
 			return err
 		}
 		if _, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: p.workspaceID, ID: b.ContactId}); store.IsNotFound(err) {

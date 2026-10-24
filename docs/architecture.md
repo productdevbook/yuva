@@ -4501,6 +4501,31 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   Contacts stay workspace-wide: an address known only from a personal mailbox still answers
   `409 email_taken` when someone adds it as a contact, and a shared inbox writing to it reuses that
   contact; only the mail in the personal mailbox is private, not the contact record.
+- **As built (#171, migration 00138).** `mailbox_delegates (workspace_id, inbox_id, member_id, access
+  read|send, granted_by, created_at)`, keyed by mailbox and member and deleted with either, is managed
+  with `GET|PUT|DELETE /v1/inboxes/{id}/delegates[/{memberId}]` by the mailbox's owner alone, in a
+  member session; everyone else, owners, admins and delegates included, gets `404`, the owner naming
+  themself `422 self_delegation`. A delegation is a row of `member_inbox_access` (only while the
+  mailbox has an owner), so every content filter, search operator, assignee, mention and notification
+  check that follows that view reaches delegates without a change of its own. In Go, `rightIn` gives
+  owner (full), `send`, `read` or nothing; `canReadPersonal` lets delegates read, `ownedInbox` keeps
+  settings, channels, the member list, delegates and migrations to the owner, and writes (notes,
+  replies, compose, status, assignee, labels, star, snooze, move, sending a draft) go through
+  `requireWrite` (inside `visibleConversation` with `lock`, and at the sites without a lock), which
+  answers `403 forbidden` to a `read` delegate. Drafts stay their author's (#169). A delegate's
+  outgoing message keeps the delegate as `author` and names the owner in
+  `Message.on_behalf_of_member_id`; its mail carries the owner's `From:` (the owner's name with the
+  channel address, or one of the owner's verified addresses when `from_address` names one) and
+  `Sender:` with the delegate's name and the channel's sending address, never the delegate's own
+  address. Conversation mail is not DKIM-signed by Yuva (the channel's relay signs it), and `Sender:`
+  sits on the channel's sending address, which is the `From:` domain unless the owner's own address
+  is used, whose domain must be a verified sending domain of the channel; so alignment is that of
+  `From:` and Yuva's DKIM header list is unchanged. That mail counts as the owner's for `from:me` and
+  `in:sent`. A grant or revoke emits `inbox_access.changed` to the delegate, whose open realtime
+  connections reload their access at once; `Inbox.mailbox.access` tells the caller their own right.
+  Audit: `mailbox.delegate_granted` (`member_id`, `access`, `from` on a change) and
+  `mailbox.delegate_revoked` on the mailbox. A delegate's own OAuth grant reaches the mailbox as
+  their session does; keys and rules never.
 - **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
   or hands it to a named member; nobody reads it before that choice.
 - **Sending as a person.** A mail goes from the channel address with the member's name, or from the

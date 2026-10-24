@@ -112,6 +112,24 @@ func (q *Queries) DeleteInbox(ctx context.Context, arg DeleteInboxParams) (int64
 	return result.RowsAffected(), nil
 }
 
+const deleteMailboxDelegate = `-- name: DeleteMailboxDelegate :execrows
+DELETE FROM mailbox_delegates WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
+`
+
+type DeleteMailboxDelegateParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	MemberID    uuid.UUID
+}
+
+func (q *Queries) DeleteMailboxDelegate(ctx context.Context, arg DeleteMailboxDelegateParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteMailboxDelegate, arg.WorkspaceID, arg.InboxID, arg.MemberID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const getInbox = `-- name: GetInbox :one
 SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id FROM inboxes WHERE workspace_id = $1 AND id = $2
 `
@@ -240,6 +258,42 @@ func (q *Queries) InboxSupportLinks(ctx context.Context, arg InboxSupportLinksPa
 		&i.RoadmapBoard,
 		&i.WhatsNew,
 		&i.SlaPolicy,
+	)
+	return i, err
+}
+
+const insertMailboxDelegate = `-- name: InsertMailboxDelegate :one
+INSERT INTO mailbox_delegates (workspace_id, inbox_id, member_id, access, granted_by, created_at)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING workspace_id, inbox_id, member_id, access, granted_by, created_at
+`
+
+type InsertMailboxDelegateParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	MemberID    uuid.UUID
+	Access      string
+	GrantedBy   *uuid.UUID
+	Now         time.Time
+}
+
+func (q *Queries) InsertMailboxDelegate(ctx context.Context, arg InsertMailboxDelegateParams) (MailboxDelegate, error) {
+	row := q.db.QueryRow(ctx, insertMailboxDelegate,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.MemberID,
+		arg.Access,
+		arg.GrantedBy,
+		arg.Now,
+	)
+	var i MailboxDelegate
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.MemberID,
+		&i.Access,
+		&i.GrantedBy,
+		&i.CreatedAt,
 	)
 	return i, err
 }
@@ -579,6 +633,90 @@ func (q *Queries) ListInboxesByID(ctx context.Context, arg ListInboxesByIDParams
 	return items, nil
 }
 
+const listMailboxDelegateAccess = `-- name: ListMailboxDelegateAccess :many
+SELECT d.inbox_id, d.access FROM mailbox_delegates d
+WHERE d.workspace_id = $1 AND d.member_id = $2 AND d.inbox_id = ANY($3::uuid[])
+`
+
+type ListMailboxDelegateAccessParams struct {
+	WorkspaceID uuid.UUID
+	MemberID    uuid.UUID
+	InboxIds    []uuid.UUID
+}
+
+type ListMailboxDelegateAccessRow struct {
+	InboxID uuid.UUID
+	Access  string
+}
+
+func (q *Queries) ListMailboxDelegateAccess(ctx context.Context, arg ListMailboxDelegateAccessParams) ([]ListMailboxDelegateAccessRow, error) {
+	rows, err := q.db.Query(ctx, listMailboxDelegateAccess, arg.WorkspaceID, arg.MemberID, arg.InboxIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListMailboxDelegateAccessRow
+	for rows.Next() {
+		var i ListMailboxDelegateAccessRow
+		if err := rows.Scan(&i.InboxID, &i.Access); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMailboxDelegates = `-- name: ListMailboxDelegates :many
+SELECT d.member_id, d.access, d.created_at, p.name, p.email
+FROM mailbox_delegates d
+JOIN members m ON m.workspace_id = d.workspace_id AND m.id = d.member_id
+JOIN people p ON p.id = m.person_id
+WHERE d.workspace_id = $1 AND d.inbox_id = $2
+ORDER BY d.created_at, d.member_id
+`
+
+type ListMailboxDelegatesParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+type ListMailboxDelegatesRow struct {
+	MemberID  uuid.UUID
+	Access    string
+	CreatedAt time.Time
+	Name      string
+	Email     string
+}
+
+func (q *Queries) ListMailboxDelegates(ctx context.Context, arg ListMailboxDelegatesParams) ([]ListMailboxDelegatesRow, error) {
+	rows, err := q.db.Query(ctx, listMailboxDelegates, arg.WorkspaceID, arg.InboxID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListMailboxDelegatesRow
+	for rows.Next() {
+		var i ListMailboxDelegatesRow
+		if err := rows.Scan(
+			&i.MemberID,
+			&i.Access,
+			&i.CreatedAt,
+			&i.Name,
+			&i.Email,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMemberPersonalInboxIDs = `-- name: ListMemberPersonalInboxIDs :many
 SELECT id FROM inboxes WHERE workspace_id = $1 AND owner_member_id = $2 ORDER BY id
 `
@@ -715,6 +853,50 @@ func (q *Queries) LockInbox(ctx context.Context, arg LockInboxParams) (Inbox, er
 	return i, err
 }
 
+const lockMailboxDelegate = `-- name: LockMailboxDelegate :one
+SELECT workspace_id, inbox_id, member_id, access, granted_by, created_at FROM mailbox_delegates
+WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3 FOR UPDATE
+`
+
+type LockMailboxDelegateParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	MemberID    uuid.UUID
+}
+
+func (q *Queries) LockMailboxDelegate(ctx context.Context, arg LockMailboxDelegateParams) (MailboxDelegate, error) {
+	row := q.db.QueryRow(ctx, lockMailboxDelegate, arg.WorkspaceID, arg.InboxID, arg.MemberID)
+	var i MailboxDelegate
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.MemberID,
+		&i.Access,
+		&i.GrantedBy,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const mailboxDelegateAccess = `-- name: MailboxDelegateAccess :one
+SELECT d.access FROM mailbox_delegates d
+JOIN inboxes i ON i.workspace_id = d.workspace_id AND i.id = d.inbox_id AND i.owner_member_id IS NOT NULL
+WHERE d.workspace_id = $1 AND d.inbox_id = $2 AND d.member_id = $3
+`
+
+type MailboxDelegateAccessParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	MemberID    uuid.UUID
+}
+
+func (q *Queries) MailboxDelegateAccess(ctx context.Context, arg MailboxDelegateAccessParams) (string, error) {
+	row := q.db.QueryRow(ctx, mailboxDelegateAccess, arg.WorkspaceID, arg.InboxID, arg.MemberID)
+	var access string
+	err := row.Scan(&access)
+	return access, err
+}
+
 const memberReadsInbox = `-- name: MemberReadsInbox :one
 SELECT EXISTS (
     SELECT 1 FROM inboxes i
@@ -737,6 +919,26 @@ func (q *Queries) MemberReadsInbox(ctx context.Context, arg MemberReadsInboxPara
 	var access bool
 	err := row.Scan(&access)
 	return access, err
+}
+
+const memberWritesInbox = `-- name: MemberWritesInbox :one
+SELECT (i.owner_member_id IS NULL OR i.owner_member_id = $1::uuid OR EXISTS (
+    SELECT 1 FROM mailbox_delegates d
+    WHERE d.workspace_id = i.workspace_id AND d.inbox_id = i.id AND d.member_id = $1 AND d.access = 'send'))::bool AS writes
+FROM inboxes i WHERE i.workspace_id = $2 AND i.id = $3
+`
+
+type MemberWritesInboxParams struct {
+	MemberID    uuid.UUID
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+func (q *Queries) MemberWritesInbox(ctx context.Context, arg MemberWritesInboxParams) (bool, error) {
+	row := q.db.QueryRow(ctx, memberWritesInbox, arg.MemberID, arg.WorkspaceID, arg.InboxID)
+	var writes bool
+	err := row.Scan(&writes)
+	return writes, err
 }
 
 const moveFeedbackToOther = `-- name: MoveFeedbackToOther :execrows
@@ -919,6 +1121,40 @@ func (q *Queries) SetInboxSignature(ctx context.Context, arg SetInboxSignaturePa
 		&i.Signature,
 		&i.SignatureImageIds,
 		&i.OwnerMemberID,
+	)
+	return i, err
+}
+
+const setMailboxDelegateAccess = `-- name: SetMailboxDelegateAccess :one
+UPDATE mailbox_delegates SET access = $1, granted_by = $2
+WHERE workspace_id = $3 AND inbox_id = $4 AND member_id = $5
+RETURNING workspace_id, inbox_id, member_id, access, granted_by, created_at
+`
+
+type SetMailboxDelegateAccessParams struct {
+	Access      string
+	GrantedBy   *uuid.UUID
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	MemberID    uuid.UUID
+}
+
+func (q *Queries) SetMailboxDelegateAccess(ctx context.Context, arg SetMailboxDelegateAccessParams) (MailboxDelegate, error) {
+	row := q.db.QueryRow(ctx, setMailboxDelegateAccess,
+		arg.Access,
+		arg.GrantedBy,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.MemberID,
+	)
+	var i MailboxDelegate
+	err := row.Scan(
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.MemberID,
+		&i.Access,
+		&i.GrantedBy,
+		&i.CreatedAt,
 	)
 	return i, err
 }

@@ -135,6 +135,9 @@ func (s *Server) setStar(ctx context.Context, conversationID uuid.UUID, on bool)
 		if err != nil {
 			return err
 		}
+		if err := requireWrite(ctx, q, p, c.InboxID); err != nil {
+			return err
+		}
 		_, err = s.starFor(ctx, q, events, p.memberID, c, on)
 		return err
 	})

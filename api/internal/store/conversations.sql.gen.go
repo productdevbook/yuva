@@ -829,7 +829,7 @@ WHERE c.workspace_id = $2
   AND ($49::bool IS NULL OR $49::bool = EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
-        AND (m.author_member_id = $5::uuid OR m.sent_by_member_id = $5::uuid)))
+        AND (m.author_member_id = $5::uuid OR m.sent_by_member_id = $5::uuid OR m.on_behalf_of_member_id = $5::uuid)))
   AND ($50::bool IS NULL OR $50::bool = EXISTS (
       SELECT 1 FROM messages m
       JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
@@ -857,7 +857,7 @@ WHERE c.workspace_id = $2
   AND ($58::bool IS NULL OR $58::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.kind = 'message' AND m.direction = 'out'
-        AND NOT m.draft AND (m.author_member_id = $5::uuid OR m.sent_by_member_id = $5::uuid))))
+        AND NOT m.draft AND (m.author_member_id = $5::uuid OR m.sent_by_member_id = $5::uuid OR m.on_behalf_of_member_id = $5::uuid))))
   AND ($59::bool IS NULL OR $59::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.draft AND m.scheduled_at IS NULL

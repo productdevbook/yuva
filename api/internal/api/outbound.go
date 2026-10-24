@@ -556,6 +556,11 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 		References:    me.ReferencesIds,
 		AutoSubmitted: me.Auto,
 	}
+	if msg.OnBehalfOfMemberID != nil {
+		if out.Sender, err = s.delegateSender(ctx, workspaceID, ch, conv, msg); err != nil {
+			return "", err
+		}
+	}
 	if me.InReplyTo != nil {
 		out.InReplyTo = *me.InReplyTo
 	}
@@ -618,12 +623,36 @@ func sendingMember(msg messageRow) *uuid.UUID {
 	return nil
 }
 
+// fromMember is whose name the From: carries: the mailbox owner for a delegate's mail, otherwise
+// the member who sent it.
+func fromMember(msg messageRow) *uuid.UUID {
+	if msg.OnBehalfOfMemberID != nil {
+		return msg.OnBehalfOfMemberID
+	}
+	return sendingMember(msg)
+}
+
+// delegateSender names the delegate who wrote msg, with the channel's own sending address so the
+// Sender: stays on the From: domain and never shows the delegate's own address.
+func (s *Server) delegateSender(ctx context.Context, ws uuid.UUID, ch store.EmailChannel, conv store.Conversation, msg messageRow) (email.Address, error) {
+	member := sendingMember(msg)
+	if member == nil {
+		return email.Address{}, nil
+	}
+	addr, err := sendingAddress(ch, conv)
+	if err != nil {
+		return email.Address{}, &email.PermanentError{Err: err}
+	}
+	name, err := memberName(ctx, s.st.Queries, ws, *member)
+	return email.Address{Name: name, Email: addr}, err
+}
+
 func (s *Server) replyFromName(ctx context.Context, ws uuid.UUID, conv store.Conversation, msg messageRow, channelName string) (string, error) {
 	fromName := channelName
 	if msg.AuthorType == string(oas.AuthorTypeBot) && msg.BotName != "" {
 		fromName = msg.BotName
 	}
-	member := sendingMember(msg)
+	member := fromMember(msg)
 	if member == nil {
 		return fromName, nil
 	}
@@ -655,7 +684,7 @@ func (s *Server) memberSender(ctx context.Context, ws uuid.UUID, ch store.EmailC
 	if err != nil {
 		return "", "", err
 	}
-	if member := sendingMember(msg); a.VerifiedAt == nil || a.Address != me.FromAddress || member == nil || *member != a.MemberID {
+	if member := fromMember(msg); a.VerifiedAt == nil || a.Address != me.FromAddress || member == nil || *member != a.MemberID {
 		return "", "", &email.PermanentError{Err: errors.New("the sending address " + me.FromAddress + " is no longer the sender's verified address")}
 	}
 	why, err := s.memberAddressUnusable(ctx, s.st.Queries, ch, a.Address)

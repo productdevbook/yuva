@@ -269,6 +269,9 @@ func (s *Server) ForwardConversation(ctx context.Context, req oas.ForwardConvers
 			Body: note, CreatedAt: now, Draft: draft, Via: p.viaClient(), Forward: mustJSON(spec),
 		}
 		arg.AuthorType, arg.AuthorMemberID, arg.AuthorApiKeyID = authorFor(p)
+		if arg.OnBehalfOfMemberID, err = onBehalfOf(ctx, q, p, c.InboxID); err != nil {
+			return err
+		}
 		if plan != nil {
 			queued := deliveryQueued
 			arg.DeliveryState = &queued
@@ -455,6 +458,9 @@ func (s *Server) sendForward(ctx context.Context, workspaceID uuid.UUID, msg mes
 		if err != nil {
 			return "", err
 		}
+		if msg.OnBehalfOfMemberID != nil {
+			sender = msg.OnBehalfOfMemberID
+		}
 		if inbox.Purpose == string(oas.InboxPurposeMail) {
 			if fromName, err = memberChannelName(ctx, s.st.Queries, workspaceID, *sender, channelName); err != nil {
 				return "", err
@@ -492,6 +498,11 @@ func (s *Server) sendForward(ctx context.Context, workspaceID uuid.UUID, msg mes
 	}
 	for _, addr := range rcpts[1:] {
 		out.AlsoTo = append(out.AlsoTo, email.Address{Email: addr})
+	}
+	if msg.OnBehalfOfMemberID != nil {
+		if out.Sender, err = s.delegateSender(ctx, workspaceID, ch, conv, msg); err != nil {
+			return "", err
+		}
 	}
 	if out.Headers, err = s.sesHeaders(ctx, ch, cfg); err != nil {
 		return "", err

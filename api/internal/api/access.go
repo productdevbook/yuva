@@ -10,6 +10,7 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -27,6 +28,7 @@ var (
 	errLabelGone        = problem(http.StatusNotFound, "not_found", "no such label")
 	errCannedReplyGone  = problem(http.StatusNotFound, "not_found", "no such canned reply")
 	errInvalidCursor    = errValidation("cursor is not valid")
+	errReadDelegate     = problem(http.StatusForbidden, "forbidden", "you may read this personal mailbox, not write in it")
 )
 
 func (p principal) seesAllInboxes() bool {
@@ -53,13 +55,67 @@ func errPersonalMailbox(detail string) *apiError {
 	return problem(http.StatusConflict, "personal_mailbox", detail)
 }
 
-// canReadPersonal is who reads a personal mailbox's content: its owner, through a session or the
-// owner's own OAuth grant, the system's own jobs, and the mailbox's own filters.
-func canReadPersonal(p principal, in store.Inbox) bool {
-	if in.OwnerMemberID == nil || p.auto || (p.mailbox != uuid.Nil() && p.mailbox == in.ID) {
-		return true
+// mailboxRight is what a principal may do in an inbox: a shared inbox, and the system's own jobs,
+// leave it to the usual role and scope checks (rightFull).
+type mailboxRight int
+
+const (
+	rightNone mailboxRight = iota
+	rightRead
+	rightSend
+	rightFull
+)
+
+// ownsMailbox is the owner of a personal mailbox, through a session or the owner's own OAuth grant.
+func ownsMailbox(p principal, in store.Inbox) bool {
+	return in.OwnerMemberID != nil && !p.isKey() && p.rule == nil && p.memberID != uuid.Nil() && p.memberID == *in.OwnerMemberID
+}
+
+// rightIn is the owner's full right, a delegate's read or send, or nothing; keys, rules and other
+// members' grants never reach a personal mailbox.
+func rightIn(ctx context.Context, q *store.Queries, p principal, in store.Inbox) (mailboxRight, error) {
+	if in.OwnerMemberID == nil || p.auto || ownsMailbox(p, in) || (p.mailbox != uuid.Nil() && p.mailbox == in.ID) {
+		return rightFull, nil
 	}
-	return !p.isKey() && p.rule == nil && p.memberID != uuid.Nil() && p.memberID == *in.OwnerMemberID
+	if p.isKey() || p.rule != nil || p.memberID == uuid.Nil() {
+		return rightNone, nil
+	}
+	access, err := q.MailboxDelegateAccess(ctx, store.MailboxDelegateAccessParams{WorkspaceID: p.workspaceID, InboxID: in.ID, MemberID: p.memberID})
+	if store.IsNotFound(err) {
+		return rightNone, nil
+	}
+	if err != nil {
+		return rightNone, err
+	}
+	if access == string(oas.DelegateSend) {
+		return rightSend, nil
+	}
+	return rightRead, nil
+}
+
+// canReadPersonal is who reads a personal mailbox's content: its owner and delegates, through a
+// session or their own OAuth grant, the system's own jobs, and the mailbox's own filters.
+func canReadPersonal(ctx context.Context, q *store.Queries, p principal, in store.Inbox) (bool, error) {
+	r, err := rightIn(ctx, q, p, in)
+	return r != rightNone, err
+}
+
+// requireWrite refuses a delegate who only reads the personal mailbox inboxID any change in it.
+func requireWrite(ctx context.Context, q *store.Queries, p principal, inboxID uuid.UUID) error {
+	if p.auto || p.isKey() || p.rule != nil || p.memberID == uuid.Nil() {
+		return nil
+	}
+	ok, err := q.MemberWritesInbox(ctx, store.MemberWritesInboxParams{WorkspaceID: p.workspaceID, InboxID: inboxID, MemberID: p.memberID})
+	if store.IsNotFound(err) {
+		return errInboxGone
+	}
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return errReadDelegate
+	}
+	return nil
 }
 
 // canSeeInbox reports whether p reads the inbox's content; seeing every inbox stops short of another
@@ -73,10 +129,41 @@ func canSeeInbox(ctx context.Context, q *store.Queries, p principal, inboxID uui
 
 func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {
 	in, err := visibleInboxMeta(ctx, q, p, id)
-	if err == nil && !canReadPersonal(p, in) {
+	if err != nil {
+		return in, err
+	}
+	ok, err := canReadPersonal(ctx, q, p, in)
+	if err != nil {
+		return in, err
+	}
+	if !ok {
+		return in, errInboxGone
+	}
+	return in, nil
+}
+
+// ownedInbox is visibleInbox for what only a personal mailbox's owner does: its settings, channels,
+// delegates and migrations. Its delegates get 404 like everyone else.
+func ownedInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {
+	in, err := visibleInbox(ctx, q, p, id)
+	if err == nil && in.OwnerMemberID != nil && !p.auto && !ownsMailbox(p, in) {
 		return in, errInboxGone
 	}
 	return in, err
+}
+
+// writableInbox is visibleInbox for writing in it: a delegate who only reads gets 403.
+func writableInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {
+	in, err := visibleInbox(ctx, q, p, id)
+	if err != nil {
+		return in, err
+	}
+	if r, err := rightIn(ctx, q, p, in); err != nil {
+		return in, err
+	} else if r == rightRead {
+		return in, errReadDelegate
+	}
+	return in, nil
 }
 
 // visibleInboxMeta also returns another member's personal mailbox to those who see every inbox, for
@@ -102,29 +189,38 @@ func visibleInboxMeta(ctx context.Context, q *store.Queries, p principal, id uui
 	return in, nil
 }
 
-// hiddenInboxes remembers, for one principal, which inboxes are personal mailboxes it does not read.
-// An inbox's owner is fixed when it is created, so an answer holds while the inbox exists.
+// hiddenInboxes remembers, for one principal, its right in each personal mailbox. A delegation or a
+// hand-over sends inbox_access.changed to the members it concerns, whose filters start again.
 type hiddenInboxes struct {
 	p    principal
-	seen map[uuid.UUID]bool
+	seen map[uuid.UUID]mailboxRight
 }
 
-func (h *hiddenInboxes) hidden(ctx context.Context, q *store.Queries, id uuid.UUID) (bool, error) {
+func (h *hiddenInboxes) right(ctx context.Context, q *store.Queries, id uuid.UUID) (mailboxRight, error) {
 	if v, ok := h.seen[id]; ok {
 		return v, nil
 	}
 	if h.seen == nil {
-		h.seen = map[uuid.UUID]bool{}
+		h.seen = map[uuid.UUID]mailboxRight{}
 	}
 	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: h.p.workspaceID, ID: id})
 	if store.IsNotFound(err) {
-		return true, nil
+		return rightNone, nil
 	}
 	if err != nil {
-		return false, err
+		return rightNone, err
 	}
-	h.seen[id] = !canReadPersonal(h.p, in)
-	return h.seen[id], nil
+	r, err := rightIn(ctx, q, h.p, in)
+	if err != nil {
+		return rightNone, err
+	}
+	h.seen[id] = r
+	return r, nil
+}
+
+func (h *hiddenInboxes) hidden(ctx context.Context, q *store.Queries, id uuid.UUID) (bool, error) {
+	r, err := h.right(ctx, q, id)
+	return r == rightNone, err
 }
 
 // visibleConversation is a conversation of an inbox the caller can see that is not in the trash.
@@ -159,6 +255,9 @@ func visibleConversationOrTrashed(ctx context.Context, q *store.Queries, p princ
 	}
 	if !ok {
 		return c, errConversationGone
+	}
+	if lock {
+		return c, requireWrite(ctx, q, p, c.InboxID)
 	}
 	return c, nil
 }

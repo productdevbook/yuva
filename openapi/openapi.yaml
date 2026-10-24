@@ -2988,6 +2988,114 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}/delegates:
+    get:
+      operationId: listMailboxDelegates
+      summary: List a personal mailbox's delegates
+      description: |
+        The members the owner of a personal mailbox lets read it (`read`) or also write in it
+        (`send`), oldest first. Only the mailbox's owner, with a member session; everyone else,
+        delegates, owners and admins included, gets `404`. A shared inbox answers `409
+        personal_mailbox` to those who see it.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      responses:
+        "200":
+          description: The delegates.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MailboxDelegateList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}/delegates/{memberId}:
+    put:
+      operationId: setMailboxDelegate
+      summary: Let a member read or write in a personal mailbox
+      description: |
+        Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+        cannot pass the access on, and owners and admins cannot grant it). Any member of the
+        workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+
+        `read` reads everything the owner reads: conversations, messages, notes, attachments,
+        raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+        drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+        snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+        `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+        delegates, migrations and deleting it stay with the owner.
+
+        Setting the access a delegate already has changes nothing. A new delegate's
+        `inbox_access.changed` reaches their open connections. Audited as
+        `mailbox.delegate_granted`.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+        - $ref: "#/components/parameters/MemberId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MailboxDelegateInput"
+      responses:
+        "200":
+          description: The delegate.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MailboxDelegate"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "422":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: removeMailboxDelegate
+      summary: Take a delegate's access away
+      description: |
+        Only the mailbox's owner, with a member session; everyone else gets `404`. Takes effect at
+        once: the member's next request about the mailbox answers `404`, and their open realtime
+        connections stop receiving its events (`inbox_access.changed` with `granted: false`).
+        Removing someone who is not a delegate changes nothing. Audited as
+        `mailbox.delegate_revoked`.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "204":
+          description: The member is no longer a delegate.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
   /v1/teams:
     get:
       operationId: listTeams
@@ -21667,6 +21775,9 @@ components:
           `yuva channel prove`.
         - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
           `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
+        - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
+          delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
+          the personal mailbox.
         - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
           `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
           `inbox_name`.
@@ -21761,6 +21872,8 @@ components:
         - inbox.created
         - inbox.deleted
         - inbox.purpose_changed
+        - mailbox.delegate_granted
+        - mailbox.delegate_revoked
         - conversation.trashed
         - conversation.restored
         - conversation.deleted
@@ -21808,11 +21921,11 @@ components:
         - member_address.added
         - member_address.verified
         - member_address.removed
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditMailboxDelegateGranted, AuditMailboxDelegateRevoked, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
     AuditTargetType:
       type: string
-      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
-      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration, AuditTargetAutomationRule]
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule, mailbox]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration, AuditTargetAutomationRule, AuditTargetMailbox]
     AuditTarget:
       type: object
       required: [type, id]
@@ -23081,9 +23194,10 @@ components:
           format: uuid
           description: |
             The member whose personal mailbox this is; `null` for a shared inbox. Only that member
-            reads its conversations, messages, attachments, drafts and events: owners, admins,
-            API keys, webhooks, automation rules and other members' OAuth tokens get `404` or
-            nothing, as for an inbox they cannot see. Set on creation only.
+            and the delegates they name (`PUT /v1/inboxes/{id}/delegates/{memberId}`) read its
+            conversations, messages, attachments and events, and only its owner its own drafts:
+            owners, admins, API keys, webhooks, automation rules and other members' OAuth tokens
+            get `404` or nothing, as for an inbox they cannot see. Set on creation only.
         mailbox:
           $ref: "#/components/schemas/InboxMailbox"
         branding:
@@ -23131,6 +23245,49 @@ components:
         updated_at:
           type: string
           format: date-time
+    MailboxAccess:
+      type: string
+      description: |
+        What the caller may do in a personal mailbox: `owner` (everything, managing it included),
+        `send` (a delegate who reads and writes) or `read` (a delegate who reads).
+      enum: [owner, send, read]
+      x-enum-varnames: [MailboxAccessOwner, MailboxAccessSend, MailboxAccessRead]
+    MailboxDelegateAccess:
+      type: string
+      enum: [read, send]
+      x-enum-varnames: [DelegateRead, DelegateSend]
+    MailboxDelegateInput:
+      type: object
+      required: [access]
+      properties:
+        access:
+          $ref: "#/components/schemas/MailboxDelegateAccess"
+    MailboxDelegate:
+      type: object
+      required: [member_id, name, email, access, created_at]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        access:
+          $ref: "#/components/schemas/MailboxDelegateAccess"
+        created_at:
+          type: string
+          format: date-time
+          description: When the member became a delegate.
+    MailboxDelegateList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MailboxDelegate"
     InboxMailbox:
       type: object
       description: |
@@ -23138,6 +23295,9 @@ components:
         personal mailboxes only.
       required: [addresses, conversations, storage_bytes]
       properties:
+        access:
+          $ref: "#/components/schemas/MailboxAccess"
+          description: The caller's own access; absent when the caller sees only this metadata.
         addresses:
           type: array
           items:
@@ -26467,6 +26627,13 @@ components:
         forward:
           $ref: "#/components/schemas/MessageForward"
           description: What an outgoing `forward` sent and to whom; absent for everything else.
+        on_behalf_of_member_id:
+          type: string
+          format: uuid
+          description: |
+            The owner of the personal mailbox a delegate wrote this outgoing message for; `author`
+            is the delegate. The e-mail's `From:` is what the owner's own mail uses and its
+            `Sender:` names the delegate with the mailbox's channel address. Absent otherwise.
         signature_html:
           type: string
           description: |
@@ -30492,7 +30659,8 @@ components:
       type: object
       description: |
         A member's effective access to an inbox flipped: through their own grant, a team they joined
-        or left, or a team that was granted the inbox, lost it or was deleted. Reload the inboxes,
+        or left, a team that was granted the inbox, lost it or was deleted, or becoming or ceasing
+        to be a delegate of a personal mailbox. Reload the inboxes,
         conversations and teams when it is about you.
       required: [id, type, workspace_id, inbox_id, created_at, data]
       properties:

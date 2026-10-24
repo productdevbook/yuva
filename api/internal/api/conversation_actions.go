@@ -140,7 +140,7 @@ func (s *Server) MoveConversation(ctx context.Context, req oas.MoveConversationR
 		if err != nil {
 			return err
 		}
-		target, err := visibleInbox(ctx, q, p, req.Body.InboxId)
+		target, err := writableInbox(ctx, q, p, req.Body.InboxId)
 		if err != nil {
 			return err
 		}

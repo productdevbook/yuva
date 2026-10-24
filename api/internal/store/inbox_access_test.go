@@ -25,7 +25,7 @@ var (
 func TestNoRawInboxMembersReads(t *testing.T) {
 	allowedQueries := []string{"GrantInboxAccess", "RevokeInboxAccess"}
 	const viewMigration = "00101_teams.sql"
-	const ownerRowsMigration = "00135_personal_mailboxes.sql"
+	redefinitions := []string{"00135_personal_mailboxes.sql", "00138_mailbox_delegates.sql"}
 
 	files, err := filepath.Glob("queries/*.sql")
 	if err != nil || len(files) == 0 {
@@ -60,7 +60,7 @@ func TestNoRawInboxMembersReads(t *testing.T) {
 			seenView = true
 			continue
 		}
-		if base == ownerRowsMigration {
+		if slices.Contains(redefinitions, base) {
 			continue
 		}
 		b, err := os.ReadFile(f)

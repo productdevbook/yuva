@@ -2467,9 +2467,7 @@ SELECT m.id, m.workspace_id, m.source, m.preset, m.source_address, m.inbox_id, m
 LEFT JOIN inboxes i ON i.workspace_id = m.workspace_id AND i.id = m.inbox_id
 WHERE m.workspace_id = $1
   AND (cardinality($2::text[]) = 0 OR m.state = ANY($2::text[]))
-  AND (i.owner_member_id IS NULL OR EXISTS (
-          SELECT 1 FROM inbox_viewers iv
-          WHERE iv.workspace_id = m.workspace_id AND iv.inbox_id = m.inbox_id AND iv.viewer_id = $3))
+  AND (i.owner_member_id IS NULL OR i.owner_member_id = $3::uuid)
   AND ($4::timestamptz IS NULL
        OR (m.created_at, m.id) < ($4::timestamptz, $5::uuid))
 ORDER BY m.created_at DESC, m.id DESC

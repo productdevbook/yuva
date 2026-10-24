@@ -80,7 +80,7 @@ func channelSettings(v *oas.ChannelSettings) ([]byte, error) {
 
 func (s *Server) ListChannels(ctx context.Context, req oas.ListChannelsRequestObject) (oas.ListChannelsResponseObject, error) {
 	p := principalFrom(ctx)
-	if _, err := visibleInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
+	if _, err := ownedInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
 	}
 	rows, err := s.st.ListChannels(ctx, store.ListChannelsParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
@@ -190,7 +190,7 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 			return nil, err
 		}
 	}
-	if _, err := visibleInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
+	if _, err := ownedInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
 	}
 	var out oas.Channel
@@ -262,13 +262,10 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	return oas.CreateChannel201JSONResponse(out), nil
 }
 
-// requireChannelManager is requireManagerOrKey, and also lets the owner of a personal mailbox,
-// whatever their role, manage its channels. channelID names the inbox when set.
+// requireChannelManager is requireManagerOrKey for a shared inbox; a personal mailbox's channels
+// are its owner's, whatever their role, and nobody else's. channelID names the inbox when set.
 func (s *Server) requireChannelManager(ctx context.Context, p principal, inboxID, channelID uuid.UUID) error {
 	err := requireManagerOrKey(p)
-	if err == nil || p.isKey() {
-		return err
-	}
 	if channelID != uuid.Nil() {
 		c, cerr := s.st.GetChannel(ctx, store.GetChannelParams{WorkspaceID: p.workspaceID, ID: channelID})
 		if cerr != nil {
@@ -277,10 +274,16 @@ func (s *Server) requireChannelManager(ctx context.Context, p principal, inboxID
 		inboxID = c.InboxID
 	}
 	in, ierr := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: inboxID})
-	if ierr != nil || in.OwnerMemberID == nil || !canReadPersonal(p, in) {
+	if ierr != nil || in.OwnerMemberID == nil {
 		return err
 	}
-	return nil
+	if ownsMailbox(p, in) {
+		return nil
+	}
+	if p.isKey() || err == nil {
+		return errInboxGone
+	}
+	return err
 }
 
 func (s *Server) visibleChannel(ctx context.Context, p principal, id oas.ChannelId) (store.Channel, error) {
@@ -291,12 +294,10 @@ func (s *Server) visibleChannel(ctx context.Context, p principal, id oas.Channel
 	if err != nil {
 		return c, err
 	}
-	ok, err := canSeeInbox(ctx, s.st.Queries, p, c.InboxID)
-	if err != nil {
-		return c, err
-	}
-	if !ok {
+	if _, err := ownedInbox(ctx, s.st.Queries, p, c.InboxID); err == errInboxGone {
 		return c, errChannelGone
+	} else if err != nil {
+		return c, err
 	}
 	return c, nil
 }

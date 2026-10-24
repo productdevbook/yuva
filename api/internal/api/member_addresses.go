@@ -175,9 +175,11 @@ func memberSendChannels(ctx context.Context, q *store.Queries, ws, member uuid.U
 	if err != nil {
 		return nil, err
 	}
-	ids := make([]uuid.UUID, len(inboxes))
-	for i, in := range inboxes {
-		ids[i] = in.ID
+	ids := make([]uuid.UUID, 0, len(inboxes))
+	for _, in := range inboxes {
+		if in.OwnerMemberID == nil || *in.OwnerMemberID == member {
+			ids = append(ids, in.ID)
+		}
 	}
 	chs, err := q.ListInboxEmailChannels(ctx, store.ListInboxEmailChannelsParams{WorkspaceID: ws, InboxIds: ids})
 	if err != nil {
@@ -496,9 +498,17 @@ func (s *Server) fromMemberAddress(ctx context.Context, q *store.Queries, p prin
 		return store.MemberAddress{}, errFromNotMember
 	}
 	addr := strings.ToLower(strings.TrimSpace(from))
-	row, err := q.GetVerifiedMemberAddress(ctx, store.GetVerifiedMemberAddressParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, Address: addr})
+	member, whose := p.memberID, "your"
+	owner, err := channelMailboxOwner(ctx, q, p.workspaceID, ch.ChannelID)
+	if err != nil {
+		return store.MemberAddress{}, err
+	}
+	if owner != nil && *owner != p.memberID {
+		member, whose = *owner, "the mailbox owner's"
+	}
+	row, err := q.GetVerifiedMemberAddress(ctx, store.GetVerifiedMemberAddressParams{WorkspaceID: p.workspaceID, MemberID: member, Address: addr})
 	if store.IsNotFound(err) {
-		return row, errFromNotAllowed(addr + " is not one of your verified addresses")
+		return row, errFromNotAllowed(addr + " is not one of " + whose + " verified addresses")
 	}
 	if err != nil {
 		return row, err
@@ -511,6 +521,17 @@ func (s *Server) fromMemberAddress(ctx context.Context, q *store.Queries, p prin
 		return row, errFromNotAllowed(why)
 	}
 	return row, nil
+}
+
+// channelMailboxOwner is the owner of the personal mailbox the channel belongs to, nil for a shared
+// inbox.
+func channelMailboxOwner(ctx context.Context, q *store.Queries, ws, channelID uuid.UUID) (*uuid.UUID, error) {
+	c, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: ws, ID: channelID})
+	if err != nil {
+		return nil, err
+	}
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ws, ID: c.InboxID})
+	return in.OwnerMemberID, err
 }
 
 func memberName(ctx context.Context, q *store.Queries, ws, member uuid.UUID) (string, error) {

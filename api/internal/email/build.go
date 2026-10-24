@@ -12,6 +12,7 @@ import (
 
 type Outgoing struct {
 	From          Address
+	Sender        Address
 	ReplyTo       Address
 	To            Address
 	AlsoTo        []Address
@@ -150,6 +151,9 @@ func Build(o Outgoing) ([]byte, error) {
 			cc[i] = FormatAddress(c)
 		}
 		root.Header.Set("Cc", strings.Join(cc, ", "))
+	}
+	if o.Sender.Email != "" {
+		root.Header.Set("Sender", FormatAddress(o.Sender))
 	}
 	if o.ReplyTo.Email != "" {
 		root.Header.Set("Reply-To", FormatAddress(o.ReplyTo))

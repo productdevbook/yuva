@@ -201,7 +201,8 @@ func migrationEventInbox(ctx context.Context, q *store.Queries, m store.Migratio
 	return &in.ID, nil
 }
 
-// mayManageMigration keeps a migration into a personal mailbox to the managers who read it.
+// mayManageMigration keeps a migration into a personal mailbox to its owner; delegates read the
+// mailbox but do not manage it.
 func mayManageMigration(ctx context.Context, q *store.Queries, p principal, m store.Migration) error {
 	if err := requireMigrationManager(p); err != nil {
 		return err
@@ -210,7 +211,7 @@ func mayManageMigration(ctx context.Context, q *store.Queries, p principal, m st
 	if err != nil {
 		return err
 	}
-	if in != nil && !canReadPersonal(p, *in) {
+	if in != nil && !ownsMailbox(p, *in) && !p.auto {
 		return errMigrationGone
 	}
 	return nil
@@ -600,7 +601,7 @@ func migrationTarget(ctx context.Context, q *store.Queries, p principal, inboxID
 		if err != nil {
 			return nil, nil, err
 		}
-		if _, err := visibleInbox(ctx, q, p, ch.InboxID); err == errInboxGone {
+		if _, err := ownedInbox(ctx, q, p, ch.InboxID); err == errInboxGone {
 			return nil, nil, errChannelGone
 		} else if err != nil {
 			return nil, nil, err
@@ -625,7 +626,7 @@ func migrationTarget(ctx context.Context, q *store.Queries, p principal, inboxID
 		return &inbox, &ch.ID, nil
 	}
 	if inboxID != nil {
-		if _, err := visibleInbox(ctx, q, p, *inboxID); err != nil {
+		if _, err := ownedInbox(ctx, q, p, *inboxID); err != nil {
 			return nil, nil, err
 		}
 	}
@@ -778,7 +779,7 @@ func applyMigrationOptions(ctx context.Context, q *store.Queries, p principal, c
 				return out, false, errValidation("options.inboxes names " + ib.Folder + " twice")
 			}
 			seen[ib.Folder] = true
-			if _, err := visibleInbox(ctx, q, p, ib.InboxId); err != nil {
+			if _, err := ownedInbox(ctx, q, p, ib.InboxId); err != nil {
 				return out, false, errValidation("options.inboxes names an inbox that does not exist")
 			}
 			inboxes = append(inboxes, ib)

@@ -2,8 +2,10 @@ package api_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"strings"
 	"testing"
@@ -87,6 +89,60 @@ func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
 		"inbox_id": inbox, "to": []string{"success@simulator.amazonses.com"}, "subject": unique("Private draft"), "body": "Draft body", "draft": true,
 	}).body["conversation"].(map[string]any)["id"].(string)
 
+	reader, readerID := tm.newAgent(tm.inbox)
+	sender, senderID := tm.newAgent(tm.inbox)
+	mailOwner.expect(http.StatusOK, "PATCH", "/v1/me", map[string]any{"name": "Mia Owner"})
+	sender.expect(http.StatusOK, "PATCH", "/v1/me", map[string]any{"name": "Sam Sender"})
+	delegates := "/v1/inboxes/" + inbox + "/delegates/"
+	readerWS := reader.dial("")
+	readerWS.ready()
+	for _, c := range []*client{tm.owner, admin, tm.agent} {
+		c.expectProblem(http.StatusNotFound, "not_found", "PUT", delegates+readerID, map[string]any{"access": "read"})
+		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/inboxes/"+inbox+"/delegates", nil)
+	}
+	key.expectProblem(http.StatusForbidden, "member_session_required", "PUT", delegates+readerID, map[string]any{"access": "read"})
+	mailOwner.expectProblem(http.StatusUnprocessableEntity, "self_delegation", "PUT", delegates+mailOwnerID, map[string]any{"access": "read"})
+	mailOwner.expectProblem(http.StatusBadRequest, "validation_failed", "PUT", delegates+readerID, map[string]any{"access": "write"})
+	mailOwner.expectProblem(http.StatusNotFound, "not_found", "PUT", delegates+uuid.New().String(), map[string]any{"access": "read"})
+	tm.owner.expectProblem(http.StatusConflict, "personal_mailbox", "PUT", "/v1/inboxes/"+tm.inbox+"/delegates/"+readerID, map[string]any{"access": "read"})
+	if g := mailOwner.expect(http.StatusOK, "PUT", delegates+readerID, map[string]any{"access": "read"}); g.str("access") != "read" || g.str("member_id") != readerID {
+		t.Fatalf("grant: %s", g.raw)
+	}
+	var change map[string]any
+	if err := json.Unmarshal(readerWS.nextOf("inbox_access.changed").Data, &change); err != nil || change["inbox_id"] != inbox || change["granted"] != true {
+		t.Fatalf("reader's realtime on grant: %v %v", change, err)
+	}
+	mailOwner.expect(http.StatusOK, "PUT", delegates+senderID, map[string]any{"access": "read"})
+	mailOwner.expect(http.StatusOK, "PUT", delegates+senderID, map[string]any{"access": "send"})
+	mailOwner.expect(http.StatusOK, "PUT", delegates+senderID, map[string]any{"access": "send"})
+	if l := mailOwner.expect(http.StatusOK, "GET", "/v1/inboxes/"+inbox+"/delegates", nil); len(l.body["items"].([]any)) != 2 || !strings.Contains(string(l.raw), `"send"`) {
+		t.Fatalf("delegates: %s", l.raw)
+	}
+	for _, d := range []struct {
+		c      *client
+		access string
+	}{{mailOwner, "owner"}, {reader, "read"}, {sender, "send"}} {
+		got := d.c.expect(http.StatusOK, "GET", "/v1/inboxes/"+inbox, nil)
+		if box, _ := got.body["mailbox"].(map[string]any); box == nil || box["access"] != d.access {
+			t.Fatalf("%s's mailbox: %s", d.access, got.raw)
+		}
+	}
+	for _, c := range []*client{reader, sender} {
+		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/inboxes/"+inbox+"/delegates", nil)
+		c.expectProblem(http.StatusNotFound, "not_found", "PUT", delegates+tm.agentID, map[string]any{"access": "read"})
+		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/inboxes/"+inbox+"/channels", nil)
+		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/inboxes/"+inbox+"/members", nil)
+		if c.do("PATCH", "/v1/inboxes/"+inbox, map[string]any{"timezone": "Europe/Berlin"}).status/100 == 2 {
+			t.Fatal("a delegate changed the mailbox's settings")
+		}
+		if c.do("DELETE", "/v1/inboxes/"+inbox, nil).status/100 == 2 {
+			t.Fatal("a delegate deleted the mailbox")
+		}
+	}
+	readerGrant := h.client()
+	readerGrant.bearer = h.oauthToken(reader, tm.ws, "Reader App", testOrigin, []string{"conversations:read", "conversations:write", "notes:write", "messages:write", "contacts:write", "contacts:read", "inboxes:read", "reports:read"})
+	readerMCP := h.mcpSession(h.oauthToken(reader, tm.ws, "Reader Assistant", testOrigin+"/mcp", []string{"conversations:read", "contacts:read", "inboxes:read"}))
+
 	ownerGrant := h.client()
 	ownerGrant.bearer = h.oauthToken(mailOwner, tm.ws, "Own App", testOrigin, []string{"conversations:read", "conversations:write", "contacts:read", "inboxes:read", "reports:read"})
 	otherGrant := h.client()
@@ -101,50 +157,60 @@ func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
 		res := c.do("GET", path, nil)
 		return res.status == http.StatusOK && strings.Contains(string(res.raw), needle)
 	}
+	const (
+		none = iota
+		reads
+		sends
+		owns
+	)
 	surfaces := []struct {
-		name string
-		sees func(c *client) bool
+		name  string
+		needs int
+		sees  func(c *client) bool
 	}{
-		{"get conversation", func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+conv, nil) }},
-		{"list conversations", func(c *client) bool { return has(c, "/v1/conversations?limit=100", conv) }},
-		{"counts", func(c *client) bool { return has(c, "/v1/conversations/counts", inbox) }},
-		{"messages", func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+conv+"/messages", nil) }},
-		{"attachment", func(c *client) bool { return ok(c, "GET", "/v1/attachments/"+attachment, nil) }},
-		{"raw e-mail", func(c *client) bool { return ok(c, "GET", "/v1/messages/"+msg+"/raw", nil) }},
-		{"search", func(c *client) bool { return has(c, "/v1/conversations?q=export", conv) }},
-		{"contact", func(c *client) bool { return ok(c, "GET", "/v1/contacts/"+contact, nil) }},
-		{"contact list", func(c *client) bool { return has(c, "/v1/contacts?limit=100", contact) }},
-		{"contact's conversations", func(c *client) bool { return has(c, "/v1/conversations?contact_id="+contact, conv) }},
-		{"events", func(c *client) bool { return has(c, "/v1/events?after=0&limit=500", conv) }},
-		{"drafts", func(c *client) bool { return has(c, "/v1/drafts", replyDraft) }},
-		{"composed draft", func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+composed, nil) }},
-		{"composed draft listed", func(c *client) bool { return has(c, "/v1/conversations?limit=100", composed) }},
-		{"report", func(c *client) bool { return ok(c, "GET", "/v1/reports?from="+today+"&to="+today+"&inbox_id="+inbox, nil) }},
-		{"bulk", func(c *client) bool {
+		{"get conversation", reads, func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+conv, nil) }},
+		{"list conversations", reads, func(c *client) bool { return has(c, "/v1/conversations?limit=100", conv) }},
+		{"counts", reads, func(c *client) bool { return has(c, "/v1/conversations/counts", inbox) }},
+		{"messages", reads, func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+conv+"/messages", nil) }},
+		{"attachment", reads, func(c *client) bool { return ok(c, "GET", "/v1/attachments/"+attachment, nil) }},
+		{"raw e-mail", reads, func(c *client) bool { return ok(c, "GET", "/v1/messages/"+msg+"/raw", nil) }},
+		{"search", reads, func(c *client) bool { return has(c, "/v1/conversations?q=export", conv) }},
+		{"contact", reads, func(c *client) bool { return ok(c, "GET", "/v1/contacts/"+contact, nil) }},
+		{"contact list", reads, func(c *client) bool { return has(c, "/v1/contacts?limit=100", contact) }},
+		{"contact's conversations", reads, func(c *client) bool { return has(c, "/v1/conversations?contact_id="+contact, conv) }},
+		{"events", reads, func(c *client) bool { return has(c, "/v1/events?after=0&limit=500", conv) }},
+		{"drafts", owns, func(c *client) bool { return has(c, "/v1/drafts", replyDraft) }},
+		{"composed draft", owns, func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+composed, nil) }},
+		{"composed draft listed", owns, func(c *client) bool { return has(c, "/v1/conversations?limit=100", composed) }},
+		{"report", reads, func(c *client) bool { return ok(c, "GET", "/v1/reports?from="+today+"&to="+today+"&inbox_id="+inbox, nil) }},
+		{"bulk", sends, func(c *client) bool {
 			res := c.do("POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{conv}, "status": "open"})
 			return res.status == http.StatusOK && strings.Contains(fmt.Sprint(res.body["updated"]), conv)
 		}},
 	}
 	viewers := []struct {
-		name   string
-		c      *client
-		reader bool
+		name  string
+		c     *client
+		level int
 	}{
-		{"mailbox owner", mailOwner, true},
-		{"mailbox owner's grant", ownerGrant, true},
-		{"workspace owner", tm.owner, false},
-		{"admin", admin, false},
-		{"another agent", tm.agent, false},
-		{"api key", key, false},
-		{"another member's grant", otherGrant, false},
+		{"mailbox owner", mailOwner, owns},
+		{"mailbox owner's grant", ownerGrant, owns},
+		{"read delegate", reader, reads},
+		{"read delegate's grant", readerGrant, reads},
+		{"send delegate", sender, sends},
+		{"workspace owner", tm.owner, none},
+		{"admin", admin, none},
+		{"another agent", tm.agent, none},
+		{"api key", key, none},
+		{"another member's grant", otherGrant, none},
 	}
 	for _, v := range viewers {
 		for _, s := range surfaces {
-			if got := s.sees(v.c); got != v.reader {
-				t.Errorf("%s, %s: sees %v, want %v", v.name, s.name, got, v.reader)
+			if got, want := s.sees(v.c), v.level >= s.needs; got != want {
+				t.Errorf("%s, %s: sees %v, want %v", v.name, s.name, got, want)
 			}
 		}
-		if !v.reader {
+		if v.level == none {
 			if ok(v.c, "POST", "/v1/conversations/"+conv+"/move", map[string]any{"inbox_id": tm.inbox}) {
 				t.Errorf("%s moved the conversation out of the personal mailbox", v.name)
 			}
@@ -157,7 +223,7 @@ func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
 		name   string
 		cs     *mcp.ClientSession
 		reader bool
-	}{{"mailbox owner", ownerMCP, true}, {"another member", otherMCP, false}} {
+	}{{"mailbox owner", ownerMCP, true}, {"read delegate", readerMCP, true}, {"another member", otherMCP, false}} {
 		if _, errText := callTool(t, m.cs, "get_conversation", map[string]any{"conversation_id": conv}); (errText == "") != m.reader {
 			t.Errorf("MCP %s get_conversation: %q", m.name, errText)
 		}
@@ -165,6 +231,66 @@ func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
 		if strings.Contains(fmt.Sprint(out), conv) != m.reader {
 			t.Errorf("MCP %s search_conversations: %v", m.name, out)
 		}
+	}
+
+	for _, c := range []*client{reader, readerGrant} {
+		c.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "note", "body": "reader note"})
+		c.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "reader reply"})
+		c.expectProblem(http.StatusForbidden, "forbidden", "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "closed"})
+		c.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/mail", map[string]any{
+			"inbox_id": inbox, "to": []string{"success@simulator.amazonses.com"}, "subject": "From the reader", "body": "Hi",
+		})
+	}
+	reader.expectProblem(http.StatusForbidden, "forbidden", "PUT", "/v1/conversations/"+conv+"/star", nil)
+	sender.expect(http.StatusNoContent, "PUT", "/v1/conversations/"+conv+"/star", nil)
+	post(sender, conv, map[string]any{"kind": "note", "body": "sender note"})
+	sender.expect(http.StatusOK, "PATCH", "/v1/conversations/"+conv, map[string]any{"status": "pending"})
+	reply := sender.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "On Mia's behalf"})
+	if author, _ := reply.body["author"].(map[string]any); reply.str("on_behalf_of_member_id") != mailOwnerID || author["member_id"] != senderID {
+		t.Fatalf("delegate's reply: %s", reply.raw)
+	}
+	readerWS.until(messageIn(conv))
+	for _, q := range []struct {
+		c     *client
+		query string
+	}{{mailOwner, "in:sent"}, {mailOwner, "from:me"}, {sender, "in:sent"}, {reader, "has:attachment"}, {reader, "-in:trash"}} {
+		if !has(q.c, "/v1/conversations?q="+url.QueryEscape(q.query), conv) {
+			t.Errorf("search %q misses the delegate's conversation", q.query)
+		}
+	}
+	h.sendQueued(t, tm.ws, reply.str("id"))
+	sent, parsed := h.smtp.last(t)
+	from, senderHeader := parsed.Header.Get("From"), parsed.Header.Get("Sender")
+	if !strings.Contains(from, `"Mia Owner (My mail)"`) || !strings.Contains(from, address) || sent.from != address {
+		t.Fatalf("From %q envelope %s", from, sent.from)
+	}
+	if !strings.HasPrefix(senderHeader, "Sam Sender <") || !strings.Contains(senderHeader, address) {
+		t.Fatalf("Sender %q", senderHeader)
+	}
+	if own := personEmail(sender); strings.Contains(string(sent.raw), own) {
+		t.Fatalf("the delegate's own address %s is in the mail", own)
+	}
+	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND target_id = $2 AND action = 'mailbox.delegate_granted'", tm.ws, inbox); n != 3 {
+		t.Fatalf("%d grants audited, want 3", n)
+	}
+
+	mailOwner.expect(http.StatusNoContent, "DELETE", delegates+readerID, nil)
+	mailOwner.expect(http.StatusNoContent, "DELETE", delegates+readerID, nil)
+	if err := json.Unmarshal(readerWS.nextOf("inbox_access.changed").Data, &change); err != nil || change["inbox_id"] != inbox || change["granted"] != false {
+		t.Fatalf("reader's realtime on revoke: %v %v", change, err)
+	}
+	reader.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+conv, nil)
+	readerGrant.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+conv, nil)
+	post(mailOwner, conv, map[string]any{"kind": "note", "body": "after the revoke"})
+	shared := tm.conversation(tm.owner)
+	tm.say(tm.owner, shared, "sentinel")
+	for _, m := range readerWS.until(messageIn(shared)) {
+		if m.ConversationID == conv {
+			t.Fatalf("a revoked delegate's open connection got %s", m.Type)
+		}
+	}
+	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND target_id = $2 AND action = 'mailbox.delegate_revoked'", tm.ws, inbox); n != 1 {
+		t.Fatalf("%d revokes audited, want 1", n)
 	}
 
 	adminID := memberships(admin)[0].(map[string]any)["member_id"].(string)

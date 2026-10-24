@@ -98,6 +98,16 @@ func withMailboxes(ctx context.Context, q *store.Queries, p principal, items []o
 	if err != nil {
 		return err
 	}
+	delegated := map[uuid.UUID]oas.MailboxAccess{}
+	if !p.isKey() && p.rule == nil && p.memberID != uuid.Nil() {
+		access, err := q.ListMailboxDelegateAccess(ctx, store.ListMailboxDelegateAccessParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, InboxIds: ids})
+		if err != nil {
+			return err
+		}
+		for _, a := range access {
+			delegated[a.InboxID] = oas.MailboxAccess(a.Access)
+		}
+	}
 	for _, r := range rows {
 		for i := range items {
 			if items[i].Id != r.ID {
@@ -109,10 +119,16 @@ func withMailboxes(ctx context.Context, q *store.Queries, p principal, items []o
 			}
 			items[i].Mailbox = &oas.InboxMailbox{Addresses: addresses, Conversations: r.Conversations, StorageBytes: r.StorageBytes}
 			owner := items[i].OwnerMemberId.MustGet()
-			if !canReadPersonal(p, store.Inbox{OwnerMemberID: &owner}) {
+			if ownsMailbox(p, store.Inbox{OwnerMemberID: &owner}) {
+				items[i].Mailbox.Access = new(oas.MailboxAccessOwner)
+				continue
+			}
+			items[i].Import = nil
+			items[i].SesTenant = nil
+			if a, ok := delegated[r.ID]; ok {
+				items[i].Mailbox.Access = &a
+			} else {
 				items[i].Signature = ""
-				items[i].Import = nil
-				items[i].SesTenant = nil
 			}
 		}
 	}
@@ -363,7 +379,7 @@ func manageInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUI
 	if in.OwnerMemberID == nil {
 		return in, false, requireManagerOrKey(p)
 	}
-	if canReadPersonal(p, in) {
+	if ownsMailbox(p, in) {
 		return in, false, nil
 	}
 	if p.isKey() || p.rule != nil || requireManagerOrKey(p) != nil {
@@ -665,7 +681,7 @@ func (s *Server) RotateInboxIdentitySecret(ctx context.Context, req oas.RotateIn
 
 func (s *Server) ListInboxMembers(ctx context.Context, req oas.ListInboxMembersRequestObject) (oas.ListInboxMembersResponseObject, error) {
 	p := principalFrom(ctx)
-	if _, err := visibleInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
+	if _, err := ownedInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
 	}
 	rows, err := s.st.ListInboxMembers(ctx, store.ListInboxMembersParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})

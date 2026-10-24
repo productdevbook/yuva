@@ -354,6 +354,11 @@ func (s *Server) SendScheduled(ctx context.Context, a ScheduledSendArgs, lastAtt
 	if c.TrashedAt != nil {
 		return s.failScheduled(ctx, a, &m.ID, "conversation_trashed", "the conversation is in the trash")
 	}
+	if err := requireWrite(ctx, s.st.Queries, p, c.InboxID); errors.Is(err, errReadDelegate) {
+		return s.failScheduled(ctx, a, &m.ID, "inbox_access_lost", "you may no longer write in the conversation's inbox")
+	} else if err != nil {
+		return err
+	}
 	body := &oas.MessageSend{FromAddress: (*oas.Email)(sc.ScheduledFrom)}
 	if sc.ScheduledCc != nil {
 		body.Cc = emailsOf(sc.ScheduledCc)

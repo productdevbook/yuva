@@ -1145,6 +1145,8 @@ const (
 	AuditIssueIntegrationSecretRotated       AuditAction = "issue_integration.secret_rotated"
 	AuditIssueIntegrationUpdated             AuditAction = "issue_integration.updated"
 	AuditListConsentExported                 AuditAction = "list.consent_exported"
+	AuditMailboxDelegateGranted              AuditAction = "mailbox.delegate_granted"
+	AuditMailboxDelegateRevoked              AuditAction = "mailbox.delegate_revoked"
 	AuditMemberAddressAdded                  AuditAction = "member_address.added"
 	AuditMemberAddressRemoved                AuditAction = "member_address.removed"
 	AuditMemberAddressVerified               AuditAction = "member_address.verified"
@@ -1253,6 +1255,10 @@ func (e AuditAction) Valid() bool {
 	case AuditIssueIntegrationUpdated:
 		return true
 	case AuditListConsentExported:
+		return true
+	case AuditMailboxDelegateGranted:
+		return true
+	case AuditMailboxDelegateRevoked:
 		return true
 	case AuditMemberAddressAdded:
 		return true
@@ -1386,6 +1392,7 @@ const (
 	AuditTargetInvite           AuditTargetType = "invite"
 	AuditTargetIssueIntegration AuditTargetType = "issue_integration"
 	AuditTargetList             AuditTargetType = "list"
+	AuditTargetMailbox          AuditTargetType = "mailbox"
 	AuditTargetMember           AuditTargetType = "member"
 	AuditTargetMessage          AuditTargetType = "message"
 	AuditTargetOAuthGrant       AuditTargetType = "oauth_grant"
@@ -1418,6 +1425,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetIssueIntegration:
 		return true
 	case AuditTargetList:
+		return true
+	case AuditTargetMailbox:
 		return true
 	case AuditTargetMember:
 		return true
@@ -4719,6 +4728,45 @@ func (e MacroVisibility) Valid() bool {
 	case MacroVisibilityPersonal:
 		return true
 	case MacroVisibilityShared:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MailboxAccess.
+const (
+	MailboxAccessOwner MailboxAccess = "owner"
+	MailboxAccessRead  MailboxAccess = "read"
+	MailboxAccessSend  MailboxAccess = "send"
+)
+
+// Valid indicates whether the value is a known member of the MailboxAccess enum.
+func (e MailboxAccess) Valid() bool {
+	switch e {
+	case MailboxAccessOwner:
+		return true
+	case MailboxAccessRead:
+		return true
+	case MailboxAccessSend:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MailboxDelegateAccess.
+const (
+	DelegateRead MailboxDelegateAccess = "read"
+	DelegateSend MailboxDelegateAccess = "send"
+)
+
+// Valid indicates whether the value is a known member of the MailboxDelegateAccess enum.
+func (e MailboxDelegateAccess) Valid() bool {
+	switch e {
+	case DelegateRead:
+		return true
+	case DelegateSend:
 		return true
 	default:
 		return false
@@ -10143,6 +10191,9 @@ type Attributes map[string]interface{}
 //     `yuva channel prove`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
 //     `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
+//   - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
+//     delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
+//     the personal mailbox.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 //     `inbox_name`.
@@ -10271,6 +10322,9 @@ type AuditEntry struct {
 	//   `yuva channel prove`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
 	//   `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
+	// - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
+	//   delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
+	//   the personal mailbox.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 	//   `inbox_name`.
@@ -17662,9 +17716,10 @@ type Inbox struct {
 	Name string    `json:"name"`
 
 	// OwnerMemberId The member whose personal mailbox this is; `null` for a shared inbox. Only that member
-	// reads its conversations, messages, attachments, drafts and events: owners, admins,
-	// API keys, webhooks, automation rules and other members' OAuth tokens get `404` or
-	// nothing, as for an inbox they cannot see. Set on creation only.
+	// and the delegates they name (`PUT /v1/inboxes/{id}/delegates/{memberId}`) read its
+	// conversations, messages, attachments and events, and only its owner its own drafts:
+	// owners, admins, API keys, webhooks, automation rules and other members' OAuth tokens
+	// get `404` or nothing, as for an inbox they cannot see. Set on creation only.
 	OwnerMemberId nullable.Nullable[uuid.UUID] `json:"owner_member_id"`
 
 	// Purpose `support` (the default, and every inbox made before purposes existed) or `mail`, a team
@@ -17715,7 +17770,8 @@ type InboxAccessChange struct {
 }
 
 // InboxAccessChangedEvent A member's effective access to an inbox flipped: through their own grant, a team they joined
-// or left, or a team that was granted the inbox, lost it or was deleted. Reload the inboxes,
+// or left, a team that was granted the inbox, lost it or was deleted, or becoming or ceasing
+// to be a delegate of a personal mailbox. Reload the inboxes,
 // conversations and teams when it is about you.
 type InboxAccessChangedEvent struct {
 	CreatedAt   time.Time                   `json:"created_at"`
@@ -17871,6 +17927,9 @@ type InboxList struct {
 // InboxMailbox A personal mailbox's size and addresses, the part of it owners and admins see. Present on
 // personal mailboxes only.
 type InboxMailbox struct {
+	// Access The caller's own access; absent when the caller sees only this metadata.
+	Access *MailboxAccess `json:"access,omitempty"`
+
 	// Addresses The addresses of its e-mail channels.
 	Addresses []string `json:"addresses"`
 
@@ -18720,6 +18779,34 @@ type MailFilterSuggestion struct {
 	Trigger AutomationTrigger `json:"trigger"`
 }
 
+// MailboxAccess What the caller may do in a personal mailbox: `owner` (everything, managing it included),
+// `send` (a delegate who reads and writes) or `read` (a delegate who reads).
+type MailboxAccess string
+
+// MailboxDelegate defines model for MailboxDelegate.
+type MailboxDelegate struct {
+	Access MailboxDelegateAccess `json:"access"`
+
+	// CreatedAt When the member became a delegate.
+	CreatedAt time.Time           `json:"created_at"`
+	Email     openapi_types.Email `json:"email"`
+	MemberId  uuid.UUID           `json:"member_id"`
+	Name      string              `json:"name"`
+}
+
+// MailboxDelegateAccess defines model for MailboxDelegateAccess.
+type MailboxDelegateAccess string
+
+// MailboxDelegateInput defines model for MailboxDelegateInput.
+type MailboxDelegateInput struct {
+	Access MailboxDelegateAccess `json:"access"`
+}
+
+// MailboxDelegateList defines model for MailboxDelegateList.
+type MailboxDelegateList struct {
+	Items []MailboxDelegate `json:"items"`
+}
+
 // MailingList defines model for MailingList.
 type MailingList struct {
 	ArchivedAt *time.Time `json:"archived_at,omitempty"`
@@ -19103,6 +19190,11 @@ type Message struct {
 
 	// Mentions Members a note mentions (notes only; absent when it mentions nobody).
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
+
+	// OnBehalfOfMemberId The owner of the personal mailbox a delegate wrote this outgoing message for; `author`
+	// is the delegate. The e-mail's `From:` is what the owner's own mail uses and its
+	// `Sender:` names the delegate with the mailbox's channel address. Absent otherwise.
+	OnBehalfOfMemberId *uuid.UUID `json:"on_behalf_of_member_id,omitempty"`
 
 	// Recipients The To, Cc and Bcc a new mail draft (`POST /v1/conversations/mail` with `draft: true`) is
 	// stored with, changed with `PATCH /v1/messages/{id}`. Only on composed drafts, and only in
@@ -27597,6 +27689,24 @@ type CreateChannelParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListMailboxDelegatesParams defines parameters for ListMailboxDelegates.
+type ListMailboxDelegatesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RemoveMailboxDelegateParams defines parameters for RemoveMailboxDelegate.
+type RemoveMailboxDelegateParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// SetMailboxDelegateParams defines parameters for SetMailboxDelegate.
+type SetMailboxDelegateParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // RotateInboxIdentitySecretParams defines parameters for RotateInboxIdentitySecret.
 type RotateInboxIdentitySecretParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -30146,6 +30256,9 @@ type UpdateInboxJSONRequestBody = InboxUpdate
 
 // CreateChannelJSONRequestBody defines body for CreateChannel for application/json ContentType.
 type CreateChannelJSONRequestBody = ChannelCreate
+
+// SetMailboxDelegateJSONRequestBody defines body for SetMailboxDelegate for application/json ContentType.
+type SetMailboxDelegateJSONRequestBody = MailboxDelegateInput
 
 // SetInboxSlackJSONRequestBody defines body for SetInboxSlack for application/json ContentType.
 type SetInboxSlackJSONRequestBody = InboxSlackUpdate
@@ -41547,6 +41660,71 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/inboxes/{inboxId}/channels (the `CreateChannel` operationId).
 	CreateChannel(ctx context.Context, inboxId InboxId, params *CreateChannelParams, body CreateChannelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListMailboxDelegates List a personal mailbox's delegates
+	//
+	// The members the owner of a personal mailbox lets read it (`read`) or also write in it
+	// (`send`), oldest first. Only the mailbox's owner, with a member session; everyone else,
+	// delegates, owners and admins included, gets `404`. A shared inbox answers `409
+	// personal_mailbox` to those who see it.
+	//
+	// Corresponds with GET /v1/inboxes/{inboxId}/delegates (the `ListMailboxDelegates` operationId).
+	ListMailboxDelegates(ctx context.Context, inboxId InboxId, params *ListMailboxDelegatesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveMailboxDelegate Take a delegate's access away
+	//
+	// Only the mailbox's owner, with a member session; everyone else gets `404`. Takes effect at
+	// once: the member's next request about the mailbox answers `404`, and their open realtime
+	// connections stop receiving its events (`inbox_access.changed` with `granted: false`).
+	// Removing someone who is not a delegate changes nothing. Audited as
+	// `mailbox.delegate_revoked`.
+	//
+	// Corresponds with DELETE /v1/inboxes/{inboxId}/delegates/{memberId} (the `RemoveMailboxDelegate` operationId).
+	RemoveMailboxDelegate(ctx context.Context, inboxId InboxId, memberId MemberId, params *RemoveMailboxDelegateParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetMailboxDelegateWithBody Let a member read or write in a personal mailbox
+	//
+	// Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+	// cannot pass the access on, and owners and admins cannot grant it). Any member of the
+	// workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+	//
+	// `read` reads everything the owner reads: conversations, messages, notes, attachments,
+	// raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+	// drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+	// snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+	// `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+	// delegates, migrations and deleting it stay with the owner.
+	//
+	// Setting the access a delegate already has changes nothing. A new delegate's
+	// `inbox_access.changed` reaches their open connections. Audited as
+	// `mailbox.delegate_granted`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
+	SetMailboxDelegateWithBody(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetMailboxDelegate Let a member read or write in a personal mailbox
+	//
+	// Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+	// cannot pass the access on, and owners and admins cannot grant it). Any member of the
+	// workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+	//
+	// `read` reads everything the owner reads: conversations, messages, notes, attachments,
+	// raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+	// drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+	// snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+	// `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+	// delegates, migrations and deleting it stay with the owner.
+	//
+	// Setting the access a delegate already has changes nothing. A new delegate's
+	// `inbox_access.changed` reaches their open connections. Audited as
+	// `mailbox.delegate_granted`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
+	SetMailboxDelegate(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, body SetMailboxDelegateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RotateInboxIdentitySecret Rotate the identity secret
 	//
@@ -56851,6 +57029,111 @@ func (c *Client) CreateChannelWithBody(ctx context.Context, inboxId InboxId, par
 // Corresponds with POST /v1/inboxes/{inboxId}/channels (the `CreateChannel` operationId).
 func (c *Client) CreateChannel(ctx context.Context, inboxId InboxId, params *CreateChannelParams, body CreateChannelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateChannelRequest(c.Server, inboxId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListMailboxDelegates List a personal mailbox's delegates
+//
+// The members the owner of a personal mailbox lets read it (`read`) or also write in it
+// (`send`), oldest first. Only the mailbox's owner, with a member session; everyone else,
+// delegates, owners and admins included, gets `404`. A shared inbox answers `409
+// personal_mailbox` to those who see it.
+//
+// Corresponds with GET /v1/inboxes/{inboxId}/delegates (the `ListMailboxDelegates` operationId).
+func (c *Client) ListMailboxDelegates(ctx context.Context, inboxId InboxId, params *ListMailboxDelegatesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMailboxDelegatesRequest(c.Server, inboxId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RemoveMailboxDelegate Take a delegate's access away
+//
+// Only the mailbox's owner, with a member session; everyone else gets `404`. Takes effect at
+// once: the member's next request about the mailbox answers `404`, and their open realtime
+// connections stop receiving its events (`inbox_access.changed` with `granted: false`).
+// Removing someone who is not a delegate changes nothing. Audited as
+// `mailbox.delegate_revoked`.
+//
+// Corresponds with DELETE /v1/inboxes/{inboxId}/delegates/{memberId} (the `RemoveMailboxDelegate` operationId).
+func (c *Client) RemoveMailboxDelegate(ctx context.Context, inboxId InboxId, memberId MemberId, params *RemoveMailboxDelegateParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveMailboxDelegateRequest(c.Server, inboxId, memberId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetMailboxDelegateWithBody Let a member read or write in a personal mailbox
+//
+// Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+// cannot pass the access on, and owners and admins cannot grant it). Any member of the
+// workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+//
+// `read` reads everything the owner reads: conversations, messages, notes, attachments,
+// raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+// drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+// snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+// `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+// delegates, migrations and deleting it stay with the owner.
+//
+// Setting the access a delegate already has changes nothing. A new delegate's
+// `inbox_access.changed` reaches their open connections. Audited as
+// `mailbox.delegate_granted`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
+func (c *Client) SetMailboxDelegateWithBody(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetMailboxDelegateRequestWithBody(c.Server, inboxId, memberId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetMailboxDelegate Let a member read or write in a personal mailbox
+//
+// Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+// cannot pass the access on, and owners and admins cannot grant it). Any member of the
+// workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+//
+// `read` reads everything the owner reads: conversations, messages, notes, attachments,
+// raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+// drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+// snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+// `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+// delegates, migrations and deleting it stay with the owner.
+//
+// Setting the access a delegate already has changes nothing. A new delegate's
+// `inbox_access.changed` reaches their open connections. Audited as
+// `mailbox.delegate_granted`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
+func (c *Client) SetMailboxDelegate(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, body SetMailboxDelegateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetMailboxDelegateRequest(c.Server, inboxId, memberId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -84193,6 +84476,180 @@ func NewCreateChannelRequestWithBody(server string, inboxId InboxId, params *Cre
 	return req, nil
 }
 
+// NewListMailboxDelegatesRequest constructs an http.Request for the ListMailboxDelegates method
+func NewListMailboxDelegatesRequest(server string, inboxId InboxId, params *ListMailboxDelegatesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inboxes/%s/delegates", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewRemoveMailboxDelegateRequest constructs an http.Request for the RemoveMailboxDelegate method
+func NewRemoveMailboxDelegateRequest(server string, inboxId InboxId, memberId MemberId, params *RemoveMailboxDelegateParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "memberId", memberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inboxes/%s/delegates/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewSetMailboxDelegateRequest calls the generic SetMailboxDelegate builder with application/json body
+func NewSetMailboxDelegateRequest(server string, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, body SetMailboxDelegateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetMailboxDelegateRequestWithBody(server, inboxId, memberId, params, "application/json", bodyReader)
+}
+
+// NewSetMailboxDelegateRequestWithBody constructs an http.Request for the SetMailboxDelegate method, with any body, and a specified content type
+func NewSetMailboxDelegateRequestWithBody(server string, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "memberId", memberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inboxes/%s/delegates/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewRotateInboxIdentitySecretRequest constructs an http.Request for the RotateInboxIdentitySecret method
 func NewRotateInboxIdentitySecretRequest(server string, inboxId InboxId, params *RotateInboxIdentitySecretParams) (*http.Request, error) {
 	var err error
@@ -104520,6 +104977,75 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/inboxes/{inboxId}/channels (the `CreateChannel` operationId).
 	CreateChannelWithResponse(ctx context.Context, inboxId InboxId, params *CreateChannelParams, body CreateChannelJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateChannelResponse, error)
+
+	// ListMailboxDelegatesWithResponse List a personal mailbox's delegates
+	//
+	// The members the owner of a personal mailbox lets read it (`read`) or also write in it
+	// (`send`), oldest first. Only the mailbox's owner, with a member session; everyone else,
+	// delegates, owners and admins included, gets `404`. A shared inbox answers `409
+	// personal_mailbox` to those who see it.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/inboxes/{inboxId}/delegates (the `ListMailboxDelegates` operationId).
+	ListMailboxDelegatesWithResponse(ctx context.Context, inboxId InboxId, params *ListMailboxDelegatesParams, reqEditors ...RequestEditorFn) (*ListMailboxDelegatesResponse, error)
+
+	// RemoveMailboxDelegateWithResponse Take a delegate's access away
+	//
+	// Only the mailbox's owner, with a member session; everyone else gets `404`. Takes effect at
+	// once: the member's next request about the mailbox answers `404`, and their open realtime
+	// connections stop receiving its events (`inbox_access.changed` with `granted: false`).
+	// Removing someone who is not a delegate changes nothing. Audited as
+	// `mailbox.delegate_revoked`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/inboxes/{inboxId}/delegates/{memberId} (the `RemoveMailboxDelegate` operationId).
+	RemoveMailboxDelegateWithResponse(ctx context.Context, inboxId InboxId, memberId MemberId, params *RemoveMailboxDelegateParams, reqEditors ...RequestEditorFn) (*RemoveMailboxDelegateResponse, error)
+
+	// SetMailboxDelegateWithBodyWithResponse Let a member read or write in a personal mailbox
+	//
+	// Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+	// cannot pass the access on, and owners and admins cannot grant it). Any member of the
+	// workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+	//
+	// `read` reads everything the owner reads: conversations, messages, notes, attachments,
+	// raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+	// drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+	// snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+	// `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+	// delegates, migrations and deleting it stay with the owner.
+	//
+	// Setting the access a delegate already has changes nothing. A new delegate's
+	// `inbox_access.changed` reaches their open connections. Audited as
+	// `mailbox.delegate_granted`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
+	SetMailboxDelegateWithBodyWithResponse(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMailboxDelegateResponse, error)
+
+	// SetMailboxDelegateWithResponse Let a member read or write in a personal mailbox
+	//
+	// Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+	// cannot pass the access on, and owners and admins cannot grant it). Any member of the
+	// workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+	//
+	// `read` reads everything the owner reads: conversations, messages, notes, attachments,
+	// raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+	// drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+	// snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+	// `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+	// delegates, migrations and deleting it stay with the owner.
+	//
+	// Setting the access a delegate already has changes nothing. A new delegate's
+	// `inbox_access.changed` reaches their open connections. Audited as
+	// `mailbox.delegate_granted`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
+	SetMailboxDelegateWithResponse(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, body SetMailboxDelegateJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMailboxDelegateResponse, error)
 
 	// RotateInboxIdentitySecretWithResponse Rotate the identity secret
 	//
@@ -130245,6 +130771,220 @@ func (r CreateChannelResponse) ContentType() string {
 	return ""
 }
 
+type ListMailboxDelegatesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MailboxDelegateList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListMailboxDelegatesResponse) GetJSON200() *MailboxDelegateList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListMailboxDelegatesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListMailboxDelegatesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListMailboxDelegatesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r ListMailboxDelegatesResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r ListMailboxDelegatesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListMailboxDelegatesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListMailboxDelegatesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListMailboxDelegatesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RemoveMailboxDelegateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RemoveMailboxDelegateResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RemoveMailboxDelegateResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RemoveMailboxDelegateResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r RemoveMailboxDelegateResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r RemoveMailboxDelegateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveMailboxDelegateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveMailboxDelegateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RemoveMailboxDelegateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetMailboxDelegateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MailboxDelegate
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetMailboxDelegateResponse) GetJSON200() *MailboxDelegate {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r SetMailboxDelegateResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r SetMailboxDelegateResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r SetMailboxDelegateResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r SetMailboxDelegateResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r SetMailboxDelegateResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r SetMailboxDelegateResponse) GetApplicationproblemJSON422() *Problem {
+	return r.ApplicationproblemJSON422
+}
+
+// GetBody returns the raw response body bytes
+func (r SetMailboxDelegateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetMailboxDelegateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetMailboxDelegateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetMailboxDelegateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type RotateInboxIdentitySecretResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -154495,6 +155235,99 @@ func (c *ClientWithResponses) CreateChannelWithResponse(ctx context.Context, inb
 	return ParseCreateChannelResponse(rsp)
 }
 
+// ListMailboxDelegatesWithResponse List a personal mailbox's delegates
+//
+// The members the owner of a personal mailbox lets read it (`read`) or also write in it
+// (`send`), oldest first. Only the mailbox's owner, with a member session; everyone else,
+// delegates, owners and admins included, gets `404`. A shared inbox answers `409
+// personal_mailbox` to those who see it.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/inboxes/{inboxId}/delegates (the `ListMailboxDelegates` operationId).
+func (c *ClientWithResponses) ListMailboxDelegatesWithResponse(ctx context.Context, inboxId InboxId, params *ListMailboxDelegatesParams, reqEditors ...RequestEditorFn) (*ListMailboxDelegatesResponse, error) {
+	rsp, err := c.ListMailboxDelegates(ctx, inboxId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListMailboxDelegatesResponse(rsp)
+}
+
+// RemoveMailboxDelegateWithResponse Take a delegate's access away
+//
+// Only the mailbox's owner, with a member session; everyone else gets `404`. Takes effect at
+// once: the member's next request about the mailbox answers `404`, and their open realtime
+// connections stop receiving its events (`inbox_access.changed` with `granted: false`).
+// Removing someone who is not a delegate changes nothing. Audited as
+// `mailbox.delegate_revoked`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/inboxes/{inboxId}/delegates/{memberId} (the `RemoveMailboxDelegate` operationId).
+func (c *ClientWithResponses) RemoveMailboxDelegateWithResponse(ctx context.Context, inboxId InboxId, memberId MemberId, params *RemoveMailboxDelegateParams, reqEditors ...RequestEditorFn) (*RemoveMailboxDelegateResponse, error) {
+	rsp, err := c.RemoveMailboxDelegate(ctx, inboxId, memberId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveMailboxDelegateResponse(rsp)
+}
+
+// SetMailboxDelegateWithBodyWithResponse Let a member read or write in a personal mailbox
+//
+// Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+// cannot pass the access on, and owners and admins cannot grant it). Any member of the
+// workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+//
+// `read` reads everything the owner reads: conversations, messages, notes, attachments,
+// raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+// drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+// snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+// `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+// delegates, migrations and deleting it stay with the owner.
+//
+// Setting the access a delegate already has changes nothing. A new delegate's
+// `inbox_access.changed` reaches their open connections. Audited as
+// `mailbox.delegate_granted`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
+func (c *ClientWithResponses) SetMailboxDelegateWithBodyWithResponse(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetMailboxDelegateResponse, error) {
+	rsp, err := c.SetMailboxDelegateWithBody(ctx, inboxId, memberId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetMailboxDelegateResponse(rsp)
+}
+
+// SetMailboxDelegateWithResponse Let a member read or write in a personal mailbox
+//
+// Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+// cannot pass the access on, and owners and admins cannot grant it). Any member of the
+// workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+//
+// `read` reads everything the owner reads: conversations, messages, notes, attachments,
+// raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+// drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+// snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+// `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+// delegates, migrations and deleting it stay with the owner.
+//
+// Setting the access a delegate already has changes nothing. A new delegate's
+// `inbox_access.changed` reaches their open connections. Audited as
+// `mailbox.delegate_granted`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
+func (c *ClientWithResponses) SetMailboxDelegateWithResponse(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, body SetMailboxDelegateJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMailboxDelegateResponse, error) {
+	rsp, err := c.SetMailboxDelegate(ctx, inboxId, memberId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetMailboxDelegateResponse(rsp)
+}
+
 // RotateInboxIdentitySecretWithResponse Rotate the identity secret
 //
 // Owners, admins and API keys. Replaces the inbox's identity secret, which
@@ -177527,6 +178360,178 @@ func ParseCreateChannelResponse(rsp *http.Response) (*CreateChannelResponse, err
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListMailboxDelegatesResponse parses an HTTP response from a ListMailboxDelegatesWithResponse call
+func ParseListMailboxDelegatesResponse(rsp *http.Response) (*ListMailboxDelegatesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListMailboxDelegatesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MailboxDelegateList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveMailboxDelegateResponse parses an HTTP response from a RemoveMailboxDelegateWithResponse call
+func ParseRemoveMailboxDelegateResponse(rsp *http.Response) (*RemoveMailboxDelegateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveMailboxDelegateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetMailboxDelegateResponse parses an HTTP response from a SetMailboxDelegateWithResponse call
+func ParseSetMailboxDelegateResponse(rsp *http.Response) (*SetMailboxDelegateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetMailboxDelegateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MailboxDelegate
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
 
 	}
 

@@ -313,6 +313,7 @@ func (f *eventFilter) seenByAll(ctx context.Context, q *store.Queries, e realtim
 }
 
 func (f *eventFilter) reload(ctx context.Context, q *store.Queries) error {
+	f.hidden.seen = nil
 	if f.p.seesAllInboxes() {
 		f.inboxes = nil
 		return nil
@@ -337,7 +338,12 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		if !f.p.isKey() && ch.MemberId == f.p.memberID {
 			return true, f.reload(ctx, q)
 		}
-		return f.p.seesAllInboxes(), nil
+		if !f.p.seesAllInboxes() {
+			return false, nil
+		}
+		f.hidden.p = f.p
+		hidden, err := f.hidden.hidden(ctx, q, ch.InboxId)
+		return !hidden, err
 	}
 	if e.OnlyMember != nil {
 		if m := f.p.memberRef(); m == nil || *m != *e.OnlyMember {
@@ -411,8 +417,8 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 			return true, nil
 		}
 		f.hidden.p = f.p
-		hidden, err := f.hidden.hidden(ctx, q, *e.InboxID)
-		return !hidden, err
+		r, err := f.hidden.right(ctx, q, *e.InboxID)
+		return r == rightFull, err
 	case realtime.Typing:
 		var ty oas.Typing
 		if err := json.Unmarshal(e.Data, &ty); err != nil {
@@ -472,7 +478,7 @@ func (f *eventFilter) view(e realtime.Event) (realtime.Event, bool) {
 	}
 	keep := func(id uuid.UUID) bool { return f.inboxes[id] }
 	if f.p.seesAllInboxes() {
-		keep = func(id uuid.UUID) bool { return !f.hidden.seen[id] }
+		keep = func(id uuid.UUID) bool { return f.hidden.seen[id] != rightNone }
 	}
 	var c map[string]json.RawMessage
 	if json.Unmarshal(e.Data, &c) != nil {
