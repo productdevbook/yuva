@@ -1256,6 +1256,10 @@ msgstr "Mukautettu MCP-palvelin ChatGPT:ssä verkossa. Se toimii sinuna, sallima
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Päivää etukäteen pienennä MX-tietueiden TTL, jotta muutos leviää nopeasti."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "päivä muodossa YYYY-MM-DD, aikavyöhykkeessäsi"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Toisen postilaatikon tai arkistoitu ulkoasu"
@@ -1365,6 +1369,10 @@ msgstr "Lista koostuu ihmisistä, jotka ovat suostuneet kuulemaan sinusta. Jokai
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro on vastaus ja toimintoja: tunnisteet, vastuuhenkilö, tila, prioriteetti tai torkku. Kirjoita vastauskenttään / ja pikakomento; toiminnot suoritetaan, kun vastaus lähetetään."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "postikansio"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Lisää sivuston osoite."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Lisää kaksi elementtiä jokaisen dokumentaatiosivun alle"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Lisää ne tavallisten sanojen perään. Etumerkkinä oleva miinus sulkee pois osumat ja lainausmerkit kokoavat arvon, jossa on välilyöntejä. Jokaisen operaattorin on täytyttävä."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Keskustelut, {unread} lukematonta"
 msgid "Copied"
 msgstr "Kopioitu"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "kopion saajan osoite"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Anna automaattiselle määritykselle"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Luovutettu henkilölle {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "sisältää liitteen"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Viimeaikaiset käynnit"
 msgid "Recently active"
 msgstr "Äskettäin aktiiviset"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "vastaanottajan osoite"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "vastaanottajat"
@@ -15335,6 +15359,10 @@ msgstr "Hae postista"
 msgid "Search name, e-mail or id…"
 msgstr "Hae nimellä, sähköpostilla tai tunnuksella…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Hakuoperaattorit"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Hae ihmisiä, toimintoja tai asetuksia"
@@ -15675,6 +15703,10 @@ msgstr "Lähetä webhook-päätepisteeseen"
 msgid "Sender"
 msgstr "Lähettäjä"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "lähettäjän osoite tai nimi"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Lähettäjän tiedot alatunnisteeseen"
@@ -15847,6 +15879,10 @@ msgstr "Lähetti 1 viestin tästä osoitteesta"
 msgid "Sent an attachment"
 msgstr "Lähetti liitteen"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "lähetetty ennen päivää"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Lähetetty sähköpostitse"
@@ -15854,6 +15890,10 @@ msgstr "Lähetetty sähköpostitse"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Lähetetty posti"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "lähetetty päivänä tai sen jälkeen"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Tähditetyt"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "tähdellä merkitsemäsi"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Aloita"
@@ -16957,6 +17001,10 @@ msgstr "Komponentin {0} tila"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Komponentin {0} tila, kun se on avoinna"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "keskustelun tila"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Tämä selain ei voi näyttää työpöytäilmoituksia, joten vain ään
 msgid "This browser does not support passkeys."
 msgstr "Tämä selain ei tue pääsyavaimia."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Tämän selaimen aikavyöhykettä ei tunnisteta, joten haun päivämääriä ei voi lukea."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Tällä kanavalla ei ole SMTP-tiliä, joten se ei voi lähettää joukkolähetyksiä eikä testiviestiä."
@@ -18934,6 +18986,11 @@ msgstr "Tämä pyyntö vanheni tai se on jo käytetty. Aloita yhdistäminen uude
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Tämä pyyntö on päättynyt"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Tätä hakua ei voi käyttää: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Mitä"
 msgid "What {header} holds"
 msgstr "Mitä {header} sisältää"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "mitä viestissä on"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Mitä tulee mukaan"
@@ -20733,6 +20794,10 @@ msgstr "ilman liitteitä"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Ei tehdä"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "sanat aiheessa"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

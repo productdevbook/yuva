@@ -1256,6 +1256,10 @@ msgstr "เซิร์ฟเวอร์ MCP แบบกำหนดเอง�
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "ล่วงหน้าหนึ่งวัน ลด TTL ของระเบียน MX เพื่อให้การเปลี่ยนแปลงกระจายได้เร็ว"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "วันในรูปแบบ YYYY-MM-DD ตามเขตเวลาของคุณ"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "ดีไซน์ของกล่องข้อความอื่นหรือที่เก็บถาวรแล้ว"
@@ -1365,6 +1369,10 @@ msgstr "รายชื่อคือผู้ที่ยินยอมรั
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "มาโครคือคำตอบพร้อมการดำเนินการ ได้แก่ ป้ายกำกับ ผู้รับผิดชอบ สถานะ ลำดับความสำคัญ หรือเลื่อนเตือน พิมพ์ / และชื่อย่อในช่องตอบ การดำเนินการจะทำเมื่อส่งคำตอบ"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "โฟลเดอร์อีเมล"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "เพิ่มที่อยู่ของไซต์"
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "เพิ่มสององค์ประกอบใต้ทุกหน้าเอกสาร"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "เพิ่มไว้กับคำทั่วไป เครื่องหมายลบข้างหน้าจะตัดสิ่งที่ตรงออก และเครื่องหมายคำพูดรวมค่าที่มีช่องว่างไว้ด้วยกัน ตัวดำเนินการทุกตัวต้องเป็นจริง"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "การสนทนา ยังไม่อ่าน {unread}"
 msgid "Copied"
 msgstr "คัดลอกแล้ว"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "ที่อยู่ที่สำเนาถึง"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "ส่งให้การมอบหมายอัตโนมัต
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "ส่งต่อให้ {name} แล้ว"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "มีไฟล์แนบ"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "การเข้าชมล่าสุด"
 msgid "Recently active"
 msgstr "ใช้งานล่าสุด"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "ที่อยู่ผู้รับ"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "ผู้รับ"
@@ -15335,6 +15359,10 @@ msgstr "ค้นหาอีเมล"
 msgid "Search name, e-mail or id…"
 msgstr "ค้นหาชื่อ อีเมล หรือ ID…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "ตัวดำเนินการค้นหา"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "ค้นหาผู้คน การดำเนินการ หรือการตั้งค่า"
@@ -15675,6 +15703,10 @@ msgstr "ส่งไปยังปลายทางเว็บฮุก"
 msgid "Sender"
 msgstr "ผู้ส่ง"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "ที่อยู่หรือชื่อผู้ส่ง"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "รายละเอียดผู้ส่งสำหรับส่วนท้าย"
@@ -15847,6 +15879,10 @@ msgstr "ส่ง 1 ข้อความจากที่อยู่นี้
 msgid "Sent an attachment"
 msgstr "ส่งไฟล์แนบ"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "ส่งก่อนวันหนึ่ง"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "ส่งทางอีเมล"
@@ -15854,6 +15890,10 @@ msgstr "ส่งทางอีเมล"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "อีเมลที่ส่ง"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "ส่งในวันหนึ่งหรือหลังจากนั้น"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "ติดดาว"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "ที่คุณติดดาว"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "เริ่ม"
@@ -16957,6 +17001,10 @@ msgstr "สถานะของ {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "สถานะของ {0} ขณะที่เปิดอยู่"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "สถานะของการสนทนา"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "เบราว์เซอร์นี้แสดงการแจ้
 msgid "This browser does not support passkeys."
 msgstr "เบราว์เซอร์นี้ไม่รองรับพาสคีย์"
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "ไม่รู้จักเขตเวลาของเบราว์เซอร์นี้ จึงอ่านวันที่ในการค้นหาไม่ได้"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "ช่องทางนี้ไม่มีบัญชี SMTP จึงส่งบรอดคาสต์หรืออีเมลทดสอบไม่ได้"
@@ -18934,6 +18986,11 @@ msgstr "คำขอนี้หมดอายุหรือถูกใช้
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "คำขอนี้สิ้นสุดแล้ว"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "ใช้การค้นหานี้ไม่ได้: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "อะไร"
 msgid "What {header} holds"
 msgstr "{header} มีอะไร"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "สิ่งที่ข้อความมี"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "สิ่งที่นำมา"
@@ -20733,6 +20794,10 @@ msgstr "ไม่มีไฟล์แนบ"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Won't do"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "คำในหัวเรื่อง"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

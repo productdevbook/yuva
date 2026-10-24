@@ -1256,6 +1256,10 @@ msgstr "Strežnik MCP po meri v ChatGPT na spletu. Deluje kot vi, z dostopom, ki
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Dan prej znižajte TTL zapisov MX, da se sprememba hitro razširi."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "dan kot YYYY-MM-DD, v vašem časovnem pasu"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Oblika iz drugega nabiralnika ali arhivirana"
@@ -1365,6 +1369,10 @@ msgstr "Seznam so ljudje, ki so privolili, da jim pošiljate sporočila. Vsak na
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro je odgovor in dejanja: oznake, dodeljena oseba, stanje, prednost ali preložitev. V polje za odgovor vtipkajte / in bližnjico; dejanja se izvedejo ob pošiljanju odgovora."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "mapa pošte"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Dodajte naslov spletnega mesta."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Dodajte dva elementa pod vsako stran dokumentacije"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Dodajte jih navadnim besedam. Minus pred operatorjem izključi zadetke, narekovaji združijo vrednost s presledki. Vsak operator mora veljati."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Pogovori, neprebranih: {unread}"
 msgid "Copied"
 msgstr "Kopirano"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "naslov v kopiji"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Predaj samodejni dodelitvi"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Predano uporabniku {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "ima prilogo"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Nedavni obiski"
 msgid "Recently active"
 msgstr "Nedavno aktivni"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "naslov prejemnika"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "prejemniki"
@@ -15335,6 +15359,10 @@ msgstr "Išči po pošti"
 msgid "Search name, e-mail or id…"
 msgstr "Išči ime, e-pošto ali ID…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Operatorji iskanja"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Išči ljudi, dejanja ali nastavitve"
@@ -15675,6 +15703,10 @@ msgstr "Pošlji na končno točko webhooka"
 msgid "Sender"
 msgstr "Pošiljatelj"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "naslov ali ime pošiljatelja"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Podatki o pošiljatelju za nogo"
@@ -15847,6 +15879,10 @@ msgstr "Poslano 1 sporočilo s tega naslova"
 msgid "Sent an attachment"
 msgstr "Poslal(a) je priponko"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "poslano pred dnevom"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Poslano po e-pošti"
@@ -15854,6 +15890,10 @@ msgstr "Poslano po e-pošti"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Poslana pošta"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "poslano na dan ali pozneje"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Z zvezdico"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "z vašo zvezdico"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Začni"
@@ -16957,6 +17001,10 @@ msgstr "Stanje: {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Stanje: {0}, dokler je odprt"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "stanje pogovora"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Ta brskalnik ne more prikazovati obvestil na namizju, zato se predvaja s
 msgid "This browser does not support passkeys."
 msgstr "Ta brskalnik ne podpira ključev za dostop."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Časovni pas tega brskalnika ni prepoznan, zato datumov v iskanju ni mogoče prebrati."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Ta kanal nima računa SMTP, zato ne more pošiljati množičnih sporočil ali preizkusnega sporočila."
@@ -18934,6 +18986,11 @@ msgstr "Ta zahteva je potekla ali je bila že uporabljena. Znova začnite povezo
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Ta zahteva se je končala"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Tega iskanja ni mogoče uporabiti: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Kaj"
 msgid "What {header} holds"
 msgstr "Kaj vsebuje {header}"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "kaj ima sporočilo"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Kaj se prenese"
@@ -20733,6 +20794,10 @@ msgstr "brez prilog"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Ne bo narejeno"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "besede v zadevi"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

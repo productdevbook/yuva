@@ -1256,6 +1256,10 @@ msgstr "Ένας προσαρμοσμένος διακομιστής MCP στο 
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Μία ημέρα νωρίτερα, μειώστε το TTL των εγγραφών MX, ώστε η αλλαγή να εξαπλωθεί γρήγορα."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "μια ημέρα ως YYYY-MM-DD, στη ζώνη ώρας σας"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Σχέδιο άλλων εισερχομένων ή αρχειοθετημένο"
@@ -1365,6 +1369,10 @@ msgstr "Μια λίστα είναι όσοι συμφώνησαν να ακού
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Η μακροεντολή είναι μια απάντηση με ενέργειες: ετικέτες, υπεύθυνος, κατάσταση, προτεραιότητα ή αναβολή. Πληκτρολογήστε / και τη συντόμευση στο πλαίσιο απάντησης· οι ενέργειες εφαρμόζονται κατά την αποστολή."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "ένας φάκελος αλληλογραφίας"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Προσθέστε τη διεύθυνση του ιστότοπου."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Προσθέστε τα δύο στοιχεία κάτω από κάθε σελίδα τεκμηρίωσης"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Προσθέστε τους σε απλές λέξεις. Ένα μείον μπροστά αποκλείει ό,τι ταιριάζει και τα εισαγωγικά ομαδοποιούν μια τιμή με κενά. Κάθε τελεστής πρέπει να ισχύει."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Συνομιλίες, {unread} αδιάβαστες"
 msgid "Copied"
 msgstr "Αντιγράφηκε"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "διεύθυνση σε κοινοποίηση"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Παράδοση στην αυτόματη ανάθεση"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Παραδόθηκε στον/στην {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "έχει συνημμένο"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Πρόσφατες επισκέψεις"
 msgid "Recently active"
 msgstr "Ενεργοί πρόσφατα"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "διεύθυνση παραλήπτη"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "παραλήπτες"
@@ -15335,6 +15359,10 @@ msgstr "Αναζήτηση στην αλληλογραφία"
 msgid "Search name, e-mail or id…"
 msgstr "Αναζήτηση ονόματος, email ή αναγνωριστικού…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Τελεστές αναζήτησης"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Αναζήτηση ατόμων, ενεργειών ή ρυθμίσεων"
@@ -15675,6 +15703,10 @@ msgstr "Αποστολή σε τελικό σημείο webhook"
 msgid "Sender"
 msgstr "Αποστολέας"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "διεύθυνση ή όνομα αποστολέα"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Στοιχεία αποστολέα για το υποσέλιδο"
@@ -15847,6 +15879,10 @@ msgstr "Στάλθηκε 1 μήνυμα από αυτή τη διεύθυνση"
 msgid "Sent an attachment"
 msgstr "Έστειλε συνημμένο"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "στάλθηκε πριν από μια ημέρα"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Στάλθηκε με e-mail"
@@ -15854,6 +15890,10 @@ msgstr "Στάλθηκε με e-mail"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Απεσταλμένα"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "στάλθηκε μια ημέρα ή αργότερα"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Με αστέρι"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "με αστέρι από εσάς"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Έναρξη"
@@ -16957,6 +17001,10 @@ msgstr "Κατάσταση του {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Κατάσταση του {0} όσο είναι ανοιχτό"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "κατάσταση της συνομιλίας"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Αυτό το πρόγραμμα περιήγησης δεν μπορε�
 msgid "This browser does not support passkeys."
 msgstr "Αυτό το πρόγραμμα περιήγησης δεν υποστηρίζει passkeys."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Η ζώνη ώρας αυτού του προγράμματος περιήγησης δεν αναγνωρίζεται, οπότε οι ημερομηνίες στην αναζήτηση δεν διαβάζονται."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Αυτό το κανάλι δεν έχει λογαριασμό SMTP, οπότε δεν μπορεί να στείλει μαζικές αποστολές ή δοκιμαστικό e-mail."
@@ -18934,6 +18986,11 @@ msgstr "Αυτό το αίτημα έληξε ή χρησιμοποιήθηκε 
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Αυτό το αίτημα έχει τελειώσει"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Αυτή η αναζήτηση δεν μπορεί να χρησιμοποιηθεί: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Τι"
 msgid "What {header} holds"
 msgstr "Τι περιέχει το {header}"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "τι έχει ένα μήνυμα"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Τι έρχεται"
@@ -20733,6 +20794,10 @@ msgstr "χωρίς συνημμένα"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Δεν θα γίνει"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "λέξεις στο θέμα"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

@@ -1256,6 +1256,10 @@ msgstr "वेब पर ChatGPT में एक कस्टम MCP सर्�
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "एक दिन पहले MX रिकॉर्ड का TTL घटा दें, ताकि बदलाव जल्दी फैले।"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "YYYY-MM-DD रूप में एक दिन, आपके समय क्षेत्र में"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "दूसरे इनबॉक्स का या आर्काइव किया गया डिज़ाइन"
@@ -1365,6 +1369,10 @@ msgstr "सूची उन लोगों की होती है जिन
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "मैक्रो एक जवाब के साथ कार्रवाइयाँ हैं: लेबल, ज़िम्मेदार व्यक्ति, स्थिति, प्राथमिकता या स्नूज़। जवाब बॉक्स में / और उसका शॉर्टकट लिखें; जवाब भेजते समय कार्रवाइयाँ लागू होती हैं।"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "मेल का फ़ोल्डर"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "साइट का पता जोड़ें।"
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "हर डॉक्स पेज के नीचे दोनों एलिमेंट जोड़ें"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "इन्हें सामान्य शब्दों के साथ जोड़ें। आगे माइनस लगाने से मेल खाने वाली चीज़ें हट जाती हैं और उद्धरण चिह्न रिक्त स्थान वाले मान को जोड़ते हैं। हर ऑपरेटर का पूरा होना ज़रूरी है।"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "बातचीत, {unread} अनपढ़ी"
 msgid "Copied"
 msgstr "कॉपी हो गया"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "प्रतिलिपि वाला पता"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "स्वचालित असाइनमेंट को सौंप
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "{name} को सौंपा गया"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "संलग्नक है"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "हाल के विज़िट"
 msgid "Recently active"
 msgstr "हाल ही में सक्रिय"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "प्राप्तकर्ता का पता"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "प्राप्तकर्ता"
@@ -15335,6 +15359,10 @@ msgstr "मेल खोजें"
 msgid "Search name, e-mail or id…"
 msgstr "नाम, ईमेल या आईडी खोजें…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "खोज ऑपरेटर"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "लोग, कार्रवाइयाँ या सेटिंग खोजें"
@@ -15675,6 +15703,10 @@ msgstr "वेबहुक एंडपॉइंट को भेजें"
 msgid "Sender"
 msgstr "प्रेषक"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "भेजने वाले का पता या नाम"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "फ़ुटर के लिए प्रेषक का विवरण"
@@ -15847,6 +15879,10 @@ msgstr "इस पते से 1 संदेश भेजा गया"
 msgid "Sent an attachment"
 msgstr "अटैचमेंट भेजा"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "किसी दिन से पहले भेजा गया"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "ई-मेल से भेजा गया"
@@ -15854,6 +15890,10 @@ msgstr "ई-मेल से भेजा गया"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "भेजा गया मेल"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "किसी दिन या उसके बाद भेजा गया"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "तारांकित"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "आपने तारांकित किया"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "शुरू करें"
@@ -16957,6 +17001,10 @@ msgstr "{0} की स्थिति"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} की स्थिति जब तक खुला है"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "बातचीत की स्थिति"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "यह ब्राउज़र डेस्कटॉप नोटिफ
 msgid "This browser does not support passkeys."
 msgstr "यह ब्राउज़र पासकी का समर्थन नहीं करता।"
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "इस ब्राउज़र का समय क्षेत्र पहचाना नहीं गया, इसलिए खोज में तारीखें पढ़ी नहीं जा सकतीं।"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "इस चैनल का कोई SMTP खाता नहीं है, इसलिए यह ब्रॉडकास्ट या टेस्ट मेल नहीं भेज सकता।"
@@ -18934,6 +18986,11 @@ msgstr "यह अनुरोध समाप्त हो गया या प
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "यह अनुरोध समाप्त हो गया"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "यह खोज इस्तेमाल नहीं हो सकती: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "क्या"
 msgid "What {header} holds"
 msgstr "{header} में क्या है"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "संदेश में क्या है"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "क्या आता है"
@@ -20733,6 +20794,10 @@ msgstr "अटैचमेंट के बिना"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Won't do"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "विषय के शब्द"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

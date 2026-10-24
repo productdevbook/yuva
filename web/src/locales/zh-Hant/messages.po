@@ -1256,6 +1256,10 @@ msgstr "ChatGPT 網頁版中的自訂 MCP 伺服器。它以你的身份執行,�
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "提前一天降低 MX 記錄的 TTL,這樣變更能很快生效。"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "YYYY-MM-DD 格式的日期,依你的時區"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "其他收件匣的設計或已歸檔的設計"
@@ -1365,6 +1369,10 @@ msgstr "清單由同意收到你訊息的人組成。每位訂閱者都有可匯
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "巨集是一則回覆加上若干動作：標籤、負責人、狀態、優先順序或延後。在回覆框輸入 / 和它的捷徑名稱；傳送回覆時會執行這些動作。"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "郵件資料夾"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "請新增站點的地址。"
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "在每個文件頁面底部新增這兩個元素"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "加在一般字詞旁。前面加減號可排除符合項目,含空格的值以引號括起。每個運算子都必須成立。"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "對話,{unread} 個未讀"
 msgid "Copied"
 msgstr "已複製"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "副本地址"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "交給自動指派"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "已交給 {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "有附件"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "最近存取"
 msgid "Recently active"
 msgstr "最近活躍"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "收件者地址"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "收件人"
@@ -15335,6 +15359,10 @@ msgstr "搜尋郵件"
 msgid "Search name, e-mail or id…"
 msgstr "搜尋姓名、電子郵件或 ID…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "搜尋運算子"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "搜尋人員、操作或設定"
@@ -15675,6 +15703,10 @@ msgstr "傳送到 Webhook 端點"
 msgid "Sender"
 msgstr "發件人"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "寄件者地址或姓名"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "頁尾中的發件人資訊"
@@ -15847,6 +15879,10 @@ msgstr "已從此地址傳送 1 條訊息"
 msgid "Sent an attachment"
 msgstr "傳送了一個附件"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "在某日之前寄出"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "透過郵件傳送"
@@ -15854,6 +15890,10 @@ msgstr "透過郵件傳送"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "已傳送郵件"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "在某日或之後寄出"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "已加星號"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "你已加星號"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "開始"
@@ -16957,6 +17001,10 @@ msgstr "{0} 的狀態"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} 開啟期間的狀態"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "對話狀態"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "此瀏覽器無法顯示桌面通知,因此只會播放提示音。"
 msgid "This browser does not support passkeys."
 msgstr "此瀏覽器不支援通行金鑰。"
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "無法辨識此瀏覽器的時區,因此無法讀取搜尋中的日期。"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "此頻道沒有 SMTP 帳號,因此無法傳送群發或測試郵件。"
@@ -18934,6 +18986,11 @@ msgstr "此請求已過期或已被使用。請從應用程式重新開始連線
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "此請求已結束"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "無法使用此搜尋:{0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "動作"
 msgid "What {header} holds"
 msgstr "{header} 中包含什麼"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "郵件具有的內容"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "匯入的內容"
@@ -20733,6 +20794,10 @@ msgstr "不含附件"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "不會處理"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "主旨中的字詞"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

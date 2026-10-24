@@ -21,9 +21,12 @@ export function useConversations(filters: ConversationFilters, enabled = true) {
     queryKey: keys.conversations(ws, filters),
     queryFn: ({ pageParam }) => {
       const { fields, ...rest } = filters
+      const timezone = rest.q ? Intl.DateTimeFormat().resolvedOptions().timeZone : undefined
       const dynamic = Object.fromEntries(Object.entries(fields ?? {}).map(([k, v]) => [`field.${k}`, v]))
       return unwrap(
-        api.GET("/v1/conversations", { params: { query: { ...rest, ...dynamic, cursor: pageParam, limit: 100 } } })
+        api.GET("/v1/conversations", {
+          params: { query: { ...rest, ...dynamic, timezone, cursor: pageParam, limit: 100 } },
+        })
       )
     },
     initialPageParam: undefined as string | undefined,

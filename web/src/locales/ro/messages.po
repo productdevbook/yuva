@@ -1256,6 +1256,10 @@ msgstr "Un server MCP personalizat în ChatGPT pe web. Acționează ca tine, cu 
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Cu o zi înainte, scade TTL-ul înregistrărilor MX, ca schimbarea să se răspândească repede."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "o zi ca YYYY-MM-DD, în fusul tău orar"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Un design din altă căsuță sau arhivat"
@@ -1365,6 +1369,10 @@ msgstr "O listă cuprinde oamenii care au acceptat să primească vești de la t
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Un macro este un răspuns plus acțiuni: etichete, persoană atribuită, stare, prioritate sau amânare. Scrie / și scurtătura în câmpul de răspuns; acțiunile se aplică la trimiterea răspunsului."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "un dosar de e-mail"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Adaugă adresa site-ului."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Adaugă cele două elemente sub fiecare pagină de documentație"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Adaugă-le la cuvinte obișnuite. Un minus în față exclude ce se potrivește, iar ghilimelele cuprind o valoare cu spații. Fiecare operator trebuie să se respecte."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Conversații, {unread} necitite"
 msgid "Copied"
 msgstr "Copiat"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "adresă în copie"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Predă atribuirii automate"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Predat lui {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "are un atașament"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Vizite recente"
 msgid "Recently active"
 msgstr "Activi recent"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "adresa destinatarului"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "destinatari"
@@ -15335,6 +15359,10 @@ msgstr "Caută în e-mail"
 msgid "Search name, e-mail or id…"
 msgstr "Caută nume, e-mail sau ID…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Operatori de căutare"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Caută persoane, acțiuni sau setări"
@@ -15675,6 +15703,10 @@ msgstr "Trimite la un endpoint de webhook"
 msgid "Sender"
 msgstr "Expeditor"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "adresa sau numele expeditorului"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Detaliile expeditorului pentru subsol"
@@ -15847,6 +15879,10 @@ msgstr "A trimis 1 mesaj de la această adresă"
 msgid "Sent an attachment"
 msgstr "A trimis un atașament"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "trimis înainte de o zi"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Trimis prin e-mail"
@@ -15854,6 +15890,10 @@ msgstr "Trimis prin e-mail"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "E-mail trimis"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "trimis într-o zi sau după"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Cu stea"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "marcat de tine cu stea"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Începe"
@@ -16957,6 +17001,10 @@ msgstr "Starea pentru {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Starea pentru {0} cât timp este deschis"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "starea conversației"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Acest browser nu poate afișa notificări pe desktop, deci se redă doar
 msgid "This browser does not support passkeys."
 msgstr "Acest browser nu acceptă chei de acces."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Fusul orar al acestui browser nu este recunoscut, deci datele din căutare nu pot fi citite."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Acest canal nu are un cont SMTP, deci nu poate trimite mesaje în masă sau un e-mail de test."
@@ -18934,6 +18986,11 @@ msgstr "Această cerere a expirat sau a fost deja folosită. Începe din nou con
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Această cerere s-a încheiat"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Această căutare nu poate fi folosită: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Ce"
 msgid "What {header} holds"
 msgstr "Ce conține {header}"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "ce are un mesaj"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Ce se aduce"
@@ -20733,6 +20794,10 @@ msgstr "fără atașamente"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Nu se va face"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "cuvinte din subiect"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

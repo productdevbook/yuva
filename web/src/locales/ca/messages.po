@@ -1256,6 +1256,10 @@ msgstr "Un servidor MCP personalitzat a ChatGPT a la web. Actua com tu, amb l'ac
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Un dia abans, abaixa el TTL dels registres MX perquè el canvi es propagui ràpid."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "un dia com YYYY-MM-DD, a la teva zona horària"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Un disseny d'una altra safata o arxivat"
@@ -1365,6 +1369,10 @@ msgstr "Una llista reuneix qui ha acceptat rebre notícies teves. Cada subscript
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Una macro és una resposta més accions: etiquetes, responsable, estat, prioritat o posposar. Escriu / i la drecera al quadre de resposta; les accions s'apliquen en enviar la resposta."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "una carpeta de correu"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Afegeix l'adreça del lloc."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Afegeix els dos elements sota cada pàgina de documentació"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Afegeix-los a paraules normals. Un menys davant exclou el que coincideix i les cometes agrupen un valor amb espais. Cada operador s'ha de complir."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Converses, {unread} sense llegir"
 msgid "Copied"
 msgstr "Copiat"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "adreça en còpia"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Passa a l'assignació automàtica"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Passada a {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "té un adjunt"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Visites recents"
 msgid "Recently active"
 msgstr "Actius recentment"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "adreça del destinatari"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "destinataris"
@@ -15335,6 +15359,10 @@ msgstr "Cerca al correu"
 msgid "Search name, e-mail or id…"
 msgstr "Cerca nom, correu o identificador…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Operadors de cerca"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Cerca persones, accions o configuració"
@@ -15675,6 +15703,10 @@ msgstr "Envia a un endpoint de webhook"
 msgid "Sender"
 msgstr "Remitent"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "adreça o nom del remitent"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Dades del remitent per al peu"
@@ -15847,6 +15879,10 @@ msgstr "S'ha enviat 1 missatge des d'aquesta adreça"
 msgid "Sent an attachment"
 msgstr "Ha enviat un adjunt"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "enviat abans d'un dia"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Enviat per correu"
@@ -15854,6 +15890,10 @@ msgstr "Enviat per correu"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Correu enviat"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "enviat a partir d'un dia"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Destacats"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "marcat per tu amb estrella"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Comença"
@@ -16957,6 +17001,10 @@ msgstr "Estat de {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Estat de {0} mentre és obert"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "estat de la conversa"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Aquest navegador no pot mostrar notificacions d'escriptori, de manera qu
 msgid "This browser does not support passkeys."
 msgstr "Aquest navegador no admet claus d'accés."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "No es reconeix la zona horària d'aquest navegador, així que no es poden llegir les dates de la cerca."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Aquest canal no té compte SMTP, de manera que no pot enviar enviaments massius ni un correu de prova."
@@ -18934,6 +18986,11 @@ msgstr "Aquesta sol·licitud ha caducat o ja s'ha fet servir. Torna a començar 
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Aquesta sol·licitud ha acabat"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Aquesta cerca no es pot usar: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Què"
 msgid "What {header} holds"
 msgstr "Què conté {header}"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "què té un missatge"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Què hi vé"
@@ -20733,6 +20794,10 @@ msgstr "sense adjunts"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "No es farà"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "paraules de l'assumpte"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

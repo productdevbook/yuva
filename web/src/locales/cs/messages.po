@@ -1256,6 +1256,10 @@ msgstr "Vlastní server MCP v ChatGPT na webu. Jedná jako vy, s přístupem, kt
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Den předem snižte TTL záznamů MX, aby se změna rychle rozšířila."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "den jako YYYY-MM-DD, ve vašem časovém pásmu"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Návrh z jiné schránky nebo archivovaný"
@@ -1365,6 +1369,10 @@ msgstr "Seznam tvoří lidé, kteří souhlasili, že od vás budou dostávat zp
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro je odpověď plus akce: štítky, přiřazená osoba, stav, priorita nebo odložení. Napište do pole odpovědi / a zkratku; akce se provedou při odeslání odpovědi."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "složka pošty"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Přidejte adresu webu."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Přidejte dva prvky pod každou stránku dokumentace"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Přidejte je k obyčejným slovům. Mínus před operátorem vyloučí shody a uvozovky spojí hodnotu s mezerami. Každý operátor musí platit."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Konverzace, nepřečtených: {unread}"
 msgid "Copied"
 msgstr "Zkopírováno"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "adresa v kopii"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Předat automatickému přiřazení"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Předáno uživateli {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "má přílohu"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Nedávné návštěvy"
 msgid "Recently active"
 msgstr "Nedávno aktivní"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "adresa příjemce"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "příjemci"
@@ -15335,6 +15359,10 @@ msgstr "Hledat v poště"
 msgid "Search name, e-mail or id…"
 msgstr "Hledat jméno, e-mail nebo ID…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Operátory hledání"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Hledat lidi, akce nebo nastavení"
@@ -15675,6 +15703,10 @@ msgstr "Odeslat na koncový bod webhooku"
 msgid "Sender"
 msgstr "Odesílatel"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "adresa nebo jméno odesílatele"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Údaje odesílatele pro zápatí"
@@ -15847,6 +15879,10 @@ msgstr "Odeslána 1 zpráva z této adresy"
 msgid "Sent an attachment"
 msgstr "Poslal(a) přílohu"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "odesláno před dnem"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Odesláno e-mailem"
@@ -15854,6 +15890,10 @@ msgstr "Odesláno e-mailem"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Odeslaná pošta"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "odesláno v den nebo později"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "S hvězdičkou"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "označeno vámi hvězdičkou"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Začít"
@@ -16957,6 +17001,10 @@ msgstr "Stav: {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Stav: {0}, dokud je otevřený"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "stav konverzace"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Tento prohlížeč nemůže zobrazovat oznámení na ploše, takže se p
 msgid "This browser does not support passkeys."
 msgstr "Tento prohlížeč nepodporuje přístupové klíče."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Časové pásmo tohoto prohlížeče nebylo rozpoznáno, a proto nelze data ve hledání přečíst."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Tento kanál nemá účet SMTP, takže nemůže odesílat hromadné zprávy ani testovací zprávu."
@@ -18934,6 +18986,11 @@ msgstr "Tento požadavek vypršel nebo už byl použit. Zahajte připojení znov
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Tento požadavek skončil"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Toto hledání nelze použít: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Co"
 msgid "What {header} holds"
 msgstr "Co obsahuje {header}"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "co zpráva má"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Co se přenese"
@@ -20733,6 +20794,10 @@ msgstr "bez příloh"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Nebude se dělat"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "slova v předmětu"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

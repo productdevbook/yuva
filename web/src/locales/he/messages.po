@@ -1256,6 +1256,10 @@ msgstr "שרת MCP מותאם אישית ב-ChatGPT באינטרנט. הוא פ�
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "יום מראש, הנמך את ה-TTL של רשומות ה-MX, כדי שהשינוי יתפשט מהר."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "יום בפורמט שנה-חודש-יום, באזור הזמן שלך"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "עיצוב מתיבת דואר אחרת או בארכיון"
@@ -1365,6 +1369,10 @@ msgstr "רשימה היא האנשים שהסכימו לשמוע ממך. לכל 
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "מאקרו הוא תשובה עם פעולות: תוויות, אחראי, סטטוס, עדיפות או דחייה. הקלידו / והקיצור בשדה התשובה; הפעולות מתבצעות עם שליחת התשובה."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "תיקיית דואר"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "הוסף את כתובת האתר."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "הוסף את שני הרכיבים מתחת לכל דף תיעוד"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "הוסיפו אותם למילים רגילות. מינוס לפני אופרטור מוציא את מה שמתאים, ומירכאות מקבצות ערך עם רווחים. כל אופרטור חייב להתקיים."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "שיחות, {unread} שלא נקראו"
 msgid "Copied"
 msgstr "הועתק"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "כתובת בהעתק"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "העבר להקצאה אוטומטית"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "הועברה אל {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "יש לה קובץ מצורף"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "ביקורים אחרונים"
 msgid "Recently active"
 msgstr "פעילים לאחרונה"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "כתובת הנמען"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "נמענים"
@@ -15335,6 +15359,10 @@ msgstr "חיפוש בדואר"
 msgid "Search name, e-mail or id…"
 msgstr "חיפוש שם, אימייל או מזהה…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "אופרטורי חיפוש"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "חפש אנשים, פעולות או הגדרות"
@@ -15675,6 +15703,10 @@ msgstr "שליחה לנקודת קצה של Webhook"
 msgid "Sender"
 msgstr "שולח"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "כתובת או שם השולח"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "פרטי השולח לכותרת התחתונה"
@@ -15847,6 +15879,10 @@ msgstr "נשלחה הודעה אחת מהכתובת הזאת"
 msgid "Sent an attachment"
 msgstr "שלח קובץ מצורף"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "נשלחו לפני יום"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "נשלח באימייל"
@@ -15854,6 +15890,10 @@ msgstr "נשלח באימייל"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "דואר שנשלח"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "נשלחו ביום או אחריו"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "מסומנים בכוכב"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "סימנת בכוכב"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "התחלה"
@@ -16957,6 +17001,10 @@ msgstr "המצב של {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "המצב של {0} כל עוד הוא פתוח"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "מצב השיחה"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "הדפדפן הזה לא יכול להציג התראות שולחן ע�
 msgid "This browser does not support passkeys."
 msgstr "הדפדפן הזה לא תומך במפתחות גישה."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "אזור הזמן של הדפדפן אינו מוכר, ולכן אי אפשר לקרוא תאריכים בחיפוש."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "לערוץ הזה אין חשבון SMTP, ולכן הוא לא יכול לשלוח שליחות המוניות או אימייל בדיקה."
@@ -18934,6 +18986,11 @@ msgstr "הבקשה הזאת פגה או שכבר נעשה בה שימוש. הת�
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "הבקשה הזאת הסתיימה"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "אי אפשר להשתמש בחיפוש הזה: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "מה"
 msgid "What {header} holds"
 msgstr "מה {header} מכיל"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "מה יש להודעה"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "מה מגיע"
@@ -20733,6 +20794,10 @@ msgstr "בלי קבצים מצורפים"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Won't do"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "מילים בנושא"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

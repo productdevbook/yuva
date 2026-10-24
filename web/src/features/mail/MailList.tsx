@@ -12,6 +12,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { ErrorLine, Kbd, toast } from "@/components/common"
+import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { MAIL_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatWhen } from "@/components/common/SendLater"
 import { formatShort, useErrorText, usePreviewText } from "@/components/common/text"
@@ -34,6 +35,7 @@ import { useListActions } from "@/features/inbox/memberState"
 import { useListCursor } from "@/features/inbox/listCursor"
 import { useBulkUpdateConversations, useConversations, useDrafts } from "@/features/inbox/queries"
 import { mailFilters, type Folder } from "@/features/mail/folders"
+import { OperatorHelp, OperatorList, useOperatorSuggest } from "@/features/mail/SearchOperators"
 import { useStar } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { ConversationListItem, ConversationStatus } from "@/lib/api"
@@ -432,19 +434,25 @@ export function MailList({
       : {}
   useHotkeys({ ...listKeys, ...selectionKeys, ...(selecting ? { Escape: stopSelecting } : {}) }, active)
 
+  const searchInput = useRef<HTMLInputElement>(null)
+  const suggest = useOperatorSuggest(query, setQuery, searchInput)
   const searchBox = (
     <InputGroup className="h-[34px] min-w-0 flex-1 rounded-lg border-input bg-background shadow-none focus-within:border-faint">
       <InputGroupAddon>
         <SearchIcon className="size-[15px] text-faint" />
       </InputGroupAddon>
       <InputGroupInput
+        ref={searchInput}
         name="mail-search"
         value={query}
+        {...suggest.inputProps}
         onChange={(e) => {
           setQuery(e.target.value)
+          suggest.typed(e)
           setCursorId(null)
         }}
         onKeyDown={(e) => {
+          if (suggest.onKeyDown(e)) return
           if (e.key === "ArrowDown" || e.key === "ArrowUp") {
             e.preventDefault()
             moveCursor(e.key === "ArrowDown" ? 1 : -1)
@@ -461,6 +469,7 @@ export function MailList({
         data-testid="mail-search"
       />
       <InputGroupAddon align="inline-end">
+        <OperatorHelp />
         {query ? (
           <InputGroupButton size="icon-xs" onClick={() => setQuery("")} aria-label={t`Clear the search`}>
             <XIcon />
@@ -598,7 +607,7 @@ export function MailList({
 
   return (
     <nav aria-label={t`Mail`} className="flex h-full min-h-0 flex-col bg-background" data-testid="mail-list">
-      <div className="flex shrink-0 items-center gap-1.5 px-3 pt-2.5 pb-1.5">
+      <div className="relative flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-2.5 pb-1.5">
         {searchBox}
         <Button
           variant="outline"
@@ -611,6 +620,8 @@ export function MailList({
         >
           <SquareCheckBigIcon />
         </Button>
+        <OperatorList s={suggest} />
+        <SearchError error={list.error} className="w-full" />
       </div>
       {selecting && selection}
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto border-t" data-testid="list">
@@ -650,7 +661,7 @@ export function MailList({
             <Skeleton className="h-4 w-1/2" />
           </div>
         )}
-        <ErrorLine error={list.error} className="px-4 py-2" />
+        <ErrorLine error={isSearchError(list.error) ? null : list.error} className="px-4 py-2" />
       </div>
       {confirmDialog}
     </nav>

@@ -1256,6 +1256,10 @@ msgstr "Một máy chủ MCP tùy chỉnh trong ChatGPT trên web. Nó hành đ�
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Trước một ngày, hãy giảm TTL của các bản ghi MX để thay đổi lan nhanh."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "một ngày dạng YYYY-MM-DD, theo múi giờ của bạn"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Một thiết kế của hộp thư khác hoặc đã lưu trữ"
@@ -1365,6 +1369,10 @@ msgstr "Danh sách là những người đã đồng ý nhận tin từ bạn. M
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Macro là một câu trả lời kèm các hành động: nhãn, người phụ trách, trạng thái, mức ưu tiên hoặc báo lại. Gõ / và phím tắt trong ô trả lời; các hành động được áp dụng khi gửi câu trả lời."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "một thư mục thư"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Thêm địa chỉ của trang web."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Thêm hai phần tử dưới mỗi trang tài liệu"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Thêm chúng vào các từ thông thường. Dấu trừ phía trước loại bỏ kết quả khớp, dấu ngoặc kép gộp một giá trị có dấu cách. Mọi toán tử đều phải đúng."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Cuộc trò chuyện, {unread} chưa đọc"
 msgid "Copied"
 msgstr "Đã sao chép"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "địa chỉ trong bản sao"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Chuyển cho giao việc tự động"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Đã giao cho {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "có tệp đính kèm"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Lượt truy cập gần đây"
 msgid "Recently active"
 msgstr "Hoạt động gần đây"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "địa chỉ người nhận"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "người nhận"
@@ -15335,6 +15359,10 @@ msgstr "Tìm trong thư"
 msgid "Search name, e-mail or id…"
 msgstr "Tìm tên, email hoặc id…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Toán tử tìm kiếm"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Tìm người, thao tác hoặc cài đặt"
@@ -15675,6 +15703,10 @@ msgstr "Gửi đến một điểm cuối webhook"
 msgid "Sender"
 msgstr "Người gửi"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "địa chỉ hoặc tên người gửi"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Thông tin người gửi cho chân thư"
@@ -15847,6 +15879,10 @@ msgstr "Đã gửi 1 tin nhắn từ địa chỉ này"
 msgid "Sent an attachment"
 msgstr "Đã gửi một tệp đính kèm"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "gửi trước một ngày"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Đã gửi qua email"
@@ -15854,6 +15890,10 @@ msgstr "Đã gửi qua email"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Thư đã gửi"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "gửi vào hoặc sau một ngày"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Có gắn sao"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "bạn đã gắn sao"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Bắt đầu"
@@ -16957,6 +17001,10 @@ msgstr "Trạng thái của {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Trạng thái của {0} khi còn mở"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "trạng thái cuộc trò chuyện"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Trình duyệt này không hiện được thông báo trên màn hình,
 msgid "This browser does not support passkeys."
 msgstr "Trình duyệt này không hỗ trợ khóa truy cập."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Không nhận ra múi giờ của trình duyệt này nên không đọc được ngày trong tìm kiếm."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Kênh này không có tài khoản SMTP, nên không gửi được thư hàng loạt hay thư thử."
@@ -18934,6 +18986,11 @@ msgstr "Yêu cầu này đã hết hạn hoặc đã được dùng. Hãy bắt 
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Yêu cầu này đã kết thúc"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Không dùng được tìm kiếm này: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Việc gì"
 msgid "What {header} holds"
 msgstr "{header} chứa gì"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "thư có gì"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Những gì được chuyển sang"
@@ -20733,6 +20794,10 @@ msgstr "không có tệp đính kèm"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Sẽ không làm"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "từ trong tiêu đề"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

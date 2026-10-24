@@ -1256,6 +1256,10 @@ msgstr "Server MCP kustom di ChatGPT versi web. Ia bertindak sebagai Anda, denga
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Sehari sebelumnya, turunkan TTL rekaman MX agar perubahan cepat menyebar."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "satu hari sebagai YYYY-MM-DD, di zona waktu Anda"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Desain dari kotak masuk lain atau yang diarsipkan"
@@ -1365,6 +1369,10 @@ msgstr "Daftar adalah orang-orang yang setuju menerima kabar dari Anda. Setiap p
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro adalah balasan ditambah tindakan: label, penanggung jawab, status, prioritas, atau tunda. Ketik / dan pintasannya di kolom balasan; tindakan diterapkan saat balasan dikirim."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "folder surat"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Tambahkan alamat situs."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Tambahkan dua elemen di bawah setiap halaman dokumentasi"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Tambahkan ke kata biasa. Tanda minus di depan mengecualikan yang cocok, dan tanda kutip mengelompokkan nilai dengan spasi. Setiap operator harus terpenuhi."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Percakapan, {unread} belum dibaca"
 msgid "Copied"
 msgstr "Disalin"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "alamat dalam tembusan"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Serahkan ke penugasan otomatis"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Diserahkan ke {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "punya lampiran"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Kunjungan terbaru"
 msgid "Recently active"
 msgstr "Aktif baru-baru ini"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "alamat penerima"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "penerima"
@@ -15335,6 +15359,10 @@ msgstr "Cari email"
 msgid "Search name, e-mail or id…"
 msgstr "Cari nama, email, atau id…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Operator pencarian"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Cari orang, tindakan, atau pengaturan"
@@ -15675,6 +15703,10 @@ msgstr "Kirim ke endpoint webhook"
 msgid "Sender"
 msgstr "Pengirim"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "alamat atau nama pengirim"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Detail pengirim untuk footer"
@@ -15847,6 +15879,10 @@ msgstr "1 pesan terkirim dari alamat ini"
 msgid "Sent an attachment"
 msgstr "Mengirim lampiran"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "dikirim sebelum satu hari"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Dikirim lewat email"
@@ -15854,6 +15890,10 @@ msgstr "Dikirim lewat email"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Email terkirim"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "dikirim pada atau setelah satu hari"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Berbintang"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "Anda beri bintang"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Mulai"
@@ -16957,6 +17001,10 @@ msgstr "Status {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Status {0} selama terbuka"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "status percakapan"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Browser ini tidak dapat menampilkan notifikasi desktop, jadi hanya bunyi
 msgid "This browser does not support passkeys."
 msgstr "Browser ini tidak mendukung passkey."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Zona waktu peramban ini tidak dikenali, sehingga tanggal dalam pencarian tidak dapat dibaca."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Saluran ini tidak punya akun SMTP, sehingga tidak dapat mengirim siaran massal atau email uji."
@@ -18934,6 +18986,11 @@ msgstr "Permintaan ini kedaluwarsa atau sudah digunakan. Mulai menghubungkan lag
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Permintaan ini telah berakhir"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Pencarian ini tidak dapat digunakan: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Apa"
 msgid "What {header} holds"
 msgstr "Isi {header}"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "isi yang dimiliki pesan"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Yang ikut"
@@ -20733,6 +20794,10 @@ msgstr "tanpa lampiran"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Tidak akan dikerjakan"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "kata dalam subjek"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

@@ -1256,6 +1256,10 @@ msgstr "Egyéni MCP-szerver a ChatGPT-ben a weben. Úgy jár el, mint te, az eng
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Egy nappal előtte csökkentsd az MX-rekordok TTL-jét, hogy a változás gyorsan terjedjen."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "egy nap YYYY-MM-DD formában, az Ön időzónájában"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Másik postafiók dizájnja vagy archivált"
@@ -1365,6 +1369,10 @@ msgstr "A lista azokból áll, akik beleegyeztek, hogy hírt kapjanak tőled. Mi
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "A makró egy válasz plusz műveletek: címkék, felelős, állapot, prioritás vagy szundi. Írd be a válaszmezőbe a / jelet és a rövidítést; a műveletek a válasz elküldésekor lépnek életbe."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "egy levelezőmappa"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Add meg a webhely címét."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Add hozzá a két elemet minden dokumentációs oldal alá"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Adja őket sima szavakhoz. Az elé tett mínusz kizárja a találatokat, az idézőjel egybefog egy szóközös értéket. Minden operátornak teljesülnie kell."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Beszélgetések, {unread} olvasatlan"
 msgid "Copied"
 msgstr "Másolva"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "másolatban kapó címe"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Átadás az automatikus hozzárendelésnek"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Átadva: {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "van melléklete"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Legutóbbi látogatások"
 msgid "Recently active"
 msgstr "Nemrég aktívak"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "a címzett címe"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "címzettek"
@@ -15335,6 +15359,10 @@ msgstr "Keresés a levelekben"
 msgid "Search name, e-mail or id…"
 msgstr "Név, e-mail vagy azonosító keresése…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Keresési operátorok"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Emberek, műveletek vagy beállítások keresése"
@@ -15675,6 +15703,10 @@ msgstr "Küldés webhook-végpontnak"
 msgid "Sender"
 msgstr "Feladó"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "a feladó címe vagy neve"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Feladó adatai a lábléchez"
@@ -15847,6 +15879,10 @@ msgstr "1 üzenetet küldött erről a címről"
 msgid "Sent an attachment"
 msgstr "Mellékletet küldött"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "egy nap előtt küldve"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "E-mailben elküldve"
@@ -15854,6 +15890,10 @@ msgstr "E-mailben elküldve"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Elküldött levél"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "egy napon vagy után küldve"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Csillagozott"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "Ön által csillagozott"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Indítás"
@@ -16957,6 +17001,10 @@ msgstr "{0} állapota"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} állapota, amíg nyitott"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "a beszélgetés állapota"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Ez a böngésző nem tud asztali értesítéseket megjeleníteni, ezért
 msgid "This browser does not support passkeys."
 msgstr "Ez a böngésző nem támogatja a hozzáférési kulcsokat."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "A böngésző időzónája nem ismerhető fel, ezért a keresés dátumai nem olvashatók."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Ennek a csatornának nincs SMTP-fiókja, ezért nem küldhet tömeges leveleket vagy tesztlevelet."
@@ -18934,6 +18986,11 @@ msgstr "Ez a kérés lejárt vagy már felhasználták. Indítsd újra a csatlak
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Ez a kérés véget ért"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Ez a keresés nem használható: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Mi"
 msgid "What {header} holds"
 msgstr "Mit tartalmaz a(z) {header}"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "mije van egy üzenetnek"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Mi kerül át"
@@ -20733,6 +20794,10 @@ msgstr "melléklet nélkül"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Nem lesz megvalósítva"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "szavak a tárgyban"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

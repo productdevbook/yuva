@@ -1256,6 +1256,10 @@ msgstr "இணையத்தில் ChatGPT-இல் தனிப்பய�
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "ஒரு நாள் முன்பே, MX பதிவுகளின் TTL-ஐக் குறையுங்கள்; மாற்றம் விரைவாகப் பரவும்."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "YYYY-MM-DD வடிவில் ஒரு நாள், உங்கள் நேர மண்டலத்தில்"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "வேறு இன்பாக்ஸின் அல்லது காப்பகப்படுத்தப்பட்ட வடிவமைப்பு"
@@ -1365,6 +1369,10 @@ msgstr "பட்டியல் என்பது உங்களிடமி�
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "மேக்ரோ என்பது ஒரு பதிலும் செயல்களும்: லேபிள்கள், பொறுப்பாளர், நிலை, முன்னுரிமை அல்லது ஒத்திவை. பதில் பெட்டியில் / மற்றும் அதன் குறுக்குவழியை உள்ளிடுங்கள்; பதில் அனுப்பப்படும்போது செயல்கள் பயன்படுத்தப்படும்."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "அஞ்சல் கோப்புறை"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "தளத்தின் முகவரியைச் சேர்க�
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "ஒவ்வொரு ஆவணப் பக்கத்தின் கீழும் இரு உறுப்புகளைச் சேர்க்கவும்"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "இவற்றை சாதாரண சொற்களுடன் சேர்க்கவும். முன்னால் கழித்தல் குறி பொருந்துவதை நீக்கும், மேற்கோள் குறிகள் இடைவெளியுள்ள மதிப்பை இணைக்கும். ஒவ்வொரு ஆபரேட்டரும் பொருந்த வேண்டும்."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "உரையாடல்கள், {unread} படிக்காதவ�
 msgid "Copied"
 msgstr "நகலெடுக்கப்பட்டது"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "நகலில் உள்ள முகவரி"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "தானியங்கி ஒதுக்கீட்டிடம் �
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "{name}-க்கு ஒப்படைக்கப்பட்டது"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "இணைப்பு உள்ளது"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "சமீபத்திய வருகைகள்"
 msgid "Recently active"
 msgstr "சமீபத்தில் செயலில்"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "பெறுநரின் முகவரி"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "பெறுநர்கள்"
@@ -15335,6 +15359,10 @@ msgstr "அஞ்சலில் தேடு"
 msgid "Search name, e-mail or id…"
 msgstr "பெயர், மின்னஞ்சல் அல்லது ஐடியைத் தேடு…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "தேடல் ஆபரேட்டர்கள்"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "நபர்கள், செயல்கள் அல்லது அமைப்புகளைத் தேடு"
@@ -15675,6 +15703,10 @@ msgstr "வெப்ஹூக் முனைப்புள்ளிக்க�
 msgid "Sender"
 msgstr "அனுப்புநர்"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "அனுப்புநரின் முகவரி அல்லது பெயர்"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "அடிக்குறிப்புக்கான அனுப்புநர் விவரங்கள்"
@@ -15847,6 +15879,10 @@ msgstr "இந்த முகவரியிலிருந்து 1 செ�
 msgid "Sent an attachment"
 msgstr "இணைப்பு அனுப்பப்பட்டது"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "ஒரு நாளுக்கு முன் அனுப்பியது"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "மின்னஞ்சலில் அனுப்பப்பட்டது"
@@ -15854,6 +15890,10 @@ msgstr "மின்னஞ்சலில் அனுப்பப்பட்�
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "அனுப்பிய அஞ்சல்"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "ஒரு நாளில் அல்லது பின் அனுப்பியது"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "நட்சத்திரமிட்டவை"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "நீங்கள் நட்சத்திரமிட்டது"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "தொடங்கு"
@@ -16957,6 +17001,10 @@ msgstr "{0} நிலை"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} திறந்திருக்கும் வரையிலான நிலை"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "உரையாடலின் நிலை"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "இந்த உலாவியால் டெஸ்க்டாப் 
 msgid "This browser does not support passkeys."
 msgstr "இந்த உலாவி பாஸ்கீகளை ஆதரிக்கவில்லை."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "இந்த உலாவியின் நேர மண்டலம் அடையாளம் காணப்படவில்லை, எனவே தேடலில் தேதிகளைப் படிக்க இயலாது."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "இந்தச் சேனலுக்கு SMTP கணக்கு இல்லை; எனவே ஒளிபரப்புகளையோ சோதனை அஞ்சலையோ அனுப்ப முடியாது."
@@ -18934,6 +18986,11 @@ msgstr "இந்தக் கோரிக்கை காலாவதியா�
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "இந்தக் கோரிக்கை முடிந்துவிட்டது"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "இந்தத் தேடலைப் பயன்படுத்த இயலாது: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "என்ன"
 msgid "What {header} holds"
 msgstr "{header} கொண்டிருப்பது"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "செய்தியில் என்ன உள்ளது"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "என்ன வருகிறது"
@@ -20733,6 +20794,10 @@ msgstr "இணைப்புகள் இல்லாமல்"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Won't do"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "பொருளில் உள்ள சொற்கள்"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

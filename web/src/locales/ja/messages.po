@@ -1256,6 +1256,10 @@ msgstr "ウェブ版 ChatGPT のカスタム MCP サーバーです。あなた�
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "1 日前に MX レコードの TTL を短くしておくと、変更がすばやく反映されます。"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "YYYY-MM-DD 形式の日付(お使いのタイムゾーン)"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "別の受信トレイのデザイン、またはアーカイブ済みのデザイン"
@@ -1365,6 +1369,10 @@ msgstr "リストとは、あなたからの連絡に同意した人たちです
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "マクロは、返信とアクション（ラベル、担当者、ステータス、優先度、スヌーズ）の組み合わせです。返信欄で / とショートカットを入力すると、返信の送信時にアクションが適用されます。"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "メールのフォルダ"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "サイトのアドレスを追加してください。"
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "すべてのドキュメントページの下に 2 つの要素を追加"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "通常の語に加えて使います。前にマイナスを付けると一致するものを除外し、スペースを含む値は引用符で囲みます。すべての演算子が成り立つ必要があります。"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "会話、未読 {unread} 件"
 msgid "Copied"
 msgstr "コピーしました"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "CC のアドレス"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "自動割り当てに任せる"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "{name} に引き継ぎました"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "添付ファイルがある"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "最近の訪問"
 msgid "Recently active"
 msgstr "最近のアクティブ"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "宛先のアドレス"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "宛先"
@@ -15335,6 +15359,10 @@ msgstr "メールを検索"
 msgid "Search name, e-mail or id…"
 msgstr "名前、メールアドレス、ID を検索…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "検索演算子"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "人、操作、設定を検索"
@@ -15675,6 +15703,10 @@ msgstr "Webhook エンドポイントに送信"
 msgid "Sender"
 msgstr "送信者"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "送信者のアドレスまたは名前"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "フッター用の送信者情報"
@@ -15847,6 +15879,10 @@ msgstr "このアドレスから 1 件のメッセージを送信しました"
 msgid "Sent an attachment"
 msgstr "添付ファイルを送信しました"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "指定日より前に送信"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "メールで送信"
@@ -15854,6 +15890,10 @@ msgstr "メールで送信"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "送信済みメール"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "指定日以降に送信"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "スター付き"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "自分がスターを付けた"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "開始"
@@ -16957,6 +17001,10 @@ msgstr "{0} の状態"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} が開いている間の状態"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "会話の状態"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "このブラウザーはデスクトップ通知を表示できないた
 msgid "This browser does not support passkeys."
 msgstr "このブラウザーはパスキーに対応していません。"
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "このブラウザーのタイムゾーンを認識できないため、検索の日付を読み取れません。"
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "このチャネルには SMTP アカウントがないため、一斉配信もテストメールも送信できません。"
@@ -18934,6 +18986,11 @@ msgstr "このリクエストは期限切れか、すでに使用されていま
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "このリクエストは終了しました"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "この検索は使えません: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "内容"
 msgid "What {header} holds"
 msgstr "{header} の内容"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "メッセージの持つもの"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "取り込まれるもの"
@@ -20733,6 +20794,10 @@ msgstr "添付ファイルなし"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "対応しない"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "件名の語"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

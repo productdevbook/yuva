@@ -1256,6 +1256,10 @@ msgstr "Власний MCP-сервер у ChatGPT у вебі. Він діє в
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "За день до цього зменшіть TTL записів MX, щоб зміна поширилася швидко."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "день у форматі YYYY-MM-DD, у вашому часовому поясі"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Дизайн іншої скриньки або архівний"
@@ -1365,6 +1369,10 @@ msgstr "Список — це люди, які погодилися отриму
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Макрос — це відповідь плюс дії: мітки, відповідальний, статус, пріоритет або відкласти. Введіть у полі відповіді / і скорочення; дії виконаються під час надсилання відповіді."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "папка пошти"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Додайте адресу сайту."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Додайте два елементи під кожною сторінкою документації"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Додавайте їх до звичайних слів. Мінус перед оператором виключає збіги, лапки об'єднують значення з пробілами. Кожен оператор має виконуватися."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Розмови, непрочитаних: {unread}"
 msgid "Copied"
 msgstr "Скопійовано"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "адреса в копії"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Передати автоматичному призначенню"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Передано: {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "має вкладення"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Нещодавні візити"
 msgid "Recently active"
 msgstr "Нещодавно були активні"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "адреса одержувача"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "отримувачі"
@@ -15335,6 +15359,10 @@ msgstr "Пошук у пошті"
 msgid "Search name, e-mail or id…"
 msgstr "Пошук за ім’ям, e-mail або ID…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Оператори пошуку"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Пошук людей, дій або налаштувань"
@@ -15675,6 +15703,10 @@ msgstr "Надіслати на кінцеву точку вебхука"
 msgid "Sender"
 msgstr "Відправник"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "адреса або ім'я відправника"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Дані відправника для підвалу"
@@ -15847,6 +15879,10 @@ msgstr "З цієї адреси надіслано 1 повідомлення"
 msgid "Sent an attachment"
 msgstr "Надіслав(ла) вкладення"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "надіслано до дня"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Надіслано електронною поштою"
@@ -15854,6 +15890,10 @@ msgstr "Надіслано електронною поштою"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Надіслані"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "надіслано в цей день або пізніше"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Із зірочкою"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "позначено вами зірочкою"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Почати"
@@ -16957,6 +17001,10 @@ msgstr "Стан: {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Стан: {0}, доки відкритий"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "стан розмови"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Цей браузер не може показувати сповіще�
 msgid "This browser does not support passkeys."
 msgstr "Цей браузер не підтримує ключі доступу."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Часовий пояс цього браузера не розпізнано, тому дати в пошуку неможливо прочитати."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "У цього каналу немає облікового запису SMTP, тож він не може надсилати розсилки чи тестовий лист."
@@ -18934,6 +18986,11 @@ msgstr "Цей запит сплив або вже використаний. П�
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Цей запит завершено"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Цей пошук не можна використати: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Що"
 msgid "What {header} holds"
 msgstr "Що містить {header}"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "що є в повідомленні"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Що переноситься"
@@ -20733,6 +20794,10 @@ msgstr "без вкладень"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Не буде зроблено"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "слова в темі"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

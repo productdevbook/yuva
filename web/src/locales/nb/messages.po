@@ -1256,6 +1256,10 @@ msgstr "En egendefinert MCP-server i ChatGPT på nettet. Den handler som deg, me
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Senk TTL på MX-postene en dag i forveien, så endringen sprer seg raskt."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "en dag som YYYY-MM-DD, i tidssonen din"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Et design fra en annen postboks eller arkivert"
@@ -1365,6 +1369,10 @@ msgstr "En liste er de som har sagt ja til å høre fra deg. Hver abonnent har e
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "En makro er et svar pluss handlinger: etiketter, ansvarlig, status, prioritet eller utsett. Skriv / og snarveien i svarfeltet; handlingene utføres når svaret sendes."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "en e-postmappe"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Legg til adressen til nettstedet."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Legg til de to elementene under hver dokumentasjonsside"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Legg dem til vanlige ord. Et minus foran utelukker det som matcher, og anførselstegn samler en verdi med mellomrom. Hver operatør må gjelde."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Samtaler, {unread} uleste"
 msgid "Copied"
 msgstr "Kopiert"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "adresse i kopi"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Gi til automatisk tildeling"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Overlatt til {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "har et vedlegg"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Nylige besøk"
 msgid "Recently active"
 msgstr "Nylig aktive"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "mottakerens adresse"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "mottakere"
@@ -15335,6 +15359,10 @@ msgstr "Søk i e-post"
 msgid "Search name, e-mail or id…"
 msgstr "Søk etter navn, e-post eller ID…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Søkeoperatorer"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Søk etter personer, handlinger eller innstillinger"
@@ -15675,6 +15703,10 @@ msgstr "Send til et webhook-endepunkt"
 msgid "Sender"
 msgstr "Avsender"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "avsenderens adresse eller navn"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Avsenderopplysninger for bunnteksten"
@@ -15847,6 +15879,10 @@ msgstr "Sendte 1 melding fra denne adressen"
 msgid "Sent an attachment"
 msgstr "Sendte et vedlegg"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "sendt før en dag"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Sendt per e-post"
@@ -15854,6 +15890,10 @@ msgstr "Sendt per e-post"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Sendt e-post"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "sendt på en dag eller senere"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Stjernemerket"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "stjernemerket av deg"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Start"
@@ -16957,6 +17001,10 @@ msgstr "Tilstand for {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Tilstand for {0} mens den er åpen"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "samtalens tilstand"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Denne nettleseren kan ikke vise skrivebordsvarsler, så bare lyden spill
 msgid "This browser does not support passkeys."
 msgstr "Denne nettleseren støtter ikke passkeys."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Tidssonen til denne nettleseren gjenkjennes ikke, så datoer i søket kan ikke leses."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Denne kanalen har ingen SMTP-konto, så den kan verken sende utsendelser eller en test-e-post."
@@ -18934,6 +18986,11 @@ msgstr "Denne forespørselen er utløpt eller allerede brukt. Start tilkoblingen
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Denne forespørselen er avsluttet"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Dette søket kan ikke brukes: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Hva"
 msgid "What {header} holds"
 msgstr "Hva {header} inneholder"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "hva en melding har"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Hva som kommer over"
@@ -20733,6 +20794,10 @@ msgstr "uten vedlegg"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Blir ikke gjort"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "ord i emnet"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

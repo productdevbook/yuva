@@ -1256,6 +1256,10 @@ msgstr "Web'deki ChatGPT'de özel bir MCP sunucusu. Sizin adınıza, yalnızca i
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Bir gün önceden MX kayıtlarının TTL değerini düşürün; değişiklik böylece hızla yayılır."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "YYYY-MM-DD biçiminde bir gün, saat diliminize göre"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Başka bir gelen kutusunun ya da arşivlenmiş bir tasarım"
@@ -1365,6 +1369,10 @@ msgstr "Bir liste, sizden haber almayı kabul edenlerdir. Her abone, dışa akta
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro, bir yanıt ve eylemlerdir: etiketler, atanan kişi, durum, öncelik veya erteleme. Yazı alanında / ve kısayolunu yazın; yanıt gönderilirken eylemler uygulanır."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "bir posta klasörü"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Sitenin adresini girin."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "İki öğeyi her doküman sayfasının altına ekleyin"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Bunları düz sözcüklerin yanına ekleyin. Eşleşeni dışarıda bırakmak için başına eksi, boşluklu bir değerin çevresine tırnak koyun. Her işleç geçerli olmalı."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Konuşmalar, {unread} okunmamış"
 msgid "Copied"
 msgstr "Kopyalandı"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "bilgi adresi"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Otomatik atamaya ver"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Verildi: {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "ekli dosyası var"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Son ziyaretler"
 msgid "Recently active"
 msgstr "Son zamanlarda etkin"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "alıcı adresi"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "alıcı"
@@ -15335,6 +15359,10 @@ msgstr "Postada ara"
 msgid "Search name, e-mail or id…"
 msgstr "Ad, e-posta veya kimlik ara…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Arama işleçleri"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Kişi, işlem veya ayar ara"
@@ -15675,6 +15703,10 @@ msgstr "Bir web kancası uç noktasına gönder"
 msgid "Sender"
 msgstr "Gönderen"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "gönderenin adresi veya adı"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Alt bilgi için gönderen bilgileri"
@@ -15847,6 +15879,10 @@ msgstr "Bu adresten 1 mesaj gönderilmiş"
 msgid "Sent an attachment"
 msgstr "Bir dosya gönderdi"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "bir günden önce gönderilmiş"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "E-postayla gönderildi"
@@ -15854,6 +15890,10 @@ msgstr "E-postayla gönderildi"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Gönderilenler"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "bir gün ve sonrasında gönderilmiş"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Yıldızlı"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "sizin yıldızladığınız"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Başla"
@@ -16957,6 +17001,10 @@ msgstr "{0} durumu"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} durumu, açıkken"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "görüşmenin durumu"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Bu tarayıcı masaüstü bildirimi gösteremiyor, bu yüzden yalnızca s
 msgid "This browser does not support passkeys."
 msgstr "Bu tarayıcı geçiş anahtarlarını desteklemiyor."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "Bu tarayıcının saat dilimi tanınmadı, bu yüzden aramadaki tarihler okunamıyor."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Bu kanalın SMTP hesabı yok, bu yüzden bülten ya da deneme e-postası gönderemez."
@@ -18934,6 +18986,11 @@ msgstr "Bu isteğin süresi doldu ya da zaten kullanıldı. Bağlanmayı uygulam
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Bu istek artık geçerli değil"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Bu arama kullanılamıyor: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Ne"
 msgid "What {header} holds"
 msgstr "{header} sütununda ne var"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "iletinin sahip olduğu"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Neler aktarılacak"
@@ -20733,6 +20794,10 @@ msgstr "ek olmadan"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Yapılmayacak"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "konudaki sözcükler"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

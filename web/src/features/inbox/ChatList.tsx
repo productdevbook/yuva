@@ -22,6 +22,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
+import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { useShell } from "@/app/shell"
 import { TeamMenu } from "@/app/TeamMenu"
 import { UserMenu } from "@/app/UserMenu"
@@ -1122,7 +1123,7 @@ export function ChatList({
   )
 
   const searchRow = (
-    <div className="flex shrink-0 items-center gap-1.5 px-3 pt-2.5 pb-1.5">
+    <div className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-2.5 pb-1.5">
       {searchBox}
       <Button
         variant="outline"
@@ -1135,6 +1136,7 @@ export function ChatList({
       >
         <SquareCheckBigIcon />
       </Button>
+      <SearchError error={list.error} className="w-full" />
     </div>
   )
 
@@ -1429,7 +1431,7 @@ export function ChatList({
             <Skeleton className="h-4 w-1/2" />
           </div>
         )}
-        <ErrorLine error={list.error} className="px-4 py-2" />
+        <ErrorLine error={isSearchError(list.error) ? null : list.error} className="px-4 py-2" />
       </div>
       {confirmDialog}
       <BulkFailuresDialog failures={failures} rows={rows} onClose={() => setFailures([])} />

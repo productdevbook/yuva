@@ -1256,6 +1256,10 @@ msgstr "Een aangepaste MCP-server in ChatGPT op het web. Hij handelt als jij, me
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "Verlaag een dag van tevoren de TTL van de MX-records, zodat de wijziging snel doorwerkt."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "een dag als YYYY-MM-DD, in uw tijdzone"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "Een ontwerp van een andere mailbox of gearchiveerd"
@@ -1365,6 +1369,10 @@ msgstr "Een lijst bevat de mensen die ermee instemden van je te horen. Elke abon
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Een macro is een antwoord plus acties: labels, toegewezene, status, prioriteit of uitstellen. Typ / en de snelkoppeling in het antwoordveld; de acties worden toegepast als het antwoord wordt verstuurd."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "een mailmap"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "Voeg het adres van de site toe."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "Voeg de twee elementen toe onder elke documentatiepagina"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "Voeg ze toe aan gewone woorden. Een min ervoor sluit uit wat past en aanhalingstekens omsluiten een waarde met spaties. Elke operator moet kloppen."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "Gesprekken, {unread} ongelezen"
 msgid "Copied"
 msgstr "Gekopieerd"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "adres in kopie"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "Geven aan automatische toewijzing"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "Overgedragen aan {name}"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "heeft een bijlage"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "Recente bezoeken"
 msgid "Recently active"
 msgstr "Recent actief"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "adres van de ontvanger"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "ontvangers"
@@ -15335,6 +15359,10 @@ msgstr "Mail doorzoeken"
 msgid "Search name, e-mail or id…"
 msgstr "Zoek op naam, e-mail of id…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "Zoekoperatoren"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "Mensen, acties of instellingen zoeken"
@@ -15675,6 +15703,10 @@ msgstr "Naar een webhook-eindpunt sturen"
 msgid "Sender"
 msgstr "Afzender"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "adres of naam van de afzender"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "Afzendergegevens voor de voettekst"
@@ -15847,6 +15879,10 @@ msgstr "1 bericht vanaf dit adres verzonden"
 msgid "Sent an attachment"
 msgstr "Heeft een bijlage verzonden"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "verzonden vóór een dag"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "Per e-mail verzonden"
@@ -15854,6 +15890,10 @@ msgstr "Per e-mail verzonden"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "Verzonden mail"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "verzonden op of na een dag"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "Met ster"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "door u met een ster gemarkeerd"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "Start"
@@ -16957,6 +17001,10 @@ msgstr "Status van {0}"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "Status van {0} zolang het open is"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "status van het gesprek"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "Deze browser kan geen bureaubladmeldingen tonen, dus alleen het geluid w
 msgid "This browser does not support passkeys."
 msgstr "Deze browser ondersteunt geen passkeys."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "De tijdzone van deze browser wordt niet herkend, dus datums in de zoekopdracht kunnen niet worden gelezen."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "Dit kanaal heeft geen SMTP-account, dus het kan geen mailings of testmail verzenden."
@@ -18934,6 +18986,11 @@ msgstr "Dit verzoek is verlopen of al gebruikt. Begin het verbinden opnieuw vanu
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "Dit verzoek is beëindigd"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "Deze zoekopdracht kan niet worden gebruikt: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "Wat"
 msgid "What {header} holds"
 msgstr "Wat {header} bevat"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "wat een bericht heeft"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "Wat meekomt"
@@ -20733,6 +20794,10 @@ msgstr "zonder bijlagen"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Wordt niet gedaan"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "woorden in het onderwerp"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

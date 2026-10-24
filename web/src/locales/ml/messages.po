@@ -1256,6 +1256,10 @@ msgstr "വെബിലെ ChatGPT-യിൽ ഒരു കസ്റ്റം MCP
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "ഒരു ദിവസം മുമ്പ്, മാറ്റം വേഗം പടരാൻ MX റെക്കോർഡുകളുടെ TTL കുറയ്ക്കുക."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "YYYY-MM-DD രൂപത്തിൽ ഒരു ദിവസം, നിങ്ങളുടെ സമയ മേഖലയിൽ"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "മറ്റൊരു ഇൻബോക്സിന്റെ അല്ലെങ്കിൽ ആർക്കൈവ് ചെയ്ത ഡിസൈൻ"
@@ -1365,6 +1369,10 @@ msgstr "പട്ടിക എന്നാൽ നിങ്ങളിൽ നിന
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "മാക്രോ എന്നാൽ ഒരു മറുപടിയും പ്രവർത്തനങ്ങളും: ലേബലുകൾ, ചുമതലക്കാരൻ, നില, മുൻഗണന അല്ലെങ്കിൽ സ്നൂസ്. മറുപടി ബോക്സിൽ / ഉം അതിന്റെ കുറുക്കുവഴിയും ടൈപ്പ് ചെയ്യുക; മറുപടി അയയ്ക്കുമ്പോൾ പ്രവർത്തനങ്ങൾ ബാധകമാകും."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "മെയിൽ ഫോൾഡർ"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "സൈറ്റിന്റെ വിലാസം ചേർക്കു�
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "ഓരോ ഡോക്സ് പേജിനും താഴെ രണ്ട് ഘടകങ്ങൾ ചേർക്കുക"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "ഇവ സാധാരണ വാക്കുകളോടൊപ്പം ചേർക്കുക. മുന്നിൽ മൈനസ് ഇട്ടാൽ പൊരുത്തപ്പെടുന്നത് ഒഴിവാകും, ഉദ്ധരണി ചിഹ്നങ്ങൾ ഇടവേളയുള്ള മൂല്യത്തെ ചേർക്കും. ഓരോ ഓപ്പറേറ്ററും ബാധകമാകണം."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "സംഭാഷണങ്ങൾ, {unread} വായിക്കാത്�
 msgid "Copied"
 msgstr "പകർത്തി"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "പകർപ്പിലെ വിലാസം"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "സ്വയമേവയുള്ള അസൈൻമെന്റിന�
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "{name}-ന് കൈമാറി"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "അറ്റാച്ച്മെന്റ് ഉണ്ട്"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "സമീപകാല സന്ദർശനങ്ങൾ"
 msgid "Recently active"
 msgstr "അടുത്തിടെ സജീവമായവർ"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "സ്വീകർത്താവിന്റെ വിലാസം"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "സ്വീകർത്താക്കൾ"
@@ -15335,6 +15359,10 @@ msgstr "മെയിലിൽ തിരയുക"
 msgid "Search name, e-mail or id…"
 msgstr "പേര്, ഇമെയിൽ അല്ലെങ്കിൽ ഐഡി തിരയുക…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "തിരയൽ ഓപ്പറേറ്ററുകൾ"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "ആളുകളെയോ പ്രവർത്തനങ്ങളെയോ ക്രമീകരണങ്ങളെയോ തിരയുക"
@@ -15675,6 +15703,10 @@ msgstr "വെബ്‌ഹുക്ക് എൻഡ്‌പോയിന്റ�
 msgid "Sender"
 msgstr "അയയ്ക്കുന്നയാൾ"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "അയച്ചയാളുടെ വിലാസം അല്ലെങ്കിൽ പേര്"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "ഫൂട്ടറിനുള്ള അയയ്ക്കുന്നയാളുടെ വിശദാംശങ്ങൾ"
@@ -15847,6 +15879,10 @@ msgstr "ഈ വിലാസത്തിൽ നിന്ന് 1 സന്ദേ�
 msgid "Sent an attachment"
 msgstr "ഒരു അറ്റാച്ച്‌മെന്റ് അയച്ചു"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "ഒരു ദിവസത്തിനു മുമ്പ് അയച്ചത്"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "ഇമെയിൽ വഴി അയച്ചു"
@@ -15854,6 +15890,10 @@ msgstr "ഇമെയിൽ വഴി അയച്ചു"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "അയച്ച മെയിൽ"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "ഒരു ദിവസം അല്ലെങ്കിൽ അതിനുശേഷം അയച്ചത്"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "നക്ഷത്രമിട്ടവ"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "നിങ്ങൾ നക്ഷത്രമിട്ടത്"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "ആരംഭിക്കുക"
@@ -16957,6 +17001,10 @@ msgstr "{0}-ന്റെ അവസ്ഥ"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "{0} തുറന്നിരിക്കുമ്പോഴുള്ള അവസ്ഥ"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "സംഭാഷണത്തിന്റെ അവസ്ഥ"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "ഈ ബ്രൗസറിന് ഡെസ്ക്ടോപ്പ് അ
 msgid "This browser does not support passkeys."
 msgstr "ഈ ബ്രൗസർ പാസ്‌കീകളെ പിന്തുണയ്ക്കുന്നില്ല."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "ഈ ബ്രൗസറിന്റെ സമയ മേഖല തിരിച്ചറിഞ്ഞില്ല, അതിനാൽ തിരയലിലെ തീയതികൾ വായിക്കാനാവില്ല."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "ഈ ചാനലിന് SMTP അക്കൗണ്ട് ഇല്ല, അതിനാൽ ബ്രോഡ്കാസ്റ്റുകളോ ടെസ്റ്റ് മെയിലോ അയയ്ക്കാൻ കഴിയില്ല."
@@ -18934,6 +18986,11 @@ msgstr "ഈ അഭ്യർത്ഥന കാലഹരണപ്പെട്ട�
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "ഈ അഭ്യർത്ഥന അവസാനിച്ചു"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "ഈ തിരയൽ ഉപയോഗിക്കാനാവില്ല: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "എന്ത്"
 msgid "What {header} holds"
 msgstr "{header} എന്താണ് ഉൾക്കൊള്ളുന്നത്"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "സന്ദേശത്തിൽ എന്താണുള്ളത്"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "എന്താണ് വരുന്നത്"
@@ -20733,6 +20794,10 @@ msgstr "അറ്റാച്ച്മെന്റുകളില്ലാതെ
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "Won't do"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "വിഷയത്തിലെ വാക്കുകൾ"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"

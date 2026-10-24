@@ -1256,6 +1256,10 @@ msgstr "웹 ChatGPT의 커스텀 MCP 서버입니다. 사용자 권한으로 동
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
 msgstr "하루 전에 MX 레코드의 TTL을 낮춰 두면 변경이 빨리 퍼집니다."
 
+#: src/features/mail/SearchOperators.tsx
+msgid "a day as YYYY-MM-DD, in your time zone"
+msgstr "YYYY-MM-DD 형식의 날짜(사용자의 시간대 기준)"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
 msgstr "다른 받은 편지함의 디자인 또는 보관된 디자인"
@@ -1365,6 +1369,10 @@ msgstr "목록은 당신의 소식을 받는 데 동의한 사람들입니다. �
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "매크로는 답변과 동작(라벨, 담당자, 상태, 우선순위, 일시 중지)의 묶음입니다. 답변 창에서 /와 단축 이름을 입력하면 답변을 보낼 때 동작이 적용됩니다."
+
+#: src/features/mail/SearchOperators.tsx
+msgid "a mail folder"
+msgstr "메일 폴더"
 
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
@@ -1972,6 +1980,10 @@ msgstr "사이트 주소를 추가하세요."
 #: src/features/setup/InstallStep.tsx
 msgid "Add the two elements under every docs page"
 msgstr "모든 문서 페이지 아래에 두 요소 추가"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "Add them to plain words. Put a minus before one to leave out what matches, and quotes around a value with spaces. Every operator must hold."
+msgstr "일반 단어에 덧붙여 사용합니다. 앞에 마이너스를 붙이면 일치하는 것을 제외하고, 공백이 있는 값은 따옴표로 묶습니다. 모든 연산자가 성립해야 합니다."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add to Cursor"
@@ -4849,6 +4861,10 @@ msgstr "대화, 읽지 않음 {unread}개"
 msgid "Copied"
 msgstr "복사됨"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "copied address"
+msgstr "참조 주소"
+
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
@@ -7521,6 +7537,10 @@ msgstr "자동 배정에 넘기기"
 #: src/features/conversation/actions.ts
 msgid "Handed to {name}"
 msgstr "{name}님에게 넘겼습니다"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "has an attachment"
+msgstr "첨부 파일이 있음"
 
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
@@ -13961,6 +13981,10 @@ msgstr "최근 방문"
 msgid "Recently active"
 msgstr "최근 활동"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "recipient address"
+msgstr "받는 사람 주소"
+
 #: src/features/home/HomePage.tsx
 msgid "recipients"
 msgstr "수신자"
@@ -15335,6 +15359,10 @@ msgstr "메일 검색"
 msgid "Search name, e-mail or id…"
 msgstr "이름, 이메일 또는 ID 검색…"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "Search operators"
+msgstr "검색 연산자"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "사람, 작업 또는 설정 검색"
@@ -15675,6 +15703,10 @@ msgstr "웹훅 엔드포인트로 보내기"
 msgid "Sender"
 msgstr "발신자"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sender address or name"
+msgstr "보낸 사람 주소 또는 이름"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Sender details for the footer"
 msgstr "바닥글용 발신자 정보"
@@ -15847,6 +15879,10 @@ msgstr "이 주소에서 메시지 1개를 보냈습니다"
 msgid "Sent an attachment"
 msgstr "첨부 파일을 보냈습니다"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "sent before a day"
+msgstr "지정한 날 이전에 보냄"
+
 #: src/features/conversation/messages/DeliveryState.tsx
 msgid "Sent by e-mail"
 msgstr "이메일로 보냄"
@@ -15854,6 +15890,10 @@ msgstr "이메일로 보냄"
 #: src/features/migrations/text.ts
 msgid "Sent mail"
 msgstr "보낸 메일"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "sent on or after a day"
+msgstr "지정한 날 또는 이후에 보냄"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
@@ -16870,6 +16910,10 @@ msgctxt "mail folder"
 msgid "Starred"
 msgstr "별표편지함"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "starred by you"
+msgstr "내가 별표를 단"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
 msgstr "시작"
@@ -16957,6 +17001,10 @@ msgstr "{0}의 상태"
 #: src/features/status/IncidentDialog.tsx
 msgid "State of {0} while it is open"
 msgstr "{0}이(가) 열려 있는 동안의 상태"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "state of the conversation"
+msgstr "대화 상태"
 
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18633,6 +18681,10 @@ msgstr "이 브라우저는 데스크톱 알림을 표시할 수 없어 소리�
 msgid "This browser does not support passkeys."
 msgstr "이 브라우저는 패스키를 지원하지 않습니다."
 
+#: src/components/common/SearchError.tsx
+msgid "This browser's time zone is not recognised, so dates in the search cannot be read."
+msgstr "이 브라우저의 시간대를 인식하지 못해 검색의 날짜를 읽을 수 없습니다."
+
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "This channel has no SMTP account, so it cannot send broadcasts or a test mail."
 msgstr "이 채널에는 SMTP 계정이 없어 일괄 발송이나 테스트 메일을 보낼 수 없습니다."
@@ -18934,6 +18986,11 @@ msgstr "이 요청은 만료되었거나 이미 사용되었습니다. 앱에서
 #: src/features/oauth/ConsentPage.tsx
 msgid "This request has ended"
 msgstr "이 요청은 종료되었습니다"
+
+#. placeholder {0}: e.detail
+#: src/components/common/SearchError.tsx
+msgid "This search cannot be used: {0}"
+msgstr "이 검색은 사용할 수 없습니다: {0}"
 
 #: src/components/common/text.ts
 msgid "This server does not offer imports from this kind of mailbox."
@@ -20332,6 +20389,10 @@ msgstr "내용"
 msgid "What {header} holds"
 msgstr "{header}에 들어 있는 것"
 
+#: src/features/mail/SearchOperators.tsx
+msgid "what a message has"
+msgstr "메시지가 가진 것"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "What comes over"
 msgstr "가져오는 항목"
@@ -20733,6 +20794,10 @@ msgstr "첨부 파일 없음"
 #: src/components/common/text.ts
 msgid "Won't do"
 msgstr "하지 않음"
+
+#: src/features/mail/SearchOperators.tsx
+msgid "words in the subject"
+msgstr "제목의 단어"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"
