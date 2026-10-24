@@ -113,7 +113,29 @@ is called change. Decisions:
 Members change up to 100 conversations in one request (`POST /v1/conversations/bulk`: status,
 assignee, labels to add and remove); each is checked against the caller's inbox access and
 changed in its own transaction with the same events and webhooks as a single change, and the
-answer lists which changed and which were refused. A member who sees both inboxes moves a
+answer lists which changed and which were refused.
+
+**Bulk changes in content lists (#200).** The other lists the panel selects many in share one
+pattern: `POST /v1/<resource>/bulk` with `{ids, action, ...params}`, 1 to 100 ids (duplicates count
+once), answered `200` with `BulkResult` (`succeeded` ids, `failed` with each id's `status`, `code`,
+`detail`, `field` and the typed extras the single answer carries, such as `used_by` for
+`image_in_use`). Each id runs in its own transaction through the same function as the single
+endpoint, so events, webhooks and post-commit signals are the single change's; an id the caller
+cannot see, of another workspace or of another parent is `not_found`, and a personal mailbox's
+design or broadcast is `not_found` to everyone but its owner (its list answers `404` as the parent).
+An unknown action or a missing or invalid parameter (`collection_id` included) is a whole-request
+`400`; the role or scope of the single action is checked once (`403`). Help center articles:
+`delete`, `publish` and `unpublish` (one `locale`, the center's default when absent; no such
+translation is `not_found`), `move` (`collection_id`, `null` for none). What's new entries:
+`delete`, `publish` (the whole entry; one already published succeeds untouched, without a second
+`changelog.entry.published`). List subscriptions: `unsubscribe` (no undo: consent is
+recorded), `delete`. E-mail designs: `delete` (archive), e-mail images: `delete` (without `force`),
+broadcasts: `delete` (an active one is `broadcast_active`). Discussions act on the opening post:
+`hide` and `unhide` are `updateDiscussionPost` with `state: hidden` and `state: published`, `spam` is `markDiscussionPostSpam`, `delete`
+is `deleteDiscussionPost` (only a thread the member wrote; others `forbidden`). Undo uses the
+inverse action (unpublish and publish, move back per article, `unhide` after `hide`).
+
+A member who sees both inboxes moves a
 conversation to another inbox of the workspace (`POST /v1/conversations/{id}/move`) with its
 messages, notes, labels and attachments; the assignee stays only with access to the new inbox,
 replies continue on the new inbox's channel of the same kind, and an e-mail conversation is

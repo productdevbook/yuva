@@ -801,25 +801,8 @@ func (s *Server) UpdateSubscription(ctx context.Context, req oas.UpdateSubscript
 	}
 	var out store.ListSubscription
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		list, sub, err := visibleSubscription(ctx, q, p, req.ListId, req.SubscriptionId, true)
-		if err != nil {
-			return err
-		}
-		if err := requireManagerOrKey(p); err != nil {
-			return err
-		}
-		if string(req.Body.State) != subUnsubscribed {
-			if string(req.Body.State) == sub.State && sub.State == subPending {
-				out = sub
-				return nil
-			}
-			return errConfirmationRequired
-		}
-		reason := string(oas.UnsubscribeReasonMember)
-		if p.scoped() {
-			reason = string(oas.UnsubscribeReasonApi)
-		}
-		out, err = s.unsubscribe(ctx, q, events, list, sub, reason, consentUnsubscribed, principalProof(p, reason))
+		var err error
+		out, err = s.setSubscriptionState(ctx, q, events, p, req.ListId, req.SubscriptionId, req.Body.State)
 		return err
 	})
 	if err != nil {
@@ -832,32 +815,57 @@ func (s *Server) UpdateSubscription(ctx context.Context, req oas.UpdateSubscript
 	return oas.UpdateSubscription200JSONResponse(body), nil
 }
 
+func (s *Server) setSubscriptionState(ctx context.Context, q *store.Queries, events *eventBatch, p principal, listID, id uuid.UUID, state oas.SubscriptionState) (store.ListSubscription, error) {
+	list, sub, err := visibleSubscription(ctx, q, p, listID, id, true)
+	if err != nil {
+		return sub, err
+	}
+	if err := requireManagerOrKey(p); err != nil {
+		return sub, err
+	}
+	if string(state) != subUnsubscribed {
+		if string(state) == sub.State && sub.State == subPending {
+			return sub, nil
+		}
+		return sub, errConfirmationRequired
+	}
+	reason := string(oas.UnsubscribeReasonMember)
+	if p.scoped() {
+		reason = string(oas.UnsubscribeReasonApi)
+	}
+	return s.unsubscribe(ctx, q, events, list, sub, reason, consentUnsubscribed, principalProof(p, reason))
+}
+
 func (s *Server) DeleteSubscription(ctx context.Context, req oas.DeleteSubscriptionRequestObject) (oas.DeleteSubscriptionResponseObject, error) {
 	p := principalFrom(ctx)
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
-		_, sub, err := visibleSubscription(ctx, q, p, req.ListId, req.SubscriptionId, true)
-		if err != nil {
-			return err
-		}
-		if err := requireManagerOrKey(p); err != nil {
-			return err
-		}
-		list, err := q.GetMailingList(ctx, store.GetMailingListParams{WorkspaceID: p.workspaceID, ID: sub.ListID})
-		if err != nil {
-			return err
-		}
-		if objected(sub) && list.Kind != listKindStatus {
-			if err := s.rememberOptOuts(ctx, q, p.workspaceID, []string{sub.Email}, optOutErasure); err != nil {
-				return err
-			}
-		}
-		_, err = q.DeleteSubscription(ctx, store.DeleteSubscriptionParams{WorkspaceID: p.workspaceID, ID: sub.ID})
-		return err
+		return s.deleteSubscription(ctx, q, p, req.ListId, req.SubscriptionId)
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.DeleteSubscription204Response{}, nil
+}
+
+func (s *Server) deleteSubscription(ctx context.Context, q *store.Queries, p principal, listID, id uuid.UUID) error {
+	_, sub, err := visibleSubscription(ctx, q, p, listID, id, true)
+	if err != nil {
+		return err
+	}
+	if err := requireManagerOrKey(p); err != nil {
+		return err
+	}
+	list, err := q.GetMailingList(ctx, store.GetMailingListParams{WorkspaceID: p.workspaceID, ID: sub.ListID})
+	if err != nil {
+		return err
+	}
+	if objected(sub) && list.Kind != listKindStatus {
+		if err := s.rememberOptOuts(ctx, q, p.workspaceID, []string{sub.Email}, optOutErasure); err != nil {
+			return err
+		}
+	}
+	_, err = q.DeleteSubscription(ctx, store.DeleteSubscriptionParams{WorkspaceID: p.workspaceID, ID: sub.ID})
+	return err
 }
 
 func (s *Server) ResendSubscriptionConfirmation(ctx context.Context, req oas.ResendSubscriptionConfirmationRequestObject) (oas.ResendSubscriptionConfirmationResponseObject, error) {

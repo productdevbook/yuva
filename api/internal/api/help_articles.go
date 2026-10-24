@@ -471,38 +471,8 @@ func (s *Server) UpdateHelpArticle(ctx context.Context, req oas.UpdateHelpArticl
 	}
 	var out oas.HelpArticle
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
-		c, err := visibleHelpCenter(ctx, q, p, req.CenterId, true)
-		if err != nil {
-			return err
-		}
-		cur, err := helpArticle(ctx, q, c, req.ArticleId, true)
-		if err != nil {
-			return err
-		}
-		col := nullableID(b.CollectionId, cur.CollectionID)
-		if err := helpCollectionOf(ctx, q, c, col); err != nil {
-			return err
-		}
-		position, paths := cur.Position, cur.Paths
-		if b.Position != nil {
-			position = *b.Position
-		}
-		if b.Paths != nil {
-			paths = *b.Paths
-		}
-		if paths == nil {
-			paths = []string{}
-		}
-		a, err := q.UpdateHelpArticle(ctx, store.UpdateHelpArticleParams{
-			WorkspaceID: c.WorkspaceID, ID: cur.ID, CollectionID: col, Position: position, Paths: paths, Now: s.now(),
-		})
-		if err != nil {
-			return err
-		}
-		if err := s.touchHelpCenter(ctx, q, c); err != nil {
-			return err
-		}
-		out, err = s.helpArticleOut(ctx, q, c, a)
+		var err error
+		out, err = s.updateHelpArticle(ctx, q, p, req.CenterId, req.ArticleId, *b)
 		return err
 	})
 	if err != nil {
@@ -511,45 +481,84 @@ func (s *Server) UpdateHelpArticle(ctx context.Context, req oas.UpdateHelpArticl
 	return oas.UpdateHelpArticle200JSONResponse(out), nil
 }
 
+func (s *Server) updateHelpArticle(ctx context.Context, q *store.Queries, p principal, centerID, articleID uuid.UUID, b oas.HelpArticleUpdate) (oas.HelpArticle, error) {
+	c, err := visibleHelpCenter(ctx, q, p, centerID, true)
+	if err != nil {
+		return oas.HelpArticle{}, err
+	}
+	cur, err := helpArticle(ctx, q, c, articleID, true)
+	if err != nil {
+		return oas.HelpArticle{}, err
+	}
+	col := nullableID(b.CollectionId, cur.CollectionID)
+	if err := helpCollectionOf(ctx, q, c, col); err != nil {
+		return oas.HelpArticle{}, err
+	}
+	position, paths := cur.Position, cur.Paths
+	if b.Position != nil {
+		position = *b.Position
+	}
+	if b.Paths != nil {
+		paths = *b.Paths
+	}
+	if paths == nil {
+		paths = []string{}
+	}
+	a, err := q.UpdateHelpArticle(ctx, store.UpdateHelpArticleParams{
+		WorkspaceID: c.WorkspaceID, ID: cur.ID, CollectionID: col, Position: position, Paths: paths, Now: s.now(),
+	})
+	if err != nil {
+		return oas.HelpArticle{}, err
+	}
+	if err := s.touchHelpCenter(ctx, q, c); err != nil {
+		return oas.HelpArticle{}, err
+	}
+	return s.helpArticleOut(ctx, q, c, a)
+}
+
 func (s *Server) DeleteHelpArticle(ctx context.Context, req oas.DeleteHelpArticleRequestObject) (oas.DeleteHelpArticleResponseObject, error) {
 	if err := s.helpOn(); err != nil {
 		return nil, err
 	}
 	p := principalFrom(ctx)
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
-		c, err := visibleHelpCenter(ctx, q, p, req.CenterId, true)
-		if err != nil {
-			return err
-		}
-		a, err := helpArticle(ctx, q, c, req.ArticleId, true)
-		if err != nil {
-			return err
-		}
-		ts, err := helpSummaries(ctx, q, c.WorkspaceID, []uuid.UUID{a.ID})
-		if err != nil {
-			return err
-		}
-		published := slices.ContainsFunc(ts, func(t store.HelpArticleTranslation) bool { return t.PublishedAt != nil })
-		if published {
-			if err := mayPublishHelp(p, c); err != nil {
-				return err
-			}
-		}
-		if _, err := q.DeleteHelpArticle(ctx, store.DeleteHelpArticleParams{WorkspaceID: c.WorkspaceID, CenterID: c.ID, ID: a.ID}); err != nil {
-			return err
-		}
-		if published {
-			if err := s.touchHelpCenter(ctx, q, c); err != nil {
-				return err
-			}
-		}
-		ev.add(helpEventDeleted, &c.InboxID, nil, helpEventData(c, a, nil))
-		return nil
+		return s.deleteHelpArticle(ctx, q, ev, p, req.CenterId, req.ArticleId)
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.DeleteHelpArticle204Response{}, nil
+}
+
+func (s *Server) deleteHelpArticle(ctx context.Context, q *store.Queries, ev *eventBatch, p principal, centerID, articleID uuid.UUID) error {
+	c, err := visibleHelpCenter(ctx, q, p, centerID, true)
+	if err != nil {
+		return err
+	}
+	a, err := helpArticle(ctx, q, c, articleID, true)
+	if err != nil {
+		return err
+	}
+	ts, err := helpSummaries(ctx, q, c.WorkspaceID, []uuid.UUID{a.ID})
+	if err != nil {
+		return err
+	}
+	published := slices.ContainsFunc(ts, func(t store.HelpArticleTranslation) bool { return t.PublishedAt != nil })
+	if published {
+		if err := mayPublishHelp(p, c); err != nil {
+			return err
+		}
+	}
+	if _, err := q.DeleteHelpArticle(ctx, store.DeleteHelpArticleParams{WorkspaceID: c.WorkspaceID, CenterID: c.ID, ID: a.ID}); err != nil {
+		return err
+	}
+	if published {
+		if err := s.touchHelpCenter(ctx, q, c); err != nil {
+			return err
+		}
+	}
+	ev.add(helpEventDeleted, &c.InboxID, nil, helpEventData(c, a, nil))
+	return nil
 }
 
 func (s *Server) saveHelpDraft(ctx context.Context, q *store.Queries, p principal, t store.HelpArticleTranslation, d helpDraft) (store.HelpArticleTranslation, error) {
@@ -698,56 +707,65 @@ func (s *Server) PublishHelpArticleTranslation(ctx context.Context, req oas.Publ
 		return nil, err
 	}
 	p := principalFrom(ctx)
+	var base *int32
+	if req.Body != nil {
+		base = req.Body.BaseVersion
+	}
 	var out oas.HelpArticleTranslation
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
-		c, err := visibleHelpCenter(ctx, q, p, req.CenterId, true)
-		if err != nil {
-			return err
-		}
-		if err := mayPublishHelp(p, c); err != nil {
-			return err
-		}
-		a, err := helpArticle(ctx, q, c, req.ArticleId, true)
-		if err != nil {
-			return err
-		}
-		t, err := lockedHelpTranslation(ctx, q, a, req.Locale)
-		if err != nil {
-			return err
-		}
-		if req.Body != nil && req.Body.BaseVersion != nil && *req.Body.BaseVersion != t.Version {
-			return s.helpConflict(ctx, q, c, a, &t)
-		}
-		if t.PublishedAt == nil || t.HasUnpublishedChanges {
-			images, err := s.helpImages(ctx, q, p.workspaceID, t.Body)
-			if err != nil {
-				return err
-			}
-			html := renderHelp(t.Body, images)
-			member, key := helpCreatedBy(p)
-			if t, err = q.PublishHelpTranslation(ctx, store.PublishHelpTranslationParams{
-				WorkspaceID: c.WorkspaceID, ArticleID: a.ID, Locale: t.Locale, Html: &html, Excerpt: new(htmlExcerpt(html)),
-				Now: new(s.now()), MemberID: member, ApiKeyID: key,
-			}); err != nil {
-				return err
-			}
-			if err := s.addHelpRevision(ctx, q, p, t, oas.HelpRevisionPublish, t.Title, t.Body, t.Keywords); err != nil {
-				return err
-			}
-			if err := s.touchHelpCenter(ctx, q, c); err != nil {
-				return err
-			}
-			data := helpEventData(c, a, &t.Locale)
-			data.Title, data.Url = t.PublishedTitle, s.helpPublicURL(c, a.Number, t)
-			ev.add(helpEventPublished, &c.InboxID, nil, data)
-		}
-		out, err = s.helpTranslationOut(ctx, q, c, a, t)
+		var err error
+		out, err = s.publishHelpTranslation(ctx, q, ev, p, req.CenterId, req.ArticleId, req.Locale, base)
 		return err
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.PublishHelpArticleTranslation200JSONResponse(out), nil
+}
+
+func (s *Server) publishHelpTranslation(ctx context.Context, q *store.Queries, ev *eventBatch, p principal, centerID, articleID uuid.UUID, locale string, base *int32) (oas.HelpArticleTranslation, error) {
+	c, err := visibleHelpCenter(ctx, q, p, centerID, true)
+	if err != nil {
+		return oas.HelpArticleTranslation{}, err
+	}
+	if err := mayPublishHelp(p, c); err != nil {
+		return oas.HelpArticleTranslation{}, err
+	}
+	a, err := helpArticle(ctx, q, c, articleID, true)
+	if err != nil {
+		return oas.HelpArticleTranslation{}, err
+	}
+	t, err := lockedHelpTranslation(ctx, q, a, locale)
+	if err != nil {
+		return oas.HelpArticleTranslation{}, err
+	}
+	if base != nil && *base != t.Version {
+		return oas.HelpArticleTranslation{}, s.helpConflict(ctx, q, c, a, &t)
+	}
+	if t.PublishedAt == nil || t.HasUnpublishedChanges {
+		images, err := s.helpImages(ctx, q, p.workspaceID, t.Body)
+		if err != nil {
+			return oas.HelpArticleTranslation{}, err
+		}
+		html := renderHelp(t.Body, images)
+		member, key := helpCreatedBy(p)
+		if t, err = q.PublishHelpTranslation(ctx, store.PublishHelpTranslationParams{
+			WorkspaceID: c.WorkspaceID, ArticleID: a.ID, Locale: t.Locale, Html: &html, Excerpt: new(htmlExcerpt(html)),
+			Now: new(s.now()), MemberID: member, ApiKeyID: key,
+		}); err != nil {
+			return oas.HelpArticleTranslation{}, err
+		}
+		if err := s.addHelpRevision(ctx, q, p, t, oas.HelpRevisionPublish, t.Title, t.Body, t.Keywords); err != nil {
+			return oas.HelpArticleTranslation{}, err
+		}
+		if err := s.touchHelpCenter(ctx, q, c); err != nil {
+			return oas.HelpArticleTranslation{}, err
+		}
+		data := helpEventData(c, a, &t.Locale)
+		data.Title, data.Url = t.PublishedTitle, s.helpPublicURL(c, a.Number, t)
+		ev.add(helpEventPublished, &c.InboxID, nil, data)
+	}
+	return s.helpTranslationOut(ctx, q, c, a, t)
 }
 
 func (s *Server) UnpublishHelpArticleTranslation(ctx context.Context, req oas.UnpublishHelpArticleTranslationRequestObject) (oas.UnpublishHelpArticleTranslationResponseObject, error) {
@@ -757,40 +775,45 @@ func (s *Server) UnpublishHelpArticleTranslation(ctx context.Context, req oas.Un
 	p := principalFrom(ctx)
 	var out oas.HelpArticleTranslation
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
-		c, err := visibleHelpCenter(ctx, q, p, req.CenterId, true)
-		if err != nil {
-			return err
-		}
-		if err := mayPublishHelp(p, c); err != nil {
-			return err
-		}
-		a, err := helpArticle(ctx, q, c, req.ArticleId, true)
-		if err != nil {
-			return err
-		}
-		t, err := lockedHelpTranslation(ctx, q, a, req.Locale)
-		if err != nil {
-			return err
-		}
-		if t.PublishedAt != nil {
-			title := t.PublishedTitle
-			if t, err = q.UnpublishHelpTranslation(ctx, store.UnpublishHelpTranslationParams{WorkspaceID: c.WorkspaceID, ArticleID: a.ID, Locale: t.Locale}); err != nil {
-				return err
-			}
-			if err := s.touchHelpCenter(ctx, q, c); err != nil {
-				return err
-			}
-			data := helpEventData(c, a, &t.Locale)
-			data.Title = title
-			ev.add(helpEventUnpublish, &c.InboxID, nil, data)
-		}
-		out, err = s.helpTranslationOut(ctx, q, c, a, t)
+		var err error
+		out, err = s.unpublishHelpTranslation(ctx, q, ev, p, req.CenterId, req.ArticleId, req.Locale)
 		return err
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.UnpublishHelpArticleTranslation200JSONResponse(out), nil
+}
+
+func (s *Server) unpublishHelpTranslation(ctx context.Context, q *store.Queries, ev *eventBatch, p principal, centerID, articleID uuid.UUID, locale string) (oas.HelpArticleTranslation, error) {
+	c, err := visibleHelpCenter(ctx, q, p, centerID, true)
+	if err != nil {
+		return oas.HelpArticleTranslation{}, err
+	}
+	if err := mayPublishHelp(p, c); err != nil {
+		return oas.HelpArticleTranslation{}, err
+	}
+	a, err := helpArticle(ctx, q, c, articleID, true)
+	if err != nil {
+		return oas.HelpArticleTranslation{}, err
+	}
+	t, err := lockedHelpTranslation(ctx, q, a, locale)
+	if err != nil {
+		return oas.HelpArticleTranslation{}, err
+	}
+	if t.PublishedAt != nil {
+		title := t.PublishedTitle
+		if t, err = q.UnpublishHelpTranslation(ctx, store.UnpublishHelpTranslationParams{WorkspaceID: c.WorkspaceID, ArticleID: a.ID, Locale: t.Locale}); err != nil {
+			return oas.HelpArticleTranslation{}, err
+		}
+		if err := s.touchHelpCenter(ctx, q, c); err != nil {
+			return oas.HelpArticleTranslation{}, err
+		}
+		data := helpEventData(c, a, &t.Locale)
+		data.Title = title
+		ev.add(helpEventUnpublish, &c.InboxID, nil, data)
+	}
+	return s.helpTranslationOut(ctx, q, c, a, t)
 }
 
 func helpRevisionBody(r store.HelpArticleRevision) oas.HelpArticleRevision {

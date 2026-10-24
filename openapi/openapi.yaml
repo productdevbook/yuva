@@ -7849,6 +7849,48 @@ paths:
         "422":
           $ref: "#/components/responses/Problem"
 
+  /v1/discussions/bulk:
+    post:
+      operationId: bulkChangeDiscussions
+      summary: Moderate several threads at once
+      description: |
+        Each action works on the thread's opening post: `hide` and `unhide` as
+        `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+        `hide`), `spam` as `markDiscussionPostSpam` (a
+        member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+        thread the calling member wrote (`forbidden` otherwise).
+
+        Each item is changed in its own transaction by the same code as the single endpoint, with the
+        same events and webhooks; a refused item is listed in `failed` with the status and code the
+        single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+        once. An id the caller cannot see or of another workspace is listed with
+        `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+
+        `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+        sessions only.
+      tags: [discussions]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DiscussionBulkChange"
+      responses:
+        "200":
+          description: Which items changed and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/discussions/{discussionId}:
     get:
       operationId: getDiscussion
@@ -9023,6 +9065,48 @@ paths:
           $ref: "#/components/responses/Problem"
         "429":
           $ref: "#/components/responses/Problem"
+  /v1/lists/{listId}/subscriptions/bulk:
+    post:
+      operationId: bulkChangeSubscriptions
+      summary: Change several subscriptions at once
+      description: |
+        `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+        no undo); `delete` as `deleteSubscription`.
+
+        Each item is changed in its own transaction by the same code as the single endpoint, with the
+        same events and webhooks; a refused item is listed in `failed` with the status and code the
+        single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+        once. An id the caller cannot see, of another workspace or of another list is listed with
+        `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+
+        A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+        keys. Scope: `lists:write`.
+      tags: [lists]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ListId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscriptionBulkChange"
+      responses:
+        "200":
+          description: Which items changed and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/lists/{listId}/subscriptions/{subscriptionId}:
     get:
       operationId: getSubscription
@@ -9634,6 +9718,44 @@ paths:
           $ref: "#/components/responses/EmailDesignProblem"
         "429":
           $ref: "#/components/responses/Problem"
+  /v1/email-designs/bulk:
+    post:
+      operationId: bulkChangeEmailDesigns
+      summary: Change several e-mail designs at once
+      description: |
+        `delete` archives each design as `archiveEmailDesign`.
+
+        Each item is changed in its own transaction by the same code as the single endpoint, with the
+        same events and webhooks; a refused item is listed in `failed` with the status and code the
+        single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+        once. An id the caller cannot see or of another workspace is listed with
+        `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+
+        A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+        Owners, admins and API keys. Scope: `broadcasts:write`.
+      tags: [designs]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailDesignBulkChange"
+      responses:
+        "200":
+          description: Which items changed and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/email-designs/{designId}:
     get:
       operationId: getEmailDesign
@@ -9932,6 +10054,44 @@ paths:
           $ref: "#/components/responses/Problem"
         "429":
           $ref: "#/components/responses/Problem"
+  /v1/email-images/bulk:
+    post:
+      operationId: bulkChangeEmailImages
+      summary: Change several e-mail images at once
+      description: |
+        `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+        and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+
+        Each item is changed in its own transaction by the same code as the single endpoint, with the
+        same events and webhooks; a refused item is listed in `failed` with the status and code the
+        single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+        once. An id the caller cannot see or of another workspace is listed with
+        `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+
+        Owners, admins and API keys. Scope: `broadcasts:write`.
+      tags: [designs]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailImageBulkChange"
+      responses:
+        "200":
+          description: Which items changed and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
   /v1/email-images/{imageId}:
     delete:
       operationId: deleteEmailImage
@@ -10055,6 +10215,45 @@ paths:
         "404":
           $ref: "#/components/responses/Problem"
         "409":
+          $ref: "#/components/responses/Problem"
+  /v1/broadcasts/bulk:
+    post:
+      operationId: bulkChangeBroadcasts
+      summary: Change several broadcasts at once
+      description: |
+        `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+        with `broadcast_active`.
+
+        Each item is changed in its own transaction by the same code as the single endpoint, with the
+        same events and webhooks; a refused item is listed in `failed` with the status and code the
+        single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+        once. An id the caller cannot see or of another workspace is listed with
+        `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+
+        A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+        Owners, admins and API keys. Scope: `broadcasts:write`.
+      tags: [broadcasts]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BroadcastBulkChange"
+      responses:
+        "200":
+          description: Which items changed and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
           $ref: "#/components/responses/Problem"
   /v1/broadcasts/{broadcastId}:
     get:
@@ -15488,6 +15687,51 @@ paths:
           $ref: "#/components/responses/Problem"
         "422":
           $ref: "#/components/responses/Problem"
+  /v1/changelogs/{changelogId}/entries/bulk:
+    post:
+      operationId: bulkChangeChangelogEntries
+      summary: Change several entries at once
+      description: |
+        `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+        entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+        without a translation in the default locale listed with `no_default_translation`. An entry
+        that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+        and no `changelog.entry.published` goes out.
+
+        Each item is changed in its own transaction by the same code as the single endpoint, with the
+        same events and webhooks; a refused item is listed in `failed` with the status and code the
+        single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+        once. An id the caller cannot see, of another workspace or of another changelog is listed with
+        `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+
+        Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+        checked once (`403`).
+      tags: [changelog]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ChangelogId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangelogEntryBulkChange"
+      responses:
+        "200":
+          description: Which items changed and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
   /v1/changelogs/{changelogId}/entries/{entryId}:
     get:
       operationId: getChangelogEntry
@@ -16318,6 +16562,53 @@ paths:
         "404":
           $ref: "#/components/responses/Problem"
         "422":
+          $ref: "#/components/responses/Problem"
+  /v1/help-centers/{centerId}/articles/bulk:
+    post:
+      operationId: bulkChangeHelpArticles
+      summary: Change several articles at once
+      description: |
+        `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+        center's default locale when absent) as `publishHelpArticleTranslation` and
+        `unpublishHelpArticleTranslation`, an article without that translation listed with
+        `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+        `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+        article back. An unknown `collection_id` answers `400`.
+
+        Each item is changed in its own transaction by the same code as the single endpoint, with the
+        same events and webhooks; a refused item is listed in `failed` with the status and code the
+        single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+        once. An id the caller cannot see, of another workspace or of another center is listed with
+        `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+
+        Who may, as for each single action, checked once for the whole request (`403`); deleting a
+        published article needs who may publish, per article. Scope: `help:write`; `publish` and
+        `unpublish` need `help:publish` instead.
+      tags: [help]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/HelpCenterId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HelpArticleBulkChange"
+      responses:
+        "200":
+          description: Which items changed and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
           $ref: "#/components/responses/Problem"
   /v1/help-centers/{centerId}/articles/{articleId}:
     get:
@@ -25485,6 +25776,119 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ConversationBulkFailure"
+    BulkIds:
+      type: array
+      description: Up to 100 ids; duplicates count once.
+      minItems: 1
+      maxItems: 100
+      items:
+        type: string
+        format: uuid
+    BulkFailure:
+      type: object
+      required: [id, status, code]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status the single change would have answered.
+        code:
+          type: string
+        detail:
+          type: string
+        field:
+          type: string
+          description: The request field the refusal is about, when it is about one.
+        used_by:
+          $ref: "#/components/schemas/EmailImageUsage"
+          description: "`image_in_use`: what uses the image, as the single delete names it."
+    BulkResult:
+      type: object
+      required: [succeeded, failed]
+      properties:
+        succeeded:
+          type: array
+          description: The ids that changed, in request order.
+          items:
+            type: string
+            format: uuid
+        failed:
+          type: array
+          items:
+            $ref: "#/components/schemas/BulkFailure"
+    HelpArticleBulkChange:
+      type: object
+      required: [ids, action]
+      properties:
+        ids:
+          $ref: "#/components/schemas/BulkIds"
+        action:
+          type: string
+          enum: [delete, publish, unpublish, move]
+        locale:
+          $ref: "#/components/schemas/LanguageTag"
+          description: "`publish` and `unpublish`: the translation; the center's default locale when absent."
+        collection_id:
+          type: [string, "null"]
+          format: uuid
+          description: "`move` only, and required there: the collection, `null` for none."
+    ChangelogEntryBulkChange:
+      type: object
+      required: [ids, action]
+      properties:
+        ids:
+          $ref: "#/components/schemas/BulkIds"
+        action:
+          type: string
+          enum: [delete, publish]
+    SubscriptionBulkChange:
+      type: object
+      required: [ids, action]
+      properties:
+        ids:
+          $ref: "#/components/schemas/BulkIds"
+        action:
+          type: string
+          enum: [unsubscribe, delete]
+    EmailDesignBulkChange:
+      type: object
+      required: [ids, action]
+      properties:
+        ids:
+          $ref: "#/components/schemas/BulkIds"
+        action:
+          type: string
+          enum: [delete]
+    EmailImageBulkChange:
+      type: object
+      required: [ids, action]
+      properties:
+        ids:
+          $ref: "#/components/schemas/BulkIds"
+        action:
+          type: string
+          enum: [delete]
+    BroadcastBulkChange:
+      type: object
+      required: [ids, action]
+      properties:
+        ids:
+          $ref: "#/components/schemas/BulkIds"
+        action:
+          type: string
+          enum: [delete]
+    DiscussionBulkChange:
+      type: object
+      required: [ids, action]
+      properties:
+        ids:
+          $ref: "#/components/schemas/BulkIds"
+        action:
+          type: string
+          enum: [hide, unhide, spam, delete]
     ConversationMove:
       type: object
       required: [inbox_id]

@@ -212,6 +212,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateSubscription":             {oas.ListsWrite},
 	"UpdateSubscription":             {oas.ListsWrite},
 	"DeleteSubscription":             {oas.ListsWrite},
+	"BulkChangeSubscriptions":        {oas.ListsWrite},
 	"ResendSubscriptionConfirmation": {oas.ListsWrite},
 	"CreateListImport":               {oas.ListsWrite},
 	"UpdateListImport":               {oas.ListsWrite},
@@ -230,10 +231,12 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateEmailDesign":         {oas.BroadcastsWrite},
 	"UpdateEmailDesign":         {oas.BroadcastsWrite},
 	"ArchiveEmailDesign":        {oas.BroadcastsWrite},
+	"BulkChangeEmailDesigns":    {oas.BroadcastsWrite},
 	"DuplicateEmailDesign":      {oas.BroadcastsWrite},
 	"RestoreEmailDesignVersion": {oas.BroadcastsWrite},
 	"UploadEmailImage":          {oas.BroadcastsWrite},
 	"DeleteEmailImage":          {oas.BroadcastsWrite},
+	"BulkChangeEmailImages":     {oas.BroadcastsWrite},
 
 	"ListBroadcasts":          {oas.BroadcastsRead},
 	"GetBroadcast":            {oas.BroadcastsRead},
@@ -242,10 +245,11 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"GetBroadcastReport":      {oas.BroadcastsRead},
 	"ListBroadcastDeliveries": {oas.BroadcastsRead, oas.ContactsRead},
 
-	"CreateBroadcast":   {oas.BroadcastsWrite},
-	"UpdateBroadcast":   {oas.BroadcastsWrite},
-	"DeleteBroadcast":   {oas.BroadcastsWrite},
-	"SendBroadcastTest": {oas.BroadcastsWrite},
+	"CreateBroadcast":      {oas.BroadcastsWrite},
+	"UpdateBroadcast":      {oas.BroadcastsWrite},
+	"DeleteBroadcast":      {oas.BroadcastsWrite},
+	"BulkChangeBroadcasts": {oas.BroadcastsWrite},
+	"SendBroadcastTest":    {oas.BroadcastsWrite},
 
 	"ScheduleBroadcast":   {oas.BroadcastsSend},
 	"UnscheduleBroadcast": {oas.BroadcastsSend},
@@ -383,6 +387,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateHelpArticle":               {oas.HelpWrite},
 	"UpdateHelpArticle":               {oas.HelpWrite},
 	"DeleteHelpArticle":               {oas.HelpWrite},
+	"BulkChangeHelpArticles":          nil,
 	"PutHelpArticleTranslation":       {oas.HelpWrite},
 	"DeleteHelpArticleTranslation":    {oas.HelpWrite},
 	"RestoreHelpArticleRevision":      {oas.HelpWrite},
@@ -417,6 +422,7 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"CreateChangelogEntry":            {oas.ChangelogWrite},
 	"UpdateChangelogEntry":            {oas.ChangelogWrite},
 	"DeleteChangelogEntry":            {oas.ChangelogWrite},
+	"BulkChangeChangelogEntries":      nil,
 	"PutChangelogEntryTranslation":    {oas.ChangelogWrite},
 	"DeleteChangelogEntryTranslation": {oas.ChangelogWrite},
 	"UploadChangelogImage":            {oas.ChangelogWrite},
@@ -453,9 +459,11 @@ func errInsufficientScope(scope oas.ApiKeyScope) *apiError {
 // keyMayCall refuses a key an operation that is not in operationScopes or whose scopes it lacks;
 // CreateMessage (nil) needs messages:write or notes:write by its kind, the macro writes (nil)
 // canned_replies:write for a shared macro and conversations:write for a personal one, the view writes
-// (nil) views:write, and BulkUpdateConversations
-// (nil) conversations:delete for trashed and conversations:write for any other change, checked
-// once the body is read; the custom field reads (nil) conversations:read or contacts:read.
+// (nil) views:write, BulkUpdateConversations (nil) conversations:delete for trashed and
+// conversations:write for any other change, BulkChangeHelpArticles (nil) help:publish to publish or
+// unpublish and help:write otherwise, BulkChangeChangelogEntries (nil) changelog:publish to publish
+// and changelog:write otherwise, all three checked once the body is read; the custom field reads
+// (nil) conversations:read or contacts:read.
 func keyMayCall(p principal, operationID string) error {
 	scopes, ok := operationScopes[operationID]
 	if !ok {

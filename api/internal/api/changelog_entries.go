@@ -550,47 +550,55 @@ func (s *Server) DeleteChangelogEntry(ctx context.Context, req oas.DeleteChangel
 		return nil, err
 	}
 	p := principalFrom(ctx)
-	var center store.Changelog
-	var wasPublished bool
+	var after func()
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
-		c, err := visibleChangelog(ctx, q, p, req.ChangelogId, true)
-		if err != nil {
-			return err
-		}
-		center = c
-		e, err := changelogEntry(ctx, q, c, req.EntryId, true)
-		if err != nil {
-			return err
-		}
-		if e.State != changelogStateDraft {
-			if err := mayPublishChangelog(p, c); err != nil {
-				return err
-			}
-		}
-		ts, err := q.ListChangelogTranslations(ctx, store.ListChangelogTranslationsParams{WorkspaceID: c.WorkspaceID, EntryIds: []uuid.UUID{e.ID}})
-		if err != nil {
-			return err
-		}
-		if _, err := q.DeleteChangelogEntry(ctx, store.DeleteChangelogEntryParams{WorkspaceID: c.WorkspaceID, ChangelogID: c.ID, ID: e.ID}); err != nil {
-			return err
-		}
-		if e.State == changelogStatePublished {
-			wasPublished = true
-			if err := s.touchChangelog(ctx, q, c); err != nil {
-				return err
-			}
-			ev.add(changelogEventDeleted, &c.InboxID, nil, s.changelogEventData(c, e, ts))
-		}
-		return nil
+		var err error
+		after, err = s.deleteChangelogEntry(ctx, q, ev, p, req.ChangelogId, req.EntryId)
+		return err
 	})
 	if err != nil {
 		return nil, err
 	}
-	s.changelogSignal(ctx, p, center, req.EntryId, nil)
-	if wasPublished {
-		s.statusHint(ctx, p.workspaceID, center.InboxID)
-	}
+	after()
 	return oas.DeleteChangelogEntry204Response{}, nil
+}
+
+// deleteChangelogEntry deletes the entry in the caller's transaction; after tells the open panels
+// once it is committed.
+func (s *Server) deleteChangelogEntry(ctx context.Context, q *store.Queries, ev *eventBatch, p principal, changelogID, entryID uuid.UUID) (after func(), err error) {
+	c, err := visibleChangelog(ctx, q, p, changelogID, true)
+	if err != nil {
+		return nil, err
+	}
+	e, err := changelogEntry(ctx, q, c, entryID, true)
+	if err != nil {
+		return nil, err
+	}
+	if e.State != changelogStateDraft {
+		if err := mayPublishChangelog(p, c); err != nil {
+			return nil, err
+		}
+	}
+	ts, err := q.ListChangelogTranslations(ctx, store.ListChangelogTranslationsParams{WorkspaceID: c.WorkspaceID, EntryIds: []uuid.UUID{e.ID}})
+	if err != nil {
+		return nil, err
+	}
+	if _, err := q.DeleteChangelogEntry(ctx, store.DeleteChangelogEntryParams{WorkspaceID: c.WorkspaceID, ChangelogID: c.ID, ID: e.ID}); err != nil {
+		return nil, err
+	}
+	wasPublished := e.State == changelogStatePublished
+	if wasPublished {
+		if err := s.touchChangelog(ctx, q, c); err != nil {
+			return nil, err
+		}
+		ev.add(changelogEventDeleted, &c.InboxID, nil, s.changelogEventData(c, e, ts))
+	}
+	return func() {
+		s.changelogSignal(ctx, p, c, entryID, nil)
+		if wasPublished {
+			s.statusHint(ctx, p.workspaceID, c.InboxID)
+		}
+	}, nil
 }
 
 func (s *Server) saveChangelogDraft(ctx context.Context, q *store.Queries, p principal, t store.ChangelogEntryTranslation, d changelogDraft) (store.ChangelogEntryTranslation, error) {
@@ -825,62 +833,72 @@ func (s *Server) PublishChangelogEntry(ctx context.Context, req oas.PublishChang
 		base = req.Body.BaseVersion
 	}
 	var out oas.ChangelogEntry
-	var center store.Changelog
+	var after func()
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, ev *eventBatch) error {
-		c, err := visibleChangelog(ctx, q, p, req.ChangelogId, true)
-		if err != nil {
-			return err
-		}
-		center = c
-		if err := mayPublishChangelog(p, c); err != nil {
-			return err
-		}
-		e, err := changelogEntry(ctx, q, c, req.EntryId, true)
-		if err != nil {
-			return err
-		}
-		member, key := helpCreatedBy(p)
-		actor := changelogActor{member: member, key: key}
-		if locale != "" {
-			if e.State != changelogStatePublished {
-				return errChangelogNotPublished
-			}
-			t, err := lockedChangelogTranslation(ctx, q, e, locale)
-			if err != nil {
-				return err
-			}
-			if base != nil && *base != t.Version {
-				return s.changelogConflict(ctx, q, c, e, &t)
-			}
-			if t.PublishedAt == nil || t.HasUnpublishedChanges {
-				if err := s.freezeChangelogEntry(ctx, q, ev, c, e, actor, locale); err != nil {
-					return err
-				}
-			}
-		} else {
-			ok, err := s.hasDefaultChangelogTranslation(ctx, q, c, e)
-			if err != nil {
-				return err
-			}
-			if !ok {
-				return errChangelogNoDefault
-			}
-			if e, err = q.PublishChangelogEntry(ctx, store.PublishChangelogEntryParams{WorkspaceID: c.WorkspaceID, ID: e.ID, Now: s.now()}); err != nil {
-				return err
-			}
-			if err := s.freezeChangelogEntry(ctx, q, ev, c, e, actor, ""); err != nil {
-				return err
-			}
-		}
-		out, err = s.changelogEntryOut(ctx, q, c, e)
+		var err error
+		out, after, err = s.publishChangelogEntry(ctx, q, ev, p, req.ChangelogId, req.EntryId, locale, base)
 		return err
 	})
 	if err != nil {
 		return nil, err
 	}
-	s.changelogSignal(ctx, p, center, req.EntryId, nil)
-	s.statusHint(ctx, p.workspaceID, center.InboxID)
+	after()
 	return oas.PublishChangelogEntry200JSONResponse(out), nil
+}
+
+func (s *Server) publishChangelogEntry(ctx context.Context, q *store.Queries, ev *eventBatch, p principal, changelogID, entryID uuid.UUID, locale string, base *int32) (oas.ChangelogEntry, func(), error) {
+	c, err := visibleChangelog(ctx, q, p, changelogID, true)
+	if err != nil {
+		return oas.ChangelogEntry{}, nil, err
+	}
+	if err := mayPublishChangelog(p, c); err != nil {
+		return oas.ChangelogEntry{}, nil, err
+	}
+	e, err := changelogEntry(ctx, q, c, entryID, true)
+	if err != nil {
+		return oas.ChangelogEntry{}, nil, err
+	}
+	member, key := helpCreatedBy(p)
+	actor := changelogActor{member: member, key: key}
+	if locale != "" {
+		if e.State != changelogStatePublished {
+			return oas.ChangelogEntry{}, nil, errChangelogNotPublished
+		}
+		t, err := lockedChangelogTranslation(ctx, q, e, locale)
+		if err != nil {
+			return oas.ChangelogEntry{}, nil, err
+		}
+		if base != nil && *base != t.Version {
+			return oas.ChangelogEntry{}, nil, s.changelogConflict(ctx, q, c, e, &t)
+		}
+		if t.PublishedAt == nil || t.HasUnpublishedChanges {
+			if err := s.freezeChangelogEntry(ctx, q, ev, c, e, actor, locale); err != nil {
+				return oas.ChangelogEntry{}, nil, err
+			}
+		}
+	} else {
+		ok, err := s.hasDefaultChangelogTranslation(ctx, q, c, e)
+		if err != nil {
+			return oas.ChangelogEntry{}, nil, err
+		}
+		if !ok {
+			return oas.ChangelogEntry{}, nil, errChangelogNoDefault
+		}
+		if e, err = q.PublishChangelogEntry(ctx, store.PublishChangelogEntryParams{WorkspaceID: c.WorkspaceID, ID: e.ID, Now: s.now()}); err != nil {
+			return oas.ChangelogEntry{}, nil, err
+		}
+		if err := s.freezeChangelogEntry(ctx, q, ev, c, e, actor, ""); err != nil {
+			return oas.ChangelogEntry{}, nil, err
+		}
+	}
+	out, err := s.changelogEntryOut(ctx, q, c, e)
+	if err != nil {
+		return oas.ChangelogEntry{}, nil, err
+	}
+	return out, func() {
+		s.changelogSignal(ctx, p, c, entryID, nil)
+		s.statusHint(ctx, p.workspaceID, c.InboxID)
+	}, nil
 }
 
 func (s *Server) ScheduleChangelogEntry(ctx context.Context, req oas.ScheduleChangelogEntryRequestObject) (oas.ScheduleChangelogEntryResponseObject, error) {

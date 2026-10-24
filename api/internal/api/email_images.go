@@ -213,85 +213,90 @@ func (s *Server) DeleteEmailImage(ctx context.Context, req oas.DeleteEmailImageR
 	}
 	var key string
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
-		img, err := q.LockEmailImage(ctx, store.LockEmailImageParams{WorkspaceID: p.workspaceID, ID: req.ImageId})
-		if store.IsNotFound(err) {
-			return errEmailImageGone
-		}
-		if err != nil {
-			return err
-		}
-		users, err := q.ListDesignsUsingImage(ctx, store.ListDesignsUsingImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID.String()})
-		if err != nil {
-			return err
-		}
-		articles, err := q.ListHelpArticlesUsingImage(ctx, store.ListHelpArticlesUsingImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID})
-		if err != nil {
-			return err
-		}
-		entries, err := q.ListChangelogEntriesUsingImage(ctx, store.ListChangelogEntriesUsingImageParams{WorkspaceID: p.workspaceID, ImageID: &img.ID})
-		if err != nil {
-			return err
-		}
-		inboxSigs, err := q.ListInboxesUsingSignatureImage(ctx, store.ListInboxesUsingSignatureImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID})
-		if err != nil {
-			return err
-		}
-		memberSigs, err := q.ListMemberSignaturesUsingImage(ctx, store.ListMemberSignaturesUsingImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID})
-		if err != nil {
-			return err
-		}
-		if len(users) > 0 || len(articles) > 0 || len(entries) > 0 || len(inboxSigs) > 0 || len(memberSigs) > 0 {
-			designs := make([]map[string]any, len(users))
-			for i, u := range users {
-				designs[i] = map[string]any{"id": u.ID, "name": u.Name}
-			}
-			usedBy := map[string]any{"designs": designs}
-			if len(articles) > 0 {
-				help := make([]map[string]any, len(articles))
-				for i, a := range articles {
-					help[i] = map[string]any{"id": a.ID, "center_id": a.CenterID, "number": a.Number, "title": a.Title}
-				}
-				usedBy["help_articles"] = help
-			}
-			if len(entries) > 0 {
-				news := make([]map[string]any, len(entries))
-				for i, n := range entries {
-					news[i] = map[string]any{"id": n.ID, "changelog_id": n.ChangelogID, "number": n.Number, "title": n.Title}
-				}
-				usedBy["changelog_entries"] = news
-			}
-			if len(inboxSigs) > 0 {
-				sigs := make([]map[string]any, len(inboxSigs))
-				for i, s := range inboxSigs {
-					sigs[i] = map[string]any{"id": s.ID, "name": s.Name}
-				}
-				usedBy["inbox_signatures"] = sigs
-			}
-			if len(memberSigs) > 0 {
-				sigs := make([]map[string]any, len(memberSigs))
-				for i, s := range memberSigs {
-					sigs[i] = map[string]any{"member_id": s.MemberID, "name": s.Name, "inbox_id": s.InboxID}
-				}
-				usedBy["member_signatures"] = sigs
-			}
-			e := problem(http.StatusConflict, "image_in_use", "designs, help articles, What's new entries or signatures use this image; take it out of them first")
-			e.Extra = map[string]any{"used_by": usedBy}
-			return e
-		}
-		if img.SentAt != nil && !boolOr(req.Params.Force, false) {
-			return errImageSent
-		}
-		if _, err := q.DeleteEmailImage(ctx, store.DeleteEmailImageParams{WorkspaceID: p.workspaceID, ID: img.ID}); err != nil {
-			return err
-		}
-		key = img.StorageKey
-		return nil
+		var err error
+		key, err = s.deleteEmailImage(ctx, q, p, req.ImageId, boolOr(req.Params.Force, false))
+		return err
 	})
 	if err != nil {
 		return nil, err
 	}
 	s.deleteObjects(ctx, []string{key})
 	return oas.DeleteEmailImage204Response{}, nil
+}
+
+func (s *Server) deleteEmailImage(ctx context.Context, q *store.Queries, p principal, id uuid.UUID, force bool) (string, error) {
+	img, err := q.LockEmailImage(ctx, store.LockEmailImageParams{WorkspaceID: p.workspaceID, ID: id})
+	if store.IsNotFound(err) {
+		return "", errEmailImageGone
+	}
+	if err != nil {
+		return "", err
+	}
+	users, err := q.ListDesignsUsingImage(ctx, store.ListDesignsUsingImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID.String()})
+	if err != nil {
+		return "", err
+	}
+	articles, err := q.ListHelpArticlesUsingImage(ctx, store.ListHelpArticlesUsingImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID})
+	if err != nil {
+		return "", err
+	}
+	entries, err := q.ListChangelogEntriesUsingImage(ctx, store.ListChangelogEntriesUsingImageParams{WorkspaceID: p.workspaceID, ImageID: &img.ID})
+	if err != nil {
+		return "", err
+	}
+	inboxSigs, err := q.ListInboxesUsingSignatureImage(ctx, store.ListInboxesUsingSignatureImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID})
+	if err != nil {
+		return "", err
+	}
+	memberSigs, err := q.ListMemberSignaturesUsingImage(ctx, store.ListMemberSignaturesUsingImageParams{WorkspaceID: p.workspaceID, ImageID: img.ID})
+	if err != nil {
+		return "", err
+	}
+	if len(users) > 0 || len(articles) > 0 || len(entries) > 0 || len(inboxSigs) > 0 || len(memberSigs) > 0 {
+		designs := make([]map[string]any, len(users))
+		for i, u := range users {
+			designs[i] = map[string]any{"id": u.ID, "name": u.Name}
+		}
+		usedBy := map[string]any{"designs": designs}
+		if len(articles) > 0 {
+			help := make([]map[string]any, len(articles))
+			for i, a := range articles {
+				help[i] = map[string]any{"id": a.ID, "center_id": a.CenterID, "number": a.Number, "title": a.Title}
+			}
+			usedBy["help_articles"] = help
+		}
+		if len(entries) > 0 {
+			news := make([]map[string]any, len(entries))
+			for i, n := range entries {
+				news[i] = map[string]any{"id": n.ID, "changelog_id": n.ChangelogID, "number": n.Number, "title": n.Title}
+			}
+			usedBy["changelog_entries"] = news
+		}
+		if len(inboxSigs) > 0 {
+			sigs := make([]map[string]any, len(inboxSigs))
+			for i, s := range inboxSigs {
+				sigs[i] = map[string]any{"id": s.ID, "name": s.Name}
+			}
+			usedBy["inbox_signatures"] = sigs
+		}
+		if len(memberSigs) > 0 {
+			sigs := make([]map[string]any, len(memberSigs))
+			for i, s := range memberSigs {
+				sigs[i] = map[string]any{"member_id": s.MemberID, "name": s.Name, "inbox_id": s.InboxID}
+			}
+			usedBy["member_signatures"] = sigs
+		}
+		e := problem(http.StatusConflict, "image_in_use", "designs, help articles, What's new entries or signatures use this image; take it out of them first")
+		e.Extra = map[string]any{"used_by": usedBy}
+		return "", e
+	}
+	if img.SentAt != nil && !force {
+		return "", errImageSent
+	}
+	if _, err := q.DeleteEmailImage(ctx, store.DeleteEmailImageParams{WorkspaceID: p.workspaceID, ID: img.ID}); err != nil {
+		return "", err
+	}
+	return img.StorageKey, nil
 }
 
 // publicImageHeaders are the same for every public e-mail image: cached for a year, never

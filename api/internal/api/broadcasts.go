@@ -817,23 +817,27 @@ func (s *Server) changePace(ctx context.Context, q *store.Queries, b store.Broad
 func (s *Server) DeleteBroadcast(ctx context.Context, req oas.DeleteBroadcastRequestObject) (oas.DeleteBroadcastResponseObject, error) {
 	p := principalFrom(ctx)
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
-		b, err := visibleBroadcast(ctx, q, p, req.BroadcastId, true)
-		if err != nil {
-			return err
-		}
-		if err := requireManagerOrKey(p); err != nil {
-			return err
-		}
-		if activeBroadcast(b.State) {
-			return errBroadcastActive
-		}
-		_, err = q.DeleteBroadcast(ctx, store.DeleteBroadcastParams{WorkspaceID: p.workspaceID, ID: b.ID})
-		return err
+		return deleteBroadcast(ctx, q, p, req.BroadcastId)
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.DeleteBroadcast204Response{}, nil
+}
+
+func deleteBroadcast(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) error {
+	b, err := visibleBroadcast(ctx, q, p, id, true)
+	if err != nil {
+		return err
+	}
+	if err := requireManagerOrKey(p); err != nil {
+		return err
+	}
+	if activeBroadcast(b.State) {
+		return errBroadcastActive
+	}
+	_, err = q.DeleteBroadcast(ctx, store.DeleteBroadcastParams{WorkspaceID: p.workspaceID, ID: b.ID})
+	return err
 }
 
 // audienceRow is one recipient as the audience query returns it, with whether the address

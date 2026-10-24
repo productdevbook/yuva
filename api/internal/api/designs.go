@@ -548,20 +548,24 @@ func (s *Server) UpdateEmailDesign(ctx context.Context, req oas.UpdateEmailDesig
 func (s *Server) ArchiveEmailDesign(ctx context.Context, req oas.ArchiveEmailDesignRequestObject) (oas.ArchiveEmailDesignResponseObject, error) {
 	p := principalFrom(ctx)
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
-		cur, err := visibleDesign(ctx, q, p, req.DesignId, true)
-		if err != nil {
-			return err
-		}
-		if _, err := designInbox(ctx, q, p, cur.InboxID); err != nil {
-			return err
-		}
-		_, err = q.ArchiveEmailDesign(ctx, store.ArchiveEmailDesignParams{WorkspaceID: p.workspaceID, ID: cur.ID, Now: s.now()})
-		return err
+		return s.archiveEmailDesign(ctx, q, p, req.DesignId)
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.ArchiveEmailDesign204Response{}, nil
+}
+
+func (s *Server) archiveEmailDesign(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) error {
+	cur, err := visibleDesign(ctx, q, p, id, true)
+	if err != nil {
+		return err
+	}
+	if _, err := designInbox(ctx, q, p, cur.InboxID); err != nil {
+		return err
+	}
+	_, err = q.ArchiveEmailDesign(ctx, store.ArchiveEmailDesignParams{WorkspaceID: p.workspaceID, ID: cur.ID, Now: s.now()})
+	return err
 }
 
 func (s *Server) DuplicateEmailDesign(ctx context.Context, req oas.DuplicateEmailDesignRequestObject) (oas.DuplicateEmailDesignResponseObject, error) {

@@ -1796,6 +1796,21 @@ func (e Availability) Valid() bool {
 	}
 }
 
+// Defines values for BroadcastBulkChangeAction.
+const (
+	BroadcastBulkChangeActionDelete BroadcastBulkChangeAction = "delete"
+)
+
+// Valid indicates whether the value is a known member of the BroadcastBulkChangeAction enum.
+func (e BroadcastBulkChangeAction) Valid() bool {
+	switch e {
+	case BroadcastBulkChangeActionDelete:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for BroadcastConditionOp.
 const (
 	ConditionContains  BroadcastConditionOp = "contains"
@@ -2105,6 +2120,24 @@ func (e BroadcastsStatus) Valid() bool {
 	case ApprovalRequired:
 		return true
 	case Suspended:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChangelogEntryBulkChangeAction.
+const (
+	ChangelogEntryBulkChangeActionDelete  ChangelogEntryBulkChangeAction = "delete"
+	ChangelogEntryBulkChangeActionPublish ChangelogEntryBulkChangeAction = "publish"
+)
+
+// Valid indicates whether the value is a known member of the ChangelogEntryBulkChangeAction enum.
+func (e ChangelogEntryBulkChangeAction) Valid() bool {
+	switch e {
+	case ChangelogEntryBulkChangeActionDelete:
+		return true
+	case ChangelogEntryBulkChangeActionPublish:
 		return true
 	default:
 		return false
@@ -2855,6 +2888,30 @@ func (e DiscussionAuthorKind) Valid() bool {
 	}
 }
 
+// Defines values for DiscussionBulkChangeAction.
+const (
+	DiscussionBulkChangeActionDelete DiscussionBulkChangeAction = "delete"
+	DiscussionBulkChangeActionHide   DiscussionBulkChangeAction = "hide"
+	DiscussionBulkChangeActionSpam   DiscussionBulkChangeAction = "spam"
+	DiscussionBulkChangeActionUnhide DiscussionBulkChangeAction = "unhide"
+)
+
+// Valid indicates whether the value is a known member of the DiscussionBulkChangeAction enum.
+func (e DiscussionBulkChangeAction) Valid() bool {
+	switch e {
+	case DiscussionBulkChangeActionDelete:
+		return true
+	case DiscussionBulkChangeActionHide:
+		return true
+	case DiscussionBulkChangeActionSpam:
+		return true
+	case DiscussionBulkChangeActionUnhide:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for DiscussionEventType.
 const (
 	DiscussionEventTypeDiscussionAnswered    DiscussionEventType = "discussion.answered"
@@ -3155,6 +3212,21 @@ func (e EmailColumnsBlockType) Valid() bool {
 	}
 }
 
+// Defines values for EmailDesignBulkChangeAction.
+const (
+	EmailDesignBulkChangeActionDelete EmailDesignBulkChangeAction = "delete"
+)
+
+// Valid indicates whether the value is a known member of the EmailDesignBulkChangeAction enum.
+func (e EmailDesignBulkChangeAction) Valid() bool {
+	switch e {
+	case EmailDesignBulkChangeActionDelete:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for EmailDesignDocumentSchema.
 const (
 	EmailDesignSchema1 EmailDesignDocumentSchema = 1
@@ -3344,6 +3416,21 @@ const (
 func (e EmailImageBlockType) Valid() bool {
 	switch e {
 	case EmailBlockImage:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailImageBulkChangeAction.
+const (
+	EmailImageBulkChangeActionDelete EmailImageBulkChangeAction = "delete"
+)
+
+// Valid indicates whether the value is a known member of the EmailImageBulkChangeAction enum.
+func (e EmailImageBulkChangeAction) Valid() bool {
+	switch e {
+	case EmailImageBulkChangeActionDelete:
 		return true
 	default:
 		return false
@@ -3731,6 +3818,30 @@ const (
 func (e HealthStatus) Valid() bool {
 	switch e {
 	case Ok:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpArticleBulkChangeAction.
+const (
+	HelpArticleBulkChangeActionDelete    HelpArticleBulkChangeAction = "delete"
+	HelpArticleBulkChangeActionMove      HelpArticleBulkChangeAction = "move"
+	HelpArticleBulkChangeActionPublish   HelpArticleBulkChangeAction = "publish"
+	HelpArticleBulkChangeActionUnpublish HelpArticleBulkChangeAction = "unpublish"
+)
+
+// Valid indicates whether the value is a known member of the HelpArticleBulkChangeAction enum.
+func (e HelpArticleBulkChangeAction) Valid() bool {
+	switch e {
+	case HelpArticleBulkChangeActionDelete:
+		return true
+	case HelpArticleBulkChangeActionMove:
+		return true
+	case HelpArticleBulkChangeActionPublish:
+		return true
+	case HelpArticleBulkChangeActionUnpublish:
 		return true
 	default:
 		return false
@@ -7226,6 +7337,24 @@ func (e StatusStateSource) Valid() bool {
 	case StatusSourceMember:
 		return true
 	case StatusSourceMonitor:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SubscriptionBulkChangeAction.
+const (
+	SubscriptionBulkChangeActionDelete      SubscriptionBulkChangeAction = "delete"
+	SubscriptionBulkChangeActionUnsubscribe SubscriptionBulkChangeAction = "unsubscribe"
+)
+
+// Valid indicates whether the value is a known member of the SubscriptionBulkChangeAction enum.
+func (e SubscriptionBulkChangeAction) Valid() bool {
+	switch e {
+	case SubscriptionBulkChangeActionDelete:
+		return true
+	case SubscriptionBulkChangeActionUnsubscribe:
 		return true
 	default:
 		return false
@@ -10904,6 +11033,17 @@ type BroadcastAudienceInput struct {
 	Locales *[]LanguageTag `json:"locales,omitempty"`
 }
 
+// BroadcastBulkChange defines model for BroadcastBulkChange.
+type BroadcastBulkChange struct {
+	Action BroadcastBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// BroadcastBulkChangeAction defines model for BroadcastBulkChange.Action.
+type BroadcastBulkChangeAction string
+
 // BroadcastCampaignVisits defines model for BroadcastCampaignVisits.
 type BroadcastCampaignVisits struct {
 	Pageviews    int64     `json:"pageviews"`
@@ -11345,6 +11485,33 @@ type BroadcastsMode string
 // or 0.3% of its broadcast mail in the last 30 days was reported as spam).
 type BroadcastsStatus string
 
+// BulkFailure defines model for BulkFailure.
+type BulkFailure struct {
+	Code   string  `json:"code"`
+	Detail *string `json:"detail,omitempty"`
+
+	// Field The request field the refusal is about, when it is about one.
+	Field *string   `json:"field,omitempty"`
+	Id    uuid.UUID `json:"id"`
+
+	// Status The HTTP status the single change would have answered.
+	Status int32 `json:"status"`
+
+	// UsedBy `image_in_use`: what uses the image, as the single delete names it.
+	UsedBy *EmailImageUsage `json:"used_by,omitempty"`
+}
+
+// BulkIds Up to 100 ids; duplicates count once.
+type BulkIds = []uuid.UUID
+
+// BulkResult defines model for BulkResult.
+type BulkResult struct {
+	Failed []BulkFailure `json:"failed"`
+
+	// Succeeded The ids that changed, in request order.
+	Succeeded []uuid.UUID `json:"succeeded"`
+}
+
 // BusinessHours When `enabled` is false the inbox counts as always open.
 type BusinessHours struct {
 	Enabled   bool                    `json:"enabled"`
@@ -11579,6 +11746,17 @@ type ChangelogEntry struct {
 	Translations []ChangelogEntryTranslation `json:"translations"`
 	UpdatedAt    time.Time                   `json:"updated_at"`
 }
+
+// ChangelogEntryBulkChange defines model for ChangelogEntryBulkChange.
+type ChangelogEntryBulkChange struct {
+	Action ChangelogEntryBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// ChangelogEntryBulkChangeAction defines model for ChangelogEntryBulkChange.Action.
+type ChangelogEntryBulkChangeAction string
 
 // ChangelogEntryCreate defines model for ChangelogEntryCreate.
 type ChangelogEntryCreate struct {
@@ -14705,6 +14883,17 @@ type DiscussionAuthor struct {
 // `anonymous`: no author to show (threads moved over from published answers).
 type DiscussionAuthorKind string
 
+// DiscussionBulkChange defines model for DiscussionBulkChange.
+type DiscussionBulkChange struct {
+	Action DiscussionBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// DiscussionBulkChangeAction defines model for DiscussionBulkChange.Action.
+type DiscussionBulkChangeAction string
+
 // DiscussionCreate defines model for DiscussionCreate.
 type DiscussionCreate struct {
 	// BoardId `idea`: the roadmap board the idea is filed on, which names the channel.
@@ -15377,6 +15566,17 @@ type EmailDesign struct {
 	Warnings []EmailDesignIssue `json:"warnings"`
 }
 
+// EmailDesignBulkChange defines model for EmailDesignBulkChange.
+type EmailDesignBulkChange struct {
+	Action EmailDesignBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// EmailDesignBulkChangeAction defines model for EmailDesignBulkChange.Action.
+type EmailDesignBulkChangeAction string
+
 // EmailDesignCreate At most one of `document` and `template`; with neither the design starts empty.
 type EmailDesignCreate struct {
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
@@ -15781,6 +15981,17 @@ type EmailImageBlock struct {
 
 // EmailImageBlockType defines model for EmailImageBlock.Type.
 type EmailImageBlockType string
+
+// EmailImageBulkChange defines model for EmailImageBulkChange.
+type EmailImageBulkChange struct {
+	Action EmailImageBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// EmailImageBulkChangeAction defines model for EmailImageBulkChange.Action.
+type EmailImageBulkChangeAction string
 
 // EmailImagePage defines model for EmailImagePage.
 type EmailImagePage struct {
@@ -16470,6 +16681,25 @@ type HelpArticle struct {
 	Translations []HelpArticleTranslation `json:"translations"`
 	UpdatedAt    time.Time                `json:"updated_at"`
 }
+
+// HelpArticleBulkChange defines model for HelpArticleBulkChange.
+type HelpArticleBulkChange struct {
+	Action HelpArticleBulkChangeAction `json:"action"`
+
+	// CollectionId `move` only, and required there: the collection, `null` for none.
+	CollectionId nullable.Nullable[uuid.UUID] `json:"collection_id,omitempty"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+
+	// Locale `publish` and `unpublish`: the translation; the center's default locale when absent.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+}
+
+// HelpArticleBulkChangeAction defines model for HelpArticleBulkChange.Action.
+type HelpArticleBulkChangeAction string
 
 // HelpArticleCreate defines model for HelpArticleCreate.
 type HelpArticleCreate struct {
@@ -23934,6 +24164,17 @@ type Subscription struct {
 	UpdatedAt         time.Time          `json:"updated_at"`
 }
 
+// SubscriptionBulkChange defines model for SubscriptionBulkChange.
+type SubscriptionBulkChange struct {
+	Action SubscriptionBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// SubscriptionBulkChangeAction defines model for SubscriptionBulkChange.Action.
+type SubscriptionBulkChangeAction string
+
 // SubscriptionConsent How the person agreed, as the caller declares it; stored as proof.
 type SubscriptionConsent struct {
 	// Confirmed `true`: the person already agreed. `false`: mail them a confirmation first.
@@ -25958,6 +26199,15 @@ type CreateBroadcastParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// BulkChangeBroadcastsParams defines parameters for BulkChangeBroadcasts.
+type BulkChangeBroadcastsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // DeleteBroadcastParams defines parameters for DeleteBroadcast.
 type DeleteBroadcastParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -26151,6 +26401,15 @@ type ListChangelogEntriesParamsState string
 
 // CreateChangelogEntryParams defines parameters for CreateChangelogEntry.
 type CreateChangelogEntryParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// BulkChangeChangelogEntriesParams defines parameters for BulkChangeChangelogEntries.
+type BulkChangeChangelogEntriesParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -26978,6 +27237,15 @@ type CreateDiscussionParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// BulkChangeDiscussionsParams defines parameters for BulkChangeDiscussions.
+type BulkChangeDiscussionsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetDiscussionParams defines parameters for GetDiscussion.
 type GetDiscussionParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -27203,6 +27471,15 @@ type CreateEmailDesignParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// BulkChangeEmailDesignsParams defines parameters for BulkChangeEmailDesigns.
+type BulkChangeEmailDesignsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // RenderEmailDesignParams defines parameters for RenderEmailDesign.
 type RenderEmailDesignParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -27271,6 +27548,15 @@ type ListEmailImagesParams struct {
 
 // UploadEmailImageParams defines parameters for UploadEmailImage.
 type UploadEmailImageParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// BulkChangeEmailImagesParams defines parameters for BulkChangeEmailImages.
+type BulkChangeEmailImagesParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -27386,6 +27672,15 @@ type ListHelpArticlesParamsState string
 
 // CreateHelpArticleParams defines parameters for CreateHelpArticle.
 type CreateHelpArticleParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// BulkChangeHelpArticlesParams defines parameters for BulkChangeHelpArticles.
+type BulkChangeHelpArticlesParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -27938,6 +28233,15 @@ type ListSubscriptionsParams struct {
 
 // CreateSubscriptionParams defines parameters for CreateSubscription.
 type CreateSubscriptionParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// BulkChangeSubscriptionsParams defines parameters for BulkChangeSubscriptions.
+type BulkChangeSubscriptionsParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -30011,6 +30315,9 @@ type UpdateAutomationRuleJSONRequestBody = AutomationRuleUpdate
 // CreateBroadcastJSONRequestBody defines body for CreateBroadcast for application/json ContentType.
 type CreateBroadcastJSONRequestBody = BroadcastCreate
 
+// BulkChangeBroadcastsJSONRequestBody defines body for BulkChangeBroadcasts for application/json ContentType.
+type BulkChangeBroadcastsJSONRequestBody = BroadcastBulkChange
+
 // UpdateBroadcastJSONRequestBody defines body for UpdateBroadcast for application/json ContentType.
 type UpdateBroadcastJSONRequestBody = BroadcastUpdate
 
@@ -30034,6 +30341,9 @@ type UpdateChangelogJSONRequestBody = ChangelogUpdate
 
 // CreateChangelogEntryJSONRequestBody defines body for CreateChangelogEntry for application/json ContentType.
 type CreateChangelogEntryJSONRequestBody = ChangelogEntryCreate
+
+// BulkChangeChangelogEntriesJSONRequestBody defines body for BulkChangeChangelogEntries for application/json ContentType.
+type BulkChangeChangelogEntriesJSONRequestBody = ChangelogEntryBulkChange
 
 // UpdateChangelogEntryJSONRequestBody defines body for UpdateChangelogEntry for application/json ContentType.
 type UpdateChangelogEntryJSONRequestBody = ChangelogEntryUpdate
@@ -30128,6 +30438,9 @@ type UpdateDiscussionPostJSONRequestBody = DiscussionPostUpdate
 // CreateDiscussionJSONRequestBody defines body for CreateDiscussion for application/json ContentType.
 type CreateDiscussionJSONRequestBody = DiscussionCreate
 
+// BulkChangeDiscussionsJSONRequestBody defines body for BulkChangeDiscussions for application/json ContentType.
+type BulkChangeDiscussionsJSONRequestBody = DiscussionBulkChange
+
 // UpdateDiscussionJSONRequestBody defines body for UpdateDiscussion for application/json ContentType.
 type UpdateDiscussionJSONRequestBody = DiscussionUpdate
 
@@ -30149,6 +30462,9 @@ type MoveIdeaStageJSONRequestBody = RoadmapStageMove
 // CreateEmailDesignJSONRequestBody defines body for CreateEmailDesign for application/json ContentType.
 type CreateEmailDesignJSONRequestBody = EmailDesignCreate
 
+// BulkChangeEmailDesignsJSONRequestBody defines body for BulkChangeEmailDesigns for application/json ContentType.
+type BulkChangeEmailDesignsJSONRequestBody = EmailDesignBulkChange
+
 // RenderEmailDesignJSONRequestBody defines body for RenderEmailDesign for application/json ContentType.
 type RenderEmailDesignJSONRequestBody = EmailDesignRenderRequest
 
@@ -30164,6 +30480,9 @@ type RestoreEmailDesignVersionJSONRequestBody = EmailDesignRestore
 // UploadEmailImageMultipartRequestBody defines body for UploadEmailImage for multipart/form-data ContentType.
 type UploadEmailImageMultipartRequestBody = EmailImageUpload
 
+// BulkChangeEmailImagesJSONRequestBody defines body for BulkChangeEmailImages for application/json ContentType.
+type BulkChangeEmailImagesJSONRequestBody = EmailImageBulkChange
+
 // CreateFeedbackJSONRequestBody defines body for CreateFeedback for application/json ContentType.
 type CreateFeedbackJSONRequestBody = FeedbackCreate
 
@@ -30175,6 +30494,9 @@ type UpdateHelpCenterJSONRequestBody = HelpCenterUpdate
 
 // CreateHelpArticleJSONRequestBody defines body for CreateHelpArticle for application/json ContentType.
 type CreateHelpArticleJSONRequestBody = HelpArticleCreate
+
+// BulkChangeHelpArticlesJSONRequestBody defines body for BulkChangeHelpArticles for application/json ContentType.
+type BulkChangeHelpArticlesJSONRequestBody = HelpArticleBulkChange
 
 // UpdateHelpArticleJSONRequestBody defines body for UpdateHelpArticle for application/json ContentType.
 type UpdateHelpArticleJSONRequestBody = HelpArticleUpdate
@@ -30250,6 +30572,9 @@ type UpdateListImportJSONRequestBody = ListImportMappingUpdate
 
 // CreateSubscriptionJSONRequestBody defines body for CreateSubscription for application/json ContentType.
 type CreateSubscriptionJSONRequestBody = SubscriptionCreate
+
+// BulkChangeSubscriptionsJSONRequestBody defines body for BulkChangeSubscriptions for application/json ContentType.
+type BulkChangeSubscriptionsJSONRequestBody = SubscriptionBulkChange
 
 // UpdateSubscriptionJSONRequestBody defines body for UpdateSubscription for application/json ContentType.
 type UpdateSubscriptionJSONRequestBody = SubscriptionUpdate
@@ -35044,6 +35369,9 @@ type ServerInterface interface {
 	// CreateBroadcast Create a draft broadcast
 	// (POST /v1/broadcasts)
 	CreateBroadcast(w http.ResponseWriter, r *http.Request, params CreateBroadcastParams)
+	// BulkChangeBroadcasts Change several broadcasts at once
+	// (POST /v1/broadcasts/bulk)
+	BulkChangeBroadcasts(w http.ResponseWriter, r *http.Request, params BulkChangeBroadcastsParams)
 	// DeleteBroadcast Delete a broadcast
 	// (DELETE /v1/broadcasts/{broadcastId})
 	DeleteBroadcast(w http.ResponseWriter, r *http.Request, broadcastId BroadcastId, params DeleteBroadcastParams)
@@ -35116,6 +35444,9 @@ type ServerInterface interface {
 	// CreateChangelogEntry Write an entry
 	// (POST /v1/changelogs/{changelogId}/entries)
 	CreateChangelogEntry(w http.ResponseWriter, r *http.Request, changelogId ChangelogId, params CreateChangelogEntryParams)
+	// BulkChangeChangelogEntries Change several entries at once
+	// (POST /v1/changelogs/{changelogId}/entries/bulk)
+	BulkChangeChangelogEntries(w http.ResponseWriter, r *http.Request, changelogId ChangelogId, params BulkChangeChangelogEntriesParams)
 	// DeleteChangelogEntry Delete an entry
 	// (DELETE /v1/changelogs/{changelogId}/entries/{entryId})
 	DeleteChangelogEntry(w http.ResponseWriter, r *http.Request, changelogId ChangelogId, entryId ChangelogEntryId, params DeleteChangelogEntryParams)
@@ -35359,6 +35690,9 @@ type ServerInterface interface {
 	// CreateDiscussion Start a thread as a member
 	// (POST /v1/discussions)
 	CreateDiscussion(w http.ResponseWriter, r *http.Request, params CreateDiscussionParams)
+	// BulkChangeDiscussions Moderate several threads at once
+	// (POST /v1/discussions/bulk)
+	BulkChangeDiscussions(w http.ResponseWriter, r *http.Request, params BulkChangeDiscussionsParams)
 	// GetDiscussion A thread with every post
 	// (GET /v1/discussions/{discussionId})
 	GetDiscussion(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, params GetDiscussionParams)
@@ -35422,6 +35756,9 @@ type ServerInterface interface {
 	// CreateEmailDesign Create an e-mail design
 	// (POST /v1/email-designs)
 	CreateEmailDesign(w http.ResponseWriter, r *http.Request, params CreateEmailDesignParams)
+	// BulkChangeEmailDesigns Change several e-mail designs at once
+	// (POST /v1/email-designs/bulk)
+	BulkChangeEmailDesigns(w http.ResponseWriter, r *http.Request, params BulkChangeEmailDesignsParams)
 	// RenderEmailDesign Render a design
 	// (POST /v1/email-designs/render)
 	RenderEmailDesign(w http.ResponseWriter, r *http.Request, params RenderEmailDesignParams)
@@ -35452,6 +35789,9 @@ type ServerInterface interface {
 	// UploadEmailImage Upload an e-mail image
 	// (POST /v1/email-images)
 	UploadEmailImage(w http.ResponseWriter, r *http.Request, params UploadEmailImageParams)
+	// BulkChangeEmailImages Change several e-mail images at once
+	// (POST /v1/email-images/bulk)
+	BulkChangeEmailImages(w http.ResponseWriter, r *http.Request, params BulkChangeEmailImagesParams)
 	// DeleteEmailImage Delete an e-mail image
 	// (DELETE /v1/email-images/{imageId})
 	DeleteEmailImage(w http.ResponseWriter, r *http.Request, imageId ImageId, params DeleteEmailImageParams)
@@ -35491,6 +35831,9 @@ type ServerInterface interface {
 	// CreateHelpArticle Create an article
 	// (POST /v1/help-centers/{centerId}/articles)
 	CreateHelpArticle(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params CreateHelpArticleParams)
+	// BulkChangeHelpArticles Change several articles at once
+	// (POST /v1/help-centers/{centerId}/articles/bulk)
+	BulkChangeHelpArticles(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params BulkChangeHelpArticlesParams)
 	// DeleteHelpArticle Delete an article
 	// (DELETE /v1/help-centers/{centerId}/articles/{articleId})
 	DeleteHelpArticle(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, articleId HelpArticleId, params DeleteHelpArticleParams)
@@ -35704,6 +36047,9 @@ type ServerInterface interface {
 	// CreateSubscription Add a subscriber
 	// (POST /v1/lists/{listId}/subscriptions)
 	CreateSubscription(w http.ResponseWriter, r *http.Request, listId ListId, params CreateSubscriptionParams)
+	// BulkChangeSubscriptions Change several subscriptions at once
+	// (POST /v1/lists/{listId}/subscriptions/bulk)
+	BulkChangeSubscriptions(w http.ResponseWriter, r *http.Request, listId ListId, params BulkChangeSubscriptionsParams)
 	// DeleteSubscription Delete a subscription
 	// (DELETE /v1/lists/{listId}/subscriptions/{subscriptionId})
 	DeleteSubscription(w http.ResponseWriter, r *http.Request, listId ListId, subscriptionId SubscriptionId, params DeleteSubscriptionParams)
@@ -41995,6 +42341,66 @@ func (siw *ServerInterfaceWrapper) CreateBroadcast(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
+// BulkChangeBroadcasts operation middleware
+func (siw *ServerInterfaceWrapper) BulkChangeBroadcasts(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BulkChangeBroadcastsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.BulkChangeBroadcasts(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // DeleteBroadcast operation middleware
 func (siw *ServerInterfaceWrapper) DeleteBroadcast(w http.ResponseWriter, r *http.Request) {
 
@@ -43483,6 +43889,75 @@ func (siw *ServerInterfaceWrapper) CreateChangelogEntry(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateChangelogEntry(w, r, changelogId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// BulkChangeChangelogEntries operation middleware
+func (siw *ServerInterfaceWrapper) BulkChangeChangelogEntries(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "changelogId" -------------
+	var changelogId ChangelogId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "changelogId", r.PathValue("changelogId"), &changelogId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "changelogId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BulkChangeChangelogEntriesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.BulkChangeChangelogEntries(w, r, changelogId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -49033,6 +49508,66 @@ func (siw *ServerInterfaceWrapper) CreateDiscussion(w http.ResponseWriter, r *ht
 	handler.ServeHTTP(w, r)
 }
 
+// BulkChangeDiscussions operation middleware
+func (siw *ServerInterfaceWrapper) BulkChangeDiscussions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BulkChangeDiscussionsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.BulkChangeDiscussions(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetDiscussion operation middleware
 func (siw *ServerInterfaceWrapper) GetDiscussion(w http.ResponseWriter, r *http.Request) {
 
@@ -50554,6 +51089,66 @@ func (siw *ServerInterfaceWrapper) CreateEmailDesign(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
+// BulkChangeEmailDesigns operation middleware
+func (siw *ServerInterfaceWrapper) BulkChangeEmailDesigns(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BulkChangeEmailDesignsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.BulkChangeEmailDesigns(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // RenderEmailDesign operation middleware
 func (siw *ServerInterfaceWrapper) RenderEmailDesign(w http.ResponseWriter, r *http.Request) {
 
@@ -51119,6 +51714,66 @@ func (siw *ServerInterfaceWrapper) UploadEmailImage(w http.ResponseWriter, r *ht
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UploadEmailImage(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// BulkChangeEmailImages operation middleware
+func (siw *ServerInterfaceWrapper) BulkChangeEmailImages(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BulkChangeEmailImagesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.BulkChangeEmailImages(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -51909,6 +52564,75 @@ func (siw *ServerInterfaceWrapper) CreateHelpArticle(w http.ResponseWriter, r *h
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateHelpArticle(w, r, centerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// BulkChangeHelpArticles operation middleware
+func (siw *ServerInterfaceWrapper) BulkChangeHelpArticles(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "centerId" -------------
+	var centerId HelpCenterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "centerId", r.PathValue("centerId"), &centerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "centerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BulkChangeHelpArticlesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.BulkChangeHelpArticles(w, r, centerId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -56314,6 +57038,75 @@ func (siw *ServerInterfaceWrapper) CreateSubscription(w http.ResponseWriter, r *
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateSubscription(w, r, listId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// BulkChangeSubscriptions operation middleware
+func (siw *ServerInterfaceWrapper) BulkChangeSubscriptions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "listId" -------------
+	var listId ListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "listId", r.PathValue("listId"), &listId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "listId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BulkChangeSubscriptionsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.BulkChangeSubscriptions(w, r, listId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -66749,6 +67542,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/docs/page", wrapper.GetDocsPage)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/discussions", wrapper.ListDiscussions)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/discussions", wrapper.CreateDiscussion)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/discussions/bulk", wrapper.BulkChangeDiscussions)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/discussions/{discussionId}", wrapper.GetDiscussion)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/discussions/{discussionId}", wrapper.UpdateDiscussion)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/discussions/{discussionId}/posts", wrapper.CreateDiscussionPost)
@@ -66783,6 +67577,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/lists/{listId}/growth", wrapper.GetMailingListGrowth)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/lists/{listId}/subscriptions", wrapper.ListSubscriptions)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/lists/{listId}/subscriptions", wrapper.CreateSubscription)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/lists/{listId}/subscriptions/bulk", wrapper.BulkChangeSubscriptions)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/lists/{listId}/subscriptions/{subscriptionId}", wrapper.DeleteSubscription)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/lists/{listId}/subscriptions/{subscriptionId}", wrapper.GetSubscription)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/lists/{listId}/subscriptions/{subscriptionId}", wrapper.UpdateSubscription)
@@ -66800,6 +67595,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/email-designs", wrapper.ListEmailDesigns)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/email-designs", wrapper.CreateEmailDesign)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/email-designs/render", wrapper.RenderEmailDesign)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/email-designs/bulk", wrapper.BulkChangeEmailDesigns)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/email-designs/{designId}", wrapper.ArchiveEmailDesign)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/email-designs/{designId}", wrapper.GetEmailDesign)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/email-designs/{designId}", wrapper.UpdateEmailDesign)
@@ -66809,9 +67605,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/email-designs/{designId}/versions/{version}/restore", wrapper.RestoreEmailDesignVersion)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/email-images", wrapper.ListEmailImages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/email-images", wrapper.UploadEmailImage)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/email-images/bulk", wrapper.BulkChangeEmailImages)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/email-images/{imageId}", wrapper.DeleteEmailImage)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/broadcasts", wrapper.ListBroadcasts)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/broadcasts", wrapper.CreateBroadcast)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/broadcasts/bulk", wrapper.BulkChangeBroadcasts)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/broadcasts/{broadcastId}", wrapper.DeleteBroadcast)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/broadcasts/{broadcastId}", wrapper.GetBroadcast)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/broadcasts/{broadcastId}", wrapper.UpdateBroadcast)
@@ -66968,6 +67766,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/changelogs/{changelogId}/preview", wrapper.PreviewChangelog)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/changelogs/{changelogId}/entries", wrapper.ListChangelogEntries)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/changelogs/{changelogId}/entries", wrapper.CreateChangelogEntry)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/changelogs/{changelogId}/entries/bulk", wrapper.BulkChangeChangelogEntries)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/changelogs/{changelogId}/entries/{entryId}", wrapper.DeleteChangelogEntry)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/changelogs/{changelogId}/entries/{entryId}", wrapper.GetChangelogEntry)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/changelogs/{changelogId}/entries/{entryId}", wrapper.UpdateChangelogEntry)
@@ -66991,6 +67790,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/help-centers/{centerId}/collections/{collectionId}", wrapper.UpdateHelpCollection)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/help-centers/{centerId}/articles", wrapper.ListHelpArticles)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/help-centers/{centerId}/articles", wrapper.CreateHelpArticle)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/help-centers/{centerId}/articles/bulk", wrapper.BulkChangeHelpArticles)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/help-centers/{centerId}/articles/{articleId}", wrapper.DeleteHelpArticle)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/help-centers/{centerId}/articles/{articleId}", wrapper.GetHelpArticle)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/help-centers/{centerId}/articles/{articleId}", wrapper.UpdateHelpArticle)
@@ -80832,6 +81632,73 @@ func (response CreateBroadcast409ApplicationProblemPlusJSONResponse) VisitCreate
 	return err
 }
 
+type BulkChangeBroadcastsRequestObject struct {
+	Params BulkChangeBroadcastsParams
+	Body   *BulkChangeBroadcastsJSONRequestBody
+}
+
+type BulkChangeBroadcastsResponseObject interface {
+	VisitBulkChangeBroadcastsResponse(w http.ResponseWriter) error
+}
+
+type BulkChangeBroadcasts200JSONResponse BulkResult
+
+func (response BulkChangeBroadcasts200JSONResponse) VisitBulkChangeBroadcastsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeBroadcasts400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response BulkChangeBroadcasts400ApplicationProblemPlusJSONResponse) VisitBulkChangeBroadcastsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeBroadcasts401ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeBroadcasts401ApplicationProblemPlusJSONResponse) VisitBulkChangeBroadcastsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeBroadcasts403ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeBroadcasts403ApplicationProblemPlusJSONResponse) VisitBulkChangeBroadcastsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type DeleteBroadcastRequestObject struct {
 	BroadcastId BroadcastId `json:"broadcastId"`
 	Params      DeleteBroadcastParams
@@ -82746,6 +83613,88 @@ func (response CreateChangelogEntry422ApplicationProblemPlusJSONResponse) VisitC
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeChangelogEntriesRequestObject struct {
+	ChangelogId ChangelogId `json:"changelogId"`
+	Params      BulkChangeChangelogEntriesParams
+	Body        *BulkChangeChangelogEntriesJSONRequestBody
+}
+
+type BulkChangeChangelogEntriesResponseObject interface {
+	VisitBulkChangeChangelogEntriesResponse(w http.ResponseWriter) error
+}
+
+type BulkChangeChangelogEntries200JSONResponse BulkResult
+
+func (response BulkChangeChangelogEntries200JSONResponse) VisitBulkChangeChangelogEntriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeChangelogEntries400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response BulkChangeChangelogEntries400ApplicationProblemPlusJSONResponse) VisitBulkChangeChangelogEntriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeChangelogEntries401ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeChangelogEntries401ApplicationProblemPlusJSONResponse) VisitBulkChangeChangelogEntriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeChangelogEntries403ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeChangelogEntries403ApplicationProblemPlusJSONResponse) VisitBulkChangeChangelogEntriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeChangelogEntries404ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeChangelogEntries404ApplicationProblemPlusJSONResponse) VisitBulkChangeChangelogEntriesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -89421,6 +90370,73 @@ func (response CreateDiscussion422ApplicationProblemPlusJSONResponse) VisitCreat
 	return err
 }
 
+type BulkChangeDiscussionsRequestObject struct {
+	Params BulkChangeDiscussionsParams
+	Body   *BulkChangeDiscussionsJSONRequestBody
+}
+
+type BulkChangeDiscussionsResponseObject interface {
+	VisitBulkChangeDiscussionsResponse(w http.ResponseWriter) error
+}
+
+type BulkChangeDiscussions200JSONResponse BulkResult
+
+func (response BulkChangeDiscussions200JSONResponse) VisitBulkChangeDiscussionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeDiscussions400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response BulkChangeDiscussions400ApplicationProblemPlusJSONResponse) VisitBulkChangeDiscussionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeDiscussions401ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeDiscussions401ApplicationProblemPlusJSONResponse) VisitBulkChangeDiscussionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeDiscussions403ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeDiscussions403ApplicationProblemPlusJSONResponse) VisitBulkChangeDiscussionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetDiscussionRequestObject struct {
 	DiscussionId DiscussionId `json:"discussionId"`
 	Params       GetDiscussionParams
@@ -91194,6 +92210,73 @@ func (response CreateEmailDesign422ApplicationProblemPlusJSONResponse) VisitCrea
 	return err
 }
 
+type BulkChangeEmailDesignsRequestObject struct {
+	Params BulkChangeEmailDesignsParams
+	Body   *BulkChangeEmailDesignsJSONRequestBody
+}
+
+type BulkChangeEmailDesignsResponseObject interface {
+	VisitBulkChangeEmailDesignsResponse(w http.ResponseWriter) error
+}
+
+type BulkChangeEmailDesigns200JSONResponse BulkResult
+
+func (response BulkChangeEmailDesigns200JSONResponse) VisitBulkChangeEmailDesignsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeEmailDesigns400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response BulkChangeEmailDesigns400ApplicationProblemPlusJSONResponse) VisitBulkChangeEmailDesignsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeEmailDesigns401ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeEmailDesigns401ApplicationProblemPlusJSONResponse) VisitBulkChangeEmailDesignsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeEmailDesigns403ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeEmailDesigns403ApplicationProblemPlusJSONResponse) VisitBulkChangeEmailDesignsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type RenderEmailDesignRequestObject struct {
 	Params RenderEmailDesignParams
 	Body   *RenderEmailDesignJSONRequestBody
@@ -92130,6 +93213,73 @@ func (response UploadEmailImage429ApplicationProblemPlusJSONResponse) VisitUploa
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeEmailImagesRequestObject struct {
+	Params BulkChangeEmailImagesParams
+	Body   *BulkChangeEmailImagesJSONRequestBody
+}
+
+type BulkChangeEmailImagesResponseObject interface {
+	VisitBulkChangeEmailImagesResponse(w http.ResponseWriter) error
+}
+
+type BulkChangeEmailImages200JSONResponse BulkResult
+
+func (response BulkChangeEmailImages200JSONResponse) VisitBulkChangeEmailImagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeEmailImages400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response BulkChangeEmailImages400ApplicationProblemPlusJSONResponse) VisitBulkChangeEmailImagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeEmailImages401ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeEmailImages401ApplicationProblemPlusJSONResponse) VisitBulkChangeEmailImagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeEmailImages403ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeEmailImages403ApplicationProblemPlusJSONResponse) VisitBulkChangeEmailImagesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -93183,6 +94333,88 @@ func (response CreateHelpArticle422ApplicationProblemPlusJSONResponse) VisitCrea
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeHelpArticlesRequestObject struct {
+	CenterId HelpCenterId `json:"centerId"`
+	Params   BulkChangeHelpArticlesParams
+	Body     *BulkChangeHelpArticlesJSONRequestBody
+}
+
+type BulkChangeHelpArticlesResponseObject interface {
+	VisitBulkChangeHelpArticlesResponse(w http.ResponseWriter) error
+}
+
+type BulkChangeHelpArticles200JSONResponse BulkResult
+
+func (response BulkChangeHelpArticles200JSONResponse) VisitBulkChangeHelpArticlesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeHelpArticles400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response BulkChangeHelpArticles400ApplicationProblemPlusJSONResponse) VisitBulkChangeHelpArticlesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeHelpArticles401ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeHelpArticles401ApplicationProblemPlusJSONResponse) VisitBulkChangeHelpArticlesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeHelpArticles403ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeHelpArticles403ApplicationProblemPlusJSONResponse) VisitBulkChangeHelpArticlesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeHelpArticles404ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeHelpArticles404ApplicationProblemPlusJSONResponse) VisitBulkChangeHelpArticlesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -99045,6 +100277,88 @@ func (response CreateSubscription429ApplicationProblemPlusJSONResponse) VisitCre
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeSubscriptionsRequestObject struct {
+	ListId ListId `json:"listId"`
+	Params BulkChangeSubscriptionsParams
+	Body   *BulkChangeSubscriptionsJSONRequestBody
+}
+
+type BulkChangeSubscriptionsResponseObject interface {
+	VisitBulkChangeSubscriptionsResponse(w http.ResponseWriter) error
+}
+
+type BulkChangeSubscriptions200JSONResponse BulkResult
+
+func (response BulkChangeSubscriptions200JSONResponse) VisitBulkChangeSubscriptionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeSubscriptions400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response BulkChangeSubscriptions400ApplicationProblemPlusJSONResponse) VisitBulkChangeSubscriptionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeSubscriptions401ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeSubscriptions401ApplicationProblemPlusJSONResponse) VisitBulkChangeSubscriptionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeSubscriptions403ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeSubscriptions403ApplicationProblemPlusJSONResponse) VisitBulkChangeSubscriptionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type BulkChangeSubscriptions404ApplicationProblemPlusJSONResponse Problem
+
+func (response BulkChangeSubscriptions404ApplicationProblemPlusJSONResponse) VisitBulkChangeSubscriptionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -113333,6 +114647,9 @@ type StrictServerInterface interface {
 	// CreateBroadcast Create a draft broadcast
 	// (POST /v1/broadcasts)
 	CreateBroadcast(ctx context.Context, request CreateBroadcastRequestObject) (CreateBroadcastResponseObject, error)
+	// BulkChangeBroadcasts Change several broadcasts at once
+	// (POST /v1/broadcasts/bulk)
+	BulkChangeBroadcasts(ctx context.Context, request BulkChangeBroadcastsRequestObject) (BulkChangeBroadcastsResponseObject, error)
 	// DeleteBroadcast Delete a broadcast
 	// (DELETE /v1/broadcasts/{broadcastId})
 	DeleteBroadcast(ctx context.Context, request DeleteBroadcastRequestObject) (DeleteBroadcastResponseObject, error)
@@ -113405,6 +114722,9 @@ type StrictServerInterface interface {
 	// CreateChangelogEntry Write an entry
 	// (POST /v1/changelogs/{changelogId}/entries)
 	CreateChangelogEntry(ctx context.Context, request CreateChangelogEntryRequestObject) (CreateChangelogEntryResponseObject, error)
+	// BulkChangeChangelogEntries Change several entries at once
+	// (POST /v1/changelogs/{changelogId}/entries/bulk)
+	BulkChangeChangelogEntries(ctx context.Context, request BulkChangeChangelogEntriesRequestObject) (BulkChangeChangelogEntriesResponseObject, error)
 	// DeleteChangelogEntry Delete an entry
 	// (DELETE /v1/changelogs/{changelogId}/entries/{entryId})
 	DeleteChangelogEntry(ctx context.Context, request DeleteChangelogEntryRequestObject) (DeleteChangelogEntryResponseObject, error)
@@ -113648,6 +114968,9 @@ type StrictServerInterface interface {
 	// CreateDiscussion Start a thread as a member
 	// (POST /v1/discussions)
 	CreateDiscussion(ctx context.Context, request CreateDiscussionRequestObject) (CreateDiscussionResponseObject, error)
+	// BulkChangeDiscussions Moderate several threads at once
+	// (POST /v1/discussions/bulk)
+	BulkChangeDiscussions(ctx context.Context, request BulkChangeDiscussionsRequestObject) (BulkChangeDiscussionsResponseObject, error)
 	// GetDiscussion A thread with every post
 	// (GET /v1/discussions/{discussionId})
 	GetDiscussion(ctx context.Context, request GetDiscussionRequestObject) (GetDiscussionResponseObject, error)
@@ -113711,6 +115034,9 @@ type StrictServerInterface interface {
 	// CreateEmailDesign Create an e-mail design
 	// (POST /v1/email-designs)
 	CreateEmailDesign(ctx context.Context, request CreateEmailDesignRequestObject) (CreateEmailDesignResponseObject, error)
+	// BulkChangeEmailDesigns Change several e-mail designs at once
+	// (POST /v1/email-designs/bulk)
+	BulkChangeEmailDesigns(ctx context.Context, request BulkChangeEmailDesignsRequestObject) (BulkChangeEmailDesignsResponseObject, error)
 	// RenderEmailDesign Render a design
 	// (POST /v1/email-designs/render)
 	RenderEmailDesign(ctx context.Context, request RenderEmailDesignRequestObject) (RenderEmailDesignResponseObject, error)
@@ -113741,6 +115067,9 @@ type StrictServerInterface interface {
 	// UploadEmailImage Upload an e-mail image
 	// (POST /v1/email-images)
 	UploadEmailImage(ctx context.Context, request UploadEmailImageRequestObject) (UploadEmailImageResponseObject, error)
+	// BulkChangeEmailImages Change several e-mail images at once
+	// (POST /v1/email-images/bulk)
+	BulkChangeEmailImages(ctx context.Context, request BulkChangeEmailImagesRequestObject) (BulkChangeEmailImagesResponseObject, error)
 	// DeleteEmailImage Delete an e-mail image
 	// (DELETE /v1/email-images/{imageId})
 	DeleteEmailImage(ctx context.Context, request DeleteEmailImageRequestObject) (DeleteEmailImageResponseObject, error)
@@ -113780,6 +115109,9 @@ type StrictServerInterface interface {
 	// CreateHelpArticle Create an article
 	// (POST /v1/help-centers/{centerId}/articles)
 	CreateHelpArticle(ctx context.Context, request CreateHelpArticleRequestObject) (CreateHelpArticleResponseObject, error)
+	// BulkChangeHelpArticles Change several articles at once
+	// (POST /v1/help-centers/{centerId}/articles/bulk)
+	BulkChangeHelpArticles(ctx context.Context, request BulkChangeHelpArticlesRequestObject) (BulkChangeHelpArticlesResponseObject, error)
 	// DeleteHelpArticle Delete an article
 	// (DELETE /v1/help-centers/{centerId}/articles/{articleId})
 	DeleteHelpArticle(ctx context.Context, request DeleteHelpArticleRequestObject) (DeleteHelpArticleResponseObject, error)
@@ -113993,6 +115325,9 @@ type StrictServerInterface interface {
 	// CreateSubscription Add a subscriber
 	// (POST /v1/lists/{listId}/subscriptions)
 	CreateSubscription(ctx context.Context, request CreateSubscriptionRequestObject) (CreateSubscriptionResponseObject, error)
+	// BulkChangeSubscriptions Change several subscriptions at once
+	// (POST /v1/lists/{listId}/subscriptions/bulk)
+	BulkChangeSubscriptions(ctx context.Context, request BulkChangeSubscriptionsRequestObject) (BulkChangeSubscriptionsResponseObject, error)
 	// DeleteSubscription Delete a subscription
 	// (DELETE /v1/lists/{listId}/subscriptions/{subscriptionId})
 	DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequestObject) (DeleteSubscriptionResponseObject, error)
@@ -118311,6 +119646,39 @@ func (sh *strictHandler) CreateBroadcast(w http.ResponseWriter, r *http.Request,
 	}
 }
 
+// BulkChangeBroadcasts operation middleware
+func (sh *strictHandler) BulkChangeBroadcasts(w http.ResponseWriter, r *http.Request, params BulkChangeBroadcastsParams) {
+	var request BulkChangeBroadcastsRequestObject
+
+	request.Params = params
+
+	var body BulkChangeBroadcastsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.BulkChangeBroadcasts(ctx, request.(BulkChangeBroadcastsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BulkChangeBroadcasts")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(BulkChangeBroadcastsResponseObject); ok {
+		if err := validResponse.VisitBulkChangeBroadcastsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // DeleteBroadcast operation middleware
 func (sh *strictHandler) DeleteBroadcast(w http.ResponseWriter, r *http.Request, broadcastId BroadcastId, params DeleteBroadcastParams) {
 	var request DeleteBroadcastRequestObject
@@ -119010,6 +120378,40 @@ func (sh *strictHandler) CreateChangelogEntry(w http.ResponseWriter, r *http.Req
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateChangelogEntryResponseObject); ok {
 		if err := validResponse.VisitCreateChangelogEntryResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// BulkChangeChangelogEntries operation middleware
+func (sh *strictHandler) BulkChangeChangelogEntries(w http.ResponseWriter, r *http.Request, changelogId ChangelogId, params BulkChangeChangelogEntriesParams) {
+	var request BulkChangeChangelogEntriesRequestObject
+
+	request.ChangelogId = changelogId
+	request.Params = params
+
+	var body BulkChangeChangelogEntriesJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.BulkChangeChangelogEntries(ctx, request.(BulkChangeChangelogEntriesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BulkChangeChangelogEntries")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(BulkChangeChangelogEntriesResponseObject); ok {
+		if err := validResponse.VisitBulkChangeChangelogEntriesResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -121442,6 +122844,39 @@ func (sh *strictHandler) CreateDiscussion(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// BulkChangeDiscussions operation middleware
+func (sh *strictHandler) BulkChangeDiscussions(w http.ResponseWriter, r *http.Request, params BulkChangeDiscussionsParams) {
+	var request BulkChangeDiscussionsRequestObject
+
+	request.Params = params
+
+	var body BulkChangeDiscussionsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.BulkChangeDiscussions(ctx, request.(BulkChangeDiscussionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BulkChangeDiscussions")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(BulkChangeDiscussionsResponseObject); ok {
+		if err := validResponse.VisitBulkChangeDiscussionsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // GetDiscussion operation middleware
 func (sh *strictHandler) GetDiscussion(w http.ResponseWriter, r *http.Request, discussionId DiscussionId, params GetDiscussionParams) {
 	var request GetDiscussionRequestObject
@@ -122055,6 +123490,39 @@ func (sh *strictHandler) CreateEmailDesign(w http.ResponseWriter, r *http.Reques
 	}
 }
 
+// BulkChangeEmailDesigns operation middleware
+func (sh *strictHandler) BulkChangeEmailDesigns(w http.ResponseWriter, r *http.Request, params BulkChangeEmailDesignsParams) {
+	var request BulkChangeEmailDesignsRequestObject
+
+	request.Params = params
+
+	var body BulkChangeEmailDesignsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.BulkChangeEmailDesigns(ctx, request.(BulkChangeEmailDesignsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BulkChangeEmailDesigns")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(BulkChangeEmailDesignsResponseObject); ok {
+		if err := validResponse.VisitBulkChangeEmailDesignsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // RenderEmailDesign operation middleware
 func (sh *strictHandler) RenderEmailDesign(w http.ResponseWriter, r *http.Request, params RenderEmailDesignParams) {
 	var request RenderEmailDesignRequestObject
@@ -122355,6 +123823,39 @@ func (sh *strictHandler) UploadEmailImage(w http.ResponseWriter, r *http.Request
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(UploadEmailImageResponseObject); ok {
 		if err := validResponse.VisitUploadEmailImageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// BulkChangeEmailImages operation middleware
+func (sh *strictHandler) BulkChangeEmailImages(w http.ResponseWriter, r *http.Request, params BulkChangeEmailImagesParams) {
+	var request BulkChangeEmailImagesRequestObject
+
+	request.Params = params
+
+	var body BulkChangeEmailImagesJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.BulkChangeEmailImages(ctx, request.(BulkChangeEmailImagesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BulkChangeEmailImages")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(BulkChangeEmailImagesResponseObject); ok {
+		if err := validResponse.VisitBulkChangeEmailImagesResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -122728,6 +124229,40 @@ func (sh *strictHandler) CreateHelpArticle(w http.ResponseWriter, r *http.Reques
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateHelpArticleResponseObject); ok {
 		if err := validResponse.VisitCreateHelpArticleResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// BulkChangeHelpArticles operation middleware
+func (sh *strictHandler) BulkChangeHelpArticles(w http.ResponseWriter, r *http.Request, centerId HelpCenterId, params BulkChangeHelpArticlesParams) {
+	var request BulkChangeHelpArticlesRequestObject
+
+	request.CenterId = centerId
+	request.Params = params
+
+	var body BulkChangeHelpArticlesJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.BulkChangeHelpArticles(ctx, request.(BulkChangeHelpArticlesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BulkChangeHelpArticles")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(BulkChangeHelpArticlesResponseObject); ok {
+		if err := validResponse.VisitBulkChangeHelpArticlesResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -124843,6 +126378,40 @@ func (sh *strictHandler) CreateSubscription(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateSubscriptionResponseObject); ok {
 		if err := validResponse.VisitCreateSubscriptionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// BulkChangeSubscriptions operation middleware
+func (sh *strictHandler) BulkChangeSubscriptions(w http.ResponseWriter, r *http.Request, listId ListId, params BulkChangeSubscriptionsParams) {
+	var request BulkChangeSubscriptionsRequestObject
+
+	request.ListId = listId
+	request.Params = params
+
+	var body BulkChangeSubscriptionsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.BulkChangeSubscriptions(ctx, request.(BulkChangeSubscriptionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "BulkChangeSubscriptions")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(BulkChangeSubscriptionsResponseObject); ok {
+		if err := validResponse.VisitBulkChangeSubscriptionsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

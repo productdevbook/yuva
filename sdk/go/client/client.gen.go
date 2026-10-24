@@ -1794,6 +1794,21 @@ func (e Availability) Valid() bool {
 	}
 }
 
+// Defines values for BroadcastBulkChangeAction.
+const (
+	BroadcastBulkChangeActionDelete BroadcastBulkChangeAction = "delete"
+)
+
+// Valid indicates whether the value is a known member of the BroadcastBulkChangeAction enum.
+func (e BroadcastBulkChangeAction) Valid() bool {
+	switch e {
+	case BroadcastBulkChangeActionDelete:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for BroadcastConditionOp.
 const (
 	ConditionContains  BroadcastConditionOp = "contains"
@@ -2103,6 +2118,24 @@ func (e BroadcastsStatus) Valid() bool {
 	case ApprovalRequired:
 		return true
 	case Suspended:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChangelogEntryBulkChangeAction.
+const (
+	ChangelogEntryBulkChangeActionDelete  ChangelogEntryBulkChangeAction = "delete"
+	ChangelogEntryBulkChangeActionPublish ChangelogEntryBulkChangeAction = "publish"
+)
+
+// Valid indicates whether the value is a known member of the ChangelogEntryBulkChangeAction enum.
+func (e ChangelogEntryBulkChangeAction) Valid() bool {
+	switch e {
+	case ChangelogEntryBulkChangeActionDelete:
+		return true
+	case ChangelogEntryBulkChangeActionPublish:
 		return true
 	default:
 		return false
@@ -2853,6 +2886,30 @@ func (e DiscussionAuthorKind) Valid() bool {
 	}
 }
 
+// Defines values for DiscussionBulkChangeAction.
+const (
+	DiscussionBulkChangeActionDelete DiscussionBulkChangeAction = "delete"
+	DiscussionBulkChangeActionHide   DiscussionBulkChangeAction = "hide"
+	DiscussionBulkChangeActionSpam   DiscussionBulkChangeAction = "spam"
+	DiscussionBulkChangeActionUnhide DiscussionBulkChangeAction = "unhide"
+)
+
+// Valid indicates whether the value is a known member of the DiscussionBulkChangeAction enum.
+func (e DiscussionBulkChangeAction) Valid() bool {
+	switch e {
+	case DiscussionBulkChangeActionDelete:
+		return true
+	case DiscussionBulkChangeActionHide:
+		return true
+	case DiscussionBulkChangeActionSpam:
+		return true
+	case DiscussionBulkChangeActionUnhide:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for DiscussionEventType.
 const (
 	DiscussionEventTypeDiscussionAnswered    DiscussionEventType = "discussion.answered"
@@ -3153,6 +3210,21 @@ func (e EmailColumnsBlockType) Valid() bool {
 	}
 }
 
+// Defines values for EmailDesignBulkChangeAction.
+const (
+	EmailDesignBulkChangeActionDelete EmailDesignBulkChangeAction = "delete"
+)
+
+// Valid indicates whether the value is a known member of the EmailDesignBulkChangeAction enum.
+func (e EmailDesignBulkChangeAction) Valid() bool {
+	switch e {
+	case EmailDesignBulkChangeActionDelete:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for EmailDesignDocumentSchema.
 const (
 	EmailDesignSchema1 EmailDesignDocumentSchema = 1
@@ -3342,6 +3414,21 @@ const (
 func (e EmailImageBlockType) Valid() bool {
 	switch e {
 	case EmailBlockImage:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailImageBulkChangeAction.
+const (
+	EmailImageBulkChangeActionDelete EmailImageBulkChangeAction = "delete"
+)
+
+// Valid indicates whether the value is a known member of the EmailImageBulkChangeAction enum.
+func (e EmailImageBulkChangeAction) Valid() bool {
+	switch e {
+	case EmailImageBulkChangeActionDelete:
 		return true
 	default:
 		return false
@@ -3729,6 +3816,30 @@ const (
 func (e HealthStatus) Valid() bool {
 	switch e {
 	case Ok:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HelpArticleBulkChangeAction.
+const (
+	HelpArticleBulkChangeActionDelete    HelpArticleBulkChangeAction = "delete"
+	HelpArticleBulkChangeActionMove      HelpArticleBulkChangeAction = "move"
+	HelpArticleBulkChangeActionPublish   HelpArticleBulkChangeAction = "publish"
+	HelpArticleBulkChangeActionUnpublish HelpArticleBulkChangeAction = "unpublish"
+)
+
+// Valid indicates whether the value is a known member of the HelpArticleBulkChangeAction enum.
+func (e HelpArticleBulkChangeAction) Valid() bool {
+	switch e {
+	case HelpArticleBulkChangeActionDelete:
+		return true
+	case HelpArticleBulkChangeActionMove:
+		return true
+	case HelpArticleBulkChangeActionPublish:
+		return true
+	case HelpArticleBulkChangeActionUnpublish:
 		return true
 	default:
 		return false
@@ -7224,6 +7335,24 @@ func (e StatusStateSource) Valid() bool {
 	case StatusSourceMember:
 		return true
 	case StatusSourceMonitor:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SubscriptionBulkChangeAction.
+const (
+	SubscriptionBulkChangeActionDelete      SubscriptionBulkChangeAction = "delete"
+	SubscriptionBulkChangeActionUnsubscribe SubscriptionBulkChangeAction = "unsubscribe"
+)
+
+// Valid indicates whether the value is a known member of the SubscriptionBulkChangeAction enum.
+func (e SubscriptionBulkChangeAction) Valid() bool {
+	switch e {
+	case SubscriptionBulkChangeActionDelete:
+		return true
+	case SubscriptionBulkChangeActionUnsubscribe:
 		return true
 	default:
 		return false
@@ -10950,6 +11079,17 @@ type BroadcastAudienceInput struct {
 	Locales *[]LanguageTag `json:"locales,omitempty"`
 }
 
+// BroadcastBulkChange defines model for BroadcastBulkChange.
+type BroadcastBulkChange struct {
+	Action BroadcastBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// BroadcastBulkChangeAction defines model for BroadcastBulkChange.Action.
+type BroadcastBulkChangeAction string
+
 // BroadcastCampaignVisits defines model for BroadcastCampaignVisits.
 type BroadcastCampaignVisits struct {
 	Pageviews    int64     `json:"pageviews"`
@@ -11391,6 +11531,33 @@ type BroadcastsMode string
 // or 0.3% of its broadcast mail in the last 30 days was reported as spam).
 type BroadcastsStatus string
 
+// BulkFailure defines model for BulkFailure.
+type BulkFailure struct {
+	Code   string  `json:"code"`
+	Detail *string `json:"detail,omitempty"`
+
+	// Field The request field the refusal is about, when it is about one.
+	Field *string   `json:"field,omitempty"`
+	Id    uuid.UUID `json:"id"`
+
+	// Status The HTTP status the single change would have answered.
+	Status int32 `json:"status"`
+
+	// UsedBy `image_in_use`: what uses the image, as the single delete names it.
+	UsedBy *EmailImageUsage `json:"used_by,omitempty"`
+}
+
+// BulkIds Up to 100 ids; duplicates count once.
+type BulkIds = []uuid.UUID
+
+// BulkResult defines model for BulkResult.
+type BulkResult struct {
+	Failed []BulkFailure `json:"failed"`
+
+	// Succeeded The ids that changed, in request order.
+	Succeeded []uuid.UUID `json:"succeeded"`
+}
+
 // BusinessHours When `enabled` is false the inbox counts as always open.
 type BusinessHours struct {
 	Enabled   bool                    `json:"enabled"`
@@ -11625,6 +11792,17 @@ type ChangelogEntry struct {
 	Translations []ChangelogEntryTranslation `json:"translations"`
 	UpdatedAt    time.Time                   `json:"updated_at"`
 }
+
+// ChangelogEntryBulkChange defines model for ChangelogEntryBulkChange.
+type ChangelogEntryBulkChange struct {
+	Action ChangelogEntryBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// ChangelogEntryBulkChangeAction defines model for ChangelogEntryBulkChange.Action.
+type ChangelogEntryBulkChangeAction string
 
 // ChangelogEntryCreate defines model for ChangelogEntryCreate.
 type ChangelogEntryCreate struct {
@@ -14751,6 +14929,17 @@ type DiscussionAuthor struct {
 // `anonymous`: no author to show (threads moved over from published answers).
 type DiscussionAuthorKind string
 
+// DiscussionBulkChange defines model for DiscussionBulkChange.
+type DiscussionBulkChange struct {
+	Action DiscussionBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// DiscussionBulkChangeAction defines model for DiscussionBulkChange.Action.
+type DiscussionBulkChangeAction string
+
 // DiscussionCreate defines model for DiscussionCreate.
 type DiscussionCreate struct {
 	// BoardId `idea`: the roadmap board the idea is filed on, which names the channel.
@@ -15423,6 +15612,17 @@ type EmailDesign struct {
 	Warnings []EmailDesignIssue `json:"warnings"`
 }
 
+// EmailDesignBulkChange defines model for EmailDesignBulkChange.
+type EmailDesignBulkChange struct {
+	Action EmailDesignBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// EmailDesignBulkChangeAction defines model for EmailDesignBulkChange.Action.
+type EmailDesignBulkChangeAction string
+
 // EmailDesignCreate At most one of `document` and `template`; with neither the design starts empty.
 type EmailDesignCreate struct {
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
@@ -15827,6 +16027,17 @@ type EmailImageBlock struct {
 
 // EmailImageBlockType defines model for EmailImageBlock.Type.
 type EmailImageBlockType string
+
+// EmailImageBulkChange defines model for EmailImageBulkChange.
+type EmailImageBulkChange struct {
+	Action EmailImageBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// EmailImageBulkChangeAction defines model for EmailImageBulkChange.Action.
+type EmailImageBulkChangeAction string
 
 // EmailImagePage defines model for EmailImagePage.
 type EmailImagePage struct {
@@ -16516,6 +16727,25 @@ type HelpArticle struct {
 	Translations []HelpArticleTranslation `json:"translations"`
 	UpdatedAt    time.Time                `json:"updated_at"`
 }
+
+// HelpArticleBulkChange defines model for HelpArticleBulkChange.
+type HelpArticleBulkChange struct {
+	Action HelpArticleBulkChangeAction `json:"action"`
+
+	// CollectionId `move` only, and required there: the collection, `null` for none.
+	CollectionId nullable.Nullable[uuid.UUID] `json:"collection_id,omitempty"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+
+	// Locale `publish` and `unpublish`: the translation; the center's default locale when absent.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+}
+
+// HelpArticleBulkChangeAction defines model for HelpArticleBulkChange.Action.
+type HelpArticleBulkChangeAction string
 
 // HelpArticleCreate defines model for HelpArticleCreate.
 type HelpArticleCreate struct {
@@ -23980,6 +24210,17 @@ type Subscription struct {
 	UpdatedAt         time.Time          `json:"updated_at"`
 }
 
+// SubscriptionBulkChange defines model for SubscriptionBulkChange.
+type SubscriptionBulkChange struct {
+	Action SubscriptionBulkChangeAction `json:"action"`
+
+	// Ids Up to 100 ids; duplicates count once.
+	Ids BulkIds `json:"ids"`
+}
+
+// SubscriptionBulkChangeAction defines model for SubscriptionBulkChange.Action.
+type SubscriptionBulkChangeAction string
+
 // SubscriptionConsent How the person agreed, as the caller declares it; stored as proof.
 type SubscriptionConsent struct {
 	// Confirmed `true`: the person already agreed. `false`: mail them a confirmation first.
@@ -26058,6 +26299,15 @@ type CreateBroadcastParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// BulkChangeBroadcastsParams defines parameters for BulkChangeBroadcasts.
+type BulkChangeBroadcastsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // DeleteBroadcastParams defines parameters for DeleteBroadcast.
 type DeleteBroadcastParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -26251,6 +26501,15 @@ type ListChangelogEntriesParamsState string
 
 // CreateChangelogEntryParams defines parameters for CreateChangelogEntry.
 type CreateChangelogEntryParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// BulkChangeChangelogEntriesParams defines parameters for BulkChangeChangelogEntries.
+type BulkChangeChangelogEntriesParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -27078,6 +27337,15 @@ type CreateDiscussionParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// BulkChangeDiscussionsParams defines parameters for BulkChangeDiscussions.
+type BulkChangeDiscussionsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // GetDiscussionParams defines parameters for GetDiscussion.
 type GetDiscussionParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -27303,6 +27571,15 @@ type CreateEmailDesignParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// BulkChangeEmailDesignsParams defines parameters for BulkChangeEmailDesigns.
+type BulkChangeEmailDesignsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // RenderEmailDesignParams defines parameters for RenderEmailDesign.
 type RenderEmailDesignParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -27371,6 +27648,15 @@ type ListEmailImagesParams struct {
 
 // UploadEmailImageParams defines parameters for UploadEmailImage.
 type UploadEmailImageParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// BulkChangeEmailImagesParams defines parameters for BulkChangeEmailImages.
+type BulkChangeEmailImagesParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -27486,6 +27772,15 @@ type ListHelpArticlesParamsState string
 
 // CreateHelpArticleParams defines parameters for CreateHelpArticle.
 type CreateHelpArticleParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// BulkChangeHelpArticlesParams defines parameters for BulkChangeHelpArticles.
+type BulkChangeHelpArticlesParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -28038,6 +28333,15 @@ type ListSubscriptionsParams struct {
 
 // CreateSubscriptionParams defines parameters for CreateSubscription.
 type CreateSubscriptionParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// BulkChangeSubscriptionsParams defines parameters for BulkChangeSubscriptions.
+type BulkChangeSubscriptionsParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -30126,6 +30430,9 @@ type UpdateAutomationRuleJSONRequestBody = AutomationRuleUpdate
 // CreateBroadcastJSONRequestBody defines body for CreateBroadcast for application/json ContentType.
 type CreateBroadcastJSONRequestBody = BroadcastCreate
 
+// BulkChangeBroadcastsJSONRequestBody defines body for BulkChangeBroadcasts for application/json ContentType.
+type BulkChangeBroadcastsJSONRequestBody = BroadcastBulkChange
+
 // UpdateBroadcastJSONRequestBody defines body for UpdateBroadcast for application/json ContentType.
 type UpdateBroadcastJSONRequestBody = BroadcastUpdate
 
@@ -30149,6 +30456,9 @@ type UpdateChangelogJSONRequestBody = ChangelogUpdate
 
 // CreateChangelogEntryJSONRequestBody defines body for CreateChangelogEntry for application/json ContentType.
 type CreateChangelogEntryJSONRequestBody = ChangelogEntryCreate
+
+// BulkChangeChangelogEntriesJSONRequestBody defines body for BulkChangeChangelogEntries for application/json ContentType.
+type BulkChangeChangelogEntriesJSONRequestBody = ChangelogEntryBulkChange
 
 // UpdateChangelogEntryJSONRequestBody defines body for UpdateChangelogEntry for application/json ContentType.
 type UpdateChangelogEntryJSONRequestBody = ChangelogEntryUpdate
@@ -30243,6 +30553,9 @@ type UpdateDiscussionPostJSONRequestBody = DiscussionPostUpdate
 // CreateDiscussionJSONRequestBody defines body for CreateDiscussion for application/json ContentType.
 type CreateDiscussionJSONRequestBody = DiscussionCreate
 
+// BulkChangeDiscussionsJSONRequestBody defines body for BulkChangeDiscussions for application/json ContentType.
+type BulkChangeDiscussionsJSONRequestBody = DiscussionBulkChange
+
 // UpdateDiscussionJSONRequestBody defines body for UpdateDiscussion for application/json ContentType.
 type UpdateDiscussionJSONRequestBody = DiscussionUpdate
 
@@ -30264,6 +30577,9 @@ type MoveIdeaStageJSONRequestBody = RoadmapStageMove
 // CreateEmailDesignJSONRequestBody defines body for CreateEmailDesign for application/json ContentType.
 type CreateEmailDesignJSONRequestBody = EmailDesignCreate
 
+// BulkChangeEmailDesignsJSONRequestBody defines body for BulkChangeEmailDesigns for application/json ContentType.
+type BulkChangeEmailDesignsJSONRequestBody = EmailDesignBulkChange
+
 // RenderEmailDesignJSONRequestBody defines body for RenderEmailDesign for application/json ContentType.
 type RenderEmailDesignJSONRequestBody = EmailDesignRenderRequest
 
@@ -30279,6 +30595,9 @@ type RestoreEmailDesignVersionJSONRequestBody = EmailDesignRestore
 // UploadEmailImageMultipartRequestBody defines body for UploadEmailImage for multipart/form-data ContentType.
 type UploadEmailImageMultipartRequestBody = EmailImageUpload
 
+// BulkChangeEmailImagesJSONRequestBody defines body for BulkChangeEmailImages for application/json ContentType.
+type BulkChangeEmailImagesJSONRequestBody = EmailImageBulkChange
+
 // CreateFeedbackJSONRequestBody defines body for CreateFeedback for application/json ContentType.
 type CreateFeedbackJSONRequestBody = FeedbackCreate
 
@@ -30290,6 +30609,9 @@ type UpdateHelpCenterJSONRequestBody = HelpCenterUpdate
 
 // CreateHelpArticleJSONRequestBody defines body for CreateHelpArticle for application/json ContentType.
 type CreateHelpArticleJSONRequestBody = HelpArticleCreate
+
+// BulkChangeHelpArticlesJSONRequestBody defines body for BulkChangeHelpArticles for application/json ContentType.
+type BulkChangeHelpArticlesJSONRequestBody = HelpArticleBulkChange
 
 // UpdateHelpArticleJSONRequestBody defines body for UpdateHelpArticle for application/json ContentType.
 type UpdateHelpArticleJSONRequestBody = HelpArticleUpdate
@@ -30365,6 +30687,9 @@ type UpdateListImportJSONRequestBody = ListImportMappingUpdate
 
 // CreateSubscriptionJSONRequestBody defines body for CreateSubscription for application/json ContentType.
 type CreateSubscriptionJSONRequestBody = SubscriptionCreate
+
+// BulkChangeSubscriptionsJSONRequestBody defines body for BulkChangeSubscriptions for application/json ContentType.
+type BulkChangeSubscriptionsJSONRequestBody = SubscriptionBulkChange
 
 // UpdateSubscriptionJSONRequestBody defines body for UpdateSubscription for application/json ContentType.
 type UpdateSubscriptionJSONRequestBody = SubscriptionUpdate
@@ -37827,6 +38152,44 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/broadcasts (the `CreateBroadcast` operationId).
 	CreateBroadcast(ctx context.Context, params *CreateBroadcastParams, body CreateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BulkChangeBroadcastsWithBody Change several broadcasts at once
+	//
+	// `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+	// with `broadcast_active`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/broadcasts/bulk (the `BulkChangeBroadcasts` operationId).
+	BulkChangeBroadcastsWithBody(ctx context.Context, params *BulkChangeBroadcastsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeBroadcasts Change several broadcasts at once
+	//
+	// `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+	// with `broadcast_active`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/broadcasts/bulk (the `BulkChangeBroadcasts` operationId).
+	BulkChangeBroadcasts(ctx context.Context, params *BulkChangeBroadcastsParams, body BulkChangeBroadcastsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteBroadcast Delete a broadcast
 	//
 	// Deletes a draft or a finished broadcast (`sent`, `cancelled`, `failed`) with its deliveries;
@@ -38247,6 +38610,50 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/changelogs/{changelogId}/entries (the `CreateChangelogEntry` operationId).
 	CreateChangelogEntry(ctx context.Context, changelogId ChangelogId, params *CreateChangelogEntryParams, body CreateChangelogEntryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeChangelogEntriesWithBody Change several entries at once
+	//
+	// `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+	// entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+	// without a translation in the default locale listed with `no_default_translation`. An entry
+	// that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+	// and no `changelog.entry.published` goes out.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another changelog is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+	// checked once (`403`).
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/changelogs/{changelogId}/entries/bulk (the `BulkChangeChangelogEntries` operationId).
+	BulkChangeChangelogEntriesWithBody(ctx context.Context, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeChangelogEntries Change several entries at once
+	//
+	// `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+	// entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+	// without a translation in the default locale listed with `no_default_translation`. An entry
+	// that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+	// and no `changelog.entry.published` goes out.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another changelog is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+	// checked once (`403`).
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/changelogs/{changelogId}/entries/bulk (the `BulkChangeChangelogEntries` operationId).
+	BulkChangeChangelogEntries(ctx context.Context, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, body BulkChangeChangelogEntriesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteChangelogEntry Delete an entry
 	//
@@ -40166,6 +40573,50 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/discussions (the `CreateDiscussion` operationId).
 	CreateDiscussion(ctx context.Context, params *CreateDiscussionParams, body CreateDiscussionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BulkChangeDiscussionsWithBody Moderate several threads at once
+	//
+	// Each action works on the thread's opening post: `hide` and `unhide` as
+	// `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+	// `hide`), `spam` as `markDiscussionPostSpam` (a
+	// member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+	// thread the calling member wrote (`forbidden` otherwise).
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+	// sessions only.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/discussions/bulk (the `BulkChangeDiscussions` operationId).
+	BulkChangeDiscussionsWithBody(ctx context.Context, params *BulkChangeDiscussionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeDiscussions Moderate several threads at once
+	//
+	// Each action works on the thread's opening post: `hide` and `unhide` as
+	// `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+	// `hide`), `spam` as `markDiscussionPostSpam` (a
+	// member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+	// thread the calling member wrote (`forbidden` otherwise).
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+	// sessions only.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/discussions/bulk (the `BulkChangeDiscussions` operationId).
+	BulkChangeDiscussions(ctx context.Context, params *BulkChangeDiscussionsParams, body BulkChangeDiscussionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetDiscussion A thread with every post
 	//
 	// The thread and all its replies in every state (pending and hidden included), the accepted
@@ -40600,6 +41051,42 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/email-designs (the `CreateEmailDesign` operationId).
 	CreateEmailDesign(ctx context.Context, params *CreateEmailDesignParams, body CreateEmailDesignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// BulkChangeEmailDesignsWithBody Change several e-mail designs at once
+	//
+	// `delete` archives each design as `archiveEmailDesign`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/email-designs/bulk (the `BulkChangeEmailDesigns` operationId).
+	BulkChangeEmailDesignsWithBody(ctx context.Context, params *BulkChangeEmailDesignsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeEmailDesigns Change several e-mail designs at once
+	//
+	// `delete` archives each design as `archiveEmailDesign`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/email-designs/bulk (the `BulkChangeEmailDesigns` operationId).
+	BulkChangeEmailDesigns(ctx context.Context, params *BulkChangeEmailDesignsParams, body BulkChangeEmailDesignsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// RenderEmailDesignWithBody Render a design
 	//
 	// Renders a document (saved or not) as the mail would look: HTML, the plain-text part, the
@@ -40794,6 +41281,42 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/email-images (the `UploadEmailImage` operationId).
 	UploadEmailImageWithBody(ctx context.Context, params *UploadEmailImageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeEmailImagesWithBody Change several e-mail images at once
+	//
+	// `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+	// and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/email-images/bulk (the `BulkChangeEmailImages` operationId).
+	BulkChangeEmailImagesWithBody(ctx context.Context, params *BulkChangeEmailImagesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeEmailImages Change several e-mail images at once
+	//
+	// `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+	// and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/email-images/bulk (the `BulkChangeEmailImages` operationId).
+	BulkChangeEmailImages(ctx context.Context, params *BulkChangeEmailImagesParams, body BulkChangeEmailImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteEmailImage Delete an e-mail image
 	//
@@ -41056,6 +41579,54 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/help-centers/{centerId}/articles (the `CreateHelpArticle` operationId).
 	CreateHelpArticle(ctx context.Context, centerId HelpCenterId, params *CreateHelpArticleParams, body CreateHelpArticleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeHelpArticlesWithBody Change several articles at once
+	//
+	// `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+	// center's default locale when absent) as `publishHelpArticleTranslation` and
+	// `unpublishHelpArticleTranslation`, an article without that translation listed with
+	// `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+	// `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+	// article back. An unknown `collection_id` answers `400`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another center is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Who may, as for each single action, checked once for the whole request (`403`); deleting a
+	// published article needs who may publish, per article. Scope: `help:write`; `publish` and
+	// `unpublish` need `help:publish` instead.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/help-centers/{centerId}/articles/bulk (the `BulkChangeHelpArticles` operationId).
+	BulkChangeHelpArticlesWithBody(ctx context.Context, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeHelpArticles Change several articles at once
+	//
+	// `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+	// center's default locale when absent) as `publishHelpArticleTranslation` and
+	// `unpublishHelpArticleTranslation`, an article without that translation listed with
+	// `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+	// `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+	// article back. An unknown `collection_id` answers `400`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another center is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Who may, as for each single action, checked once for the whole request (`403`); deleting a
+	// published article needs who may publish, per article. Scope: `help:write`; `publish` and
+	// `unpublish` need `help:publish` instead.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/help-centers/{centerId}/articles/bulk (the `BulkChangeHelpArticles` operationId).
+	BulkChangeHelpArticles(ctx context.Context, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, body BulkChangeHelpArticlesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteHelpArticle Delete an article
 	//
@@ -42443,6 +43014,44 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/lists/{listId}/subscriptions (the `CreateSubscription` operationId).
 	CreateSubscription(ctx context.Context, listId ListId, params *CreateSubscriptionParams, body CreateSubscriptionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeSubscriptionsWithBody Change several subscriptions at once
+	//
+	// `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+	// no undo); `delete` as `deleteSubscription`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another list is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+	// keys. Scope: `lists:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/lists/{listId}/subscriptions/bulk (the `BulkChangeSubscriptions` operationId).
+	BulkChangeSubscriptionsWithBody(ctx context.Context, listId ListId, params *BulkChangeSubscriptionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// BulkChangeSubscriptions Change several subscriptions at once
+	//
+	// `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+	// no undo); `delete` as `deleteSubscription`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another list is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+	// keys. Scope: `lists:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/lists/{listId}/subscriptions/bulk (the `BulkChangeSubscriptions` operationId).
+	BulkChangeSubscriptions(ctx context.Context, listId ListId, params *BulkChangeSubscriptionsParams, body BulkChangeSubscriptionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteSubscription Delete a subscription
 	//
@@ -50836,6 +51445,64 @@ func (c *Client) CreateBroadcast(ctx context.Context, params *CreateBroadcastPar
 	return c.Client.Do(req)
 }
 
+// BulkChangeBroadcastsWithBody Change several broadcasts at once
+//
+// `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+// with `broadcast_active`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/broadcasts/bulk (the `BulkChangeBroadcasts` operationId).
+func (c *Client) BulkChangeBroadcastsWithBody(ctx context.Context, params *BulkChangeBroadcastsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeBroadcastsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeBroadcasts Change several broadcasts at once
+//
+// `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+// with `broadcast_active`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/broadcasts/bulk (the `BulkChangeBroadcasts` operationId).
+func (c *Client) BulkChangeBroadcasts(ctx context.Context, params *BulkChangeBroadcastsParams, body BulkChangeBroadcastsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeBroadcastsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // DeleteBroadcast Delete a broadcast
 //
 // Deletes a draft or a finished broadcast (`sent`, `cancelled`, `failed`) with its deliveries;
@@ -51567,6 +52234,70 @@ func (c *Client) CreateChangelogEntryWithBody(ctx context.Context, changelogId C
 // Corresponds with POST /v1/changelogs/{changelogId}/entries (the `CreateChangelogEntry` operationId).
 func (c *Client) CreateChangelogEntry(ctx context.Context, changelogId ChangelogId, params *CreateChangelogEntryParams, body CreateChangelogEntryJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateChangelogEntryRequest(c.Server, changelogId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeChangelogEntriesWithBody Change several entries at once
+//
+// `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+// entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+// without a translation in the default locale listed with `no_default_translation`. An entry
+// that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+// and no `changelog.entry.published` goes out.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another changelog is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+// checked once (`403`).
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/changelogs/{changelogId}/entries/bulk (the `BulkChangeChangelogEntries` operationId).
+func (c *Client) BulkChangeChangelogEntriesWithBody(ctx context.Context, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeChangelogEntriesRequestWithBody(c.Server, changelogId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeChangelogEntries Change several entries at once
+//
+// `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+// entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+// without a translation in the default locale listed with `no_default_translation`. An entry
+// that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+// and no `changelog.entry.published` goes out.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another changelog is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+// checked once (`403`).
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/changelogs/{changelogId}/entries/bulk (the `BulkChangeChangelogEntries` operationId).
+func (c *Client) BulkChangeChangelogEntries(ctx context.Context, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, body BulkChangeChangelogEntriesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeChangelogEntriesRequest(c.Server, changelogId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -54585,6 +55316,70 @@ func (c *Client) CreateDiscussion(ctx context.Context, params *CreateDiscussionP
 	return c.Client.Do(req)
 }
 
+// BulkChangeDiscussionsWithBody Moderate several threads at once
+//
+// Each action works on the thread's opening post: `hide` and `unhide` as
+// `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+// `hide`), `spam` as `markDiscussionPostSpam` (a
+// member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+// thread the calling member wrote (`forbidden` otherwise).
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+// sessions only.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/discussions/bulk (the `BulkChangeDiscussions` operationId).
+func (c *Client) BulkChangeDiscussionsWithBody(ctx context.Context, params *BulkChangeDiscussionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeDiscussionsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeDiscussions Moderate several threads at once
+//
+// Each action works on the thread's opening post: `hide` and `unhide` as
+// `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+// `hide`), `spam` as `markDiscussionPostSpam` (a
+// member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+// thread the calling member wrote (`forbidden` otherwise).
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+// sessions only.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/discussions/bulk (the `BulkChangeDiscussions` operationId).
+func (c *Client) BulkChangeDiscussions(ctx context.Context, params *BulkChangeDiscussionsParams, body BulkChangeDiscussionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeDiscussionsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetDiscussion A thread with every post
 //
 // The thread and all its replies in every state (pending and hidden included), the accepted
@@ -55299,6 +56094,62 @@ func (c *Client) CreateEmailDesign(ctx context.Context, params *CreateEmailDesig
 	return c.Client.Do(req)
 }
 
+// BulkChangeEmailDesignsWithBody Change several e-mail designs at once
+//
+// `delete` archives each design as `archiveEmailDesign`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/email-designs/bulk (the `BulkChangeEmailDesigns` operationId).
+func (c *Client) BulkChangeEmailDesignsWithBody(ctx context.Context, params *BulkChangeEmailDesignsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeEmailDesignsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeEmailDesigns Change several e-mail designs at once
+//
+// `delete` archives each design as `archiveEmailDesign`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/email-designs/bulk (the `BulkChangeEmailDesigns` operationId).
+func (c *Client) BulkChangeEmailDesigns(ctx context.Context, params *BulkChangeEmailDesignsParams, body BulkChangeEmailDesignsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeEmailDesignsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // RenderEmailDesignWithBody Render a design
 //
 // Renders a document (saved or not) as the mail would look: HTML, the plain-text part, the
@@ -55624,6 +56475,62 @@ func (c *Client) ListEmailImages(ctx context.Context, params *ListEmailImagesPar
 // Corresponds with POST /v1/email-images (the `UploadEmailImage` operationId).
 func (c *Client) UploadEmailImageWithBody(ctx context.Context, params *UploadEmailImageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadEmailImageRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeEmailImagesWithBody Change several e-mail images at once
+//
+// `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+// and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/email-images/bulk (the `BulkChangeEmailImages` operationId).
+func (c *Client) BulkChangeEmailImagesWithBody(ctx context.Context, params *BulkChangeEmailImagesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeEmailImagesRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeEmailImages Change several e-mail images at once
+//
+// `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+// and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/email-images/bulk (the `BulkChangeEmailImages` operationId).
+func (c *Client) BulkChangeEmailImages(ctx context.Context, params *BulkChangeEmailImagesParams, body BulkChangeEmailImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeEmailImagesRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -56056,6 +56963,74 @@ func (c *Client) CreateHelpArticleWithBody(ctx context.Context, centerId HelpCen
 // Corresponds with POST /v1/help-centers/{centerId}/articles (the `CreateHelpArticle` operationId).
 func (c *Client) CreateHelpArticle(ctx context.Context, centerId HelpCenterId, params *CreateHelpArticleParams, body CreateHelpArticleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateHelpArticleRequest(c.Server, centerId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeHelpArticlesWithBody Change several articles at once
+//
+// `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+// center's default locale when absent) as `publishHelpArticleTranslation` and
+// `unpublishHelpArticleTranslation`, an article without that translation listed with
+// `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+// `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+// article back. An unknown `collection_id` answers `400`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another center is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Who may, as for each single action, checked once for the whole request (`403`); deleting a
+// published article needs who may publish, per article. Scope: `help:write`; `publish` and
+// `unpublish` need `help:publish` instead.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/help-centers/{centerId}/articles/bulk (the `BulkChangeHelpArticles` operationId).
+func (c *Client) BulkChangeHelpArticlesWithBody(ctx context.Context, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeHelpArticlesRequestWithBody(c.Server, centerId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeHelpArticles Change several articles at once
+//
+// `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+// center's default locale when absent) as `publishHelpArticleTranslation` and
+// `unpublishHelpArticleTranslation`, an article without that translation listed with
+// `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+// `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+// article back. An unknown `collection_id` answers `400`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another center is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Who may, as for each single action, checked once for the whole request (`403`); deleting a
+// published article needs who may publish, per article. Scope: `help:write`; `publish` and
+// `unpublish` need `help:publish` instead.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/help-centers/{centerId}/articles/bulk (the `BulkChangeHelpArticles` operationId).
+func (c *Client) BulkChangeHelpArticles(ctx context.Context, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, body BulkChangeHelpArticlesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeHelpArticlesRequest(c.Server, centerId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -58383,6 +59358,64 @@ func (c *Client) CreateSubscriptionWithBody(ctx context.Context, listId ListId, 
 // Corresponds with POST /v1/lists/{listId}/subscriptions (the `CreateSubscription` operationId).
 func (c *Client) CreateSubscription(ctx context.Context, listId ListId, params *CreateSubscriptionParams, body CreateSubscriptionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateSubscriptionRequest(c.Server, listId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeSubscriptionsWithBody Change several subscriptions at once
+//
+// `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+// no undo); `delete` as `deleteSubscription`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another list is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+// keys. Scope: `lists:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/lists/{listId}/subscriptions/bulk (the `BulkChangeSubscriptions` operationId).
+func (c *Client) BulkChangeSubscriptionsWithBody(ctx context.Context, listId ListId, params *BulkChangeSubscriptionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeSubscriptionsRequestWithBody(c.Server, listId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// BulkChangeSubscriptions Change several subscriptions at once
+//
+// `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+// no undo); `delete` as `deleteSubscription`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another list is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+// keys. Scope: `lists:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/lists/{listId}/subscriptions/bulk (the `BulkChangeSubscriptions` operationId).
+func (c *Client) BulkChangeSubscriptions(ctx context.Context, listId ListId, params *BulkChangeSubscriptionsParams, body BulkChangeSubscriptionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewBulkChangeSubscriptionsRequest(c.Server, listId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -72073,6 +73106,72 @@ func NewCreateBroadcastRequestWithBody(server string, params *CreateBroadcastPar
 	return req, nil
 }
 
+// NewBulkChangeBroadcastsRequest calls the generic BulkChangeBroadcasts builder with application/json body
+func NewBulkChangeBroadcastsRequest(server string, params *BulkChangeBroadcastsParams, body BulkChangeBroadcastsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkChangeBroadcastsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewBulkChangeBroadcastsRequestWithBody constructs an http.Request for the BulkChangeBroadcasts method, with any body, and a specified content type
+func NewBulkChangeBroadcastsRequestWithBody(server string, params *BulkChangeBroadcastsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/bulk")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewDeleteBroadcastRequest constructs an http.Request for the DeleteBroadcast method
 func NewDeleteBroadcastRequest(server string, broadcastId BroadcastId, params *DeleteBroadcastParams) (*http.Request, error) {
 	var err error
@@ -73567,6 +74666,79 @@ func NewCreateChangelogEntryRequestWithBody(server string, changelogId Changelog
 	}
 
 	operationPath := fmt.Sprintf("/v1/changelogs/%s/entries", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewBulkChangeChangelogEntriesRequest calls the generic BulkChangeChangelogEntries builder with application/json body
+func NewBulkChangeChangelogEntriesRequest(server string, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, body BulkChangeChangelogEntriesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkChangeChangelogEntriesRequestWithBody(server, changelogId, params, "application/json", bodyReader)
+}
+
+// NewBulkChangeChangelogEntriesRequestWithBody constructs an http.Request for the BulkChangeChangelogEntries method, with any body, and a specified content type
+func NewBulkChangeChangelogEntriesRequestWithBody(server string, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "changelogId", changelogId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/changelogs/%s/entries/bulk", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -79346,6 +80518,72 @@ func NewCreateDiscussionRequestWithBody(server string, params *CreateDiscussionP
 	return req, nil
 }
 
+// NewBulkChangeDiscussionsRequest calls the generic BulkChangeDiscussions builder with application/json body
+func NewBulkChangeDiscussionsRequest(server string, params *BulkChangeDiscussionsParams, body BulkChangeDiscussionsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkChangeDiscussionsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewBulkChangeDiscussionsRequestWithBody constructs an http.Request for the BulkChangeDiscussions method, with any body, and a specified content type
+func NewBulkChangeDiscussionsRequestWithBody(server string, params *BulkChangeDiscussionsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/discussions/bulk")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetDiscussionRequest constructs an http.Request for the GetDiscussion method
 func NewGetDiscussionRequest(server string, discussionId DiscussionId, params *GetDiscussionParams) (*http.Request, error) {
 	var err error
@@ -80984,6 +82222,72 @@ func NewCreateEmailDesignRequestWithBody(server string, params *CreateEmailDesig
 	return req, nil
 }
 
+// NewBulkChangeEmailDesignsRequest calls the generic BulkChangeEmailDesigns builder with application/json body
+func NewBulkChangeEmailDesignsRequest(server string, params *BulkChangeEmailDesignsParams, body BulkChangeEmailDesignsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkChangeEmailDesignsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewBulkChangeEmailDesignsRequestWithBody constructs an http.Request for the BulkChangeEmailDesigns method, with any body, and a specified content type
+func NewBulkChangeEmailDesignsRequestWithBody(server string, params *BulkChangeEmailDesignsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/email-designs/bulk")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewRenderEmailDesignRequest calls the generic RenderEmailDesign builder with application/json body
 func NewRenderEmailDesignRequest(server string, params *RenderEmailDesignParams, body RenderEmailDesignJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -81548,6 +82852,72 @@ func NewUploadEmailImageRequestWithBody(server string, params *UploadEmailImageP
 	}
 
 	operationPath := fmt.Sprintf("/v1/email-images")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewBulkChangeEmailImagesRequest calls the generic BulkChangeEmailImages builder with application/json body
+func NewBulkChangeEmailImagesRequest(server string, params *BulkChangeEmailImagesParams, body BulkChangeEmailImagesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkChangeEmailImagesRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewBulkChangeEmailImagesRequestWithBody constructs an http.Request for the BulkChangeEmailImages method, with any body, and a specified content type
+func NewBulkChangeEmailImagesRequestWithBody(server string, params *BulkChangeEmailImagesParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/email-images/bulk")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -82447,6 +83817,79 @@ func NewCreateHelpArticleRequestWithBody(server string, centerId HelpCenterId, p
 	}
 
 	operationPath := fmt.Sprintf("/v1/help-centers/%s/articles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewBulkChangeHelpArticlesRequest calls the generic BulkChangeHelpArticles builder with application/json body
+func NewBulkChangeHelpArticlesRequest(server string, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, body BulkChangeHelpArticlesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkChangeHelpArticlesRequestWithBody(server, centerId, params, "application/json", bodyReader)
+}
+
+// NewBulkChangeHelpArticlesRequestWithBody constructs an http.Request for the BulkChangeHelpArticles method, with any body, and a specified content type
+func NewBulkChangeHelpArticlesRequestWithBody(server string, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "centerId", centerId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/help-centers/%s/articles/bulk", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -87055,6 +88498,79 @@ func NewCreateSubscriptionRequestWithBody(server string, listId ListId, params *
 	}
 
 	operationPath := fmt.Sprintf("/v1/lists/%s/subscriptions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewBulkChangeSubscriptionsRequest calls the generic BulkChangeSubscriptions builder with application/json body
+func NewBulkChangeSubscriptionsRequest(server string, listId ListId, params *BulkChangeSubscriptionsParams, body BulkChangeSubscriptionsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewBulkChangeSubscriptionsRequestWithBody(server, listId, params, "application/json", bodyReader)
+}
+
+// NewBulkChangeSubscriptionsRequestWithBody constructs an http.Request for the BulkChangeSubscriptions method, with any body, and a specified content type
+func NewBulkChangeSubscriptionsRequestWithBody(server string, listId ListId, params *BulkChangeSubscriptionsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "listId", listId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/lists/%s/subscriptions/bulk", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -101139,6 +102655,44 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/broadcasts (the `CreateBroadcast` operationId).
 	CreateBroadcastWithResponse(ctx context.Context, params *CreateBroadcastParams, body CreateBroadcastJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateBroadcastResponse, error)
 
+	// BulkChangeBroadcastsWithBodyWithResponse Change several broadcasts at once
+	//
+	// `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+	// with `broadcast_active`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/broadcasts/bulk (the `BulkChangeBroadcasts` operationId).
+	BulkChangeBroadcastsWithBodyWithResponse(ctx context.Context, params *BulkChangeBroadcastsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeBroadcastsResponse, error)
+
+	// BulkChangeBroadcastsWithResponse Change several broadcasts at once
+	//
+	// `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+	// with `broadcast_active`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/broadcasts/bulk (the `BulkChangeBroadcasts` operationId).
+	BulkChangeBroadcastsWithResponse(ctx context.Context, params *BulkChangeBroadcastsParams, body BulkChangeBroadcastsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeBroadcastsResponse, error)
+
 	// DeleteBroadcastWithResponse Delete a broadcast
 	//
 	// Deletes a draft or a finished broadcast (`sent`, `cancelled`, `failed`) with its deliveries;
@@ -101591,6 +103145,50 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/changelogs/{changelogId}/entries (the `CreateChangelogEntry` operationId).
 	CreateChangelogEntryWithResponse(ctx context.Context, changelogId ChangelogId, params *CreateChangelogEntryParams, body CreateChangelogEntryJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateChangelogEntryResponse, error)
+
+	// BulkChangeChangelogEntriesWithBodyWithResponse Change several entries at once
+	//
+	// `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+	// entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+	// without a translation in the default locale listed with `no_default_translation`. An entry
+	// that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+	// and no `changelog.entry.published` goes out.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another changelog is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+	// checked once (`403`).
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/changelogs/{changelogId}/entries/bulk (the `BulkChangeChangelogEntries` operationId).
+	BulkChangeChangelogEntriesWithBodyWithResponse(ctx context.Context, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeChangelogEntriesResponse, error)
+
+	// BulkChangeChangelogEntriesWithResponse Change several entries at once
+	//
+	// `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+	// entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+	// without a translation in the default locale listed with `no_default_translation`. An entry
+	// that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+	// and no `changelog.entry.published` goes out.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another changelog is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+	// checked once (`403`).
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/changelogs/{changelogId}/entries/bulk (the `BulkChangeChangelogEntries` operationId).
+	BulkChangeChangelogEntriesWithResponse(ctx context.Context, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, body BulkChangeChangelogEntriesJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeChangelogEntriesResponse, error)
 
 	// DeleteChangelogEntryWithResponse Delete an entry
 	//
@@ -103614,6 +105212,50 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/discussions (the `CreateDiscussion` operationId).
 	CreateDiscussionWithResponse(ctx context.Context, params *CreateDiscussionParams, body CreateDiscussionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDiscussionResponse, error)
 
+	// BulkChangeDiscussionsWithBodyWithResponse Moderate several threads at once
+	//
+	// Each action works on the thread's opening post: `hide` and `unhide` as
+	// `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+	// `hide`), `spam` as `markDiscussionPostSpam` (a
+	// member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+	// thread the calling member wrote (`forbidden` otherwise).
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+	// sessions only.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/discussions/bulk (the `BulkChangeDiscussions` operationId).
+	BulkChangeDiscussionsWithBodyWithResponse(ctx context.Context, params *BulkChangeDiscussionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeDiscussionsResponse, error)
+
+	// BulkChangeDiscussionsWithResponse Moderate several threads at once
+	//
+	// Each action works on the thread's opening post: `hide` and `unhide` as
+	// `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+	// `hide`), `spam` as `markDiscussionPostSpam` (a
+	// member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+	// thread the calling member wrote (`forbidden` otherwise).
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+	// sessions only.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/discussions/bulk (the `BulkChangeDiscussions` operationId).
+	BulkChangeDiscussionsWithResponse(ctx context.Context, params *BulkChangeDiscussionsParams, body BulkChangeDiscussionsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeDiscussionsResponse, error)
+
 	// GetDiscussionWithResponse A thread with every post
 	//
 	// The thread and all its replies in every state (pending and hidden included), the accepted
@@ -104076,6 +105718,42 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/email-designs (the `CreateEmailDesign` operationId).
 	CreateEmailDesignWithResponse(ctx context.Context, params *CreateEmailDesignParams, body CreateEmailDesignJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEmailDesignResponse, error)
 
+	// BulkChangeEmailDesignsWithBodyWithResponse Change several e-mail designs at once
+	//
+	// `delete` archives each design as `archiveEmailDesign`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/email-designs/bulk (the `BulkChangeEmailDesigns` operationId).
+	BulkChangeEmailDesignsWithBodyWithResponse(ctx context.Context, params *BulkChangeEmailDesignsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeEmailDesignsResponse, error)
+
+	// BulkChangeEmailDesignsWithResponse Change several e-mail designs at once
+	//
+	// `delete` archives each design as `archiveEmailDesign`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/email-designs/bulk (the `BulkChangeEmailDesigns` operationId).
+	BulkChangeEmailDesignsWithResponse(ctx context.Context, params *BulkChangeEmailDesignsParams, body BulkChangeEmailDesignsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeEmailDesignsResponse, error)
+
 	// RenderEmailDesignWithBodyWithResponse Render a design
 	//
 	// Renders a document (saved or not) as the mail would look: HTML, the plain-text part, the
@@ -104280,6 +105958,42 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/email-images (the `UploadEmailImage` operationId).
 	UploadEmailImageWithBodyWithResponse(ctx context.Context, params *UploadEmailImageParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadEmailImageResponse, error)
+
+	// BulkChangeEmailImagesWithBodyWithResponse Change several e-mail images at once
+	//
+	// `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+	// and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/email-images/bulk (the `BulkChangeEmailImages` operationId).
+	BulkChangeEmailImagesWithBodyWithResponse(ctx context.Context, params *BulkChangeEmailImagesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeEmailImagesResponse, error)
+
+	// BulkChangeEmailImagesWithResponse Change several e-mail images at once
+	//
+	// `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+	// and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see or of another workspace is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/email-images/bulk (the `BulkChangeEmailImages` operationId).
+	BulkChangeEmailImagesWithResponse(ctx context.Context, params *BulkChangeEmailImagesParams, body BulkChangeEmailImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeEmailImagesResponse, error)
 
 	// DeleteEmailImageWithResponse Delete an e-mail image
 	//
@@ -104560,6 +106274,54 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/help-centers/{centerId}/articles (the `CreateHelpArticle` operationId).
 	CreateHelpArticleWithResponse(ctx context.Context, centerId HelpCenterId, params *CreateHelpArticleParams, body CreateHelpArticleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateHelpArticleResponse, error)
+
+	// BulkChangeHelpArticlesWithBodyWithResponse Change several articles at once
+	//
+	// `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+	// center's default locale when absent) as `publishHelpArticleTranslation` and
+	// `unpublishHelpArticleTranslation`, an article without that translation listed with
+	// `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+	// `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+	// article back. An unknown `collection_id` answers `400`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another center is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Who may, as for each single action, checked once for the whole request (`403`); deleting a
+	// published article needs who may publish, per article. Scope: `help:write`; `publish` and
+	// `unpublish` need `help:publish` instead.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/help-centers/{centerId}/articles/bulk (the `BulkChangeHelpArticles` operationId).
+	BulkChangeHelpArticlesWithBodyWithResponse(ctx context.Context, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeHelpArticlesResponse, error)
+
+	// BulkChangeHelpArticlesWithResponse Change several articles at once
+	//
+	// `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+	// center's default locale when absent) as `publishHelpArticleTranslation` and
+	// `unpublishHelpArticleTranslation`, an article without that translation listed with
+	// `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+	// `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+	// article back. An unknown `collection_id` answers `400`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another center is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// Who may, as for each single action, checked once for the whole request (`403`); deleting a
+	// published article needs who may publish, per article. Scope: `help:write`; `publish` and
+	// `unpublish` need `help:publish` instead.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/help-centers/{centerId}/articles/bulk (the `BulkChangeHelpArticles` operationId).
+	BulkChangeHelpArticlesWithResponse(ctx context.Context, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, body BulkChangeHelpArticlesJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeHelpArticlesResponse, error)
 
 	// DeleteHelpArticleWithResponse Delete an article
 	//
@@ -106039,6 +107801,44 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/lists/{listId}/subscriptions (the `CreateSubscription` operationId).
 	CreateSubscriptionWithResponse(ctx context.Context, listId ListId, params *CreateSubscriptionParams, body CreateSubscriptionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSubscriptionResponse, error)
+
+	// BulkChangeSubscriptionsWithBodyWithResponse Change several subscriptions at once
+	//
+	// `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+	// no undo); `delete` as `deleteSubscription`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another list is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+	// keys. Scope: `lists:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/lists/{listId}/subscriptions/bulk (the `BulkChangeSubscriptions` operationId).
+	BulkChangeSubscriptionsWithBodyWithResponse(ctx context.Context, listId ListId, params *BulkChangeSubscriptionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeSubscriptionsResponse, error)
+
+	// BulkChangeSubscriptionsWithResponse Change several subscriptions at once
+	//
+	// `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+	// no undo); `delete` as `deleteSubscription`.
+	//
+	// Each item is changed in its own transaction by the same code as the single endpoint, with the
+	// same events and webhooks; a refused item is listed in `failed` with the status and code the
+	// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+	// once. An id the caller cannot see, of another workspace or of another list is listed with
+	// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+	//
+	// A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+	// keys. Scope: `lists:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/lists/{listId}/subscriptions/bulk (the `BulkChangeSubscriptions` operationId).
+	BulkChangeSubscriptionsWithResponse(ctx context.Context, listId ListId, params *BulkChangeSubscriptionsParams, body BulkChangeSubscriptionsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeSubscriptionsResponse, error)
 
 	// DeleteSubscriptionWithResponse Delete a subscription
 	//
@@ -118665,6 +120465,68 @@ func (r CreateBroadcastResponse) ContentType() string {
 	return ""
 }
 
+type BulkChangeBroadcastsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *BulkResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r BulkChangeBroadcastsResponse) GetJSON200() *BulkResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r BulkChangeBroadcastsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r BulkChangeBroadcastsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r BulkChangeBroadcastsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r BulkChangeBroadcastsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkChangeBroadcastsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkChangeBroadcastsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BulkChangeBroadcastsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type DeleteBroadcastResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -120287,6 +122149,75 @@ func (r CreateChangelogEntryResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CreateChangelogEntryResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type BulkChangeChangelogEntriesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *BulkResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r BulkChangeChangelogEntriesResponse) GetJSON200() *BulkResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r BulkChangeChangelogEntriesResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r BulkChangeChangelogEntriesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r BulkChangeChangelogEntriesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r BulkChangeChangelogEntriesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r BulkChangeChangelogEntriesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkChangeChangelogEntriesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkChangeChangelogEntriesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BulkChangeChangelogEntriesResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -125847,6 +127778,68 @@ func (r CreateDiscussionResponse) ContentType() string {
 	return ""
 }
 
+type BulkChangeDiscussionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *BulkResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r BulkChangeDiscussionsResponse) GetJSON200() *BulkResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r BulkChangeDiscussionsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r BulkChangeDiscussionsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r BulkChangeDiscussionsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r BulkChangeDiscussionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkChangeDiscussionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkChangeDiscussionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BulkChangeDiscussionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetDiscussionResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -127317,6 +129310,68 @@ func (r CreateEmailDesignResponse) ContentType() string {
 	return ""
 }
 
+type BulkChangeEmailDesignsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *BulkResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r BulkChangeEmailDesignsResponse) GetJSON200() *BulkResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r BulkChangeEmailDesignsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r BulkChangeEmailDesignsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r BulkChangeEmailDesignsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r BulkChangeEmailDesignsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkChangeEmailDesignsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkChangeEmailDesignsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BulkChangeEmailDesignsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type RenderEmailDesignResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -128057,6 +130112,68 @@ func (r UploadEmailImageResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UploadEmailImageResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type BulkChangeEmailImagesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *BulkResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r BulkChangeEmailImagesResponse) GetJSON200() *BulkResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r BulkChangeEmailImagesResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r BulkChangeEmailImagesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r BulkChangeEmailImagesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r BulkChangeEmailImagesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkChangeEmailImagesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkChangeEmailImagesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BulkChangeEmailImagesResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -128947,6 +131064,75 @@ func (r CreateHelpArticleResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CreateHelpArticleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type BulkChangeHelpArticlesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *BulkResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r BulkChangeHelpArticlesResponse) GetJSON200() *BulkResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r BulkChangeHelpArticlesResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r BulkChangeHelpArticlesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r BulkChangeHelpArticlesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r BulkChangeHelpArticlesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r BulkChangeHelpArticlesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkChangeHelpArticlesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkChangeHelpArticlesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BulkChangeHelpArticlesResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -133790,6 +135976,75 @@ func (r CreateSubscriptionResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CreateSubscriptionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type BulkChangeSubscriptionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *BulkResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r BulkChangeSubscriptionsResponse) GetJSON200() *BulkResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r BulkChangeSubscriptionsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r BulkChangeSubscriptionsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r BulkChangeSubscriptionsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r BulkChangeSubscriptionsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r BulkChangeSubscriptionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r BulkChangeSubscriptionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r BulkChangeSubscriptionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r BulkChangeSubscriptionsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -150080,6 +152335,56 @@ func (c *ClientWithResponses) CreateBroadcastWithResponse(ctx context.Context, p
 	return ParseCreateBroadcastResponse(rsp)
 }
 
+// BulkChangeBroadcastsWithBodyWithResponse Change several broadcasts at once
+//
+// `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+// with `broadcast_active`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/broadcasts/bulk (the `BulkChangeBroadcasts` operationId).
+func (c *ClientWithResponses) BulkChangeBroadcastsWithBodyWithResponse(ctx context.Context, params *BulkChangeBroadcastsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeBroadcastsResponse, error) {
+	rsp, err := c.BulkChangeBroadcastsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeBroadcastsResponse(rsp)
+}
+
+// BulkChangeBroadcastsWithResponse Change several broadcasts at once
+//
+// `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+// with `broadcast_active`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/broadcasts/bulk (the `BulkChangeBroadcasts` operationId).
+func (c *ClientWithResponses) BulkChangeBroadcastsWithResponse(ctx context.Context, params *BulkChangeBroadcastsParams, body BulkChangeBroadcastsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeBroadcastsResponse, error) {
+	rsp, err := c.BulkChangeBroadcasts(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeBroadcastsResponse(rsp)
+}
+
 // DeleteBroadcastWithResponse Delete a broadcast
 //
 // Deletes a draft or a finished broadcast (`sent`, `cancelled`, `failed`) with its deliveries;
@@ -150723,6 +153028,62 @@ func (c *ClientWithResponses) CreateChangelogEntryWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseCreateChangelogEntryResponse(rsp)
+}
+
+// BulkChangeChangelogEntriesWithBodyWithResponse Change several entries at once
+//
+// `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+// entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+// without a translation in the default locale listed with `no_default_translation`. An entry
+// that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+// and no `changelog.entry.published` goes out.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another changelog is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+// checked once (`403`).
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/changelogs/{changelogId}/entries/bulk (the `BulkChangeChangelogEntries` operationId).
+func (c *ClientWithResponses) BulkChangeChangelogEntriesWithBodyWithResponse(ctx context.Context, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeChangelogEntriesResponse, error) {
+	rsp, err := c.BulkChangeChangelogEntriesWithBody(ctx, changelogId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeChangelogEntriesResponse(rsp)
+}
+
+// BulkChangeChangelogEntriesWithResponse Change several entries at once
+//
+// `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+// entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+// without a translation in the default locale listed with `no_default_translation`. An entry
+// that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+// and no `changelog.entry.published` goes out.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another changelog is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+// checked once (`403`).
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/changelogs/{changelogId}/entries/bulk (the `BulkChangeChangelogEntries` operationId).
+func (c *ClientWithResponses) BulkChangeChangelogEntriesWithResponse(ctx context.Context, changelogId ChangelogId, params *BulkChangeChangelogEntriesParams, body BulkChangeChangelogEntriesJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeChangelogEntriesResponse, error) {
+	rsp, err := c.BulkChangeChangelogEntries(ctx, changelogId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeChangelogEntriesResponse(rsp)
 }
 
 // DeleteChangelogEntryWithResponse Delete an entry
@@ -153401,6 +155762,62 @@ func (c *ClientWithResponses) CreateDiscussionWithResponse(ctx context.Context, 
 	return ParseCreateDiscussionResponse(rsp)
 }
 
+// BulkChangeDiscussionsWithBodyWithResponse Moderate several threads at once
+//
+// Each action works on the thread's opening post: `hide` and `unhide` as
+// `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+// `hide`), `spam` as `markDiscussionPostSpam` (a
+// member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+// thread the calling member wrote (`forbidden` otherwise).
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+// sessions only.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/discussions/bulk (the `BulkChangeDiscussions` operationId).
+func (c *ClientWithResponses) BulkChangeDiscussionsWithBodyWithResponse(ctx context.Context, params *BulkChangeDiscussionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeDiscussionsResponse, error) {
+	rsp, err := c.BulkChangeDiscussionsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeDiscussionsResponse(rsp)
+}
+
+// BulkChangeDiscussionsWithResponse Moderate several threads at once
+//
+// Each action works on the thread's opening post: `hide` and `unhide` as
+// `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+// `hide`), `spam` as `markDiscussionPostSpam` (a
+// member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+// thread the calling member wrote (`forbidden` otherwise).
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+// sessions only.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/discussions/bulk (the `BulkChangeDiscussions` operationId).
+func (c *ClientWithResponses) BulkChangeDiscussionsWithResponse(ctx context.Context, params *BulkChangeDiscussionsParams, body BulkChangeDiscussionsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeDiscussionsResponse, error) {
+	rsp, err := c.BulkChangeDiscussions(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeDiscussionsResponse(rsp)
+}
+
 // GetDiscussionWithResponse A thread with every post
 //
 // The thread and all its replies in every state (pending and hidden included), the accepted
@@ -154031,6 +156448,54 @@ func (c *ClientWithResponses) CreateEmailDesignWithResponse(ctx context.Context,
 	return ParseCreateEmailDesignResponse(rsp)
 }
 
+// BulkChangeEmailDesignsWithBodyWithResponse Change several e-mail designs at once
+//
+// `delete` archives each design as `archiveEmailDesign`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/email-designs/bulk (the `BulkChangeEmailDesigns` operationId).
+func (c *ClientWithResponses) BulkChangeEmailDesignsWithBodyWithResponse(ctx context.Context, params *BulkChangeEmailDesignsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeEmailDesignsResponse, error) {
+	rsp, err := c.BulkChangeEmailDesignsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeEmailDesignsResponse(rsp)
+}
+
+// BulkChangeEmailDesignsWithResponse Change several e-mail designs at once
+//
+// `delete` archives each design as `archiveEmailDesign`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/email-designs/bulk (the `BulkChangeEmailDesigns` operationId).
+func (c *ClientWithResponses) BulkChangeEmailDesignsWithResponse(ctx context.Context, params *BulkChangeEmailDesignsParams, body BulkChangeEmailDesignsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeEmailDesignsResponse, error) {
+	rsp, err := c.BulkChangeEmailDesigns(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeEmailDesignsResponse(rsp)
+}
+
 // RenderEmailDesignWithBodyWithResponse Render a design
 //
 // Renders a document (saved or not) as the mail would look: HTML, the plain-text part, the
@@ -154318,6 +156783,54 @@ func (c *ClientWithResponses) UploadEmailImageWithBodyWithResponse(ctx context.C
 		return nil, err
 	}
 	return ParseUploadEmailImageResponse(rsp)
+}
+
+// BulkChangeEmailImagesWithBodyWithResponse Change several e-mail images at once
+//
+// `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+// and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/email-images/bulk (the `BulkChangeEmailImages` operationId).
+func (c *ClientWithResponses) BulkChangeEmailImagesWithBodyWithResponse(ctx context.Context, params *BulkChangeEmailImagesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeEmailImagesResponse, error) {
+	rsp, err := c.BulkChangeEmailImagesWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeEmailImagesResponse(rsp)
+}
+
+// BulkChangeEmailImagesWithResponse Change several e-mail images at once
+//
+// `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+// and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see or of another workspace is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/email-images/bulk (the `BulkChangeEmailImages` operationId).
+func (c *ClientWithResponses) BulkChangeEmailImagesWithResponse(ctx context.Context, params *BulkChangeEmailImagesParams, body BulkChangeEmailImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeEmailImagesResponse, error) {
+	rsp, err := c.BulkChangeEmailImages(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeEmailImagesResponse(rsp)
 }
 
 // DeleteEmailImageWithResponse Delete an e-mail image
@@ -154700,6 +157213,66 @@ func (c *ClientWithResponses) CreateHelpArticleWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseCreateHelpArticleResponse(rsp)
+}
+
+// BulkChangeHelpArticlesWithBodyWithResponse Change several articles at once
+//
+// `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+// center's default locale when absent) as `publishHelpArticleTranslation` and
+// `unpublishHelpArticleTranslation`, an article without that translation listed with
+// `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+// `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+// article back. An unknown `collection_id` answers `400`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another center is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Who may, as for each single action, checked once for the whole request (`403`); deleting a
+// published article needs who may publish, per article. Scope: `help:write`; `publish` and
+// `unpublish` need `help:publish` instead.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/help-centers/{centerId}/articles/bulk (the `BulkChangeHelpArticles` operationId).
+func (c *ClientWithResponses) BulkChangeHelpArticlesWithBodyWithResponse(ctx context.Context, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeHelpArticlesResponse, error) {
+	rsp, err := c.BulkChangeHelpArticlesWithBody(ctx, centerId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeHelpArticlesResponse(rsp)
+}
+
+// BulkChangeHelpArticlesWithResponse Change several articles at once
+//
+// `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+// center's default locale when absent) as `publishHelpArticleTranslation` and
+// `unpublishHelpArticleTranslation`, an article without that translation listed with
+// `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+// `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+// article back. An unknown `collection_id` answers `400`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another center is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// Who may, as for each single action, checked once for the whole request (`403`); deleting a
+// published article needs who may publish, per article. Scope: `help:write`; `publish` and
+// `unpublish` need `help:publish` instead.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/help-centers/{centerId}/articles/bulk (the `BulkChangeHelpArticles` operationId).
+func (c *ClientWithResponses) BulkChangeHelpArticlesWithResponse(ctx context.Context, centerId HelpCenterId, params *BulkChangeHelpArticlesParams, body BulkChangeHelpArticlesJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeHelpArticlesResponse, error) {
+	rsp, err := c.BulkChangeHelpArticles(ctx, centerId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeHelpArticlesResponse(rsp)
 }
 
 // DeleteHelpArticleWithResponse Delete an article
@@ -156743,6 +159316,56 @@ func (c *ClientWithResponses) CreateSubscriptionWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseCreateSubscriptionResponse(rsp)
+}
+
+// BulkChangeSubscriptionsWithBodyWithResponse Change several subscriptions at once
+//
+// `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+// no undo); `delete` as `deleteSubscription`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another list is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+// keys. Scope: `lists:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/lists/{listId}/subscriptions/bulk (the `BulkChangeSubscriptions` operationId).
+func (c *ClientWithResponses) BulkChangeSubscriptionsWithBodyWithResponse(ctx context.Context, listId ListId, params *BulkChangeSubscriptionsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*BulkChangeSubscriptionsResponse, error) {
+	rsp, err := c.BulkChangeSubscriptionsWithBody(ctx, listId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeSubscriptionsResponse(rsp)
+}
+
+// BulkChangeSubscriptionsWithResponse Change several subscriptions at once
+//
+// `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+// no undo); `delete` as `deleteSubscription`.
+//
+// Each item is changed in its own transaction by the same code as the single endpoint, with the
+// same events and webhooks; a refused item is listed in `failed` with the status and code the
+// single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+// once. An id the caller cannot see, of another workspace or of another list is listed with
+// `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+//
+// A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+// keys. Scope: `lists:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/lists/{listId}/subscriptions/bulk (the `BulkChangeSubscriptions` operationId).
+func (c *ClientWithResponses) BulkChangeSubscriptionsWithResponse(ctx context.Context, listId ListId, params *BulkChangeSubscriptionsParams, body BulkChangeSubscriptionsJSONRequestBody, reqEditors ...RequestEditorFn) (*BulkChangeSubscriptionsResponse, error) {
+	rsp, err := c.BulkChangeSubscriptions(ctx, listId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseBulkChangeSubscriptionsResponse(rsp)
 }
 
 // DeleteSubscriptionWithResponse Delete a subscription
@@ -169039,6 +171662,53 @@ func ParseCreateBroadcastResponse(rsp *http.Response) (*CreateBroadcastResponse,
 	return response, nil
 }
 
+// ParseBulkChangeBroadcastsResponse parses an HTTP response from a BulkChangeBroadcastsWithResponse call
+func ParseBulkChangeBroadcastsResponse(rsp *http.Response) (*BulkChangeBroadcastsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkChangeBroadcastsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BulkResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDeleteBroadcastResponse parses an HTTP response from a DeleteBroadcastWithResponse call
 func ParseDeleteBroadcastResponse(rsp *http.Response) (*DeleteBroadcastResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -170310,6 +172980,60 @@ func ParseCreateChangelogEntryResponse(rsp *http.Response) (*CreateChangelogEntr
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkChangeChangelogEntriesResponse parses an HTTP response from a BulkChangeChangelogEntriesWithResponse call
+func ParseBulkChangeChangelogEntriesResponse(rsp *http.Response) (*BulkChangeChangelogEntriesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkChangeChangelogEntriesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BulkResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 
@@ -174703,6 +177427,53 @@ func ParseCreateDiscussionResponse(rsp *http.Response) (*CreateDiscussionRespons
 	return response, nil
 }
 
+// ParseBulkChangeDiscussionsResponse parses an HTTP response from a BulkChangeDiscussionsWithResponse call
+func ParseBulkChangeDiscussionsResponse(rsp *http.Response) (*BulkChangeDiscussionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkChangeDiscussionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BulkResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetDiscussionResponse parses an HTTP response from a GetDiscussionWithResponse call
 func ParseGetDiscussionResponse(rsp *http.Response) (*GetDiscussionResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -175867,6 +178638,53 @@ func ParseCreateEmailDesignResponse(rsp *http.Response) (*CreateEmailDesignRespo
 	return response, nil
 }
 
+// ParseBulkChangeEmailDesignsResponse parses an HTTP response from a BulkChangeEmailDesignsWithResponse call
+func ParseBulkChangeEmailDesignsResponse(rsp *http.Response) (*BulkChangeEmailDesignsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkChangeEmailDesignsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BulkResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseRenderEmailDesignResponse parses an HTTP response from a RenderEmailDesignWithResponse call
 func ParseRenderEmailDesignResponse(rsp *http.Response) (*RenderEmailDesignResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -176460,6 +179278,53 @@ func ParseUploadEmailImageResponse(rsp *http.Response) (*UploadEmailImageRespons
 			return nil, err
 		}
 		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkChangeEmailImagesResponse parses an HTTP response from a BulkChangeEmailImagesWithResponse call
+func ParseBulkChangeEmailImagesResponse(rsp *http.Response) (*BulkChangeEmailImagesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkChangeEmailImagesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BulkResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
 
 	}
 
@@ -177161,6 +180026,60 @@ func ParseCreateHelpArticleResponse(rsp *http.Response) (*CreateHelpArticleRespo
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkChangeHelpArticlesResponse parses an HTTP response from a BulkChangeHelpArticlesWithResponse call
+func ParseBulkChangeHelpArticlesResponse(rsp *http.Response) (*BulkChangeHelpArticlesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkChangeHelpArticlesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BulkResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 
@@ -180999,6 +183918,60 @@ func ParseCreateSubscriptionResponse(rsp *http.Response) (*CreateSubscriptionRes
 			return nil, err
 		}
 		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseBulkChangeSubscriptionsResponse parses an HTTP response from a BulkChangeSubscriptionsWithResponse call
+func ParseBulkChangeSubscriptionsResponse(rsp *http.Response) (*BulkChangeSubscriptionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &BulkChangeSubscriptionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest BulkResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 

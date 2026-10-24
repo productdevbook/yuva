@@ -495,14 +495,7 @@ func (s *Server) UpdateDiscussionPost(ctx context.Context, req oas.UpdateDiscuss
 			}
 		}
 		if b.State != nil {
-			if post.DeletedAt != nil {
-				return errDiscussionPostGone
-			}
-			if t, err = loadThread(ctx, q, p.workspaceID, t.d.ID, false); err != nil {
-				return err
-			}
-			post, _ = t.post(req.PostId)
-			return s.moderate(ctx, q, events, t, post, string(*b.State))
+			return s.setPostState(ctx, q, events, t, post, string(*b.State))
 		}
 		return nil
 	})
@@ -516,6 +509,18 @@ func (s *Server) UpdateDiscussionPost(ctx context.Context, req oas.UpdateDiscuss
 	return oas.UpdateDiscussionPost200JSONResponse(out), nil
 }
 
+func (s *Server) setPostState(ctx context.Context, q *store.Queries, events *eventBatch, t thread, post store.DiscussionPostView, state string) error {
+	if post.DeletedAt != nil {
+		return errDiscussionPostGone
+	}
+	t, err := loadThread(ctx, q, t.d.WorkspaceID, t.d.ID, false)
+	if err != nil {
+		return err
+	}
+	post, _ = t.post(post.ID)
+	return s.moderate(ctx, q, events, t, post, state)
+}
+
 func (s *Server) DeleteDiscussionPost(ctx context.Context, req oas.DeleteDiscussionPostRequestObject) (oas.DeleteDiscussionPostResponseObject, error) {
 	p := principalFrom(ctx)
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
@@ -523,18 +528,22 @@ func (s *Server) DeleteDiscussionPost(ctx context.Context, req oas.DeleteDiscuss
 		if err != nil {
 			return err
 		}
-		if post.DeletedAt != nil {
-			return errDiscussionPostGone
-		}
-		if !memberActor(p).owns(post) {
-			return errNotPostAuthor
-		}
-		return s.deletePost(ctx, q, events, t, post)
+		return s.deleteOwnPost(ctx, q, events, p, t, post)
 	})
 	if err != nil {
 		return nil, err
 	}
 	return oas.DeleteDiscussionPost204Response{}, nil
+}
+
+func (s *Server) deleteOwnPost(ctx context.Context, q *store.Queries, events *eventBatch, p principal, t thread, post store.DiscussionPostView) error {
+	if post.DeletedAt != nil {
+		return errDiscussionPostGone
+	}
+	if !memberActor(p).owns(post) {
+		return errNotPostAuthor
+	}
+	return s.deletePost(ctx, q, events, t, post)
 }
 
 func (s *Server) MarkDiscussionPostSpam(ctx context.Context, req oas.MarkDiscussionPostSpamRequestObject) (oas.MarkDiscussionPostSpamResponseObject, error) {
