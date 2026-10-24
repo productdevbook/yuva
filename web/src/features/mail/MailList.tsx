@@ -77,7 +77,7 @@ function Row({
   checked: boolean
   showInbox: boolean
   scheduledAt?: string
-  onOpen: () => void
+  onOpen: (range: boolean) => void
   onStar: () => void
 }) {
   const { t, i18n } = useLingui()
@@ -117,7 +117,7 @@ function Row({
       </button>
       <button
         type="button"
-        onClick={onOpen}
+        onClick={(e) => onOpen(e.shiftKey)}
         className="flex min-w-0 flex-1 items-start gap-2.5 py-3 ps-1 pe-3.5 text-start outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
         aria-current={current || undefined}
         aria-pressed={selecting ? checked : undefined}
@@ -248,6 +248,7 @@ export function MailList({
   const [nearEnd, setNearEnd] = useState(false)
   const [selecting, setSelecting] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
+  const anchor = useRef<string | null>(null)
   const list = useConversations(mailFilters(box, folder, q))
   const rows = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, active, scroller)
@@ -285,19 +286,27 @@ export function MailList({
     if (nearEnd && hasNextPage && !isFetchingNextPage) void fetchNextPage()
   }, [nearEnd, hasNextPage, isFetchingNextPage, fetchNextPage, rows.length])
 
-  const toggle = (id: string) => {
+  const toggle = (id: string, range = false) => {
     setSelecting(true)
+    const ids = rows.map((c) => c.id)
+    const from = anchor.current ? ids.indexOf(anchor.current) : -1
+    const to = ids.indexOf(id)
     setSelected((s) => {
       const next = new Set(s)
-      if (!next.delete(id)) next.add(id)
+      if (range && from >= 0 && to >= 0) {
+        for (let i = Math.min(from, to); i <= Math.max(from, to); i++) next.add(ids[i])
+      } else if (!next.delete(id)) next.add(id)
       return next
     })
+    anchor.current = id
   }
   const stopSelecting = () => {
     setSelecting(false)
     setSelected(new Set())
+    anchor.current = null
   }
   const chosenRows = rows.filter((c) => selected.has(c.id))
+  const allPicked = rows.length > 0 && chosenRows.length === rows.length
   const chosen = chosenRows.map((c) => c.id)
   const picked = chosen.length
   const none = picked === 0
@@ -485,6 +494,16 @@ export function MailList({
       <span className="me-1 min-w-0 truncate text-small font-medium" aria-live="polite">
         {none ? <Trans>Pick mails</Trans> : <Trans>Selected: {picked}</Trans>}
       </span>
+      <Button
+        variant="outline"
+        className={look.btnSm}
+        disabled={rows.length === 0}
+        onClick={() => setSelected(allPicked ? new Set() : new Set(rows.map((c) => c.id)))}
+        aria-pressed={allPicked}
+        data-testid="select-all"
+      >
+        <Trans>Select all</Trans>
+      </Button>
       {inTrash ? (
         <>
           <Button
@@ -657,7 +676,7 @@ export function MailList({
               checked={selected.has(c.id)}
               showInbox={box === "all"}
               scheduledAt={folder === "scheduled" ? c.scheduled_at : undefined}
-              onOpen={() => (selecting ? toggle(c.id) : onOpen(c.id))}
+              onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
               onStar={() => star([c.id], !c.starred)}
             />
           ))

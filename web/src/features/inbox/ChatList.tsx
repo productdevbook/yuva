@@ -227,7 +227,7 @@ function Row({
   live: boolean
   selecting: boolean
   checked: boolean
-  onOpen: () => void
+  onOpen: (range: boolean) => void
 }) {
   const { t, i18n } = useLingui()
   const channel = useChannelMap().get(c.channel_id ?? "")
@@ -249,7 +249,7 @@ function Row({
   return (
     <button
       type="button"
-      onClick={onOpen}
+      onClick={(e) => onOpen(e.shiftKey)}
       className={cn(
         "group flex w-full items-start gap-2.5 border-b px-3.5 py-3 text-start outline-none transition-colors",
         current ? "bg-surface" : "hover:bg-surface",
@@ -749,6 +749,7 @@ export function ChatList({
   const [nearEnd, setNearEnd] = useState(false)
   const [selecting, setSelecting] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
+  const anchor = useRef<string | null>(null)
   const [linking, setLinking] = useState(false)
   const view = useActiveView()
   const sort: Order = order ?? (view.id ? (view.sla ? "sla_due" : "newest") : chip === "waiting" ? "oldest" : "newest")
@@ -837,20 +838,28 @@ export function ChatList({
     if (next) onOpen(next)
   })
 
-  const toggle = (id: string) => {
+  const toggle = (id: string, range = false) => {
     setSelecting(true)
+    const ids = rows.map((c) => c.id)
+    const from = anchor.current ? ids.indexOf(anchor.current) : -1
+    const to = ids.indexOf(id)
     setSelected((s) => {
       const next = new Set(s)
-      if (!next.delete(id)) next.add(id)
+      if (range && from >= 0 && to >= 0) {
+        for (let i = Math.min(from, to); i <= Math.max(from, to); i++) next.add(ids[i])
+      } else if (!next.delete(id)) next.add(id)
       return next
     })
+    anchor.current = id
   }
   const stopSelecting = () => {
     setSelecting(false)
     setSelected(new Set())
+    anchor.current = null
   }
   const linkKey = keyLabel(SHORTCUTS.linkSelected).join("")
   const chosenRows = rows.filter((c) => selected.has(c.id))
+  const allPicked = rows.length > 0 && chosenRows.length === rows.length
   const chosen = chosenRows.map((c) => c.id)
   const picked = chosen.length
   useHotkeys(
@@ -1182,6 +1191,16 @@ export function ChatList({
       <span className="me-1 min-w-0 truncate text-small font-medium" aria-live="polite">
         {none ? <Trans>Pick conversations</Trans> : <Trans>Selected: {picked}</Trans>}
       </span>
+      <Button
+        variant="outline"
+        className={look.btnSm}
+        disabled={rows.length === 0}
+        onClick={() => setSelected(allPicked ? new Set() : new Set(rows.map((c) => c.id)))}
+        aria-pressed={allPicked}
+        data-testid="select-all"
+      >
+        <Trans>Select all</Trans>
+      </Button>
       {inTrash ? (
         <>
           <Button
@@ -1476,7 +1495,7 @@ export function ChatList({
                 live={live.has(c.id)}
                 selecting={selecting}
                 checked={selected.has(c.id)}
-                onOpen={() => (selecting ? toggle(c.id) : onOpen(c.id))}
+                onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
               />
             ))}
             {pinnedRows.length > 0 && mainRows.length > 0 && (
@@ -1491,7 +1510,7 @@ export function ChatList({
                 live={live.has(c.id)}
                 selecting={selecting}
                 checked={selected.has(c.id)}
-                onOpen={() => (selecting ? toggle(c.id) : onOpen(c.id))}
+                onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
               />
             ))}
           </>
