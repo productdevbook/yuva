@@ -412,6 +412,7 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
   const markUnread = () => {
     marked.current = lastId ?? null
     listActions.markUnread(c.id)
+    toast(t`Marked as unread`, () => listActions.markRead(c.id))
     onLeave()
   }
   const toggleStar = () => star([c.id], !starred)
