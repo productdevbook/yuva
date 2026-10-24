@@ -1,8 +1,8 @@
 -- name: CreateInbox :one
-INSERT INTO inboxes (id, workspace_id, name, slug, branding, default_locale, timezone, mode,
+INSERT INTO inboxes (id, workspace_id, name, slug, purpose, branding, default_locale, timezone, mode,
                      expected_reply_minutes, business_hours, identity_secret, ask_for_rating, rating_since,
                      assignment_mode, assignment_cap, created_at, updated_at)
-VALUES (@id, @workspace_id, @name, @slug, @branding, @default_locale, @timezone, @mode,
+VALUES (@id, @workspace_id, @name, @slug, @purpose, @branding, @default_locale, @timezone, @mode,
         @expected_reply_minutes, @business_hours, @identity_secret, coalesce(sqlc.narg(ask_for_rating)::bool, false),
         CASE WHEN sqlc.narg(ask_for_rating)::bool THEN @now::timestamptz END, @assignment_mode, @assignment_cap, @now, @now)
 RETURNING *;
@@ -22,7 +22,7 @@ WHERE i.workspace_id = @workspace_id
 ORDER BY i.name, i.id;
 
 -- name: UpdateInbox :one
-UPDATE inboxes SET name = @name, slug = @slug, branding = @branding, default_locale = @default_locale,
+UPDATE inboxes SET name = @name, slug = @slug, purpose = @purpose, branding = @branding, default_locale = @default_locale,
     timezone = @timezone, mode = @mode, expected_reply_minutes = @expected_reply_minutes,
     business_hours = @business_hours, ask_for_rating = @ask_for_rating,
     assignment_mode = @assignment_mode, assignment_cap = @assignment_cap,
@@ -87,3 +87,25 @@ WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND kind = 'feedback
 
 -- name: ShareInboxFeedbackCategories :one
 SELECT feedback_categories FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE;
+
+-- name: ShareInboxPurpose :one
+SELECT purpose FROM inboxes WHERE workspace_id = @workspace_id AND id = @id FOR SHARE;
+
+-- name: ListInboxPurposes :many
+SELECT id, purpose FROM inboxes WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);
+
+-- name: InboxSupportLinks :one
+SELECT
+    coalesce((SELECT array_agg(DISTINCT ch.kind ORDER BY ch.kind) FROM channels ch
+              WHERE ch.workspace_id = @workspace_id AND ch.inbox_id = @inbox_id AND ch.kind <> 'email'), '{}')::text[] AS channel_kinds,
+    EXISTS (SELECT 1 FROM help_centers h WHERE h.workspace_id = @workspace_id AND h.inbox_id = @inbox_id)::bool AS help_center,
+    EXISTS (SELECT 1 FROM status_pages sp WHERE sp.workspace_id = @workspace_id AND sp.inbox_id = @inbox_id)::bool AS status_page,
+    EXISTS (SELECT 1 FROM roadmap_boards rb WHERE rb.workspace_id = @workspace_id AND rb.inbox_id = @inbox_id)::bool AS roadmap_board,
+    EXISTS (SELECT 1 FROM changelogs cl WHERE cl.workspace_id = @workspace_id AND cl.inbox_id = @inbox_id)::bool AS whats_new,
+    EXISTS (SELECT 1 FROM sla_policies p WHERE p.workspace_id = @workspace_id AND @inbox_id::uuid = ANY (p.inbox_ids))::bool AS sla_policy;
+
+-- name: ListInboxSLAConversations :many
+SELECT s.conversation_id FROM conversation_sla s
+JOIN conversations c ON c.workspace_id = s.workspace_id AND c.id = s.conversation_id
+WHERE s.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND s.dropped_at IS NULL
+ORDER BY s.conversation_id;

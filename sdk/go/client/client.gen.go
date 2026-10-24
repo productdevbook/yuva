@@ -1136,6 +1136,7 @@ const (
 	AuditConversationTrashed                 AuditAction = "conversation.trashed"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
+	AuditInboxPurposeChanged                 AuditAction = "inbox.purpose_changed"
 	AuditInviteCreated                       AuditAction = "invite.created"
 	AuditInviteDeleted                       AuditAction = "invite.deleted"
 	AuditIssueIntegrationConnected           AuditAction = "issue_integration.connected"
@@ -1229,6 +1230,8 @@ func (e AuditAction) Valid() bool {
 	case AuditInboxDeleted:
 		return true
 	case AuditInboxIdentitySecretRotated:
+		return true
+	case AuditInboxPurposeChanged:
 		return true
 	case AuditInviteCreated:
 		return true
@@ -4179,6 +4182,24 @@ func (e InboxMode) Valid() bool {
 	case Async:
 		return true
 	case Live:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InboxPurpose.
+const (
+	InboxPurposeMail    InboxPurpose = "mail"
+	InboxPurposeSupport InboxPurpose = "support"
+)
+
+// Valid indicates whether the value is a known member of the InboxPurpose enum.
+func (e InboxPurpose) Valid() bool {
+	switch e {
+	case InboxPurposeMail:
+		return true
+	case InboxPurposeSupport:
 		return true
 	default:
 		return false
@@ -7800,6 +7821,21 @@ func (e ListConversationsParamsIdea) Valid() bool {
 	}
 }
 
+// Defines values for ListConversationsParamsSent.
+const (
+	ListConversationsSentMine ListConversationsParamsSent = "mine"
+)
+
+// Valid indicates whether the value is a known member of the ListConversationsParamsSent enum.
+func (e ListConversationsParamsSent) Valid() bool {
+	switch e {
+	case ListConversationsSentMine:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListConversationsParamsSort.
 const (
 	ListConversationsSortLastActivity ListConversationsParamsSort = "last_activity"
@@ -9994,7 +10030,8 @@ type Attributes map[string]interface{}
 //     channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
 //     `address`, by `operator`, when the server's operator vouched for the address with
 //     `yuva channel prove`.
-//   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+//   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
+//     `from`, `to`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 //     `inbox_name`.
@@ -10117,7 +10154,8 @@ type AuditEntry struct {
 	//   channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
 	//   `address`, by `operator`, when the server's operator vouched for the address with
 	//   `yuva channel prove`.
-	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
+	//   `from`, `to`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 	//   `inbox_name`.
@@ -13361,6 +13399,9 @@ type Conversation struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// InboxPurpose Read-only, the `purpose` of its inbox as it is now, so receivers of events and webhooks can tell team mail from support.
+	InboxPurpose InboxPurpose `json:"inbox_purpose"`
+
 	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
 	Issues *[]IssueLink `json:"issues,omitempty"`
 
@@ -13403,7 +13444,13 @@ type Conversation struct {
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
-	Spam    bool               `json:"spam"`
+	Spam bool `json:"spam"`
+
+	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
+	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
+	// `conversation.updated` event a member's own star change sends to their connections;
+	// absent for API keys, in webhooks and in other events.
+	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
@@ -13500,6 +13547,9 @@ type ConversationCounts struct {
 
 	// Spam Open conversations flagged as spam (not included in the other counts).
 	Spam int64 `json:"spam"`
+
+	// Starred Starred by the calling member (`0` for API keys).
+	Starred int64 `json:"starred"`
 
 	// Teams Per assigned team id.
 	Teams      []CountByID `json:"teams"`
@@ -13672,6 +13722,9 @@ type ConversationListItem struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// InboxPurpose Read-only, the `purpose` of its inbox as it is now, so receivers of events and webhooks can tell team mail from support.
+	InboxPurpose InboxPurpose `json:"inbox_purpose"`
+
 	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
 	Issues *[]IssueLink `json:"issues,omitempty"`
 
@@ -13720,7 +13773,13 @@ type ConversationListItem struct {
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
-	Spam    bool               `json:"spam"`
+	Spam bool `json:"spam"`
+
+	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
+	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
+	// `conversation.updated` event a member's own star change sends to their connections;
+	// absent for API keys, in webhooks and in other events.
+	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
@@ -17296,6 +17355,17 @@ type Inbox struct {
 	Mode InboxMode `json:"mode"`
 	Name string    `json:"name"`
 
+	// Purpose `support` (the default, and every inbox made before purposes existed) or `mail`, a team
+	// mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
+	// it asks no rating, sends no greeting auto-reply, assigns nothing automatically
+	// (`assignment_mode` must stay `off`), gets no SLA targets, cannot be the inbox of a help
+	// center, status page, roadmap board, What's new or SLA policy, and is left out of support
+	// stats, reports and the Home support blocks. Settings that only change behaviour
+	// (`ask_for_rating`, `expected_reply_minutes`, `business_hours`, `branding.greeting`) are kept
+	// as stored and apply again when the inbox becomes `support`. Conversations keep their model;
+	// the panel shows `closed` as Archived in a `mail` inbox.
+	Purpose InboxPurpose `json:"purpose"`
+
 	// Sender Who sends the inbox's list mail, for the footer the law asks for (CAN-SPAM, CASL, Türkiye's
 	// Regulation on Commercial Communication): the legal name, a postal address, a registration
 	// such as a MERSİS number or VAT id, and a contact (an e-mail address, phone or URL).
@@ -17377,6 +17447,9 @@ type InboxCreate struct {
 	// time instead.
 	Mode *InboxMode `json:"mode,omitempty"`
 	Name string     `json:"name"`
+
+	// Purpose Defaults to `support`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
+	Purpose *InboxPurpose `json:"purpose,omitempty"`
 
 	// Slug Examples: acme-app
 	Slug Slug `json:"slug"`
@@ -17521,6 +17594,17 @@ type InboxNotificationsUpdate struct {
 	Events NotificationEventsUpdate `json:"events"`
 }
 
+// InboxPurpose `support` (the default, and every inbox made before purposes existed) or `mail`, a team
+// mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
+// it asks no rating, sends no greeting auto-reply, assigns nothing automatically
+// (`assignment_mode` must stay `off`), gets no SLA targets, cannot be the inbox of a help
+// center, status page, roadmap board, What's new or SLA policy, and is left out of support
+// stats, reports and the Home support blocks. Settings that only change behaviour
+// (`ask_for_rating`, `expected_reply_minutes`, `business_hours`, `branding.greeting`) are kept
+// as stored and apply again when the inbox becomes `support`. Conversations keep their model;
+// the panel shows `closed` as Archived in a `mail` inbox.
+type InboxPurpose string
+
 // InboxRatingStats defines model for InboxRatingStats.
 type InboxRatingStats struct {
 	Bad     int64     `json:"bad"`
@@ -17639,6 +17723,14 @@ type InboxUpdate struct {
 	// time instead.
 	Mode *InboxMode `json:"mode,omitempty"`
 	Name *string    `json:"name,omitempty"`
+
+	// Purpose `mail` to `support` is always allowed. `support` to `mail` answers `409
+	// purpose_mismatch`, naming what blocks it, while the inbox has a `chat`, `app` or `api`
+	// channel, a help center, status page, roadmap board or What's new, or is named in an SLA
+	// policy's `inbox_ids`, or while `assignment_mode` is not `off` (send `assignment_mode:
+	// off` in the same request). Teams granted the inbox do not block it. Conversations of
+	// the inbox lose their running SLA targets at once. Audited as `inbox.purpose_changed`.
+	Purpose *InboxPurpose `json:"purpose,omitempty"`
 
 	// Sender Owners, admins and keys with `inboxes:manage`.
 	Sender *InboxSenderUpdate `json:"sender,omitempty"`
@@ -22271,6 +22363,9 @@ type StatusIncidentConversation struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// InboxPurpose Read-only, the `purpose` of its inbox as it is now, so receivers of events and webhooks can tell team mail from support.
+	InboxPurpose InboxPurpose `json:"inbox_purpose"`
+
 	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
 	Issues *[]IssueLink `json:"issues,omitempty"`
 
@@ -22320,7 +22415,13 @@ type StatusIncidentConversation struct {
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
-	Spam    bool               `json:"spam"`
+	Spam bool `json:"spam"`
+
+	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
+	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
+	// `conversation.updated` event a member's own star change sends to their connections;
+	// absent for API keys, in webhooks and in other events.
+	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
@@ -24353,6 +24454,17 @@ type ImportId = uuid.UUID
 // InboxId defines model for InboxId.
 type InboxId = uuid.UUID
 
+// InboxPurposeFilter `support` (the default, and every inbox made before purposes existed) or `mail`, a team
+// mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
+// it asks no rating, sends no greeting auto-reply, assigns nothing automatically
+// (`assignment_mode` must stay `off`), gets no SLA targets, cannot be the inbox of a help
+// center, status page, roadmap board, What's new or SLA policy, and is left out of support
+// stats, reports and the Home support blocks. Settings that only change behaviour
+// (`ask_for_rating`, `expected_reply_minutes`, `business_hours`, `branding.greeting`) are kept
+// as stored and apply again when the inbox becomes `support`. Conversations keep their model;
+// the panel shows `closed` as Archived in a `mail` inbox.
+type InboxPurposeFilter = InboxPurpose
+
 // InviteId defines model for InviteId.
 type InviteId = uuid.UUID
 
@@ -25817,6 +25929,18 @@ type ListConversationsParams struct {
 	// without it, both. Member sessions only (`400 validation_failed` for API keys).
 	Pinned *bool `form:"pinned,omitempty" json:"pinned,omitempty"`
 
+	// Purpose Only conversations of inboxes with this `purpose`; without it, every inbox.
+	Purpose *InboxPurposeFilter `form:"purpose,omitempty" json:"purpose,omitempty"`
+
+	// Starred `true` lists only the conversations the calling member starred, `false` only the
+	// others; without it, both. Member sessions only (`400 validation_failed` for API keys).
+	Starred *bool `form:"starred,omitempty" json:"starred,omitempty"`
+
+	// Sent `mine` lists only the conversations in which the calling member wrote a public
+	// outbound message (sent, not a draft or note), the Sent folder. Member sessions only
+	// (`400 validation_failed` for API keys).
+	Sent *ListConversationsParamsSent `form:"sent,omitempty" json:"sent,omitempty"`
+
 	// Sort `last_activity` (the default): most recent activity first. `sla_due`: conversations
 	// with a running SLA target first, the earliest `sla.due_at` first (so breached ones
 	// lead), then the others by most recent activity. A cursor continues only the order it
@@ -25846,6 +25970,9 @@ type ListConversationsParamsTeam string
 // ListConversationsParamsIdea defines parameters for ListConversations.
 type ListConversationsParamsIdea string
 
+// ListConversationsParamsSent defines parameters for ListConversations.
+type ListConversationsParamsSent string
+
 // ListConversationsParamsSort defines parameters for ListConversations.
 type ListConversationsParamsSort string
 
@@ -25873,6 +26000,9 @@ type GetConversationCountsParams struct {
 	// parameter (`kind=feedback&kind=conversation`) or give a comma-separated list
 	// (`kind=feedback,conversation`).
 	Kind *ConversationKinds `form:"kind,omitempty" json:"kind,omitempty"`
+
+	// Purpose Only conversations of inboxes with this `purpose`; without it, every inbox.
+	Purpose *InboxPurposeFilter `form:"purpose,omitempty" json:"purpose,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -26020,6 +26150,18 @@ type MarkConversationReadParams struct {
 
 // RestoreConversationParams defines parameters for RestoreConversation.
 type RestoreConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnstarConversationParams defines parameters for UnstarConversation.
+type UnstarConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// StarConversationParams defines parameters for StarConversation.
+type StarConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -37087,6 +37229,8 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
 	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with POST /v1/changelogs (the `CreateChangelog` operationId).
@@ -37102,6 +37246,8 @@ type ClientInterface interface {
 	// and accent colour of the public pages are the inbox's branding.
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
+	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -38007,7 +38153,11 @@ type ClientInterface interface {
 	//
 	// `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
 	// the panel's Conversations view sends `kind=conversation`, its Feedback section
-	// `kind=feedback`. Without it every kind is counted.
+	// `kind=feedback`. Without it every kind is counted. `purpose` counts only the inboxes of
+	// that purpose: the panel's Mail section sends `purpose=mail`.
+	//
+	// `starred` counts the open conversations the calling member starred (`0` for API keys),
+	// spam left out.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -38469,6 +38619,9 @@ type ClientInterface interface {
 	// `conversation.updated` reports the new inbox; members watching the old one get
 	// `conversation.moved`.
 	//
+	// Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+	// refused with `409 purpose_mismatch`.
+	//
 	// Scope: `conversations:write`.
 	//
 	// Takes any type of body and a specified content type.
@@ -38487,6 +38640,9 @@ type ClientInterface interface {
 	// timeline gets a `moved` event.
 	// `conversation.updated` reports the new inbox; members watching the old one get
 	// `conversation.moved`.
+	//
+	// Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+	// refused with `409 purpose_mismatch`.
 	//
 	// Scope: `conversations:write`.
 	//
@@ -38606,6 +38762,24 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/restore (the `RestoreConversation` operationId).
 	RestoreConversation(ctx context.Context, conversationId ConversationId, params *RestoreConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnstarConversation Remove a star
+	//
+	// Takes the calling member's star away; unstarring a conversation that is not starred
+	// changes nothing. Events as for starring. Member sessions only.
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId}/star (the `UnstarConversation` operationId).
+	UnstarConversation(ctx context.Context, conversationId ConversationId, params *UnstarConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// StarConversation Star a conversation
+	//
+	// Stars the conversation for the calling member; nobody else sees it. Starring a starred
+	// conversation changes nothing. The member's own connections get a `conversation.updated`
+	// event with `starred` when it changes; nobody else does, and no webhook is sent. Member
+	// sessions only (`403 member_session_required` for API keys and OAuth tokens).
+	//
+	// Corresponds with PUT /v1/conversations/{conversationId}/star (the `StarConversation` operationId).
+	StarConversation(ctx context.Context, conversationId ConversationId, params *StarConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SetMemberTypingWithBody Tell others you are typing
 	//
@@ -39553,6 +39727,8 @@ type ClientInterface interface {
 	// workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
 	// gets an `api` channel named `API` on the first request.
 	//
+	// A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
+	//
 	// Scope: `feedback:write`.
 	//
 	// The contact is found by the external id in the inbox, then by `contact.email`, or created;
@@ -39575,6 +39751,8 @@ type ClientInterface interface {
 	// for its user `contact.external_id` in `inbox_id`, which may be any inbox of the key's
 	// workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
 	// gets an `api` channel named `API` on the first request.
+	//
+	// A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
 	//
 	// Scope: `feedback:write`.
 	//
@@ -39612,6 +39790,8 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
 	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with POST /v1/help-centers (the `CreateHelpCenter` operationId).
@@ -39627,6 +39807,8 @@ type ClientInterface interface {
 	// same inbox, `analytics_property_id` a property of the workspace.
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
+	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -40253,7 +40435,8 @@ type ClientInterface interface {
 	// CreateInboxWithBody Create an inbox
 	//
 	// Owners, admins and API keys. A new identity secret is generated; it is
-	// returned here and on rotation only, and stored encrypted.
+	// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+	// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -40265,7 +40448,8 @@ type ClientInterface interface {
 	// CreateInbox Create an inbox
 	//
 	// Owners, admins and API keys. A new identity secret is generated; it is
-	// returned here and on rotation only, and stored encrypted.
+	// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+	// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -40295,7 +40479,8 @@ type ClientInterface interface {
 
 	// UpdateInboxWithBody Update an inbox
 	//
-	// Owners, admins and API keys.
+	// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+	// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -40306,7 +40491,8 @@ type ClientInterface interface {
 
 	// UpdateInbox Update an inbox
 	//
-	// Owners, admins and API keys.
+	// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+	// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -40335,6 +40521,9 @@ type ClientInterface interface {
 	// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
 	// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 	//
+	// A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+	// purpose_mismatch`.
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes any type of body and a specified content type.
@@ -40354,6 +40543,9 @@ type ClientInterface interface {
 	// proved it holds it. The same address twice in this workspace answers
 	// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
 	// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
+	//
+	// A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+	// purpose_mismatch`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -42477,6 +42669,8 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
 	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with POST /v1/roadmap-boards (the `CreateRoadmapBoard` operationId).
@@ -42492,6 +42686,8 @@ type ClientInterface interface {
 	// `suggestions` defaults to `moderated`. A server with `YUVA_ROADMAP=off` answers `404 roadmap_off`.
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
+	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -42581,6 +42777,9 @@ type ClientInterface interface {
 	// without an SLA the next time it changes or gets a message, and to one with an SLA when its
 	// priority, labels or inbox change.
 	//
+	// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+	// `inbox_ids` never applies to `mail` inboxes.
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes any type of body and a specified content type.
@@ -42594,6 +42793,9 @@ type ClientInterface interface {
 	// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
 	// without an SLA the next time it changes or gets a message, and to one with an SLA when its
 	// priority, labels or inbox change.
+	//
+	// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+	// `inbox_ids` never applies to `mail` inboxes.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -42656,6 +42858,8 @@ type ClientInterface interface {
 	// not count if one applies again. Conversations it newly matches pick it up as for a new
 	// policy.
 	//
+	// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes any type of body and a specified content type.
@@ -42672,6 +42876,8 @@ type ClientInterface interface {
 	// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
 	// not count if one applies again. Conversations it newly matches pick it up as for a new
 	// policy.
+	//
+	// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -43002,6 +43208,8 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys. Scope: `status:manage`.
 	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with POST /v1/status-pages (the `CreateStatusPage` operationId).
@@ -43016,6 +43224,8 @@ type ClientInterface interface {
 	// to the inbox's.
 	//
 	// Owners, admins and API keys. Scope: `status:manage`.
+	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -49574,6 +49784,8 @@ func (c *Client) ListChangelogs(ctx context.Context, params *ListChangelogsParam
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
 //
+// A `mail` inbox answers `409 purpose_mismatch`.
+//
 // Takes any type of body and a specified content type.
 //
 // Corresponds with POST /v1/changelogs (the `CreateChangelog` operationId).
@@ -49599,6 +49811,8 @@ func (c *Client) CreateChangelogWithBody(ctx context.Context, params *CreateChan
 // and accent colour of the public pages are the inbox's branding.
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
+//
+// A `mail` inbox answers `409 purpose_mismatch`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -51154,7 +51368,11 @@ func (c *Client) BulkUpdateConversations(ctx context.Context, params *BulkUpdate
 //
 // `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
 // the panel's Conversations view sends `kind=conversation`, its Feedback section
-// `kind=feedback`. Without it every kind is counted.
+// `kind=feedback`. Without it every kind is counted. `purpose` counts only the inboxes of
+// that purpose: the panel's Mail section sends `purpose=mail`.
+//
+// `starred` counts the open conversations the calling member starred (`0` for API keys),
+// spam left out.
 //
 // Scope: `conversations:read`.
 //
@@ -51786,6 +52004,9 @@ func (c *Client) CreateMessage(ctx context.Context, conversationId ConversationI
 // `conversation.updated` reports the new inbox; members watching the old one get
 // `conversation.moved`.
 //
+// Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+// refused with `409 purpose_mismatch`.
+//
 // Scope: `conversations:write`.
 //
 // Takes any type of body and a specified content type.
@@ -51814,6 +52035,9 @@ func (c *Client) MoveConversationWithBody(ctx context.Context, conversationId Co
 // timeline gets a `moved` event.
 // `conversation.updated` reports the new inbox; members watching the old one get
 // `conversation.moved`.
+//
+// Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+// refused with `409 purpose_mismatch`.
 //
 // Scope: `conversations:write`.
 //
@@ -52024,6 +52248,44 @@ func (c *Client) MarkConversationRead(ctx context.Context, conversationId Conver
 // Corresponds with POST /v1/conversations/{conversationId}/restore (the `RestoreConversation` operationId).
 func (c *Client) RestoreConversation(ctx context.Context, conversationId ConversationId, params *RestoreConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRestoreConversationRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UnstarConversation Remove a star
+//
+// Takes the calling member's star away; unstarring a conversation that is not starred
+// changes nothing. Events as for starring. Member sessions only.
+//
+// Corresponds with DELETE /v1/conversations/{conversationId}/star (the `UnstarConversation` operationId).
+func (c *Client) UnstarConversation(ctx context.Context, conversationId ConversationId, params *UnstarConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnstarConversationRequest(c.Server, conversationId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// StarConversation Star a conversation
+//
+// Stars the conversation for the calling member; nobody else sees it. Starring a starred
+// conversation changes nothing. The member's own connections get a `conversation.updated`
+// event with `starred` when it changes; nobody else does, and no webhook is sent. Member
+// sessions only (`403 member_session_required` for API keys and OAuth tokens).
+//
+// Corresponds with PUT /v1/conversations/{conversationId}/star (the `StarConversation` operationId).
+func (c *Client) StarConversation(ctx context.Context, conversationId ConversationId, params *StarConversationParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewStarConversationRequest(c.Server, conversationId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -53650,6 +53912,8 @@ func (c *Client) GetLatestEvent(ctx context.Context, params *GetLatestEventParam
 // workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
 // gets an `api` channel named `API` on the first request.
 //
+// A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
+//
 // Scope: `feedback:write`.
 //
 // The contact is found by the external id in the inbox, then by `contact.email`, or created;
@@ -53682,6 +53946,8 @@ func (c *Client) CreateFeedbackWithBody(ctx context.Context, params *CreateFeedb
 // for its user `contact.external_id` in `inbox_id`, which may be any inbox of the key's
 // workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
 // gets an `api` channel named `API` on the first request.
+//
+// A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
 //
 // Scope: `feedback:write`.
 //
@@ -53739,6 +54005,8 @@ func (c *Client) ListHelpCenters(ctx context.Context, params *ListHelpCentersPar
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
 //
+// A `mail` inbox answers `409 purpose_mismatch`.
+//
 // Takes any type of body and a specified content type.
 //
 // Corresponds with POST /v1/help-centers (the `CreateHelpCenter` operationId).
@@ -53764,6 +54032,8 @@ func (c *Client) CreateHelpCenterWithBody(ctx context.Context, params *CreateHel
 // same inbox, `analytics_property_id` a property of the workspace.
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
+//
+// A `mail` inbox answers `409 purpose_mismatch`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -54810,7 +55080,8 @@ func (c *Client) ListInboxes(ctx context.Context, params *ListInboxesParams, req
 // CreateInboxWithBody Create an inbox
 //
 // Owners, admins and API keys. A new identity secret is generated; it is
-// returned here and on rotation only, and stored encrypted.
+// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -54832,7 +55103,8 @@ func (c *Client) CreateInboxWithBody(ctx context.Context, params *CreateInboxPar
 // CreateInbox Create an inbox
 //
 // Owners, admins and API keys. A new identity secret is generated; it is
-// returned here and on rotation only, and stored encrypted.
+// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -54892,7 +55164,8 @@ func (c *Client) GetInbox(ctx context.Context, inboxId InboxId, params *GetInbox
 
 // UpdateInboxWithBody Update an inbox
 //
-// Owners, admins and API keys.
+// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -54913,7 +55186,8 @@ func (c *Client) UpdateInboxWithBody(ctx context.Context, inboxId InboxId, param
 
 // UpdateInbox Update an inbox
 //
-// Owners, admins and API keys.
+// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -54962,6 +55236,9 @@ func (c *Client) ListChannels(ctx context.Context, inboxId InboxId, params *List
 // `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
 // provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 //
+// A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+// purpose_mismatch`.
+//
 // Scope: `inboxes:manage`.
 //
 // Takes any type of body and a specified content type.
@@ -54991,6 +55268,9 @@ func (c *Client) CreateChannelWithBody(ctx context.Context, inboxId InboxId, par
 // proved it holds it. The same address twice in this workspace answers
 // `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
 // provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
+//
+// A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+// purpose_mismatch`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -58594,6 +58874,8 @@ func (c *Client) ListRoadmapBoards(ctx context.Context, params *ListRoadmapBoard
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
 //
+// A `mail` inbox answers `409 purpose_mismatch`.
+//
 // Takes any type of body and a specified content type.
 //
 // Corresponds with POST /v1/roadmap-boards (the `CreateRoadmapBoard` operationId).
@@ -58619,6 +58901,8 @@ func (c *Client) CreateRoadmapBoardWithBody(ctx context.Context, params *CreateR
 // `suggestions` defaults to `moderated`. A server with `YUVA_ROADMAP=off` answers `404 roadmap_off`.
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
+//
+// A `mail` inbox answers `409 purpose_mismatch`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -58778,6 +59062,9 @@ func (c *Client) ListSlaPolicies(ctx context.Context, params *ListSlaPoliciesPar
 // without an SLA the next time it changes or gets a message, and to one with an SLA when its
 // priority, labels or inbox change.
 //
+// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+// `inbox_ids` never applies to `mail` inboxes.
+//
 // Scope: `inboxes:manage`.
 //
 // Takes any type of body and a specified content type.
@@ -58801,6 +59088,9 @@ func (c *Client) CreateSlaPolicyWithBody(ctx context.Context, params *CreateSlaP
 // workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
 // without an SLA the next time it changes or gets a message, and to one with an SLA when its
 // priority, labels or inbox change.
+//
+// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+// `inbox_ids` never applies to `mail` inboxes.
 //
 // Scope: `inboxes:manage`.
 //
@@ -58913,6 +59203,8 @@ func (c *Client) GetSlaPolicy(ctx context.Context, slaPolicyId SlaPolicyId, para
 // not count if one applies again. Conversations it newly matches pick it up as for a new
 // policy.
 //
+// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
+//
 // Scope: `inboxes:manage`.
 //
 // Takes any type of body and a specified content type.
@@ -58939,6 +59231,8 @@ func (c *Client) UpdateSlaPolicyWithBody(ctx context.Context, slaPolicyId SlaPol
 // conversation loses its SLA (`conversation.updated`); the time while no policy applies does
 // not count if one applies again. Conversations it newly matches pick it up as for a new
 // policy.
+//
+// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -59489,6 +59783,8 @@ func (c *Client) ListStatusPages(ctx context.Context, params *ListStatusPagesPar
 //
 // Owners, admins and API keys. Scope: `status:manage`.
 //
+// A `mail` inbox answers `409 purpose_mismatch`.
+//
 // Takes any type of body and a specified content type.
 //
 // Corresponds with POST /v1/status-pages (the `CreateStatusPage` operationId).
@@ -59513,6 +59809,8 @@ func (c *Client) CreateStatusPageWithBody(ctx context.Context, params *CreateSta
 // to the inbox's.
 //
 // Owners, admins and API keys. Scope: `status:manage`.
+//
+// A `mail` inbox answers `409 purpose_mismatch`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -73732,6 +74030,42 @@ func NewListConversationsRequest(server string, params *ListConversationsParams)
 
 		}
 
+		if params.Purpose != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "purpose", *params.Purpose, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Starred != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "starred", *params.Starred, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Sent != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sent", *params.Sent, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.Sort != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sort", *params.Sort, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -73984,6 +74318,18 @@ func NewGetConversationCountsRequest(server string, params *GetConversationCount
 		if params.Kind != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "kind", *params.Kind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Purpose != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "purpose", *params.Purpose, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -75177,6 +75523,104 @@ func NewRestoreConversationRequest(server string, conversationId ConversationId,
 	}
 
 	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewUnstarConversationRequest constructs an http.Request for the UnstarConversation method
+func NewUnstarConversationRequest(server string, conversationId ConversationId, params *UnstarConversationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/star", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewStarConversationRequest constructs an http.Request for the StarConversation method
+func NewStarConversationRequest(server string, conversationId ConversationId, params *StarConversationParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/star", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -97559,6 +98003,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
 	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /v1/changelogs (the `CreateChangelog` operationId).
@@ -97574,6 +98020,8 @@ type ClientWithResponsesInterface interface {
 	// and accent colour of the public pages are the inbox's branding.
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
+	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -98541,7 +98989,11 @@ type ClientWithResponsesInterface interface {
 	//
 	// `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
 	// the panel's Conversations view sends `kind=conversation`, its Feedback section
-	// `kind=feedback`. Without it every kind is counted.
+	// `kind=feedback`. Without it every kind is counted. `purpose` counts only the inboxes of
+	// that purpose: the panel's Mail section sends `purpose=mail`.
+	//
+	// `starred` counts the open conversations the calling member starred (`0` for API keys),
+	// spam left out.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -99017,6 +99469,9 @@ type ClientWithResponsesInterface interface {
 	// `conversation.updated` reports the new inbox; members watching the old one get
 	// `conversation.moved`.
 	//
+	// Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+	// refused with `409 purpose_mismatch`.
+	//
 	// Scope: `conversations:write`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -99035,6 +99490,9 @@ type ClientWithResponsesInterface interface {
 	// timeline gets a `moved` event.
 	// `conversation.updated` reports the new inbox; members watching the old one get
 	// `conversation.moved`.
+	//
+	// Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+	// refused with `409 purpose_mismatch`.
 	//
 	// Scope: `conversations:write`.
 	//
@@ -99164,6 +99622,28 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/{conversationId}/restore (the `RestoreConversation` operationId).
 	RestoreConversationWithResponse(ctx context.Context, conversationId ConversationId, params *RestoreConversationParams, reqEditors ...RequestEditorFn) (*RestoreConversationResponse, error)
+
+	// UnstarConversationWithResponse Remove a star
+	//
+	// Takes the calling member's star away; unstarring a conversation that is not starred
+	// changes nothing. Events as for starring. Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/conversations/{conversationId}/star (the `UnstarConversation` operationId).
+	UnstarConversationWithResponse(ctx context.Context, conversationId ConversationId, params *UnstarConversationParams, reqEditors ...RequestEditorFn) (*UnstarConversationResponse, error)
+
+	// StarConversationWithResponse Star a conversation
+	//
+	// Stars the conversation for the calling member; nobody else sees it. Starring a starred
+	// conversation changes nothing. The member's own connections get a `conversation.updated`
+	// event with `starred` when it changes; nobody else does, and no webhook is sent. Member
+	// sessions only (`403 member_session_required` for API keys and OAuth tokens).
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /v1/conversations/{conversationId}/star (the `StarConversation` operationId).
+	StarConversationWithResponse(ctx context.Context, conversationId ConversationId, params *StarConversationParams, reqEditors ...RequestEditorFn) (*StarConversationResponse, error)
 
 	// SetMemberTypingWithBodyWithResponse Tell others you are typing
 	//
@@ -100179,6 +100659,8 @@ type ClientWithResponsesInterface interface {
 	// workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
 	// gets an `api` channel named `API` on the first request.
 	//
+	// A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
+	//
 	// Scope: `feedback:write`.
 	//
 	// The contact is found by the external id in the inbox, then by `contact.email`, or created;
@@ -100201,6 +100683,8 @@ type ClientWithResponsesInterface interface {
 	// for its user `contact.external_id` in `inbox_id`, which may be any inbox of the key's
 	// workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
 	// gets an `api` channel named `API` on the first request.
+	//
+	// A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
 	//
 	// Scope: `feedback:write`.
 	//
@@ -100240,6 +100724,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
 	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /v1/help-centers (the `CreateHelpCenter` operationId).
@@ -100255,6 +100741,8 @@ type ClientWithResponsesInterface interface {
 	// same inbox, `analytics_property_id` a property of the workspace.
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
+	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -100921,7 +101409,8 @@ type ClientWithResponsesInterface interface {
 	// CreateInboxWithBodyWithResponse Create an inbox
 	//
 	// Owners, admins and API keys. A new identity secret is generated; it is
-	// returned here and on rotation only, and stored encrypted.
+	// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+	// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -100933,7 +101422,8 @@ type ClientWithResponsesInterface interface {
 	// CreateInboxWithResponse Create an inbox
 	//
 	// Owners, admins and API keys. A new identity secret is generated; it is
-	// returned here and on rotation only, and stored encrypted.
+	// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+	// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -100967,7 +101457,8 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateInboxWithBodyWithResponse Update an inbox
 	//
-	// Owners, admins and API keys.
+	// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+	// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -100978,7 +101469,8 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateInboxWithResponse Update an inbox
 	//
-	// Owners, admins and API keys.
+	// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+	// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -101009,6 +101501,9 @@ type ClientWithResponsesInterface interface {
 	// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
 	// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 	//
+	// A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+	// purpose_mismatch`.
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -101028,6 +101523,9 @@ type ClientWithResponsesInterface interface {
 	// proved it holds it. The same address twice in this workspace answers
 	// `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
 	// provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
+	//
+	// A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+	// purpose_mismatch`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -103305,6 +103803,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
 	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /v1/roadmap-boards (the `CreateRoadmapBoard` operationId).
@@ -103320,6 +103820,8 @@ type ClientWithResponsesInterface interface {
 	// `suggestions` defaults to `moderated`. A server with `YUVA_ROADMAP=off` answers `404 roadmap_off`.
 	//
 	// Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
+	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -103417,6 +103919,9 @@ type ClientWithResponsesInterface interface {
 	// without an SLA the next time it changes or gets a message, and to one with an SLA when its
 	// priority, labels or inbox change.
 	//
+	// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+	// `inbox_ids` never applies to `mail` inboxes.
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -103430,6 +103935,9 @@ type ClientWithResponsesInterface interface {
 	// workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
 	// without an SLA the next time it changes or gets a message, and to one with an SLA when its
 	// priority, labels or inbox change.
+	//
+	// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+	// `inbox_ids` never applies to `mail` inboxes.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -103496,6 +104004,8 @@ type ClientWithResponsesInterface interface {
 	// not count if one applies again. Conversations it newly matches pick it up as for a new
 	// policy.
 	//
+	// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -103512,6 +104022,8 @@ type ClientWithResponsesInterface interface {
 	// conversation loses its SLA (`conversation.updated`); the time while no policy applies does
 	// not count if one applies again. Conversations it newly matches pick it up as for a new
 	// policy.
+	//
+	// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -103864,6 +104376,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys. Scope: `status:manage`.
 	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
+	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /v1/status-pages (the `CreateStatusPage` operationId).
@@ -103878,6 +104392,8 @@ type ClientWithResponsesInterface interface {
 	// to the inbox's.
 	//
 	// Owners, admins and API keys. Scope: `status:manage`.
+	//
+	// A `mail` inbox answers `409 purpose_mismatch`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -119976,6 +120492,116 @@ func (r RestoreConversationResponse) ContentType() string {
 	return ""
 }
 
+type UnstarConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r UnstarConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r UnstarConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r UnstarConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r UnstarConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UnstarConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnstarConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnstarConversationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type StarConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r StarConversationResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r StarConversationResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r StarConversationResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r StarConversationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r StarConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r StarConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r StarConversationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type SetMemberTypingResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -123503,6 +124129,8 @@ type CreateFeedbackResponse struct {
 	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -123533,6 +124161,11 @@ func (r CreateFeedbackResponse) GetApplicationproblemJSON403() *Problem {
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
 func (r CreateFeedbackResponse) GetApplicationproblemJSON404() *Problem {
 	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r CreateFeedbackResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
 }
 
 // GetBody returns the raw response body bytes
@@ -134121,6 +134754,8 @@ type CreateSlaPolicyResponse struct {
 	ApplicationproblemJSON401 *Problem
 	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
 	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
 }
 
 // GetJSON201 returns the response for an HTTP 201 `application/json` response
@@ -134141,6 +134776,11 @@ func (r CreateSlaPolicyResponse) GetApplicationproblemJSON401() *Problem {
 // GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
 func (r CreateSlaPolicyResponse) GetApplicationproblemJSON403() *Problem {
 	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r CreateSlaPolicyResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
 }
 
 // GetBody returns the raw response body bytes
@@ -134364,6 +135004,8 @@ type UpdateSlaPolicyResponse struct {
 	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -134389,6 +135031,11 @@ func (r UpdateSlaPolicyResponse) GetApplicationproblemJSON403() *Problem {
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
 func (r UpdateSlaPolicyResponse) GetApplicationproblemJSON404() *Problem {
 	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r UpdateSlaPolicyResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
 }
 
 // GetBody returns the raw response body bytes
@@ -144573,6 +145220,8 @@ func (c *ClientWithResponses) ListChangelogsWithResponse(ctx context.Context, pa
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
 //
+// A `mail` inbox answers `409 purpose_mismatch`.
+//
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /v1/changelogs (the `CreateChangelog` operationId).
@@ -144594,6 +145243,8 @@ func (c *ClientWithResponses) CreateChangelogWithBodyWithResponse(ctx context.Co
 // and accent colour of the public pages are the inbox's branding.
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
+//
+// A `mail` inbox answers `409 purpose_mismatch`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -145951,7 +146602,11 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithResponse(ctx context.Co
 //
 // `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
 // the panel's Conversations view sends `kind=conversation`, its Feedback section
-// `kind=feedback`. Without it every kind is counted.
+// `kind=feedback`. Without it every kind is counted. `purpose` counts only the inboxes of
+// that purpose: the panel's Mail section sends `purpose=mail`.
+//
+// `starred` counts the open conversations the calling member starred (`0` for API keys),
+// spam left out.
 //
 // Scope: `conversations:read`.
 //
@@ -146529,6 +147184,9 @@ func (c *ClientWithResponses) CreateMessageWithResponse(ctx context.Context, con
 // `conversation.updated` reports the new inbox; members watching the old one get
 // `conversation.moved`.
 //
+// Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+// refused with `409 purpose_mismatch`.
+//
 // Scope: `conversations:write`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -146553,6 +147211,9 @@ func (c *ClientWithResponses) MoveConversationWithBodyWithResponse(ctx context.C
 // timeline gets a `moved` event.
 // `conversation.updated` reports the new inbox; members watching the old one get
 // `conversation.moved`.
+//
+// Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+// refused with `409 purpose_mismatch`.
 //
 // Scope: `conversations:write`.
 //
@@ -146741,6 +147402,40 @@ func (c *ClientWithResponses) RestoreConversationWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParseRestoreConversationResponse(rsp)
+}
+
+// UnstarConversationWithResponse Remove a star
+//
+// Takes the calling member's star away; unstarring a conversation that is not starred
+// changes nothing. Events as for starring. Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/conversations/{conversationId}/star (the `UnstarConversation` operationId).
+func (c *ClientWithResponses) UnstarConversationWithResponse(ctx context.Context, conversationId ConversationId, params *UnstarConversationParams, reqEditors ...RequestEditorFn) (*UnstarConversationResponse, error) {
+	rsp, err := c.UnstarConversation(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnstarConversationResponse(rsp)
+}
+
+// StarConversationWithResponse Star a conversation
+//
+// Stars the conversation for the calling member; nobody else sees it. Starring a starred
+// conversation changes nothing. The member's own connections get a `conversation.updated`
+// event with `starred` when it changes; nobody else does, and no webhook is sent. Member
+// sessions only (`403 member_session_required` for API keys and OAuth tokens).
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /v1/conversations/{conversationId}/star (the `StarConversation` operationId).
+func (c *ClientWithResponses) StarConversationWithResponse(ctx context.Context, conversationId ConversationId, params *StarConversationParams, reqEditors ...RequestEditorFn) (*StarConversationResponse, error) {
+	rsp, err := c.StarConversation(ctx, conversationId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseStarConversationResponse(rsp)
 }
 
 // SetMemberTypingWithBodyWithResponse Tell others you are typing
@@ -148159,6 +148854,8 @@ func (c *ClientWithResponses) GetLatestEventWithResponse(ctx context.Context, pa
 // workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
 // gets an `api` channel named `API` on the first request.
 //
+// A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
+//
 // Scope: `feedback:write`.
 //
 // The contact is found by the external id in the inbox, then by `contact.email`, or created;
@@ -148187,6 +148884,8 @@ func (c *ClientWithResponses) CreateFeedbackWithBodyWithResponse(ctx context.Con
 // for its user `contact.external_id` in `inbox_id`, which may be any inbox of the key's
 // workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
 // gets an `api` channel named `API` on the first request.
+//
+// A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
 //
 // Scope: `feedback:write`.
 //
@@ -148238,6 +148937,8 @@ func (c *ClientWithResponses) ListHelpCentersWithResponse(ctx context.Context, p
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
 //
+// A `mail` inbox answers `409 purpose_mismatch`.
+//
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /v1/help-centers (the `CreateHelpCenter` operationId).
@@ -148259,6 +148960,8 @@ func (c *ClientWithResponses) CreateHelpCenterWithBodyWithResponse(ctx context.C
 // same inbox, `analytics_property_id` a property of the workspace.
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
+//
+// A `mail` inbox answers `409 purpose_mismatch`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -149177,7 +149880,8 @@ func (c *ClientWithResponses) ListInboxesWithResponse(ctx context.Context, param
 // CreateInboxWithBodyWithResponse Create an inbox
 //
 // Owners, admins and API keys. A new identity secret is generated; it is
-// returned here and on rotation only, and stored encrypted.
+// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -149195,7 +149899,8 @@ func (c *ClientWithResponses) CreateInboxWithBodyWithResponse(ctx context.Contex
 // CreateInboxWithResponse Create an inbox
 //
 // Owners, admins and API keys. A new identity secret is generated; it is
-// returned here and on rotation only, and stored encrypted.
+// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -149247,7 +149952,8 @@ func (c *ClientWithResponses) GetInboxWithResponse(ctx context.Context, inboxId 
 
 // UpdateInboxWithBodyWithResponse Update an inbox
 //
-// Owners, admins and API keys.
+// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -149264,7 +149970,8 @@ func (c *ClientWithResponses) UpdateInboxWithBodyWithResponse(ctx context.Contex
 
 // UpdateInboxWithResponse Update an inbox
 //
-// Owners, admins and API keys.
+// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -149307,6 +150014,9 @@ func (c *ClientWithResponses) ListChannelsWithResponse(ctx context.Context, inbo
 // `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
 // provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
 //
+// A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+// purpose_mismatch`.
+//
 // Scope: `inboxes:manage`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -149332,6 +150042,9 @@ func (c *ClientWithResponses) CreateChannelWithBodyWithResponse(ctx context.Cont
 // proved it holds it. The same address twice in this workspace answers
 // `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
 // provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
+//
+// A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+// purpose_mismatch`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -152497,6 +153210,8 @@ func (c *ClientWithResponses) ListRoadmapBoardsWithResponse(ctx context.Context,
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
 //
+// A `mail` inbox answers `409 purpose_mismatch`.
+//
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /v1/roadmap-boards (the `CreateRoadmapBoard` operationId).
@@ -152518,6 +153233,8 @@ func (c *ClientWithResponses) CreateRoadmapBoardWithBodyWithResponse(ctx context
 // `suggestions` defaults to `moderated`. A server with `YUVA_ROADMAP=off` answers `404 roadmap_off`.
 //
 // Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
+//
+// A `mail` inbox answers `409 purpose_mismatch`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -152657,6 +153374,9 @@ func (c *ClientWithResponses) ListSlaPoliciesWithResponse(ctx context.Context, p
 // without an SLA the next time it changes or gets a message, and to one with an SLA when its
 // priority, labels or inbox change.
 //
+// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+// `inbox_ids` never applies to `mail` inboxes.
+//
 // Scope: `inboxes:manage`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -152676,6 +153396,9 @@ func (c *ClientWithResponses) CreateSlaPolicyWithBodyWithResponse(ctx context.Co
 // workspace holds at most 100 policies (`403 sla_policy_limit`). It applies to a conversation
 // without an SLA the next time it changes or gets a message, and to one with an SLA when its
 // priority, labels or inbox change.
+//
+// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+// `inbox_ids` never applies to `mail` inboxes.
 //
 // Scope: `inboxes:manage`.
 //
@@ -152772,6 +153495,8 @@ func (c *ClientWithResponses) GetSlaPolicyWithResponse(ctx context.Context, slaP
 // not count if one applies again. Conversations it newly matches pick it up as for a new
 // policy.
 //
+// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
+//
 // Scope: `inboxes:manage`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -152794,6 +153519,8 @@ func (c *ClientWithResponses) UpdateSlaPolicyWithBodyWithResponse(ctx context.Co
 // conversation loses its SLA (`conversation.updated`); the time while no policy applies does
 // not count if one applies again. Conversations it newly matches pick it up as for a new
 // policy.
+//
+// `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -153278,6 +154005,8 @@ func (c *ClientWithResponses) ListStatusPagesWithResponse(ctx context.Context, p
 //
 // Owners, admins and API keys. Scope: `status:manage`.
 //
+// A `mail` inbox answers `409 purpose_mismatch`.
+//
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /v1/status-pages (the `CreateStatusPage` operationId).
@@ -153298,6 +154027,8 @@ func (c *ClientWithResponses) CreateStatusPageWithBodyWithResponse(ctx context.C
 // to the inbox's.
 //
 // Owners, admins and API keys. Scope: `status:manage`.
+//
+// A `mail` inbox answers `409 purpose_mismatch`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -166872,6 +167603,92 @@ func ParseRestoreConversationResponse(rsp *http.Response) (*RestoreConversationR
 	return response, nil
 }
 
+// ParseUnstarConversationResponse parses an HTTP response from a UnstarConversationWithResponse call
+func ParseUnstarConversationResponse(rsp *http.Response) (*UnstarConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnstarConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseStarConversationResponse parses an HTTP response from a StarConversationWithResponse call
+func ParseStarConversationResponse(rsp *http.Response) (*StarConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &StarConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseSetMemberTypingResponse parses an HTTP response from a SetMemberTypingWithResponse call
 func ParseSetMemberTypingResponse(rsp *http.Response) (*SetMemberTypingResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -169698,6 +170515,13 @@ func ParseCreateFeedbackResponse(rsp *http.Response) (*CreateFeedbackResponse, e
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 
@@ -178048,6 +178872,13 @@ func ParseCreateSlaPolicyResponse(rsp *http.Response) (*CreateSlaPolicyResponse,
 		}
 		response.ApplicationproblemJSON403 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
 	}
 
 	return response, nil
@@ -178238,6 +179069,13 @@ func ParseUpdateSlaPolicyResponse(rsp *http.Response) (*UpdateSlaPolicyResponse,
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 

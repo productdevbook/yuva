@@ -140,8 +140,11 @@ func clearTeam(ctx context.Context, q *store.Queries, events *eventBatch, worksp
 	bodies := make([]oas.Conversation, len(rows))
 	refs := make([]*oas.Conversation, len(rows))
 	for i, r := range rows {
-		bodies[i] = conversationBody(r, labels[r.ID])
+		bodies[i] = conversationFields(r, labels[r.ID])
 		refs[i] = &bodies[i]
+	}
+	if err := fillPurposes(ctx, q, workspaceID, refs...); err != nil {
+		return err
 	}
 	if err := fillImportSources(ctx, q, workspaceID, refs...); err != nil {
 		return err

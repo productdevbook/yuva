@@ -302,7 +302,11 @@ func (s *Server) feedbackCreated(ctx context.Context, q *store.Queries, events *
 	if err != nil {
 		return c, err
 	}
-	events.conversationAt(mark, realtime.ConversationCreated, c, conversationBody(c, nil))
+	body, err := conversationBody(ctx, q, c, nil)
+	if err != nil {
+		return c, err
+	}
+	events.conversationAt(mark, realtime.ConversationCreated, c, body)
 	return c, nil
 }
 
@@ -422,7 +426,8 @@ func (s *Server) inboxAPIChannel(ctx context.Context, q *store.Queries, inbox st
 	if !store.IsNotFound(err) {
 		return ch, err
 	}
-	if _, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: inbox.WorkspaceID, ID: inbox.ID}); err != nil {
+	locked, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: inbox.WorkspaceID, ID: inbox.ID})
+	if err != nil {
 		if store.IsNotFound(err) {
 			return ch, errInboxGone
 		}
@@ -431,6 +436,9 @@ func (s *Server) inboxAPIChannel(ctx context.Context, q *store.Queries, inbox st
 	ch, err = q.InboxAPIChannel(ctx, arg)
 	if !store.IsNotFound(err) {
 		return ch, err
+	}
+	if locked.Purpose == purposeMail {
+		return ch, errPurposeMismatch("a mail inbox cannot have an api channel, only e-mail channels")
 	}
 	return q.CreateChannel(ctx, store.CreateChannelParams{
 		ID: newID(), WorkspaceID: inbox.WorkspaceID, InboxID: inbox.ID, Kind: string(oas.ChannelKindApi),

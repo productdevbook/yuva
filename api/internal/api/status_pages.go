@@ -317,6 +317,9 @@ func (s *Server) CreateStatusPage(ctx context.Context, req oas.CreateStatusPageR
 	}
 	var pg store.StatusPage
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, _ *eventBatch) error {
+		if err := supportInbox(ctx, q, p.workspaceID, in.ID, "a status page"); err != nil {
+			return err
+		}
 		if _, err := q.GetInboxStatusPage(ctx, store.GetInboxStatusPageParams{WorkspaceID: p.workspaceID, InboxID: in.ID}); err == nil {
 			return errStatusPageExists
 		} else if !store.IsNotFound(err) {

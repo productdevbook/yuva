@@ -360,7 +360,7 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 			return false, nil
 		}
 	}
-	if e.Type == realtime.ConversationRead || e.Type == realtime.ConversationPin {
+	if e.Type == realtime.ConversationRead || e.Type == realtime.ConversationPin || e.Type == eventConversationStar {
 		var r struct {
 			MemberID uuid.UUID `json:"member_id"`
 		}
@@ -402,6 +402,8 @@ func (f *eventFilter) view(e realtime.Event) (realtime.Event, bool) {
 	switch e.Type {
 	case eventTeamCreated, eventTeamUpdated, eventTeamDeleted:
 		return f.teamView(e)
+	case eventConversationStar:
+		return starView(e)
 	}
 	if e.Type != realtime.ContactUpdated || f.p.seesAllInboxes() {
 		return e, true

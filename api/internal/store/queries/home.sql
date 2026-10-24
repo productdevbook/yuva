@@ -4,6 +4,7 @@ WITH open AS (
     FROM conversations c
     WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
       AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+      AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
       AND (@all_inboxes::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
@@ -44,7 +45,7 @@ ORDER BY o.since, o.id;
 SELECT i.id AS inbox_id, c.assignee_id, coalesce(c.kind = 'feedback', false)::bool AS feedback, count(c.id) AS n
 FROM inboxes i
 LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
-WHERE i.workspace_id = @workspace_id
+WHERE i.workspace_id = @workspace_id AND i.purpose = 'support'
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
@@ -58,6 +59,7 @@ FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.last_activity_at >= @since::timestamptz
   AND c.created_at >= @since::timestamptz AND c.created_at <= @until::timestamptz AND NOT c.spam AND c.trashed_at IS NULL
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
@@ -69,6 +71,7 @@ FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.rated_at >= @since::timestamptz AND c.rated_at <= @until::timestamptz
   AND NOT c.spam AND c.kind <> 'feedback' AND c.trashed_at IS NULL
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
   AND (@all_inboxes::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))

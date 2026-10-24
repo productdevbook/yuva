@@ -69,6 +69,16 @@ WHERE c.workspace_id = @workspace_id
       SELECT 1 FROM conversation_member_states s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
         AND s.member_id = sqlc.narg(pinned_by)::uuid AND s.pinned_at IS NOT NULL))
+  AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = sqlc.narg(purpose)::text))
+  AND (sqlc.narg(starred)::bool IS NULL OR sqlc.narg(starred)::bool = EXISTS (
+      SELECT 1 FROM conversation_stars st
+      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = sqlc.narg(starred_by)::uuid))
+  AND (sqlc.narg(sent_by)::uuid IS NULL OR EXISTS (
+      SELECT 1 FROM messages sm
+      WHERE sm.workspace_id = c.workspace_id AND sm.conversation_id = c.id AND sm.kind = 'message' AND sm.direction = 'out'
+        AND NOT sm.draft AND (sm.author_member_id = sqlc.narg(sent_by)::uuid OR sm.sent_by_member_id = sqlc.narg(sent_by)::uuid)))
   AND (sqlc.narg(q)::text IS NULL OR (
       to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate(sqlc.narg(q)::text, 'İı', 'ii'))
       OR EXISTS (
@@ -144,6 +154,9 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS N
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
+  AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = sqlc.narg(purpose)::text))
 GROUP BY 1, 2, 3, 4;
 
 -- name: CountOpenConversationsByLabel :many
@@ -155,6 +168,9 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS N
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
+  AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = sqlc.narg(purpose)::text))
 GROUP BY cl.label_id
 ORDER BY cl.label_id;
 
@@ -166,8 +182,23 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS N
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
+  AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = sqlc.narg(purpose)::text))
 GROUP BY 1
 ORDER BY 1;
+
+-- name: CountStarredConversations :one
+SELECT count(*) FROM conversations c
+JOIN conversation_stars st ON st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = @member_id
+WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam
+  AND (@all_inboxes::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
+  AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = sqlc.narg(purpose)::text));
 
 -- name: GetFirstPublicMessage :one
 SELECT id FROM messages

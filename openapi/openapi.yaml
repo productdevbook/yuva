@@ -2471,7 +2471,8 @@ paths:
       summary: Create an inbox
       description: |
         Owners, admins and API keys. A new identity secret is generated; it is
-        returned here and on rotation only, and stored encrypted.
+        returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
+        given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -2528,7 +2529,8 @@ paths:
       operationId: updateInbox
       summary: Update an inbox
       description: |
-        Owners, admins and API keys.
+        Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
+        inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -2943,6 +2945,9 @@ paths:
         without an SLA the next time it changes or gets a message, and to one with an SLA when its
         priority, labels or inbox change.
 
+        `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`; a policy without
+        `inbox_ids` never applies to `mail` inboxes.
+
         Scope: `inboxes:manage`.
       tags: [sla]
       parameters:
@@ -2966,6 +2971,8 @@ paths:
         "401":
           $ref: "#/components/responses/Problem"
         "403":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/sla-policies/order:
     put:
@@ -3035,6 +3042,8 @@ paths:
         not count if one applies again. Conversations it newly matches pick it up as for a new
         policy.
 
+        `inbox_ids` naming a `mail` inbox answers `409 purpose_mismatch`.
+
         Scope: `inboxes:manage`.
       tags: [sla]
       parameters:
@@ -3060,6 +3069,8 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
     delete:
       operationId: deleteSlaPolicy
@@ -3327,6 +3338,9 @@ paths:
         proved it holds it. The same address twice in this workspace answers
         `409 email_address_taken`. A catch-all on the forwarding domain or on a public mail
         provider (gmail.com, outlook.com, …) is refused (`400 validation_failed`).
+
+        A `mail` inbox takes only `email` channels: `chat`, `app` and `api` answer `409
+        purpose_mismatch`.
 
         Scope: `inboxes:manage`.
       tags: [channels]
@@ -4434,6 +4448,24 @@ paths:
             without it, both. Member sessions only (`400 validation_failed` for API keys).
           schema:
             type: boolean
+        - $ref: "#/components/parameters/InboxPurposeFilter"
+        - name: starred
+          in: query
+          description: |
+            `true` lists only the conversations the calling member starred, `false` only the
+            others; without it, both. Member sessions only (`400 validation_failed` for API keys).
+          schema:
+            type: boolean
+        - name: sent
+          in: query
+          description: |
+            `mine` lists only the conversations in which the calling member wrote a public
+            outbound message (sent, not a draft or note), the Sent folder. Member sessions only
+            (`400 validation_failed` for API keys).
+          schema:
+            type: string
+            enum: [mine]
+            x-enum-varnames: [ListConversationsSentMine]
         - name: sort
           in: query
           description: |
@@ -4514,13 +4546,18 @@ paths:
 
         `kind` limits every count to conversations of those kinds, as on `GET /v1/conversations`:
         the panel's Conversations view sends `kind=conversation`, its Feedback section
-        `kind=feedback`. Without it every kind is counted.
+        `kind=feedback`. Without it every kind is counted. `purpose` counts only the inboxes of
+        that purpose: the panel's Mail section sends `purpose=mail`.
+
+        `starred` counts the open conversations the calling member starred (`0` for API keys),
+        spam left out.
 
         Scope: `conversations:read`.
       tags: [conversations]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/ConversationKinds"
+        - $ref: "#/components/parameters/InboxPurposeFilter"
       responses:
         "200":
           description: The counts.
@@ -4989,6 +5026,9 @@ paths:
         timeline gets a `moved` event.
         `conversation.updated` reports the new inbox; members watching the old one get
         `conversation.moved`.
+
+        Into a `mail` inbox, a conversation whose `channel_kind` is `chat`, `app` or `api` is
+        refused with `409 purpose_mismatch`.
 
         Scope: `conversations:write`.
       tags: [conversations]
@@ -5503,6 +5543,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ConversationPin"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/{conversationId}/star:
+    put:
+      operationId: starConversation
+      summary: Star a conversation
+      description: |
+        Stars the conversation for the calling member; nobody else sees it. Starring a starred
+        conversation changes nothing. The member's own connections get a `conversation.updated`
+        event with `starred` when it changes; nobody else does, and no webhook is sent. Member
+        sessions only (`403 member_session_required` for API keys and OAuth tokens).
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "204":
+          description: The conversation is starred.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    delete:
+      operationId: unstarConversation
+      summary: Remove a star
+      description: |
+        Takes the calling member's star away; unstarring a conversation that is not starred
+        changes nothing. Events as for starring. Member sessions only.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/ConversationId"
+      responses:
+        "204":
+          description: The conversation is not starred.
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -7351,6 +7432,8 @@ paths:
         `suggestions` defaults to `moderated`. A server with `YUVA_ROADMAP=off` answers `404 roadmap_off`.
 
         Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `roadmap:write`.
+
+        A `mail` inbox answers `409 purpose_mismatch`.
       tags: [roadmap]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -10625,6 +10708,8 @@ paths:
         workspace. The conversation starts on the inbox's oldest `api` channel; an inbox without one
         gets an `api` channel named `API` on the first request.
 
+        A `mail` inbox has no `api` channel and answers `409 purpose_mismatch`.
+
         Scope: `feedback:write`.
 
         The contact is found by the external id in the inbox, then by `contact.email`, or created;
@@ -10666,6 +10751,8 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/issue-integrations:
     get:
@@ -12889,7 +12976,8 @@ paths:
         events reach it only with `contacts:read`. `inbox.created` reaches owners,
         admins and API keys (an agent learns of a new inbox from `inbox_access.changed`);
         `inbox.deleted` reaches everyone who could see the inbox. `conversation.read` and
-        `conversation.pin` reach only the connections of the member who read or pinned. `typing` (a contact or another member typing) has no
+        `conversation.pin` reach only the connections of the member who read or pinned, and so
+        does the `conversation.updated` a star change sends (it carries `starred`). `typing` (a contact or another member typing) has no
         `id`, is not stored and is not replayed. `member.presence` (a member of the workspace opened
         or closed the panel or changed `availability`) reaches member sessions only, also has no
         `id` and is not replayed; so does `viewing` (another member opened or left a conversation),
@@ -12995,6 +13083,8 @@ paths:
         to the inbox's.
 
         Owners, admins and API keys. Scope: `status:manage`.
+
+        A `mail` inbox answers `409 purpose_mismatch`.
       tags: [status]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -14331,6 +14421,8 @@ paths:
         and accent colour of the public pages are the inbox's branding.
 
         Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `changelog:publish`.
+
+        A `mail` inbox answers `409 purpose_mismatch`.
       tags: [changelog]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -15037,6 +15129,8 @@ paths:
         same inbox, `analytics_property_id` a property of the workspace.
 
         Owners, admins and API keys; not OAuth tokens (`403 member_session_required`). Scope: `help:publish`.
+
+        A `mail` inbox answers `409 purpose_mismatch`.
       tags: [help]
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
@@ -20401,6 +20495,12 @@ components:
       schema:
         type: string
         maxLength: 200
+    InboxPurposeFilter:
+      name: purpose
+      in: query
+      description: Only conversations of inboxes with this `purpose`; without it, every inbox.
+      schema:
+        $ref: "#/components/schemas/InboxPurpose"
     ConversationKinds:
       name: kind
       in: query
@@ -20896,7 +20996,8 @@ components:
           channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
           `address`, by `operator`, when the server's operator vouched for the address with
           `yuva channel prove`.
-        - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+        - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
+          `from`, `to`.
         - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
           `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
           `inbox_name`.
@@ -20985,6 +21086,7 @@ components:
         - channel.dkim_key_deleted
         - inbox.identity_secret_rotated
         - inbox.deleted
+        - inbox.purpose_changed
         - conversation.trashed
         - conversation.restored
         - conversation.deleted
@@ -21028,7 +21130,7 @@ components:
         - automation_rule.created
         - automation_rule.updated
         - automation_rule.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
@@ -22180,6 +22282,20 @@ components:
         `live` shows who is available, typing and read receipts; `async` shows the expected reply
         time instead.
       enum: [live, async]
+    InboxPurpose:
+      type: string
+      description: |
+        `support` (the default, and every inbox made before purposes existed) or `mail`, a team
+        mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
+        it asks no rating, sends no greeting auto-reply, assigns nothing automatically
+        (`assignment_mode` must stay `off`), gets no SLA targets, cannot be the inbox of a help
+        center, status page, roadmap board, What's new or SLA policy, and is left out of support
+        stats, reports and the Home support blocks. Settings that only change behaviour
+        (`ask_for_rating`, `expected_reply_minutes`, `business_hours`, `branding.greeting`) are kept
+        as stored and apply again when the inbox becomes `support`. Conversations keep their model;
+        the panel shows `closed` as Archived in a `mail` inbox.
+      enum: [support, mail]
+      x-enum-varnames: [InboxPurposeSupport, InboxPurposeMail]
     AssignmentMode:
       type: string
       description: |
@@ -22254,7 +22370,7 @@ components:
           maxLength: 500
     Inbox:
       type: object
-      required: [id, name, slug, branding, default_locale, timezone, mode, business_hours, feedback_categories, assignment_mode, ask_for_rating, sender, created_at, updated_at]
+      required: [id, name, slug, purpose, branding, default_locale, timezone, mode, business_hours, feedback_categories, assignment_mode, ask_for_rating, sender, created_at, updated_at]
       properties:
         id:
           type: string
@@ -22263,6 +22379,8 @@ components:
           type: string
         slug:
           $ref: "#/components/schemas/Slug"
+        purpose:
+          $ref: "#/components/schemas/InboxPurpose"
         branding:
           $ref: "#/components/schemas/InboxBranding"
         default_locale:
@@ -22345,6 +22463,9 @@ components:
           maxLength: 200
         slug:
           $ref: "#/components/schemas/Slug"
+        purpose:
+          $ref: "#/components/schemas/InboxPurpose"
+          description: Defaults to `support`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
         branding:
           $ref: "#/components/schemas/InboxBranding"
         default_locale:
@@ -22380,6 +22501,15 @@ components:
           maxLength: 200
         slug:
           $ref: "#/components/schemas/Slug"
+        purpose:
+          $ref: "#/components/schemas/InboxPurpose"
+          description: |
+            `mail` to `support` is always allowed. `support` to `mail` answers `409
+            purpose_mismatch`, naming what blocks it, while the inbox has a `chat`, `app` or `api`
+            channel, a help center, status page, roadmap board or What's new, or is named in an SLA
+            policy's `inbox_ids`, or while `assignment_mode` is not `off` (send `assignment_mode:
+            off` in the same request). Teams granted the inbox do not block it. Conversations of
+            the inbox lose their running SLA targets at once. Audited as `inbox.purpose_changed`.
         branding:
           $ref: "#/components/schemas/InboxBranding"
         default_locale:
@@ -23889,7 +24019,7 @@ components:
       enum: [low, normal, high, urgent]
     Conversation:
       type: object
-      required: [id, inbox_id, contact_id, kind, subject, status, priority, spam, labels, fields, last_activity_at, created_at, updated_at]
+      required: [id, inbox_id, inbox_purpose, contact_id, kind, subject, status, priority, spam, labels, fields, last_activity_at, created_at, updated_at]
       properties:
         id:
           type: string
@@ -23897,6 +24027,16 @@ components:
         inbox_id:
           type: string
           format: uuid
+        inbox_purpose:
+          $ref: "#/components/schemas/InboxPurpose"
+          description: Read-only, the `purpose` of its inbox as it is now, so receivers of events and webhooks can tell team mail from support.
+        starred:
+          type: boolean
+          description: |
+            Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
+            on list items and `GET /v1/conversations/{id}` for member sessions, and on the
+            `conversation.updated` event a member's own star change sends to their connections;
+            absent for API keys, in webhooks and in other events.
         contact_id:
           type: string
           format: uuid
@@ -24643,7 +24783,7 @@ components:
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams]
+      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams, starred]
       properties:
         feedback:
           type: integer
@@ -24693,6 +24833,10 @@ components:
           type: integer
           format: int64
           description: Assigned to any team of the calling member (`0` for API keys).
+        starred:
+          type: integer
+          format: int64
+          description: Starred by the calling member (`0` for API keys).
     Home:
       type: object
       description: The Home blocks; a block the member may not see is absent.

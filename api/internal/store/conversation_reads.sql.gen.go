@@ -111,6 +111,37 @@ func (q *Queries) ListPinnedConversations(ctx context.Context, arg ListPinnedCon
 	return items, nil
 }
 
+const listStarredConversations = `-- name: ListStarredConversations :many
+SELECT conversation_id FROM conversation_stars
+WHERE workspace_id = $1 AND member_id = $2 AND conversation_id = ANY($3::uuid[])
+`
+
+type ListStarredConversationsParams struct {
+	WorkspaceID     uuid.UUID
+	MemberID        uuid.UUID
+	ConversationIds []uuid.UUID
+}
+
+func (q *Queries) ListStarredConversations(ctx context.Context, arg ListStarredConversationsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listStarredConversations, arg.WorkspaceID, arg.MemberID, arg.ConversationIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var conversation_id uuid.UUID
+		if err := rows.Scan(&conversation_id); err != nil {
+			return nil, err
+		}
+		items = append(items, conversation_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUnreadConversations = `-- name: ListUnreadConversations :many
 SELECT c.id FROM conversations c
 LEFT JOIN conversation_reads r
@@ -245,6 +276,32 @@ func (q *Queries) PinConversation(ctx context.Context, arg PinConversationParams
 	return pinned_at, err
 }
 
+const starConversation = `-- name: StarConversation :execrows
+INSERT INTO conversation_stars (workspace_id, member_id, conversation_id, created_at)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT DO NOTHING
+`
+
+type StarConversationParams struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+	Now            time.Time
+}
+
+func (q *Queries) StarConversation(ctx context.Context, arg StarConversationParams) (int64, error) {
+	result, err := q.db.Exec(ctx, starConversation,
+		arg.WorkspaceID,
+		arg.MemberID,
+		arg.ConversationID,
+		arg.Now,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const unpinConversation = `-- name: UnpinConversation :execrows
 UPDATE conversation_member_states SET pinned_at = NULL
 WHERE workspace_id = $1 AND member_id = $2 AND conversation_id = $3
@@ -259,6 +316,24 @@ type UnpinConversationParams struct {
 
 func (q *Queries) UnpinConversation(ctx context.Context, arg UnpinConversationParams) (int64, error) {
 	result, err := q.db.Exec(ctx, unpinConversation, arg.WorkspaceID, arg.MemberID, arg.ConversationID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const unstarConversation = `-- name: UnstarConversation :execrows
+DELETE FROM conversation_stars WHERE workspace_id = $1 AND member_id = $2 AND conversation_id = $3
+`
+
+type UnstarConversationParams struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+}
+
+func (q *Queries) UnstarConversation(ctx context.Context, arg UnstarConversationParams) (int64, error) {
+	result, err := q.db.Exec(ctx, unstarConversation, arg.WorkspaceID, arg.MemberID, arg.ConversationID)
 	if err != nil {
 		return 0, err
 	}

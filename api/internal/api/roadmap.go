@@ -222,6 +222,9 @@ func (s *Server) CreateRoadmapBoard(ctx context.Context, req oas.CreateRoadmapBo
 		if err != nil {
 			return err
 		}
+		if err := supportInbox(ctx, q, p.workspaceID, in.ID, "a roadmap board"); err != nil {
+			return err
+		}
 		f := roadmapBoardFields{
 			name: b.Name, slug: string(b.Slug), channel: b.ChannelId, public: boolOr(b.Public, false),
 			suggestions: string(oas.RoadmapSuggestionsModerated), property: b.AnalyticsPropertyId,

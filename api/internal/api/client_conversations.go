@@ -154,7 +154,7 @@ func clientConversationItems(ctx context.Context, q *store.Queries, cp contactPr
 		out[i] = clientConversationBody(r)
 		out[i].Feedback = clientFeedback(ctx, in, out[i].Feedback)
 		out[i].LastMessage, out[i].Unread, out[i].LastReadByMemberAt = byConv[r.ID], unread[r.ID], readAt[r.ID]
-		out[i].CanRate, out[i].Rating = ratingState(in.RatingSince, r.Kind, r.Status, r.ClosedAt, r.RatedAt, r.Rating, now)
+		out[i].CanRate, out[i].Rating = ratingState(ratingSince(in), r.Kind, r.Status, r.ClosedAt, r.RatedAt, r.Rating, now)
 	}
 	return out, nil
 }
@@ -464,7 +464,11 @@ func (s *Server) CreateClientConversation(ctx context.Context, req oas.CreateCli
 		if err != nil {
 			return err
 		}
-		events.conversation(realtime.ConversationCreated, c, conversationBody(c, nil))
+		body, err := conversationBody(ctx, q, c, nil)
+		if err != nil {
+			return err
+		}
+		events.conversation(realtime.ConversationCreated, c, body)
 		msg, _, err := s.addContactMessage(ctx, q, events, cp, c, in, true)
 		convID, msgID = c.ID, msg.ID
 		return err
@@ -591,7 +595,11 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 			_, err = s.feedbackCreated(ctx, q, events, mark, c, msg)
 			return err
 		}
-		events.conversationAt(mark, realtime.ConversationCreated, c, conversationBody(c, nil))
+		body, err := conversationBody(ctx, q, c, nil)
+		if err != nil {
+			return err
+		}
+		events.conversationAt(mark, realtime.ConversationCreated, c, body)
 		return nil
 	})
 	if err != nil || !created {

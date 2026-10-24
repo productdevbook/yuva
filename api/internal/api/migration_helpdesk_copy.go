@@ -1021,7 +1021,11 @@ func (s *Server) importDeskMessage(ctx context.Context, m store.Migration, team 
 				return err
 			}
 			if live {
-				events.conversation(realtime.ConversationCreated, conv, conversationBody(conv, nil))
+				body, err := conversationBody(ctx, q, conv, nil)
+				if err != nil {
+					return err
+				}
+				events.conversation(realtime.ConversationCreated, conv, body)
 			}
 		} else if conv, err = q.GetConversation(ctx, store.GetConversationParams{WorkspaceID: ws, ID: *thread.ConversationID}); err != nil {
 			return err

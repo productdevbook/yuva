@@ -785,7 +785,11 @@ func (s *Server) threadFor(ctx context.Context, q *store.Queries, events *eventB
 			return c, false, err
 		}
 	}
-	events.conversation(realtime.ConversationCreated, c, conversationBody(c, nil))
+	body, err := conversationBody(ctx, q, c, nil)
+	if err != nil {
+		return c, false, err
+	}
+	events.conversation(realtime.ConversationCreated, c, body)
 	if reply != nil {
 		if err := reply(); err != nil {
 			return c, false, err
@@ -872,6 +876,9 @@ func (s *Server) systemEvent(ctx context.Context, q *store.Queries, events *even
 }
 
 func (s *Server) autoReply(ctx context.Context, q *store.Queries, events *eventBatch, ch store.FindEmailChannelByAddressRow, c store.Conversation, contactID uuid.UUID, now time.Time) error {
+	if in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: c.WorkspaceID, ID: c.InboxID}); err != nil || in.Purpose == purposeMail {
+		return err
+	}
 	plan, err := s.planEmail(ctx, q, c)
 	var apiErr *apiError
 	if errors.As(err, &apiErr) || (err == nil && plan == nil) {

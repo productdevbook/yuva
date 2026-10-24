@@ -57,3 +57,15 @@ WHERE workspace_id = @workspace_id AND member_id = @member_id AND conversation_i
 SELECT conversation_id, pinned_at::timestamptz AS pinned_at FROM conversation_member_states
 WHERE workspace_id = @workspace_id AND member_id = @member_id AND conversation_id = ANY(@conversation_ids::uuid[])
   AND pinned_at IS NOT NULL;
+
+-- name: StarConversation :execrows
+INSERT INTO conversation_stars (workspace_id, member_id, conversation_id, created_at)
+VALUES (@workspace_id, @member_id, @conversation_id, @now)
+ON CONFLICT DO NOTHING;
+
+-- name: UnstarConversation :execrows
+DELETE FROM conversation_stars WHERE workspace_id = @workspace_id AND member_id = @member_id AND conversation_id = @conversation_id;
+
+-- name: ListStarredConversations :many
+SELECT conversation_id FROM conversation_stars
+WHERE workspace_id = @workspace_id AND member_id = @member_id AND conversation_id = ANY(@conversation_ids::uuid[]);

@@ -176,9 +176,9 @@ func (s *Server) ListStatusIncidentConversations(ctx context.Context, req oas.Li
 	}
 	for i, c := range items {
 		out.Items = append(out.Items, oas.StatusIncidentConversation{
-			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, ChannelKind: c.ChannelKind, Kind: c.Kind, Feedback: c.Feedback, Page: c.Page, Subject: c.Subject,
+			Id: c.Id, InboxId: c.InboxId, InboxPurpose: c.InboxPurpose, ContactId: c.ContactId, ChannelId: c.ChannelId, ChannelKind: c.ChannelKind, Kind: c.Kind, Feedback: c.Feedback, Page: c.Page, Subject: c.Subject,
 			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, TeamId: c.TeamId, AssignWaitingSince: c.AssignWaitingSince, Labels: c.Labels,
-			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
+			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, Starred: c.Starred,
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt, BroadcastId: c.BroadcastId,
 			Imported: c.Imported, Contact: c.Contact, LastMessage: c.LastMessage, Unread: c.Unread, PinnedAt: c.PinnedAt, LinkedAt: rows[i].LinkedAt,
 		})

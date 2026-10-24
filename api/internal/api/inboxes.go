@@ -28,7 +28,7 @@ const identitySecretPrefix = "yuva_is_"
 
 func inboxBody(in store.Inbox) oas.Inbox {
 	out := oas.Inbox{
-		Id: in.ID, Name: in.Name, Slug: in.Slug, DefaultLocale: in.DefaultLocale, Timezone: in.Timezone,
+		Id: in.ID, Name: in.Name, Slug: in.Slug, Purpose: oas.InboxPurpose(in.Purpose), DefaultLocale: in.DefaultLocale, Timezone: in.Timezone,
 		Mode: oas.InboxMode(in.Mode), ExpectedReplyMinutes: in.ExpectedReplyMinutes, AskForRating: in.AskForRating,
 		AssignmentMode: oas.AssignmentMode(in.AssignmentMode), AssignmentCap: in.AssignmentCap,
 		Sender: inboxSenderBody(in), CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
@@ -132,11 +132,11 @@ func validTimezone(tz string) error {
 }
 
 type inboxFields struct {
-	name, slug, locale, timezone, mode string
-	branding                           oas.InboxBranding
-	hours                              oas.BusinessHours
-	replyMinutes                       *int32
-	assignment                         assignmentSettings
+	name, slug, purpose, locale, timezone, mode string
+	branding                                    oas.InboxBranding
+	hours                                       oas.BusinessHours
+	replyMinutes                                *int32
+	assignment                                  assignmentSettings
 }
 
 func (f *inboxFields) validate() error {
@@ -164,6 +164,12 @@ func (f *inboxFields) validate() error {
 	}
 	if err := f.assignment.validate(); err != nil {
 		return err
+	}
+	if err := validPurpose(f.purpose); err != nil {
+		return err
+	}
+	if f.purpose == purposeMail && f.assignment.mode != oas.AssignmentOff {
+		return errPurposeMismatch("a mail inbox assigns nothing automatically: assignment_mode must be off")
 	}
 	if f.hours.Intervals == nil {
 		f.hours.Intervals = []oas.BusinessHoursInterval{}
@@ -202,12 +208,15 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 	}
 	b := req.Body
 	f := inboxFields{
-		name: b.Name, slug: b.Slug, locale: "en", timezone: "UTC", mode: string(oas.Async),
+		name: b.Name, slug: b.Slug, purpose: purposeSupport, locale: "en", timezone: "UTC", mode: string(oas.Async),
 		hours: oas.BusinessHours{Intervals: []oas.BusinessHoursInterval{}}, replyMinutes: b.ExpectedReplyMinutes,
 		assignment: assignmentSettings{mode: oas.AssignmentOff, cap: b.AssignmentCap},
 	}
 	if b.AssignmentMode != nil {
 		f.assignment.mode = *b.AssignmentMode
+	}
+	if b.Purpose != nil {
+		f.purpose = string(*b.Purpose)
 	}
 	if b.DefaultLocale != nil {
 		f.locale = *b.DefaultLocale
@@ -233,7 +242,7 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		var err error
 		in, err = q.CreateInbox(ctx, store.CreateInboxParams{
-			ID: id, WorkspaceID: p.workspaceID, Name: f.name, Slug: f.slug, Branding: mustJSON(f.branding),
+			ID: id, WorkspaceID: p.workspaceID, Name: f.name, Slug: f.slug, Purpose: f.purpose, Branding: mustJSON(f.branding),
 			DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
 			BusinessHours: mustJSON(f.hours), IdentitySecret: sealed, AskForRating: b.AskForRating,
 			AssignmentMode: string(f.assignment.mode), AssignmentCap: f.assignment.cap, Now: s.now(),
@@ -290,7 +299,7 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 			return err
 		}
 		f := inboxFields{
-			name: cur.Name, slug: cur.Slug, locale: cur.DefaultLocale, timezone: cur.Timezone, mode: cur.Mode,
+			name: cur.Name, slug: cur.Slug, purpose: cur.Purpose, locale: cur.DefaultLocale, timezone: cur.Timezone, mode: cur.Mode,
 			replyMinutes: cur.ExpectedReplyMinutes,
 			assignment:   assignmentSettings{mode: oas.AssignmentMode(cur.AssignmentMode), cap: cur.AssignmentCap},
 		}
@@ -302,6 +311,9 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		}
 		if b.Slug != nil {
 			f.slug = *b.Slug
+		}
+		if b.Purpose != nil {
+			f.purpose = string(*b.Purpose)
 		}
 		if b.DefaultLocale != nil {
 			f.locale = *b.DefaultLocale
@@ -332,8 +344,21 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		if err := f.validate(); err != nil {
 			return err
 		}
+		toMail := f.purpose == purposeMail && cur.Purpose != purposeMail
+		var unSLA []uuid.UUID
+		if toMail {
+			if err := mailBlockers(ctx, q, p.workspaceID, cur.ID); err != nil {
+				return err
+			}
+			if unSLA, err = q.ListInboxSLAConversations(ctx, store.ListInboxSLAConversationsParams{WorkspaceID: p.workspaceID, InboxID: cur.ID}); err != nil {
+				return err
+			}
+			if err := lockSLAConversations(ctx, q, p.workspaceID, unSLA); err != nil {
+				return err
+			}
+		}
 		in, err := q.UpdateInbox(ctx, store.UpdateInboxParams{
-			WorkspaceID: p.workspaceID, ID: cur.ID, Name: f.name, Slug: f.slug, Branding: mustJSON(f.branding),
+			WorkspaceID: p.workspaceID, ID: cur.ID, Name: f.name, Slug: f.slug, Purpose: f.purpose, Branding: mustJSON(f.branding),
 			DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
 			BusinessHours: mustJSON(f.hours), AskForRating: ask,
 			AssignmentMode: string(f.assignment.mode), AssignmentCap: f.assignment.cap, Now: s.now(),
@@ -353,6 +378,14 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 			if in, err = s.setInboxSender(ctx, q, in, *b.Sender); err != nil {
 				return err
 			}
+		}
+		if f.purpose != cur.Purpose {
+			if err := s.audit(ctx, q, p, oas.AuditInboxPurposeChanged, oas.AuditTargetInbox, in.ID, auditDetails{"from": cur.Purpose, "to": f.purpose}); err != nil {
+				return err
+			}
+		}
+		if err := s.syncSLAConversations(ctx, q, events, p.workspaceID, unSLA); err != nil {
+			return err
 		}
 		if out, err = memberInbox(ctx, q, in); err != nil {
 			return err

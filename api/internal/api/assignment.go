@@ -330,6 +330,10 @@ func (s *Server) poolOf(ctx context.Context, q *store.Queries, c store.Conversat
 		return assignPool{}, err
 	}
 	pool := assignPool{id: in.ID, mode: oas.AssignmentMode(in.AssignmentMode), cap: in.AssignmentCap, inbox: in}
+	if in.Purpose == purposeMail {
+		pool.mode = oas.AssignmentOff
+		return pool, nil
+	}
 	if c.TeamID == nil {
 		return pool, nil
 	}

@@ -36,6 +36,9 @@ WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
   AND ($4::text[] IS NULL OR c.kind = ANY($4::text[]))
+  AND ($5::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $5::text))
 GROUP BY 1, 2, 3, 4
 `
 
@@ -44,6 +47,7 @@ type CountOpenConversationsParams struct {
 	AllInboxes  bool
 	ViewerID    uuid.UUID
 	Kinds       []string
+	Purpose     *string
 }
 
 type CountOpenConversationsRow struct {
@@ -60,6 +64,7 @@ func (q *Queries) CountOpenConversations(ctx context.Context, arg CountOpenConve
 		arg.AllInboxes,
 		arg.ViewerID,
 		arg.Kinds,
+		arg.Purpose,
 	)
 	if err != nil {
 		return nil, err
@@ -94,6 +99,9 @@ WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
   AND ($4::text[] IS NULL OR c.kind = ANY($4::text[]))
+  AND ($5::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $5::text))
 GROUP BY cl.label_id
 ORDER BY cl.label_id
 `
@@ -103,6 +111,7 @@ type CountOpenConversationsByLabelParams struct {
 	AllInboxes  bool
 	ViewerID    uuid.UUID
 	Kinds       []string
+	Purpose     *string
 }
 
 type CountOpenConversationsByLabelRow struct {
@@ -116,6 +125,7 @@ func (q *Queries) CountOpenConversationsByLabel(ctx context.Context, arg CountOp
 		arg.AllInboxes,
 		arg.ViewerID,
 		arg.Kinds,
+		arg.Purpose,
 	)
 	if err != nil {
 		return nil, err
@@ -143,6 +153,9 @@ WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
   AND ($4::text[] IS NULL OR c.kind = ANY($4::text[]))
+  AND ($5::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $5::text))
 GROUP BY 1
 ORDER BY 1
 `
@@ -152,6 +165,7 @@ type CountOpenFeedbackParams struct {
 	AllInboxes  bool
 	ViewerID    uuid.UUID
 	Kinds       []string
+	Purpose     *string
 }
 
 type CountOpenFeedbackRow struct {
@@ -165,6 +179,7 @@ func (q *Queries) CountOpenFeedback(ctx context.Context, arg CountOpenFeedbackPa
 		arg.AllInboxes,
 		arg.ViewerID,
 		arg.Kinds,
+		arg.Purpose,
 	)
 	if err != nil {
 		return nil, err
@@ -182,6 +197,42 @@ func (q *Queries) CountOpenFeedback(ctx context.Context, arg CountOpenFeedbackPa
 		return nil, err
 	}
 	return items, nil
+}
+
+const countStarredConversations = `-- name: CountStarredConversations :one
+SELECT count(*) FROM conversations c
+JOIN conversation_stars st ON st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $1
+WHERE c.workspace_id = $2 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam
+  AND ($3::bool OR EXISTS (
+      SELECT 1 FROM inbox_viewers iv
+      WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4::uuid))
+  AND ($5::text[] IS NULL OR c.kind = ANY($5::text[]))
+  AND ($6::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $6::text))
+`
+
+type CountStarredConversationsParams struct {
+	MemberID    uuid.UUID
+	WorkspaceID uuid.UUID
+	AllInboxes  bool
+	ViewerID    uuid.UUID
+	Kinds       []string
+	Purpose     *string
+}
+
+func (q *Queries) CountStarredConversations(ctx context.Context, arg CountStarredConversationsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countStarredConversations,
+		arg.MemberID,
+		arg.WorkspaceID,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.Kinds,
+		arg.Purpose,
+	)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const createConversation = `-- name: CreateConversation :one
@@ -604,49 +655,59 @@ WHERE c.workspace_id = $1
       SELECT 1 FROM conversation_member_states s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
         AND s.member_id = $24::uuid AND s.pinned_at IS NOT NULL))
-  AND ($25::text IS NULL OR (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($25::text, 'İı', 'ii'))
+  AND ($25::text IS NULL OR EXISTS (
+      SELECT 1 FROM inboxes pi
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $25::text))
+  AND ($26::bool IS NULL OR $26::bool = EXISTS (
+      SELECT 1 FROM conversation_stars st
+      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $27::uuid))
+  AND ($28::uuid IS NULL OR EXISTS (
+      SELECT 1 FROM messages sm
+      WHERE sm.workspace_id = c.workspace_id AND sm.conversation_id = c.id AND sm.kind = 'message' AND sm.direction = 'out'
+        AND NOT sm.draft AND (sm.author_member_id = $28::uuid OR sm.sent_by_member_id = $28::uuid)))
+  AND ($29::text IS NULL OR (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($29::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($25::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($29::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($25::text, 'İı', 'ii')))))
-  AND ($26::text IS NULL OR NOT (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($26::text, 'İı', 'ii'))
+            AND ct.search @@ websearch_to_tsquery('simple', translate($29::text, 'İı', 'ii')))))
+  AND ($30::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($30::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($26::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($30::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($26::text, 'İı', 'ii')))))
-  AND ($27::text[] IS NULL OR EXISTS (
+            AND ct.search @@ websearch_to_tsquery('simple', translate($30::text, 'İı', 'ii')))))
+  AND ($31::text[] IS NULL OR EXISTS (
       SELECT 1 FROM conversation_sla s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id AND s.dropped_at IS NULL
         AND (CASE
-            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $28::timestamptz THEN 'breached'
+            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $32::timestamptz THEN 'breached'
             WHEN c.sla_due_at IS NOT NULL AND s.warn_minutes > 0
-                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= $28::timestamptz THEN 'due_soon'
+                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= $32::timestamptz THEN 'due_soon'
             WHEN c.sla_due_at IS NOT NULL THEN 'on_track'
             WHEN s.paused_at IS NOT NULL THEN 'paused'
             WHEN s.first_reply_breached_at IS NOT NULL OR s.next_reply_breached_at IS NOT NULL OR s.resolution_breached_at IS NOT NULL THEN 'breached'
             WHEN (s.first_reply_target_s IS NOT NULL AND s.first_reply_met_at IS NOT NULL)
                 OR (s.next_reply_target_s IS NOT NULL AND s.next_reply_met_at IS NOT NULL)
                 OR (s.resolution_target_s IS NOT NULL AND s.resolution_met_at IS NOT NULL) THEN 'met'
-            ELSE 'on_track' END) = ANY ($27::text[])))
-  AND ($29::timestamptz IS NULL OR CASE
-      WHEN NOT $30::bool THEN (c.last_activity_at, c.id) < ($29::timestamptz, $31::uuid)
-      WHEN $32::timestamptz IS NULL THEN c.sla_due_at IS NULL
-          AND (c.last_activity_at, c.id) < ($29::timestamptz, $31::uuid)
-      ELSE c.sla_due_at IS NULL OR c.sla_due_at > $32::timestamptz
-          OR (c.sla_due_at = $32::timestamptz
-              AND (c.last_activity_at, c.id) < ($29::timestamptz, $31::uuid)) END)
-ORDER BY CASE WHEN $30::bool THEN c.sla_due_at END ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
-LIMIT $33
+            ELSE 'on_track' END) = ANY ($31::text[])))
+  AND ($33::timestamptz IS NULL OR CASE
+      WHEN NOT $34::bool THEN (c.last_activity_at, c.id) < ($33::timestamptz, $35::uuid)
+      WHEN $36::timestamptz IS NULL THEN c.sla_due_at IS NULL
+          AND (c.last_activity_at, c.id) < ($33::timestamptz, $35::uuid)
+      ELSE c.sla_due_at IS NULL OR c.sla_due_at > $36::timestamptz
+          OR (c.sla_due_at = $36::timestamptz
+              AND (c.last_activity_at, c.id) < ($33::timestamptz, $35::uuid)) END)
+ORDER BY CASE WHEN $34::bool THEN c.sla_due_at END ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
+LIMIT $37
 `
 
 type ListConversationsParams struct {
@@ -674,6 +735,10 @@ type ListConversationsParams struct {
 	Fields       []byte
 	Pinned       *bool
 	PinnedBy     *uuid.UUID
+	Purpose      *string
+	Starred      *bool
+	StarredBy    *uuid.UUID
+	SentBy       *uuid.UUID
 	Q            *string
 	QNot         *string
 	SlaStates    []string
@@ -711,6 +776,10 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.Fields,
 		arg.Pinned,
 		arg.PinnedBy,
+		arg.Purpose,
+		arg.Starred,
+		arg.StarredBy,
+		arg.SentBy,
 		arg.Q,
 		arg.QNot,
 		arg.SlaStates,

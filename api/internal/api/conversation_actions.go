@@ -147,6 +147,11 @@ func (s *Server) MoveConversation(ctx context.Context, req oas.MoveConversationR
 		if target.ID == cur.InboxID {
 			return errValidation("the conversation is already in this inbox")
 		}
+		if cur.ChannelKind != nil && *cur.ChannelKind != string(oas.ChannelKindEmail) {
+			if err := supportInbox(ctx, q, p.workspaceID, target.ID, "a conversation of a "+*cur.ChannelKind+" channel"); err != nil {
+				return err
+			}
+		}
 		next := cur
 		next.InboxID = target.ID
 		next.ChannelID = nil

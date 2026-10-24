@@ -269,6 +269,7 @@ type mcpInbox struct {
 	DefaultLocale        string    `json:"default_locale" jsonschema:"the inbox's language, a BCP 47 tag; write replies in it unless the contact wrote in another"`
 	Timezone             string    `json:"timezone"`
 	Mode                 string    `json:"mode" jsonschema:"live or async"`
+	Purpose              string    `json:"purpose" jsonschema:"support or mail"`
 	ExpectedReplyMinutes *int32    `json:"expected_reply_minutes,omitempty"`
 	Sender               mcpSender `json:"sender" jsonschema:"who sends the inbox's list mail; every broadcast's footer shows it"`
 	SenderReady          bool      `json:"sender_ready" jsonschema:"the legal name and postal address are set, so broadcasts are not blocked by the sender identity"`
@@ -284,7 +285,7 @@ type mcpSender struct {
 func inboxOut(in oas.Inbox) mcpInbox {
 	return mcpInbox{
 		ID: in.Id, Name: in.Name, Slug: in.Slug, DefaultLocale: in.DefaultLocale, Timezone: in.Timezone, Mode: string(in.Mode),
-		ExpectedReplyMinutes: in.ExpectedReplyMinutes,
+		Purpose: string(in.Purpose), ExpectedReplyMinutes: in.ExpectedReplyMinutes,
 		Sender: mcpSender{
 			LegalName: deref(in.Sender.LegalName), PostalAddress: deref(in.Sender.PostalAddress), Registration: deref(in.Sender.Registration),
 			Contact: deref(in.Sender.Contact),

@@ -383,7 +383,11 @@ func (s *Server) syncOutgoing(ctx context.Context, m store.Migration, team migra
 			if err != nil {
 				return err
 			}
-			events.conversation(realtime.ConversationCreated, c, conversationBody(c, nil))
+			body, err := conversationBody(ctx, q, c, nil)
+			if err != nil {
+				return err
+			}
+			events.conversation(realtime.ConversationCreated, c, body)
 			conv = &c
 		}
 		dir := string(oas.Out)

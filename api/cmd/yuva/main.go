@@ -45,7 +45,7 @@ const usageText = `usage:
   yuva api-key create --workspace <id|name> --name <name> [--scope <scope>]... [--inbox <id>]...   (prints only the secret, once)
   yuva api-key list --workspace <id|name>
   yuva api-key revoke <id>
-  yuva inbox create --workspace <id|name> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live|async] [--expected-reply-minutes <n>]
+  yuva inbox create --workspace <id|name> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live|async] [--expected-reply-minutes <n>] [--purpose support|mail]
   yuva inbox list --workspace <id|name>
   yuva inbox ses-tenant show --workspace <id|name> [--inbox <id|slug>]
   yuva inbox ses-tenant sync (--workspace <id|name> [--inbox <id|slug>] | --all) [--dry-run]

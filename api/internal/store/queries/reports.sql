@@ -144,7 +144,7 @@ SELECT date_trunc(@grain::text, r.bucket AT TIME ZONE @timezone::text)::date AS 
         ELSE '' END)::text AS grp,
     r.metric::text AS metric, r.bin::smallint AS bin, sum(r.n)::bigint AS n
 FROM r
-JOIN inboxes i ON i.workspace_id = @workspace_id AND i.id = r.inbox_id
+JOIN inboxes i ON i.workspace_id = @workspace_id AND i.id = r.inbox_id AND i.purpose = 'support'
 LEFT JOIN teams t ON t.workspace_id = @workspace_id AND t.id = r.team_id
 LEFT JOIN members mb ON mb.workspace_id = @workspace_id AND mb.id = r.member_id
 LEFT JOIN labels l ON l.workspace_id = @workspace_id AND l.id = r.label_id

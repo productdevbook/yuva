@@ -956,6 +956,13 @@ type ConversationSla struct {
 	UpdatedAt            time.Time
 }
 
+type ConversationStar struct {
+	WorkspaceID    uuid.UUID
+	MemberID       uuid.UUID
+	ConversationID uuid.UUID
+	CreatedAt      time.Time
+}
+
 type CustomField struct {
 	ID              uuid.UUID
 	WorkspaceID     uuid.UUID
@@ -1438,6 +1445,7 @@ type Inbox struct {
 	FeedbackCategories   []byte
 	AssignmentMode       string
 	AssignmentCap        *int32
+	Purpose              string
 }
 
 type InboxMember struct {

@@ -70,6 +70,8 @@ var operationAccess = map[string]access{
 	"MarkConversationUnread": accessMember,
 	"PinConversation":        accessMember,
 	"UnpinConversation":      accessMember,
+	"StarConversation":       accessMember,
+	"UnstarConversation":     accessMember,
 	"SetMemberTyping":        accessMember,
 	"ListMentions":           accessMember,
 	"MarkMentionSeen":        accessMember,

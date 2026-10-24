@@ -60,7 +60,7 @@ func (s *Server) rate(ctx context.Context, q *store.Queries, events *eventBatch,
 	if c.Kind == string(oas.ConversationKindFeedback) {
 		return c, errRatingUnavailable
 	}
-	can, current := ratingState(in.RatingSince, c.Kind, c.Status, c.ClosedAt, c.RatedAt, c.Rating, now)
+	can, current := ratingState(ratingSince(in), c.Kind, c.Status, c.ClosedAt, c.RatedAt, c.Rating, now)
 	if current != nil {
 		return c, errAlreadyRated
 	}

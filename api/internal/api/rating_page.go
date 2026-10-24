@@ -113,7 +113,7 @@ func (s *Server) RequestRating(ctx context.Context, workspaceID, conversationID 
 			return err
 		}
 		now := s.now()
-		if can, _ := ratingState(in.RatingSince, c.Kind, c.Status, c.ClosedAt, c.RatedAt, c.Rating, now); !can || c.Spam {
+		if can, _ := ratingState(ratingSince(in), c.Kind, c.Status, c.ClosedAt, c.RatedAt, c.Rating, now); !can || c.Spam {
 			return nil
 		}
 		replied, err := q.ConversationHasReply(ctx, store.ConversationHasReplyParams{WorkspaceID: workspaceID, ConversationID: c.ID})
@@ -375,7 +375,7 @@ func (s *Server) answerRatingPage(w http.ResponseWriter, r *http.Request, token 
 		writeRatingPage(w, http.StatusNotFound, v)
 		return
 	}
-	can, current := ratingState(in.RatingSince, c.Kind, c.Status, c.ClosedAt, c.RatedAt, c.Rating, s.now())
+	can, current := ratingState(ratingSince(in), c.Kind, c.Status, c.ClosedAt, c.RatedAt, c.Rating, s.now())
 	switch {
 	case current != nil || errors.Is(rateErr, errAlreadyRated):
 		v.Heading = v.W.Already

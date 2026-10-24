@@ -190,6 +190,7 @@ SELECT c.inbox_id, c.rating::text AS rating, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = $1 AND c.rated_at >= $2::timestamptz AND c.rated_at <= $3::timestamptz AND NOT c.spam AND c.kind <> 'feedback' AND c.trashed_at IS NULL
   AND ($4::uuid IS NULL OR c.inbox_id = $4::uuid)
+  AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
   AND ($5::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid))

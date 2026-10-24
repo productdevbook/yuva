@@ -13,13 +13,13 @@ import (
 )
 
 const createInbox = `-- name: CreateInbox :one
-INSERT INTO inboxes (id, workspace_id, name, slug, branding, default_locale, timezone, mode,
+INSERT INTO inboxes (id, workspace_id, name, slug, purpose, branding, default_locale, timezone, mode,
                      expected_reply_minutes, business_hours, identity_secret, ask_for_rating, rating_since,
                      assignment_mode, assignment_cap, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
-        $9, $10, $11, coalesce($12::bool, false),
-        CASE WHEN $12::bool THEN $13::timestamptz END, $14, $15, $13, $13)
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
+        $10, $11, $12, coalesce($13::bool, false),
+        CASE WHEN $13::bool THEN $14::timestamptz END, $15, $16, $14, $14)
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose
 `
 
 type CreateInboxParams struct {
@@ -27,6 +27,7 @@ type CreateInboxParams struct {
 	WorkspaceID          uuid.UUID
 	Name                 string
 	Slug                 string
+	Purpose              string
 	Branding             []byte
 	DefaultLocale        string
 	Timezone             string
@@ -46,6 +47,7 @@ func (q *Queries) CreateInbox(ctx context.Context, arg CreateInboxParams) (Inbox
 		arg.WorkspaceID,
 		arg.Name,
 		arg.Slug,
+		arg.Purpose,
 		arg.Branding,
 		arg.DefaultLocale,
 		arg.Timezone,
@@ -82,6 +84,7 @@ func (q *Queries) CreateInbox(ctx context.Context, arg CreateInboxParams) (Inbox
 		&i.FeedbackCategories,
 		&i.AssignmentMode,
 		&i.AssignmentCap,
+		&i.Purpose,
 	)
 	return i, err
 }
@@ -104,7 +107,7 @@ func (q *Queries) DeleteInbox(ctx context.Context, arg DeleteInboxParams) (int64
 }
 
 const getInbox = `-- name: GetInbox :one
-SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap FROM inboxes WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose FROM inboxes WHERE workspace_id = $1 AND id = $2
 `
 
 type GetInboxParams struct {
@@ -138,6 +141,7 @@ func (q *Queries) GetInbox(ctx context.Context, arg GetInboxParams) (Inbox, erro
 		&i.FeedbackCategories,
 		&i.AssignmentMode,
 		&i.AssignmentCap,
+		&i.Purpose,
 	)
 	return i, err
 }
@@ -185,6 +189,45 @@ func (q *Queries) HasInboxAccess(ctx context.Context, arg HasInboxAccessParams) 
 	var access bool
 	err := row.Scan(&access)
 	return access, err
+}
+
+const inboxSupportLinks = `-- name: InboxSupportLinks :one
+SELECT
+    coalesce((SELECT array_agg(DISTINCT ch.kind ORDER BY ch.kind) FROM channels ch
+              WHERE ch.workspace_id = $1 AND ch.inbox_id = $2 AND ch.kind <> 'email'), '{}')::text[] AS channel_kinds,
+    EXISTS (SELECT 1 FROM help_centers h WHERE h.workspace_id = $1 AND h.inbox_id = $2)::bool AS help_center,
+    EXISTS (SELECT 1 FROM status_pages sp WHERE sp.workspace_id = $1 AND sp.inbox_id = $2)::bool AS status_page,
+    EXISTS (SELECT 1 FROM roadmap_boards rb WHERE rb.workspace_id = $1 AND rb.inbox_id = $2)::bool AS roadmap_board,
+    EXISTS (SELECT 1 FROM changelogs cl WHERE cl.workspace_id = $1 AND cl.inbox_id = $2)::bool AS whats_new,
+    EXISTS (SELECT 1 FROM sla_policies p WHERE p.workspace_id = $1 AND $2::uuid = ANY (p.inbox_ids))::bool AS sla_policy
+`
+
+type InboxSupportLinksParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+type InboxSupportLinksRow struct {
+	ChannelKinds []string
+	HelpCenter   bool
+	StatusPage   bool
+	RoadmapBoard bool
+	WhatsNew     bool
+	SlaPolicy    bool
+}
+
+func (q *Queries) InboxSupportLinks(ctx context.Context, arg InboxSupportLinksParams) (InboxSupportLinksRow, error) {
+	row := q.db.QueryRow(ctx, inboxSupportLinks, arg.WorkspaceID, arg.InboxID)
+	var i InboxSupportLinksRow
+	err := row.Scan(
+		&i.ChannelKinds,
+		&i.HelpCenter,
+		&i.StatusPage,
+		&i.RoadmapBoard,
+		&i.WhatsNew,
+		&i.SlaPolicy,
+	)
+	return i, err
 }
 
 const listInboxMembers = `-- name: ListInboxMembers :many
@@ -246,6 +289,72 @@ func (q *Queries) ListInboxMembers(ctx context.Context, arg ListInboxMembersPara
 	return items, nil
 }
 
+const listInboxPurposes = `-- name: ListInboxPurposes :many
+SELECT id, purpose FROM inboxes WHERE workspace_id = $1 AND id = ANY($2::uuid[])
+`
+
+type ListInboxPurposesParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+type ListInboxPurposesRow struct {
+	ID      uuid.UUID
+	Purpose string
+}
+
+func (q *Queries) ListInboxPurposes(ctx context.Context, arg ListInboxPurposesParams) ([]ListInboxPurposesRow, error) {
+	rows, err := q.db.Query(ctx, listInboxPurposes, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListInboxPurposesRow
+	for rows.Next() {
+		var i ListInboxPurposesRow
+		if err := rows.Scan(&i.ID, &i.Purpose); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listInboxSLAConversations = `-- name: ListInboxSLAConversations :many
+SELECT s.conversation_id FROM conversation_sla s
+JOIN conversations c ON c.workspace_id = s.workspace_id AND c.id = s.conversation_id
+WHERE s.workspace_id = $1 AND c.inbox_id = $2 AND s.dropped_at IS NULL
+ORDER BY s.conversation_id
+`
+
+type ListInboxSLAConversationsParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+func (q *Queries) ListInboxSLAConversations(ctx context.Context, arg ListInboxSLAConversationsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listInboxSLAConversations, arg.WorkspaceID, arg.InboxID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var conversation_id uuid.UUID
+		if err := rows.Scan(&conversation_id); err != nil {
+			return nil, err
+		}
+		items = append(items, conversation_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listInboxStorageKeys = `-- name: ListInboxStorageKeys :many
 SELECT a.storage_key FROM attachments a
 JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
@@ -278,7 +387,7 @@ func (q *Queries) ListInboxStorageKeys(ctx context.Context, arg ListInboxStorage
 }
 
 const listInboxes = `-- name: ListInboxes :many
-SELECT i.id, i.workspace_id, i.name, i.slug, i.branding, i.default_locale, i.timezone, i.mode, i.expected_reply_minutes, i.business_hours, i.identity_secret, i.created_at, i.updated_at, i.ask_for_rating, i.rating_since, i.sender_legal_name, i.sender_postal_address, i.sender_registration, i.sender_contact, i.feedback_categories, i.assignment_mode, i.assignment_cap FROM inboxes i
+SELECT i.id, i.workspace_id, i.name, i.slug, i.branding, i.default_locale, i.timezone, i.mode, i.expected_reply_minutes, i.business_hours, i.identity_secret, i.created_at, i.updated_at, i.ask_for_rating, i.rating_since, i.sender_legal_name, i.sender_postal_address, i.sender_registration, i.sender_contact, i.feedback_categories, i.assignment_mode, i.assignment_cap, i.purpose FROM inboxes i
 WHERE i.workspace_id = $1
   AND ($2::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
@@ -324,6 +433,7 @@ func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inb
 			&i.FeedbackCategories,
 			&i.AssignmentMode,
 			&i.AssignmentCap,
+			&i.Purpose,
 		); err != nil {
 			return nil, err
 		}
@@ -365,7 +475,7 @@ func (q *Queries) ListViewerInboxIDs(ctx context.Context, arg ListViewerInboxIDs
 }
 
 const lockInbox = `-- name: LockInbox :one
-SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockInboxParams struct {
@@ -399,6 +509,7 @@ func (q *Queries) LockInbox(ctx context.Context, arg LockInboxParams) (Inbox, er
 		&i.FeedbackCategories,
 		&i.AssignmentMode,
 		&i.AssignmentCap,
+		&i.Purpose,
 	)
 	return i, err
 }
@@ -444,7 +555,7 @@ func (q *Queries) RevokeInboxAccess(ctx context.Context, arg RevokeInboxAccessPa
 const setInboxFeedbackCategories = `-- name: SetInboxFeedbackCategories :one
 UPDATE inboxes SET feedback_categories = $1, updated_at = $2
 WHERE workspace_id = $3 AND id = $4
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose
 `
 
 type SetInboxFeedbackCategoriesParams struct {
@@ -485,6 +596,7 @@ func (q *Queries) SetInboxFeedbackCategories(ctx context.Context, arg SetInboxFe
 		&i.FeedbackCategories,
 		&i.AssignmentMode,
 		&i.AssignmentCap,
+		&i.Purpose,
 	)
 	return i, err
 }
@@ -530,20 +642,37 @@ func (q *Queries) ShareInboxFeedbackCategories(ctx context.Context, arg ShareInb
 	return feedback_categories, err
 }
 
+const shareInboxPurpose = `-- name: ShareInboxPurpose :one
+SELECT purpose FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE
+`
+
+type ShareInboxPurposeParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) ShareInboxPurpose(ctx context.Context, arg ShareInboxPurposeParams) (string, error) {
+	row := q.db.QueryRow(ctx, shareInboxPurpose, arg.WorkspaceID, arg.ID)
+	var purpose string
+	err := row.Scan(&purpose)
+	return purpose, err
+}
+
 const updateInbox = `-- name: UpdateInbox :one
-UPDATE inboxes SET name = $1, slug = $2, branding = $3, default_locale = $4,
-    timezone = $5, mode = $6, expected_reply_minutes = $7,
-    business_hours = $8, ask_for_rating = $9,
-    assignment_mode = $10, assignment_cap = $11,
-    rating_since = CASE WHEN NOT $9::bool THEN NULL WHEN ask_for_rating THEN rating_since ELSE $12::timestamptz END,
-    updated_at = $12
-WHERE workspace_id = $13 AND id = $14
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap
+UPDATE inboxes SET name = $1, slug = $2, purpose = $3, branding = $4, default_locale = $5,
+    timezone = $6, mode = $7, expected_reply_minutes = $8,
+    business_hours = $9, ask_for_rating = $10,
+    assignment_mode = $11, assignment_cap = $12,
+    rating_since = CASE WHEN NOT $10::bool THEN NULL WHEN ask_for_rating THEN rating_since ELSE $13::timestamptz END,
+    updated_at = $13
+WHERE workspace_id = $14 AND id = $15
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose
 `
 
 type UpdateInboxParams struct {
 	Name                 string
 	Slug                 string
+	Purpose              string
 	Branding             []byte
 	DefaultLocale        string
 	Timezone             string
@@ -562,6 +691,7 @@ func (q *Queries) UpdateInbox(ctx context.Context, arg UpdateInboxParams) (Inbox
 	row := q.db.QueryRow(ctx, updateInbox,
 		arg.Name,
 		arg.Slug,
+		arg.Purpose,
 		arg.Branding,
 		arg.DefaultLocale,
 		arg.Timezone,
@@ -599,6 +729,7 @@ func (q *Queries) UpdateInbox(ctx context.Context, arg UpdateInboxParams) (Inbox
 		&i.FeedbackCategories,
 		&i.AssignmentMode,
 		&i.AssignmentCap,
+		&i.Purpose,
 	)
 	return i, err
 }

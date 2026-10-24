@@ -108,6 +108,7 @@ type createInboxIn struct {
 	Timezone             string `json:"timezone,omitempty" jsonschema:"an IANA time zone such as Europe/Istanbul; UTC when empty"`
 	Mode                 string `json:"mode" jsonschema:"live shows who is available, typing and read receipts; async shows the expected reply time"`
 	ExpectedReplyMinutes int32  `json:"expected_reply_minutes,omitempty" jsonschema:"shown to contacts in async mode, 1 to 43200"`
+	Purpose              string `json:"purpose,omitempty" jsonschema:"support (the default) or mail; a mail inbox takes only e-mail channels and stays out of support reports, ratings, SLA and auto-assignment"`
 }
 
 type createChatChannelIn struct {
@@ -443,6 +444,9 @@ func (c *mcpCall) createInbox(ctx context.Context, in createInboxIn) (mcpInbox, 
 	body := oas.InboxCreate{Name: in.Name, Slug: in.Slug, DefaultLocale: &locale, Mode: &mode, ExpectedReplyMinutes: optLimit(in.ExpectedReplyMinutes)}
 	if in.Timezone != "" {
 		body.Timezone = &in.Timezone
+	}
+	if in.Purpose != "" {
+		body.Purpose = new(oas.InboxPurpose(in.Purpose))
 	}
 	base := slugify(in.Name)
 	if base == "" {

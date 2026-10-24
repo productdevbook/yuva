@@ -240,6 +240,9 @@ func (s *Server) CreateChangelog(ctx context.Context, req oas.CreateChangelogReq
 		if err != nil {
 			return err
 		}
+		if err := supportInbox(ctx, q, p.workspaceID, in.ID, "a What's new"); err != nil {
+			return err
+		}
 		f := changelogFields{
 			name: b.Name, slug: string(b.Slug), defaultLocale: in.DefaultLocale, property: b.AnalyticsPropertyId,
 			agentsPublish: boolOr(b.AgentsMayPublish, false), published: boolOr(b.Published, false),

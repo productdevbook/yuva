@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	inboxUsage = "usage: yuva inbox create --workspace <id|name> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live|async] [--expected-reply-minutes <n>]\n" +
+	inboxUsage = "usage: yuva inbox create --workspace <id|name> --name <name> [--slug <slug>] [--locale <tag>] [--timezone <zone>] [--mode live|async] [--expected-reply-minutes <n>] [--purpose support|mail]\n" +
 		"       yuva inbox list --workspace <id|name>\n" +
 		"       yuva inbox ses-tenant show --workspace <id|name> [--inbox <id|slug>]\n" +
 		"       yuva inbox ses-tenant sync (--workspace <id|name> [--inbox <id|slug>] | --all) [--dry-run]\n" +
@@ -156,6 +156,7 @@ func inboxCommand(ctx context.Context, st *store.Store, srv *api.Server, args []
 		timezone := fs.String("timezone", "UTC", "IANA time zone")
 		mode := fs.String("mode", string(oas.Async), "live or async")
 		replyMinutes := fs.Int("expected-reply-minutes", 0, "expected reply time shown in async mode; 0 for none")
+		purpose := fs.String("purpose", string(oas.InboxPurposeSupport), "support or mail")
 		if err := fs.Parse(args[1:]); err != nil {
 			return err
 		}
@@ -169,8 +170,11 @@ func inboxCommand(ctx context.Context, st *store.Store, srv *api.Server, args []
 		if *slug == "" {
 			*slug = slugify(*name)
 		}
-		m := oas.InboxMode(*mode)
-		body := oas.InboxCreate{Name: *name, Slug: *slug, DefaultLocale: locale, Timezone: timezone, Mode: &m}
+		if *purpose != string(oas.InboxPurposeSupport) && *purpose != string(oas.InboxPurposeMail) {
+			return errors.New("--purpose must be support or mail")
+		}
+		m, pu := oas.InboxMode(*mode), oas.InboxPurpose(*purpose)
+		body := oas.InboxCreate{Name: *name, Slug: *slug, DefaultLocale: locale, Timezone: timezone, Mode: &m, Purpose: &pu}
 		if *replyMinutes != 0 {
 			v := int32(*replyMinutes)
 			body.ExpectedReplyMinutes = &v
@@ -198,13 +202,13 @@ func inboxCommand(ctx context.Context, st *store.Store, srv *api.Server, args []
 			return err
 		}
 		tw := tabwriter.NewWriter(stdout, 0, 0, 2, ' ', 0)
-		fmt.Fprintln(tw, "ID\tSLUG\tNAME\tLOCALE\tTIMEZONE\tMODE\tREPLY MINUTES")
+		fmt.Fprintln(tw, "ID\tSLUG\tNAME\tLOCALE\tTIMEZONE\tMODE\tPURPOSE\tREPLY MINUTES")
 		for _, in := range inboxes {
 			reply := "-"
 			if in.ExpectedReplyMinutes != nil {
 				reply = fmt.Sprint(*in.ExpectedReplyMinutes)
 			}
-			fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", in.Id, in.Slug, in.Name, in.DefaultLocale, in.Timezone, in.Mode, reply)
+			fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", in.Id, in.Slug, in.Name, in.DefaultLocale, in.Timezone, in.Mode, in.Purpose, reply)
 		}
 		return tw.Flush()
 	default:

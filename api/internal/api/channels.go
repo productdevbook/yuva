@@ -195,6 +195,11 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	}
 	var out oas.Channel
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		if !isEmail {
+			if err := supportInbox(ctx, q, p.workspaceID, req.InboxId, "a "+string(req.Body.Kind)+" channel, only e-mail channels"); err != nil {
+				return err
+			}
+		}
 		c, err := q.CreateChannel(ctx, store.CreateChannelParams{
 			ID: id, WorkspaceID: p.workspaceID, InboxID: req.InboxId, Kind: string(req.Body.Kind),
 			Name: name, Settings: settings, AttachmentMaxBytes: limits.maxBytes, AttachmentTypes: limits.types, Now: s.now(),

@@ -1138,6 +1138,7 @@ const (
 	AuditConversationTrashed                 AuditAction = "conversation.trashed"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
+	AuditInboxPurposeChanged                 AuditAction = "inbox.purpose_changed"
 	AuditInviteCreated                       AuditAction = "invite.created"
 	AuditInviteDeleted                       AuditAction = "invite.deleted"
 	AuditIssueIntegrationConnected           AuditAction = "issue_integration.connected"
@@ -1231,6 +1232,8 @@ func (e AuditAction) Valid() bool {
 	case AuditInboxDeleted:
 		return true
 	case AuditInboxIdentitySecretRotated:
+		return true
+	case AuditInboxPurposeChanged:
 		return true
 	case AuditInviteCreated:
 		return true
@@ -4181,6 +4184,24 @@ func (e InboxMode) Valid() bool {
 	case Async:
 		return true
 	case Live:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InboxPurpose.
+const (
+	InboxPurposeMail    InboxPurpose = "mail"
+	InboxPurposeSupport InboxPurpose = "support"
+)
+
+// Valid indicates whether the value is a known member of the InboxPurpose enum.
+func (e InboxPurpose) Valid() bool {
+	switch e {
+	case InboxPurposeMail:
+		return true
+	case InboxPurposeSupport:
 		return true
 	default:
 		return false
@@ -7754,6 +7775,21 @@ func (e ListConversationsParamsIdea) Valid() bool {
 	}
 }
 
+// Defines values for ListConversationsParamsSent.
+const (
+	ListConversationsSentMine ListConversationsParamsSent = "mine"
+)
+
+// Valid indicates whether the value is a known member of the ListConversationsParamsSent enum.
+func (e ListConversationsParamsSent) Valid() bool {
+	switch e {
+	case ListConversationsSentMine:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListConversationsParamsSort.
 const (
 	ListConversationsSortLastActivity ListConversationsParamsSort = "last_activity"
@@ -9948,7 +9984,8 @@ type Attributes map[string]interface{}
 //     channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
 //     `address`, by `operator`, when the server's operator vouched for the address with
 //     `yuva channel prove`.
-//   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+//   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
+//     `from`, `to`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 //     `inbox_name`.
@@ -10071,7 +10108,8 @@ type AuditEntry struct {
 	//   channel's address); the workspace's owners are e-mailed too. `channel.address_proven`:
 	//   `address`, by `operator`, when the server's operator vouched for the address with
 	//   `yuva channel prove`.
-	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`.
+	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
+	//   `from`, `to`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 	//   `inbox_name`.
@@ -13315,6 +13353,9 @@ type Conversation struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// InboxPurpose Read-only, the `purpose` of its inbox as it is now, so receivers of events and webhooks can tell team mail from support.
+	InboxPurpose InboxPurpose `json:"inbox_purpose"`
+
 	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
 	Issues *[]IssueLink `json:"issues,omitempty"`
 
@@ -13357,7 +13398,13 @@ type Conversation struct {
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
-	Spam    bool               `json:"spam"`
+	Spam bool `json:"spam"`
+
+	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
+	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
+	// `conversation.updated` event a member's own star change sends to their connections;
+	// absent for API keys, in webhooks and in other events.
+	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
@@ -13454,6 +13501,9 @@ type ConversationCounts struct {
 
 	// Spam Open conversations flagged as spam (not included in the other counts).
 	Spam int64 `json:"spam"`
+
+	// Starred Starred by the calling member (`0` for API keys).
+	Starred int64 `json:"starred"`
 
 	// Teams Per assigned team id.
 	Teams      []CountByID `json:"teams"`
@@ -13626,6 +13676,9 @@ type ConversationListItem struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// InboxPurpose Read-only, the `purpose` of its inbox as it is now, so receivers of events and webhooks can tell team mail from support.
+	InboxPurpose InboxPurpose `json:"inbox_purpose"`
+
 	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
 	Issues *[]IssueLink `json:"issues,omitempty"`
 
@@ -13674,7 +13727,13 @@ type ConversationListItem struct {
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
-	Spam    bool               `json:"spam"`
+	Spam bool `json:"spam"`
+
+	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
+	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
+	// `conversation.updated` event a member's own star change sends to their connections;
+	// absent for API keys, in webhooks and in other events.
+	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
@@ -17250,6 +17309,17 @@ type Inbox struct {
 	Mode InboxMode `json:"mode"`
 	Name string    `json:"name"`
 
+	// Purpose `support` (the default, and every inbox made before purposes existed) or `mail`, a team
+	// mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
+	// it asks no rating, sends no greeting auto-reply, assigns nothing automatically
+	// (`assignment_mode` must stay `off`), gets no SLA targets, cannot be the inbox of a help
+	// center, status page, roadmap board, What's new or SLA policy, and is left out of support
+	// stats, reports and the Home support blocks. Settings that only change behaviour
+	// (`ask_for_rating`, `expected_reply_minutes`, `business_hours`, `branding.greeting`) are kept
+	// as stored and apply again when the inbox becomes `support`. Conversations keep their model;
+	// the panel shows `closed` as Archived in a `mail` inbox.
+	Purpose InboxPurpose `json:"purpose"`
+
 	// Sender Who sends the inbox's list mail, for the footer the law asks for (CAN-SPAM, CASL, Türkiye's
 	// Regulation on Commercial Communication): the legal name, a postal address, a registration
 	// such as a MERSİS number or VAT id, and a contact (an e-mail address, phone or URL).
@@ -17331,6 +17401,9 @@ type InboxCreate struct {
 	// time instead.
 	Mode *InboxMode `json:"mode,omitempty"`
 	Name string     `json:"name"`
+
+	// Purpose Defaults to `support`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
+	Purpose *InboxPurpose `json:"purpose,omitempty"`
 
 	// Slug Examples: acme-app
 	Slug Slug `json:"slug"`
@@ -17475,6 +17548,17 @@ type InboxNotificationsUpdate struct {
 	Events NotificationEventsUpdate `json:"events"`
 }
 
+// InboxPurpose `support` (the default, and every inbox made before purposes existed) or `mail`, a team
+// mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
+// it asks no rating, sends no greeting auto-reply, assigns nothing automatically
+// (`assignment_mode` must stay `off`), gets no SLA targets, cannot be the inbox of a help
+// center, status page, roadmap board, What's new or SLA policy, and is left out of support
+// stats, reports and the Home support blocks. Settings that only change behaviour
+// (`ask_for_rating`, `expected_reply_minutes`, `business_hours`, `branding.greeting`) are kept
+// as stored and apply again when the inbox becomes `support`. Conversations keep their model;
+// the panel shows `closed` as Archived in a `mail` inbox.
+type InboxPurpose string
+
 // InboxRatingStats defines model for InboxRatingStats.
 type InboxRatingStats struct {
 	Bad     int64     `json:"bad"`
@@ -17593,6 +17677,14 @@ type InboxUpdate struct {
 	// time instead.
 	Mode *InboxMode `json:"mode,omitempty"`
 	Name *string    `json:"name,omitempty"`
+
+	// Purpose `mail` to `support` is always allowed. `support` to `mail` answers `409
+	// purpose_mismatch`, naming what blocks it, while the inbox has a `chat`, `app` or `api`
+	// channel, a help center, status page, roadmap board or What's new, or is named in an SLA
+	// policy's `inbox_ids`, or while `assignment_mode` is not `off` (send `assignment_mode:
+	// off` in the same request). Teams granted the inbox do not block it. Conversations of
+	// the inbox lose their running SLA targets at once. Audited as `inbox.purpose_changed`.
+	Purpose *InboxPurpose `json:"purpose,omitempty"`
 
 	// Sender Owners, admins and keys with `inboxes:manage`.
 	Sender *InboxSenderUpdate `json:"sender,omitempty"`
@@ -22225,6 +22317,9 @@ type StatusIncidentConversation struct {
 	Imported *ConversationImport `json:"imported,omitempty"`
 	InboxId  uuid.UUID           `json:"inbox_id"`
 
+	// InboxPurpose Read-only, the `purpose` of its inbox as it is now, so receivers of events and webhooks can tell team mail from support.
+	InboxPurpose InboxPurpose `json:"inbox_purpose"`
+
 	// Issues The GitHub and Linear issues a `feedback` conversation is linked to, oldest link first; absent when there are none.
 	Issues *[]IssueLink `json:"issues,omitempty"`
 
@@ -22274,7 +22369,13 @@ type StatusIncidentConversation struct {
 
 	// Spam Flagged as spam, e.g. because the first e-mail failed DMARC. Spam is left out of lists
 	// and counts unless asked for, and gets no automatic reply.
-	Spam    bool               `json:"spam"`
+	Spam bool `json:"spam"`
+
+	// Starred Whether the calling member starred it (`PUT /v1/conversations/{id}/star`). Present
+	// on list items and `GET /v1/conversations/{id}` for member sessions, and on the
+	// `conversation.updated` event a member's own star change sends to their connections;
+	// absent for API keys, in webhooks and in other events.
+	Starred *bool              `json:"starred,omitempty"`
 	Status  ConversationStatus `json:"status"`
 	Subject string             `json:"subject"`
 
@@ -24307,6 +24408,17 @@ type ImportId = uuid.UUID
 // InboxId defines model for InboxId.
 type InboxId = uuid.UUID
 
+// InboxPurposeFilter `support` (the default, and every inbox made before purposes existed) or `mail`, a team
+// mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
+// it asks no rating, sends no greeting auto-reply, assigns nothing automatically
+// (`assignment_mode` must stay `off`), gets no SLA targets, cannot be the inbox of a help
+// center, status page, roadmap board, What's new or SLA policy, and is left out of support
+// stats, reports and the Home support blocks. Settings that only change behaviour
+// (`ask_for_rating`, `expected_reply_minutes`, `business_hours`, `branding.greeting`) are kept
+// as stored and apply again when the inbox becomes `support`. Conversations keep their model;
+// the panel shows `closed` as Archived in a `mail` inbox.
+type InboxPurposeFilter = InboxPurpose
+
 // InviteId defines model for InviteId.
 type InviteId = uuid.UUID
 
@@ -25717,6 +25829,18 @@ type ListConversationsParams struct {
 	// without it, both. Member sessions only (`400 validation_failed` for API keys).
 	Pinned *bool `form:"pinned,omitempty" json:"pinned,omitempty"`
 
+	// Purpose Only conversations of inboxes with this `purpose`; without it, every inbox.
+	Purpose *InboxPurposeFilter `form:"purpose,omitempty" json:"purpose,omitempty"`
+
+	// Starred `true` lists only the conversations the calling member starred, `false` only the
+	// others; without it, both. Member sessions only (`400 validation_failed` for API keys).
+	Starred *bool `form:"starred,omitempty" json:"starred,omitempty"`
+
+	// Sent `mine` lists only the conversations in which the calling member wrote a public
+	// outbound message (sent, not a draft or note), the Sent folder. Member sessions only
+	// (`400 validation_failed` for API keys).
+	Sent *ListConversationsParamsSent `form:"sent,omitempty" json:"sent,omitempty"`
+
 	// Sort `last_activity` (the default): most recent activity first. `sla_due`: conversations
 	// with a running SLA target first, the earliest `sla.due_at` first (so breached ones
 	// lead), then the others by most recent activity. A cursor continues only the order it
@@ -25746,6 +25870,9 @@ type ListConversationsParamsTeam string
 // ListConversationsParamsIdea defines parameters for ListConversations.
 type ListConversationsParamsIdea string
 
+// ListConversationsParamsSent defines parameters for ListConversations.
+type ListConversationsParamsSent string
+
 // ListConversationsParamsSort defines parameters for ListConversations.
 type ListConversationsParamsSort string
 
@@ -25773,6 +25900,9 @@ type GetConversationCountsParams struct {
 	// parameter (`kind=feedback&kind=conversation`) or give a comma-separated list
 	// (`kind=feedback,conversation`).
 	Kind *ConversationKinds `form:"kind,omitempty" json:"kind,omitempty"`
+
+	// Purpose Only conversations of inboxes with this `purpose`; without it, every inbox.
+	Purpose *InboxPurposeFilter `form:"purpose,omitempty" json:"purpose,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -25920,6 +26050,18 @@ type MarkConversationReadParams struct {
 
 // RestoreConversationParams defines parameters for RestoreConversation.
 type RestoreConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// UnstarConversationParams defines parameters for UnstarConversation.
+type UnstarConversationParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// StarConversationParams defines parameters for StarConversation.
+type StarConversationParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -34281,6 +34423,12 @@ type ServerInterface interface {
 	// RestoreConversation Bring a conversation back from the trash
 	// (POST /v1/conversations/{conversationId}/restore)
 	RestoreConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params RestoreConversationParams)
+	// UnstarConversation Remove a star
+	// (DELETE /v1/conversations/{conversationId}/star)
+	UnstarConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params UnstarConversationParams)
+	// StarConversation Star a conversation
+	// (PUT /v1/conversations/{conversationId}/star)
+	StarConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params StarConversationParams)
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params SetMemberTypingParams)
@@ -45239,6 +45387,45 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 		return
 	}
 
+	// ------------- Optional query parameter "purpose" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "purpose", r.URL.Query(), &params.Purpose, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "purpose"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "purpose", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "starred" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "starred", r.URL.Query(), &params.Starred, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "starred"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "starred", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sent" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sent", r.URL.Query(), &params.Sent, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sent"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sent", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "sort" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "sort", r.URL.Query(), &params.Sort, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
@@ -45474,6 +45661,19 @@ func (siw *ServerInterfaceWrapper) GetConversationCounts(w http.ResponseWriter, 
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "purpose" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "purpose", r.URL.Query(), &params.Purpose, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "purpose"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "purpose", Err: err})
 		}
 		return
 	}
@@ -46641,6 +46841,106 @@ func (siw *ServerInterfaceWrapper) RestoreConversation(w http.ResponseWriter, r 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RestoreConversation(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnstarConversation operation middleware
+func (siw *ServerInterfaceWrapper) UnstarConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnstarConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnstarConversation(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// StarConversation operation middleware
+func (siw *ServerInterfaceWrapper) StarConversation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params StarConversationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.StarConversation(w, r, conversationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -64570,6 +64870,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/unread", wrapper.MarkConversationUnread)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}/pin", wrapper.UnpinConversation)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/conversations/{conversationId}/pin", wrapper.PinConversation)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}/star", wrapper.UnstarConversation)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/conversations/{conversationId}/star", wrapper.StarConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/incidents", wrapper.ListConversationIncidents)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/issues", wrapper.ListConversationIssues)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/issues", wrapper.LinkConversationIssue)
@@ -85856,6 +86158,128 @@ func (response RestoreConversation409ApplicationProblemPlusJSONResponse) VisitRe
 	return err
 }
 
+type UnstarConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         UnstarConversationParams
+}
+
+type UnstarConversationResponseObject interface {
+	VisitUnstarConversationResponse(w http.ResponseWriter) error
+}
+
+type UnstarConversation204Response struct {
+}
+
+func (response UnstarConversation204Response) VisitUnstarConversationResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type UnstarConversation401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UnstarConversation401ApplicationProblemPlusJSONResponse) VisitUnstarConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnstarConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response UnstarConversation403ApplicationProblemPlusJSONResponse) VisitUnstarConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UnstarConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response UnstarConversation404ApplicationProblemPlusJSONResponse) VisitUnstarConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StarConversationRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         StarConversationParams
+}
+
+type StarConversationResponseObject interface {
+	VisitStarConversationResponse(w http.ResponseWriter) error
+}
+
+type StarConversation204Response struct {
+}
+
+func (response StarConversation204Response) VisitStarConversationResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type StarConversation401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response StarConversation401ApplicationProblemPlusJSONResponse) VisitStarConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StarConversation403ApplicationProblemPlusJSONResponse Problem
+
+func (response StarConversation403ApplicationProblemPlusJSONResponse) VisitStarConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StarConversation404ApplicationProblemPlusJSONResponse Problem
+
+func (response StarConversation404ApplicationProblemPlusJSONResponse) VisitStarConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type SetMemberTypingRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
 	Params         SetMemberTypingParams
@@ -90141,6 +90565,20 @@ func (response CreateFeedback404ApplicationProblemPlusJSONResponse) VisitCreateF
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateFeedback409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateFeedback409ApplicationProblemPlusJSONResponse) VisitCreateFeedbackResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -102658,6 +103096,20 @@ func (response CreateSlaPolicy403ApplicationProblemPlusJSONResponse) VisitCreate
 	return err
 }
 
+type CreateSlaPolicy409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateSlaPolicy409ApplicationProblemPlusJSONResponse) VisitCreateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type OrderSlaPoliciesRequestObject struct {
 	Params OrderSlaPoliciesParams
 	Body   *OrderSlaPoliciesJSONRequestBody
@@ -102931,6 +103383,20 @@ func (response UpdateSlaPolicy404ApplicationProblemPlusJSONResponse) VisitUpdate
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSlaPolicy409ApplicationProblemPlusJSONResponse Problem
+
+func (response UpdateSlaPolicy409ApplicationProblemPlusJSONResponse) VisitUpdateSlaPolicyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -109855,6 +110321,12 @@ type StrictServerInterface interface {
 	// RestoreConversation Bring a conversation back from the trash
 	// (POST /v1/conversations/{conversationId}/restore)
 	RestoreConversation(ctx context.Context, request RestoreConversationRequestObject) (RestoreConversationResponseObject, error)
+	// UnstarConversation Remove a star
+	// (DELETE /v1/conversations/{conversationId}/star)
+	UnstarConversation(ctx context.Context, request UnstarConversationRequestObject) (UnstarConversationResponseObject, error)
+	// StarConversation Star a conversation
+	// (PUT /v1/conversations/{conversationId}/star)
+	StarConversation(ctx context.Context, request StarConversationRequestObject) (StarConversationResponseObject, error)
 	// SetMemberTyping Tell others you are typing
 	// (POST /v1/conversations/{conversationId}/typing)
 	SetMemberTyping(ctx context.Context, request SetMemberTypingRequestObject) (SetMemberTypingResponseObject, error)
@@ -117106,6 +117578,60 @@ func (sh *strictHandler) RestoreConversation(w http.ResponseWriter, r *http.Requ
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(RestoreConversationResponseObject); ok {
 		if err := validResponse.VisitRestoreConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UnstarConversation operation middleware
+func (sh *strictHandler) UnstarConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params UnstarConversationParams) {
+	var request UnstarConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.UnstarConversation(ctx, request.(UnstarConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UnstarConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(UnstarConversationResponseObject); ok {
+		if err := validResponse.VisitUnstarConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// StarConversation operation middleware
+func (sh *strictHandler) StarConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params StarConversationParams) {
+	var request StarConversationRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.StarConversation(ctx, request.(StarConversationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "StarConversation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(StarConversationResponseObject); ok {
+		if err := validResponse.VisitStarConversationResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

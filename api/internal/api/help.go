@@ -278,6 +278,9 @@ func (s *Server) CreateHelpCenter(ctx context.Context, req oas.CreateHelpCenterR
 		if err != nil {
 			return err
 		}
+		if err := supportInbox(ctx, q, p.workspaceID, in.ID, "a help center"); err != nil {
+			return err
+		}
 		f := helpCenterFields{
 			name: b.Name, slug: string(b.Slug), defaultLocale: in.DefaultLocale, logo: b.LogoUrl, site: b.SiteUrl,
 			chat: b.ChatChannelId, property: b.AnalyticsPropertyId, agentsPublish: boolOr(b.AgentsMayPublish, false),

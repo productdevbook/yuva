@@ -528,12 +528,16 @@ func (s *Server) syncConversationSLA(ctx context.Context, q *store.Queries, ws, 
 	if err != nil && !store.IsNotFound(err) {
 		return err
 	}
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ws, ID: c.InboxID})
+	if err != nil {
+		return err
+	}
 	now := s.now()
 	dropped := exists && row.DroppedAt != nil
 	var policy store.SlaPolicy
 	found := false
 	key := ""
-	if !c.Spam && c.TrashedAt == nil {
+	if !c.Spam && c.TrashedAt == nil && in.Purpose != purposeMail {
 		labelMap, err := conversationLabels(ctx, q, ws, []uuid.UUID{id})
 		if err != nil {
 			return err
@@ -574,10 +578,6 @@ func (s *Server) syncConversationSLA(ctx context.Context, q *store.Queries, ws, 
 			return err
 		}
 		return s.showSLA(ctx, q, ev, c, nil)
-	}
-	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ws, ID: c.InboxID})
-	if err != nil {
-		return err
 	}
 	before := row
 	run := &slaRun{row: &row, policy: policy, clock: inboxClock(in), now: now}

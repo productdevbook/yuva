@@ -118,6 +118,11 @@ func (f *slaPolicyFields) check(ctx context.Context, q *store.Queries, ws uuid.U
 		if len(found) != len(f.inboxes) {
 			return errValidation("inbox_ids names an inbox that does not exist")
 		}
+		for _, in := range found {
+			if in.Purpose == purposeMail {
+				return errPurposeMismatch("inbox_ids names a mail inbox, which has no SLA targets")
+			}
+		}
 	}
 	if len(f.labels) > 0 {
 		found, err := q.LockLabels(ctx, store.LockLabelsParams{WorkspaceID: ws, Ids: f.labels})

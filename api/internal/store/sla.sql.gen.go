@@ -504,7 +504,7 @@ func (q *Queries) LockConversationSLA(ctx context.Context, arg LockConversationS
 }
 
 const lockInboxesShared = `-- name: LockInboxesShared :many
-SELECT id FROM inboxes WHERE workspace_id = $1 AND id = ANY ($2::uuid[]) FOR SHARE
+SELECT id, purpose FROM inboxes WHERE workspace_id = $1 AND id = ANY ($2::uuid[]) FOR SHARE
 `
 
 type LockInboxesSharedParams struct {
@@ -512,19 +512,24 @@ type LockInboxesSharedParams struct {
 	Ids         []uuid.UUID
 }
 
-func (q *Queries) LockInboxesShared(ctx context.Context, arg LockInboxesSharedParams) ([]uuid.UUID, error) {
+type LockInboxesSharedRow struct {
+	ID      uuid.UUID
+	Purpose string
+}
+
+func (q *Queries) LockInboxesShared(ctx context.Context, arg LockInboxesSharedParams) ([]LockInboxesSharedRow, error) {
 	rows, err := q.db.Query(ctx, lockInboxesShared, arg.WorkspaceID, arg.Ids)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []uuid.UUID
+	var items []LockInboxesSharedRow
 	for rows.Next() {
-		var id uuid.UUID
-		if err := rows.Scan(&id); err != nil {
+		var i LockInboxesSharedRow
+		if err := rows.Scan(&i.ID, &i.Purpose); err != nil {
 			return nil, err
 		}
-		items = append(items, id)
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -851,6 +856,7 @@ FROM sla_outcomes o
 JOIN conversations c ON c.workspace_id = o.workspace_id AND c.id = o.conversation_id
 WHERE o.workspace_id = $1 AND o.at >= $2 AND o.at <= $3
   AND ($4::uuid IS NULL OR o.inbox_id = $4::uuid) AND c.trashed_at IS NULL
+  AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = o.workspace_id AND mi.id = o.inbox_id AND mi.purpose = 'mail')
   AND ($5::bool OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = o.workspace_id AND iv.inbox_id = o.inbox_id AND iv.viewer_id = $6::uuid))

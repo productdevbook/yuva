@@ -168,8 +168,15 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 	bodies := make([]oas.Conversation, len(rows))
 	refs := make([]*oas.Conversation, len(rows))
 	for i, r := range rows {
-		bodies[i] = conversationBody(r, labels[r.ID])
+		bodies[i] = conversationFields(r, labels[r.ID])
 		refs[i] = &bodies[i]
+	}
+	if err := fillPurposes(ctx, s.st.Queries, p.workspaceID, refs...); err != nil {
+		return nil, err
+	}
+	starred, err := memberStarred(ctx, s.st.Queries, p, ids)
+	if err != nil {
+		return nil, err
 	}
 	if err := fillImportSources(ctx, s.st.Queries, p.workspaceID, refs...); err != nil {
 		return nil, err
@@ -187,9 +194,9 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 	for i, r := range rows {
 		c := bodies[i]
 		out[i] = oas.ConversationListItem{
-			Id: c.Id, InboxId: c.InboxId, ContactId: c.ContactId, ChannelId: c.ChannelId, ChannelKind: c.ChannelKind, Kind: c.Kind, Feedback: c.Feedback, Page: c.Page, Subject: c.Subject,
+			Id: c.Id, InboxId: c.InboxId, InboxPurpose: c.InboxPurpose, ContactId: c.ContactId, ChannelId: c.ChannelId, ChannelKind: c.ChannelKind, Kind: c.Kind, Feedback: c.Feedback, Page: c.Page, Subject: c.Subject,
 			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, TeamId: c.TeamId, AssignWaitingSince: c.AssignWaitingSince, Labels: c.Labels,
-			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
+			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, Starred: starredFor(p, starred[r.ID]),
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt, BroadcastId: c.BroadcastId,
 			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Issues: c.Issues, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
 			TrashedAt: c.TrashedAt, TrashedBy: c.TrashedBy, DeletesAt: c.DeletesAt, Fields: c.Fields, Sla: c.Sla,
@@ -198,7 +205,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 	return out, nil
 }
 
-func conversationBody(c store.Conversation, labels []uuid.UUID) oas.Conversation {
+func conversationFields(c store.Conversation, labels []uuid.UUID) oas.Conversation {
 	if labels == nil {
 		labels = []uuid.UUID{}
 	}
@@ -270,7 +277,10 @@ func oneConversation(ctx context.Context, q *store.Queries, c store.Conversation
 	if err != nil {
 		return oas.Conversation{}, err
 	}
-	out := conversationBody(c, labels[c.ID])
+	out, err := conversationBody(ctx, q, c, labels[c.ID])
+	if err != nil {
+		return out, err
+	}
 	if err := fillImportSources(ctx, q, c.WorkspaceID, &out); err != nil {
 		return out, err
 	}
@@ -530,6 +540,27 @@ func (s *Server) conversationFilter(ctx context.Context, q *store.Queries, p pri
 		}
 		arg.Pinned, arg.PinnedBy = prm.Pinned, &p.memberID
 	}
+	if prm.Purpose != nil {
+		if !prm.Purpose.Valid() {
+			return none, onParam("purpose", errValidation("purpose must be support or mail"))
+		}
+		arg.Purpose = new(string(*prm.Purpose))
+	}
+	if prm.Starred != nil {
+		if p.isKey() {
+			return none, onParam("starred", errValidation("starred needs a member session"))
+		}
+		arg.Starred, arg.StarredBy = prm.Starred, &p.memberID
+	}
+	if prm.Sent != nil {
+		if *prm.Sent != oas.ListConversationsSentMine {
+			return none, onParam("sent", errValidation("sent must be mine"))
+		}
+		if p.isKey() {
+			return none, onParam("sent", errValidation("sent=mine needs a member session"))
+		}
+		arg.SentBy = &p.memberID
+	}
 	if arg.Statuses, err = enumList(prm.Status, "status must be open, pending, snoozed or closed"); err != nil {
 		return none, onParam("status", err)
 	}
@@ -594,21 +625,36 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 	if err != nil {
 		return nil, err
 	}
+	var purpose *string
+	if req.Params.Purpose != nil {
+		if !req.Params.Purpose.Valid() {
+			return nil, errValidation("purpose must be support or mail")
+		}
+		purpose = new(string(*req.Params.Purpose))
+	}
 	var member *uuid.UUID
 	if !p.isKey() {
 		member = &p.memberID
 	}
-	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds})
+	rows, err := s.st.CountOpenConversations(ctx, store.CountOpenConversationsParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds, Purpose: purpose})
 	if err != nil {
 		return nil, err
 	}
-	byLabel, err := s.st.CountOpenConversationsByLabel(ctx, store.CountOpenConversationsByLabelParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds})
+	byLabel, err := s.st.CountOpenConversationsByLabel(ctx, store.CountOpenConversationsByLabelParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds, Purpose: purpose})
 	if err != nil {
 		return nil, err
 	}
-	feedback, err := s.st.CountOpenFeedback(ctx, store.CountOpenFeedbackParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds})
+	feedback, err := s.st.CountOpenFeedback(ctx, store.CountOpenFeedbackParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds, Purpose: purpose})
 	if err != nil {
 		return nil, err
+	}
+	var starred int64
+	if member != nil {
+		if starred, err = s.st.CountStarredConversations(ctx, store.CountStarredConversationsParams{
+			WorkspaceID: p.workspaceID, MemberID: *member, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), Kinds: kinds, Purpose: purpose,
+		}); err != nil {
+			return nil, err
+		}
 	}
 	var myTeams []uuid.UUID
 	if member != nil {
@@ -618,6 +664,7 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 	}
 	out := oas.GetConversationCounts200JSONResponse{
 		Inboxes: []oas.CountByID{}, Assignees: []oas.CountByID{}, Teams: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel)), FeedbackCategories: make([]oas.FeedbackCount, 0, len(feedback)),
+		Starred: starred,
 	}
 	for _, r := range feedback {
 		out.Feedback += r.N
@@ -730,7 +777,9 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 				return err
 			}
 		}
-		out = conversationBody(c, labels)
+		if out, err = conversationBody(ctx, q, c, labels); err != nil {
+			return err
+		}
 		events.conversation(realtime.ConversationCreated, c, out)
 		before := c
 		before.AssigneeID = nil
@@ -761,6 +810,11 @@ func (s *Server) GetConversation(ctx context.Context, req oas.GetConversationReq
 	if err := s.fillSLA(ctx, s.st.Queries, p.workspaceID, &out); err != nil {
 		return nil, err
 	}
+	starred, err := memberStarred(ctx, s.st.Queries, p, []uuid.UUID{c.ID})
+	if err != nil {
+		return nil, err
+	}
+	out.Starred = starredFor(p, starred[c.ID])
 	return oas.GetConversation200JSONResponse(out), nil
 }
 
@@ -943,7 +997,9 @@ func (s *Server) changeConversation(ctx context.Context, q *store.Queries, event
 			}
 		}
 	}
-	out = conversationBody(updated, want)
+	if out, err = conversationBody(ctx, q, updated, want); err != nil {
+		return out, err
+	}
 	if err := fillImportSources(ctx, q, p.workspaceID, &out); err != nil {
 		return out, err
 	}
