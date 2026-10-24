@@ -28,6 +28,25 @@ func (q *Queries) AddConversationLabel(ctx context.Context, arg AddConversationL
 	return err
 }
 
+const addTrashEmptyDeleted = `-- name: AddTrashEmptyDeleted :one
+UPDATE trash_empties SET deleted = deleted + $1::bigint
+WHERE workspace_id = $2 AND id = $3
+RETURNING deleted
+`
+
+type AddTrashEmptyDeletedParams struct {
+	N           int64
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) AddTrashEmptyDeleted(ctx context.Context, arg AddTrashEmptyDeletedParams) (int64, error) {
+	row := q.db.QueryRow(ctx, addTrashEmptyDeleted, arg.N, arg.WorkspaceID, arg.ID)
+	var deleted int64
+	err := row.Scan(&deleted)
+	return deleted, err
+}
+
 const countDeletableTrash = `-- name: CountDeletableTrash :one
 WITH b AS (SELECT coalesce($7::timestamptz, statement_timestamp())::timestamptz AS bound)
 SELECT b.bound::timestamptz AS bound, (
@@ -403,6 +422,21 @@ func (q *Queries) CreateConversation(ctx context.Context, arg CreateConversation
 	return i, err
 }
 
+const createTrashEmpty = `-- name: CreateTrashEmpty :exec
+INSERT INTO trash_empties (workspace_id, id, created_at) VALUES ($1, $2, $3)
+`
+
+type CreateTrashEmptyParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	Now         time.Time
+}
+
+func (q *Queries) CreateTrashEmpty(ctx context.Context, arg CreateTrashEmptyParams) error {
+	_, err := q.db.Exec(ctx, createTrashEmpty, arg.WorkspaceID, arg.ID, arg.Now)
+	return err
+}
+
 const deleteConversations = `-- name: DeleteConversations :execrows
 DELETE FROM conversations WHERE workspace_id = $1 AND id = ANY($2::uuid[])
 `
@@ -446,6 +480,58 @@ type DeleteDraftContactParams struct {
 
 func (q *Queries) DeleteDraftContact(ctx context.Context, arg DeleteDraftContactParams) (int64, error) {
 	result, err := q.db.Exec(ctx, deleteDraftContact, arg.WorkspaceID, arg.ID, arg.Since)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
+const deleteTrashEmpty = `-- name: DeleteTrashEmpty :exec
+DELETE FROM trash_empties WHERE workspace_id = $1 AND id = $2
+`
+
+type DeleteTrashEmptyParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) DeleteTrashEmpty(ctx context.Context, arg DeleteTrashEmptyParams) error {
+	_, err := q.db.Exec(ctx, deleteTrashEmpty, arg.WorkspaceID, arg.ID)
+	return err
+}
+
+const freezeTrashEmpty = `-- name: FreezeTrashEmpty :execrows
+INSERT INTO trash_empty_items (workspace_id, empty_id, conversation_id)
+SELECT c.workspace_id, $1::uuid, c.id FROM conversations c
+JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+WHERE c.workspace_id = $2 AND c.trashed_at IS NOT NULL
+  AND conversation_visible_to(c.draft_of, $3::uuid)
+  AND ((i.personal AND i.owner_member_id = $4::uuid)
+    OR (NOT i.personal AND $5::bool AND ($6::bool OR EXISTS (
+        SELECT 1 FROM inbox_viewers iv
+        WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))))
+`
+
+type FreezeTrashEmptyParams struct {
+	EmptyID        uuid.UUID
+	WorkspaceID    uuid.UUID
+	ViewerMemberID *uuid.UUID
+	OwnerMemberID  *uuid.UUID
+	Manager        bool
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+}
+
+func (q *Queries) FreezeTrashEmpty(ctx context.Context, arg FreezeTrashEmptyParams) (int64, error) {
+	result, err := q.db.Exec(ctx, freezeTrashEmpty,
+		arg.EmptyID,
+		arg.WorkspaceID,
+		arg.ViewerMemberID,
+		arg.OwnerMemberID,
+		arg.Manager,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
 	if err != nil {
 		return 0, err
 	}
@@ -1225,66 +1311,6 @@ func (q *Queries) ListConversationsWithAttachments(ctx context.Context, arg List
 	return items, nil
 }
 
-const listDeletableTrash = `-- name: ListDeletableTrash :many
-SELECT c.id, c.inbox_id, c.contact_id FROM conversations c
-JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
-WHERE c.workspace_id = $1 AND c.trashed_at <= $2::timestamptz
-  AND conversation_visible_to(c.draft_of, $3::uuid)
-  AND ((i.personal AND i.owner_member_id = $4::uuid)
-    OR (NOT i.personal AND $5::bool AND ($6::bool OR EXISTS (
-        SELECT 1 FROM inbox_viewers iv
-        WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))))
-ORDER BY c.id
-LIMIT $8
-FOR UPDATE OF c
-`
-
-type ListDeletableTrashParams struct {
-	WorkspaceID    uuid.UUID
-	Until          time.Time
-	ViewerMemberID *uuid.UUID
-	OwnerMemberID  *uuid.UUID
-	Manager        bool
-	AllInboxes     bool
-	ViewerID       uuid.UUID
-	MaxRows        int32
-}
-
-type ListDeletableTrashRow struct {
-	ID        uuid.UUID
-	InboxID   uuid.UUID
-	ContactID uuid.UUID
-}
-
-func (q *Queries) ListDeletableTrash(ctx context.Context, arg ListDeletableTrashParams) ([]ListDeletableTrashRow, error) {
-	rows, err := q.db.Query(ctx, listDeletableTrash,
-		arg.WorkspaceID,
-		arg.Until,
-		arg.ViewerMemberID,
-		arg.OwnerMemberID,
-		arg.Manager,
-		arg.AllInboxes,
-		arg.ViewerID,
-		arg.MaxRows,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListDeletableTrashRow
-	for rows.Next() {
-		var i ListDeletableTrashRow
-		if err := rows.Scan(&i.ID, &i.InboxID, &i.ContactID); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listDraftConversationIDs = `-- name: ListDraftConversationIDs :many
 SELECT id FROM conversations WHERE workspace_id = $1 AND draft_of = $2 ORDER BY id
 `
@@ -1501,6 +1527,67 @@ func (q *Queries) ListToMatchConversations(ctx context.Context, arg ListToMatchC
 			return nil, err
 		}
 		items = append(items, conversation_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listTrashEmptyBatch = `-- name: ListTrashEmptyBatch :many
+SELECT c.id, c.inbox_id, c.contact_id FROM trash_empty_items t
+JOIN conversations c ON c.workspace_id = t.workspace_id AND c.id = t.conversation_id
+JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+WHERE t.workspace_id = $1 AND t.empty_id = $2 AND c.trashed_at IS NOT NULL
+  AND conversation_visible_to(c.draft_of, $3::uuid)
+  AND ((i.personal AND i.owner_member_id = $4::uuid)
+    OR (NOT i.personal AND $5::bool AND ($6::bool OR EXISTS (
+        SELECT 1 FROM inbox_viewers iv
+        WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))))
+ORDER BY c.id
+LIMIT $8
+FOR UPDATE OF c
+`
+
+type ListTrashEmptyBatchParams struct {
+	WorkspaceID    uuid.UUID
+	EmptyID        uuid.UUID
+	ViewerMemberID *uuid.UUID
+	OwnerMemberID  *uuid.UUID
+	Manager        bool
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	MaxRows        int32
+}
+
+type ListTrashEmptyBatchRow struct {
+	ID        uuid.UUID
+	InboxID   uuid.UUID
+	ContactID uuid.UUID
+}
+
+func (q *Queries) ListTrashEmptyBatch(ctx context.Context, arg ListTrashEmptyBatchParams) ([]ListTrashEmptyBatchRow, error) {
+	rows, err := q.db.Query(ctx, listTrashEmptyBatch,
+		arg.WorkspaceID,
+		arg.EmptyID,
+		arg.ViewerMemberID,
+		arg.OwnerMemberID,
+		arg.Manager,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.MaxRows,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListTrashEmptyBatchRow
+	for rows.Next() {
+		var i ListTrashEmptyBatchRow
+		if err := rows.Scan(&i.ID, &i.InboxID, &i.ContactID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -2144,6 +2231,22 @@ func (q *Queries) TrashConversation(ctx context.Context, arg TrashConversationPa
 		&i.DraftOf,
 	)
 	return i, err
+}
+
+const trashEmptyExists = `-- name: TrashEmptyExists :one
+SELECT EXISTS (SELECT 1 FROM trash_empties WHERE workspace_id = $1 AND id = $2)
+`
+
+type TrashEmptyExistsParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) TrashEmptyExists(ctx context.Context, arg TrashEmptyExistsParams) (bool, error) {
+	row := q.db.QueryRow(ctx, trashEmptyExists, arg.WorkspaceID, arg.ID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }
 
 const updateConversation = `-- name: UpdateConversation :one

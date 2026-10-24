@@ -243,7 +243,10 @@ WHERE workspace_id = @workspace_id AND contact_id = @from_contact;
 SELECT (
     SELECT count(*) FROM conversations c
     WHERE c.workspace_id = @workspace_id AND c.contact_id = @contact_id
-      AND (@with_trash::bool OR c.trashed_at IS NULL)
+      AND (c.trashed_at IS NULL OR (@with_trash::bool AND NOT EXISTS (
+          SELECT 1 FROM inboxes ti
+          WHERE ti.workspace_id = c.workspace_id AND ti.id = c.inbox_id AND ti.personal
+            AND ti.owner_member_id IS DISTINCT FROM sqlc.narg(trash_owner)::uuid)))
       AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
       AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
@@ -252,7 +255,8 @@ SELECT (
     SELECT 1 FROM conversations c
     JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
     WHERE c.workspace_id = @workspace_id AND c.contact_id = @contact_id AND i.personal
-      AND NOT EXISTS (
+      AND (NOT EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid)
+        OR (c.trashed_at IS NOT NULL AND i.owner_member_id IS DISTINCT FROM sqlc.narg(trash_owner)::uuid))
 ) AS has_hidden_conversations;

@@ -67,8 +67,9 @@ func (s *Server) GetContactDeletionPreview(ctx context.Context, req oas.GetConta
 	if !found {
 		return nil, errContactGone
 	}
+	withTrash, _ := trashView(p)
 	row, err := s.st.ContactDeletionPreview(ctx, store.ContactDeletionPreviewParams{
-		WorkspaceID: p.workspaceID, ContactID: req.ContactId, WithTrash: requireTrashManager(p) == nil,
+		WorkspaceID: p.workspaceID, ContactID: req.ContactId, WithTrash: withTrash, TrashOwner: p.memberRef(),
 		ViewerMemberID: p.memberRef(), AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
 	})
 	if err != nil {

@@ -2782,6 +2782,19 @@ type TrackedIssue struct {
 	CreatedAt      time.Time
 }
 
+type TrashEmpty struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+	Deleted     int64
+	CreatedAt   time.Time
+}
+
+type TrashEmptyItem struct {
+	WorkspaceID    uuid.UUID
+	EmptyID        uuid.UUID
+	ConversationID uuid.UUID
+}
+
 type UsageCounter struct {
 	WorkspaceID             uuid.UUID
 	Month                   time.Time

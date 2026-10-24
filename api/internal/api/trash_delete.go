@@ -111,24 +111,38 @@ func (s *Server) DeleteConversations(ctx context.Context, req oas.DeleteConversa
 	return oas.DeleteConversations200JSONResponse{Deleted: int32(n), Failed: failed}, nil
 }
 
-// TrashEmptyArgs deletes for good the trash a caller could delete when they asked, up to Until;
-// a run that runs out of time queues the next with what it deleted so far in Deleted.
+// TrashEmptyArgs deletes for good the conversations frozen in trash_empty_items when the caller
+// asked, as far as the caller may still delete them; who asked is checked again on every run.
 type TrashEmptyArgs struct {
-	WorkspaceID uuid.UUID `json:"workspace_id"`
-	Until       time.Time `json:"until"`
-	MemberID    uuid.UUID `json:"member_id,omitzero"`
-	KeyID       uuid.UUID `json:"key_id,omitzero"`
-	GrantID     uuid.UUID `json:"grant_id,omitzero"`
-	Via         string    `json:"via,omitempty"`
-	Role        string    `json:"role,omitempty"`
-	Limited     bool      `json:"limited,omitempty"`
-	Deleted     int64     `json:"deleted"`
+	WorkspaceID uuid.UUID  `json:"workspace_id"`
+	EmptyID     uuid.UUID  `json:"empty_id"`
+	MemberID    uuid.UUID  `json:"member_id,omitzero"`
+	KeyID       uuid.UUID  `json:"key_id,omitzero"`
+	GrantID     uuid.UUID  `json:"grant_id,omitzero"`
+	SSO         *uuid.UUID `json:"sso,omitempty"`
+	Via         string     `json:"via,omitempty"`
+	MCPOnly     bool       `json:"mcp_only,omitempty"`
 }
 
 func (TrashEmptyArgs) Kind() string { return "trash_empty" }
 
-func (a TrashEmptyArgs) principal() principal {
-	return principal{workspaceID: a.WorkspaceID, memberID: a.MemberID, keyID: a.KeyID, grantID: a.GrantID, via: a.Via, role: a.Role, limited: a.Limited}
+func (a TrashEmptyArgs) asked() principal {
+	return principal{workspaceID: a.WorkspaceID, memberID: a.MemberID, keyID: a.KeyID, grantID: a.GrantID, via: a.Via}
+}
+
+func (a TrashEmptyArgs) caller(ctx context.Context, s *Server) (principal, bool, error) {
+	ref := func(id uuid.UUID) *uuid.UUID {
+		if id == uuid.Nil() {
+			return nil
+		}
+		return new(id)
+	}
+	p, refused, err := s.callerPrincipal(ctx, a.WorkspaceID, ref(a.MemberID), ref(a.KeyID), ref(a.GrantID), a.SSO, a.Via, a.MCPOnly)
+	if err != nil || refused != "" {
+		return p, false, err
+	}
+	ok, _ := trashView(p)
+	return p, ok, nil
 }
 
 type trashEmptyWorker struct {
@@ -159,23 +173,28 @@ func (s *Server) EmptyTrash(ctx context.Context, req oas.EmptyTrashRequestObject
 	owner, manager := trashScope(p)
 	var count int64
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		row, err := q.CountDeletableTrash(ctx, store.CountDeletableTrashParams{
-			WorkspaceID: p.workspaceID, ViewerMemberID: p.memberRef(), OwnerMemberID: owner, Manager: manager,
-			AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), At: s.dbAt(),
+		id := newID()
+		if err := q.CreateTrashEmpty(ctx, store.CreateTrashEmptyParams{WorkspaceID: p.workspaceID, ID: id, Now: s.now()}); err != nil {
+			return err
+		}
+		n, err := q.FreezeTrashEmpty(ctx, store.FreezeTrashEmptyParams{
+			EmptyID: id, WorkspaceID: p.workspaceID, ViewerMemberID: p.memberRef(), OwnerMemberID: owner, Manager: manager,
+			AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(),
 		})
 		if err != nil {
 			return err
 		}
-		if row.N != req.Body.ConfirmCount {
-			return errCountChanged(row.N)
+		if n != req.Body.ConfirmCount {
+			return errCountChanged(n)
 		}
-		count = row.N
-		if count > 0 {
-			events.job(TrashEmptyArgs{
-				WorkspaceID: p.workspaceID, Until: row.Bound, MemberID: p.memberID, KeyID: p.keyID, GrantID: p.grantID,
-				Via: p.via, Role: p.role, Limited: p.limited,
-			}, nil)
+		count = n
+		if n == 0 {
+			return q.DeleteTrashEmpty(ctx, store.DeleteTrashEmptyParams{WorkspaceID: p.workspaceID, ID: id})
 		}
+		events.job(TrashEmptyArgs{
+			WorkspaceID: p.workspaceID, EmptyID: id, MemberID: p.memberID, KeyID: p.keyID, GrantID: p.grantID,
+			SSO: p.ssoSettings, Via: p.via, MCPOnly: p.mcpOnly,
+		}, nil)
 		return nil
 	})
 	if err != nil {
@@ -184,32 +203,55 @@ func (s *Server) EmptyTrash(ctx context.Context, req oas.EmptyTrashRequestObject
 	return oas.EmptyTrash202JSONResponse{Count: count}, nil
 }
 
-// EmptyTrashRun deletes batches of the job's trash until none is left or about budget is spent;
-// the transaction of the last batch records trash.emptied, or queues the next run.
+// EmptyTrashRun deletes batches of the frozen set until none is left or about budget is spent;
+// the transaction of the last batch records trash.emptied with the count kept in trash_empties,
+// or queues the next run.
 func (s *Server) EmptyTrashRun(ctx context.Context, a TrashEmptyArgs, budget time.Duration) error {
+	exists, err := s.st.TrashEmptyExists(ctx, store.TrashEmptyExistsParams{WorkspaceID: a.WorkspaceID, ID: a.EmptyID})
+	if err != nil || !exists {
+		return err
+	}
+	p, may, err := a.caller(ctx, s)
+	if err != nil {
+		return err
+	}
 	deadline := time.Now().Add(budget)
-	p := a.principal()
 	owner, manager := trashScope(p)
 	for {
 		more, done := false, false
+		var deleted int64
 		_, _, err := s.deleteConversationBatch(ctx, a.WorkspaceID, true, func(q *store.Queries, events *eventBatch) ([]uuid.UUID, error) {
-			rows, err := q.ListDeletableTrash(ctx, store.ListDeletableTrashParams{
-				WorkspaceID: a.WorkspaceID, Until: a.Until, ViewerMemberID: p.memberRef(), OwnerMemberID: owner, Manager: manager,
-				AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), MaxRows: retentionBatch,
-			})
-			if err != nil {
-				return nil, err
+			var rows []store.ListTrashEmptyBatchRow
+			if may {
+				var err error
+				rows, err = q.ListTrashEmptyBatch(ctx, store.ListTrashEmptyBatchParams{
+					WorkspaceID: a.WorkspaceID, EmptyID: a.EmptyID, ViewerMemberID: p.memberRef(), OwnerMemberID: owner, Manager: manager,
+					AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), MaxRows: retentionBatch,
+				})
+				if err != nil {
+					return nil, err
+				}
 			}
 			ids := make([]uuid.UUID, len(rows))
 			for i, r := range rows {
 				ids[i] = r.ID
 				events.add(realtime.ConversationDeleted, new(r.InboxID), new(r.ID), oas.ConversationDeleted{Id: r.ID, InboxId: r.InboxID, ContactId: r.ContactID})
 			}
-			a.Deleted += int64(len(rows))
+			var err error
+			deleted, err = q.AddTrashEmptyDeleted(ctx, store.AddTrashEmptyDeletedParams{WorkspaceID: a.WorkspaceID, ID: a.EmptyID, N: int64(len(rows))})
+			if store.IsNotFound(err) {
+				return nil, nil
+			}
+			if err != nil {
+				return nil, err
+			}
 			switch {
 			case len(rows) < retentionBatch:
 				done = true
-				return ids, writeAudit(ctx, q, p, s.now(), oas.AuditTrashEmptied, oas.AuditTargetTrash, a.WorkspaceID, auditDetails{"count": a.Deleted})
+				if err := q.DeleteTrashEmpty(ctx, store.DeleteTrashEmptyParams{WorkspaceID: a.WorkspaceID, ID: a.EmptyID}); err != nil {
+					return nil, err
+				}
+				return ids, writeAudit(ctx, q, a.asked(), s.now(), oas.AuditTrashEmptied, oas.AuditTargetTrash, a.WorkspaceID, auditDetails{"count": deleted})
 			case time.Now().After(deadline):
 				events.job(a, nil)
 			default:
@@ -221,7 +263,7 @@ func (s *Server) EmptyTrashRun(ctx context.Context, a TrashEmptyArgs, budget tim
 			return err
 		}
 		if done {
-			s.log.InfoContext(ctx, "trash emptied", slog.String("workspace_id", a.WorkspaceID.String()), slog.Int64("conversations", a.Deleted))
+			s.log.InfoContext(ctx, "trash emptied", slog.String("workspace_id", a.WorkspaceID.String()), slog.Int64("conversations", deleted))
 		}
 		if !more {
 			return nil

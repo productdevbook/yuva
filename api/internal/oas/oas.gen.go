@@ -13671,7 +13671,8 @@ type ContactDeletionPreview struct {
 	ConversationCount int64 `json:"conversation_count"`
 
 	// HasHiddenConversations `true` when the contact also has conversations in personal mailboxes the caller does not
-	// read; they are deleted too.
+	// read, or in the trash of personal mailboxes the caller reads as a delegate; they are
+	// deleted too.
 	HasHiddenConversations bool `json:"has_hidden_conversations"`
 }
 

@@ -314,3 +314,68 @@ func TestPersonalMailboxTrash(t *testing.T) {
 		t.Fatalf("after restore: %v", ids)
 	}
 }
+
+func TestEmptyTrashDeletesOnlyTheConfirmedSet(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/members/"+tm.agentID, map[string]any{"role": "admin"})
+	admin := tm.agent
+	trash := func() string {
+		c := tm.conversation(tm.owner)
+		tm.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+c, nil)
+		return c
+	}
+	a, b, c := trash(), trash(), trash()
+	run := func() {
+		t.Helper()
+		jobs := h.jobs("trash_empty", tm.ws)
+		if len(jobs) != 1 {
+			t.Fatalf("jobs: %v", jobs)
+		}
+		var args api.TrashEmptyArgs
+		if err := json.Unmarshal(jobs[0].args, &args); err != nil {
+			t.Fatal(err)
+		}
+		for range 2 {
+			if err := h.srv.EmptyTrashRun(context.Background(), args, time.Minute); err != nil {
+				t.Fatal(err)
+			}
+		}
+		h.dropJob(jobs[0].id)
+	}
+	emptied := func() []float64 {
+		var out []float64
+		for _, e := range auditOf(auditLog(t, tm.owner, "&action=trash.emptied"), "trash.emptied") {
+			if actorOf(e)["id"] == tm.agentID {
+				out = append(out, detailsOf(e)["count"].(float64))
+			}
+		}
+		return out
+	}
+
+	admin.expect(http.StatusAccepted, "POST", "/v1/conversations/trash/empty", map[string]any{"confirm_count": 3})
+	tm.owner.expect(http.StatusOK, "POST", "/v1/conversations/"+b+"/restore", nil)
+	d := trash()
+	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE trash_empties SET deleted = 5 WHERE workspace_id = $1", tm.ws); err != nil {
+		t.Fatal(err)
+	}
+	run()
+	if h.conversationRows(tm.ws, a, c) != 0 || h.conversationRows(tm.ws, b, d) != 2 {
+		t.Fatal("deleted other than the confirmed, still trashed set")
+	}
+	if got := emptied(); fmt.Sprint(got) != "[7]" {
+		t.Fatalf("trash.emptied after a retried run: %v", got)
+	}
+
+	tm.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+b, nil)
+	admin.expect(http.StatusAccepted, "POST", "/v1/conversations/trash/empty", map[string]any{"confirm_count": 2})
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/members/"+tm.agentID, map[string]any{"role": "agent"})
+	run()
+	if h.conversationRows(tm.ws, b, d) != 2 {
+		t.Fatal("deleted after the caller lost the right to")
+	}
+	if got := emptied(); len(got) != 2 || got[0]+got[1] != 7 {
+		t.Fatalf("trash.emptied after a demotion: %v", got)
+	}
+}

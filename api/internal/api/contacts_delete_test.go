@@ -39,6 +39,14 @@ func TestDeleteContactsInBulk(t *testing.T) {
 	}
 	pm.owner.expectProblem(http.StatusForbidden, "forbidden", "GET", "/v1/contacts/"+customer+"/deletion-preview", nil)
 	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/contacts/"+customer+"/deletion-preview", nil)
+	pm.owner.expect(http.StatusOK, "PUT", "/v1/inboxes/"+pm.inbox+"/delegates/"+et.ownerMemberID(t), map[string]any{"access": "send"})
+	if got := preview(et.owner, customer); got != "2 false" {
+		t.Fatalf("delegate's preview: %s", got)
+	}
+	h.trashBySQL(et.ws, private)
+	if got := preview(et.owner, customer); got != "1 true" {
+		t.Fatalf("delegate's preview with the mailbox's conversation in the trash: %s", got)
+	}
 
 	ids := make([]string, 101)
 	for i := range ids {

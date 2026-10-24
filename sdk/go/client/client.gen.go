@@ -13717,7 +13717,8 @@ type ContactDeletionPreview struct {
 	ConversationCount int64 `json:"conversation_count"`
 
 	// HasHiddenConversations `true` when the contact also has conversations in personal mailboxes the caller does not
-	// read; they are deleted too.
+	// read, or in the trash of personal mailboxes the caller reads as a delegate; they are
+	// deleted too.
 	HasHiddenConversations bool `json:"has_hidden_conversations"`
 }
 
@@ -39423,8 +39424,9 @@ type ClientInterface interface {
 	// GetContactDeletionPreview What deleting a contact takes with it
 	//
 	// For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
-	// conversations the caller can see (trashed ones included for those who see the trash), and
-	// whether conversations in personal mailboxes the caller does not read go too. Nothing else
+	// conversations the caller can see (trashed ones included where the caller sees the trash, as
+	// `trashed=true` lists it), and whether conversations in personal mailboxes the caller does
+	// not read, or in their trash, go too. Nothing else
 	// about those is shown.
 	//
 	// Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
@@ -39915,9 +39917,11 @@ type ClientInterface interface {
 	// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
 	// the number of those conversations the person confirmed; when the trash holds another
 	// number now, nothing happens and the answer is `409 count_changed` with the current number
-	// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
-	// the answer is `202` with the count. Conversations moved to the trash after the request are
-	// not deleted; ones restored before the job reaches them stay.
+	// in `count`. Otherwise the request records exactly those conversations, and one job deletes
+	// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+	// never deletes more than was confirmed: conversations moved to the trash after the request
+	// are not deleted, ones restored before the job reaches them stay, and before each run the
+	// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 	//
 	// When the job is done, the audit log records one `trash.emptied` by the caller with the
 	// number deleted, never ids, subjects or content.
@@ -39936,9 +39940,11 @@ type ClientInterface interface {
 	// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
 	// the number of those conversations the person confirmed; when the trash holds another
 	// number now, nothing happens and the answer is `409 count_changed` with the current number
-	// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
-	// the answer is `202` with the count. Conversations moved to the trash after the request are
-	// not deleted; ones restored before the job reaches them stay.
+	// in `count`. Otherwise the request records exactly those conversations, and one job deletes
+	// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+	// never deletes more than was confirmed: conversations moved to the trash after the request
+	// are not deleted, ones restored before the job reaches them stay, and before each run the
+	// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 	//
 	// When the job is done, the audit log records one `trash.emptied` by the caller with the
 	// number deleted, never ids, subjects or content.
@@ -53651,8 +53657,9 @@ func (c *Client) ExportContactConsent(ctx context.Context, contactId ContactId, 
 // GetContactDeletionPreview What deleting a contact takes with it
 //
 // For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
-// conversations the caller can see (trashed ones included for those who see the trash), and
-// whether conversations in personal mailboxes the caller does not read go too. Nothing else
+// conversations the caller can see (trashed ones included where the caller sees the trash, as
+// `trashed=true` lists it), and whether conversations in personal mailboxes the caller does
+// not read, or in their trash, go too. Nothing else
 // about those is shown.
 //
 // Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
@@ -54363,9 +54370,11 @@ func (c *Client) ComposeMail(ctx context.Context, params *ComposeMailParams, bod
 // see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
 // the number of those conversations the person confirmed; when the trash holds another
 // number now, nothing happens and the answer is `409 count_changed` with the current number
-// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
-// the answer is `202` with the count. Conversations moved to the trash after the request are
-// not deleted; ones restored before the job reaches them stay.
+// in `count`. Otherwise the request records exactly those conversations, and one job deletes
+// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+// never deletes more than was confirmed: conversations moved to the trash after the request
+// are not deleted, ones restored before the job reaches them stay, and before each run the
+// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 //
 // When the job is done, the audit log records one `trash.emptied` by the caller with the
 // number deleted, never ids, subjects or content.
@@ -54394,9 +54403,11 @@ func (c *Client) EmptyTrashWithBody(ctx context.Context, params *EmptyTrashParam
 // see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
 // the number of those conversations the person confirmed; when the trash holds another
 // number now, nothing happens and the answer is `409 count_changed` with the current number
-// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
-// the answer is `202` with the count. Conversations moved to the trash after the request are
-// not deleted; ones restored before the job reaches them stay.
+// in `count`. Otherwise the request records exactly those conversations, and one job deletes
+// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+// never deletes more than was confirmed: conversations moved to the trash after the request
+// are not deleted, ones restored before the job reaches them stay, and before each run the
+// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 //
 // When the job is done, the audit log records one `trash.emptied` by the caller with the
 // number deleted, never ids, subjects or content.
@@ -104605,8 +104616,9 @@ type ClientWithResponsesInterface interface {
 	// GetContactDeletionPreviewWithResponse What deleting a contact takes with it
 	//
 	// For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
-	// conversations the caller can see (trashed ones included for those who see the trash), and
-	// whether conversations in personal mailboxes the caller does not read go too. Nothing else
+	// conversations the caller can see (trashed ones included where the caller sees the trash, as
+	// `trashed=true` lists it), and whether conversations in personal mailboxes the caller does
+	// not read, or in their trash, go too. Nothing else
 	// about those is shown.
 	//
 	// Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
@@ -105117,9 +105129,11 @@ type ClientWithResponsesInterface interface {
 	// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
 	// the number of those conversations the person confirmed; when the trash holds another
 	// number now, nothing happens and the answer is `409 count_changed` with the current number
-	// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
-	// the answer is `202` with the count. Conversations moved to the trash after the request are
-	// not deleted; ones restored before the job reaches them stay.
+	// in `count`. Otherwise the request records exactly those conversations, and one job deletes
+	// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+	// never deletes more than was confirmed: conversations moved to the trash after the request
+	// are not deleted, ones restored before the job reaches them stay, and before each run the
+	// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 	//
 	// When the job is done, the audit log records one `trash.emptied` by the caller with the
 	// number deleted, never ids, subjects or content.
@@ -105138,9 +105152,11 @@ type ClientWithResponsesInterface interface {
 	// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
 	// the number of those conversations the person confirmed; when the trash holds another
 	// number now, nothing happens and the answer is `409 count_changed` with the current number
-	// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
-	// the answer is `202` with the count. Conversations moved to the trash after the request are
-	// not deleted; ones restored before the job reaches them stay.
+	// in `count`. Otherwise the request records exactly those conversations, and one job deletes
+	// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+	// never deletes more than was confirmed: conversations moved to the trash after the request
+	// are not deleted, ones restored before the job reaches them stay, and before each run the
+	// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 	//
 	// When the job is done, the audit log records one `trash.emptied` by the caller with the
 	// number deleted, never ids, subjects or content.
@@ -155168,8 +155184,9 @@ func (c *ClientWithResponses) ExportContactConsentWithResponse(ctx context.Conte
 // GetContactDeletionPreviewWithResponse What deleting a contact takes with it
 //
 // For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
-// conversations the caller can see (trashed ones included for those who see the trash), and
-// whether conversations in personal mailboxes the caller does not read go too. Nothing else
+// conversations the caller can see (trashed ones included where the caller sees the trash, as
+// `trashed=true` lists it), and whether conversations in personal mailboxes the caller does
+// not read, or in their trash, go too. Nothing else
 // about those is shown.
 //
 // Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
@@ -155812,9 +155829,11 @@ func (c *ClientWithResponses) ComposeMailWithResponse(ctx context.Context, param
 // see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
 // the number of those conversations the person confirmed; when the trash holds another
 // number now, nothing happens and the answer is `409 count_changed` with the current number
-// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
-// the answer is `202` with the count. Conversations moved to the trash after the request are
-// not deleted; ones restored before the job reaches them stay.
+// in `count`. Otherwise the request records exactly those conversations, and one job deletes
+// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+// never deletes more than was confirmed: conversations moved to the trash after the request
+// are not deleted, ones restored before the job reaches them stay, and before each run the
+// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 //
 // When the job is done, the audit log records one `trash.emptied` by the caller with the
 // number deleted, never ids, subjects or content.
@@ -155839,9 +155858,11 @@ func (c *ClientWithResponses) EmptyTrashWithBodyWithResponse(ctx context.Context
 // see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
 // the number of those conversations the person confirmed; when the trash holds another
 // number now, nothing happens and the answer is `409 count_changed` with the current number
-// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
-// the answer is `202` with the count. Conversations moved to the trash after the request are
-// not deleted; ones restored before the job reaches them stay.
+// in `count`. Otherwise the request records exactly those conversations, and one job deletes
+// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
+// never deletes more than was confirmed: conversations moved to the trash after the request
+// are not deleted, ones restored before the job reaches them stay, and before each run the
+// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 //
 // When the job is done, the audit log records one `trash.emptied` by the caller with the
 // number deleted, never ids, subjects or content.

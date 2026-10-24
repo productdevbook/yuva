@@ -4672,11 +4672,17 @@ they belong to no channel. (#136, migration 00095)
   the person confirmed (`GET /v1/conversations/counts` `trash`). A different number than the
   caller's trash holds answers `409 count_changed` with `count`; otherwise it answers `202
   {count}` and, when there is anything, queues the River job `trash_empty` in the same
-  transaction. The job is bounded: it deletes only conversations trashed up to the request's
-  database time (`until`), so what is trashed afterwards stays, and only those the caller saw
-  (the job carries the principal: member, key or grant, role, inbox limit). It deletes 200 per
-  transaction for about 30 seconds a run and then queues its own continuation in the last
-  transaction, so a large trash never hits a timeout and a crash repeats at most one batch.
+  transaction. The set is frozen when it is counted: the same transaction records the ids in
+  `trash_empty_items` under a `trash_empties` row (migration 00140), so the job deletes exactly
+  what was confirmed and never what is trashed afterwards; the job's arguments carry only that
+  row's id and who asked. Each run rebuilds the caller as it is now (member role, key, grant,
+  single sign-on) and deletes only frozen conversations that are still trashed and that the
+  caller may still delete: restored ones, a lost role, key or mailbox skip, and a mailbox handed
+  to the caller afterwards is not in the set. It deletes 200 per transaction for about 30 seconds
+  a run and queues its own continuation in the last transaction. Each batch adds its count to
+  `trash_empties.deleted` in its own transaction, so `trash.emptied`, written with the last
+  batch, counts what was deleted across runs and retries; the last batch deletes the row and the
+  set with it, and a run whose row is gone does nothing.
 - A trashed conversation is read-only and left out of every list, count, search, stat, Home
   figure, contact summary, docs and analytics support figure, linked replies and roadmap link
   counts, drafts, mentions, rating links, chat continuity mail, the automation run log
@@ -4847,13 +4853,15 @@ they belong to no channel. (#136, migration 00095)
   a contact with their address first.
 - Deleting contacts in bulk (#199): `POST /v1/contacts/delete` takes up to 100 `ids` and
   `confirm_count`, the number of different ids the person confirmed; another number answers `409
-  count_changed` with `count`. Each contact is deleted as `DELETE /v1/contacts/by-external-id` deletes one, in its
+  count_changed` with `count`. Each contact is deleted as `DELETE /v1/contacts/{id}` does, in its
   own transaction, with failures per id in `failed`; owners, admins and full keys only, scope
   `contacts:write`. Before a deletion the panel reads `GET /v1/contacts/{id}/deletion-preview`:
   `conversation_count` (the conversations the caller sees, trashed ones included only for those
   who see the trash) and `has_hidden_conversations`, `true` when the contact also has
-  conversations in personal mailboxes the caller does not read, which go too. It names no mailbox
-  and counts none of them.
+  conversations in personal mailboxes the caller does not read, which go too. Trashed
+  conversations count only where the caller sees the trash (the Trash view's rule), so a delegate
+  gets no count from a delegated mailbox's trash; those set `has_hidden_conversations`. It names
+  no mailbox and counts none of the hidden ones.
 - Deleting conversations for good (contact deletion, inbox deletion, retention, the trash purge,
   migration cutover) deletes in the same transaction their stored events and webhook deliveries,
   pending or kept, by index, never by searching payloads (#189): migration 00122 adds
