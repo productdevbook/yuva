@@ -31,10 +31,13 @@ SLA policies, automatic assignment, greetings, status, help, roadmap, What's new
 
 A personal mailbox is private, even from owners and admins: see [Privacy](#privacy).
 
-<!-- panel steps: Y-170 -->
-To create a shared mailbox, owners and admins open **Settings → Products → Add an inbox**
-(or **Add an inbox** on an empty **Mail** page) and pick **Team mail** as what the inbox is for. A personal mailbox is created with the inbox's owner set
-to a member (`POST /v1/inboxes` with `owner_member_id`).
+1. Open **Settings → Products → Add an inbox**, or in **Mail** the mailbox picker → **New mailbox**.
+2. Under **Team mail**, answer **Who reads it?** with **Shared with the team** or **Personal (only you)**.
+   Owners and admins also get **Personal for a member**: pick the member.
+
+In **Mail** the mailbox picker groups mailboxes as **Your mailboxes**, **Shared with you** (marked
+**Read** or **Read and send**) and **Team mail**. A personal mailbox can also be created through the API:
+`POST /v1/inboxes` with `owner_member_id`.
 
 ## Route a domain's mail to Yuva
 
@@ -166,7 +169,9 @@ Details such as the length limits are in [Searching mail](email.md#searching-mai
 
 ## Privacy
 
-<!-- panel steps: Y-170 -->
+Owners and admins find someone else's mailbox in **Settings → Products** as `Personal mailbox of <owner>`, with a lock. The page shows **Addresses**, the conversation count and **Size**, and offers only
+**Rename the mailbox** and **Delete mailbox**.
+
 A personal mailbox is read only by its owner and the members the owner delegates to.
 
 - Owners and admins see that a personal mailbox exists: its name, its addresses, its number of
@@ -185,7 +190,14 @@ A personal mailbox is read only by its owner and the members the owner delegates
 
 ## Delegation
 
-<!-- panel steps: Y-170 -->
+1. The owner opens **Settings → Products**, the mailbox, then **Delegates**.
+2. Choose **Add a member**, pick the member and choose **Read** or **Read and send**.
+3. Change or remove a delegate in the same list: they stop reading this mailbox at once.
+
+A delegate with **Read** sees `You can read this mailbox but not change it.` With **Read and send** the
+composer says `Sending on behalf of <owner>` and the thread shows `<delegate> on behalf of <owner>`.
+Delegates get no Settings link for the mailbox.
+
 The owner of a personal mailbox lets other members in, one by one, with one of two rights. Only the
 owner can do this; owners, admins and delegates cannot.
 
@@ -201,7 +213,13 @@ shows both people. Removing a delegate takes the access away at once. API: `GET|
 
 ## When a member leaves
 
-<!-- panel steps: Y-170 -->
+1. Open **Team**, choose the member, then **Remove**. The dialog `Remove <name>?` lists each of their
+   personal mailboxes.
+2. For each one choose **Delete this mailbox**, or **Hand over** and pick the member in **Hand over to**.
+
+An orphaned mailbox shows **No owner** and **Needs an owner** in **Settings → Products**. Choose **Hand
+over** and pick the **New owner**, or **Delete mailbox**.
+
 A personal mailbox does not become shared when its owner goes.
 
 - **An owner or admin removes the member.** For every personal mailbox the member owns, the removal asks

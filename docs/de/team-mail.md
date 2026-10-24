@@ -32,11 +32,13 @@ Support-Berichte.
 
 Ein persönliches Postfach ist privat, auch vor Ownern und Admins: siehe [Datenschutz](#datenschutz).
 
-<!-- panel steps: Y-170 -->
-Ein gemeinsames Postfach legen Owner und Admins unter **Einstellungen → Produkte → Postfach hinzufügen** an (oder mit
-**Postfach hinzufügen** auf der leeren **Mail**-Seite) und wählen **Team-Mail** als Zweck des Posteingangs. Ein
-persönliches Postfach entsteht, indem der Inhaber des Posteingangs auf ein Mitglied gesetzt wird (`POST /v1/inboxes`
-mit `owner_member_id`).
+1. Öffnen Sie **Einstellungen → Produkte → Postfach hinzufügen**, in **Mail** die Postfachauswahl → **Neues Postfach**.
+2. Beantworten Sie unter **Team-Mail** die Frage **Wer liest es?** mit **Mit dem Team geteilt** oder **Persönlich (nur Sie)**.
+   Owner und Admins sehen zusätzlich **Persönlich für ein Mitglied**: Wählen Sie das Mitglied.
+
+In **Mail** gruppiert die Postfachauswahl die Postfächer als **Ihre Postfächer**, **Mit Ihnen geteilt** (mit **Lesen**
+oder **Lesen und senden**) und **Team-Mail**. Ein persönliches Postfach lässt sich auch per API anlegen:
+`POST /v1/inboxes` mit `owner_member_id`.
 
 ## Die Mail einer Domain zu Yuva leiten
 
@@ -171,7 +173,10 @@ Einzelheiten wie die Längengrenzen stehen unter [E-Mails durchsuchen](email.md#
 
 ## Datenschutz
 
-<!-- panel steps: Y-170 -->
+Owner und Admins finden das Postfach einer anderen Person unter **Einstellungen → Produkte** als `Persönliches
+Postfach von <owner>`, mit Schloss. Die Seite zeigt **Adressen**, die Zahl der Unterhaltungen und **Größe** und bietet
+nur **Postfach umbenennen** und **Postfach löschen**.
+
 Ein persönliches Postfach liest nur seine Inhaberin oder sein Inhaber und die Mitglieder, denen sie oder er Zugriff
 überträgt.
 
@@ -192,7 +197,14 @@ Ein persönliches Postfach liest nur seine Inhaberin oder sein Inhaber und die M
 
 ## Zugriff übertragen
 
-<!-- panel steps: Y-170 -->
+1. Die Inhaberin oder der Inhaber öffnet **Einstellungen → Produkte**, das Postfach, dann **Stellvertreter**.
+2. Wählen Sie **Mitglied hinzufügen**, das Mitglied und **Lesen** oder **Lesen und senden**.
+3. In derselben Liste ändern oder entfernen Sie Stellvertreter: Sie lesen dieses Postfach sofort nicht mehr.
+
+Wer **Lesen** hat, sieht `Sie können dieses Postfach lesen, aber nicht ändern.` Bei **Lesen und senden** steht im
+Editor `Sendet im Auftrag von <name>` und im Verlauf `<delegate> im Auftrag von <owner>`. Stellvertreter erhalten
+keinen Einstellungen-Link für das Postfach.
+
 Die Inhaberin oder der Inhaber eines persönlichen Postfachs lässt andere Mitglieder einzeln mit einem von zwei Rechten
 hinein. Nur sie oder er kann das; Owner, Admins und bereits Berechtigte können es nicht.
 
@@ -208,7 +220,13 @@ Auftrag“ der Inhaberin oder des Inhabers hinaus: `From` ist deren Name und Adr
 
 ## Wenn ein Mitglied geht
 
-<!-- panel steps: Y-170 -->
+1. Öffnen Sie **Team**, wählen Sie das Mitglied und dann **Entfernen**. Der Dialog `<name> entfernen?` listet jedes
+   persönliche Postfach auf.
+2. Wählen Sie je Postfach **Dieses Postfach löschen** oder **Übergeben** und das Mitglied unter **Übergeben an**.
+
+Ein verwaistes Postfach zeigt in **Einstellungen → Produkte** **Kein Besitzer** und **Braucht einen Besitzer**. Wählen
+Sie **Übergeben** und den **Neuer Besitzer**, oder **Postfach löschen**.
+
 Ein persönliches Postfach wird nicht gemeinsam, wenn seine Inhaberin oder sein Inhaber geht.
 
 - **Ein Owner oder Admin entfernt das Mitglied.** Für jedes persönliche Postfach des Mitglieds verlangt das Entfernen

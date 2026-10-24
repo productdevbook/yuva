@@ -31,11 +31,13 @@ yardım, yol haritası, Yenilikler ve destek raporları.
 
 Kişisel posta kutusu sahiplerden ve yöneticilerden bile gizlidir: bkz. [Gizlilik](#gizlilik).
 
-<!-- panel steps: Y-170 -->
-Ortak posta kutusu kurmak için sahipler ve yöneticiler **Ayarlar → Ürünler → Gelen kutusu ekle** yolunu açar
-(ya da boş **Posta** sayfasında **Gelen kutusu ekle**'yi seçer) ve gelen kutusunun amacı olarak **Ekip postası**'nı
-seçer. Kişisel posta kutusu, gelen kutusunun sahibi bir üye olarak ayarlanarak oluşturulur (`POST /v1/inboxes`,
-`owner_member_id`).
+1. **Ayarlar → Ürünler → Gelen kutusu ekle**'yi açın; **Posta**'da ise posta kutusu seçici → **Yeni posta kutusu**.
+2. **Ekip postası** altında **Kim okuyor?** sorusunu **Ekiple paylaşılan** ya da **Kişisel (yalnızca siz)** ile
+   yanıtlayın. Sahipler ve yöneticiler ayrıca **Bir üye için kişisel** seçeneğini görür: üyeyi seçin.
+
+**Posta**'da posta kutusu seçici kutuları **Posta kutularınız**, **Sizinle paylaşılan** (**Okuma** ya da
+**Okuma ve gönderme** etiketli) ve **Ekip postası** altında gruplar. Kişisel posta kutusu API ile de oluşturulabilir:
+`POST /v1/inboxes`, `owner_member_id`.
 
 ## Alan adının postasını Yuva'ya yönlendirme
 
@@ -166,7 +168,10 @@ Uzunluk sınırları gibi ayrıntılar [E-postada arama](email.md#e-postada-aram
 
 ## Gizlilik
 
-<!-- panel steps: Y-170 -->
+Sahipler ve yöneticiler başkasının posta kutusunu **Ayarlar → Ürünler** içinde, kilit simgesiyle `<owner> üyesinin
+kişisel posta kutusu` olarak bulur. Sayfa **Adresler**'i, konuşma sayısını ve **Boyut**'u gösterir; yalnızca
+**Posta kutusunun adını değiştir** ve **Posta kutusunu sil** sunar.
+
 Kişisel posta kutusunu yalnızca sahibi ve sahibinin yetki verdiği üyeler okur.
 
 - Sahipler ve yöneticiler kişisel bir posta kutusunun var olduğunu görür: adını, adreslerini, konuşma sayısını ve
@@ -185,7 +190,14 @@ Kişisel posta kutusunu yalnızca sahibi ve sahibinin yetki verdiği üyeler oku
 
 ## Yetki devri
 
-<!-- panel steps: Y-170 -->
+1. Sahibi **Ayarlar → Ürünler** içinde posta kutusunu, ardından **Vekiller**'i açar.
+2. **Üye ekle**'yi seçer, üyeyi seçer ve **Okuma** ya da **Okuma ve gönderme**'yi seçer.
+3. Vekil aynı listeden değiştirilir ya da çıkarılır: bu posta kutusunu hemen okumayı bırakır.
+
+**Okuma** hakkı olan vekil `Bu posta kutusunu okuyabilirsiniz ama değiştiremezsiniz.` iletisini görür. **Okuma ve
+gönderme** hakkında yazı alanında `<name> adına gönderiliyor`, konuşmada `<delegate>, <owner> adına` yazar.
+Vekillere bu posta kutusu için Ayarlar bağlantısı gösterilmez.
+
 Kişisel posta kutusunun sahibi diğer üyeleri tek tek, iki haktan biriyle içeri alır. Bunu yalnızca sahibi yapabilir;
 sahipler, yöneticiler ve yetki verilenler yapamaz.
 
@@ -200,7 +212,13 @@ kaldırmak erişimi hemen alır. API: `GET|PUT|DELETE /v1/inboxes/{id}/delegates
 
 ## Bir üye ayrıldığında
 
-<!-- panel steps: Y-170 -->
+1. **Ekip**'i açın, üyeyi seçin, ardından **Kaldır**'ı seçin. `<name> kaldırılsın mı?` penceresi üyenin her kişisel
+   posta kutusunu listeler.
+2. Her biri için **Bu posta kutusunu sil**'i seçin, ya da **Devret**'i seçip üyeyi **Şuna devret** içinde seçin.
+
+Sahipsiz posta kutusu **Ayarlar → Ürünler** içinde **Sahibi yok** ve **Sahip gerekiyor** olarak görünür. **Devret**'i
+seçip **Yeni sahip**'i belirleyin, ya da **Posta kutusunu sil**'i seçin.
+
 Kişisel posta kutusu, sahibi gidince ortak olmaz.
 
 - **Bir sahip ya da yönetici üyeyi kaldırır.** Üyenin sahibi olduğu her kişisel posta kutusu için kaldırma sizden
