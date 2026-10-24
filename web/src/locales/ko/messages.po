@@ -221,6 +221,10 @@ msgstr "{added}개 추가 · {out}개 제외"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "{address} 주소는 이전에 반송되었거나 신고된 적이 있습니다. 여기서 제거하거나, 연락처에서 지우면 그 주소로 전달할 수 있습니다."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} 주소는 이전에 반송되었거나 신고되었습니다. 주소를 제거하거나 연락처에서 지워야 보낼 수 있습니다."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "{address} 주소는 수신자가 될 수 없습니다. 대화의 연락처, 이미 참조에 들어 있는 주소, 이 서버의 주소이거나 올바르지 않은 주소일 수 있습니다."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "이 속도로는 발송에 약 {paceDays}일이 걸립니다. 일괄 발
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "파일 첨부"
 
@@ -3212,6 +3218,7 @@ msgstr "나쁨만"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "숨은 참조"
@@ -3223,6 +3230,10 @@ msgstr "숨은 참조 ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "숨은 참조 수신자는 메일을 받지만 연락처를 포함한 다른 모든 사람에게 보이지 않습니다."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "숨은 참조 수신자는 메일을 받지만 다른 모든 사람에게는 보이지 않습니다."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "원인 파악됨"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "참조"
@@ -4100,6 +4112,7 @@ msgstr "클라이언트 시크릿"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "디렉터리(테넌트) ID(선택)"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "버리기"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "초안을 삭제했습니다"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "초안을 저장했습니다"
 
@@ -7099,6 +7114,7 @@ msgstr "보낸 편지함에서 찾았습니다"
 msgid "Friday"
 msgstr "금요일"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "전달, 라우팅, MX는 그대로 두세요. 지금은 그 경로로 �
 msgid "Keep the name only"
 msgstr "이름만 유지"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "이 메일을 임시 보관함에 저장할까요?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "이 페이지를 열어 두세요. 연결이 끊겨도 복구되면 업로드가 계속되며, 새로 고친 경우 같은 파일을 선택하면 빠진 부분만 전송됩니다."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "계속 쓰기"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "메일은 {address}을(를) 받는 이메일 채널 \"{channelName}\"로
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Gmail과 Yahoo에서 요구하는 발신자 자체 도메인 키로 메일이 서명되지 않았습니다."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "메일을 보냈습니다"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "메일 크기"
@@ -9608,6 +9637,7 @@ msgstr "다른 연락처와 병합"
 msgid "Merge…"
 msgstr "병합…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "메시지"
@@ -10350,6 +10380,11 @@ msgstr "새 리스트"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "새 매크로"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "새 메일"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "제거"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} 제거"
@@ -14866,6 +14902,7 @@ msgstr "변경 사항 저장"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "초안 저장"
 
@@ -15204,6 +15241,7 @@ msgstr "세미콜론"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "보내기"
 
@@ -16781,6 +16819,7 @@ msgstr "서브도메인을 찾을 수 없음"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS(포트 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "{via}를 통해"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "보기"
 
@@ -20441,6 +20482,11 @@ msgstr "메시지 쓰기…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "새 메일 쓰기"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "팀을 위한 메모 작성"
 
@@ -20496,6 +20542,10 @@ msgstr "'새 소식' 항목과 번역 작성"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "어디서 언제 동의했는지 적으세요."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "메일을 작성하세요…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

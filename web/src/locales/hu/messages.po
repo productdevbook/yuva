@@ -221,6 +221,10 @@ msgstr "Hozzáadva: {added} · kihagyva: {out}"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "A(z) {address} cím korábban visszapattant vagy panaszt kapott. Távolítsd el innen, vagy töröld a kapcsolatnál, hogy oda továbbíthass."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} korábban visszapattant vagy panaszt jelzett. Távolítsd el a címet, vagy töröld a névjegyén, hogy írhass neki."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "A(z) {address} nem lehet címzett. Lehet a beszélgetés kapcsolata, egy már másolatban lévő cím, e szerver címe, vagy érvénytelen."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "Ilyen tempóban a küldés kb. {paceDays} napig tartana. Egy tömeges le
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "Fájlok csatolása"
 
@@ -3212,6 +3218,7 @@ msgstr "Csak a rosszak"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Titkos másolat"
@@ -3223,6 +3230,10 @@ msgstr "Titkos másolat ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "A titkos másolat címzettjei megkapják a levelet, de mindenki más elől rejtve maradnak, a kapcsolat elől is."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "A titkos másolat címzettjei megkapják a levelet, de a többiek elől rejtve maradnak."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "Megvan az ok"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Másolat"
@@ -4100,6 +4112,7 @@ msgstr "Klienstitok"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "Directory (tenant) ID, nem kötelező"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "Elvetés"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "Piszkozat törölve"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Piszkozat mentve"
 
@@ -7099,6 +7114,7 @@ msgstr "A Elküldött mappáidban találtuk"
 msgid "Friday"
 msgstr "Péntek"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "Hagyd az átirányítást, útválasztást vagy MX-et úgy, ahogy van: �
 msgid "Keep the name only"
 msgstr "Csak a név megtartása"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "Piszkozatként megtartod ezt a levelet?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Tartsd nyitva ezt az oldalt. Ha a kapcsolat megszakad, a feltöltés folytatódik, amikor visszatér; újratöltés után válaszd ki ugyanazt a fájlt, és csak a hiányzó részek kerülnek elküldésre."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "Írás folytatása"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "A levelek a(z) „{channelName}” e-mail-csatornába kerülnek, amely a
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "A levelet nem a feladó saját tartományának kulcsa írja alá, pedig a Gmail és a Yahoo ezt várja el."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "Levél elküldve"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "Levél mérete"
@@ -9608,6 +9637,7 @@ msgstr "Egyesítés másik kontakttal"
 msgid "Merge…"
 msgstr "Egyesítés…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Üzenet"
@@ -10350,6 +10380,11 @@ msgstr "Új lista"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Új makró"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "Új levél"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "Eltávolítás"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} eltávolítása"
@@ -14866,6 +14902,7 @@ msgstr "Módosítások mentése"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Piszkozat mentése"
 
@@ -15204,6 +15241,7 @@ msgstr "pontosvesszők"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "Küldés"
 
@@ -16781,6 +16819,7 @@ msgstr "Az aldomain nem található"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (465-ös port)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "{via} révén"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "Megtekintés"
 
@@ -20441,6 +20482,11 @@ msgstr "Írj egy üzenetet…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "Új levél írása"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "Megjegyzés írása a csapatnak"
 
@@ -20496,6 +20542,10 @@ msgstr "Újdonságok-bejegyzések és fordításaik írása"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "Írd le, hol és mikor egyeztek bele."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "Írd meg a leveled…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

@@ -221,6 +221,10 @@ msgstr "已新增 {added} 個 · 排除 {out} 個"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "{address} 先前曾退信或遭檢舉。請在此移除它，或在聯絡人中清除後再轉寄到該地址。"
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} 先前曾退信或遭檢舉。請移除此地址，或在其聯絡人中清除後再寄信。"
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "{address} 不能作為收件人。它可能是對話的聯絡人、已在副本中的地址、本伺服器的地址，或格式無效。"
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "按此速度,傳送大約需要 {paceDays} 天。一次群發最長 365 
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "附加檔案"
 
@@ -3212,6 +3218,7 @@ msgstr "僅負評"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "密件副本"
@@ -3223,6 +3230,10 @@ msgstr "密件副本 ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "密件副本收件者會收到郵件，但對包括聯絡人在內的其他所有人隱藏。"
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "密件副本收件者會收到郵件，但對其他所有人隱藏。"
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "已找到原因"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "副本"
@@ -4100,6 +4112,7 @@ msgstr "用戶端金鑰"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "目錄(租戶)ID,可選"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "丟棄"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "草稿已刪除"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "草稿已儲存"
 
@@ -7099,6 +7114,7 @@ msgstr "在你的已傳送資料夾中找到"
 msgid "Friday"
 msgstr "星期五"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "請保持轉發、路由或 MX 不變:郵件現在就是這樣到達 Yuv
 msgid "Keep the name only"
 msgstr "僅保留名稱"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "要將這封郵件存為草稿嗎？"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "請保持此頁面開啟。如果連線中斷,恢復後上傳會繼續;重新整理後,選擇同一個檔案,只會傳送缺少的部分。"
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "繼續寫"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "郵件會進入接收 {address} 的郵件頻道「{channelName}」。"
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "郵件未使用寄件者自有網域的金鑰簽署,而 Gmail 和 Yahoo 要求這麼做。"
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "郵件已寄出"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "郵件大小"
@@ -9608,6 +9637,7 @@ msgstr "與另一位聯絡人合併"
 msgid "Merge…"
 msgstr "合併…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "訊息"
@@ -10350,6 +10380,11 @@ msgstr "新建列表"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "新增巨集"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "新郵件"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "移除"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "移除 {0}"
@@ -14866,6 +14902,7 @@ msgstr "儲存變更"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "儲存草稿"
 
@@ -15204,6 +15241,7 @@ msgstr "分號"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "傳送"
 
@@ -16781,6 +16819,7 @@ msgstr "未找到子域名"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS(埠 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "透過 {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "檢視"
 
@@ -20441,6 +20482,11 @@ msgstr "寫一條訊息…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "寫新郵件"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "給團隊寫一條備註"
 
@@ -20496,6 +20542,10 @@ msgstr "撰寫「最新動態」項目及其翻譯"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "寫明他們是在哪裡、何時同意的。"
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "寫下你的郵件…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

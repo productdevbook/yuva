@@ -221,6 +221,10 @@ msgstr "נוספו {added} · דולגו {out}"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "הכתובת {address} החזירה הודעה או התלוננה בעבר. הסירו אותה כאן, או נקו אותה אצל איש הקשר כדי להעביר אליה."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "הכתובת {address} החזירה דואר או התלוננה בעבר. הסירו אותה או נקו אותה באיש הקשר כדי לכתוב אליה."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "הכתובת {address} לא יכולה להיות נמענת. ייתכן שזהו איש הקשר של השיחה, כתובת שכבר מועתקת בה, כתובת של השרת הזה, או כתובת לא תקינה."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "בקצב הזה השליחה תיקח בערך {paceDays} ימים. של
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "צירוף קבצים"
 
@@ -3212,6 +3218,7 @@ msgstr "רעים בלבד"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "עותק מוסתר"
@@ -3223,6 +3230,10 @@ msgstr "עותק מוסתר ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "נמענים בעותק מוסתר מקבלים את ההודעה אך נשארים מוסתרים מכל השאר, כולל איש הקשר."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "נמעני העתק מוסתר מקבלים את המכתב אך נשארים מוסתרים משאר הנמענים."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "הסיבה נמצאה"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "עותק"
@@ -4100,6 +4112,7 @@ msgstr "סוד לקוח"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "מזהה ספרייה (דייר), אופציונלי"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "השלך"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "הטיוטה נמחקה"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "הטיוטה נשמרה"
 
@@ -7099,6 +7114,7 @@ msgstr "נמצא בתיקיות הדואר שנשלח שלך"
 msgid "Friday"
 msgstr "יום שישי"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "השאר את ההעברה, הניתוב או ה-MX כפי שהם: כך 
 msgid "Keep the name only"
 msgstr "שמירת השם בלבד"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "לשמור את המכתב הזה כטיוטה?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "השאר את הדף הזה פתוח. אם החיבור נופל, ההעלאה נמשכת כשהוא חוזר; אחרי טעינה מחדש בחר את אותו קובץ ורק החלקים החסרים יישלחו."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "המשך כתיבה"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "הדואר נכנס לערוץ האימייל „{channelName}”, שמ�
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "הדואר אינו חתום במפתח של הדומיין של השולח, כפי ש-Gmail ו-Yahoo מצפים."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "המכתב נשלח"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "גודל הדואר"
@@ -9608,6 +9637,7 @@ msgstr "מיזוג עם איש קשר אחר"
 msgid "Merge…"
 msgstr "מיזוג…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "הודעה"
@@ -10350,6 +10380,11 @@ msgstr "רשימה חדשה"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "מאקרו חדש"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "מכתב חדש"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "הסרה"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "הסרת {0}"
@@ -14866,6 +14902,7 @@ msgstr "שמירת שינויים"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "שמירת טיוטה"
 
@@ -15204,6 +15241,7 @@ msgstr "נקודה-פסיק"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "שליחה"
 
@@ -16781,6 +16819,7 @@ msgstr "תת-הדומיין לא נמצא"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (פורט 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "דרך {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "הצגה"
 
@@ -20441,6 +20482,11 @@ msgstr "כתוב הודעה…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "כתיבת מכתב חדש"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "כתוב הערה לצוות"
 
@@ -20496,6 +20542,10 @@ msgstr "כתיבת רשומות ב״מה חדש״ ותרגומיהן"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "כתוב איפה ומתי הם הסכימו."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "כתבו את המכתב…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

@@ -221,6 +221,10 @@ msgstr "เพิ่ม {added} · ข้าม {out}"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "{address} เคยตีกลับหรือถูกร้องเรียนมาก่อน ลบออกที่นี่ หรือล้างที่ผู้ติดต่อเพื่อให้ส่งต่อไปที่นั่นได้"
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} เคยตีกลับหรือถูกร้องเรียนมาก่อน ลบที่อยู่นี้ หรือล้างออกจากผู้ติดต่อเพื่อเขียนถึง"
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "{address} เป็นผู้รับไม่ได้ อาจเป็นผู้ติดต่อของการสนทนา ที่อยู่ที่อยู่ในสำเนาแล้ว ที่อยู่ของเซิร์ฟเวอร์นี้ หรือไม่ถูกต้อง"
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "ด้วยความเร็วนี้ การส่งจะ�
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "แนบไฟล์"
 
@@ -3212,6 +3218,7 @@ msgstr "เฉพาะที่ไม่ดี"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "สำเนาลับ"
@@ -3223,6 +3230,10 @@ msgstr "สำเนาลับ ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "ผู้รับสำเนาลับจะได้รับอีเมล แต่ถูกซ่อนจากทุกคน รวมถึงผู้ติดต่อ"
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "ผู้รับ Bcc จะได้รับเมลแต่ถูกซ่อนจากคนอื่นทั้งหมด"
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "พบสาเหตุแล้ว"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "สำเนา"
@@ -4100,6 +4112,7 @@ msgstr "Client secret"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "Directory (tenant) ID ไม่บังคับ"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "ทิ้ง"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "ลบฉบับร่างแล้ว"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "บันทึกฉบับร่างแล้ว"
 
@@ -7099,6 +7114,7 @@ msgstr "พบในโฟลเดอร์ส่งแล้วของคุ
 msgid "Friday"
 msgstr "วันศุกร์"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "คงการส่งต่อ การกำหนดเส้น�
 msgid "Keep the name only"
 msgstr "เก็บเฉพาะชื่อ"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "เก็บเมลนี้เป็นฉบับร่างไหม"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "เปิดหน้านี้ค้างไว้ หากการเชื่อมต่อหลุด การอัปโหลดจะดำเนินต่อเมื่อกลับมา หลังโหลดหน้าใหม่ ให้เลือกไฟล์เดิม แล้วจะส่งเฉพาะส่วนที่ขาด"
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "เขียนต่อ"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "อีเมลเข้าช่องทางอีเมล “{chan
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "อีเมลไม่ได้ลงนามด้วยคีย์ของโดเมนผู้ส่งเอง ซึ่ง Gmail และ Yahoo คาดหวังให้มี"
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "ส่งเมลแล้ว"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "ขนาดอีเมล"
@@ -9608,6 +9637,7 @@ msgstr "รวมกับผู้ติดต่ออื่น"
 msgid "Merge…"
 msgstr "รวม…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "ข้อความ"
@@ -10350,6 +10380,11 @@ msgstr "รายชื่อใหม่"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "มาโครใหม่"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "เมลใหม่"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "นำออก"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "นำ {0} ออก"
@@ -14866,6 +14902,7 @@ msgstr "บันทึกการเปลี่ยนแปลง"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "บันทึกฉบับร่าง"
 
@@ -15204,6 +15241,7 @@ msgstr "อัฒภาค"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "ส่ง"
 
@@ -16781,6 +16819,7 @@ msgstr "ไม่พบโดเมนย่อย"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (พอร์ต 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "ผ่าน {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "ดู"
 
@@ -20441,6 +20482,11 @@ msgstr "เขียนข้อความ…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "เขียนเมลใหม่"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "เขียนบันทึกสำหรับทีม"
 
@@ -20496,6 +20542,10 @@ msgstr "เขียนรายการใน \"มีอะไรใหม่
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "เขียนว่าพวกเขายินยอมที่ไหนและเมื่อใด"
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "เขียนเมลของคุณ…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

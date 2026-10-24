@@ -51,9 +51,9 @@ export type ReplyHandle = {
   replyAll: (all: boolean) => void
 }
 
-const MAX_FILES = 10
+export const MAX_FILES = 10
 
-function FileThumb({ file }: { file: File }) {
+export function FileThumb({ file }: { file: File }) {
   const preview = useCallback(
     (img: HTMLImageElement | null) => {
       if (!img) return

@@ -1,10 +1,11 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, ChevronDownIcon, MailIcon, MailOpenIcon } from "lucide-react"
-import { useCallback } from "react"
+import { CheckIcon, ChevronDownIcon, MailIcon, MailOpenIcon, PenSquareIcon } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
 import { useDefaultLayout } from "react-resizable-panels"
 import { Link, Navigate, useLocation, useNavigate } from "react-router"
 
-import { EmptyState } from "@/components/common"
+import { EmptyState, Kbd } from "@/components/common"
+import { MAIL_KEYS } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -24,9 +25,12 @@ import {
   useMailRoute,
   type Folder,
 } from "@/features/mail/folders"
+import { Compose } from "@/features/mail/Compose"
+import { COMPOSE_EVENT } from "@/features/mail/compose"
 import { MailList } from "@/features/mail/MailList"
 import { MailThread } from "@/features/mail/MailThread"
 import { useMailCounts } from "@/features/mail/queries"
+import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { useViewing } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
@@ -78,6 +82,16 @@ function BoxPicker({ box, folder }: { box: string; folder: Folder }) {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+function ComposeButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Button className={cn(look.btnInk, "gap-1.5")} onClick={onClick} data-testid="mail-compose">
+      <PenSquareIcon />
+      <Trans>New mail</Trans>
+      <Kbd className="phone:hidden bg-background/15 text-background">{MAIL_KEYS.compose}</Kbd>
+    </Button>
   )
 }
 
@@ -138,6 +152,13 @@ export function MailPage() {
   const open = useCallback((next: string) => navigate(mailPath(box, folder, next)), [navigate, box, folder])
   const leave = useCallback(() => navigate(mailPath(box, folder)), [navigate, box, folder])
   useViewing(id ?? undefined)
+  const [composing, setComposing] = useState(false)
+  useEffect(() => {
+    const on = () => setComposing(true)
+    window.addEventListener(COMPOSE_EVENT, on)
+    return () => window.removeEventListener(COMPOSE_EVENT, on)
+  }, [])
+  useHotkeys({ [MAIL_KEYS.compose]: () => setComposing(true) }, inboxes.length > 0 && !composing)
 
   const canonical = mailPath(box, folders.includes(folder) ? folder : "inbox", id ?? undefined)
   if (inboxes.length === 0) return <NoMailInboxes />
@@ -162,7 +183,16 @@ export function MailPage() {
     }
     return (
       <main className="flex min-h-0 flex-1 flex-col" data-testid="mail">
-        <ListHead title={<Trans>Mail</Trans>} sub={boxName} action={<BoxPicker box={box} folder={folder} />}>
+        <ListHead
+          title={<Trans>Mail</Trans>}
+          sub={boxName}
+          action={
+            <>
+              <BoxPicker box={box} folder={folder} />
+              <ComposeButton onClick={() => setComposing(true)} />
+            </>
+          }
+        >
           <UnderlineTabs
             value={folder}
             onChange={(f) => navigate(mailPath(box, f))}
@@ -176,6 +206,7 @@ export function MailPage() {
           />
         </ListHead>
         <MailList box={box} folder={folder} currentId={null} onOpen={open} active />
+        {composing && <Compose box={box} onClose={() => setComposing(false)} />}
       </main>
     )
   }
@@ -185,7 +216,12 @@ export function MailPage() {
       <PageTop
         title={<Trans>Mail</Trans>}
         sub={boxName}
-        actions={<BoxPicker box={box} folder={folder} />}
+        actions={
+          <>
+            <BoxPicker box={box} folder={folder} />
+            <ComposeButton onClick={() => setComposing(true)} />
+          </>
+        }
         tabs={<FrameTabs label={t`Folders`} value={folder} items={tabs} />}
       />
       <ResizablePanelGroup
@@ -210,6 +246,7 @@ export function MailPage() {
           {id ? <Thread id={id} onLeave={leave} /> : <EmptyThread />}
         </ResizablePanel>
       </ResizablePanelGroup>
+      {composing && <Compose box={box} onClose={() => setComposing(false)} />}
     </main>
   )
 }

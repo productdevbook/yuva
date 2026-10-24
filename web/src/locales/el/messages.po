@@ -221,6 +221,10 @@ msgstr "Προστέθηκαν: {added} · παραλείφθηκαν: {out}"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "Η διεύθυνση {address} έχει επιστρέψει ή αναφερθεί ως ανεπιθύμητη στο παρελθόν. Αφαίρεσέ την εδώ ή καθάρισέ την από την επαφή για να προωθήσεις εκεί."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "Η διεύθυνση {address} είχε επιστρέψει ή αναφέρει μήνυμα παλαιότερα. Αφαιρέστε την ή καθαρίστε την από την επαφή για να της γράψετε."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "Η διεύθυνση {address} δεν μπορεί να είναι παραλήπτης. Μπορεί να είναι η επαφή της συνομιλίας, διεύθυνση που ήδη βρίσκεται σε κοινοποίηση, διεύθυνση αυτού του διακομιστή ή μη έγκυρη."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "Με αυτόν τον ρυθμό, η αποστολή θα διαρκο
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "Επισύναψη αρχείων"
 
@@ -3212,6 +3218,7 @@ msgstr "Μόνο κακές"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Κρυφή κοιν."
@@ -3223,6 +3230,10 @@ msgstr "Κρυφή κοιν. ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Οι παραλήπτες σε κρυφή κοινοποίηση λαμβάνουν το μήνυμα αλλά παραμένουν κρυφοί από όλους τους άλλους, και από την επαφή."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Οι παραλήπτες Bcc λαμβάνουν το μήνυμα αλλά παραμένουν κρυφοί από τους υπόλοιπους."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "Βρέθηκε η αιτία"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Κοιν."
@@ -4100,6 +4112,7 @@ msgstr "Μυστικό πελάτη"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "Αναγνωριστικό καταλόγου (μισθωτή), προα
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "Απόρριψη"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "Το πρόχειρο διαγράφηκε"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Το πρόχειρο αποθηκεύτηκε"
 
@@ -7099,6 +7114,7 @@ msgstr "Βρέθηκε στους φακέλους Απεσταλμένων σα
 msgid "Friday"
 msgstr "Παρασκευή"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "Κρατήστε την προώθηση, τη δρομολόγηση ή
 msgid "Keep the name only"
 msgstr "Διατήρηση μόνο του ονόματος"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "Να κρατηθεί αυτό το μήνυμα ως πρόχειρο;"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Κρατήστε αυτή τη σελίδα ανοιχτή. Αν πέσει η σύνδεση, η μεταφόρτωση συνεχίζεται όταν επανέλθει· μετά από επαναφόρτωση, επιλέξτε το ίδιο αρχείο και στέλνονται μόνο τα μέρη που λείπουν."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "Συνέχεια γραφής"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "Η αλληλογραφία μπαίνει στο κανάλι e-mail «
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Η αλληλογραφία δεν είναι υπογεγραμμένη με κλειδί του δικού τους τομέα του αποστολέα, κάτι που αναμένουν το Gmail και το Yahoo."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "Το μήνυμα στάλθηκε"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "Μέγεθος e-mail"
@@ -9608,6 +9637,7 @@ msgstr "Συγχώνευση με άλλη επαφή"
 msgid "Merge…"
 msgstr "Συγχώνευση…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Μήνυμα"
@@ -10350,6 +10380,11 @@ msgstr "Νέα λίστα"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Νέα μακροεντολή"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "Νέο μήνυμα"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "Αφαίρεση"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Αφαίρεση {0}"
@@ -14866,6 +14902,7 @@ msgstr "Αποθήκευση αλλαγών"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Αποθήκευση πρόχειρου"
 
@@ -15204,6 +15241,7 @@ msgstr "ερωτηματικά"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "Αποστολή"
 
@@ -16781,6 +16819,7 @@ msgstr "Ο υποτομέας δεν βρέθηκε"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (θύρα 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "μέσω {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "Προβολή"
 
@@ -20441,6 +20482,11 @@ msgstr "Γράψτε ένα μήνυμα…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "Γράψτε νέο μήνυμα"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "Σύνταξη σημείωσης για την ομάδα"
 
@@ -20496,6 +20542,10 @@ msgstr "Συγγραφή καταχωρίσεων «Τι νέο υπάρχει»
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "Γράψτε πού και πότε συμφώνησαν."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "Γράψτε το μήνυμά σας…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

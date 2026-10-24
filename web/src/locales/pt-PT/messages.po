@@ -221,6 +221,10 @@ msgstr "{added} adicionados · {out} excluídos"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "{address} já devolveu uma mensagem ou apresentou queixa. Remova-o aqui, ou limpe-o no contacto para poder reencaminhar para ele."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} já teve correio devolvido ou denunciado. Remova o endereço, ou limpe-o no contacto para lhe escrever."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "{address} não pode ser destinatário. Pode ser o contacto da conversa, um endereço que já está em cópia, um endereço deste servidor ou ser inválido."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "Nesse ritmo, o envio levaria cerca de {paceDays} dias. Um envio pode lev
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "Anexar ficheiros"
 
@@ -3212,6 +3218,7 @@ msgstr "Só más"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
@@ -3223,6 +3230,10 @@ msgstr "Bcc ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Os destinatários em Bcc recebem o e-mail, mas ficam ocultos de todos os outros, incluindo o contacto."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Os destinatários em Bcc recebem o correio, mas ficam ocultos dos restantes."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "Causa encontrada"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
@@ -4100,6 +4112,7 @@ msgstr "Segredo do cliente"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "ID do diretório (tenant), opcional"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "Descartar"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "Rascunho eliminado"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Rascunho guardado"
 
@@ -7099,6 +7114,7 @@ msgstr "Encontrado nas suas pastas de enviados"
 msgid "Friday"
 msgstr "Sexta-feira"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "Mantenha o encaminhamento, o roteamento ou o MX como está: é assim que
 msgid "Keep the name only"
 msgstr "Manter só o nome"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "Guardar este correio como rascunho?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Mantenha esta página aberta. Se a ligação cair, o upload continua a quar ela voltar; depois de recarregar, escolha o mesmo ficheiro e só as partes que faltam são enviadas."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "Continuar a escrever"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "O e-mail vai para o canal de e-mail “{channelName}”, que recebe {add
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "O e-mail não está assinado com uma chave do domínio do próprio remetente, como o Gmail e o Yahoo esperam."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "Correio enviado"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "Tamanho do e-mail"
@@ -9608,6 +9637,7 @@ msgstr "Mesclar com outro contacto"
 msgid "Merge…"
 msgstr "Unir…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Mensagem"
@@ -10350,6 +10380,11 @@ msgstr "Nova lista"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Nova macro"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "Novo correio"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "Remover"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Remover {0}"
@@ -14866,6 +14902,7 @@ msgstr "Guardar alterações"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Guardar rascunho"
 
@@ -15204,6 +15241,7 @@ msgstr "ponto e vírgula"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "Enviar"
 
@@ -16781,6 +16819,7 @@ msgstr "Subdomínio não encontrado"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (porta 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "através de {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "Ver"
 
@@ -20441,6 +20482,11 @@ msgstr "Escreva uma mensagem…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "Escrever um novo correio"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "Escrever uma nota para a equipa"
 
@@ -20496,6 +20542,10 @@ msgstr "Escrever entradas de Novidades e as respetivas traduções"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "Escreva onde e quando eles aceitaram."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "Escreva o seu correio…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

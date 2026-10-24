@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router"
 
 import { inboxRoot, isChats, useShell } from "@/app/shell"
 import { Kbd } from "@/components/common"
-import { keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
+import { keyLabel, MAIL_KEYS, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText } from "@/components/common/text"
 import {
   Command,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/command"
 import { useReplyChoices } from "@/features/conversation/composer/CannedMenu"
 import { hasCommands, runCommand, runInsert, type CommandName } from "@/features/conversation/commands"
+import { openCompose } from "@/features/mail/compose"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { focusListSearch, setListQuery } from "@/features/inbox/listSearch"
 import { useConversation } from "@/features/conversation/queries"
@@ -128,6 +129,8 @@ function useItems(open: boolean): Item[] {
     })
     if (canManage) go(t`Home`, "/", keyLabel(SHORTCUTS.home))
     if (inboxList?.some((i) => i.purpose === "mail")) go(t`Mail`, "/mail", keyLabel(SHORTCUTS.mail))
+    if (pathname.startsWith("/mail"))
+      list.push({ group: t`Mail`, label: t`Write a new mail`, keys: [MAIL_KEYS.compose], run: openCompose })
     go(t`Feedback`, "/feedback", keyLabel(SHORTCUTS.feedback))
     go(t`Contacts`, "/contacts", keyLabel(SHORTCUTS.contacts))
     go(t`Docs`, "/docs", keyLabel(SHORTCUTS.docs))

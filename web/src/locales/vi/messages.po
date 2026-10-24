@@ -221,6 +221,10 @@ msgstr "Đã thêm {added} · bỏ qua {out}"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "{address} từng bị trả về hoặc bị báo cáo. Hãy xóa nó ở đây, hoặc xóa khỏi liên hệ để có thể chuyển tiếp tới đó."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} từng bị trả thư hoặc bị khiếu nại. Hãy xóa địa chỉ này, hoặc xóa nó khỏi liên hệ để viết cho địa chỉ đó."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "{address} không thể là người nhận. Đó có thể là liên hệ của cuộc trò chuyện, một địa chỉ đã được đồng gửi, địa chỉ của máy chủ này, hoặc không hợp lệ."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "Với tốc độ này, việc gửi sẽ mất khoảng {paceDays} ngà
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "Đính kèm tệp"
 
@@ -3212,6 +3218,7 @@ msgstr "Chỉ xấu"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
@@ -3223,6 +3230,10 @@ msgstr "Bcc ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Người nhận Bcc vẫn nhận được thư nhưng được ẩn khỏi mọi người khác, kể cả liên hệ."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Người nhận Bcc nhận được thư nhưng được ẩn với mọi người khác."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "Đã tìm ra nguyên nhân"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
@@ -4100,6 +4112,7 @@ msgstr "Client secret"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "Directory (tenant) ID, không bắt buộc"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "Hủy bỏ"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "Đã xóa bản nháp"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Đã lưu bản nháp"
 
@@ -7099,6 +7114,7 @@ msgstr "Tìm thấy trong các thư mục Đã gửi của bạn"
 msgid "Friday"
 msgstr "Thứ Sáu"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "Giữ nguyên chuyển tiếp, định tuyến hoặc MX: đó là cách
 msgid "Keep the name only"
 msgstr "Chỉ giữ tên"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "Giữ thư này làm bản nháp?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Hãy giữ trang này mở. Nếu kết nối bị đứt, việc tải lên sẽ tiếp tục khi có lại; sau khi tải lại trang, hãy chọn cùng tệp và chỉ các phần còn thiếu được gửi."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "Viết tiếp"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "Thư đi vào kênh email “{channelName}”, kênh nhận {address}."
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Thư chưa được ký bằng khóa của chính tên miền người gửi, điều mà Gmail và Yahoo yêu cầu."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "Đã gửi thư"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "Kích thước thư"
@@ -9608,6 +9637,7 @@ msgstr "Gộp với liên hệ khác"
 msgid "Merge…"
 msgstr "Gộp…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Tin nhắn"
@@ -10350,6 +10380,11 @@ msgstr "Danh sách mới"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Macro mới"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "Thư mới"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "Gỡ"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Gỡ {0}"
@@ -14866,6 +14902,7 @@ msgstr "Lưu thay đổi"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Lưu bản nháp"
 
@@ -15204,6 +15241,7 @@ msgstr "dấu chấm phẩy"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "Gửi"
 
@@ -16781,6 +16819,7 @@ msgstr "Không tìm thấy tên miền phụ"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (cổng 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "qua {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "Xem"
 
@@ -20441,6 +20482,11 @@ msgstr "Viết tin nhắn…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "Viết thư mới"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "Viết ghi chú cho nhóm"
 
@@ -20496,6 +20542,10 @@ msgstr "Viết các mục trong Có gì mới và bản dịch của chúng"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "Hãy ghi họ đã đồng ý ở đâu và khi nào."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "Viết thư của bạn…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

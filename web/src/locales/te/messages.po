@@ -221,6 +221,10 @@ msgstr "{added} జోడించబడ్డాయి · {out} మినహా
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "{address} ఇంతకుముందు బౌన్స్ అయింది లేదా ఫిర్యాదు చేయబడింది. దీన్ని ఇక్కడ తొలగించండి, లేదా అక్కడికి ఫార్వర్డ్ చేయడానికి కాంటాక్ట్‌లో క్లియర్ చేయండి."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} కి ముందు మెయిల్ తిరిగి వచ్చింది లేదా ఫిర్యాదు వచ్చింది. చిరునామాను తొలగించండి, లేదా రాయడానికి పరిచయం నుండి తుడిచేయండి."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "{address} గ్రహీత కాలేదు. ఇది సంభాషణ కాంటాక్ట్, ఇప్పటికే కాపీలో ఉన్న చిరునామా, ఈ సర్వర్ చిరునామా లేదా చెల్లని చిరునామా కావచ్చు."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "ఈ వేగంతో పంపడానికి సుమారు {p
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "ఫైల్‌లను జోడించండి"
 
@@ -3212,6 +3218,7 @@ msgstr "చెడ్డవి మాత్రమే"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
@@ -3223,6 +3230,10 @@ msgstr "Bcc ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Bcc గ్రహీతలకు మెయిల్ అందుతుంది, కానీ కాంటాక్ట్‌తో సహా మిగతా అందరి నుండి దాచబడతారు."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Bcc గ్రహీతలకు మెయిల్ అందుతుంది, కానీ మిగతావారికి కనిపించరు."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "కారణం దొరికింది"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
@@ -4100,6 +4112,7 @@ msgstr "క్లయింట్ సీక్రెట్"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "డైరెక్టరీ (టెనెంట్) ID, ఐచ్ఛి�
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "విస్మరించండి"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "డ్రాఫ్ట్ తొలగించబడింది"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "డ్రాఫ్ట్ సేవ్ అయింది"
 
@@ -7099,6 +7114,7 @@ msgstr "మీ Sent ఫోల్డర్‌లలో కనుగొనబడ�
 msgid "Friday"
 msgstr "శుక్రవారం"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "ఫార్వర్డింగ్, రూటింగ్ లేదా
 msgid "Keep the name only"
 msgstr "పేరును మాత్రమే ఉంచండి"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "ఈ మెయిల్‌ను డ్రాఫ్ట్‌గా ఉంచాలా?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "ఈ పేజీని తెరిచి ఉంచండి. కనెక్షన్ తెగితే, తిరిగి వచ్చాక అప్‌లోడ్ కొనసాగుతుంది; రీలోడ్ తర్వాత, అదే ఫైల్‌ను ఎంచుకుంటే లేని భాగాలు మాత్రమే పంపబడతాయి."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "రాయడం కొనసాగించు"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "మెయిల్ {address} ను అందుకునే “{channel
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "మెయిల్‌పై పంపినవారి సొంత డొమైన్ కీతో సంతకం లేదు; Gmail, Yahoo దీన్ని ఆశిస్తాయి."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "మెయిల్ పంపబడింది"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "మెయిల్ పరిమాణం"
@@ -9608,6 +9637,7 @@ msgstr "మరో కాంటాక్ట్‌తో విలీనం చే
 msgid "Merge…"
 msgstr "విలీనం చేయండి…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "సందేశం"
@@ -10350,6 +10380,11 @@ msgstr "కొత్త లిస్ట్"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "కొత్త మాక్రో"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "కొత్త మెయిల్"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "తొలగించండి"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} ను తొలగించండి"
@@ -14866,6 +14902,7 @@ msgstr "మార్పులను సేవ్ చేయండి"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "డ్రాఫ్ట్‌ను సేవ్ చేయండి"
 
@@ -15204,6 +15241,7 @@ msgstr "సెమీకోలన్‌లు"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "పంపండి"
 
@@ -16781,6 +16819,7 @@ msgstr "సబ్‌డొమైన్ కనుగొనబడలేదు"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (పోర్ట్ 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "{via} ద్వారా"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "చూడండి"
 
@@ -20441,6 +20482,11 @@ msgstr "సందేశం రాయండి…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "కొత్త మెయిల్ రాయండి"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "బృందం కోసం గమనిక రాయండి"
 
@@ -20496,6 +20542,10 @@ msgstr "\"కొత్తవి\" ఎంట్రీలను, అనువా�
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "వారు ఎక్కడ మరియు ఎప్పుడు అంగీకరించారో రాయండి."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "మీ మెయిల్ రాయండి…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

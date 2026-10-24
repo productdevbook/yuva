@@ -221,6 +221,10 @@ msgstr "Dodano {added} · izpuščeno {out}"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "Naslov {address} je bil že zavrnjen ali prijavljen. Odstranite ga tukaj ali ga počistite pri stiku, da boste lahko posredovali nanj."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} je že vrnil pošto ali se pritožil. Odstranite naslov ali ga pri stiku počistite, da mu lahko pišete."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "Naslov {address} ne more biti prejemnik. Lahko je stik pogovora, naslov, ki je že v kopiji, naslov tega strežnika ali neveljaven."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "Pri tem tempu bi pošiljanje trajalo približno {paceDays} dni. Množič
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "Pripenjaj datoteke"
 
@@ -3212,6 +3218,7 @@ msgstr "Samo slabe"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Skrita kopija"
@@ -3223,6 +3230,10 @@ msgstr "Skrita kopija ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Prejemniki v skriti kopiji sporočilo dobijo, a so skriti vsem drugim, tudi stiku."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Prejemniki v skrivnem kopiranju prejmejo sporočilo, a so drugim skriti."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "Vzrok najden"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Kopija"
@@ -4100,6 +4112,7 @@ msgstr "Skrivnost odjemalca"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "ID imenika (najemnika), neobvezno"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "Zavrži"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "Osnutek izbrisan"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Osnutek shranjen"
 
@@ -7099,6 +7114,7 @@ msgstr "Najdeno v vaših mapah Poslano"
 msgid "Friday"
 msgstr "Petek"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "Pustite preusmeritev, usmerjanje ali MX, kakršno je: tako pošta zdaj p
 msgid "Keep the name only"
 msgstr "Ohrani samo ime"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "Naj to e-pošto shranim kot osnutek?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Naj bo ta stran odprta. Če se povezava prekine, se nalaganje nadaljuje, ko se vrne; po ponovnem nalaganju izberite isto datoteko in poslani bodo samo manjkajoči deli."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "Piši naprej"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "Pošta gre v e-poštni kanal »{channelName}«, ki prejema {address}."
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Pošta ni podpisana s ključem domene pošiljatelja, kar pričakujeta Gmail in Yahoo."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "E-pošta poslana"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "Velikost sporočila"
@@ -9608,6 +9637,7 @@ msgstr "Združi z drugim stikom"
 msgid "Merge…"
 msgstr "Združi…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Sporočilo"
@@ -10350,6 +10380,11 @@ msgstr "Nov seznam"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Novo makro"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "Nova e-pošta"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "Odstrani"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Odstrani {0}"
@@ -14866,6 +14902,7 @@ msgstr "Shrani spremembe"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Shrani osnutek"
 
@@ -15204,6 +15241,7 @@ msgstr "podpičja"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "Pošlji"
 
@@ -16781,6 +16819,7 @@ msgstr "Poddomena ni najdena"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (vrata 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "prek {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "Poglej"
 
@@ -20441,6 +20482,11 @@ msgstr "Napišite sporočilo …"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "Napiši novo e-pošto"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "Napiši opombo za ekipo"
 
@@ -20496,6 +20542,10 @@ msgstr "Pisanje vnosov v Novostih in njihovih prevodov"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "Napišite, kje in kdaj so privolili."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "Napišite e-pošto…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

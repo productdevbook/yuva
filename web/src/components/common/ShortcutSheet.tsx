@@ -63,6 +63,7 @@ export const SHORTCUTS = {
 } as const
 
 export const MAIL_KEYS = {
+  compose: "c",
   reply: "r",
   replyAll: "a",
   note: "n",
@@ -339,6 +340,7 @@ export function ShortcutSheet({
     {
       title: t`Mail`,
       items: [
+        [k(MAIL_KEYS.compose), t`Write a new mail`],
         [k(MAIL_KEYS.reply), t`Reply to the sender`],
         [k(MAIL_KEYS.replyAll), t`Reply to everyone`],
         [k(MAIL_KEYS.note), t`Write a note for the team`],

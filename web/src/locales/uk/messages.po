@@ -221,6 +221,10 @@ msgstr "Додано: {added} · пропущено: {out}"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "Адреса {address} раніше повертала листи або на неї скаржилися. Видаліть її тут або очистьте в контакті, щоб пересилати на неї."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "Адреса {address} раніше повертала пошту або скаржилася. Видаліть її або очистьте в контакті, щоб писати на неї."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "Адреса {address} не може бути отримувачем. Це може бути контакт розмови, адреса, яка вже в копії, адреса цього сервера або недійсна адреса."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "За такої швидкості надсилання триватим
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "Прикріпити файли"
 
@@ -3212,6 +3218,7 @@ msgstr "Лише погані"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Прихована копія"
@@ -3223,6 +3230,10 @@ msgstr "Прихована копія ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Одержувачі у прихованій копії отримують лист, але приховані від усіх інших, зокрема від контакту."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Одержувачі прихованої копії отримують лист, але приховані від решти."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "Причину знайдено"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Копія"
@@ -4100,6 +4112,7 @@ msgstr "Секрет клієнта"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "ID каталогу (орендаря), необов'язково"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "Відкинути"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "Чернетку видалено"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Чернетку збережено"
 
@@ -7099,6 +7114,7 @@ msgstr "Знайдено у ваших теках «Надіслані»"
 msgid "Friday"
 msgstr "П'ятниця"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "Залиште переспрямування, маршрутизаці�
 msgid "Keep the name only"
 msgstr "Залишити лише ім'я"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "Зберегти цей лист як чернетку?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Не закривайте цю сторінку. Якщо з'єднання перерветься, завантаження продовжиться, коли воно повернеться; після перезавантаження виберіть той самий файл, і буде надіслано лише відсутні частини."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "Писати далі"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "Пошта потрапляє в поштовий канал «{channelN
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Листи не підписано ключем власного домену відправника, чого очікують Gmail і Yahoo."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "Лист надіслано"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "Розмір листа"
@@ -9608,6 +9637,7 @@ msgstr "Об'єднати з іншим контактом"
 msgid "Merge…"
 msgstr "Об’єднати…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Повідомлення"
@@ -10350,6 +10380,11 @@ msgstr "Новий список"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Новий макрос"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "Новий лист"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "Видалити"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Видалити {0}"
@@ -14866,6 +14902,7 @@ msgstr "Зберегти зміни"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Зберегти чернетку"
 
@@ -15204,6 +15241,7 @@ msgstr "крапки з комою"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "Надіслати"
 
@@ -16781,6 +16819,7 @@ msgstr "Піддомен не знайдено"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (порт 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "через {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "Відкрити"
 
@@ -20441,6 +20482,11 @@ msgstr "Напишіть повідомлення…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "Написати новий лист"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "Написати нотатку для команди"
 
@@ -20496,6 +20542,10 @@ msgstr "Написання записів «Що нового» та їхніх 
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "Вкажіть, де й коли вони дали згоду."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "Напишіть листа…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

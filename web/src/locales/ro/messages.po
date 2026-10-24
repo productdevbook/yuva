@@ -221,6 +221,10 @@ msgstr "{added} adăugate · {out} omise"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "Adresa {address} a returnat sau a raportat mesaje înainte. Elimin-o de aici sau șterge-o de la contact pentru a putea redirecționa către ea."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} a returnat sau a reclamat mesaje înainte. Elimină adresa sau șterge-o din contact ca să-i poți scrie."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "Adresa {address} nu poate fi destinatar. Poate fi contactul conversației, o adresă deja în copie, o adresă a acestui server sau una nevalidă."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "În acest ritm, trimiterea ar dura aproximativ {paceDays} zile. Un mesaj
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "Atașează fișiere"
 
@@ -3212,6 +3218,7 @@ msgstr "Doar proaste"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
@@ -3223,6 +3230,10 @@ msgstr "Bcc ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Destinatarii în Bcc primesc mesajul, dar rămân ascunși față de toți ceilalți, inclusiv față de contact."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Destinatarii Bcc primesc mesajul, dar rămân ascunși față de ceilalți."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "Cauza a fost găsită"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
@@ -4100,6 +4112,7 @@ msgstr "Secret de client"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "ID de director (tenant), opțional"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "Elimină"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "Ciornă ștearsă"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Ciornă salvată"
 
@@ -7099,6 +7114,7 @@ msgstr "Găsit în dosarele tale Trimise"
 msgid "Friday"
 msgstr "Vineri"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "Lasă redirecționarea, rutarea sau MX-ul așa cum sunt: așa ajunge acu
 msgid "Keep the name only"
 msgstr "Păstrează doar numele"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "Păstrezi acest mesaj ca ciornă?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Ține această pagină deschisă. Dacă conexiunea cade, încărcarea continuă când revine; după o reîncărcare, alege același fișier și sunt trimise doar părțile lipsă."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "Continuă să scrii"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "E-mailul merge în canalul de e-mail „{channelName}”, care primește
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "E-mailul nu este semnat cu o cheie a domeniului propriu al expeditorului, cum cer Gmail și Yahoo."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "Mesaj trimis"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "Dimensiunea mesajului"
@@ -9608,6 +9637,7 @@ msgstr "Îmbină cu alt contact"
 msgid "Merge…"
 msgstr "Îmbină…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Mesaj"
@@ -10350,6 +10380,11 @@ msgstr "Listă nouă"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Macro nou"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "Mesaj nou"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "Elimină"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Elimină {0}"
@@ -14866,6 +14902,7 @@ msgstr "Salvează modificările"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Salvează ciorna"
 
@@ -15204,6 +15241,7 @@ msgstr "punct și virgulă"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "Trimite"
 
@@ -16781,6 +16819,7 @@ msgstr "Subdomeniul nu a fost găsit"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (portul 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "prin {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "Vezi"
 
@@ -20441,6 +20482,11 @@ msgstr "Scrie un mesaj…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "Scrie un mesaj nou"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "Scrie o notă pentru echipă"
 
@@ -20496,6 +20542,10 @@ msgstr "Scrie intrări din Noutăți și traducerile lor"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "Scrie unde și când au fost de acord."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "Scrie mesajul tău…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

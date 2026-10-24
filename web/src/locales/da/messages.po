@@ -221,6 +221,10 @@ msgstr "{added} tilføjet · {out} udeladt"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "{address} har tidligere bounced eller klaget. Fjern den her, eller ryd den på kontakten for at videresende dertil."
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} er tidligere afvist eller anmeldt. Fjern adressen, eller ryd den på kontakten for at skrive til den."
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "{address} kan ikke være modtager. Det kan være samtalens kontakt, en adresse der allerede er i kopi, en adresse på denne server, eller ugyldig."
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "I dette tempo ville afsendelsen tage cirka {paceDays} dage. En udsendels
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "Vedhæft filer"
 
@@ -3212,6 +3218,7 @@ msgstr "Kun dårlige"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
@@ -3223,6 +3230,10 @@ msgstr "Bcc ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Bcc-modtagere får mailen, men er skjult for alle andre, også kontakten."
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Bcc-modtagere får mailen, men er skjult for alle andre."
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "Årsag fundet"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
@@ -4100,6 +4112,7 @@ msgstr "Klienthemmelighed"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "Mappe-ID (tenant), valgfrit"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "Kassér"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "Kladde slettet"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "Kladde gemt"
 
@@ -7099,6 +7114,7 @@ msgstr "Fundet i dine mapper med sendt post"
 msgid "Friday"
 msgstr "Fredag"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "Lad videresendelsen, routingen eller MX blive, som den er: sådan når m
 msgid "Keep the name only"
 msgstr "Behold kun navnet"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "Gem denne mail som kladde?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "Hold denne side åben. Hvis forbindelsen falder ud, fortsætter uploaden, når den er tilbage; efter en genindlæsning skal du vælge den samme fil, og kun de manglende dele sendes."
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "Fortsæt med at skrive"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "Mail går til e-mailkanalen “{channelName}”, som modtager {address}.
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Mailen er ikke signeret med en nøgle fra afsenderens eget domæne, hvilket Gmail og Yahoo forventer."
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "Mail sendt"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "Mailstørrelse"
@@ -9608,6 +9637,7 @@ msgstr "Flet med en anden kontakt"
 msgid "Merge…"
 msgstr "Slå sammen…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Besked"
@@ -10350,6 +10380,11 @@ msgstr "Ny liste"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "Ny makro"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "Ny mail"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "Fjern"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "Fjern {0}"
@@ -14866,6 +14902,7 @@ msgstr "Gem ændringer"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "Gem kladde"
 
@@ -15204,6 +15241,7 @@ msgstr "semikoloner"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "Send"
 
@@ -16781,6 +16819,7 @@ msgstr "Underdomænet blev ikke fundet"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (port 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "via {via}"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "Vis"
 
@@ -20441,6 +20482,11 @@ msgstr "Skriv en besked…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "Skriv en ny mail"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "Skriv en note til teamet"
 
@@ -20496,6 +20542,10 @@ msgstr "Skriv opslag i Nyheder og deres oversættelser"
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "Skriv hvor og hvornår de sagde ja."
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "Skriv din mail…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts

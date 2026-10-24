@@ -70,6 +70,7 @@ import {
   useConversation,
   useMarkRead,
   useMessages,
+  useParticipants,
   useRedactMessage,
   useMoveConversation,
   useTrashConversation,
@@ -298,9 +299,11 @@ function Loaded({
         }),
     })
   }
+  const participants = useParticipants(c.id, c.channel_kind === "email")
   const ctx: ThreadContext = {
     members,
     contact,
+    participants: participants.data?.items,
     labels,
     inboxes,
     subject: c.subject,

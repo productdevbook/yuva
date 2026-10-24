@@ -1,10 +1,11 @@
 import { useLingui } from "@lingui/react/macro"
 
-import type { Contact, Inbox, Label, Member, Message, MessageAuthor } from "@/lib/api"
+import type { Contact, ConversationParticipant, Inbox, Label, Member, Message, MessageAuthor } from "@/lib/api"
 
 export type ThreadContext = {
   members: Map<string, Member>
   contact?: Contact
+  participants?: ConversationParticipant[]
   labels: Label[]
   inboxes: Inbox[]
   subject: string
@@ -20,8 +21,15 @@ export type ThreadContext = {
   canRemove?: (m: Message) => boolean
 }
 
-function nameOf(a: MessageAuthor, ctx: ThreadContext, t: ReturnType<typeof useLingui>["t"]) {
-  if (a.type === "contact") return ctx.contact?.name || ctx.contact?.emails[0] || t`Contact`
+function nameOf(a: MessageAuthor, ctx: ThreadContext, t: ReturnType<typeof useLingui>["t"], from?: string) {
+  if (a.type === "contact") {
+    const address = from?.toLowerCase()
+    if (address && ctx.contact && !ctx.contact.emails.some((e) => e.toLowerCase() === address)) {
+      const person = ctx.participants?.find((p) => p.email.toLowerCase() === address)
+      return person?.name || address
+    }
+    return ctx.contact?.name || ctx.contact?.emails[0] || t`Contact`
+  }
   if (a.type === "system") return t`System`
   if (a.type === "bot") return a.name || t`Bot`
   const member = a.member_id ? ctx.members.get(a.member_id) : undefined
@@ -35,7 +43,7 @@ export function useAuthorName(m: Message, ctx: ThreadContext) {
     const rule = m.rule.name
     return t`Rule ${rule}`
   }
-  const name = nameOf(m.author, ctx, t)
+  const name = nameOf(m.author, ctx, t, m.email?.from)
   const via = m.author.via
   return via ? t`${name} via ${via}` : name
 }

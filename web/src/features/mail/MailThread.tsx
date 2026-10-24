@@ -48,7 +48,13 @@ import { MailBody, MailControls, useMail } from "@/features/conversation/message
 import { EventLine } from "@/features/conversation/messages/EventLine"
 import { RedactedLine } from "@/features/conversation/messages/Redacted"
 import { TrashBanner } from "@/features/conversation/Trash"
-import { useConversation, useMarkRead, useMessages, useTrashConversation } from "@/features/conversation/queries"
+import {
+  useConversation,
+  useMarkRead,
+  useMessages,
+  useParticipants,
+  useTrashConversation,
+} from "@/features/conversation/queries"
 import { look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
 import { useStar } from "@/features/mail/queries"
@@ -353,9 +359,11 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
   const emailTo = channel?.kind === "email" ? (lastContactMail?.email?.from ?? contact?.emails[0]) : undefined
   const undeliverable = !!emailTo && !!contact?.undeliverable.some((u) => u.email === emailTo)
 
+  const participants = useParticipants(c.id, c.channel_kind === "email")
   const ctx: ThreadContext = {
     members,
     contact,
+    participants: participants.data?.items,
     labels,
     inboxes,
     subject: c.subject,

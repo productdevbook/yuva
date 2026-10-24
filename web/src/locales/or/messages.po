@@ -221,6 +221,10 @@ msgstr "{added} ଯୋଡ଼ାଗଲା · {out} ବାଦ୍"
 msgid "{address} bounced or complained before. Remove it here, or clear it on the contact to forward there."
 msgstr "{address} ପୂର୍ବରୁ ବାଉନ୍ସ ହୋଇଛି କିମ୍ବା ଅଭିଯୋଗ ହୋଇଛି। ଏଠାରୁ ହଟାନ୍ତୁ, କିମ୍ବା ସେଠାକୁ ଫରୱାର୍ଡ କରିବାକୁ ସମ୍ପର୍କରୁ ସଫା କରନ୍ତୁ।"
 
+#: src/features/mail/Compose.tsx
+msgid "{address} bounced or complained before. Remove it, or clear it on its contact to write to it."
+msgstr "{address} କୁ ପୂର୍ବରୁ ମେଲ୍ ଫେରିଛି କିମ୍ବା ଅଭିଯୋଗ ହୋଇଛି। ଠିକଣା ହଟାନ୍ତୁ, ବା ଲେଖିବା ପାଇଁ ସମ୍ପର୍କରୁ ସଫା କରନ୍ତୁ।"
+
 #: src/features/conversation/ForwardDialog.tsx
 msgid "{address} cannot be a recipient. It may be the conversation's contact, an address already copied on it, an address of this server, or not valid."
 msgstr "{address} ପ୍ରାପକ ହୋଇପାରିବ ନାହିଁ। ଏହା କଥୋପକଥନର ସମ୍ପର୍କ, ପୂର୍ବରୁ କପିରେ ଥିବା ଠିକଣା, ଏହି ସର୍ଭରର ଠିକଣା କିମ୍ବା ଅବୈଧ ହୋଇପାରେ।"
@@ -1878,6 +1882,7 @@ msgid "Add image"
 msgstr "Add image"
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Add it back"
 msgstr "Add it back"
 
@@ -3046,6 +3051,7 @@ msgstr "ଏହି ଗତିରେ ପଠାଇବାକୁ ପ୍ରାୟ {pace
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Attach files"
 msgstr "ଫାଇଲ୍ ଯୋଡ଼ନ୍ତୁ"
 
@@ -3212,6 +3218,7 @@ msgstr "କେବଳ ଖରାପ"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
@@ -3223,6 +3230,10 @@ msgstr "Bcc ({bccCount})"
 #: src/features/conversation/composer/Recipients.tsx
 msgid "Bcc recipients get the mail but are hidden from everyone else, including the contact."
 msgstr "Bcc ପ୍ରାପକମାନେ ମେଲ୍ ପାଆନ୍ତି, କିନ୍ତୁ ଯୋଗାଯୋଗ ସମେତ ଅନ୍ୟ ସମସ୍ତଙ୍କଠାରୁ ଲୁଚି ରୁହନ୍ତି।"
+
+#: src/features/mail/Compose.tsx
+msgid "Bcc recipients get the mail but are hidden from everyone else."
+msgstr "Bcc ପ୍ରାପକମାନେ ମେଲ୍ ପାଆନ୍ତି, କିନ୍ତୁ ଅନ୍ୟମାନଙ୍କଠାରୁ ଲୁଚି ରହନ୍ତି।"
 
 #: src/features/status/text.tsx
 msgid "Beat"
@@ -3652,6 +3663,7 @@ msgstr "କାରଣ ମିଳିଲା"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
@@ -4100,6 +4112,7 @@ msgstr "କ୍ଲାଏଣ୍ଟ ସିକ୍ରେଟ୍"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Close"
@@ -5577,6 +5590,7 @@ msgstr "ଡିରେକ୍ଟୋରୀ (ଟେନାଣ୍ଟ) ID, ଐଚ୍ଛ�
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Discard"
 msgstr "ବାତିଲ"
 
@@ -5878,6 +5892,7 @@ msgid "Draft deleted"
 msgstr "ଡ୍ରାଫ୍ଟ ବିଲୋପ ହେଲା"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/Compose.tsx
 msgid "Draft saved"
 msgstr "ଡ୍ରାଫ୍ଟ ସେଭ୍ ହେଲା"
 
@@ -7099,6 +7114,7 @@ msgstr "ଆପଣଙ୍କ Sent ଫୋଲ୍ଡରରେ ମିଳିଲା"
 msgid "Friday"
 msgstr "ଶୁକ୍ରବାର"
 
+#: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8437,9 +8453,17 @@ msgstr "ଫରୱାର୍ଡିଂ, ରାଉଟିଂ କିମ୍ବା MX �
 msgid "Keep the name only"
 msgstr "କେବଳ ନାମ ରଖନ୍ତୁ"
 
+#: src/features/mail/Compose.tsx
+msgid "Keep this mail as a draft?"
+msgstr "ଏହି ମେଲ୍ ଡ୍ରାଫ୍ଟ ଭାବରେ ରଖିବେ?"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "Keep this page open. If the connection drops, the upload goes on when it is back; after a reload, pick the same file and only the missing parts are sent."
 msgstr "ଏହି ପୃଷ୍ଠା ଖୋଲା ରଖନ୍ତୁ। ସଂଯୋଗ ଛିଣ୍ଡିଲେ, ଫେରିଲେ ଅପଲୋଡ୍ ଜାରି ରହେ; ରିଲୋଡ୍ ପରେ, ସେହି ଫାଇଲ୍ ବାଛନ୍ତୁ ଏବଂ କେବଳ ଅଭାବ ଅଂଶ ପଠାଯାଏ।"
+
+#: src/features/mail/Compose.tsx
+msgid "Keep writing"
+msgstr "ଲେଖିବା ଜାରି ରଖନ୍ତୁ"
 
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
@@ -8739,6 +8763,7 @@ msgid "Leave empty when the NameID is the e-mail address."
 msgstr "Leave empty when the NameID is the e-mail address."
 
 #: src/features/conversation/composer/ReplyBox.tsx
+#: src/features/mail/Compose.tsx
 msgid "Leave it out"
 msgstr "Leave it out"
 
@@ -9229,6 +9254,10 @@ msgstr "ମେଲ୍ ଇମେଲ୍ ଚ୍ୟାନେଲ “{channelName}” �
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "ମେଲ୍ ପ୍ରେରକଙ୍କ ନିଜ ଡୋମେନର କୀ ଦ୍ୱାରା ସାଇନ୍ ହୋଇନାହିଁ, ଯାହା Gmail ଏବଂ Yahoo ଆଶା କରନ୍ତି।"
 
+#: src/features/mail/Compose.tsx
+msgid "Mail sent"
+msgstr "ମେଲ୍ ପଠାଗଲା"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Mail size"
 msgstr "ମେଲ୍ ଆକାର"
@@ -9608,6 +9637,7 @@ msgstr "ଅନ୍ୟ ଯୋଗାଯୋଗ ସହ ମର୍ଜ୍ କରନ୍�
 msgid "Merge…"
 msgstr "ମର୍ଜ୍ କରନ୍ତୁ…"
 
+#: src/features/mail/Compose.tsx
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "ସଂଦେଶ"
@@ -10350,6 +10380,11 @@ msgstr "ନୂଆ ତାଲିକା"
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "New macro"
 msgstr "ନୂଆ ମ୍ୟାକ୍ରୋ"
+
+#: src/features/mail/Compose.tsx
+#: src/features/mail/MailPage.tsx
+msgid "New mail"
+msgstr "ନୂଆ ମେଲ୍"
 
 #: src/features/setup/previews.tsx
 #: src/lib/alerts.ts
@@ -13902,6 +13937,7 @@ msgstr "ହଟାନ୍ତୁ"
 #: src/features/conversation/composer/MacroChips.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/Participants.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Remove {0}"
 msgstr "{0} ହଟାନ୍ତୁ"
@@ -14866,6 +14902,7 @@ msgstr "ପରିବର୍ତ୍ତନ ସେଭ୍ କରନ୍ତୁ"
 
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Save draft"
 msgstr "ଡ୍ରାଫ୍ଟ ସେଭ୍ କରନ୍ତୁ"
 
@@ -15204,6 +15241,7 @@ msgstr "ସେମିକୋଲନ୍"
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 msgid "Send"
 msgstr "ପଠାନ୍ତୁ"
 
@@ -16781,6 +16819,7 @@ msgstr "ସବଡୋମେନ୍ ମିଳିଲା ନାହିଁ"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/ContactDetails.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Subject"
@@ -18807,6 +18846,7 @@ msgstr "TLS (ପୋର୍ଟ 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/Compose.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -19682,6 +19722,7 @@ msgid "via {via}"
 msgstr "{via} ମାଧ୍ୟମରେ"
 
 #: src/features/home/HomePage.tsx
+#: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "ଦେଖନ୍ତୁ"
 
@@ -20441,6 +20482,11 @@ msgstr "ଏକ ସଂଦେଶ ଲେଖନ୍ତୁ…"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
+msgid "Write a new mail"
+msgstr "ନୂଆ ମେଲ୍ ଲେଖନ୍ତୁ"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
 msgid "Write a note for the team"
 msgstr "ଦଳ ପାଇଁ ଏକ ନୋଟ୍ ଲେଖନ୍ତୁ"
 
@@ -20496,6 +20542,10 @@ msgstr "\"ନୂଆ କଣ\" ଏଣ୍ଟ୍ରି ଓ ଅନୁବାଦ ଲେ
 #: src/features/broadcasts/Import.tsx
 msgid "Write where and when they agreed."
 msgstr "ସେମାନେ କେଉଁଠି ଓ କେବେ ରାଜି ହେଲେ ଲେଖନ୍ତୁ।"
+
+#: src/features/mail/Compose.tsx
+msgid "Write your mail…"
+msgstr "ଆପଣଙ୍କ ମେଲ୍ ଲେଖନ୍ତୁ…"
 
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
