@@ -13711,6 +13711,11 @@ type ConversationListItem struct {
 	// when none is set.
 	Fields CustomFieldValues `json:"fields"`
 
+	// HasAttachments A sent message, forward or note has an attachment that is not an inline part of an
+	// e-mail. Notes count for members only, not for API keys; drafts never count. Turns
+	// `false` when redaction removes the last one.
+	HasAttachments bool `json:"has_attachments"`
+
 	// HelpArticleId The help article the contact read just before starting the conversation from it; absent otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
 	Id            uuid.UUID  `json:"id"`
@@ -22438,6 +22443,11 @@ type StatusIncidentConversation struct {
 	// Fields Values of the workspace's conversation custom fields by key (see `CustomFieldType`); `{}`
 	// when none is set.
 	Fields CustomFieldValues `json:"fields"`
+
+	// HasAttachments A sent message, forward or note has an attachment that is not an inline part of an
+	// e-mail. Notes count for members only, not for API keys; drafts never count. Turns
+	// `false` when redaction removes the last one.
+	HasAttachments bool `json:"has_attachments"`
 
 	// HelpArticleId The help article the contact read just before starting the conversation from it; absent otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`

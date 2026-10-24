@@ -24548,10 +24548,16 @@ components:
       allOf:
         - $ref: "#/components/schemas/Conversation"
         - type: object
-          required: [contact, unread]
+          required: [contact, unread, has_attachments]
           properties:
             contact:
               $ref: "#/components/schemas/ConversationContact"
+            has_attachments:
+              type: boolean
+              description: |
+                A sent message, forward or note has an attachment that is not an inline part of an
+                e-mail. Notes count for members only, not for API keys; drafts never count. Turns
+                `false` when redaction removes the last one.
             last_message:
               $ref: "#/components/schemas/MessagePreview"
             unread:

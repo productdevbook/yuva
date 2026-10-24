@@ -278,3 +278,12 @@ SELECT id FROM conversations WHERE workspace_id = @workspace_id AND inbox_id = @
 
 -- name: LockConversationIDs :many
 SELECT id FROM conversations WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) ORDER BY id FOR UPDATE;
+
+-- name: ListConversationsWithAttachments :many
+SELECT c.id FROM conversations c
+WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[])
+  AND EXISTS (
+      SELECT 1 FROM attachments a
+      JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
+      WHERE a.workspace_id = c.workspace_id AND a.conversation_id = c.id AND NOT a.inline
+        AND NOT m.draft AND m.redacted_at IS NULL AND (@include_notes::bool OR m.kind <> 'note'));

@@ -165,6 +165,14 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 			unread[id] = true
 		}
 	}
+	attRows, err := s.st.ListConversationsWithAttachments(ctx, store.ListConversationsWithAttachmentsParams{WorkspaceID: p.workspaceID, ConversationIds: ids, IncludeNotes: !p.isKey()})
+	if err != nil {
+		return nil, err
+	}
+	withAtts := make(map[uuid.UUID]bool, len(attRows))
+	for _, id := range attRows {
+		withAtts[id] = true
+	}
 	bodies := make([]oas.Conversation, len(rows))
 	refs := make([]*oas.Conversation, len(rows))
 	for i, r := range rows {
@@ -198,7 +206,7 @@ func (s *Server) listItems(ctx context.Context, p principal, rows []store.Conver
 			Status: c.Status, SnoozeUntil: c.SnoozeUntil, Priority: c.Priority, Spam: c.Spam, AssigneeId: c.AssigneeId, TeamId: c.TeamId, AssignWaitingSince: c.AssignWaitingSince, Labels: c.Labels,
 			LastMessageAt: c.LastMessageAt, LastActivityAt: c.LastActivityAt, CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt, Starred: starredFor(p, starred[r.ID]),
 			RelatedConversationId: c.RelatedConversationId, ClosedAt: c.ClosedAt, Rating: c.Rating, LastReadByContactAt: c.LastReadByContactAt, BroadcastId: c.BroadcastId,
-			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Issues: c.Issues, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], PinnedAt: pinned[r.ID],
+			Imported: c.Imported, HelpArticleId: c.HelpArticleId, Idea: c.Idea, Issues: c.Issues, Contact: contacts[r.ContactID], LastMessage: previews[r.ID], Unread: unread[r.ID], HasAttachments: withAtts[r.ID], PinnedAt: pinned[r.ID],
 			TrashedAt: c.TrashedAt, TrashedBy: c.TrashedBy, DeletesAt: c.DeletesAt, Fields: c.Fields, Sla: c.Sla,
 		}
 	}

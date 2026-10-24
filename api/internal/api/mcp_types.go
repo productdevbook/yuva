@@ -28,6 +28,7 @@ type mcpConversation struct {
 	Labels             []uuid.UUID            `json:"labels" jsonschema:"label ids; names come from list_labels"`
 	Spam               bool                   `json:"spam"`
 	Unread             *bool                  `json:"unread,omitempty" jsonschema:"whether the calling member has unread messages here"`
+	HasAttachments     *bool                  `json:"has_attachments,omitempty" jsonschema:"whether a message, forward or note here has an attachment; list results only"`
 	SnoozeUntil        *time.Time             `json:"snooze_until,omitempty"`
 	FeedbackCategory   string                 `json:"feedback_category,omitempty" jsonschema:"a key of the inbox feedback categories (bug, idea, praise and other by default), for feedback"`
 	FeedbackScore      int32                  `json:"feedback_score,omitempty" jsonschema:"1 (worst) to 5 (best) when the contact scored the feedback"`
@@ -90,6 +91,7 @@ func conversationItemOut(c oas.ConversationListItem) mcpConversation {
 	})
 	unread := c.Unread
 	out.Unread = &unread
+	out.HasAttachments = &c.HasAttachments
 	out.CustomerContent.ContactName = c.Contact.Name
 	if c.Contact.Email != nil {
 		out.CustomerContent.ContactEmail = string(*c.Contact.Email)

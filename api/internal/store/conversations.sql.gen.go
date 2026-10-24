@@ -885,6 +885,42 @@ func (q *Queries) ListConversationsStorageKeys(ctx context.Context, arg ListConv
 	return items, nil
 }
 
+const listConversationsWithAttachments = `-- name: ListConversationsWithAttachments :many
+SELECT c.id FROM conversations c
+WHERE c.workspace_id = $1 AND c.id = ANY($2::uuid[])
+  AND EXISTS (
+      SELECT 1 FROM attachments a
+      JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
+      WHERE a.workspace_id = c.workspace_id AND a.conversation_id = c.id AND NOT a.inline
+        AND NOT m.draft AND m.redacted_at IS NULL AND ($3::bool OR m.kind <> 'note'))
+`
+
+type ListConversationsWithAttachmentsParams struct {
+	WorkspaceID     uuid.UUID
+	ConversationIds []uuid.UUID
+	IncludeNotes    bool
+}
+
+func (q *Queries) ListConversationsWithAttachments(ctx context.Context, arg ListConversationsWithAttachmentsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listConversationsWithAttachments, arg.WorkspaceID, arg.ConversationIds, arg.IncludeNotes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listExpiredConversationIDs = `-- name: ListExpiredConversationIDs :many
 SELECT id FROM conversations
 WHERE workspace_id = $1 AND status = 'closed' AND trashed_at IS NULL
