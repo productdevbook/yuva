@@ -397,7 +397,8 @@ func (s *Server) statusSnapshot(ctx context.Context, q *store.Queries, pg store.
 		}
 	}
 	if pg.ShowResponseTimes && len(ids) > 0 {
-		rows, err := q.StatusResponseComponents(ctx, store.StatusResponseComponentsParams{WorkspaceID: ws, PageID: pg.ID, ComponentIds: ids})
+		from := now.Truncate(statusResponseStep).Add(statusResponseStep - statusResponseSteps*statusResponseStep)
+		rows, err := q.StatusResponseComponents(ctx, store.StatusResponseComponentsParams{WorkspaceID: ws, PageID: pg.ID, ComponentIds: ids, Since: from})
 		if err != nil {
 			return nil, err
 		}
@@ -410,7 +411,6 @@ func (s *Server) statusSnapshot(ctx context.Context, q *store.Queries, pg store.
 				snap.monitored = append(snap.monitored, id)
 			}
 		}
-		from := now.Truncate(statusResponseStep).Add(statusResponseStep - statusResponseSteps*statusResponseStep)
 		if snap.response, err = responseSeriesFor(ctx, q, pg, snap.monitored, from, statusResponseStep, statusResponseSteps); err != nil {
 			return nil, err
 		}

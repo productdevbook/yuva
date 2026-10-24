@@ -26,7 +26,7 @@ yöneticiler oluşturur ve değiştirir; gelen kutusuna erişimi olan temsilcile
 | Saat dilimi (`timezone`) | Gün çubuklarının dilimi. Ziyaretçiler saatleri kendi dilimlerinde görür. |
 | Geçmiş günü (`history_days`) | 7 ile 90, varsayılan 90. |
 | Çalışma süresini göster (`show_uptime`) | Her bileşenin yanında bir yüzde. Varsayılan olarak açık. |
-| Yanıt sürelerini göster (`show_response_times`) | `http` veya `tcp` izleyicisi olan bileşenlerin son 24 saatteki yanıt süreleri, medyan ve p95 ile. Varsayılan olarak kapalı. |
+| Yanıt sürelerini göster (`show_response_times`) | `http` veya `tcp` izleyicisi olan ya da push monitörü bu sürede `duration_ms` göndermiş bileşenlerin son 24 saatteki yanıt süreleri, medyan ve p95 ile. Varsayılan olarak kapalı. |
 | Adı logonun yanında göster (`show_name`) | Varsayılan olarak açık. Logo adı zaten içeriyorsa kapatın: başlıkta yalnızca logo görünür ve ad, logonun alternatif metni olur. Logo yoksa ad her zaman görünür. |
 | Akışı, rozeti ve yerleştirmeyi göster (`show_follow`) | Varsayılan olarak açık. Kapalıyken Takip et ve yerleştir bölümü, başlıktaki bağlantısı, sayfa altındaki `feed.atom` ve `badge.svg` bağlantıları ve olay sayfalarındaki akış bağlantısı gösterilmez. Akış, rozet ve JSON adresleri yanıt vermeye devam eder. |
 | Yayında (`published`) | Varsayılan olarak kapalı. Yayınlanmamış bir sayfa ekibiniz dışında herkese `404` verir; ekibiniz onu panelde önizler. |
@@ -170,7 +170,8 @@ curl -fsS -m 10 -o /dev/null "https://support.example.com/ingress/heartbeat/TOKE
 
 Düzelmek için `operational`, başarısız olmak için `degraded`, `partial_outage` ya da `major_outage`
 gönderin. Gönderdiğiniz durum, bileşenin alacağı durumdur; `message` (en fazla 1.000 karakter) kontrolle
-birlikte saklanır.
+birlikte saklanır. Kendi yoklayıcınız yanıt süresini ölçüyorsa `duration_ms` olarak gönderin (tam sayı,
+0 ile 120000 arası): sayfanın yanıt süreleri başarılı kontrollerde onu sayar.
 
 ```sh
 curl -fsS -X POST -H "Content-Type: application/json" \
@@ -178,7 +179,7 @@ curl -fsS -X POST -H "Content-Type: application/json" \
   https://support.example.com/ingress/status/TOKEN
 
 curl -fsS -X POST -H "Content-Type: application/json" \
-  -d '{"state":"operational"}' https://support.example.com/ingress/status/TOKEN
+  -d '{"state":"operational","duration_ms":182}' https://support.example.com/ingress/status/TOKEN
 ```
 
 Alertmanager ve Grafana uyarıları olduğu gibi kabul edilir: firing monitörü başarısız yapar, resolved

@@ -266,3 +266,35 @@ func TestStatusPageDarkLogo(t *testing.T) {
 		t.Fatalf("a page without a dark logo still wraps the logo: %s", page)
 	}
 }
+
+func TestStatusPushResponseTimes(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	st := newStatusTeam(t, h)
+	_, measured := st.monitor(t, map[string]any{"kind": "push", "name": "Prober", "component_id": st.api})
+	_, bare := st.monitor(t, map[string]any{"kind": "push", "name": "Alerts", "component_id": st.web})
+	st.owner.expect(http.StatusOK, "PATCH", st.path(""), map[string]any{"published": true, "show_response_times": true})
+
+	for _, d := range []int{100, 200, 300} {
+		ingress(t, h, http.StatusOK, "POST", "/ingress/status/"+measured, map[string]any{"state": "operational", "duration_ms": d})
+	}
+	ingress(t, h, http.StatusOK, "POST", "/ingress/status/"+measured, map[string]any{"state": "major_outage", "duration_ms": 90000})
+	ingress(t, h, http.StatusOK, "POST", "/ingress/status/"+measured, map[string]any{"state": "operational"})
+	ingress(t, h, http.StatusOK, "POST", "/ingress/status/"+bare, map[string]any{"state": "operational"})
+	for _, bad := range []any{12.5, -1, 120001, "100", true} {
+		ingress(t, h, http.StatusBadRequest, "POST", "/ingress/status/"+measured, map[string]any{"state": "operational", "duration_ms": bad})
+	}
+
+	js := publicStatus(t, h, "/client/v1/status/"+st.slug)
+	rt, ok := publicComponent(t, js, st.api)["response_times"].(map[string]any)
+	if !ok || rt["median_ms"] != 200.0 || rt["p95_ms"] != 290.0 {
+		t.Fatalf("response times of the measured push monitor: %s", js.raw)
+	}
+	if _, ok := publicComponent(t, js, st.web)["response_times"]; ok {
+		t.Fatalf("response times for a push monitor that never sent a duration: %s", js.raw)
+	}
+	page := string(publicStatus(t, h, "/status/"+st.slug).raw)
+	if !strings.Contains(page, "200 ms") || strings.Contains(page, `<label for="rt2">Website</label>`) {
+		t.Fatalf("the page's response times: %s", page)
+	}
+}

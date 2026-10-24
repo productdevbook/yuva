@@ -83,8 +83,8 @@ WHERE m.workspace_id = @workspace_id AND m.component_id = ANY(@component_ids::uu
 ORDER BY m.changed_at, m.id;
 
 -- name: CreateStatusCheck :exec
-INSERT INTO status_checks (id, workspace_id, monitor_id, at, ok, source, state, message, error)
-VALUES (@id, @workspace_id, @monitor_id, @at, @ok, @source, sqlc.narg(state), sqlc.narg(message), sqlc.narg(error));
+INSERT INTO status_checks (id, workspace_id, monitor_id, at, ok, source, state, message, error, duration_ms)
+VALUES (@id, @workspace_id, @monitor_id, @at, @ok, @source, sqlc.narg(state), sqlc.narg(message), sqlc.narg(error), sqlc.narg(duration_ms));
 
 -- name: ListStatusChecks :many
 SELECT * FROM status_checks
@@ -171,18 +171,22 @@ FROM status_checks
 WHERE workspace_id = @workspace_id AND monitor_id = @monitor_id AND NOT pending AND at >= @since::timestamptz AND at < @until::timestamptz;
 
 -- name: StatusResponseComponents :many
--- interval_seconds is the longest interval of the component's http and tcp monitors.
-SELECT component_id, max(coalesce(interval_seconds, 60))::int AS interval_seconds FROM status_monitors
-WHERE workspace_id = @workspace_id AND page_id = @page_id AND kind IN ('http', 'tcp') AND component_id = ANY(@component_ids::uuid[])
-GROUP BY component_id;
+-- interval_seconds is the longest interval of the component's http and tcp monitors and of its push
+-- monitors with a measured success since @since; a push monitor without one does not count.
+SELECT m.component_id, max(coalesce(m.interval_seconds, 60))::int AS interval_seconds FROM status_monitors m
+WHERE m.workspace_id = @workspace_id AND m.page_id = @page_id AND m.component_id = ANY(@component_ids::uuid[])
+  AND (m.kind IN ('http', 'tcp') OR (m.kind = 'push' AND EXISTS (
+    SELECT 1 FROM status_checks c WHERE c.workspace_id = m.workspace_id AND c.monitor_id = m.id
+      AND NOT c.pending AND c.ok AND c.duration_ms IS NOT NULL AND c.at >= @since::timestamptz)))
+GROUP BY m.component_id;
 
 -- name: StatusResponseBuckets :many
--- Step n covers since + n * step_seconds; only measured successes of http and tcp monitors count.
+-- Step n covers since + n * step_seconds; only measured successes of http, tcp and push monitors count.
 SELECT m.component_id, floor(date_part('epoch', c.at - @since::timestamptz) / sqlc.arg(step_seconds)::int)::int AS step,
     (percentile_cont(0.5) WITHIN GROUP (ORDER BY c.duration_ms))::int AS p50
 FROM status_checks c
 JOIN status_monitors m ON m.workspace_id = c.workspace_id AND m.id = c.monitor_id
-WHERE c.workspace_id = @workspace_id AND m.page_id = @page_id AND m.kind IN ('http', 'tcp') AND m.component_id = ANY(@component_ids::uuid[])
+WHERE c.workspace_id = @workspace_id AND m.page_id = @page_id AND m.kind IN ('http', 'tcp', 'push') AND m.component_id = ANY(@component_ids::uuid[])
   AND NOT c.pending AND c.ok AND c.duration_ms IS NOT NULL AND c.at >= @since::timestamptz AND c.at < @until::timestamptz
 GROUP BY 1, 2;
 
@@ -191,6 +195,6 @@ SELECT m.component_id, (percentile_cont(0.5) WITHIN GROUP (ORDER BY c.duration_m
     (percentile_cont(0.95) WITHIN GROUP (ORDER BY c.duration_ms))::int AS p95
 FROM status_checks c
 JOIN status_monitors m ON m.workspace_id = c.workspace_id AND m.id = c.monitor_id
-WHERE c.workspace_id = @workspace_id AND m.page_id = @page_id AND m.kind IN ('http', 'tcp') AND m.component_id = ANY(@component_ids::uuid[])
+WHERE c.workspace_id = @workspace_id AND m.page_id = @page_id AND m.kind IN ('http', 'tcp', 'push') AND m.component_id = ANY(@component_ids::uuid[])
   AND NOT c.pending AND c.ok AND c.duration_ms IS NOT NULL AND c.at >= @since::timestamptz AND c.at < @until::timestamptz
 GROUP BY 1;

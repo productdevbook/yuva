@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"testing"
@@ -40,9 +41,25 @@ func TestParseStatusPushOwnJSON(t *testing.T) {
 	if r, take, err = parseStatusPush([]byte(`{"state":"operational"}`)); err != nil || !take || !r.ok {
 		t.Fatalf("operational: %+v %v %v", r, take, err)
 	}
-	for _, bad := range []string{`{"state":"maintenance"}`, `{"state":"broken"}`, `{"status":"firing"}`, `[]`, `not json`, `{}`} {
+	if r, _, err = parseStatusPush([]byte(`{"state":"degraded","duration_ms":120000}`)); err != nil || r.durationMs == nil || *r.durationMs != 120000 {
+		t.Fatalf("duration: %+v %v", r, err)
+	}
+	if r, _, err = parseStatusPush(fixtureWith(t, "alertmanager_firing.json", `"duration_ms":"x",`)); err != nil || r.durationMs != nil || r.source != "alertmanager" {
+		t.Fatalf("an Alertmanager body with duration_ms: %+v %v", r, err)
+	}
+	for _, bad := range []string{`{"state":"operational","duration_ms":-1}`, `{"state":"operational","duration_ms":120001}`,
+		`{"state":"operational","duration_ms":1.5}`, `{"state":"operational","duration_ms":"5"}`, `{"state":"maintenance"}`, `{"state":"broken"}`, `{"status":"firing"}`, `[]`, `not json`, `{}`} {
 		if _, _, err := parseStatusPush([]byte(bad)); err != errPushUnreadable {
 			t.Errorf("%s: %v", bad, err)
 		}
 	}
+}
+
+func fixtureWith(t *testing.T, name, field string) []byte {
+	t.Helper()
+	body, err := os.ReadFile(filepath.Join("testdata", "status", name))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return append([]byte("{"+field), bytes.TrimPrefix(bytes.TrimSpace(body), []byte("{"))...)
 }

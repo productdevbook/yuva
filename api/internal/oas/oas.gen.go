@@ -20502,9 +20502,10 @@ type PublicStatusComponent struct {
 	Id          uuid.UUID          `json:"id"`
 	Name        string             `json:"name"`
 
-	// ResponseTimes The last 24 hours of the component's `http` and `tcp` checks that succeeded, aggregated; only
-	// when the page shows response times and the component has such a monitor. Addresses, errors
-	// and status codes of checks are never public.
+	// ResponseTimes The last 24 hours of the component's `http` and `tcp` checks and `push` checks with a
+	// `duration_ms` that succeeded, aggregated; only when the page shows response times and the
+	// component has an `http` or `tcp` monitor or such a `push` check in that time. Addresses,
+	// errors and status codes of checks are never public.
 	ResponseTimes *PublicStatusResponseTimes `json:"response_times,omitempty"`
 
 	// State Worst to best: `major_outage`, `partial_outage`, `degraded`, `maintenance`, `operational`.
@@ -20587,9 +20588,10 @@ type PublicStatusPage struct {
 	Url       string    `json:"url"`
 }
 
-// PublicStatusResponseTimes The last 24 hours of the component's `http` and `tcp` checks that succeeded, aggregated; only
-// when the page shows response times and the component has such a monitor. Addresses, errors
-// and status codes of checks are never public.
+// PublicStatusResponseTimes The last 24 hours of the component's `http` and `tcp` checks and `push` checks with a
+// `duration_ms` that succeeded, aggregated; only when the page shows response times and the
+// component has an `http` or `tcp` monitor or such a `push` check in that time. Addresses,
+// errors and status codes of checks are never public.
 type PublicStatusResponseTimes struct {
 	// From The start of the first step.
 	From time.Time `json:"from"`
@@ -22909,7 +22911,8 @@ type StatusPage struct {
 	ShowName bool `json:"show_name"`
 
 	// ShowResponseTimes Whether the public page and its JSON show the last 24 hours of response times of components
-	// with an `http` or `tcp` monitor, aggregated (median per step, median and p95).
+	// with an `http` or `tcp` monitor, or a `push` monitor that sent a `duration_ms` with a success in
+	// that time, aggregated (median per step, median and p95).
 	ShowResponseTimes bool    `json:"show_response_times"`
 	ShowUptime        bool    `json:"show_uptime"`
 	SiteUrl           *string `json:"site_url,omitempty"`
@@ -23063,8 +23066,10 @@ type StatusPageUpdate struct {
 
 // StatusPushBody defines model for StatusPushBody.
 type StatusPushBody struct {
-	Message *string             `json:"message,omitempty"`
-	State   StatusPushBodyState `json:"state"`
+	// DurationMs A response time the host measured, in milliseconds.
+	DurationMs *int32              `json:"duration_ms,omitempty"`
+	Message    *string             `json:"message,omitempty"`
+	State      StatusPushBodyState `json:"state"`
 }
 
 // StatusPushBodyState defines model for StatusPushBody.State.

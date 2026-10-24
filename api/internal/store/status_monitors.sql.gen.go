@@ -125,8 +125,8 @@ func (q *Queries) CreatePendingStatusCheck(ctx context.Context, arg CreatePendin
 }
 
 const createStatusCheck = `-- name: CreateStatusCheck :exec
-INSERT INTO status_checks (id, workspace_id, monitor_id, at, ok, source, state, message, error)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO status_checks (id, workspace_id, monitor_id, at, ok, source, state, message, error, duration_ms)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 `
 
 type CreateStatusCheckParams struct {
@@ -139,6 +139,7 @@ type CreateStatusCheckParams struct {
 	State       *string
 	Message     *string
 	Error       *string
+	DurationMs  *int32
 }
 
 func (q *Queries) CreateStatusCheck(ctx context.Context, arg CreateStatusCheckParams) error {
@@ -152,6 +153,7 @@ func (q *Queries) CreateStatusCheck(ctx context.Context, arg CreateStatusCheckPa
 		arg.State,
 		arg.Message,
 		arg.Error,
+		arg.DurationMs,
 	)
 	return err
 }
@@ -1186,7 +1188,7 @@ SELECT m.component_id, floor(date_part('epoch', c.at - $1::timestamptz) / $2::in
     (percentile_cont(0.5) WITHIN GROUP (ORDER BY c.duration_ms))::int AS p50
 FROM status_checks c
 JOIN status_monitors m ON m.workspace_id = c.workspace_id AND m.id = c.monitor_id
-WHERE c.workspace_id = $3 AND m.page_id = $4 AND m.kind IN ('http', 'tcp') AND m.component_id = ANY($5::uuid[])
+WHERE c.workspace_id = $3 AND m.page_id = $4 AND m.kind IN ('http', 'tcp', 'push') AND m.component_id = ANY($5::uuid[])
   AND NOT c.pending AND c.ok AND c.duration_ms IS NOT NULL AND c.at >= $1::timestamptz AND c.at < $6::timestamptz
 GROUP BY 1, 2
 `
@@ -1206,7 +1208,7 @@ type StatusResponseBucketsRow struct {
 	P50         int32
 }
 
-// Step n covers since + n * step_seconds; only measured successes of http and tcp monitors count.
+// Step n covers since + n * step_seconds; only measured successes of http, tcp and push monitors count.
 func (q *Queries) StatusResponseBuckets(ctx context.Context, arg StatusResponseBucketsParams) ([]StatusResponseBucketsRow, error) {
 	rows, err := q.db.Query(ctx, statusResponseBuckets,
 		arg.Since,
@@ -1235,15 +1237,19 @@ func (q *Queries) StatusResponseBuckets(ctx context.Context, arg StatusResponseB
 }
 
 const statusResponseComponents = `-- name: StatusResponseComponents :many
-SELECT component_id, max(coalesce(interval_seconds, 60))::int AS interval_seconds FROM status_monitors
-WHERE workspace_id = $1 AND page_id = $2 AND kind IN ('http', 'tcp') AND component_id = ANY($3::uuid[])
-GROUP BY component_id
+SELECT m.component_id, max(coalesce(m.interval_seconds, 60))::int AS interval_seconds FROM status_monitors m
+WHERE m.workspace_id = $1 AND m.page_id = $2 AND m.component_id = ANY($3::uuid[])
+  AND (m.kind IN ('http', 'tcp') OR (m.kind = 'push' AND EXISTS (
+    SELECT 1 FROM status_checks c WHERE c.workspace_id = m.workspace_id AND c.monitor_id = m.id
+      AND NOT c.pending AND c.ok AND c.duration_ms IS NOT NULL AND c.at >= $4::timestamptz)))
+GROUP BY m.component_id
 `
 
 type StatusResponseComponentsParams struct {
 	WorkspaceID  uuid.UUID
 	PageID       uuid.UUID
 	ComponentIds []uuid.UUID
+	Since        time.Time
 }
 
 type StatusResponseComponentsRow struct {
@@ -1251,9 +1257,15 @@ type StatusResponseComponentsRow struct {
 	IntervalSeconds int32
 }
 
-// interval_seconds is the longest interval of the component's http and tcp monitors.
+// interval_seconds is the longest interval of the component's http and tcp monitors and of its push
+// monitors with a measured success since @since; a push monitor without one does not count.
 func (q *Queries) StatusResponseComponents(ctx context.Context, arg StatusResponseComponentsParams) ([]StatusResponseComponentsRow, error) {
-	rows, err := q.db.Query(ctx, statusResponseComponents, arg.WorkspaceID, arg.PageID, arg.ComponentIds)
+	rows, err := q.db.Query(ctx, statusResponseComponents,
+		arg.WorkspaceID,
+		arg.PageID,
+		arg.ComponentIds,
+		arg.Since,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -1277,7 +1289,7 @@ SELECT m.component_id, (percentile_cont(0.5) WITHIN GROUP (ORDER BY c.duration_m
     (percentile_cont(0.95) WITHIN GROUP (ORDER BY c.duration_ms))::int AS p95
 FROM status_checks c
 JOIN status_monitors m ON m.workspace_id = c.workspace_id AND m.id = c.monitor_id
-WHERE c.workspace_id = $1 AND m.page_id = $2 AND m.kind IN ('http', 'tcp') AND m.component_id = ANY($3::uuid[])
+WHERE c.workspace_id = $1 AND m.page_id = $2 AND m.kind IN ('http', 'tcp', 'push') AND m.component_id = ANY($3::uuid[])
   AND NOT c.pending AND c.ok AND c.duration_ms IS NOT NULL AND c.at >= $4::timestamptz AND c.at < $5::timestamptz
 GROUP BY 1
 `

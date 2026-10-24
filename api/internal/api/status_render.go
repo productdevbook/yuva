@@ -49,7 +49,7 @@ func (r *responseSeries) public() *oas.PublicStatusResponseTimes {
 	return out
 }
 
-// responseSeriesFor aggregates the successful http and tcp checks of the components into n steps from
+// responseSeriesFor aggregates the measured successful http, tcp and push checks of the components into n steps from
 // from; a step without a measured success is -1.
 func responseSeriesFor(ctx context.Context, q *store.Queries, pg store.StatusPage, ids []uuid.UUID, from time.Time, step time.Duration, n int) (map[uuid.UUID]*responseSeries, error) {
 	out := map[uuid.UUID]*responseSeries{}

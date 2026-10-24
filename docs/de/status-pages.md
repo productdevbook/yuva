@@ -25,7 +25,7 @@ Admins an und ändern sie; Agents mit Zugriff auf den Posteingang arbeiten mit K
 | Zeitzone (`timezone`) | Die Zone der Tagesbalken. Besucher sehen Zeiten in ihrer eigenen Zone. |
 | Tage Verlauf (`history_days`) | 7 bis 90, Standard 90. |
 | Verfügbarkeit anzeigen (`show_uptime`) | Ein Prozentwert neben jeder Komponente. Standardmäßig an. |
-| Antwortzeiten anzeigen (`show_response_times`) | Die Antwortzeiten der letzten 24 Stunden für Komponenten mit einem `http`- oder `tcp`-Monitor, mit Median und p95. Standardmäßig aus. |
+| Antwortzeiten anzeigen (`show_response_times`) | Die Antwortzeiten der letzten 24 Stunden für Komponenten mit einem `http`- oder `tcp`-Monitor oder einem Push-Monitor, der in dieser Zeit eine `duration_ms` gesendet hat, mit Median und p95. Standardmäßig aus. |
 | Namen neben dem Logo anzeigen (`show_name`) | Standardmäßig an. Schalten Sie es aus, wenn das Logo den Namen schon enthält: Die Kopfzeile zeigt dann nur das Logo, mit dem Namen als Alternativtext. Ohne Logo erscheint der Name immer. |
 | Feed, Badge und Einbettung anzeigen (`show_follow`) | Standardmäßig an. Aus blendet den Abschnitt „Folgen und einbetten“, seinen Link in der Kopfzeile, die Links `feed.atom` und `badge.svg` in der Fußzeile und den Feed-Link auf Vorfallseiten aus. Feed, Badge und JSON bleiben unter ihren Adressen erreichbar. |
 | Veröffentlicht (`published`) | Standardmäßig aus. Eine unveröffentlichte Seite antwortet allen außer Ihrem Team mit `404`; das Team sieht sie im Panel in der Vorschau. |
@@ -172,7 +172,9 @@ curl -fsS -m 10 -o /dev/null "https://support.example.com/ingress/heartbeat/TOKE
 
 Senden Sie `operational`, um den Monitor zu erholen, oder `degraded`, `partial_outage` bzw. `major_outage`,
 um ihn ausfallen zu lassen. Der gesendete Zustand ist der, den die Komponente erhält; `message` (bis zu 1.000
-Zeichen) wird mit der Prüfung gespeichert.
+Zeichen) wird mit der Prüfung gespeichert. Misst Ihr eigener Prober die Antwortzeit, senden Sie sie als
+`duration_ms` (eine ganze Zahl von 0 bis 120000): Die Antwortzeiten der Seite zählen sie bei erfolgreichen
+Prüfungen.
 
 ```sh
 curl -fsS -X POST -H "Content-Type: application/json" \
@@ -180,7 +182,7 @@ curl -fsS -X POST -H "Content-Type: application/json" \
   https://support.example.com/ingress/status/TOKEN
 
 curl -fsS -X POST -H "Content-Type: application/json" \
-  -d '{"state":"operational"}' https://support.example.com/ingress/status/TOKEN
+  -d '{"state":"operational","duration_ms":182}' https://support.example.com/ingress/status/TOKEN
 ```
 
 Alertmanager- und Grafana-Alarme werden unverändert angenommen: firing lässt den Monitor ausfallen, resolved

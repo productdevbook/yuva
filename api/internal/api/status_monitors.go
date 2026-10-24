@@ -552,11 +552,12 @@ func (s *Server) ListStatusMonitorChecks(ctx context.Context, req oas.ListStatus
 // monitorResult is one beat, missed beat or pushed state. A failure sets state, or the monitor's
 // failure state when state is empty.
 type monitorResult struct {
-	ok      bool
-	source  string
-	state   string
-	message string
-	errText string
+	ok         bool
+	source     string
+	state      string
+	message    string
+	errText    string
+	durationMs *int32
 	// check is the pending check an outside check recorded, which counts now.
 	check *uuid.UUID
 }
@@ -618,7 +619,7 @@ func (s *Server) applyMonitorResult(ctx context.Context, q *store.Queries, ev *e
 		claim = m.FailureState
 	}
 	check := store.CreateStatusCheckParams{ID: newID(), WorkspaceID: m.WorkspaceID, MonitorID: m.ID, At: now, Ok: r.ok, Source: r.source,
-		Message: messagePtr(r.message), Error: messagePtr(r.errText)}
+		Message: messagePtr(r.message), Error: messagePtr(r.errText), DurationMs: r.durationMs}
 	if !r.ok {
 		check.State = &claim
 	}

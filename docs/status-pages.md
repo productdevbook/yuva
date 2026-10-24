@@ -25,7 +25,7 @@ and change pages; agents with access to the inbox work with components and incid
 | Time zone (`timezone`) | The zone of the day bars. Visitors see times in their own zone. |
 | Days of history (`history_days`) | 7 to 90, default 90. |
 | Show uptime (`show_uptime`) | A percentage next to each component. On by default. |
-| Show response times (`show_response_times`) | The last 24 hours of response times for components with an `http` or `tcp` monitor, with the median and p95. Off by default. |
+| Show response times (`show_response_times`) | The last 24 hours of response times for components with an `http` or `tcp` monitor, or a push monitor that sent a `duration_ms` in that time, with the median and p95. Off by default. |
 | Show the name next to the logo (`show_name`) | On by default. Turn it off when the logo already contains the name: the header then shows only the logo, with the name as its alt text. Without a logo the name always shows. |
 | Show feed, badge and embed (`show_follow`) | On by default. Off leaves out the Follow and embed section, its link in the header, the `feed.atom` and `badge.svg` links in the footer and the feed link on incident pages. The feed, badge and JSON addresses keep answering. |
 | Published (`published`) | Off by default. An unpublished page answers `404` to everyone but your team, which previews it in the panel. |
@@ -167,7 +167,9 @@ curl -fsS -m 10 -o /dev/null "https://support.example.com/ingress/heartbeat/TOKE
 ### Push: your monitoring sends the state
 
 Send `operational` to recover, or `degraded`, `partial_outage` or `major_outage` to fail. The state you
-push is the one the component gets; `message` (up to 1,000 characters) is kept with the check.
+push is the one the component gets; `message` (up to 1,000 characters) is kept with the check. When
+your own prober measures the response time, send it as `duration_ms` (a whole number, 0 to 120000): the
+page's response times count it for successful checks.
 
 ```sh
 curl -fsS -X POST -H "Content-Type: application/json" \
@@ -175,7 +177,7 @@ curl -fsS -X POST -H "Content-Type: application/json" \
   https://support.example.com/ingress/status/TOKEN
 
 curl -fsS -X POST -H "Content-Type: application/json" \
-  -d '{"state":"operational"}' https://support.example.com/ingress/status/TOKEN
+  -d '{"state":"operational","duration_ms":182}' https://support.example.com/ingress/status/TOKEN
 ```
 
 Alertmanager and Grafana alerts are accepted as they are: firing fails the monitor, resolved recovers it.

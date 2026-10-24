@@ -38,6 +38,7 @@ type pushAlert struct {
 type pushEnvelope struct {
 	State             *string           `json:"state"`
 	Message           string            `json:"message"`
+	DurationMs        json.RawMessage   `json:"duration_ms"`
 	Status            string            `json:"status"`
 	Alerts            []pushAlert       `json:"alerts"`
 	OrgID             json.RawMessage   `json:"orgId"`
@@ -68,10 +69,15 @@ func parseStatusPush(body []byte) (monitorResult, bool, error) {
 		return r, true, nil
 	case e.State != nil:
 		switch st := *e.State; st {
-		case stOperational:
-			return monitorResult{ok: true, source: string(oas.StatusCheckPush), message: e.Message}, true, nil
-		case stDegraded, stPartialOutage, stMajorOutage:
-			return monitorResult{source: string(oas.StatusCheckPush), state: st, message: e.Message, errText: st}, true, nil
+		case stOperational, stDegraded, stPartialOutage, stMajorOutage:
+			d, err := pushDuration(e.DurationMs)
+			if err != nil {
+				return monitorResult{}, false, err
+			}
+			if st == stOperational {
+				return monitorResult{ok: true, source: string(oas.StatusCheckPush), message: e.Message, durationMs: d}, true, nil
+			}
+			return monitorResult{source: string(oas.StatusCheckPush), state: st, message: e.Message, errText: st, durationMs: d}, true, nil
 		case string(oas.GrafanaAlerting):
 			return monitorResult{source: string(oas.StatusCheckGrafana), message: legacyGrafanaMessage(e), errText: "alert firing"}, true, nil
 		case string(oas.GrafanaOk):
@@ -81,6 +87,19 @@ func parseStatusPush(body []byte) (monitorResult, bool, error) {
 		}
 	}
 	return monitorResult{}, false, errPushUnreadable
+}
+
+const maxPushDurationMs = 120_000
+
+func pushDuration(raw json.RawMessage) (*int32, error) {
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil, nil
+	}
+	var v int32
+	if err := json.Unmarshal(raw, &v); err != nil || v < 0 || v > maxPushDurationMs {
+		return nil, errPushUnreadable
+	}
+	return &v, nil
 }
 
 func alertMessage(e pushEnvelope) string {

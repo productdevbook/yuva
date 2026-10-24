@@ -20548,9 +20548,10 @@ type PublicStatusComponent struct {
 	Id          uuid.UUID          `json:"id"`
 	Name        string             `json:"name"`
 
-	// ResponseTimes The last 24 hours of the component's `http` and `tcp` checks that succeeded, aggregated; only
-	// when the page shows response times and the component has such a monitor. Addresses, errors
-	// and status codes of checks are never public.
+	// ResponseTimes The last 24 hours of the component's `http` and `tcp` checks and `push` checks with a
+	// `duration_ms` that succeeded, aggregated; only when the page shows response times and the
+	// component has an `http` or `tcp` monitor or such a `push` check in that time. Addresses,
+	// errors and status codes of checks are never public.
 	ResponseTimes *PublicStatusResponseTimes `json:"response_times,omitempty"`
 
 	// State Worst to best: `major_outage`, `partial_outage`, `degraded`, `maintenance`, `operational`.
@@ -20633,9 +20634,10 @@ type PublicStatusPage struct {
 	Url       string    `json:"url"`
 }
 
-// PublicStatusResponseTimes The last 24 hours of the component's `http` and `tcp` checks that succeeded, aggregated; only
-// when the page shows response times and the component has such a monitor. Addresses, errors
-// and status codes of checks are never public.
+// PublicStatusResponseTimes The last 24 hours of the component's `http` and `tcp` checks and `push` checks with a
+// `duration_ms` that succeeded, aggregated; only when the page shows response times and the
+// component has an `http` or `tcp` monitor or such a `push` check in that time. Addresses,
+// errors and status codes of checks are never public.
 type PublicStatusResponseTimes struct {
 	// From The start of the first step.
 	From time.Time `json:"from"`
@@ -22955,7 +22957,8 @@ type StatusPage struct {
 	ShowName bool `json:"show_name"`
 
 	// ShowResponseTimes Whether the public page and its JSON show the last 24 hours of response times of components
-	// with an `http` or `tcp` monitor, aggregated (median per step, median and p95).
+	// with an `http` or `tcp` monitor, or a `push` monitor that sent a `duration_ms` with a success in
+	// that time, aggregated (median per step, median and p95).
 	ShowResponseTimes bool    `json:"show_response_times"`
 	ShowUptime        bool    `json:"show_uptime"`
 	SiteUrl           *string `json:"site_url,omitempty"`
@@ -23109,8 +23112,10 @@ type StatusPageUpdate struct {
 
 // StatusPushBody defines model for StatusPushBody.
 type StatusPushBody struct {
-	Message *string             `json:"message,omitempty"`
-	State   StatusPushBodyState `json:"state"`
+	// DurationMs A response time the host measured, in milliseconds.
+	DurationMs *int32              `json:"duration_ms,omitempty"`
+	Message    *string             `json:"message,omitempty"`
+	State      StatusPushBodyState `json:"state"`
 }
 
 // StatusPushBodyState defines model for StatusPushBody.State.
@@ -35269,9 +35274,11 @@ type ClientInterface interface {
 	//
 	// The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 	//
-	// - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-	//   `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-	//   `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+	// - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+	//   success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+	//   monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+	//   check, and so is `duration_ms`, a response time the host measured, which the status page's
+	//   response times count when the check is a success.
 	// - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
 	//   `resolved` a success. The message is the common `summary` or `description` annotation.
 	// - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -35291,9 +35298,11 @@ type ClientInterface interface {
 	//
 	// The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 	//
-	// - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-	//   `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-	//   `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+	// - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+	//   success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+	//   monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+	//   check, and so is `duration_ms`, a response time the host measured, which the status page's
+	//   response times count when the check is a success.
 	// - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
 	//   `resolved` a success. The message is the common `summary` or `description` annotation.
 	// - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -46432,9 +46441,11 @@ func (c *Client) IngestSlack(ctx context.Context, params *IngestSlackParams, bod
 //
 // The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 //
-//   - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-//     `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-//     `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+//   - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+//     success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+//     monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+//     check, and so is `duration_ms`, a response time the host measured, which the status page's
+//     response times count when the check is a success.
 //   - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
 //     `resolved` a success. The message is the common `summary` or `description` annotation.
 //   - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -46464,9 +46475,11 @@ func (c *Client) StatusPushWithBody(ctx context.Context, token StatusMonitorToke
 //
 // The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 //
-//   - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-//     `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-//     `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+//   - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+//     success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+//     monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+//     check, and so is `duration_ms`, a response time the host measured, which the status page's
+//     response times count when the check is a success.
 //   - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
 //     `resolved` a success. The message is the common `summary` or `description` annotation.
 //   - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -95617,9 +95630,11 @@ type ClientWithResponsesInterface interface {
 	//
 	// The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 	//
-	// - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-	//   `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-	//   `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+	// - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+	//   success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+	//   monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+	//   check, and so is `duration_ms`, a response time the host measured, which the status page's
+	//   response times count when the check is a success.
 	// - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
 	//   `resolved` a success. The message is the common `summary` or `description` annotation.
 	// - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -95639,9 +95654,11 @@ type ClientWithResponsesInterface interface {
 	//
 	// The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 	//
-	// - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-	//   `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-	//   `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+	// - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+	//   success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+	//   monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+	//   check, and so is `duration_ms`, a response time the host measured, which the status page's
+	//   response times count when the check is a success.
 	// - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
 	//   `resolved` a success. The message is the common `summary` or `description` annotation.
 	// - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -141835,9 +141852,11 @@ func (c *ClientWithResponses) IngestSlackWithResponse(ctx context.Context, param
 //
 // The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 //
-//   - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-//     `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-//     `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+//   - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+//     success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+//     monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+//     check, and so is `duration_ms`, a response time the host measured, which the status page's
+//     response times count when the check is a success.
 //   - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
 //     `resolved` a success. The message is the common `summary` or `description` annotation.
 //   - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -141863,9 +141882,11 @@ func (c *ClientWithResponses) StatusPushWithBodyWithResponse(ctx context.Context
 //
 // The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 //
-//   - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-//     `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-//     `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+//   - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+//     success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+//     monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+//     check, and so is `duration_ms`, a response time the host measured, which the status page's
+//     response times count when the check is a success.
 //   - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
 //     `resolved` a success. The message is the common `summary` or `description` annotation.
 //   - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of

@@ -2862,7 +2862,8 @@ incident before a customer writes, and the conversations an outage brings are an
     pre-ticks them there; nothing is sealed or cached on the page) and follow and embed (feed, badge,
     JSON URL, iframe snippet).
   - Response times: only with `show_response_times` and only for components with an `http` or `tcp`
-    monitor (paused ones too). The last 24 hours in 96 steps of 15 minutes, the median of the
+    monitor (paused ones too), or a `push` monitor with a successful check carrying `duration_ms` in the
+    last 24 hours (a push monitor that never sends one leaves its component without a chart). The last 24 hours in 96 steps of 15 minutes, the median of the
     successful checks of each step as a stepped SVG line, and median and p95 over the day. Up to
     three components are tabs made of radio inputs and `:checked` rules; more are all shown, and the
     inline script turns them into a select. The JSON carries the same aggregates as
@@ -3174,7 +3175,8 @@ incident before a customer writes, and the conversations an outage brings are an
     `interval` plus `grace`; a missed beat fails the monitor, `?fail=1` or `/fail` fails it at once.
     For servers and cron jobs Yuva cannot reach.
   - `push`: the host's monitoring sends the state: `POST /ingress/status/{token}` with
-    `{"state":"major_outage","message":"..."}`, or an Alertmanager or Grafana alert webhook body as it
+    `{"state":"major_outage","message":"...","duration_ms":182}` (`duration_ms` optional, 0–120000, the
+    host's measured response time), or an Alertmanager or Grafana alert webhook body as it
     is (firing fails, resolved recovers).
   - `http`: Yuva sends a request (method, headers, body; header values encrypted under the master key)
     every `interval` (60 seconds at least, `YUVA_STATUS_MIN_INTERVAL` on a hosted server; unset: 60, or

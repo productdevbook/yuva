@@ -18690,9 +18690,11 @@ paths:
       description: |
         The state of a `push` monitor, from the host's own monitoring. The body is one of, as it is:
 
-        - `{"state": "major_outage", "message": "..."}`: `operational` is a success, `degraded`,
-          `partial_outage` and `major_outage` a failure that sets that state (the monitor's
-          `failure_state` is not used). `message` (at most 1,000 characters) is kept with the check.
+        - `{"state": "major_outage", "message": "...", "duration_ms": 182}`: `operational` is a
+          success, `degraded`, `partial_outage` and `major_outage` a failure that sets that state (the
+          monitor's `failure_state` is not used). `message` (at most 1,000 characters) is kept with the
+          check, and so is `duration_ms`, a response time the host measured, which the status page's
+          response times count when the check is a success.
         - An Alertmanager webhook body (`version` `4`, `status`, `alerts`): `firing` is a failure,
           `resolved` a success. The message is the common `summary` or `description` annotation.
         - A Grafana alert webhook body, of Grafana Alerting (`status` `firing`/`resolved`) or of
@@ -35547,7 +35549,8 @@ components:
           type: boolean
           description: |
             Whether the public page and its JSON show the last 24 hours of response times of components
-            with an `http` or `tcp` monitor, aggregated (median per step, median and p95).
+            with an `http` or `tcp` monitor, or a `push` monitor that sent a `duration_ms` with a success in
+            that time, aggregated (median per step, median and p95).
         show_name:
           type: boolean
           description: |
@@ -37457,6 +37460,12 @@ components:
         message:
           type: string
           maxLength: 1000
+        duration_ms:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 120000
+          description: A response time the host measured, in milliseconds.
     AlertmanagerAlert:
       type: object
       properties:
@@ -37625,9 +37634,10 @@ components:
     PublicStatusResponseTimes:
       type: object
       description: |
-        The last 24 hours of the component's `http` and `tcp` checks that succeeded, aggregated; only
-        when the page shows response times and the component has such a monitor. Addresses, errors
-        and status codes of checks are never public.
+        The last 24 hours of the component's `http` and `tcp` checks and `push` checks with a
+        `duration_ms` that succeeded, aggregated; only when the page shows response times and the
+        component has an `http` or `tcp` monitor or such a `push` check in that time. Addresses,
+        errors and status codes of checks are never public.
       required: [from, step_seconds, points]
       properties:
         from:
