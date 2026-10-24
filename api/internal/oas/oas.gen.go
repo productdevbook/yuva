@@ -1136,6 +1136,7 @@ const (
 	AuditConversationDeleted                 AuditAction = "conversation.deleted"
 	AuditConversationRestored                AuditAction = "conversation.restored"
 	AuditConversationTrashed                 AuditAction = "conversation.trashed"
+	AuditConversationsDeleted                AuditAction = "conversations.deleted"
 	AuditInboxCreated                        AuditAction = "inbox.created"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
@@ -1181,6 +1182,7 @@ const (
 	AuditTeamInboxAccessRevoked              AuditAction = "team.inbox_access_revoked"
 	AuditTeamMemberAdded                     AuditAction = "team.member_added"
 	AuditTeamMemberRemoved                   AuditAction = "team.member_removed"
+	AuditTrashEmptied                        AuditAction = "trash.emptied"
 	AuditWebhookCreated                      AuditAction = "webhook.created"
 	AuditWebhookDeleted                      AuditAction = "webhook.deleted"
 	AuditWebhookSecretRotated                AuditAction = "webhook.secret_rotated"
@@ -1238,6 +1240,8 @@ func (e AuditAction) Valid() bool {
 	case AuditConversationRestored:
 		return true
 	case AuditConversationTrashed:
+		return true
+	case AuditConversationsDeleted:
 		return true
 	case AuditInboxCreated:
 		return true
@@ -1329,6 +1333,8 @@ func (e AuditAction) Valid() bool {
 		return true
 	case AuditTeamMemberRemoved:
 		return true
+	case AuditTrashEmptied:
+		return true
 	case AuditWebhookCreated:
 		return true
 	case AuditWebhookDeleted:
@@ -1399,6 +1405,7 @@ const (
 	AuditTargetChannel          AuditTargetType = "channel"
 	AuditTargetContact          AuditTargetType = "contact"
 	AuditTargetConversation     AuditTargetType = "conversation"
+	AuditTargetConversations    AuditTargetType = "conversations"
 	AuditTargetInbox            AuditTargetType = "inbox"
 	AuditTargetInvite           AuditTargetType = "invite"
 	AuditTargetIssueIntegration AuditTargetType = "issue_integration"
@@ -1410,6 +1417,7 @@ const (
 	AuditTargetSso              AuditTargetType = "sso"
 	AuditTargetSsoDomain        AuditTargetType = "sso_domain"
 	AuditTargetTeam             AuditTargetType = "team"
+	AuditTargetTrash            AuditTargetType = "trash"
 	AuditTargetWebhook          AuditTargetType = "webhook"
 	AuditTargetWorkspace        AuditTargetType = "workspace"
 )
@@ -1428,6 +1436,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetContact:
 		return true
 	case AuditTargetConversation:
+		return true
+	case AuditTargetConversations:
 		return true
 	case AuditTargetInbox:
 		return true
@@ -1450,6 +1460,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetSsoDomain:
 		return true
 	case AuditTargetTeam:
+		return true
+	case AuditTargetTrash:
 		return true
 	case AuditTargetWebhook:
 		return true
@@ -9467,7 +9479,10 @@ type AnalyticsRangeProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -10003,8 +10018,8 @@ type ApiKeyList struct {
 //		message e-mail and raw source; list labels and canned replies.
 //	  - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
 //	    and bulk-update conversations.
-//	  - `conversations:delete`: move conversations to the trash, restore them, and list the
-//	    trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
+//	  - `conversations:delete`: move conversations to the trash, restore them, list the trash,
+//	    delete conversations in it for good and empty it. For owners and admins: never offered to agents' tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //	  - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
 //	    OAuth tokens also replies to reader threads and their accepted answer. Forwarding a
@@ -10312,6 +10327,9 @@ type Attributes map[string]interface{}
 //     `inbox_name`.
 //   - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 //     `inbox_id`, by `system` (never the subject or content).
+//   - `conversations.deleted` (`POST /v1/conversations/delete`): `count`, the conversations
+//     deleted for good. `trash.emptied` (`POST /v1/conversations/trash/empty`, written when
+//     its job is done): `count`. The target is the workspace; never ids, subjects or content.
 //   - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
 //     `files` (attachments and raw e-mails removed); never the removed content.
 //   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
@@ -10446,6 +10464,9 @@ type AuditEntry struct {
 	//   `inbox_name`.
 	// - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 	//   `inbox_id`, by `system` (never the subject or content).
+	// - `conversations.deleted` (`POST /v1/conversations/delete`): `count`, the conversations
+	//   deleted for good. `trash.emptied` (`POST /v1/conversations/trash/empty`, written when
+	//   its job is done): `count`. The target is the workspace; never ids, subjects or content.
 	// - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
 	//   `files` (attachments and raw e-mails removed); never the removed content.
 	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
@@ -10528,11 +10549,13 @@ type AuditEntryPage struct {
 // AuditTarget defines model for AuditTarget.
 type AuditTarget struct {
 	// Id The target, which may no longer exist.
-	Id   uuid.UUID       `json:"id"`
+	Id uuid.UUID `json:"id"`
+
+	// Type `conversations` and `trash` name the workspace's conversations and its trash; their id is the workspace's.
 	Type AuditTargetType `json:"type"`
 }
 
-// AuditTargetType defines model for AuditTargetType.
+// AuditTargetType `conversations` and `trash` name the workspace's conversations and its trash; their id is the workspace's.
 type AuditTargetType string
 
 // AuthStatus A result as the receiving server reported it (RFC 8601); `unknown` until it is read or
@@ -11233,7 +11256,10 @@ type BroadcastProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -11641,7 +11667,10 @@ type ChangelogConflictProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -13977,8 +14006,11 @@ type ConversationBulkUpdate struct {
 	RemoveLabels *[]uuid.UUID             `json:"remove_labels,omitempty"`
 
 	// SnoozeUntil Required with status `snoozed`.
-	SnoozeUntil *time.Time          `json:"snooze_until,omitempty"`
-	Status      *ConversationStatus `json:"status,omitempty"`
+	SnoozeUntil *time.Time `json:"snooze_until,omitempty"`
+
+	// Spam Flag (`true`) or unflag (`false`) as spam, as `PATCH` does.
+	Spam   *bool               `json:"spam,omitempty"`
+	Status *ConversationStatus `json:"status,omitempty"`
 
 	// Trashed `true` moves the conversations to the trash, `false` restores them. Alone, without
 	// other changes. Owners, admins and keys and tokens with `conversations:delete`.
@@ -14042,6 +14074,18 @@ type ConversationCreate struct {
 	Labels    *[]uuid.UUID `json:"labels,omitempty"`
 	Priority  *Priority    `json:"priority,omitempty"`
 	Subject   *string      `json:"subject,omitempty"`
+}
+
+// ConversationDelete defines model for ConversationDelete.
+type ConversationDelete struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+// ConversationDeleteResult defines model for ConversationDeleteResult.
+type ConversationDeleteResult struct {
+	// Deleted How many conversations were deleted.
+	Deleted int32                     `json:"deleted"`
+	Failed  []ConversationBulkFailure `json:"failed"`
 }
 
 // ConversationDeleted A conversation deleted for good; nothing else of it is kept.
@@ -15641,6 +15685,9 @@ type EmailDesignProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
+	// Count `count_changed` only: the number as it is now.
+	Count *int64 `json:"count,omitempty"`
+
 	// Design `version_conflict` only: the design as it is now.
 	Design *EmailDesign        `json:"design,omitempty"`
 	Detail *string             `json:"detail,omitempty"`
@@ -16006,7 +16053,10 @@ type EmailImageProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -17170,7 +17220,10 @@ type HelpConflictProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -20400,7 +20453,10 @@ type MigrationFileProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Entry `file_refused` only: the zip entry it is about, when one is.
@@ -21477,7 +21533,10 @@ type Problem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -24410,6 +24469,18 @@ type TeamUpdate struct {
 	Name *string `json:"name,omitempty"`
 }
 
+// TrashEmpty defines model for TrashEmpty.
+type TrashEmpty struct {
+	// ConfirmCount The number of conversations in the trash the person confirmed.
+	ConfirmCount int64 `json:"confirm_count"`
+}
+
+// TrashEmptyResult defines model for TrashEmptyResult.
+type TrashEmptyResult struct {
+	// Count How many conversations the job will delete.
+	Count int64 `json:"count"`
+}
+
 // Typing defines model for Typing.
 type Typing struct {
 	Author         TypingAuthor `json:"author"`
@@ -26917,8 +26988,26 @@ type GetConversationCountsParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteConversationsParams defines parameters for DeleteConversations.
+type DeleteConversationsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ComposeMailParams defines parameters for ComposeMail.
 type ComposeMailParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// EmptyTrashParams defines parameters for EmptyTrash.
+type EmptyTrashParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -30390,11 +30479,17 @@ type CreateConversationJSONRequestBody = ConversationCreate
 // BulkUpdateConversationsJSONRequestBody defines body for BulkUpdateConversations for application/json ContentType.
 type BulkUpdateConversationsJSONRequestBody = ConversationBulkUpdate
 
+// DeleteConversationsJSONRequestBody defines body for DeleteConversations for application/json ContentType.
+type DeleteConversationsJSONRequestBody = ConversationDelete
+
 // ComposeMailJSONRequestBody defines body for ComposeMail for application/json ContentType.
 type ComposeMailJSONRequestBody = ComposeMail
 
 // ComposeMailMultipartRequestBody defines body for ComposeMail for multipart/form-data ContentType.
 type ComposeMailMultipartRequestBody = ComposeMailMultipart
+
+// EmptyTrashJSONRequestBody defines body for EmptyTrash for application/json ContentType.
+type EmptyTrashJSONRequestBody = TrashEmpty
 
 // UpdateConversationJSONRequestBody defines body for UpdateConversation for application/json ContentType.
 type UpdateConversationJSONRequestBody = ConversationUpdate
@@ -35579,9 +35674,15 @@ type ServerInterface interface {
 	// GetConversationCounts Count open conversations
 	// (GET /v1/conversations/counts)
 	GetConversationCounts(w http.ResponseWriter, r *http.Request, params GetConversationCountsParams)
+	// DeleteConversations Delete conversations in the trash for good
+	// (POST /v1/conversations/delete)
+	DeleteConversations(w http.ResponseWriter, r *http.Request, params DeleteConversationsParams)
 	// ComposeMail Write a new e-mail to one or more recipients
 	// (POST /v1/conversations/mail)
 	ComposeMail(w http.ResponseWriter, r *http.Request, params ComposeMailParams)
+	// EmptyTrash Empty the trash
+	// (POST /v1/conversations/trash/empty)
+	EmptyTrash(w http.ResponseWriter, r *http.Request, params EmptyTrashParams)
 	// TrashConversation Move a conversation to the trash
 	// (DELETE /v1/conversations/{conversationId})
 	TrashConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params TrashConversationParams)
@@ -47154,6 +47255,66 @@ func (siw *ServerInterfaceWrapper) GetConversationCounts(w http.ResponseWriter, 
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteConversations operation middleware
+func (siw *ServerInterfaceWrapper) DeleteConversations(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteConversationsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteConversations(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ComposeMail operation middleware
 func (siw *ServerInterfaceWrapper) ComposeMail(w http.ResponseWriter, r *http.Request) {
 
@@ -47205,6 +47366,66 @@ func (siw *ServerInterfaceWrapper) ComposeMail(w http.ResponseWriter, r *http.Re
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ComposeMail(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// EmptyTrash operation middleware
+func (siw *ServerInterfaceWrapper) EmptyTrash(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params EmptyTrashParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.EmptyTrash(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -67479,6 +67700,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/reports", wrapper.GetReport)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/reports/export", wrapper.ExportReport)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/bulk", wrapper.BulkUpdateConversations)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/delete", wrapper.DeleteConversations)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/trash/empty", wrapper.EmptyTrash)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.TrashConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.GetConversation)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/conversations/{conversationId}", wrapper.UpdateConversation)
@@ -87341,6 +87564,73 @@ func (response GetConversationCounts403ApplicationProblemPlusJSONResponse) Visit
 	return err
 }
 
+type DeleteConversationsRequestObject struct {
+	Params DeleteConversationsParams
+	Body   *DeleteConversationsJSONRequestBody
+}
+
+type DeleteConversationsResponseObject interface {
+	VisitDeleteConversationsResponse(w http.ResponseWriter) error
+}
+
+type DeleteConversations200JSONResponse ConversationDeleteResult
+
+func (response DeleteConversations200JSONResponse) VisitDeleteConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteConversations400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteConversations400ApplicationProblemPlusJSONResponse) VisitDeleteConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteConversations401ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteConversations401ApplicationProblemPlusJSONResponse) VisitDeleteConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteConversations403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteConversations403ApplicationProblemPlusJSONResponse) VisitDeleteConversationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ComposeMailRequestObject struct {
 	Params        ComposeMailParams
 	JSONBody      *ComposeMailJSONRequestBody
@@ -87489,6 +87779,87 @@ func (response ComposeMail429ApplicationProblemPlusJSONResponse) VisitComposeMai
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EmptyTrashRequestObject struct {
+	Params EmptyTrashParams
+	Body   *EmptyTrashJSONRequestBody
+}
+
+type EmptyTrashResponseObject interface {
+	VisitEmptyTrashResponse(w http.ResponseWriter) error
+}
+
+type EmptyTrash202JSONResponse TrashEmptyResult
+
+func (response EmptyTrash202JSONResponse) VisitEmptyTrashResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(202)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EmptyTrash400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response EmptyTrash400ApplicationProblemPlusJSONResponse) VisitEmptyTrashResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EmptyTrash401ApplicationProblemPlusJSONResponse Problem
+
+func (response EmptyTrash401ApplicationProblemPlusJSONResponse) VisitEmptyTrashResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EmptyTrash403ApplicationProblemPlusJSONResponse Problem
+
+func (response EmptyTrash403ApplicationProblemPlusJSONResponse) VisitEmptyTrashResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EmptyTrash409ApplicationProblemPlusJSONResponse Problem
+
+func (response EmptyTrash409ApplicationProblemPlusJSONResponse) VisitEmptyTrashResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -114857,9 +115228,15 @@ type StrictServerInterface interface {
 	// GetConversationCounts Count open conversations
 	// (GET /v1/conversations/counts)
 	GetConversationCounts(ctx context.Context, request GetConversationCountsRequestObject) (GetConversationCountsResponseObject, error)
+	// DeleteConversations Delete conversations in the trash for good
+	// (POST /v1/conversations/delete)
+	DeleteConversations(ctx context.Context, request DeleteConversationsRequestObject) (DeleteConversationsResponseObject, error)
 	// ComposeMail Write a new e-mail to one or more recipients
 	// (POST /v1/conversations/mail)
 	ComposeMail(ctx context.Context, request ComposeMailRequestObject) (ComposeMailResponseObject, error)
+	// EmptyTrash Empty the trash
+	// (POST /v1/conversations/trash/empty)
+	EmptyTrash(ctx context.Context, request EmptyTrashRequestObject) (EmptyTrashResponseObject, error)
 	// TrashConversation Move a conversation to the trash
 	// (DELETE /v1/conversations/{conversationId})
 	TrashConversation(ctx context.Context, request TrashConversationRequestObject) (TrashConversationResponseObject, error)
@@ -121723,6 +122100,39 @@ func (sh *strictHandler) GetConversationCounts(w http.ResponseWriter, r *http.Re
 	}
 }
 
+// DeleteConversations operation middleware
+func (sh *strictHandler) DeleteConversations(w http.ResponseWriter, r *http.Request, params DeleteConversationsParams) {
+	var request DeleteConversationsRequestObject
+
+	request.Params = params
+
+	var body DeleteConversationsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteConversations(ctx, request.(DeleteConversationsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteConversations")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteConversationsResponseObject); ok {
+		if err := validResponse.VisitDeleteConversationsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // ComposeMail operation middleware
 func (sh *strictHandler) ComposeMail(w http.ResponseWriter, r *http.Request, params ComposeMailParams) {
 	var request ComposeMailRequestObject
@@ -121760,6 +122170,39 @@ func (sh *strictHandler) ComposeMail(w http.ResponseWriter, r *http.Request, par
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(ComposeMailResponseObject); ok {
 		if err := validResponse.VisitComposeMailResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// EmptyTrash operation middleware
+func (sh *strictHandler) EmptyTrash(w http.ResponseWriter, r *http.Request, params EmptyTrashParams) {
+	var request EmptyTrashRequestObject
+
+	request.Params = params
+
+	var body EmptyTrashJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.EmptyTrash(ctx, request.(EmptyTrashRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "EmptyTrash")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(EmptyTrashResponseObject); ok {
+		if err := validResponse.VisitEmptyTrashResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

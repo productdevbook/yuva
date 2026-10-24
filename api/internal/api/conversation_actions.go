@@ -23,7 +23,7 @@ func (s *Server) BulkUpdateConversations(ctx context.Context, req oas.BulkUpdate
 		return nil, errValidation("conversation_ids must name 1 to 100 conversations")
 	}
 	if b.Trashed != nil {
-		if b.Status != nil || b.SnoozeUntil != nil || b.AssigneeId.IsSpecified() || b.AddLabels != nil || b.RemoveLabels != nil || b.Fields != nil {
+		if b.Status != nil || b.SnoozeUntil != nil || b.AssigneeId.IsSpecified() || b.AddLabels != nil || b.RemoveLabels != nil || b.Fields != nil || b.Spam != nil {
 			return nil, errValidation("trashed goes alone, without other changes")
 		}
 		if err := requireTrashManager(p); err != nil {
@@ -34,10 +34,10 @@ func (s *Server) BulkUpdateConversations(ctx context.Context, req oas.BulkUpdate
 	if err := requireScope(p, oas.ConversationsWrite); err != nil {
 		return nil, err
 	}
-	if b.Status == nil && b.SnoozeUntil == nil && !b.AssigneeId.IsSpecified() && b.AddLabels == nil && b.RemoveLabels == nil && b.Fields == nil {
-		return nil, errValidation("name at least one change: status, assignee_id, add_labels, remove_labels, fields or trashed")
+	if b.Status == nil && b.SnoozeUntil == nil && !b.AssigneeId.IsSpecified() && b.AddLabels == nil && b.RemoveLabels == nil && b.Fields == nil && b.Spam == nil {
+		return nil, errValidation("name at least one change: status, assignee_id, add_labels, remove_labels, fields, spam or trashed")
 	}
-	upd := oas.ConversationUpdate{Status: b.Status, SnoozeUntil: b.SnoozeUntil, AssigneeId: b.AssigneeId, Fields: b.Fields}
+	upd := oas.ConversationUpdate{Status: b.Status, SnoozeUntil: b.SnoozeUntil, AssigneeId: b.AssigneeId, Fields: b.Fields, Spam: b.Spam}
 	if b.Fields != nil {
 		defs, err := conversationFieldDefs(ctx, s.st.Queries, p.workspaceID)
 		if err != nil {
@@ -111,15 +111,7 @@ func (s *Server) bulkEach(ctx context.Context, p principal, ids []uuid.UUID, cha
 		case err == nil:
 			out.Updated = append(out.Updated, c)
 		case errors.As(err, &ae) && ae.Status < http.StatusInternalServerError:
-			f := oas.ConversationBulkFailure{Id: id, Status: int32(ae.Status), Code: ae.Code}
-			if ae.Detail != "" {
-				d := ae.Detail
-				f.Detail = &d
-			}
-			if ae.Field != "" {
-				f.Field = new(ae.Field)
-			}
-			out.Failed = append(out.Failed, f)
+			out.Failed = append(out.Failed, conversationFailure(id, ae))
 		default:
 			return nil, err
 		}

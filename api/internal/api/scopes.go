@@ -138,6 +138,8 @@ var operationScopes = map[string][]oas.ApiKeyScope{
 	"MoveConversation":        {oas.ConversationsWrite},
 	"BulkUpdateConversations": nil,
 	"TrashConversation":       {oas.ConversationsDelete},
+	"DeleteConversations":     {oas.ConversationsDelete},
+	"EmptyTrash":              {oas.ConversationsDelete},
 	"RestoreConversation":     {oas.ConversationsDelete},
 
 	"CreateMessage":     nil,

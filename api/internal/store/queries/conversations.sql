@@ -466,3 +466,32 @@ WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[])
 
 -- name: SetConversationDraftOf :exec
 UPDATE conversations SET draft_of = sqlc.narg(draft_of)::uuid WHERE workspace_id = @workspace_id AND id = @id;
+
+-- The trash a caller may delete for good: their own personal mailboxes, and for managers and keys
+-- every other inbox they see. bound is the database's clock unless at replaces it in tests.
+-- name: CountDeletableTrash :one
+WITH b AS (SELECT coalesce(sqlc.narg(at)::timestamptz, statement_timestamp())::timestamptz AS bound)
+SELECT b.bound::timestamptz AS bound, (
+    SELECT count(*) FROM conversations c
+    JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+    WHERE c.workspace_id = @workspace_id AND c.trashed_at <= b.bound
+      AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
+      AND ((i.personal AND i.owner_member_id = sqlc.narg(owner_member_id)::uuid)
+        OR (NOT i.personal AND @manager::bool AND (@all_inboxes::bool OR EXISTS (
+            SELECT 1 FROM inbox_viewers iv
+            WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))))
+)::bigint AS n
+FROM b;
+
+-- name: ListDeletableTrash :many
+SELECT c.id, c.inbox_id, c.contact_id FROM conversations c
+JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+WHERE c.workspace_id = @workspace_id AND c.trashed_at <= @until::timestamptz
+  AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
+  AND ((i.personal AND i.owner_member_id = sqlc.narg(owner_member_id)::uuid)
+    OR (NOT i.personal AND @manager::bool AND (@all_inboxes::bool OR EXISTS (
+        SELECT 1 FROM inbox_viewers iv
+        WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))))
+ORDER BY c.id
+LIMIT @max_rows
+FOR UPDATE OF c;

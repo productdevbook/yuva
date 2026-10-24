@@ -28,6 +28,53 @@ func (q *Queries) AddConversationLabel(ctx context.Context, arg AddConversationL
 	return err
 }
 
+const countDeletableTrash = `-- name: CountDeletableTrash :one
+WITH b AS (SELECT coalesce($7::timestamptz, statement_timestamp())::timestamptz AS bound)
+SELECT b.bound::timestamptz AS bound, (
+    SELECT count(*) FROM conversations c
+    JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+    WHERE c.workspace_id = $1 AND c.trashed_at <= b.bound
+      AND conversation_visible_to(c.draft_of, $2::uuid)
+      AND ((i.personal AND i.owner_member_id = $3::uuid)
+        OR (NOT i.personal AND $4::bool AND ($5::bool OR EXISTS (
+            SELECT 1 FROM inbox_viewers iv
+            WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid))))
+)::bigint AS n
+FROM b
+`
+
+type CountDeletableTrashParams struct {
+	WorkspaceID    uuid.UUID
+	ViewerMemberID *uuid.UUID
+	OwnerMemberID  *uuid.UUID
+	Manager        bool
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	At             *time.Time
+}
+
+type CountDeletableTrashRow struct {
+	Bound time.Time
+	N     int64
+}
+
+// The trash a caller may delete for good: their own personal mailboxes, and for managers and keys
+// every other inbox they see. bound is the database's clock unless at replaces it in tests.
+func (q *Queries) CountDeletableTrash(ctx context.Context, arg CountDeletableTrashParams) (CountDeletableTrashRow, error) {
+	row := q.db.QueryRow(ctx, countDeletableTrash,
+		arg.WorkspaceID,
+		arg.ViewerMemberID,
+		arg.OwnerMemberID,
+		arg.Manager,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.At,
+	)
+	var i CountDeletableTrashRow
+	err := row.Scan(&i.Bound, &i.N)
+	return i, err
+}
+
 const countOpenConversations = `-- name: CountOpenConversations :many
 SELECT c.inbox_id, c.assignee_id, c.team_id, c.spam, count(*) AS n
 FROM conversations c
@@ -1165,6 +1212,66 @@ func (q *Queries) ListConversationsWithAttachments(ctx context.Context, arg List
 			return nil, err
 		}
 		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listDeletableTrash = `-- name: ListDeletableTrash :many
+SELECT c.id, c.inbox_id, c.contact_id FROM conversations c
+JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+WHERE c.workspace_id = $1 AND c.trashed_at <= $2::timestamptz
+  AND conversation_visible_to(c.draft_of, $3::uuid)
+  AND ((i.personal AND i.owner_member_id = $4::uuid)
+    OR (NOT i.personal AND $5::bool AND ($6::bool OR EXISTS (
+        SELECT 1 FROM inbox_viewers iv
+        WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))))
+ORDER BY c.id
+LIMIT $8
+FOR UPDATE OF c
+`
+
+type ListDeletableTrashParams struct {
+	WorkspaceID    uuid.UUID
+	Until          time.Time
+	ViewerMemberID *uuid.UUID
+	OwnerMemberID  *uuid.UUID
+	Manager        bool
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+	MaxRows        int32
+}
+
+type ListDeletableTrashRow struct {
+	ID        uuid.UUID
+	InboxID   uuid.UUID
+	ContactID uuid.UUID
+}
+
+func (q *Queries) ListDeletableTrash(ctx context.Context, arg ListDeletableTrashParams) ([]ListDeletableTrashRow, error) {
+	rows, err := q.db.Query(ctx, listDeletableTrash,
+		arg.WorkspaceID,
+		arg.Until,
+		arg.ViewerMemberID,
+		arg.OwnerMemberID,
+		arg.Manager,
+		arg.AllInboxes,
+		arg.ViewerID,
+		arg.MaxRows,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListDeletableTrashRow
+	for rows.Next() {
+		var i ListDeletableTrashRow
+		if err := rows.Scan(&i.ID, &i.InboxID, &i.ContactID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

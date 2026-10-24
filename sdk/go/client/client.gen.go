@@ -1134,6 +1134,7 @@ const (
 	AuditConversationDeleted                 AuditAction = "conversation.deleted"
 	AuditConversationRestored                AuditAction = "conversation.restored"
 	AuditConversationTrashed                 AuditAction = "conversation.trashed"
+	AuditConversationsDeleted                AuditAction = "conversations.deleted"
 	AuditInboxCreated                        AuditAction = "inbox.created"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
@@ -1179,6 +1180,7 @@ const (
 	AuditTeamInboxAccessRevoked              AuditAction = "team.inbox_access_revoked"
 	AuditTeamMemberAdded                     AuditAction = "team.member_added"
 	AuditTeamMemberRemoved                   AuditAction = "team.member_removed"
+	AuditTrashEmptied                        AuditAction = "trash.emptied"
 	AuditWebhookCreated                      AuditAction = "webhook.created"
 	AuditWebhookDeleted                      AuditAction = "webhook.deleted"
 	AuditWebhookSecretRotated                AuditAction = "webhook.secret_rotated"
@@ -1236,6 +1238,8 @@ func (e AuditAction) Valid() bool {
 	case AuditConversationRestored:
 		return true
 	case AuditConversationTrashed:
+		return true
+	case AuditConversationsDeleted:
 		return true
 	case AuditInboxCreated:
 		return true
@@ -1327,6 +1331,8 @@ func (e AuditAction) Valid() bool {
 		return true
 	case AuditTeamMemberRemoved:
 		return true
+	case AuditTrashEmptied:
+		return true
 	case AuditWebhookCreated:
 		return true
 	case AuditWebhookDeleted:
@@ -1397,6 +1403,7 @@ const (
 	AuditTargetChannel          AuditTargetType = "channel"
 	AuditTargetContact          AuditTargetType = "contact"
 	AuditTargetConversation     AuditTargetType = "conversation"
+	AuditTargetConversations    AuditTargetType = "conversations"
 	AuditTargetInbox            AuditTargetType = "inbox"
 	AuditTargetInvite           AuditTargetType = "invite"
 	AuditTargetIssueIntegration AuditTargetType = "issue_integration"
@@ -1408,6 +1415,7 @@ const (
 	AuditTargetSso              AuditTargetType = "sso"
 	AuditTargetSsoDomain        AuditTargetType = "sso_domain"
 	AuditTargetTeam             AuditTargetType = "team"
+	AuditTargetTrash            AuditTargetType = "trash"
 	AuditTargetWebhook          AuditTargetType = "webhook"
 	AuditTargetWorkspace        AuditTargetType = "workspace"
 )
@@ -1426,6 +1434,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetContact:
 		return true
 	case AuditTargetConversation:
+		return true
+	case AuditTargetConversations:
 		return true
 	case AuditTargetInbox:
 		return true
@@ -1448,6 +1458,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetSsoDomain:
 		return true
 	case AuditTargetTeam:
+		return true
+	case AuditTargetTrash:
 		return true
 	case AuditTargetWebhook:
 		return true
@@ -9513,7 +9525,10 @@ type AnalyticsRangeProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -10049,8 +10064,8 @@ type ApiKeyList struct {
 //		message e-mail and raw source; list labels and canned replies.
 //	  - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
 //	    and bulk-update conversations.
-//	  - `conversations:delete`: move conversations to the trash, restore them, and list the
-//	    trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
+//	  - `conversations:delete`: move conversations to the trash, restore them, list the trash,
+//	    delete conversations in it for good and empty it. For owners and admins: never offered to agents' tokens. Never implied: a key made
 //	    without naming its scopes does not hold it.
 //	  - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
 //	    OAuth tokens also replies to reader threads and their accepted answer. Forwarding a
@@ -10358,6 +10373,9 @@ type Attributes map[string]interface{}
 //     `inbox_name`.
 //   - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 //     `inbox_id`, by `system` (never the subject or content).
+//   - `conversations.deleted` (`POST /v1/conversations/delete`): `count`, the conversations
+//     deleted for good. `trash.emptied` (`POST /v1/conversations/trash/empty`, written when
+//     its job is done): `count`. The target is the workspace; never ids, subjects or content.
 //   - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
 //     `files` (attachments and raw e-mails removed); never the removed content.
 //   - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
@@ -10492,6 +10510,9 @@ type AuditEntry struct {
 	//   `inbox_name`.
 	// - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
 	//   `inbox_id`, by `system` (never the subject or content).
+	// - `conversations.deleted` (`POST /v1/conversations/delete`): `count`, the conversations
+	//   deleted for good. `trash.emptied` (`POST /v1/conversations/trash/empty`, written when
+	//   its job is done): `count`. The target is the workspace; never ids, subjects or content.
 	// - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
 	//   `files` (attachments and raw e-mails removed); never the removed content.
 	// - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
@@ -10574,11 +10595,13 @@ type AuditEntryPage struct {
 // AuditTarget defines model for AuditTarget.
 type AuditTarget struct {
 	// Id The target, which may no longer exist.
-	Id   uuid.UUID       `json:"id"`
+	Id uuid.UUID `json:"id"`
+
+	// Type `conversations` and `trash` name the workspace's conversations and its trash; their id is the workspace's.
 	Type AuditTargetType `json:"type"`
 }
 
-// AuditTargetType defines model for AuditTargetType.
+// AuditTargetType `conversations` and `trash` name the workspace's conversations and its trash; their id is the workspace's.
 type AuditTargetType string
 
 // AuthStatus A result as the receiving server reported it (RFC 8601); `unknown` until it is read or
@@ -11279,7 +11302,10 @@ type BroadcastProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -11687,7 +11713,10 @@ type ChangelogConflictProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -14023,8 +14052,11 @@ type ConversationBulkUpdate struct {
 	RemoveLabels *[]uuid.UUID             `json:"remove_labels,omitempty"`
 
 	// SnoozeUntil Required with status `snoozed`.
-	SnoozeUntil *time.Time          `json:"snooze_until,omitempty"`
-	Status      *ConversationStatus `json:"status,omitempty"`
+	SnoozeUntil *time.Time `json:"snooze_until,omitempty"`
+
+	// Spam Flag (`true`) or unflag (`false`) as spam, as `PATCH` does.
+	Spam   *bool               `json:"spam,omitempty"`
+	Status *ConversationStatus `json:"status,omitempty"`
 
 	// Trashed `true` moves the conversations to the trash, `false` restores them. Alone, without
 	// other changes. Owners, admins and keys and tokens with `conversations:delete`.
@@ -14088,6 +14120,18 @@ type ConversationCreate struct {
 	Labels    *[]uuid.UUID `json:"labels,omitempty"`
 	Priority  *Priority    `json:"priority,omitempty"`
 	Subject   *string      `json:"subject,omitempty"`
+}
+
+// ConversationDelete defines model for ConversationDelete.
+type ConversationDelete struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+// ConversationDeleteResult defines model for ConversationDeleteResult.
+type ConversationDeleteResult struct {
+	// Deleted How many conversations were deleted.
+	Deleted int32                     `json:"deleted"`
+	Failed  []ConversationBulkFailure `json:"failed"`
 }
 
 // ConversationDeleted A conversation deleted for good; nothing else of it is kept.
@@ -15687,6 +15731,9 @@ type EmailDesignProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
+	// Count `count_changed` only: the number as it is now.
+	Count *int64 `json:"count,omitempty"`
+
 	// Design `version_conflict` only: the design as it is now.
 	Design *EmailDesign        `json:"design,omitempty"`
 	Detail *string             `json:"detail,omitempty"`
@@ -16052,7 +16099,10 @@ type EmailImageProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -17216,7 +17266,10 @@ type HelpConflictProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -20446,7 +20499,10 @@ type MigrationFileProblem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Entry `file_refused` only: the zip entry it is about, when one is.
@@ -21523,7 +21579,10 @@ type Problem struct {
 	// Code A stable, machine-readable error code.
 	//
 	// Examples: not_found
-	Code   string  `json:"code"`
+	Code string `json:"code"`
+
+	// Count `count_changed` only: the number as it is now.
+	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
 	// Field `field_invalid` and `field_required`: the key of the custom field. `validation_failed`
@@ -24456,6 +24515,18 @@ type TeamUpdate struct {
 	Name *string `json:"name,omitempty"`
 }
 
+// TrashEmpty defines model for TrashEmpty.
+type TrashEmpty struct {
+	// ConfirmCount The number of conversations in the trash the person confirmed.
+	ConfirmCount int64 `json:"confirm_count"`
+}
+
+// TrashEmptyResult defines model for TrashEmptyResult.
+type TrashEmptyResult struct {
+	// Count How many conversations the job will delete.
+	Count int64 `json:"count"`
+}
+
 // Typing defines model for Typing.
 type Typing struct {
 	Author         TypingAuthor `json:"author"`
@@ -27017,8 +27088,26 @@ type GetConversationCountsParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteConversationsParams defines parameters for DeleteConversations.
+type DeleteConversationsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ComposeMailParams defines parameters for ComposeMail.
 type ComposeMailParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// EmptyTrashParams defines parameters for EmptyTrash.
+type EmptyTrashParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
@@ -30505,11 +30594,17 @@ type CreateConversationJSONRequestBody = ConversationCreate
 // BulkUpdateConversationsJSONRequestBody defines body for BulkUpdateConversations for application/json ContentType.
 type BulkUpdateConversationsJSONRequestBody = ConversationBulkUpdate
 
+// DeleteConversationsJSONRequestBody defines body for DeleteConversations for application/json ContentType.
+type DeleteConversationsJSONRequestBody = ConversationDelete
+
 // ComposeMailJSONRequestBody defines body for ComposeMail for application/json ContentType.
 type ComposeMailJSONRequestBody = ComposeMail
 
 // ComposeMailMultipartRequestBody defines body for ComposeMail for multipart/form-data ContentType.
 type ComposeMailMultipartRequestBody = ComposeMailMultipart
+
+// EmptyTrashJSONRequestBody defines body for EmptyTrash for application/json ContentType.
+type EmptyTrashJSONRequestBody = TrashEmpty
 
 // UpdateConversationJSONRequestBody defines body for UpdateConversation for application/json ContentType.
 type UpdateConversationJSONRequestBody = ConversationUpdate
@@ -39421,6 +39516,7 @@ type ClientInterface interface {
 	// `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
 	// conversation is changed in its own transaction, records the same `event` messages and
 	// emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+	// `spam` flags or unflags them as spam (the Spam view's "Not spam").
 	// A conversation the caller cannot see (or of another workspace) is listed in `failed`
 	// with `not_found`; one whose inbox the new assignee cannot access with
 	// `validation_failed`; one that would close without a required custom field with
@@ -39447,6 +39543,7 @@ type ClientInterface interface {
 	// `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
 	// conversation is changed in its own transaction, records the same `event` messages and
 	// emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+	// `spam` flags or unflags them as spam (the Spam view's "Not spam").
 	// A conversation the caller cannot see (or of another workspace) is listed in `failed`
 	// with `not_found`; one whose inbox the new assignee cannot access with
 	// `validation_failed`; one that would close without a required custom field with
@@ -39486,6 +39583,56 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
 	GetConversationCounts(ctx context.Context, params *GetConversationCountsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteConversationsWithBody Delete conversations in the trash for good
+	//
+	// Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+	// purge does: with their messages, attachments, raw e-mails and remaining events in one
+	// transaction, and their stored files through the retried `storage_delete` job. Emits
+	// `conversation.deleted` for each. Cannot be undone.
+	//
+	// A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+	// the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+	// only their owner deletes from them, whatever the owner's role, through a member session or
+	// the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+	// delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+	// tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+	// forbidden`. Repeated ids count once.
+	//
+	// The audit log records one `conversations.deleted` with the count, never the ids, subjects
+	// or content.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/conversations/delete (the `DeleteConversations` operationId).
+	DeleteConversationsWithBody(ctx context.Context, params *DeleteConversationsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteConversations Delete conversations in the trash for good
+	//
+	// Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+	// purge does: with their messages, attachments, raw e-mails and remaining events in one
+	// transaction, and their stored files through the retried `storage_delete` job. Emits
+	// `conversation.deleted` for each. Cannot be undone.
+	//
+	// A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+	// the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+	// only their owner deletes from them, whatever the owner's role, through a member session or
+	// the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+	// delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+	// tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+	// forbidden`. Repeated ids count once.
+	//
+	// The audit log records one `conversations.deleted` with the count, never the ids, subjects
+	// or content.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/conversations/delete (the `DeleteConversations` operationId).
+	DeleteConversations(ctx context.Context, params *DeleteConversationsParams, body DeleteConversationsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ComposeMailWithBody Write a new e-mail to one or more recipients
 	//
@@ -39650,6 +39797,48 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
 	ComposeMail(ctx context.Context, params *ComposeMailParams, body ComposeMailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EmptyTrashWithBody Empty the trash
+	//
+	// Deletes for good every conversation in the trash the caller may delete (as `POST
+	// /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+	// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+	// the number of those conversations the person confirmed; when the trash holds another
+	// number now, nothing happens and the answer is `409 count_changed` with the current number
+	// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+	// the answer is `202` with the count. Conversations moved to the trash after the request are
+	// not deleted; ones restored before the job reaches them stay.
+	//
+	// When the job is done, the audit log records one `trash.emptied` by the caller with the
+	// number deleted, never ids, subjects or content.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/conversations/trash/empty (the `EmptyTrash` operationId).
+	EmptyTrashWithBody(ctx context.Context, params *EmptyTrashParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EmptyTrash Empty the trash
+	//
+	// Deletes for good every conversation in the trash the caller may delete (as `POST
+	// /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+	// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+	// the number of those conversations the person confirmed; when the trash holds another
+	// number now, nothing happens and the answer is `409 count_changed` with the current number
+	// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+	// the answer is `202` with the count. Conversations moved to the trash after the request are
+	// not deleted; ones restored before the job reaches them stay.
+	//
+	// When the job is done, the audit log records one `trash.emptied` by the caller with the
+	// number deleted, never ids, subjects or content.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/conversations/trash/empty (the `EmptyTrash` operationId).
+	EmptyTrash(ctx context.Context, params *EmptyTrashParams, body EmptyTrashJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// TrashConversation Move a conversation to the trash
 	//
@@ -53624,6 +53813,7 @@ func (c *Client) CreateConversation(ctx context.Context, params *CreateConversat
 // `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
 // conversation is changed in its own transaction, records the same `event` messages and
 // emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+// `spam` flags or unflags them as spam (the Spam view's "Not spam").
 // A conversation the caller cannot see (or of another workspace) is listed in `failed`
 // with `not_found`; one whose inbox the new assignee cannot access with
 // `validation_failed`; one that would close without a required custom field with
@@ -53660,6 +53850,7 @@ func (c *Client) BulkUpdateConversationsWithBody(ctx context.Context, params *Bu
 // `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
 // conversation is changed in its own transaction, records the same `event` messages and
 // emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+// `spam` flags or unflags them as spam (the Spam view's "Not spam").
 // A conversation the caller cannot see (or of another workspace) is listed in `failed`
 // with `not_found`; one whose inbox the new assignee cannot access with
 // `validation_failed`; one that would close without a required custom field with
@@ -53710,6 +53901,76 @@ func (c *Client) BulkUpdateConversations(ctx context.Context, params *BulkUpdate
 // Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
 func (c *Client) GetConversationCounts(ctx context.Context, params *GetConversationCountsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetConversationCountsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteConversationsWithBody Delete conversations in the trash for good
+//
+// Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+// purge does: with their messages, attachments, raw e-mails and remaining events in one
+// transaction, and their stored files through the retried `storage_delete` job. Emits
+// `conversation.deleted` for each. Cannot be undone.
+//
+// A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+// the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+// only their owner deletes from them, whatever the owner's role, through a member session or
+// the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+// delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+// tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+// forbidden`. Repeated ids count once.
+//
+// The audit log records one `conversations.deleted` with the count, never the ids, subjects
+// or content.
+//
+// Scope: `conversations:delete`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/conversations/delete (the `DeleteConversations` operationId).
+func (c *Client) DeleteConversationsWithBody(ctx context.Context, params *DeleteConversationsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteConversationsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteConversations Delete conversations in the trash for good
+//
+// Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+// purge does: with their messages, attachments, raw e-mails and remaining events in one
+// transaction, and their stored files through the retried `storage_delete` job. Emits
+// `conversation.deleted` for each. Cannot be undone.
+//
+// A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+// the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+// only their owner deletes from them, whatever the owner's role, through a member session or
+// the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+// delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+// tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+// forbidden`. Repeated ids count once.
+//
+// The audit log records one `conversations.deleted` with the count, never the ids, subjects
+// or content.
+//
+// Scope: `conversations:delete`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/conversations/delete (the `DeleteConversations` operationId).
+func (c *Client) DeleteConversations(ctx context.Context, params *DeleteConversationsParams, body DeleteConversationsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteConversationsRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -53894,6 +54155,68 @@ func (c *Client) ComposeMailWithBody(ctx context.Context, params *ComposeMailPar
 // Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
 func (c *Client) ComposeMail(ctx context.Context, params *ComposeMailParams, body ComposeMailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewComposeMailRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// EmptyTrashWithBody Empty the trash
+//
+// Deletes for good every conversation in the trash the caller may delete (as `POST
+// /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+// the number of those conversations the person confirmed; when the trash holds another
+// number now, nothing happens and the answer is `409 count_changed` with the current number
+// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+// the answer is `202` with the count. Conversations moved to the trash after the request are
+// not deleted; ones restored before the job reaches them stay.
+//
+// When the job is done, the audit log records one `trash.emptied` by the caller with the
+// number deleted, never ids, subjects or content.
+//
+// Scope: `conversations:delete`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/conversations/trash/empty (the `EmptyTrash` operationId).
+func (c *Client) EmptyTrashWithBody(ctx context.Context, params *EmptyTrashParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEmptyTrashRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// EmptyTrash Empty the trash
+//
+// Deletes for good every conversation in the trash the caller may delete (as `POST
+// /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+// the number of those conversations the person confirmed; when the trash holds another
+// number now, nothing happens and the answer is `409 count_changed` with the current number
+// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+// the answer is `202` with the count. Conversations moved to the trash after the request are
+// not deleted; ones restored before the job reaches them stay.
+//
+// When the job is done, the audit log records one `trash.emptied` by the caller with the
+// number deleted, never ids, subjects or content.
+//
+// Scope: `conversations:delete`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/conversations/trash/empty (the `EmptyTrash` operationId).
+func (c *Client) EmptyTrash(ctx context.Context, params *EmptyTrashParams, body EmptyTrashJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEmptyTrashRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -78071,6 +78394,72 @@ func NewGetConversationCountsRequest(server string, params *GetConversationCount
 	return req, nil
 }
 
+// NewDeleteConversationsRequest calls the generic DeleteConversations builder with application/json body
+func NewDeleteConversationsRequest(server string, params *DeleteConversationsParams, body DeleteConversationsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeleteConversationsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewDeleteConversationsRequestWithBody constructs an http.Request for the DeleteConversations method, with any body, and a specified content type
+func NewDeleteConversationsRequestWithBody(server string, params *DeleteConversationsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/delete")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewComposeMailRequest calls the generic ComposeMail builder with application/json body
 func NewComposeMailRequest(server string, params *ComposeMailParams, body ComposeMailJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -78092,6 +78481,72 @@ func NewComposeMailRequestWithBody(server string, params *ComposeMailParams, con
 	}
 
 	operationPath := fmt.Sprintf("/v1/conversations/mail")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewEmptyTrashRequest calls the generic EmptyTrash builder with application/json body
+func NewEmptyTrashRequest(server string, params *EmptyTrashParams, body EmptyTrashJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEmptyTrashRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewEmptyTrashRequestWithBody constructs an http.Request for the EmptyTrash method, with any body, and a specified content type
+func NewEmptyTrashRequestWithBody(server string, params *EmptyTrashParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/trash/empty")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -104012,6 +104467,7 @@ type ClientWithResponsesInterface interface {
 	// `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
 	// conversation is changed in its own transaction, records the same `event` messages and
 	// emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+	// `spam` flags or unflags them as spam (the Spam view's "Not spam").
 	// A conversation the caller cannot see (or of another workspace) is listed in `failed`
 	// with `not_found`; one whose inbox the new assignee cannot access with
 	// `validation_failed`; one that would close without a required custom field with
@@ -104038,6 +104494,7 @@ type ClientWithResponsesInterface interface {
 	// `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
 	// conversation is changed in its own transaction, records the same `event` messages and
 	// emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+	// `spam` flags or unflags them as spam (the Spam view's "Not spam").
 	// A conversation the caller cannot see (or of another workspace) is listed in `failed`
 	// with `not_found`; one whose inbox the new assignee cannot access with
 	// `validation_failed`; one that would close without a required custom field with
@@ -104079,6 +104536,56 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
 	GetConversationCountsWithResponse(ctx context.Context, params *GetConversationCountsParams, reqEditors ...RequestEditorFn) (*GetConversationCountsResponse, error)
+
+	// DeleteConversationsWithBodyWithResponse Delete conversations in the trash for good
+	//
+	// Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+	// purge does: with their messages, attachments, raw e-mails and remaining events in one
+	// transaction, and their stored files through the retried `storage_delete` job. Emits
+	// `conversation.deleted` for each. Cannot be undone.
+	//
+	// A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+	// the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+	// only their owner deletes from them, whatever the owner's role, through a member session or
+	// the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+	// delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+	// tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+	// forbidden`. Repeated ids count once.
+	//
+	// The audit log records one `conversations.deleted` with the count, never the ids, subjects
+	// or content.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/delete (the `DeleteConversations` operationId).
+	DeleteConversationsWithBodyWithResponse(ctx context.Context, params *DeleteConversationsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteConversationsResponse, error)
+
+	// DeleteConversationsWithResponse Delete conversations in the trash for good
+	//
+	// Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+	// purge does: with their messages, attachments, raw e-mails and remaining events in one
+	// transaction, and their stored files through the retried `storage_delete` job. Emits
+	// `conversation.deleted` for each. Cannot be undone.
+	//
+	// A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+	// the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+	// only their owner deletes from them, whatever the owner's role, through a member session or
+	// the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+	// delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+	// tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+	// forbidden`. Repeated ids count once.
+	//
+	// The audit log records one `conversations.deleted` with the count, never the ids, subjects
+	// or content.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/delete (the `DeleteConversations` operationId).
+	DeleteConversationsWithResponse(ctx context.Context, params *DeleteConversationsParams, body DeleteConversationsJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteConversationsResponse, error)
 
 	// ComposeMailWithBodyWithResponse Write a new e-mail to one or more recipients
 	//
@@ -104243,6 +104750,48 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /v1/conversations/mail (the `ComposeMail` operationId).
 	ComposeMailWithResponse(ctx context.Context, params *ComposeMailParams, body ComposeMailJSONRequestBody, reqEditors ...RequestEditorFn) (*ComposeMailResponse, error)
+
+	// EmptyTrashWithBodyWithResponse Empty the trash
+	//
+	// Deletes for good every conversation in the trash the caller may delete (as `POST
+	// /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+	// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+	// the number of those conversations the person confirmed; when the trash holds another
+	// number now, nothing happens and the answer is `409 count_changed` with the current number
+	// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+	// the answer is `202` with the count. Conversations moved to the trash after the request are
+	// not deleted; ones restored before the job reaches them stay.
+	//
+	// When the job is done, the audit log records one `trash.emptied` by the caller with the
+	// number deleted, never ids, subjects or content.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/trash/empty (the `EmptyTrash` operationId).
+	EmptyTrashWithBodyWithResponse(ctx context.Context, params *EmptyTrashParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EmptyTrashResponse, error)
+
+	// EmptyTrashWithResponse Empty the trash
+	//
+	// Deletes for good every conversation in the trash the caller may delete (as `POST
+	// /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+	// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+	// the number of those conversations the person confirmed; when the trash holds another
+	// number now, nothing happens and the answer is `409 count_changed` with the current number
+	// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+	// the answer is `202` with the count. Conversations moved to the trash after the request are
+	// not deleted; ones restored before the job reaches them stay.
+	//
+	// When the job is done, the audit log records one `trash.emptied` by the caller with the
+	// number deleted, never ids, subjects or content.
+	//
+	// Scope: `conversations:delete`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/trash/empty (the `EmptyTrash` operationId).
+	EmptyTrashWithResponse(ctx context.Context, params *EmptyTrashParams, body EmptyTrashJSONRequestBody, reqEditors ...RequestEditorFn) (*EmptyTrashResponse, error)
 
 	// TrashConversationWithResponse Move a conversation to the trash
 	//
@@ -125239,6 +125788,68 @@ func (r GetConversationCountsResponse) ContentType() string {
 	return ""
 }
 
+type DeleteConversationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ConversationDeleteResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteConversationsResponse) GetJSON200() *ConversationDeleteResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r DeleteConversationsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteConversationsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteConversationsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteConversationsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteConversationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteConversationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteConversationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ComposeMailResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -125337,6 +125948,75 @@ func (r ComposeMailResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r ComposeMailResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type EmptyTrashResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON202 the response for an HTTP 202 `application/json` response
+	JSON202 *TrashEmptyResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON202 returns the response for an HTTP 202 `application/json` response
+func (r EmptyTrashResponse) GetJSON202() *TrashEmptyResult {
+	return r.JSON202
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r EmptyTrashResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r EmptyTrashResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r EmptyTrashResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r EmptyTrashResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r EmptyTrashResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r EmptyTrashResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EmptyTrashResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r EmptyTrashResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -154238,6 +154918,7 @@ func (c *ClientWithResponses) CreateConversationWithResponse(ctx context.Context
 // `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
 // conversation is changed in its own transaction, records the same `event` messages and
 // emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+// `spam` flags or unflags them as spam (the Spam view's "Not spam").
 // A conversation the caller cannot see (or of another workspace) is listed in `failed`
 // with `not_found`; one whose inbox the new assignee cannot access with
 // `validation_failed`; one that would close without a required custom field with
@@ -154270,6 +154951,7 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithBodyWithResponse(ctx co
 // `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
 // conversation is changed in its own transaction, records the same `event` messages and
 // emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+// `spam` flags or unflags them as spam (the Spam view's "Not spam").
 // A conversation the caller cannot see (or of another workspace) is listed in `failed`
 // with `not_found`; one whose inbox the new assignee cannot access with
 // `validation_failed`; one that would close without a required custom field with
@@ -154322,6 +155004,68 @@ func (c *ClientWithResponses) GetConversationCountsWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetConversationCountsResponse(rsp)
+}
+
+// DeleteConversationsWithBodyWithResponse Delete conversations in the trash for good
+//
+// Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+// purge does: with their messages, attachments, raw e-mails and remaining events in one
+// transaction, and their stored files through the retried `storage_delete` job. Emits
+// `conversation.deleted` for each. Cannot be undone.
+//
+// A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+// the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+// only their owner deletes from them, whatever the owner's role, through a member session or
+// the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+// delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+// tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+// forbidden`. Repeated ids count once.
+//
+// The audit log records one `conversations.deleted` with the count, never the ids, subjects
+// or content.
+//
+// Scope: `conversations:delete`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/delete (the `DeleteConversations` operationId).
+func (c *ClientWithResponses) DeleteConversationsWithBodyWithResponse(ctx context.Context, params *DeleteConversationsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteConversationsResponse, error) {
+	rsp, err := c.DeleteConversationsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteConversationsResponse(rsp)
+}
+
+// DeleteConversationsWithResponse Delete conversations in the trash for good
+//
+// Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+// purge does: with their messages, attachments, raw e-mails and remaining events in one
+// transaction, and their stored files through the retried `storage_delete` job. Emits
+// `conversation.deleted` for each. Cannot be undone.
+//
+// A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+// the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+// only their owner deletes from them, whatever the owner's role, through a member session or
+// the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+// delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+// tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+// forbidden`. Repeated ids count once.
+//
+// The audit log records one `conversations.deleted` with the count, never the ids, subjects
+// or content.
+//
+// Scope: `conversations:delete`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/delete (the `DeleteConversations` operationId).
+func (c *ClientWithResponses) DeleteConversationsWithResponse(ctx context.Context, params *DeleteConversationsParams, body DeleteConversationsJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteConversationsResponse, error) {
+	rsp, err := c.DeleteConversations(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteConversationsResponse(rsp)
 }
 
 // ComposeMailWithBodyWithResponse Write a new e-mail to one or more recipients
@@ -154498,6 +155242,60 @@ func (c *ClientWithResponses) ComposeMailWithResponse(ctx context.Context, param
 		return nil, err
 	}
 	return ParseComposeMailResponse(rsp)
+}
+
+// EmptyTrashWithBodyWithResponse Empty the trash
+//
+// Deletes for good every conversation in the trash the caller may delete (as `POST
+// /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+// the number of those conversations the person confirmed; when the trash holds another
+// number now, nothing happens and the answer is `409 count_changed` with the current number
+// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+// the answer is `202` with the count. Conversations moved to the trash after the request are
+// not deleted; ones restored before the job reaches them stay.
+//
+// When the job is done, the audit log records one `trash.emptied` by the caller with the
+// number deleted, never ids, subjects or content.
+//
+// Scope: `conversations:delete`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/trash/empty (the `EmptyTrash` operationId).
+func (c *ClientWithResponses) EmptyTrashWithBodyWithResponse(ctx context.Context, params *EmptyTrashParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EmptyTrashResponse, error) {
+	rsp, err := c.EmptyTrashWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEmptyTrashResponse(rsp)
+}
+
+// EmptyTrashWithResponse Empty the trash
+//
+// Deletes for good every conversation in the trash the caller may delete (as `POST
+// /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+// see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+// the number of those conversations the person confirmed; when the trash holds another
+// number now, nothing happens and the answer is `409 count_changed` with the current number
+// in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+// the answer is `202` with the count. Conversations moved to the trash after the request are
+// not deleted; ones restored before the job reaches them stay.
+//
+// When the job is done, the audit log records one `trash.emptied` by the caller with the
+// number deleted, never ids, subjects or content.
+//
+// Scope: `conversations:delete`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/trash/empty (the `EmptyTrash` operationId).
+func (c *ClientWithResponses) EmptyTrashWithResponse(ctx context.Context, params *EmptyTrashParams, body EmptyTrashJSONRequestBody, reqEditors ...RequestEditorFn) (*EmptyTrashResponse, error) {
+	rsp, err := c.EmptyTrash(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEmptyTrashResponse(rsp)
 }
 
 // TrashConversationWithResponse Move a conversation to the trash
@@ -175425,6 +176223,53 @@ func ParseGetConversationCountsResponse(rsp *http.Response) (*GetConversationCou
 	return response, nil
 }
 
+// ParseDeleteConversationsResponse parses an HTTP response from a DeleteConversationsWithResponse call
+func ParseDeleteConversationsResponse(rsp *http.Response) (*DeleteConversationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteConversationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConversationDeleteResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseComposeMailResponse parses an HTTP response from a ComposeMailWithResponse call
 func ParseComposeMailResponse(rsp *http.Response) (*ComposeMailResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -175508,6 +176353,60 @@ func ParseComposeMailResponse(rsp *http.Response) (*ComposeMailResponse, error) 
 			return nil, err
 		}
 		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEmptyTrashResponse parses an HTTP response from a EmptyTrashWithResponse call
+func ParseEmptyTrashResponse(rsp *http.Response) (*EmptyTrashResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EmptyTrashResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest TrashEmptyResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 

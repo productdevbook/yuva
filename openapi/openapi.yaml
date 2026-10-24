@@ -5493,6 +5493,7 @@ paths:
         `snoozed`), an assignee (`null` unassigns), labels to add and labels to remove. Each
         conversation is changed in its own transaction, records the same `event` messages and
         emits the same events and webhooks as `PATCH /v1/conversations/{conversationId}`.
+        `spam` flags or unflags them as spam (the Spam view's "Not spam").
         A conversation the caller cannot see (or of another workspace) is listed in `failed`
         with `not_found`; one whose inbox the new assignee cannot access with
         `validation_failed`; one that would close without a required custom field with
@@ -5529,6 +5530,94 @@ paths:
         "401":
           $ref: "#/components/responses/Problem"
         "403":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/delete:
+    post:
+      operationId: deleteConversations
+      summary: Delete conversations in the trash for good
+      description: |
+        Deletes up to 100 conversations from the trash for good, each exactly as the 30-day trash
+        purge does: with their messages, attachments, raw e-mails and remaining events in one
+        transaction, and their stored files through the retried `storage_delete` job. Emits
+        `conversation.deleted` for each. Cannot be undone.
+
+        A conversation that is not in the trash is listed in `failed` with `409 not_trashed`; one
+        the caller cannot see (or of another workspace) with `404 not_found`. Personal mailboxes:
+        only their owner deletes from them, whatever the owner's role, through a member session or
+        the owner's own OAuth token; owners, admins and keys do not see them (`not_found`), and
+        delegates get `403 forbidden`. In every other inbox only owners and admins, and keys and
+        tokens with `conversations:delete` delete; an agent's conversation there fails with `403
+        forbidden`. Repeated ids count once.
+
+        The audit log records one `conversations.deleted` with the count, never the ids, subjects
+        or content.
+
+        Scope: `conversations:delete`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationDelete"
+      responses:
+        "200":
+          description: How many conversations were deleted and which were refused.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationDeleteResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+  /v1/conversations/trash/empty:
+    post:
+      operationId: emptyTrash
+      summary: Empty the trash
+      description: |
+        Deletes for good every conversation in the trash the caller may delete (as `POST
+        /v1/conversations/delete` decides: owners, admins and keys the trash of the inboxes they
+        see but personal mailboxes, a mailbox's owner its own mailbox's trash). `confirm_count` is
+        the number of those conversations the person confirmed; when the trash holds another
+        number now, nothing happens and the answer is `409 count_changed` with the current number
+        in `count`. Otherwise one job deletes them in batches, each as the 30-day purge does, and
+        the answer is `202` with the count. Conversations moved to the trash after the request are
+        not deleted; ones restored before the job reaches them stay.
+
+        When the job is done, the audit log records one `trash.emptied` by the caller with the
+        number deleted, never ids, subjects or content.
+
+        Scope: `conversations:delete`.
+      tags: [conversations]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrashEmpty"
+      responses:
+        "202":
+          description: The deletion is queued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrashEmptyResult"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/conversations/{conversationId}:
     get:
@@ -22135,6 +22224,9 @@ components:
           `inbox_name`.
         - `conversation.trashed`, `conversation.restored`: `inbox_id`. `conversation.deleted`:
           `inbox_id`, by `system` (never the subject or content).
+        - `conversations.deleted` (`POST /v1/conversations/delete`): `count`, the conversations
+          deleted for good. `trash.emptied` (`POST /v1/conversations/trash/empty`, written when
+          its job is done): `count`. The target is the workspace; never ids, subjects or content.
         - `message.redacted`: `conversation_id`, `inbox_id`, `kind` (`message` or `note`),
           `files` (attachments and raw e-mails removed); never the removed content.
         - `contact.deleted`: none (no name or address is kept). `contact.consent_exported`: `format`,
@@ -22232,6 +22324,8 @@ components:
         - conversation.trashed
         - conversation.restored
         - conversation.deleted
+        - conversations.deleted
+        - trash.emptied
         - message.redacted
         - contact.deleted
         - contact.consent_exported
@@ -22276,11 +22370,12 @@ components:
         - member_address.added
         - member_address.verified
         - member_address.removed
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditMailboxDelegateGranted, AuditMailboxDelegateRevoked, AuditMailboxHandedOver, AuditMailboxDeletedOnLeave, AuditMailboxOrphaned, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditMailboxDelegateGranted, AuditMailboxDelegateRevoked, AuditMailboxHandedOver, AuditMailboxDeletedOnLeave, AuditMailboxOrphaned, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditConversationsDeleted, AuditTrashEmptied, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
     AuditTargetType:
       type: string
-      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule, mailbox]
-      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration, AuditTargetAutomationRule, AuditTargetMailbox]
+      description: "`conversations` and `trash` name the workspace's conversations and its trash; their id is the workspace's."
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, conversations, trash, message, team, sso, sso_domain, issue_integration, automation_rule, mailbox]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetConversations, AuditTargetTrash, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration, AuditTargetAutomationRule, AuditTargetMailbox]
     AuditTarget:
       type: object
       required: [type, id]
@@ -22847,8 +22942,8 @@ components:
           message e-mail and raw source; list labels and canned replies.
         - `conversations:write`: create, update (status, assignee, snooze, priority, labels), move
           and bulk-update conversations.
-        - `conversations:delete`: move conversations to the trash, restore them, and list the
-          trash. For owners and admins: never offered to agents' tokens. Never implied: a key made
+        - `conversations:delete`: move conversations to the trash, restore them, list the trash,
+          delete conversations in it for good and empty it. For owners and admins: never offered to agents' tokens. Never implied: a key made
           without naming its scopes does not hold it.
         - `messages:write`: outgoing and incoming messages, drafts: create, edit, discard; for
           OAuth tokens also replies to reader threads and their accepted answer. Forwarding a
@@ -25745,6 +25840,9 @@ components:
           description: |
             `true` moves the conversations to the trash, `false` restores them. Alone, without
             other changes. Owners, admins and keys and tokens with `conversations:delete`.
+        spam:
+          type: boolean
+          description: Flag (`true`) or unflag (`false`) as spam, as `PATCH` does.
     ConversationBulkFailure:
       type: object
       required: [id, status, code]
@@ -25889,6 +25987,46 @@ components:
         action:
           type: string
           enum: [hide, unhide, spam, delete]
+    ConversationDelete:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: string
+            format: uuid
+    ConversationDeleteResult:
+      type: object
+      required: [deleted, failed]
+      properties:
+        deleted:
+          type: integer
+          format: int32
+          description: How many conversations were deleted.
+        failed:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConversationBulkFailure"
+    TrashEmpty:
+      type: object
+      required: [confirm_count]
+      properties:
+        confirm_count:
+          type: integer
+          format: int64
+          minimum: 0
+          description: The number of conversations in the trash the person confirmed.
+    TrashEmptyResult:
+      type: object
+      required: [count]
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: How many conversations the job will delete.
     ConversationMove:
       type: object
       required: [inbox_id]
@@ -43882,6 +44020,10 @@ components:
             type: string
             format: uuid
           description: "`personal_mailbox` on removing a member: the member's personal mailboxes."
+        count:
+          type: integer
+          format: int64
+          description: "`count_changed` only: the number as it is now."
         detail:
           type: string
     SlackConnection:
