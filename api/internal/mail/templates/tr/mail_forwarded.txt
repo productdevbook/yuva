@@ -1,0 +1,9 @@
+{{.Inbox}}: bir filtre size bir e-posta iletti{{if .Subject}}: {{.Subject}}{{end}}
+
+"{{.Rule}}" filtresi, {{.Inbox}} gelen kutusuna {{if .Contact}}{{.Contact}} tarafından gönderilen{{else}}bir göndericiden gelen{{end}}{{if .Subject}} "{{.Subject}}" konulu{{end}} e-postayı size iletti.{{if .Preview}}
+
+{{.Preview}}{{end}}
+
+Konuşmayı açın: {{.URL}}
+
+Bu e-postayı, bir e-posta filtresi sizi andığı için alıyorsunuz. Hangi e-postaları alacağınızı seçin: {{.SettingsURL}}

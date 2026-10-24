@@ -1,0 +1,5 @@
+{{template "heading" "A filter passed you a mail"}}
+<p style="margin:0 0 16px 0;">The filter “{{.Rule}}” passed you a mail from {{if .Contact}}<strong>{{.Contact}}</strong>{{else}}a sender{{end}} in <strong>{{.Inbox}}</strong>{{if .Subject}} about “{{.Subject}}”{{end}}.</p>
+{{if .Preview}}<p style="margin:0 0 16px 0;color:#52525b;">{{.Preview}}</p>
+{{end}}{{template "button" (button .URL "Open the conversation")}}
+{{define "mail_forwarded.footer"}}You get this e-mail because a mail filter names you. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Choose which e-mails you get</a>{{end}}

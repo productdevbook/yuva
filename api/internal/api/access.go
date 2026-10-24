@@ -54,9 +54,9 @@ func errPersonalMailbox(detail string) *apiError {
 }
 
 // canReadPersonal is who reads a personal mailbox's content: its owner, through a session or the
-// owner's own OAuth grant, and the system's own jobs.
+// owner's own OAuth grant, the system's own jobs, and the mailbox's own filters.
 func canReadPersonal(p principal, in store.Inbox) bool {
-	if in.OwnerMemberID == nil || p.auto {
+	if in.OwnerMemberID == nil || p.auto || (p.mailbox != uuid.Nil() && p.mailbox == in.ID) {
 		return true
 	}
 	return !p.isKey() && p.rule == nil && p.memberID != uuid.Nil() && p.memberID == *in.OwnerMemberID
@@ -65,7 +65,7 @@ func canReadPersonal(p principal, in store.Inbox) bool {
 // canSeeInbox reports whether p reads the inbox's content; seeing every inbox stops short of another
 // member's personal mailbox.
 func canSeeInbox(ctx context.Context, q *store.Queries, p principal, inboxID uuid.UUID) (bool, error) {
-	if p.auto {
+	if p.auto || (p.mailbox != uuid.Nil() && p.mailbox == inboxID) {
 		return true, nil
 	}
 	return q.ViewerReadsInbox(ctx, store.ViewerReadsInboxParams{WorkspaceID: p.workspaceID, InboxID: inboxID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})

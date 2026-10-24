@@ -1,0 +1,5 @@
+{{template "heading" "Ein Filter hat Ihnen eine E-Mail weitergegeben"}}
+<p style="margin:0 0 16px 0;">Der Filter „{{.Rule}}“ hat Ihnen eine E-Mail von {{if .Contact}}<strong>{{.Contact}}</strong>{{else}}einem Absender{{end}} in <strong>{{.Inbox}}</strong>{{if .Subject}} zu „{{.Subject}}“{{end}} weitergegeben.</p>
+{{if .Preview}}<p style="margin:0 0 16px 0;color:#52525b;">{{.Preview}}</p>
+{{end}}{{template "button" (button .URL "Unterhaltung öffnen")}}
+{{define "mail_forwarded.footer"}}Sie erhalten diese E-Mail, weil ein E-Mail-Filter Sie nennt. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Wählen Sie, welche E-Mails Sie erhalten</a>{{end}}

@@ -1505,18 +1505,22 @@ func (e AuthorType) Valid() bool {
 
 // Defines values for AutomationActionType.
 const (
-	AutomationActionAddLabels    AutomationActionType = "add_labels"
-	AutomationActionAddNote      AutomationActionType = "add_note"
-	AutomationActionAssignMember AutomationActionType = "assign_member"
-	AutomationActionAssignPool   AutomationActionType = "assign_pool"
-	AutomationActionAssignTeam   AutomationActionType = "assign_team"
-	AutomationActionRemoveLabels AutomationActionType = "remove_labels"
-	AutomationActionSendReply    AutomationActionType = "send_reply"
-	AutomationActionSendWebhook  AutomationActionType = "send_webhook"
-	AutomationActionSetPriority  AutomationActionType = "set_priority"
-	AutomationActionSetStatus    AutomationActionType = "set_status"
-	AutomationActionSnooze       AutomationActionType = "snooze"
-	AutomationActionUnassign     AutomationActionType = "unassign"
+	AutomationActionAddLabels       AutomationActionType = "add_labels"
+	AutomationActionAddNote         AutomationActionType = "add_note"
+	AutomationActionArchive         AutomationActionType = "archive"
+	AutomationActionAssignMember    AutomationActionType = "assign_member"
+	AutomationActionAssignPool      AutomationActionType = "assign_pool"
+	AutomationActionAssignTeam      AutomationActionType = "assign_team"
+	AutomationActionForwardToMember AutomationActionType = "forward_to_member"
+	AutomationActionRemoveLabels    AutomationActionType = "remove_labels"
+	AutomationActionSendReply       AutomationActionType = "send_reply"
+	AutomationActionSendWebhook     AutomationActionType = "send_webhook"
+	AutomationActionSetPriority     AutomationActionType = "set_priority"
+	AutomationActionSetStatus       AutomationActionType = "set_status"
+	AutomationActionSnooze          AutomationActionType = "snooze"
+	AutomationActionStar            AutomationActionType = "star"
+	AutomationActionTrash           AutomationActionType = "trash"
+	AutomationActionUnassign        AutomationActionType = "unassign"
 )
 
 // Valid indicates whether the value is a known member of the AutomationActionType enum.
@@ -1526,11 +1530,15 @@ func (e AutomationActionType) Valid() bool {
 		return true
 	case AutomationActionAddNote:
 		return true
+	case AutomationActionArchive:
+		return true
 	case AutomationActionAssignMember:
 		return true
 	case AutomationActionAssignPool:
 		return true
 	case AutomationActionAssignTeam:
+		return true
+	case AutomationActionForwardToMember:
 		return true
 	case AutomationActionRemoveLabels:
 		return true
@@ -1544,6 +1552,10 @@ func (e AutomationActionType) Valid() bool {
 		return true
 	case AutomationActionSnooze:
 		return true
+	case AutomationActionStar:
+		return true
+	case AutomationActionTrash:
+		return true
 	case AutomationActionUnassign:
 		return true
 	default:
@@ -1556,16 +1568,21 @@ const (
 	AutomationFieldAssignee         AutomationConditionField = "assignee"
 	AutomationFieldBody             AutomationConditionField = "body"
 	AutomationFieldBusinessHours    AutomationConditionField = "business_hours"
+	AutomationFieldCc               AutomationConditionField = "cc"
 	AutomationFieldChannelKind      AutomationConditionField = "channel_kind"
 	AutomationFieldContactAttribute AutomationConditionField = "contact_attribute"
 	AutomationFieldCustomField      AutomationConditionField = "custom_field"
 	AutomationFieldFeedbackCategory AutomationConditionField = "feedback_category"
+	AutomationFieldFrom             AutomationConditionField = "from"
+	AutomationFieldHasAttachment    AutomationConditionField = "has_attachment"
 	AutomationFieldKind             AutomationConditionField = "kind"
 	AutomationFieldLabel            AutomationConditionField = "label"
+	AutomationFieldListId           AutomationConditionField = "list_id"
 	AutomationFieldPriority         AutomationConditionField = "priority"
 	AutomationFieldStatus           AutomationConditionField = "status"
 	AutomationFieldSubject          AutomationConditionField = "subject"
 	AutomationFieldTeam             AutomationConditionField = "team"
+	AutomationFieldTo               AutomationConditionField = "to"
 )
 
 // Valid indicates whether the value is a known member of the AutomationConditionField enum.
@@ -1577,6 +1594,8 @@ func (e AutomationConditionField) Valid() bool {
 		return true
 	case AutomationFieldBusinessHours:
 		return true
+	case AutomationFieldCc:
+		return true
 	case AutomationFieldChannelKind:
 		return true
 	case AutomationFieldContactAttribute:
@@ -1585,9 +1604,15 @@ func (e AutomationConditionField) Valid() bool {
 		return true
 	case AutomationFieldFeedbackCategory:
 		return true
+	case AutomationFieldFrom:
+		return true
+	case AutomationFieldHasAttachment:
+		return true
 	case AutomationFieldKind:
 		return true
 	case AutomationFieldLabel:
+		return true
+	case AutomationFieldListId:
 		return true
 	case AutomationFieldPriority:
 		return true
@@ -1596,6 +1621,8 @@ func (e AutomationConditionField) Valid() bool {
 	case AutomationFieldSubject:
 		return true
 	case AutomationFieldTeam:
+		return true
+	case AutomationFieldTo:
 		return true
 	default:
 		return false
@@ -1708,6 +1735,7 @@ func (e AutomationRunOutcome) Valid() bool {
 const (
 	AutomationTriggerConversationCreated AutomationTrigger = "conversation_created"
 	AutomationTriggerIdle                AutomationTrigger = "idle"
+	AutomationTriggerMailReceived        AutomationTrigger = "mail_received"
 	AutomationTriggerMessageReceived     AutomationTrigger = "message_received"
 	AutomationTriggerStatusChanged       AutomationTrigger = "status_changed"
 )
@@ -1718,6 +1746,8 @@ func (e AutomationTrigger) Valid() bool {
 	case AutomationTriggerConversationCreated:
 		return true
 	case AutomationTriggerIdle:
+		return true
+	case AutomationTriggerMailReceived:
 		return true
 	case AutomationTriggerMessageReceived:
 		return true
@@ -5974,6 +6004,7 @@ func (e Priority) Valid() bool {
 const (
 	AssignedToMe                    PushNotificationEvent = "assigned_to_me"
 	ForwardAnswer                   PushNotificationEvent = "forward_answer"
+	MailForwarded                   PushNotificationEvent = "mail_forwarded"
 	Mentioned                       PushNotificationEvent = "mentioned"
 	MessageInMyConversation         PushNotificationEvent = "message_in_my_conversation"
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
@@ -5991,6 +6022,8 @@ func (e PushNotificationEvent) Valid() bool {
 	case AssignedToMe:
 		return true
 	case ForwardAnswer:
+		return true
+	case MailForwarded:
 		return true
 	case Mentioned:
 		return true
@@ -10341,13 +10374,15 @@ type AuthorType string
 
 // AutomationAction Each type at most once per rule, and only the fields its type uses (`400
 // validation_failed` otherwise); `set_status` and `snooze` exclude each other, as do
-// `assign_member`, `assign_pool` and `unassign`, and `add_labels` and `remove_labels` share
-// no label.
+// `assign_member`, `assign_pool` and `unassign`, `archive` excludes `set_status` and
+// `snooze`, `forward_to_member` excludes `trash`, and `add_labels` and `remove_labels`
+// share no label.
 type AutomationAction struct {
 	Body          *string             `json:"body,omitempty"`
 	CannedReplyId *uuid.UUID          `json:"canned_reply_id,omitempty"`
 	LabelIds      *[]uuid.UUID        `json:"label_ids,omitempty"`
 	MemberId      *uuid.UUID          `json:"member_id,omitempty"`
+	MemberIds     *[]uuid.UUID        `json:"member_ids,omitempty"`
 	Priority      *Priority           `json:"priority,omitempty"`
 	SnoozeMinutes *int32              `json:"snooze_minutes,omitempty"`
 	Status        *ConversationStatus `json:"status,omitempty"`
@@ -10366,6 +10401,14 @@ type AutomationAction struct {
 	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
 	//   for `bots_may_send`.
 	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+	// - `mail_received` only: `star` (`member_ids`, members who read the inbox; on a personal
+	//   mailbox it may be left out and then means its owner), `archive` (status `closed`, the
+	//   Archive folder), `trash` (as `POST /v1/conversations/{id}/trash`), `forward_to_member`
+	//   (`member_id`, a member who reads the inbox: the `mail_forwarded` notification). A
+	//   shared mail inbox's filter takes every action; a personal mailbox's filter takes only
+	//   these and `add_labels`, `remove_labels`, `assign_member`, `unassign`, `set_priority`,
+	//   `set_status` and `snooze`. A member a filter stars for, assigns or forwards to who no
+	//   longer reads the inbox when it runs fails the run with `no_access`.
 	Type      AutomationActionType `json:"type"`
 	WebhookId *uuid.UUID           `json:"webhook_id,omitempty"`
 }
@@ -10383,6 +10426,14 @@ type AutomationAction struct {
 //     automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
 //     for `bots_may_send`.
 //   - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+//   - `mail_received` only: `star` (`member_ids`, members who read the inbox; on a personal
+//     mailbox it may be left out and then means its owner), `archive` (status `closed`, the
+//     Archive folder), `trash` (as `POST /v1/conversations/{id}/trash`), `forward_to_member`
+//     (`member_id`, a member who reads the inbox: the `mail_forwarded` notification). A
+//     shared mail inbox's filter takes every action; a personal mailbox's filter takes only
+//     these and `add_labels`, `remove_labels`, `assign_member`, `unassign`, `set_priority`,
+//     `set_status` and `snooze`. A member a filter stars for, assigns or forwards to who no
+//     longer reads the inbox when it runs fails the run with `no_access`.
 type AutomationActionType string
 
 // AutomationCondition `in` and `not_in` take `values`; `equals`, `not_equals`, `contains` and `not_contains`
@@ -10402,6 +10453,12 @@ type AutomationCondition struct {
 	//   with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
 	// - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
 	//   inbox without hours is always inside.
+	// - `mail_received` only, on the e-mail that arrived: `from` (its sender address), `to`,
+	//   `cc` (one of its addresses), `list_id` (its `List-Id`, lower-cased and without angle
+	//   brackets) with `contains` and `not_contains`, case-insensitive, a value of 3 to 200
+	//   characters (no spaces or commas for addresses); `has_attachment` (`equals` `true` or
+	//   `false`): it carries a file that is not shown inline. Other triggers refuse them (`400
+	//   validation_failed`).
 	Field AutomationConditionField `json:"field"`
 
 	// Key `contact_attribute` and `custom_field` only.
@@ -10425,6 +10482,12 @@ type AutomationCondition struct {
 //     with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
 //   - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
 //     inbox without hours is always inside.
+//   - `mail_received` only, on the e-mail that arrived: `from` (its sender address), `to`,
+//     `cc` (one of its addresses), `list_id` (its `List-Id`, lower-cased and without angle
+//     brackets) with `contains` and `not_contains`, case-insensitive, a value of 3 to 200
+//     characters (no spaces or commas for addresses); `has_attachment` (`equals` `true` or
+//     `false`): it carries a file that is not shown inline. Other triggers refuse them (`400
+//     validation_failed`).
 type AutomationConditionField string
 
 // AutomationConditionOperator defines model for AutomationConditionOperator.
@@ -10447,7 +10510,8 @@ type AutomationRule struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 	Name    string     `json:"name"`
 
-	// Position Its place in the workspace's one list, from 0.
+	// Position Its place in the workspace's one list, from 0; a personal mailbox's filter, its place
+	// among that mailbox's filters.
 	Position int32 `json:"position"`
 
 	// SavedBy Who last changed what a rule does (its trigger, scope, conditions, actions or `enabled`), or
@@ -10460,7 +10524,10 @@ type AutomationRule struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger   AutomationTrigger `json:"trigger"`
 	UpdatedAt time.Time         `json:"updated_at"`
 }
@@ -10496,7 +10563,10 @@ type AutomationRuleCreate struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger AutomationTrigger `json:"trigger"`
 }
 
@@ -10533,7 +10603,10 @@ type AutomationRuleUpdate struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger *AutomationTrigger `json:"trigger,omitempty"`
 }
 
@@ -10553,7 +10626,8 @@ type AutomationRun struct {
 	// contact, spam, a rule reply in the last hour or three in the last day),
 	// `bot_sending_disabled` (see
 	// `AutomationRuleAuthor`), `label_gone`,
-	// `canned_reply_gone`, `webhook_unavailable`.
+	// `canned_reply_gone`, `webhook_unavailable`, `no_access` (a member a filter stars for,
+	// assigns or notifies no longer reads the inbox).
 	Error   *string              `json:"error,omitempty"`
 	Id      uuid.UUID            `json:"id"`
 	Outcome AutomationRunOutcome `json:"outcome"`
@@ -10563,7 +10637,10 @@ type AutomationRun struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger AutomationTrigger `json:"trigger"`
 }
 
@@ -10587,6 +10664,14 @@ type AutomationRunAction struct {
 	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
 	//   for `bots_may_send`.
 	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+	// - `mail_received` only: `star` (`member_ids`, members who read the inbox; on a personal
+	//   mailbox it may be left out and then means its owner), `archive` (status `closed`, the
+	//   Archive folder), `trash` (as `POST /v1/conversations/{id}/trash`), `forward_to_member`
+	//   (`member_id`, a member who reads the inbox: the `mail_forwarded` notification). A
+	//   shared mail inbox's filter takes every action; a personal mailbox's filter takes only
+	//   these and `add_labels`, `remove_labels`, `assign_member`, `unassign`, `set_priority`,
+	//   `set_status` and `snooze`. A member a filter stars for, assigns or forwards to who no
+	//   longer reads the inbox when it runs fails the run with `no_access`.
 	Type AutomationActionType `json:"type"`
 }
 
@@ -10610,7 +10695,10 @@ type AutomationRunPage struct {
 // `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 // the status changed, also when a contact's message or the snooze time reopened it.
 // `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-// (checked every 5 minutes; once per quiet period).
+// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+// `mail` inbox, and the only trigger of a personal mailbox's filters.
 type AutomationTrigger string
 
 // Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
@@ -18614,6 +18702,24 @@ type MacroUpdate struct {
 // MacroVisibility `personal`: only its owner sees and applies it. `shared`: the whole workspace.
 type MacroVisibility string
 
+// MailFilterSuggestion A draft rule body; add actions and send it to `POST /v1/automation-rules`.
+type MailFilterSuggestion struct {
+	Actions    []AutomationAction    `json:"actions"`
+	Conditions []AutomationCondition `json:"conditions"`
+	InboxId    uuid.UUID             `json:"inbox_id"`
+	Name       string                `json:"name"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
+	Trigger AutomationTrigger `json:"trigger"`
+}
+
 // MailingList defines model for MailingList.
 type MailingList struct {
 	ArchivedAt *time.Time `json:"archived_at,omitempty"`
@@ -20705,6 +20811,7 @@ type NotificationChannels struct {
 type NotificationEvents struct {
 	AssignedToMe                    NotificationChannels `json:"assigned_to_me"`
 	ForwardAnswer                   NotificationChannels `json:"forward_answer"`
+	MailForwarded                   NotificationChannels `json:"mail_forwarded"`
 	Mentioned                       NotificationChannels `json:"mentioned"`
 	MessageInMyConversation         NotificationChannels `json:"message_in_my_conversation"`
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
@@ -20719,6 +20826,7 @@ type NotificationEvents struct {
 type NotificationEventsUpdate struct {
 	AssignedToMe                    *NotificationChannels `json:"assigned_to_me,omitempty"`
 	ForwardAnswer                   *NotificationChannels `json:"forward_answer,omitempty"`
+	MailForwarded                   *NotificationChannels `json:"mail_forwarded,omitempty"`
 	Mentioned                       *NotificationChannels `json:"mentioned,omitempty"`
 	MessageInMyConversation         *NotificationChannels `json:"message_in_my_conversation,omitempty"`
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
@@ -24153,7 +24261,10 @@ type WebhookAutomationTriggeredData struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger AutomationTrigger `json:"trigger"`
 }
 
@@ -25712,6 +25823,9 @@ type ListAuditLogParams struct {
 
 // ListAutomationRulesParams defines parameters for ListAutomationRules.
 type ListAutomationRulesParams struct {
+	// InboxId Only this inbox's rules; a personal mailbox's filters need it.
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -27987,6 +28101,12 @@ type UpdateMessageParams struct {
 
 // GetMessageEmailParams defines parameters for GetMessageEmail.
 type GetMessageEmailParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetMessageFilterSuggestionParams defines parameters for GetMessageFilterSuggestion.
+type GetMessageFilterSuggestionParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -37334,8 +37454,12 @@ type ClientInterface interface {
 
 	// ListAutomationRules List automation rules
 	//
-	// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
-	// workspace rules and the rules of their inboxes.
+	// In `position` order; each list is one position scope. Without `inbox_id`, the workspace's
+	// rules outside personal mailboxes: callers limited to some inboxes (agents, inbox-limited
+	// keys) see the workspace rules and the rules of their inboxes. With `inbox_id` of an inbox
+	// the caller sees, only that inbox's rules. A personal mailbox's filters are listed only with
+	// its `inbox_id` and only to its owner (session or own grant); anyone else, owners, admins
+	// and keys included, gets `404`.
 	//
 	// Scope: `automations:read`.
 	//
@@ -37344,11 +37468,14 @@ type ClientInterface interface {
 
 	// CreateAutomationRuleWithBody Create an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-	// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-	// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-	// custom field and the inbox a rule names must exist in the workspace (`400
-	// validation_failed`); one deleted later makes the actions that need it fail.
+	// Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+	// (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+	// last in the order and runs for triggers that happen after it is saved. A workspace holds at
+	// most 100 rules, and each personal mailbox at most 100 filters besides (`403
+	// automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+	// field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+	// deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+	// notifies must read its inbox (`400 validation_failed`).
 	//
 	// Scope: `automations:manage`.
 	//
@@ -37359,11 +37486,14 @@ type ClientInterface interface {
 
 	// CreateAutomationRule Create an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-	// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-	// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-	// custom field and the inbox a rule names must exist in the workspace (`400
-	// validation_failed`); one deleted later makes the actions that need it fail.
+	// Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+	// (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+	// last in the order and runs for triggers that happen after it is saved. A workspace holds at
+	// most 100 rules, and each personal mailbox at most 100 filters besides (`403
+	// automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+	// field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+	// deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+	// notifies must read its inbox (`400 validation_failed`).
 	//
 	// Scope: `automations:manage`.
 	//
@@ -37374,8 +37504,10 @@ type ClientInterface interface {
 
 	// OrderAutomationRulesWithBody Reorder automation rules
 	//
-	// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-	// once, in the new order (`400 validation_failed` otherwise).
+	// Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+	// but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+	// reorders its filters with `ids` naming every one of them once. Anything else is `400
+	// validation_failed`. The answer lists the rules the caller sees.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -37386,8 +37518,10 @@ type ClientInterface interface {
 
 	// OrderAutomationRules Reorder automation rules
 	//
-	// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-	// once, in the new order (`400 validation_failed` otherwise).
+	// Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+	// but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+	// reorders its filters with `ids` naming every one of them once. Anything else is `400
+	// validation_failed`. The answer lists the rules the caller sees.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -37398,8 +37532,8 @@ type ClientInterface interface {
 
 	// DeleteAutomationRule Delete an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
-	// changed stays.
+	// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+	// owner (`404` to everyone else). Its log goes with it; what it already changed stays.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -37417,7 +37551,8 @@ type ClientInterface interface {
 
 	// UpdateAutomationRuleWithBody Update an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+	// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+	// owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
 	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
 	// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
 	// `enabled` (not a rename), which decides whether its replies may go out while
@@ -37432,7 +37567,8 @@ type ClientInterface interface {
 
 	// UpdateAutomationRule Update an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+	// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+	// owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
 	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
 	// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
 	// `enabled` (not a rename), which decides whether its replies may go out while
@@ -42784,6 +42920,21 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/messages/{messageId}/email (the `GetMessageEmail` operationId).
 	GetMessageEmail(ctx context.Context, messageId MessageId, params *GetMessageEmailParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMessageFilterSuggestion Draft a mail filter from an e-mail
+	//
+	// "Filter messages like this": a draft `AutomationRuleCreate` for an e-mail that arrived in a
+	// `mail` inbox, for the panel to fill its form with. It names the inbox, the trigger
+	// `mail_received` and the conditions `from` (the sender's address) and `list_id` when the
+	// e-mail has one, else `subject` (this e-mail's own subject); a value that would not be 3 to
+	// 200 characters is left out, so the draft saves as it is once it has an action. It has no
+	// actions yet. Nothing is saved. A message the
+	// caller cannot read, or one that did not arrive by e-mail in a `mail` inbox, answers `404`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Corresponds with GET /v1/messages/{messageId}/filter-suggestion (the `GetMessageFilterSuggestion` operationId).
+	GetMessageFilterSuggestion(ctx context.Context, messageId MessageId, params *GetMessageFilterSuggestionParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DownloadMessageRaw Download the original e-mail
 	//
@@ -50056,8 +50207,12 @@ func (c *Client) StartSsoSignIn(ctx context.Context, body StartSsoSignInJSONRequ
 
 // ListAutomationRules List automation rules
 //
-// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
-// workspace rules and the rules of their inboxes.
+// In `position` order; each list is one position scope. Without `inbox_id`, the workspace's
+// rules outside personal mailboxes: callers limited to some inboxes (agents, inbox-limited
+// keys) see the workspace rules and the rules of their inboxes. With `inbox_id` of an inbox
+// the caller sees, only that inbox's rules. A personal mailbox's filters are listed only with
+// its `inbox_id` and only to its owner (session or own grant); anyone else, owners, admins
+// and keys included, gets `404`.
 //
 // Scope: `automations:read`.
 //
@@ -50076,11 +50231,14 @@ func (c *Client) ListAutomationRules(ctx context.Context, params *ListAutomation
 
 // CreateAutomationRuleWithBody Create an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-// custom field and the inbox a rule names must exist in the workspace (`400
-// validation_failed`); one deleted later makes the actions that need it fail.
+// Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+// (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+// last in the order and runs for triggers that happen after it is saved. A workspace holds at
+// most 100 rules, and each personal mailbox at most 100 filters besides (`403
+// automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+// field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+// deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+// notifies must read its inbox (`400 validation_failed`).
 //
 // Scope: `automations:manage`.
 //
@@ -50101,11 +50259,14 @@ func (c *Client) CreateAutomationRuleWithBody(ctx context.Context, params *Creat
 
 // CreateAutomationRule Create an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-// custom field and the inbox a rule names must exist in the workspace (`400
-// validation_failed`); one deleted later makes the actions that need it fail.
+// Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+// (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+// last in the order and runs for triggers that happen after it is saved. A workspace holds at
+// most 100 rules, and each personal mailbox at most 100 filters besides (`403
+// automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+// field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+// deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+// notifies must read its inbox (`400 validation_failed`).
 //
 // Scope: `automations:manage`.
 //
@@ -50126,8 +50287,10 @@ func (c *Client) CreateAutomationRule(ctx context.Context, params *CreateAutomat
 
 // OrderAutomationRulesWithBody Reorder automation rules
 //
-// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-// once, in the new order (`400 validation_failed` otherwise).
+// Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+// but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+// reorders its filters with `ids` naming every one of them once. Anything else is `400
+// validation_failed`. The answer lists the rules the caller sees.
 //
 // Scope: `automations:manage`.
 //
@@ -50148,8 +50311,10 @@ func (c *Client) OrderAutomationRulesWithBody(ctx context.Context, params *Order
 
 // OrderAutomationRules Reorder automation rules
 //
-// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-// once, in the new order (`400 validation_failed` otherwise).
+// Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+// but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+// reorders its filters with `ids` naming every one of them once. Anything else is `400
+// validation_failed`. The answer lists the rules the caller sees.
 //
 // Scope: `automations:manage`.
 //
@@ -50170,8 +50335,8 @@ func (c *Client) OrderAutomationRules(ctx context.Context, params *OrderAutomati
 
 // DeleteAutomationRule Delete an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
-// changed stays.
+// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+// owner (`404` to everyone else). Its log goes with it; what it already changed stays.
 //
 // Scope: `automations:manage`.
 //
@@ -50209,7 +50374,8 @@ func (c *Client) GetAutomationRule(ctx context.Context, automationRuleId Automat
 
 // UpdateAutomationRuleWithBody Update an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+// owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
 // `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
 // when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
 // `enabled` (not a rename), which decides whether its replies may go out while
@@ -50234,7 +50400,8 @@ func (c *Client) UpdateAutomationRuleWithBody(ctx context.Context, automationRul
 
 // UpdateAutomationRule Update an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+// owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
 // `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
 // when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
 // `enabled` (not a rename), which decides whether its replies may go out while
@@ -59177,6 +59344,31 @@ func (c *Client) UpdateMessage(ctx context.Context, messageId MessageId, params 
 // Corresponds with GET /v1/messages/{messageId}/email (the `GetMessageEmail` operationId).
 func (c *Client) GetMessageEmail(ctx context.Context, messageId MessageId, params *GetMessageEmailParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetMessageEmailRequest(c.Server, messageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMessageFilterSuggestion Draft a mail filter from an e-mail
+//
+// "Filter messages like this": a draft `AutomationRuleCreate` for an e-mail that arrived in a
+// `mail` inbox, for the panel to fill its form with. It names the inbox, the trigger
+// `mail_received` and the conditions `from` (the sender's address) and `list_id` when the
+// e-mail has one, else `subject` (this e-mail's own subject); a value that would not be 3 to
+// 200 characters is left out, so the draft saves as it is once it has an action. It has no
+// actions yet. Nothing is saved. A message the
+// caller cannot read, or one that did not arrive by e-mail in a `mail` inbox, answers `404`.
+//
+// Scope: `conversations:read`.
+//
+// Corresponds with GET /v1/messages/{messageId}/filter-suggestion (the `GetMessageFilterSuggestion` operationId).
+func (c *Client) GetMessageFilterSuggestion(ctx context.Context, messageId MessageId, params *GetMessageFilterSuggestionParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMessageFilterSuggestionRequest(c.Server, messageId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -70766,6 +70958,33 @@ func NewListAutomationRulesRequest(server string, params *ListAutomationRulesPar
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -88553,6 +88772,55 @@ func NewGetMessageEmailRequest(server string, messageId MessageId, params *GetMe
 	return req, nil
 }
 
+// NewGetMessageFilterSuggestionRequest constructs an http.Request for the GetMessageFilterSuggestion method
+func NewGetMessageFilterSuggestionRequest(server string, messageId MessageId, params *GetMessageFilterSuggestionParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "messageId", messageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/messages/%s/filter-suggestion", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewDownloadMessageRawRequest constructs an http.Request for the DownloadMessageRaw method
 func NewDownloadMessageRawRequest(server string, messageId MessageId, params *DownloadMessageRawParams) (*http.Request, error) {
 	var err error
@@ -99917,8 +100185,12 @@ type ClientWithResponsesInterface interface {
 
 	// ListAutomationRulesWithResponse List automation rules
 	//
-	// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
-	// workspace rules and the rules of their inboxes.
+	// In `position` order; each list is one position scope. Without `inbox_id`, the workspace's
+	// rules outside personal mailboxes: callers limited to some inboxes (agents, inbox-limited
+	// keys) see the workspace rules and the rules of their inboxes. With `inbox_id` of an inbox
+	// the caller sees, only that inbox's rules. A personal mailbox's filters are listed only with
+	// its `inbox_id` and only to its owner (session or own grant); anyone else, owners, admins
+	// and keys included, gets `404`.
 	//
 	// Scope: `automations:read`.
 	//
@@ -99929,11 +100201,14 @@ type ClientWithResponsesInterface interface {
 
 	// CreateAutomationRuleWithBodyWithResponse Create an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-	// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-	// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-	// custom field and the inbox a rule names must exist in the workspace (`400
-	// validation_failed`); one deleted later makes the actions that need it fail.
+	// Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+	// (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+	// last in the order and runs for triggers that happen after it is saved. A workspace holds at
+	// most 100 rules, and each personal mailbox at most 100 filters besides (`403
+	// automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+	// field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+	// deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+	// notifies must read its inbox (`400 validation_failed`).
 	//
 	// Scope: `automations:manage`.
 	//
@@ -99944,11 +100219,14 @@ type ClientWithResponsesInterface interface {
 
 	// CreateAutomationRuleWithResponse Create an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-	// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-	// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-	// custom field and the inbox a rule names must exist in the workspace (`400
-	// validation_failed`); one deleted later makes the actions that need it fail.
+	// Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+	// (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+	// last in the order and runs for triggers that happen after it is saved. A workspace holds at
+	// most 100 rules, and each personal mailbox at most 100 filters besides (`403
+	// automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+	// field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+	// deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+	// notifies must read its inbox (`400 validation_failed`).
 	//
 	// Scope: `automations:manage`.
 	//
@@ -99959,8 +100237,10 @@ type ClientWithResponsesInterface interface {
 
 	// OrderAutomationRulesWithBodyWithResponse Reorder automation rules
 	//
-	// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-	// once, in the new order (`400 validation_failed` otherwise).
+	// Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+	// but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+	// reorders its filters with `ids` naming every one of them once. Anything else is `400
+	// validation_failed`. The answer lists the rules the caller sees.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -99971,8 +100251,10 @@ type ClientWithResponsesInterface interface {
 
 	// OrderAutomationRulesWithResponse Reorder automation rules
 	//
-	// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-	// once, in the new order (`400 validation_failed` otherwise).
+	// Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+	// but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+	// reorders its filters with `ids` naming every one of them once. Anything else is `400
+	// validation_failed`. The answer lists the rules the caller sees.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -99983,8 +100265,8 @@ type ClientWithResponsesInterface interface {
 
 	// DeleteAutomationRuleWithResponse Delete an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
-	// changed stays.
+	// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+	// owner (`404` to everyone else). Its log goes with it; what it already changed stays.
 	//
 	// Scope: `automations:manage`.
 	//
@@ -100006,7 +100288,8 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateAutomationRuleWithBodyWithResponse Update an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+	// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+	// owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
 	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
 	// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
 	// `enabled` (not a rename), which decides whether its replies may go out while
@@ -100021,7 +100304,8 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateAutomationRuleWithResponse Update an automation rule
 	//
-	// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+	// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+	// owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
 	// `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
 	// when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
 	// `enabled` (not a rename), which decides whether its replies may go out while
@@ -105723,6 +106007,23 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/messages/{messageId}/email (the `GetMessageEmail` operationId).
 	GetMessageEmailWithResponse(ctx context.Context, messageId MessageId, params *GetMessageEmailParams, reqEditors ...RequestEditorFn) (*GetMessageEmailResponse, error)
+
+	// GetMessageFilterSuggestionWithResponse Draft a mail filter from an e-mail
+	//
+	// "Filter messages like this": a draft `AutomationRuleCreate` for an e-mail that arrived in a
+	// `mail` inbox, for the panel to fill its form with. It names the inbox, the trigger
+	// `mail_received` and the conditions `from` (the sender's address) and `list_id` when the
+	// e-mail has one, else `subject` (this e-mail's own subject); a value that would not be 3 to
+	// 200 characters is left out, so the draft saves as it is once it has an action. It has no
+	// actions yet. Nothing is saved. A message the
+	// caller cannot read, or one that did not arrive by e-mail in a `mail` inbox, answers `404`.
+	//
+	// Scope: `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/messages/{messageId}/filter-suggestion (the `GetMessageFilterSuggestion` operationId).
+	GetMessageFilterSuggestionWithResponse(ctx context.Context, messageId MessageId, params *GetMessageFilterSuggestionParams, reqEditors ...RequestEditorFn) (*GetMessageFilterSuggestionResponse, error)
 
 	// DownloadMessageRawWithResponse Download the original e-mail
 	//
@@ -116888,15 +117189,24 @@ type ListAutomationRulesResponse struct {
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
 	JSON200 *AutomationRuleList
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
 	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
 	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
 func (r ListAutomationRulesResponse) GetJSON200() *AutomationRuleList {
 	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListAutomationRulesResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
 }
 
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
@@ -116907,6 +117217,11 @@ func (r ListAutomationRulesResponse) GetApplicationproblemJSON401() *Problem {
 // GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
 func (r ListAutomationRulesResponse) GetApplicationproblemJSON403() *Problem {
 	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListAutomationRulesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
 }
 
 // GetBody returns the raw response body bytes
@@ -135424,6 +135739,68 @@ func (r GetMessageEmailResponse) ContentType() string {
 	return ""
 }
 
+type GetMessageFilterSuggestionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MailFilterSuggestion
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMessageFilterSuggestionResponse) GetJSON200() *MailFilterSuggestion {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetMessageFilterSuggestionResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetMessageFilterSuggestionResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetMessageFilterSuggestionResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMessageFilterSuggestionResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMessageFilterSuggestionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMessageFilterSuggestionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMessageFilterSuggestionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 // DownloadMessageRawResponse200Headers the declared response headers of an HTTP 200 response for DownloadMessageRaw
 type DownloadMessageRawResponse200Headers struct {
 	ContentDisposition  *string
@@ -148246,8 +148623,12 @@ func (c *ClientWithResponses) StartSsoSignInWithResponse(ctx context.Context, bo
 
 // ListAutomationRulesWithResponse List automation rules
 //
-// In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
-// workspace rules and the rules of their inboxes.
+// In `position` order; each list is one position scope. Without `inbox_id`, the workspace's
+// rules outside personal mailboxes: callers limited to some inboxes (agents, inbox-limited
+// keys) see the workspace rules and the rules of their inboxes. With `inbox_id` of an inbox
+// the caller sees, only that inbox's rules. A personal mailbox's filters are listed only with
+// its `inbox_id` and only to its owner (session or own grant); anyone else, owners, admins
+// and keys included, gets `404`.
 //
 // Scope: `automations:read`.
 //
@@ -148264,11 +148645,14 @@ func (c *ClientWithResponses) ListAutomationRulesWithResponse(ctx context.Contex
 
 // CreateAutomationRuleWithBodyWithResponse Create an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-// custom field and the inbox a rule names must exist in the workspace (`400
-// validation_failed`); one deleted later makes the actions that need it fail.
+// Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+// (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+// last in the order and runs for triggers that happen after it is saved. A workspace holds at
+// most 100 rules, and each personal mailbox at most 100 filters besides (`403
+// automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+// field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+// deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+// notifies must read its inbox (`400 validation_failed`).
 //
 // Scope: `automations:manage`.
 //
@@ -148285,11 +148669,14 @@ func (c *ClientWithResponses) CreateAutomationRuleWithBodyWithResponse(ctx conte
 
 // CreateAutomationRuleWithResponse Create an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-// runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-// (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-// custom field and the inbox a rule names must exist in the workspace (`400
-// validation_failed`); one deleted later makes the actions that need it fail.
+// Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+// (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+// last in the order and runs for triggers that happen after it is saved. A workspace holds at
+// most 100 rules, and each personal mailbox at most 100 filters besides (`403
+// automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+// field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+// deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+// notifies must read its inbox (`400 validation_failed`).
 //
 // Scope: `automations:manage`.
 //
@@ -148306,8 +148693,10 @@ func (c *ClientWithResponses) CreateAutomationRuleWithResponse(ctx context.Conte
 
 // OrderAutomationRulesWithBodyWithResponse Reorder automation rules
 //
-// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-// once, in the new order (`400 validation_failed` otherwise).
+// Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+// but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+// reorders its filters with `ids` naming every one of them once. Anything else is `400
+// validation_failed`. The answer lists the rules the caller sees.
 //
 // Scope: `automations:manage`.
 //
@@ -148324,8 +148713,10 @@ func (c *ClientWithResponses) OrderAutomationRulesWithBodyWithResponse(ctx conte
 
 // OrderAutomationRulesWithResponse Reorder automation rules
 //
-// Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-// once, in the new order (`400 validation_failed` otherwise).
+// Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+// but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+// reorders its filters with `ids` naming every one of them once. Anything else is `400
+// validation_failed`. The answer lists the rules the caller sees.
 //
 // Scope: `automations:manage`.
 //
@@ -148342,8 +148733,8 @@ func (c *ClientWithResponses) OrderAutomationRulesWithResponse(ctx context.Conte
 
 // DeleteAutomationRuleWithResponse Delete an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
-// changed stays.
+// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+// owner (`404` to everyone else). Its log goes with it; what it already changed stays.
 //
 // Scope: `automations:manage`.
 //
@@ -148377,7 +148768,8 @@ func (c *ClientWithResponses) GetAutomationRuleWithResponse(ctx context.Context,
 
 // UpdateAutomationRuleWithBodyWithResponse Update an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+// owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
 // `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
 // when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
 // `enabled` (not a rename), which decides whether its replies may go out while
@@ -148398,7 +148790,8 @@ func (c *ClientWithResponses) UpdateAutomationRuleWithBodyWithResponse(ctx conte
 
 // UpdateAutomationRuleWithResponse Update an automation rule
 //
-// Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+// Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+// owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
 // `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
 // when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
 // `enabled` (not a rename), which decides whether its replies may go out while
@@ -156259,6 +156652,29 @@ func (c *ClientWithResponses) GetMessageEmailWithResponse(ctx context.Context, m
 		return nil, err
 	}
 	return ParseGetMessageEmailResponse(rsp)
+}
+
+// GetMessageFilterSuggestionWithResponse Draft a mail filter from an e-mail
+//
+// "Filter messages like this": a draft `AutomationRuleCreate` for an e-mail that arrived in a
+// `mail` inbox, for the panel to fill its form with. It names the inbox, the trigger
+// `mail_received` and the conditions `from` (the sender's address) and `list_id` when the
+// e-mail has one, else `subject` (this e-mail's own subject); a value that would not be 3 to
+// 200 characters is left out, so the draft saves as it is once it has an action. It has no
+// actions yet. Nothing is saved. A message the
+// caller cannot read, or one that did not arrive by e-mail in a `mail` inbox, answers `404`.
+//
+// Scope: `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/messages/{messageId}/filter-suggestion (the `GetMessageFilterSuggestion` operationId).
+func (c *ClientWithResponses) GetMessageFilterSuggestionWithResponse(ctx context.Context, messageId MessageId, params *GetMessageFilterSuggestionParams, reqEditors ...RequestEditorFn) (*GetMessageFilterSuggestionResponse, error) {
+	rsp, err := c.GetMessageFilterSuggestion(ctx, messageId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMessageFilterSuggestionResponse(rsp)
 }
 
 // DownloadMessageRawWithResponse Download the original e-mail
@@ -166828,6 +167244,13 @@ func ParseListAutomationRulesResponse(rsp *http.Response) (*ListAutomationRulesR
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -166841,6 +167264,13 @@ func ParseListAutomationRulesResponse(rsp *http.Response) (*ListAutomationRulesR
 			return nil, err
 		}
 		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
 
 	}
 
@@ -181369,6 +181799,53 @@ func ParseGetMessageEmailResponse(rsp *http.Response) (*GetMessageEmailResponse,
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest MessageEmailDetail
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMessageFilterSuggestionResponse parses an HTTP response from a GetMessageFilterSuggestionWithResponse call
+func ParseGetMessageFilterSuggestionResponse(rsp *http.Response) (*GetMessageFilterSuggestionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMessageFilterSuggestionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MailFilterSuggestion
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

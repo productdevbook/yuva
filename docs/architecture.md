@@ -285,6 +285,40 @@ while it is on; a reopened conversation gets no new resolution target.
   `is_set`, `is_not_set`. `automation.triggered` cannot be subscribed to; it reaches only the endpoint
   a rule names.
 
+- **Mail filters (#173, migration 00137).** A filter is a rule with the `inbox_id` of a `mail` inbox
+  and the trigger `mail_received`, queued next to `message_received` (same `event:<id>` key, so one
+  run per rule and trigger) for every inbound e-mail message, first or later; drafts, outbound mail
+  and imports never run one, nor does a delivery report ingress trusts (null envelope sender under
+  a v2 signature and a parsed DSN, marked on the event as `bounce`): a sender-written
+  `Return-Path: <>` or `postmaster@` From runs filters like any mail. The job reads the inbox and
+  the e-mail's facts (from, to, cc, List-Id lower-cased without angle brackets, non-inline files;
+  `MailFactsOf`, no column) once for all its rules. Conditions `from`, `to`, `cc`, `list_id`
+  (`contains`/`not_contains`, case-insensitive) and `has_attachment` (`equals` `true`/`false`) go
+  only with `mail_received`, whose values, `subject` included, are 3 to 200 characters. Actions
+  `star` (`member_ids`), `archive` (status `closed`; excludes `set_status` and `snooze`), `trash`
+  (last, after the `rule_applied` event; excludes `forward_to_member`, whose notifier drops trashed
+  conversations) and `forward_to_member` (a `mail_forwarded` notification, push and e-mail by
+  preference) are mail-only. A shared mail inbox's filter takes every action; a personal mailbox's
+  only labels, star, archive, trash, snooze, forward, status, priority and assign/unassign. Every
+  member a filter stars for, assigns or forwards to must read the inbox (`memberHasInbox`, the
+  `member_inbox_access` view, so #171 delegates count): `400` at save, a `failed` run `no_access`
+  at run time.
+  Personal mailboxes are told apart by `isPersonal(inbox)` alone. Their filters use only
+  `mail_received`; only the owner sees and writes them, by session or own grant (agents' grants
+  never carry `automations:manage`); everyone else, owners, admins and keys included, gets `404`
+  on them and `400` (`inbox_id must be an inbox of the workspace`) creating one there; an orphaned
+  mailbox's filters are nobody's. They cannot change inbox, a shared rule cannot move into one,
+  `star` defaults to the owner, and their audit rows, the trash a filter does included, carry no
+  details. Positions and the 100-rule limit count per scope: each personal mailbox, and all other
+  rules. `GET /v1/automation-rules` lists the rules outside personal mailboxes; a mailbox's filters
+  only with `?inbox_id=` and only to its owner; `PUT /order` orders the caller's mailbox when
+  `ids[0]` is one of its filters. They run as the system for that mailbox only
+  (`principal.mailbox`, admitted by `canReadPersonal` and `canSeeInbox`); workspace rules never run
+  on a personal mailbox. Mail inboxes never auto-assign, so `mail_received` holds assignment only in
+  `assignAfter`'s order, after `message_received`. `GET /v1/messages/{id}/filter-suggestion`
+  (inbound e-mail of a mail inbox the caller reads) returns a draft: `from` plus `list_id`, else
+  that e-mail's `subject`, each only when 3 to 200 characters, no actions.
+
 **Macros (#142).**
 - **Table.** `macros (workspace_id, id, owner_member_id nullable, name, shortcut, body nullable, actions jsonb, position, …)`. Null owner means shared. Shortcut is unique per owner scope.
 - **Actions.** Labels add and remove, assignee or team, status, priority, snooze duration.
@@ -4452,8 +4486,8 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   is the one place #171 adds delegates. Owners, admins and full keys get its metadata only
   (`visibleInboxMeta`: `GET /v1/inboxes[/{id}]` with `mailbox {addresses, conversations,
   storage_bytes}`, no signature, import or SES tenant), rename and delete it. Events of it are
-  dropped from realtime, `/v1/events` and MCP for everyone else, webhooks and automation rules never
-  fire for it, and Slack, webhooks, API keys, member and team grants naming it answer `409
+  dropped from realtime, `/v1/events` and MCP for everyone else, webhooks and workspace automation
+  rules never fire for it (its own mail filters do, #173), and Slack, webhooks, API keys, member and team grants naming it answer `409
   personal_mailbox`. A contact known only from personal mailboxes the caller does not read is hidden
   from everyone, owners included. Migrations stay a manager feature, and one into a personal mailbox
   is, besides, for its readers only: `404` to others on every migration endpoint and event (its

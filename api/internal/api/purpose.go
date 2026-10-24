@@ -135,26 +135,33 @@ func (s *Server) setStar(ctx context.Context, conversationID uuid.UUID, on bool)
 		if err != nil {
 			return err
 		}
-		var n int64
-		if on {
-			n, err = q.StarConversation(ctx, store.StarConversationParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ConversationID: c.ID, Now: s.now()})
-		} else {
-			n, err = q.UnstarConversation(ctx, store.UnstarConversationParams{WorkspaceID: p.workspaceID, MemberID: p.memberID, ConversationID: c.ID})
-		}
-		if err != nil || n == 0 {
-			return err
-		}
-		body, err := oneConversation(ctx, q, c)
-		if err != nil {
-			return err
-		}
-		if err := s.fillSLA(ctx, q, p.workspaceID, &body); err != nil {
-			return err
-		}
-		body.Starred = &on
-		events.conversation(eventConversationStar, c, conversationStar{MemberID: p.memberID, Conversation: body})
-		return nil
+		_, err = s.starFor(ctx, q, events, p.memberID, c, on)
+		return err
 	})
+}
+
+// starFor tells only that member's panels; false when the conversation already was so.
+func (s *Server) starFor(ctx context.Context, q *store.Queries, events *eventBatch, member uuid.UUID, c store.Conversation, on bool) (bool, error) {
+	var n int64
+	var err error
+	if on {
+		n, err = q.StarConversation(ctx, store.StarConversationParams{WorkspaceID: c.WorkspaceID, MemberID: member, ConversationID: c.ID, Now: s.now()})
+	} else {
+		n, err = q.UnstarConversation(ctx, store.UnstarConversationParams{WorkspaceID: c.WorkspaceID, MemberID: member, ConversationID: c.ID})
+	}
+	if err != nil || n == 0 {
+		return false, err
+	}
+	body, err := oneConversation(ctx, q, c)
+	if err != nil {
+		return false, err
+	}
+	if err := s.fillSLA(ctx, q, c.WorkspaceID, &body); err != nil {
+		return false, err
+	}
+	body.Starred = &on
+	events.conversation(eventConversationStar, c, conversationStar{MemberID: member, Conversation: body})
+	return true, nil
 }
 
 func (s *Server) StarConversation(ctx context.Context, req oas.StarConversationRequestObject) (oas.StarConversationResponseObject, error) {

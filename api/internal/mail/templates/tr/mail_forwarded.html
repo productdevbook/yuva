@@ -1,0 +1,5 @@
+{{template "heading" "Bir filtre size bir e-posta iletti"}}
+<p style="margin:0 0 16px 0;">“{{.Rule}}” filtresi, <strong>{{.Inbox}}</strong> gelen kutusuna {{if .Contact}}<strong>{{.Contact}}</strong> tarafından gönderilen{{else}}bir göndericiden gelen{{end}}{{if .Subject}} “{{.Subject}}” konulu{{end}} e-postayı size iletti.</p>
+{{if .Preview}}<p style="margin:0 0 16px 0;color:#52525b;">{{.Preview}}</p>
+{{end}}{{template "button" (button .URL "Konuşmayı açın")}}
+{{define "mail_forwarded.footer"}}Bu e-postayı, bir e-posta filtresi sizi andığı için alıyorsunuz. <a href="{{.SettingsURL}}" target="_blank" style="color:#71717a;text-decoration:underline;">Hangi e-postaları alacağınızı seçin</a>{{end}}

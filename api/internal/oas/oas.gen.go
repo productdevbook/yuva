@@ -1507,18 +1507,22 @@ func (e AuthorType) Valid() bool {
 
 // Defines values for AutomationActionType.
 const (
-	AutomationActionAddLabels    AutomationActionType = "add_labels"
-	AutomationActionAddNote      AutomationActionType = "add_note"
-	AutomationActionAssignMember AutomationActionType = "assign_member"
-	AutomationActionAssignPool   AutomationActionType = "assign_pool"
-	AutomationActionAssignTeam   AutomationActionType = "assign_team"
-	AutomationActionRemoveLabels AutomationActionType = "remove_labels"
-	AutomationActionSendReply    AutomationActionType = "send_reply"
-	AutomationActionSendWebhook  AutomationActionType = "send_webhook"
-	AutomationActionSetPriority  AutomationActionType = "set_priority"
-	AutomationActionSetStatus    AutomationActionType = "set_status"
-	AutomationActionSnooze       AutomationActionType = "snooze"
-	AutomationActionUnassign     AutomationActionType = "unassign"
+	AutomationActionAddLabels       AutomationActionType = "add_labels"
+	AutomationActionAddNote         AutomationActionType = "add_note"
+	AutomationActionArchive         AutomationActionType = "archive"
+	AutomationActionAssignMember    AutomationActionType = "assign_member"
+	AutomationActionAssignPool      AutomationActionType = "assign_pool"
+	AutomationActionAssignTeam      AutomationActionType = "assign_team"
+	AutomationActionForwardToMember AutomationActionType = "forward_to_member"
+	AutomationActionRemoveLabels    AutomationActionType = "remove_labels"
+	AutomationActionSendReply       AutomationActionType = "send_reply"
+	AutomationActionSendWebhook     AutomationActionType = "send_webhook"
+	AutomationActionSetPriority     AutomationActionType = "set_priority"
+	AutomationActionSetStatus       AutomationActionType = "set_status"
+	AutomationActionSnooze          AutomationActionType = "snooze"
+	AutomationActionStar            AutomationActionType = "star"
+	AutomationActionTrash           AutomationActionType = "trash"
+	AutomationActionUnassign        AutomationActionType = "unassign"
 )
 
 // Valid indicates whether the value is a known member of the AutomationActionType enum.
@@ -1528,11 +1532,15 @@ func (e AutomationActionType) Valid() bool {
 		return true
 	case AutomationActionAddNote:
 		return true
+	case AutomationActionArchive:
+		return true
 	case AutomationActionAssignMember:
 		return true
 	case AutomationActionAssignPool:
 		return true
 	case AutomationActionAssignTeam:
+		return true
+	case AutomationActionForwardToMember:
 		return true
 	case AutomationActionRemoveLabels:
 		return true
@@ -1546,6 +1554,10 @@ func (e AutomationActionType) Valid() bool {
 		return true
 	case AutomationActionSnooze:
 		return true
+	case AutomationActionStar:
+		return true
+	case AutomationActionTrash:
+		return true
 	case AutomationActionUnassign:
 		return true
 	default:
@@ -1558,16 +1570,21 @@ const (
 	AutomationFieldAssignee         AutomationConditionField = "assignee"
 	AutomationFieldBody             AutomationConditionField = "body"
 	AutomationFieldBusinessHours    AutomationConditionField = "business_hours"
+	AutomationFieldCc               AutomationConditionField = "cc"
 	AutomationFieldChannelKind      AutomationConditionField = "channel_kind"
 	AutomationFieldContactAttribute AutomationConditionField = "contact_attribute"
 	AutomationFieldCustomField      AutomationConditionField = "custom_field"
 	AutomationFieldFeedbackCategory AutomationConditionField = "feedback_category"
+	AutomationFieldFrom             AutomationConditionField = "from"
+	AutomationFieldHasAttachment    AutomationConditionField = "has_attachment"
 	AutomationFieldKind             AutomationConditionField = "kind"
 	AutomationFieldLabel            AutomationConditionField = "label"
+	AutomationFieldListId           AutomationConditionField = "list_id"
 	AutomationFieldPriority         AutomationConditionField = "priority"
 	AutomationFieldStatus           AutomationConditionField = "status"
 	AutomationFieldSubject          AutomationConditionField = "subject"
 	AutomationFieldTeam             AutomationConditionField = "team"
+	AutomationFieldTo               AutomationConditionField = "to"
 )
 
 // Valid indicates whether the value is a known member of the AutomationConditionField enum.
@@ -1579,6 +1596,8 @@ func (e AutomationConditionField) Valid() bool {
 		return true
 	case AutomationFieldBusinessHours:
 		return true
+	case AutomationFieldCc:
+		return true
 	case AutomationFieldChannelKind:
 		return true
 	case AutomationFieldContactAttribute:
@@ -1587,9 +1606,15 @@ func (e AutomationConditionField) Valid() bool {
 		return true
 	case AutomationFieldFeedbackCategory:
 		return true
+	case AutomationFieldFrom:
+		return true
+	case AutomationFieldHasAttachment:
+		return true
 	case AutomationFieldKind:
 		return true
 	case AutomationFieldLabel:
+		return true
+	case AutomationFieldListId:
 		return true
 	case AutomationFieldPriority:
 		return true
@@ -1598,6 +1623,8 @@ func (e AutomationConditionField) Valid() bool {
 	case AutomationFieldSubject:
 		return true
 	case AutomationFieldTeam:
+		return true
+	case AutomationFieldTo:
 		return true
 	default:
 		return false
@@ -1710,6 +1737,7 @@ func (e AutomationRunOutcome) Valid() bool {
 const (
 	AutomationTriggerConversationCreated AutomationTrigger = "conversation_created"
 	AutomationTriggerIdle                AutomationTrigger = "idle"
+	AutomationTriggerMailReceived        AutomationTrigger = "mail_received"
 	AutomationTriggerMessageReceived     AutomationTrigger = "message_received"
 	AutomationTriggerStatusChanged       AutomationTrigger = "status_changed"
 )
@@ -1720,6 +1748,8 @@ func (e AutomationTrigger) Valid() bool {
 	case AutomationTriggerConversationCreated:
 		return true
 	case AutomationTriggerIdle:
+		return true
+	case AutomationTriggerMailReceived:
 		return true
 	case AutomationTriggerMessageReceived:
 		return true
@@ -5976,6 +6006,7 @@ func (e Priority) Valid() bool {
 const (
 	AssignedToMe                    PushNotificationEvent = "assigned_to_me"
 	ForwardAnswer                   PushNotificationEvent = "forward_answer"
+	MailForwarded                   PushNotificationEvent = "mail_forwarded"
 	Mentioned                       PushNotificationEvent = "mentioned"
 	MessageInMyConversation         PushNotificationEvent = "message_in_my_conversation"
 	MessageInUnassignedConversation PushNotificationEvent = "message_in_unassigned_conversation"
@@ -5993,6 +6024,8 @@ func (e PushNotificationEvent) Valid() bool {
 	case AssignedToMe:
 		return true
 	case ForwardAnswer:
+		return true
+	case MailForwarded:
 		return true
 	case Mentioned:
 		return true
@@ -10295,13 +10328,15 @@ type AuthorType string
 
 // AutomationAction Each type at most once per rule, and only the fields its type uses (`400
 // validation_failed` otherwise); `set_status` and `snooze` exclude each other, as do
-// `assign_member`, `assign_pool` and `unassign`, and `add_labels` and `remove_labels` share
-// no label.
+// `assign_member`, `assign_pool` and `unassign`, `archive` excludes `set_status` and
+// `snooze`, `forward_to_member` excludes `trash`, and `add_labels` and `remove_labels`
+// share no label.
 type AutomationAction struct {
 	Body          *string             `json:"body,omitempty"`
 	CannedReplyId *uuid.UUID          `json:"canned_reply_id,omitempty"`
 	LabelIds      *[]uuid.UUID        `json:"label_ids,omitempty"`
 	MemberId      *uuid.UUID          `json:"member_id,omitempty"`
+	MemberIds     *[]uuid.UUID        `json:"member_ids,omitempty"`
 	Priority      *Priority           `json:"priority,omitempty"`
 	SnoozeMinutes *int32              `json:"snooze_minutes,omitempty"`
 	Status        *ConversationStatus `json:"status,omitempty"`
@@ -10320,6 +10355,14 @@ type AutomationAction struct {
 	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
 	//   for `bots_may_send`.
 	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+	// - `mail_received` only: `star` (`member_ids`, members who read the inbox; on a personal
+	//   mailbox it may be left out and then means its owner), `archive` (status `closed`, the
+	//   Archive folder), `trash` (as `POST /v1/conversations/{id}/trash`), `forward_to_member`
+	//   (`member_id`, a member who reads the inbox: the `mail_forwarded` notification). A
+	//   shared mail inbox's filter takes every action; a personal mailbox's filter takes only
+	//   these and `add_labels`, `remove_labels`, `assign_member`, `unassign`, `set_priority`,
+	//   `set_status` and `snooze`. A member a filter stars for, assigns or forwards to who no
+	//   longer reads the inbox when it runs fails the run with `no_access`.
 	Type      AutomationActionType `json:"type"`
 	WebhookId *uuid.UUID           `json:"webhook_id,omitempty"`
 }
@@ -10337,6 +10380,14 @@ type AutomationAction struct {
 //     automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
 //     for `bots_may_send`.
 //   - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+//   - `mail_received` only: `star` (`member_ids`, members who read the inbox; on a personal
+//     mailbox it may be left out and then means its owner), `archive` (status `closed`, the
+//     Archive folder), `trash` (as `POST /v1/conversations/{id}/trash`), `forward_to_member`
+//     (`member_id`, a member who reads the inbox: the `mail_forwarded` notification). A
+//     shared mail inbox's filter takes every action; a personal mailbox's filter takes only
+//     these and `add_labels`, `remove_labels`, `assign_member`, `unassign`, `set_priority`,
+//     `set_status` and `snooze`. A member a filter stars for, assigns or forwards to who no
+//     longer reads the inbox when it runs fails the run with `no_access`.
 type AutomationActionType string
 
 // AutomationCondition `in` and `not_in` take `values`; `equals`, `not_equals`, `contains` and `not_contains`
@@ -10356,6 +10407,12 @@ type AutomationCondition struct {
 	//   with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
 	// - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
 	//   inbox without hours is always inside.
+	// - `mail_received` only, on the e-mail that arrived: `from` (its sender address), `to`,
+	//   `cc` (one of its addresses), `list_id` (its `List-Id`, lower-cased and without angle
+	//   brackets) with `contains` and `not_contains`, case-insensitive, a value of 3 to 200
+	//   characters (no spaces or commas for addresses); `has_attachment` (`equals` `true` or
+	//   `false`): it carries a file that is not shown inline. Other triggers refuse them (`400
+	//   validation_failed`).
 	Field AutomationConditionField `json:"field"`
 
 	// Key `contact_attribute` and `custom_field` only.
@@ -10379,6 +10436,12 @@ type AutomationCondition struct {
 //     with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
 //   - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
 //     inbox without hours is always inside.
+//   - `mail_received` only, on the e-mail that arrived: `from` (its sender address), `to`,
+//     `cc` (one of its addresses), `list_id` (its `List-Id`, lower-cased and without angle
+//     brackets) with `contains` and `not_contains`, case-insensitive, a value of 3 to 200
+//     characters (no spaces or commas for addresses); `has_attachment` (`equals` `true` or
+//     `false`): it carries a file that is not shown inline. Other triggers refuse them (`400
+//     validation_failed`).
 type AutomationConditionField string
 
 // AutomationConditionOperator defines model for AutomationConditionOperator.
@@ -10401,7 +10464,8 @@ type AutomationRule struct {
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 	Name    string     `json:"name"`
 
-	// Position Its place in the workspace's one list, from 0.
+	// Position Its place in the workspace's one list, from 0; a personal mailbox's filter, its place
+	// among that mailbox's filters.
 	Position int32 `json:"position"`
 
 	// SavedBy Who last changed what a rule does (its trigger, scope, conditions, actions or `enabled`), or
@@ -10414,7 +10478,10 @@ type AutomationRule struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger   AutomationTrigger `json:"trigger"`
 	UpdatedAt time.Time         `json:"updated_at"`
 }
@@ -10450,7 +10517,10 @@ type AutomationRuleCreate struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger AutomationTrigger `json:"trigger"`
 }
 
@@ -10487,7 +10557,10 @@ type AutomationRuleUpdate struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger *AutomationTrigger `json:"trigger,omitempty"`
 }
 
@@ -10507,7 +10580,8 @@ type AutomationRun struct {
 	// contact, spam, a rule reply in the last hour or three in the last day),
 	// `bot_sending_disabled` (see
 	// `AutomationRuleAuthor`), `label_gone`,
-	// `canned_reply_gone`, `webhook_unavailable`.
+	// `canned_reply_gone`, `webhook_unavailable`, `no_access` (a member a filter stars for,
+	// assigns or notifies no longer reads the inbox).
 	Error   *string              `json:"error,omitempty"`
 	Id      uuid.UUID            `json:"id"`
 	Outcome AutomationRunOutcome `json:"outcome"`
@@ -10517,7 +10591,10 @@ type AutomationRun struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger AutomationTrigger `json:"trigger"`
 }
 
@@ -10541,6 +10618,14 @@ type AutomationRunAction struct {
 	//   automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
 	//   for `bots_may_send`.
 	// - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+	// - `mail_received` only: `star` (`member_ids`, members who read the inbox; on a personal
+	//   mailbox it may be left out and then means its owner), `archive` (status `closed`, the
+	//   Archive folder), `trash` (as `POST /v1/conversations/{id}/trash`), `forward_to_member`
+	//   (`member_id`, a member who reads the inbox: the `mail_forwarded` notification). A
+	//   shared mail inbox's filter takes every action; a personal mailbox's filter takes only
+	//   these and `add_labels`, `remove_labels`, `assign_member`, `unassign`, `set_priority`,
+	//   `set_status` and `snooze`. A member a filter stars for, assigns or forwards to who no
+	//   longer reads the inbox when it runs fails the run with `no_access`.
 	Type AutomationActionType `json:"type"`
 }
 
@@ -10564,7 +10649,10 @@ type AutomationRunPage struct {
 // `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 // the status changed, also when a contact's message or the snooze time reopened it.
 // `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-// (checked every 5 minutes; once per quiet period).
+// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+// `mail` inbox, and the only trigger of a personal mailbox's filters.
 type AutomationTrigger string
 
 // Availability `auto`: available in `live` inboxes while connected to `/v1/realtime` within business
@@ -18568,6 +18656,24 @@ type MacroUpdate struct {
 // MacroVisibility `personal`: only its owner sees and applies it. `shared`: the whole workspace.
 type MacroVisibility string
 
+// MailFilterSuggestion A draft rule body; add actions and send it to `POST /v1/automation-rules`.
+type MailFilterSuggestion struct {
+	Actions    []AutomationAction    `json:"actions"`
+	Conditions []AutomationCondition `json:"conditions"`
+	InboxId    uuid.UUID             `json:"inbox_id"`
+	Name       string                `json:"name"`
+
+	// Trigger `conversation_created`: a conversation was created (by a contact, a member or a key).
+	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
+	// the status changed, also when a contact's message or the snooze time reopened it.
+	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
+	Trigger AutomationTrigger `json:"trigger"`
+}
+
 // MailingList defines model for MailingList.
 type MailingList struct {
 	ArchivedAt *time.Time `json:"archived_at,omitempty"`
@@ -20659,6 +20765,7 @@ type NotificationChannels struct {
 type NotificationEvents struct {
 	AssignedToMe                    NotificationChannels `json:"assigned_to_me"`
 	ForwardAnswer                   NotificationChannels `json:"forward_answer"`
+	MailForwarded                   NotificationChannels `json:"mail_forwarded"`
 	Mentioned                       NotificationChannels `json:"mentioned"`
 	MessageInMyConversation         NotificationChannels `json:"message_in_my_conversation"`
 	MessageInUnassignedConversation NotificationChannels `json:"message_in_unassigned_conversation"`
@@ -20673,6 +20780,7 @@ type NotificationEvents struct {
 type NotificationEventsUpdate struct {
 	AssignedToMe                    *NotificationChannels `json:"assigned_to_me,omitempty"`
 	ForwardAnswer                   *NotificationChannels `json:"forward_answer,omitempty"`
+	MailForwarded                   *NotificationChannels `json:"mail_forwarded,omitempty"`
 	Mentioned                       *NotificationChannels `json:"mentioned,omitempty"`
 	MessageInMyConversation         *NotificationChannels `json:"message_in_my_conversation,omitempty"`
 	MessageInUnassignedConversation *NotificationChannels `json:"message_in_unassigned_conversation,omitempty"`
@@ -24107,7 +24215,10 @@ type WebhookAutomationTriggeredData struct {
 	// `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
 	// the status changed, also when a contact's message or the snooze time reopened it.
 	// `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-	// (checked every 5 minutes; once per quiet period).
+	// (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+	// `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+	// mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+	// `mail` inbox, and the only trigger of a personal mailbox's filters.
 	Trigger AutomationTrigger `json:"trigger"`
 }
 
@@ -25612,6 +25723,9 @@ type ListAuditLogParams struct {
 
 // ListAutomationRulesParams defines parameters for ListAutomationRules.
 type ListAutomationRulesParams struct {
+	// InboxId Only this inbox's rules; a personal mailbox's filters need it.
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -27887,6 +28001,12 @@ type UpdateMessageParams struct {
 
 // GetMessageEmailParams defines parameters for GetMessageEmail.
 type GetMessageEmailParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// GetMessageFilterSuggestionParams defines parameters for GetMessageFilterSuggestion.
+type GetMessageFilterSuggestionParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -35533,6 +35653,9 @@ type ServerInterface interface {
 	// GetMessageEmail Get a message's e-mail details
 	// (GET /v1/messages/{messageId}/email)
 	GetMessageEmail(w http.ResponseWriter, r *http.Request, messageId MessageId, params GetMessageEmailParams)
+	// GetMessageFilterSuggestion Draft a mail filter from an e-mail
+	// (GET /v1/messages/{messageId}/filter-suggestion)
+	GetMessageFilterSuggestion(w http.ResponseWriter, r *http.Request, messageId MessageId, params GetMessageFilterSuggestionParams)
 	// DownloadMessageRaw Download the original e-mail
 	// (GET /v1/messages/{messageId}/raw)
 	DownloadMessageRaw(w http.ResponseWriter, r *http.Request, messageId MessageId, params DownloadMessageRawParams)
@@ -41132,6 +41255,19 @@ func (siw *ServerInterfaceWrapper) ListAutomationRules(w http.ResponseWriter, r 
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params ListAutomationRulesParams
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
 
 	headers := r.Header
 
@@ -57848,6 +57984,56 @@ func (siw *ServerInterfaceWrapper) GetMessageEmail(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
+// GetMessageFilterSuggestion operation middleware
+func (siw *ServerInterfaceWrapper) GetMessageFilterSuggestion(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "messageId" -------------
+	var messageId MessageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "messageId", r.PathValue("messageId"), &messageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "messageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMessageFilterSuggestionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMessageFilterSuggestion(w, r, messageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // DownloadMessageRaw operation middleware
 func (siw *ServerInterfaceWrapper) DownloadMessageRaw(w http.ResponseWriter, r *http.Request) {
 
@@ -66108,6 +66294,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/messages/{messageId}/schedule", wrapper.UnscheduleMessage)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/messages/{messageId}/redact", wrapper.RedactMessage)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/email", wrapper.GetMessageEmail)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/filter-suggestion", wrapper.GetMessageFilterSuggestion)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/messages/{messageId}/raw", wrapper.DownloadMessageRaw)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/labels", wrapper.ListLabels)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/labels", wrapper.CreateLabel)
@@ -79564,9 +79751,23 @@ func (response ListAutomationRules200JSONResponse) VisitListAutomationRulesRespo
 	return err
 }
 
-type ListAutomationRules401ApplicationProblemPlusJSONResponse struct {
+type ListAutomationRules400ApplicationProblemPlusJSONResponse struct {
 	ProblemApplicationProblemPlusJSONResponse
 }
+
+func (response ListAutomationRules400ApplicationProblemPlusJSONResponse) VisitListAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRules401ApplicationProblemPlusJSONResponse Problem
 
 func (response ListAutomationRules401ApplicationProblemPlusJSONResponse) VisitListAutomationRulesResponse(w http.ResponseWriter) error {
 
@@ -79590,6 +79791,20 @@ func (response ListAutomationRules403ApplicationProblemPlusJSONResponse) VisitLi
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListAutomationRules404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListAutomationRules404ApplicationProblemPlusJSONResponse) VisitListAutomationRulesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -101513,6 +101728,73 @@ func (response GetMessageEmail404ApplicationProblemPlusJSONResponse) VisitGetMes
 	return err
 }
 
+type GetMessageFilterSuggestionRequestObject struct {
+	MessageId MessageId `json:"messageId"`
+	Params    GetMessageFilterSuggestionParams
+}
+
+type GetMessageFilterSuggestionResponseObject interface {
+	VisitGetMessageFilterSuggestionResponse(w http.ResponseWriter) error
+}
+
+type GetMessageFilterSuggestion200JSONResponse MailFilterSuggestion
+
+func (response GetMessageFilterSuggestion200JSONResponse) VisitGetMessageFilterSuggestionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMessageFilterSuggestion401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetMessageFilterSuggestion401ApplicationProblemPlusJSONResponse) VisitGetMessageFilterSuggestionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMessageFilterSuggestion403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetMessageFilterSuggestion403ApplicationProblemPlusJSONResponse) VisitGetMessageFilterSuggestionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMessageFilterSuggestion404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetMessageFilterSuggestion404ApplicationProblemPlusJSONResponse) VisitGetMessageFilterSuggestionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type DownloadMessageRawRequestObject struct {
 	MessageId MessageId `json:"messageId"`
 	Params    DownloadMessageRawParams
@@ -113047,6 +113329,9 @@ type StrictServerInterface interface {
 	// GetMessageEmail Get a message's e-mail details
 	// (GET /v1/messages/{messageId}/email)
 	GetMessageEmail(ctx context.Context, request GetMessageEmailRequestObject) (GetMessageEmailResponseObject, error)
+	// GetMessageFilterSuggestion Draft a mail filter from an e-mail
+	// (GET /v1/messages/{messageId}/filter-suggestion)
+	GetMessageFilterSuggestion(ctx context.Context, request GetMessageFilterSuggestionRequestObject) (GetMessageFilterSuggestionResponseObject, error)
 	// DownloadMessageRaw Download the original e-mail
 	// (GET /v1/messages/{messageId}/raw)
 	DownloadMessageRaw(ctx context.Context, request DownloadMessageRawRequestObject) (DownloadMessageRawResponseObject, error)
@@ -125049,6 +125334,33 @@ func (sh *strictHandler) GetMessageEmail(w http.ResponseWriter, r *http.Request,
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetMessageEmailResponseObject); ok {
 		if err := validResponse.VisitGetMessageEmailResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetMessageFilterSuggestion operation middleware
+func (sh *strictHandler) GetMessageFilterSuggestion(w http.ResponseWriter, r *http.Request, messageId MessageId, params GetMessageFilterSuggestionParams) {
+	var request GetMessageFilterSuggestionRequestObject
+
+	request.MessageId = messageId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetMessageFilterSuggestion(ctx, request.(GetMessageFilterSuggestionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetMessageFilterSuggestion")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetMessageFilterSuggestionResponseObject); ok {
+		if err := validResponse.VisitGetMessageFilterSuggestionResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

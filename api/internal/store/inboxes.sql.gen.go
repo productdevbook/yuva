@@ -523,6 +523,62 @@ func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inb
 	return items, nil
 }
 
+const listInboxesByID = `-- name: ListInboxesByID :many
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id FROM inboxes WHERE workspace_id = $1 AND id = ANY($2::uuid[])
+`
+
+type ListInboxesByIDParams struct {
+	WorkspaceID uuid.UUID
+	Ids         []uuid.UUID
+}
+
+func (q *Queries) ListInboxesByID(ctx context.Context, arg ListInboxesByIDParams) ([]Inbox, error) {
+	rows, err := q.db.Query(ctx, listInboxesByID, arg.WorkspaceID, arg.Ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Inbox
+	for rows.Next() {
+		var i Inbox
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.Name,
+			&i.Slug,
+			&i.Branding,
+			&i.DefaultLocale,
+			&i.Timezone,
+			&i.Mode,
+			&i.ExpectedReplyMinutes,
+			&i.BusinessHours,
+			&i.IdentitySecret,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.AskForRating,
+			&i.RatingSince,
+			&i.SenderLegalName,
+			&i.SenderPostalAddress,
+			&i.SenderRegistration,
+			&i.SenderContact,
+			&i.FeedbackCategories,
+			&i.AssignmentMode,
+			&i.AssignmentCap,
+			&i.Purpose,
+			&i.Signature,
+			&i.SignatureImageIds,
+			&i.OwnerMemberID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMemberPersonalInboxIDs = `-- name: ListMemberPersonalInboxIDs :many
 SELECT id FROM inboxes WHERE workspace_id = $1 AND owner_member_id = $2 ORDER BY id
 `

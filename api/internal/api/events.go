@@ -24,6 +24,8 @@ type pendingEvent struct {
 	deleted        *deletedContact
 	// noRules marks an event a rule caused later, such as the end of a snooze it set.
 	noRules bool
+	// bounce marks a delivery report ingress trusted (null envelope sender, DSN); it runs no mail filter.
+	bounce bool
 	// onlyMember: the conversation is still this member's draft; no one else, no webhook, rule or notification.
 	onlyMember *uuid.UUID
 }

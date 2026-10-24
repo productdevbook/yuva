@@ -48,6 +48,7 @@ func roleNotificationDefaults(role string) oas.NotificationEvents {
 		SlaBreached:                     oas.NotificationChannels{Push: true, Email: true},
 		ForwardAnswer:                   oas.NotificationChannels{Push: true, Email: true},
 		ScheduledSendFailed:             oas.NotificationChannels{Push: true, Email: true},
+		MailForwarded:                   oas.NotificationChannels{Push: true, Email: true},
 	}
 }
 
@@ -67,6 +68,7 @@ func applyNotificationEvents(base oas.NotificationEvents, u oas.NotificationEven
 	set(&base.SlaBreached, u.SlaBreached)
 	set(&base.ForwardAnswer, u.ForwardAnswer)
 	set(&base.ScheduledSendFailed, u.ScheduledSendFailed)
+	set(&base.MailForwarded, u.MailForwarded)
 	return base
 }
 
@@ -88,13 +90,14 @@ func mergeNotificationUpdates(base, u oas.NotificationEventsUpdate) oas.Notifica
 		SlaBreached:                     pick(base.SlaBreached, u.SlaBreached),
 		ForwardAnswer:                   pick(base.ForwardAnswer, u.ForwardAnswer),
 		ScheduledSendFailed:             pick(base.ScheduledSendFailed, u.ScheduledSendFailed),
+		MailForwarded:                   pick(base.MailForwarded, u.MailForwarded),
 	}
 }
 
 func emptyNotificationUpdate(u oas.NotificationEventsUpdate) bool {
 	return u.NewLiveConversation == nil && u.NewAsyncConversation == nil && u.MessageInMyConversation == nil &&
 		u.MessageInUnassignedConversation == nil && u.AssignedToMe == nil && u.Mentioned == nil && u.SlaWarning == nil && u.SlaBreached == nil &&
-		u.ForwardAnswer == nil && u.ScheduledSendFailed == nil
+		u.ForwardAnswer == nil && u.ScheduledSendFailed == nil && u.MailForwarded == nil
 }
 
 func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas.NotificationChannels {
@@ -119,6 +122,8 @@ func notificationChannelsFor(e oas.NotificationEvents, ev notificationEvent) oas
 		return e.ForwardAnswer
 	case oas.ScheduledSendFailed:
 		return e.ScheduledSendFailed
+	case oas.MailForwarded:
+		return e.MailForwarded
 	}
 	return oas.NotificationChannels{}
 }

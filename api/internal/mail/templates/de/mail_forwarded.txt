@@ -1,0 +1,9 @@
+{{.Inbox}}: Ein Filter hat Ihnen eine E-Mail weitergegeben{{if .Subject}}: {{.Subject}}{{end}}
+
+Der Filter „{{.Rule}}“ hat Ihnen eine E-Mail von {{if .Contact}}{{.Contact}}{{else}}einem Absender{{end}} in {{.Inbox}}{{if .Subject}} zu „{{.Subject}}“{{end}} weitergegeben.{{if .Preview}}
+
+{{.Preview}}{{end}}
+
+Unterhaltung öffnen: {{.URL}}
+
+Sie erhalten diese E-Mail, weil ein E-Mail-Filter Sie nennt. Wählen Sie, welche E-Mails Sie erhalten: {{.SettingsURL}}

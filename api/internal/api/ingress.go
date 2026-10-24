@@ -611,7 +611,11 @@ func (s *Server) ingestToChannel(ctx context.Context, ch store.FindEmailChannelB
 		if err := s.addUsage(ctx, q, ws, newConversations, 1, total); err != nil {
 			return err
 		}
+		n := len(events.items)
 		events.conversation(realtime.MessageCreated, conv, withEmail(messageBody(messageRow(msg), atts), &summary))
+		if len(events.items) > n {
+			events.items[n].bounce = m.Bounce != nil && nullFrom
+		}
 		res = IngestResult{Status: IngestStored, ConversationID: &conv.ID, MessageID: &msg.ID}
 		if isNew && !auto && verified && ch.AutoReplyEnabled && !opts.noGreeting {
 			return s.autoReply(ctx, q, events, ch, conv, contact.ID, now)

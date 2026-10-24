@@ -146,12 +146,19 @@ func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queri
 		if !ok || e.noRules || e.onlyMember != nil {
 			continue
 		}
+		want := []oas.AutomationTrigger{trigger}
+		if trigger == oas.AutomationTriggerMessageReceived && inboundMail(e) && !e.bounce {
+			want = append(want, oas.AutomationTriggerMailReceived)
+		}
 		if e.inboxID != nil {
-			if skip, err := personal.hidden(ctx, q, *e.inboxID); err != nil {
+			if mailbox, err := personal.hidden(ctx, q, *e.inboxID); err != nil {
 				return err
-			} else if skip {
-				continue
+			} else if mailbox {
+				want = want[1:]
 			}
+		}
+		if len(want) == 0 {
+			continue
 		}
 		if !loaded {
 			var err error
@@ -160,12 +167,13 @@ func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queri
 			}
 			loaded = true
 		}
-		if !slices.Contains(triggers, string(trigger)) {
-			continue
+		for _, t := range want {
+			if slices.Contains(triggers, string(t)) {
+				runs = append(runs, AutomationRunArgs{
+					WorkspaceID: workspaceID, ConversationID: *e.conversationID, Trigger: string(t), EventID: ids[i], MessageID: msg,
+				})
+			}
 		}
-		runs = append(runs, AutomationRunArgs{
-			WorkspaceID: workspaceID, ConversationID: *e.conversationID, Trigger: string(trigger), EventID: ids[i], MessageID: msg,
-		})
 	}
 	if pools := assignTriggers(ev.items); len(pools) > 0 {
 		enabled, err := q.AssignmentEnabled(ctx, workspaceID)
@@ -196,7 +204,7 @@ func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queri
 // assignAfter picks the run job of the conversation that queues its assignment: conversation_created
 // first, then message_received, then status_changed; -1 when none runs.
 func assignAfter(runs []AutomationRunArgs, conversation uuid.UUID) int {
-	for _, trigger := range []oas.AutomationTrigger{oas.AutomationTriggerConversationCreated, oas.AutomationTriggerMessageReceived, oas.AutomationTriggerStatusChanged} {
+	for _, trigger := range []oas.AutomationTrigger{oas.AutomationTriggerConversationCreated, oas.AutomationTriggerMessageReceived, oas.AutomationTriggerMailReceived, oas.AutomationTriggerStatusChanged} {
 		for i, r := range runs {
 			if r.ConversationID == conversation && r.Trigger == string(trigger) {
 				return i
@@ -315,9 +323,26 @@ func (s *Server) runAutomationRules(ctx context.Context, a AutomationRunArgs) er
 	if err != nil {
 		return err
 	}
+	job := ruleJob{}
+	if job.in, err = s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: a.WorkspaceID, ID: c.InboxID}); err != nil {
+		return err
+	}
+	if a.Trigger == string(oas.AutomationTriggerMailReceived) {
+		if a.MessageID == nil {
+			return nil
+		}
+		facts, err := s.st.MailFactsOf(ctx, store.MailFactsOfParams{WorkspaceID: a.WorkspaceID, ConversationID: c.ID, ID: *a.MessageID})
+		if store.IsNotFound(err) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		job.mail = &facts
+	}
 	key := a.triggerKey()
 	for _, r := range rules {
-		if r.InboxID != nil && *r.InboxID != c.InboxID {
+		if (r.InboxID != nil && *r.InboxID != c.InboxID) || (r.InboxID == nil && isPersonal(job.in)) {
 			continue
 		}
 		done, err := s.st.AutomationRunExists(ctx, store.AutomationRunExistsParams{WorkspaceID: a.WorkspaceID, RuleID: r.ID, TriggerKey: key})
@@ -333,7 +358,7 @@ func (s *Server) runAutomationRules(ctx context.Context, a AutomationRunArgs) er
 			}
 			return nil
 		}
-		match, err := s.ruleMatchesNow(ctx, a, r)
+		match, err := s.ruleMatchesNow(ctx, a, r, job)
 		if err != nil {
 			return err
 		}
@@ -342,12 +367,12 @@ func (s *Server) runAutomationRules(ctx context.Context, a AutomationRunArgs) er
 				return err
 			}
 		}
-		err = s.runRule(ctx, w, a, r.ID, match)
+		err = s.runRule(ctx, w, a, r.ID, match, job)
 		if errors.Is(err, errRuleUncharged) {
 			if err := charge(); err != nil {
 				return err
 			}
-			err = s.runRule(ctx, w, a, r.ID, true)
+			err = s.runRule(ctx, w, a, r.ID, true, job)
 		}
 		if err != nil {
 			return err
@@ -358,7 +383,7 @@ func (s *Server) runAutomationRules(ctx context.Context, a AutomationRunArgs) er
 
 // ruleMatchesNow evaluates a rule's conditions without a lock, to charge the rate limit only for
 // rules that will apply; the rule's transaction decides again under the conversation's lock.
-func (s *Server) ruleMatchesNow(ctx context.Context, a AutomationRunArgs, r store.AutomationRule) (bool, error) {
+func (s *Server) ruleMatchesNow(ctx context.Context, a AutomationRunArgs, r store.AutomationRule, job ruleJob) (bool, error) {
 	c, err := s.st.GetConversation(ctx, store.GetConversationParams{WorkspaceID: a.WorkspaceID, ID: a.ConversationID})
 	if store.IsNotFound(err) {
 		return false, nil
@@ -366,12 +391,12 @@ func (s *Server) ruleMatchesNow(ctx context.Context, a AutomationRunArgs, r stor
 	if err != nil {
 		return false, err
 	}
-	return s.ruleMatches(ctx, s.st.Queries, c, a, ruleConditions(r), s.now())
+	return s.ruleMatches(ctx, s.st.Queries, c, a, ruleConditions(r), s.now(), job)
 }
 
 // runRule applies one rule in one transaction. charged says the rate limit already counted its
 // actions; a rule that matches uncharged rolls back with errRuleUncharged to be charged and run again.
-func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRunArgs, ruleID uuid.UUID, charged bool) error {
+func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRunArgs, ruleID uuid.UUID, charged bool, job ruleJob) error {
 	var (
 		rule    store.AutomationRule
 		planned []oas.AutomationAction
@@ -407,7 +432,7 @@ func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRun
 		if err != nil {
 			return err
 		}
-		if c.TrashedAt != nil || (r.InboxID != nil && *r.InboxID != c.InboxID) {
+		if c.TrashedAt != nil || c.InboxID != job.in.ID || (r.InboxID != nil && *r.InboxID != c.InboxID) || (r.InboxID == nil && isPersonal(job.in)) {
 			return errRuleSkip
 		}
 		if a.IdleSince != nil && (!c.LastActivityAt.Equal(*a.IdleSince) || c.Spam ||
@@ -424,7 +449,7 @@ func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRun
 		} else if err != nil {
 			return err
 		}
-		match, err := s.ruleMatches(ctx, q, c, a, ruleConditions(r), now)
+		match, err := s.ruleMatches(ctx, q, c, a, ruleConditions(r), now, job)
 		if err != nil {
 			return err
 		}
@@ -434,15 +459,21 @@ func (s *Server) runRule(ctx context.Context, w store.Workspace, a AutomationRun
 		if !charged {
 			return errRuleUncharged
 		}
-		p := principal{workspaceID: a.WorkspaceID, rule: ev.rule, botsMaySend: w.BotsMaySend}
-		results, err := s.applyRule(ctx, q, ev, p, w, r, c, a, planned, now)
+		p := ruleMailbox(principal{workspaceID: a.WorkspaceID, rule: ev.rule, botsMaySend: w.BotsMaySend}, job.in)
+		results, err := s.applyRule(ctx, q, ev, p, w, r, job.in, c, a, planned, now)
 		if err != nil {
 			return err
 		}
 		if err := q.SetAutomationRunActions(ctx, store.SetAutomationRunActionsParams{WorkspaceID: a.WorkspaceID, ID: runID, Actions: mustJSON(results)}); err != nil {
 			return err
 		}
-		return s.writeEvent(ctx, q, ev, p, c, oas.MessageEvent{Type: oas.RuleApplied, Actions: &results}, now)
+		if err := s.writeEvent(ctx, q, ev, p, c, oas.MessageEvent{Type: oas.RuleApplied, Actions: &results}, now); err != nil {
+			return err
+		}
+		if slices.ContainsFunc(planned, func(act oas.AutomationAction) bool { return act.Type == oas.AutomationActionTrash }) {
+			_, err = s.setTrashed(ctx, q, ev, p, c.ID, true)
+		}
+		return err
 	})
 	if err == nil || errors.Is(err, errRuleSkip) {
 		return nil
@@ -485,6 +516,13 @@ func (s *Server) recordFailedRun(ctx context.Context, a AutomationRunArgs, r sto
 	})
 }
 
+// ruleJob is what one run job reads once for all its rules: the conversation's inbox and, for
+// mail_received, the triggering e-mail.
+type ruleJob struct {
+	in   store.Inbox
+	mail *store.MailFactsOfRow
+}
+
 // ruleState reads, once each, what the conditions of a rule look at beyond the conversation row.
 type ruleState struct {
 	q      *store.Queries
@@ -494,7 +532,6 @@ type ruleState struct {
 	attrs  map[string]any
 	fields map[string]any
 	body   *string
-	inbox  *store.Inbox
 	loaded map[oas.AutomationConditionField]bool
 }
 
@@ -523,12 +560,6 @@ func (st *ruleState) load(ctx context.Context, f oas.AutomationConditionField) e
 			return err
 		}
 		st.body = &m.Body
-	case oas.AutomationFieldBusinessHours:
-		in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ws, ID: st.c.InboxID})
-		if err != nil {
-			return err
-		}
-		st.inbox = &in
 	}
 	return nil
 }
@@ -591,7 +622,7 @@ func matchSet(op oas.AutomationConditionOperator, got *string, values *[]string)
 
 // ruleMatches evaluates the conditions on the conversation as it is now, under its lock, so a
 // later rule sees what an earlier one changed.
-func (s *Server) ruleMatches(ctx context.Context, q *store.Queries, c store.Conversation, a AutomationRunArgs, conds []oas.AutomationCondition, now time.Time) (bool, error) {
+func (s *Server) ruleMatches(ctx context.Context, q *store.Queries, c store.Conversation, a AutomationRunArgs, conds []oas.AutomationCondition, now time.Time, job ruleJob) (bool, error) {
 	st := &ruleState{q: q, c: c, a: a, loaded: map[oas.AutomationConditionField]bool{}}
 	for _, cond := range conds {
 		if err := st.load(ctx, cond.Field); err != nil {
@@ -645,7 +676,9 @@ func (s *Server) ruleMatches(ctx context.Context, q *store.Queries, c store.Conv
 		case oas.AutomationFieldAssignee:
 			ok = (c.AssigneeID != nil) == (cond.Operator == oas.AutomationOpIsSet)
 		case oas.AutomationFieldBusinessHours:
-			ok = inboxOpen(*st.inbox, now) == (*cond.Value == "inside")
+			ok = inboxOpen(job.in, now) == (*cond.Value == "inside")
+		case oas.AutomationFieldFrom, oas.AutomationFieldTo, oas.AutomationFieldCc, oas.AutomationFieldListId, oas.AutomationFieldHasAttachment:
+			ok = job.mail != nil && mailMatches(*job.mail, cond)
 		}
 		if !ok {
 			return false, nil
@@ -657,7 +690,7 @@ func (s *Server) ruleMatches(ctx context.Context, q *store.Queries, c store.Conv
 // applyRule applies every action of the rule through the code /v1 uses, or fails as a whole:
 // notes and the reply first, then one conversation change, then the webhook with the result.
 func (s *Server) applyRule(ctx context.Context, q *store.Queries, ev *eventBatch, p principal, w store.Workspace, r store.AutomationRule,
-	c store.Conversation, a AutomationRunArgs, actions []oas.AutomationAction, now time.Time) ([]oas.AutomationRunAction, error) {
+	in store.Inbox, c store.Conversation, a AutomationRunArgs, actions []oas.AutomationAction, now time.Time) ([]oas.AutomationRunAction, error) {
 	results := make([]oas.AutomationRunAction, len(actions))
 	var (
 		upd           oas.ConversationUpdate
@@ -665,10 +698,38 @@ func (s *Server) applyRule(ctx context.Context, q *store.Queries, ev *eventBatch
 		change        bool
 		note          *string
 		reply, hookID *uuid.UUID
+		star          = -1
 	)
+	mail := r.Trigger == string(oas.AutomationTriggerMailReceived)
+	readers := func(ids ...uuid.UUID) error {
+		for _, id := range ids {
+			ok, err := memberHasInbox(ctx, q, c.WorkspaceID, in.ID, id)
+			if err != nil {
+				return err
+			}
+			if !ok {
+				return errRuleNoAccess
+			}
+		}
+		return nil
+	}
 	for i, act := range actions {
 		results[i] = oas.AutomationRunAction{Type: act.Type, Result: oas.AutomationResultApplied}
+		if mail && act.MemberId != nil {
+			if err := readers(*act.MemberId); err != nil {
+				return nil, err
+			}
+		}
 		switch act.Type {
+		case oas.AutomationActionStar:
+			if err := readers(*act.MemberIds...); err != nil {
+				return nil, err
+			}
+			star = i
+		case oas.AutomationActionArchive:
+			upd.Status, change = new(oas.ConversationStatusClosed), true
+		case oas.AutomationActionForwardToMember:
+			ev.job(MailForwardedArgs{WorkspaceID: c.WorkspaceID, MemberID: *act.MemberId, MessageID: *a.MessageID, Rule: r.Name}, nil)
 		case oas.AutomationActionAddLabels, oas.AutomationActionRemoveLabels:
 			found, err := q.LockLabels(ctx, store.LockLabelsParams{WorkspaceID: c.WorkspaceID, Ids: *act.LabelIds})
 			if err != nil {
@@ -741,6 +802,23 @@ func (s *Server) applyRule(ctx context.Context, q *store.Queries, ev *eventBatch
 			}
 		}
 	}
+	if star >= 0 {
+		cur, err := q.GetConversation(ctx, store.GetConversationParams{WorkspaceID: c.WorkspaceID, ID: c.ID})
+		if err != nil {
+			return nil, err
+		}
+		starred := false
+		for _, m := range *actions[star].MemberIds {
+			on, err := s.starFor(ctx, q, ev, m, cur, true)
+			if err != nil {
+				return nil, err
+			}
+			starred = starred || on
+		}
+		if !starred {
+			results[star].Result = oas.AutomationResultUnchanged
+		}
+	}
 	if hookID != nil {
 		if err := s.ruleWebhook(ctx, q, ev, c, *hookID, a.Trigger, now); err != nil {
 			return nil, err
@@ -765,6 +843,8 @@ func unchangedBy(act oas.AutomationAction, before store.Conversation, labels []u
 		return before.Priority == string(*act.Priority)
 	case oas.AutomationActionSetStatus:
 		return before.Status == string(*act.Status)
+	case oas.AutomationActionArchive:
+		return before.Status == string(oas.ConversationStatusClosed)
 	}
 	return false
 }

@@ -13,14 +13,24 @@ SELECT * FROM automation_rules WHERE workspace_id = @workspace_id AND id = @id F
 -- name: ShareLockAutomationRule :one
 SELECT * FROM automation_rules WHERE workspace_id = @workspace_id AND id = @id FOR SHARE;
 
+-- A personal mailbox's filters count and are placed among themselves (mailbox_id), every other rule
+-- among the others, so neither side learns how many the other has.
 -- name: CountAutomationRules :one
-SELECT count(*) FROM automation_rules WHERE workspace_id = @workspace_id;
+SELECT count(*) FROM automation_rules r
+WHERE r.workspace_id = @workspace_id
+  AND CASE WHEN sqlc.narg(mailbox_id)::uuid IS NULL
+      THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.owner_member_id IS NOT NULL)
+      ELSE r.inbox_id = sqlc.narg(mailbox_id)::uuid END;
 
 -- name: CreateAutomationRule :one
 INSERT INTO automation_rules (id, workspace_id, inbox_id, name, enabled, position, trigger, idle_minutes, conditions, actions,
     saved_by_kind, saved_by_member_id, saved_by_api_key_id, created_at, updated_at)
 VALUES (@id, @workspace_id, sqlc.narg(inbox_id), @name, @enabled,
-    (SELECT coalesce(max(position) + 1, 0) FROM automation_rules WHERE workspace_id = @workspace_id),
+    (SELECT coalesce(max(r.position) + 1, 0) FROM automation_rules r
+     WHERE r.workspace_id = @workspace_id
+       AND CASE WHEN sqlc.narg(mailbox_id)::uuid IS NULL
+           THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.owner_member_id IS NOT NULL)
+           ELSE r.inbox_id = sqlc.narg(mailbox_id)::uuid END),
     @trigger, sqlc.narg(idle_minutes), @conditions, @actions,
     @saved_by_kind, sqlc.narg(saved_by_member_id), sqlc.narg(saved_by_api_key_id), @now, @now)
 RETURNING *;
@@ -136,3 +146,16 @@ SELECT * FROM webhook_endpoints WHERE workspace_id = @workspace_id AND id = ANY(
 
 -- name: ListCannedRepliesByID :many
 SELECT id FROM canned_replies WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);
+
+-- The facts of an inbound e-mail mail filters match on; List-Id lower-cased, without angle brackets.
+-- name: MailFactsOf :one
+SELECT e.from_address, e.to_addresses, e.cc_addresses,
+    lower(coalesce(substring(e.headers->>'List-Id' from '<([^<>]*)>'), btrim(e.headers->>'List-Id'), ''))::text AS list_id,
+    EXISTS (
+        SELECT 1 FROM attachments a
+        WHERE a.workspace_id = m.workspace_id AND a.message_id = m.id AND NOT a.inline
+    )::bool AS has_file
+FROM messages m
+JOIN message_emails e ON e.workspace_id = m.workspace_id AND e.message_id = m.id
+WHERE m.workspace_id = @workspace_id AND m.conversation_id = @conversation_id AND m.id = @id
+  AND m.kind = 'message' AND m.direction = 'in' AND NOT m.draft AND e.direction = 'in';

@@ -346,6 +346,7 @@ func (s *Server) AddWorkers(workers *river.Workers) {
 	river.AddWorker(workers, &slaCheckWorker{s: s})
 	river.AddWorker(workers, &scheduledSendWorker{s: s})
 	river.AddWorker(workers, &scheduledFailedWorker{s: s})
+	river.AddWorker(workers, &mailForwardedWorker{s: s})
 	river.AddWorker(workers, &slaNotifyWorker{s: s})
 	river.AddWorker(workers, &slaSweepWorker{s: s})
 	river.AddWorker(workers, &snoozeWakeWorker{s: s})

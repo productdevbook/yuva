@@ -63,11 +63,22 @@ func (q *Queries) ContactMessageOf(ctx context.Context, arg ContactMessageOfPara
 }
 
 const countAutomationRules = `-- name: CountAutomationRules :one
-SELECT count(*) FROM automation_rules WHERE workspace_id = $1
+SELECT count(*) FROM automation_rules r
+WHERE r.workspace_id = $1
+  AND CASE WHEN $2::uuid IS NULL
+      THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.owner_member_id IS NOT NULL)
+      ELSE r.inbox_id = $2::uuid END
 `
 
-func (q *Queries) CountAutomationRules(ctx context.Context, workspaceID uuid.UUID) (int64, error) {
-	row := q.db.QueryRow(ctx, countAutomationRules, workspaceID)
+type CountAutomationRulesParams struct {
+	WorkspaceID uuid.UUID
+	MailboxID   *uuid.UUID
+}
+
+// A personal mailbox's filters count and are placed among themselves (mailbox_id), every other rule
+// among the others, so neither side learns how many the other has.
+func (q *Queries) CountAutomationRules(ctx context.Context, arg CountAutomationRulesParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countAutomationRules, arg.WorkspaceID, arg.MailboxID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -108,9 +119,13 @@ const createAutomationRule = `-- name: CreateAutomationRule :one
 INSERT INTO automation_rules (id, workspace_id, inbox_id, name, enabled, position, trigger, idle_minutes, conditions, actions,
     saved_by_kind, saved_by_member_id, saved_by_api_key_id, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5,
-    (SELECT coalesce(max(position) + 1, 0) FROM automation_rules WHERE workspace_id = $2),
-    $6, $7, $8, $9,
-    $10, $11, $12, $13, $13)
+    (SELECT coalesce(max(r.position) + 1, 0) FROM automation_rules r
+     WHERE r.workspace_id = $2
+       AND CASE WHEN $6::uuid IS NULL
+           THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.owner_member_id IS NOT NULL)
+           ELSE r.inbox_id = $6::uuid END),
+    $7, $8, $9, $10,
+    $11, $12, $13, $14, $14)
 RETURNING id, workspace_id, inbox_id, name, enabled, position, trigger, idle_minutes, conditions, actions, saved_by_kind, saved_by_member_id, saved_by_api_key_id, created_at, updated_at
 `
 
@@ -120,6 +135,7 @@ type CreateAutomationRuleParams struct {
 	InboxID         *uuid.UUID
 	Name            string
 	Enabled         bool
+	MailboxID       *uuid.UUID
 	Trigger         string
 	IdleMinutes     *int32
 	Conditions      []byte
@@ -137,6 +153,7 @@ func (q *Queries) CreateAutomationRule(ctx context.Context, arg CreateAutomation
 		arg.InboxID,
 		arg.Name,
 		arg.Enabled,
+		arg.MailboxID,
 		arg.Trigger,
 		arg.IdleMinutes,
 		arg.Conditions,
@@ -705,6 +722,47 @@ SELECT pg_advisory_xact_lock(hashtextextended('yuva_automation_rules:' || $1::uu
 func (q *Queries) LockAutomationRules(ctx context.Context, workspaceID uuid.UUID) error {
 	_, err := q.db.Exec(ctx, lockAutomationRules, workspaceID)
 	return err
+}
+
+const mailFactsOf = `-- name: MailFactsOf :one
+SELECT e.from_address, e.to_addresses, e.cc_addresses,
+    lower(coalesce(substring(e.headers->>'List-Id' from '<([^<>]*)>'), btrim(e.headers->>'List-Id'), ''))::text AS list_id,
+    EXISTS (
+        SELECT 1 FROM attachments a
+        WHERE a.workspace_id = m.workspace_id AND a.message_id = m.id AND NOT a.inline
+    )::bool AS has_file
+FROM messages m
+JOIN message_emails e ON e.workspace_id = m.workspace_id AND e.message_id = m.id
+WHERE m.workspace_id = $1 AND m.conversation_id = $2 AND m.id = $3
+  AND m.kind = 'message' AND m.direction = 'in' AND NOT m.draft AND e.direction = 'in'
+`
+
+type MailFactsOfParams struct {
+	WorkspaceID    uuid.UUID
+	ConversationID uuid.UUID
+	ID             uuid.UUID
+}
+
+type MailFactsOfRow struct {
+	FromAddress string
+	ToAddresses []string
+	CcAddresses []string
+	ListID      string
+	HasFile     bool
+}
+
+// The facts of an inbound e-mail mail filters match on; List-Id lower-cased, without angle brackets.
+func (q *Queries) MailFactsOf(ctx context.Context, arg MailFactsOfParams) (MailFactsOfRow, error) {
+	row := q.db.QueryRow(ctx, mailFactsOf, arg.WorkspaceID, arg.ConversationID, arg.ID)
+	var i MailFactsOfRow
+	err := row.Scan(
+		&i.FromAddress,
+		&i.ToAddresses,
+		&i.CcAddresses,
+		&i.ListID,
+		&i.HasFile,
+	)
+	return i, err
 }
 
 const setAutomationRulePosition = `-- name: SetAutomationRulePosition :exec

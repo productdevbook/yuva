@@ -218,6 +218,8 @@ type principal struct {
 	rule *oas.AutomationRuleRef
 	// auto is set when automatic assignment acts: it sees every inbox and writes as the system.
 	auto bool
+	// mailbox is the personal mailbox whose own filter acts: the rule reads that mailbox.
+	mailbox uuid.UUID
 }
 
 func (p principal) isKey() bool { return p.keyID != uuid.Nil() }

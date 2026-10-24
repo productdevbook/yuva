@@ -169,3 +169,6 @@ SELECT s.conversation_id FROM conversation_sla s
 JOIN conversations c ON c.workspace_id = s.workspace_id AND c.id = s.conversation_id
 WHERE s.workspace_id = @workspace_id AND c.inbox_id = @inbox_id AND s.dropped_at IS NULL
 ORDER BY s.conversation_id;
+
+-- name: ListInboxesByID :many
+SELECT * FROM inboxes WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]);

@@ -1,0 +1,9 @@
+{{.Inbox}}: a filter passed you a mail{{if .Subject}}: {{.Subject}}{{end}}
+
+The filter "{{.Rule}}" passed you a mail from {{if .Contact}}{{.Contact}}{{else}}a sender{{end}} in {{.Inbox}}{{if .Subject}} about "{{.Subject}}"{{end}}.{{if .Preview}}
+
+{{.Preview}}{{end}}
+
+Open the conversation: {{.URL}}
+
+You get this e-mail because a mail filter names you. Choose which e-mails you get: {{.SettingsURL}}

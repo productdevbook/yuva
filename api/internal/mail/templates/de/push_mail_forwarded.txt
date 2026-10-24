@@ -1,0 +1,3 @@
+{{.Inbox}} · {{if .Contact}}{{.Contact}}{{else}}Neue E-Mail{{end}}
+
+Ein Filter hat Ihnen diese E-Mail weitergegeben{{if .Preview}}: {{.Preview}}{{else if .Subject}}: {{.Subject}}{{end}}

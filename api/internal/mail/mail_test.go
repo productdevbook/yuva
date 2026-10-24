@@ -85,6 +85,10 @@ func samples(inbox, text string) map[string]map[string]any {
 			"Inbox": inbox, "Subject": "Invoice question", "Reason": "the sender address is no longer verified",
 			"URL": "https://yuva.example.com/c/1", "SettingsURL": "https://yuva.example.com/settings/notifications",
 		},
+		"mail_forwarded": {
+			"Inbox": inbox, "Contact": "Jane Doe", "Subject": "Invoice question", "Rule": "Invoices to Mehmet", "Preview": text,
+			"URL": "https://yuva.example.com/c/1", "SettingsURL": "https://yuva.example.com/settings/notifications",
+		},
 		"discussion_digest": {
 			"Inbox": inbox, "Title": "How do I export my data?",
 			"Answer": map[string]string{"Author": "Mehmet Kaya", "Text": "Open Settings, then Export.\nThe file arrives by e-mail."},
@@ -115,7 +119,7 @@ func samples(inbox, text string) map[string]map[string]any {
 	}
 }
 
-var htmlMails = []string{"sign_in_code", "address_code", "member_address_code", "address_lost", "sign_in_locked", "sso_first_sign_in", "passkey_added", "passkey_removed", "sso_domain_lapsed", "invite", "confirm_email", "notification", "discussion_digest", "rating_request", "list_confirm", "status_confirm", "status_notice", "list_welcome", "analytics_limit", "analytics_report", "analytics_alert", "status_monitor", "sla_breached", "scheduled_failed"}
+var htmlMails = []string{"sign_in_code", "address_code", "member_address_code", "address_lost", "sign_in_locked", "sso_first_sign_in", "passkey_added", "passkey_removed", "sso_domain_lapsed", "invite", "confirm_email", "notification", "discussion_digest", "rating_request", "list_confirm", "status_confirm", "status_notice", "list_welcome", "analytics_limit", "analytics_report", "analytics_alert", "status_monitor", "sla_breached", "scheduled_failed", "mail_forwarded"}
 
 // englishMails go only to the server's operator.
 var englishMails = []string{"operator_digest"}

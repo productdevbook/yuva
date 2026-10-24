@@ -117,6 +117,12 @@ func (s *Server) setTrashed(ctx context.Context, q *store.Queries, events *event
 		return out, err
 	}
 	events.conversation(typ, next, out)
+	if p.rule != nil && p.mailbox != uuid.Nil() {
+		return out, writeSystemAudit(ctx, q, p.workspaceID, now, action, oas.AuditTargetConversation, next.ID, auditDetails{})
+	}
+	if p.rule != nil {
+		return out, writeSystemAudit(ctx, q, p.workspaceID, now, action, oas.AuditTargetConversation, next.ID, auditDetails{"inbox_id": next.InboxID, "rule_id": p.rule.Id})
+	}
 	return out, s.audit(ctx, q, p, action, oas.AuditTargetConversation, next.ID, auditDetails{"inbox_id": next.InboxID})
 }
 
