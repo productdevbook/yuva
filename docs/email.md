@@ -202,7 +202,7 @@ those addresses. A bounce for one of several `To` addresses marks only that addr
 
 ## Searching mail
 
-The search box of the conversation list (`q` of `GET /v1/conversations`, MCP `search_conversations`)
+The search box of the conversation list (`q` of `GET /v1/conversations`, `query` of MCP `search_conversations`)
 takes operators on top of plain words. Write `key:value`, `key:"two words"`, or `-key:value` to leave
 out what matches. Every operator and every other filter must hold. Keys and values are case-insensitive;
 a term that is not one of these operators, or whose value does not fit, is searched as text, so

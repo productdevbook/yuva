@@ -213,7 +213,7 @@ edilemez olarak işaretlenir.
 
 ## E-postada arama
 
-Konuşma listesinin arama kutusu (`GET /v1/conversations` için `q`, MCP `search_conversations`) düz
+Konuşma listesinin arama kutusu (`GET /v1/conversations` için `q`, MCP `search_conversations` için `query`) düz
 sözcüklerin yanında operatörleri de kabul eder. `anahtar:değer`, `anahtar:"iki sözcük"` yazın;
 eşleşenleri dışarıda bırakmak için `-anahtar:değer` yazın. Her operatör ve her diğer süzgeç birlikte
 sağlanmalıdır. Anahtarlar ve değerler büyük/küçük harfe duyarsızdır; bu operatörlerden biri olmayan ya

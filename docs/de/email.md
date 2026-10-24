@@ -217,7 +217,7 @@ setzt alle aktiven Beteiligten in Kopie (Allen antworten); `cc: []` geht nur an 
 
 ## E-Mails durchsuchen
 
-Das Suchfeld der Konversationsliste (`q` von `GET /v1/conversations`, MCP `search_conversations`) nimmt
+Das Suchfeld der Konversationsliste (`q` von `GET /v1/conversations`, `query` von MCP `search_conversations`) nimmt
 neben einfachen Wörtern auch Operatoren an. Schreiben Sie `schlüssel:wert`, `schlüssel:"zwei Wörter"`
 oder `-schlüssel:wert`, um Treffer auszuschließen. Jeder Operator und jeder andere Filter muss
 zutreffen. Schlüssel und Werte unterscheiden nicht zwischen Groß- und Kleinschreibung; ein Begriff, der

@@ -636,7 +636,7 @@ entry all report `0.1.0`; a fresh install from `docs/install.md` works on a clea
 
 ## M34 — Mail inboxes
 
-Status: planned; items Y-163 to Y-165 in `backlog.md`. After 0.1.0. Decisions in `architecture.md` › Team mail.
+Status: done on main (#163–#165), verified on 2026-10-24 on a server built from main. Decisions in `architecture.md` › Team mail.
 
 - An inbox's purpose, `support` or `mail`; a Mail section in the panel with folders; choosing support,
   mail or both when a workspace starts.
@@ -647,7 +647,7 @@ Conversations, support stats or a rating request.
 
 ## M35 — Writing mail
 
-Status: planned; items Y-166 to Y-169 in `backlog.md`. After 0.1.0.
+Status: done on main (#166–#169), verified on 2026-10-24 on a server built from main with two API replicas; the address proof and the deliverability check were marked passed in the database (no DNS here).
 
 - New mail to many recipients with Cc and Bcc, sending as the member, signatures, member drafts and
   scheduled send.
@@ -658,7 +658,7 @@ for five minutes ahead goes once with two replicas.
 
 ## M36 — Personal mailboxes
 
-Status: planned; items Y-170 to Y-172 in `backlog.md`. After 0.1.0.
+Status: done on main (#170–#172), verified on 2026-10-24 on a server built from main.
 
 - Mailboxes that belong to one member, delegation, and what happens when a member leaves.
 
@@ -668,7 +668,7 @@ when revoked; removing the member hands the mailbox to a named member, and the a
 
 ## M37 — Organizing mail
 
-Status: planned; items Y-173 to Y-174 in `backlog.md`. After 0.1.0.
+Status: done on main (#173, #174), verified on 2026-10-24 in the panel and through MCP.
 
 - Mail filters on the automation rules engine and search operators.
 
@@ -677,7 +677,7 @@ conversations in the panel and through MCP.
 
 ## M38 — Team mail acceptance
 
-Status: planned; items Y-175 to Y-176 in `backlog.md`. After 0.1.0.
+Status: done on main (#175, #176), verified on 2026-10-24.
 
 - Guides in en, tr, de and the verifier's run of M34 to M37.
 
