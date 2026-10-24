@@ -213,7 +213,7 @@ const countLinkedReplyTargets = `-- name: CountLinkedReplyTargets :many
 SELECT t.outcome, count(*)::int AS n FROM linked_reply_targets t
 JOIN conversations c ON c.workspace_id = t.workspace_id AND c.id = t.conversation_id
 WHERE t.workspace_id = $1 AND t.reply_id = $2
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))
 GROUP BY t.outcome
@@ -1346,7 +1346,7 @@ SELECT i.id, i.workspace_id, i.page_id, i.kind, i.title, i.impact, i.state, i.sc
 JOIN status_incidents i ON i.workspace_id = l.workspace_id AND i.id = l.incident_id
 JOIN status_pages p ON p.workspace_id = i.workspace_id AND p.id = i.page_id
 WHERE l.workspace_id = $1 AND l.conversation_id = $2
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = $4))
 ORDER BY l.linked_at DESC, i.id DESC
@@ -1423,7 +1423,7 @@ const listLinkedReplyTargetOutcomes = `-- name: ListLinkedReplyTargetOutcomes :m
 SELECT t.conversation_id, t.outcome, t.reason, t.finished_at FROM linked_reply_targets t
 JOIN conversations c ON c.workspace_id = t.workspace_id AND c.id = t.conversation_id
 WHERE t.workspace_id = $1 AND t.reply_id = $2
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))
   AND ($5::uuid IS NULL OR t.conversation_id > $5::uuid)
@@ -1698,7 +1698,7 @@ const listStatusIncidentConversations = `-- name: ListStatusIncidentConversation
 SELECT c.id, c.workspace_id, c.inbox_id, c.contact_id, c.channel_id, c.subject, c.status, c.snooze_until, c.priority, c.assignee_id, c.last_message_at, c.last_activity_at, c.created_at, c.updated_at, c.spam, c.email_token, c.related_conversation_id, c.continuity_through, c.continuity_sent_at, c.kind, c.feedback, c.email_address, c.closed_at, c.rating, c.rating_comment, c.rated_at, c.rating_requested_at, c.last_read_by_contact_at, c.page_url, c.page_title, c.channel_kind, c.broadcast_id, c.migration_id, c.imported_at, c.feedback_progress, c.help_article_id, c.trashed_at, c.trashed_by_member_id, c.trashed_by_api_key_id, c.push_through, c.push_sent_at, c.team_id, c.fields, c.sla_due_at, c.snooze_rule_id, c.assign_waiting_since, c.assign_after_rules, c.draft_of, l.linked_at FROM status_incident_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
 WHERE l.workspace_id = $1 AND l.incident_id = $2 AND c.trashed_at IS NULL
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))
   AND ($5::timestamptz IS NULL
@@ -1958,7 +1958,7 @@ const listStatusPages = `-- name: ListStatusPages :many
 SELECT id, workspace_id, inbox_id, name, description, slug, logo_url, accent_color, site_url, support_url, locale, timezone, history_days, show_uptime, published, changed_at, created_at, updated_at, mailing_list_id, email_enabled, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at, domain_claimed_at, show_response_times, show_name, show_follow, logo_dark_url FROM status_pages p
 WHERE p.workspace_id = $1
   AND ($2::uuid IS NULL OR p.inbox_id = $2::uuid)
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = $4))
 ORDER BY p.created_at, p.id
@@ -2073,7 +2073,7 @@ const listStatusReplyTargets = `-- name: ListStatusReplyTargets :many
 SELECT c.id FROM status_incident_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
 WHERE l.workspace_id = $1 AND l.incident_id = $2 AND c.status <> 'closed' AND NOT c.spam AND c.trashed_at IS NULL
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))
 ORDER BY l.linked_at, c.id

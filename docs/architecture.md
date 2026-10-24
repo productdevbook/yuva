@@ -4477,8 +4477,8 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   OAuth grant. This is the one place where an owner does not see every inbox, so that people can
   move their own mail into Yuva. Retention, contact export and deletion, and workspace deletion still
   cover it, and every delegation and hand-over is in the audit log.
-- **As built (#170, migration 00135).** `inboxes.owner_member_id` (FK to the member, `ON DELETE
-  RESTRICT`, only on `mail` inboxes) is set on `POST /v1/inboxes` and never changes. The owner row is
+- **As built (#170, migration 00135).** `inboxes.owner_member_id` (FK to the member, only on `mail`
+  inboxes) is set on `POST /v1/inboxes` and changes only by a hand-over (#172). The owner row is
   part of `member_inbox_access`, so `inbox_viewers`, assignee and mention checks, notifications and
   `GET /v1/inboxes/{id}/members` follow. Seeing every inbox (owners, admins, full keys, rules) stops
   short of a personal mailbox: every `all_inboxes` branch in SQL excludes it, `canSeeInbox` and
@@ -4495,9 +4495,9 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   other inbox, and deleting the mailbox deletes its migrations (their `inbox_id` would otherwise go
   `NULL` and reach every manager). #169's drafts need no extra check: `draft_visible_to` and
   `conversation_visible_to` are AND-ed with the inbox filter in every query, and the mailbox's
-  `conversations` count leaves out unsent drafts. Removing its owner or deleting their account answers
-  `409 personal_mailbox` with `inbox_ids` until #172; in a soft-deleted workspace the owner link is
-  cleared instead, and the purge deletes the mailbox.
+  `conversations` count leaves out unsent drafts. What removing its owner or deleting their account
+  does is #172's; in a soft-deleted workspace the owner link goes as in #172, and the purge deletes
+  the mailbox.
   Contacts stay workspace-wide: an address known only from a personal mailbox still answers
   `409 email_taken` when someone adds it as a contact, and a shared inbox writing to it reuses that
   contact; only the mail in the personal mailbox is private, not the contact record.
@@ -4526,6 +4526,26 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   Audit: `mailbox.delegate_granted` (`member_id`, `access`, `from` on a change) and
   `mailbox.delegate_revoked` on the mailbox. A delegate's own OAuth grant reaches the mailbox as
   their session does; keys and rules never.
+- **As built (#172, migration 00139).** `inboxes.personal boolean` says a mailbox is personal, so
+  that `owner_member_id` can be `NULL` without the mailbox turning shared: the FK is now `ON DELETE
+  SET NULL (owner_member_id)`, `CHECK (owner_member_id IS NULL OR personal)` and `CHECK (NOT
+  personal OR purpose = 'mail')` replace #170's check, and every filter that read `owner_member_id IS
+  [NOT] NULL` reads `personal` instead. Orphaned never means shared: a personal mailbox without an
+  owner has no row in `member_inbox_access`, so nobody reads it, and owners, admins and full keys keep
+  its metadata with `Inbox.mailbox.orphaned: true`. `DELETE /v1/members/{id}` takes `mailboxes:
+  [{inbox_id, action: delete|hand_over, to_member_id?}]`, one entry for every personal mailbox the
+  member owns, or answers `409 personal_mailbox` with all their `inbox_ids` (a removal without a body
+  too); a wrong entry (an inbox not theirs, named twice, `hand_over` without `to_member_id`, to the
+  leaver or to someone not in the workspace) is `400 validation_failed`. In the removal's transaction,
+  `delete` is #170's delete with the migrations, and `hand_over` makes `to_member_id` the owner and
+  removes the delegates, who lose it at once like a revoke; audit `mailbox.deleted_on_leave`
+  (`member_id`, `name`) and `mailbox.handed_over` (`to_member_id`, `from_member_id`). The caller only
+  gets `204`. `DELETE /v1/me` deletes no personal mailbox: their delegates go, the member row takes
+  the owner link with it, audit `mailbox.orphaned` (`member_id`) and `inbox.updated` to managers. An
+  owner or admin then hands it over with `POST /v1/inboxes/{id}/hand-over {"to_member_id"}` (member
+  session, orphaned personal mailboxes only, else `409 personal_mailbox`; it answers the metadata
+  `Inbox`) or deletes it; the soft-deleted workspace path needs no query of its own any more.
+  Down refuses to run while an orphaned mailbox exists.
 - **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
   or hands it to a named member; nobody reads it before that choice.
 - **Sending as a person.** A mail goes from the channel address with the member's name, or from the

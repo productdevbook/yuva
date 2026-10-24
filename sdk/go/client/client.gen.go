@@ -1147,6 +1147,9 @@ const (
 	AuditListConsentExported                 AuditAction = "list.consent_exported"
 	AuditMailboxDelegateGranted              AuditAction = "mailbox.delegate_granted"
 	AuditMailboxDelegateRevoked              AuditAction = "mailbox.delegate_revoked"
+	AuditMailboxDeletedOnLeave               AuditAction = "mailbox.deleted_on_leave"
+	AuditMailboxHandedOver                   AuditAction = "mailbox.handed_over"
+	AuditMailboxOrphaned                     AuditAction = "mailbox.orphaned"
 	AuditMemberAddressAdded                  AuditAction = "member_address.added"
 	AuditMemberAddressRemoved                AuditAction = "member_address.removed"
 	AuditMemberAddressVerified               AuditAction = "member_address.verified"
@@ -1259,6 +1262,12 @@ func (e AuditAction) Valid() bool {
 	case AuditMailboxDelegateGranted:
 		return true
 	case AuditMailboxDelegateRevoked:
+		return true
+	case AuditMailboxDeletedOnLeave:
+		return true
+	case AuditMailboxHandedOver:
+		return true
+	case AuditMailboxOrphaned:
 		return true
 	case AuditMemberAddressAdded:
 		return true
@@ -4767,6 +4776,24 @@ func (e MailboxDelegateAccess) Valid() bool {
 	case DelegateRead:
 		return true
 	case DelegateSend:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MailboxOnLeaveAction.
+const (
+	MailboxOnLeaveDelete   MailboxOnLeaveAction = "delete"
+	MailboxOnLeaveHandOver MailboxOnLeaveAction = "hand_over"
+)
+
+// Valid indicates whether the value is a known member of the MailboxOnLeaveAction enum.
+func (e MailboxOnLeaveAction) Valid() bool {
+	switch e {
+	case MailboxOnLeaveDelete:
+		return true
+	case MailboxOnLeaveHandOver:
 		return true
 	default:
 		return false
@@ -10194,6 +10221,9 @@ type Attributes map[string]interface{}
 //   - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
 //     delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
 //     the personal mailbox.
+//   - `mailbox.handed_over`: `from_member_id` (absent for an orphaned mailbox) and
+//     `to_member_id`. `mailbox.deleted_on_leave`: `member_id`, `name`. `mailbox.orphaned`:
+//     `member_id`. The target is the personal mailbox.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 //     `inbox_name`.
@@ -10325,6 +10355,9 @@ type AuditEntry struct {
 	// - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
 	//   delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
 	//   the personal mailbox.
+	// - `mailbox.handed_over`: `from_member_id` (absent for an orphaned mailbox) and
+	//   `to_member_id`. `mailbox.deleted_on_leave`: `member_id`, `name`. `mailbox.orphaned`:
+	//   `member_id`. The target is the personal mailbox.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 	//   `inbox_name`.
@@ -17715,7 +17748,8 @@ type Inbox struct {
 	Mode InboxMode `json:"mode"`
 	Name string    `json:"name"`
 
-	// OwnerMemberId The member whose personal mailbox this is; `null` for a shared inbox. Only that member
+	// OwnerMemberId The member whose personal mailbox this is; `null` for a shared inbox and for an orphaned
+	// mailbox (`mailbox.orphaned`). Only that member
 	// and the delegates they name (`PUT /v1/inboxes/{id}/delegates/{memberId}`) read its
 	// conversations, messages, attachments and events, and only its owner its own drafts:
 	// owners, admins, API keys, webhooks, automation rules and other members' OAuth tokens
@@ -17935,6 +17969,11 @@ type InboxMailbox struct {
 
 	// Conversations Its conversations, trashed ones included.
 	Conversations int64 `json:"conversations"`
+
+	// Orphaned Its owner deleted their account: `owner_member_id` is `null`, nobody reads it, and an
+	// owner or admin hands it over (`POST /v1/inboxes/{id}/hand-over`) or deletes it. It never
+	// becomes a shared inbox.
+	Orphaned bool `json:"orphaned"`
 
 	// StorageBytes The size of its attachments and stored raw e-mails.
 	StorageBytes int64 `json:"storage_bytes"`
@@ -18807,6 +18846,26 @@ type MailboxDelegateList struct {
 	Items []MailboxDelegate `json:"items"`
 }
 
+// MailboxHandOver defines model for MailboxHandOver.
+type MailboxHandOver struct {
+	// ToMemberId The member who becomes the mailbox's owner.
+	ToMemberId uuid.UUID `json:"to_member_id"`
+}
+
+// MailboxOnLeave defines model for MailboxOnLeave.
+type MailboxOnLeave struct {
+	Action MailboxOnLeaveAction `json:"action"`
+
+	// InboxId One of the leaving member's personal mailboxes.
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// ToMemberId The new owner, another member of the workspace; with `hand_over` only.
+	ToMemberId *uuid.UUID `json:"to_member_id,omitempty"`
+}
+
+// MailboxOnLeaveAction defines model for MailboxOnLeave.Action.
+type MailboxOnLeaveAction string
+
 // MailingList defines model for MailingList.
 type MailingList struct {
 	ArchivedAt *time.Time `json:"archived_at,omitempty"`
@@ -19039,6 +19098,11 @@ type MemberPresenceEvent struct {
 
 // MemberPresenceEventType defines model for MemberPresenceEvent.Type.
 type MemberPresenceEventType string
+
+// MemberRemoval What happens to the personal mailboxes of a member who is removed.
+type MemberRemoval struct {
+	Mailboxes *[]MailboxOnLeave `json:"mailboxes,omitempty"`
+}
 
 // MemberSignature defines model for MemberSignature.
 type MemberSignature struct {
@@ -27707,6 +27771,12 @@ type SetMailboxDelegateParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// HandOverMailboxParams defines parameters for HandOverMailbox.
+type HandOverMailboxParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // RotateInboxIdentitySecretParams defines parameters for RotateInboxIdentitySecret.
 type RotateInboxIdentitySecretParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -30260,6 +30330,9 @@ type CreateChannelJSONRequestBody = ChannelCreate
 // SetMailboxDelegateJSONRequestBody defines body for SetMailboxDelegate for application/json ContentType.
 type SetMailboxDelegateJSONRequestBody = MailboxDelegateInput
 
+// HandOverMailboxJSONRequestBody defines body for HandOverMailbox for application/json ContentType.
+type HandOverMailboxJSONRequestBody = MailboxHandOver
+
 // SetInboxSlackJSONRequestBody defines body for SetInboxSlack for application/json ContentType.
 type SetInboxSlackJSONRequestBody = InboxSlackUpdate
 
@@ -30337,6 +30410,9 @@ type StartMySlackLinkJSONRequestBody = SlackLinkStart
 
 // ConfirmMySlackLinkJSONRequestBody defines body for ConfirmMySlackLink for application/json ContentType.
 type ConfirmMySlackLinkJSONRequestBody = SlackLinkConfirm
+
+// RemoveMemberJSONRequestBody defines body for RemoveMember for application/json ContentType.
+type RemoveMemberJSONRequestBody = MemberRemoval
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
@@ -41726,6 +41802,34 @@ type ClientInterface interface {
 	// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
 	SetMailboxDelegate(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, body SetMailboxDelegateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// HandOverMailboxWithBody Give an orphaned personal mailbox a new owner
+	//
+	// A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+	// read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+	// the workspace, its owner; from then on that member reads it and names its delegates. The
+	// caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+	// `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+	// `inbox_access.changed`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/inboxes/{inboxId}/hand-over (the `HandOverMailbox` operationId).
+	HandOverMailboxWithBody(ctx context.Context, inboxId InboxId, params *HandOverMailboxParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HandOverMailbox Give an orphaned personal mailbox a new owner
+	//
+	// A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+	// read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+	// the workspace, its owner; from then on that member reads it and names its delegates. The
+	// caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+	// `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+	// `inbox_access.changed`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/inboxes/{inboxId}/hand-over (the `HandOverMailbox` operationId).
+	HandOverMailbox(ctx context.Context, inboxId InboxId, params *HandOverMailboxParams, body HandOverMailboxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// RotateInboxIdentitySecret Rotate the identity secret
 	//
 	// Owners, admins and API keys. Replaces the inbox's identity secret, which
@@ -42513,8 +42617,10 @@ type ClientInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-	// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+	// workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+	// delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+	// admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+	// `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
 	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type.
@@ -42531,8 +42637,10 @@ type ClientInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-	// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+	// workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+	// delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+	// admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+	// `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
 	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type.
@@ -42991,14 +43099,43 @@ type ClientInterface interface {
 	// Corresponds with GET /v1/members (the `ListMembers` operationId).
 	ListMembers(ctx context.Context, params *ListMembersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RemoveMemberWithBody Remove a member
+	//
+	// Owners and admins only, with a member session; only an owner removes an owner. The last
+	// owner cannot be removed.
+	//
+	// A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+	// each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+	// included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+	// removes its delegates. Without a body, or when one is missing, the answer is `409
+	// personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+	// one transaction, and neither the request nor the answer carries any of the mailboxes'
+	// content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+	// `member.removed`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
+	RemoveMemberWithBody(ctx context.Context, memberId MemberId, params *RemoveMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// RemoveMember Remove a member
 	//
 	// Owners and admins only, with a member session; only an owner removes an owner. The last
-	// owner cannot be removed. A member who owns personal mailboxes answers `409
-	// personal_mailbox` with their ids in `inbox_ids` until each is deleted.
+	// owner cannot be removed.
+	//
+	// A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+	// each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+	// included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+	// removes its delegates. Without a body, or when one is missing, the answer is `409
+	// personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+	// one transaction, and neither the request nor the answer carries any of the mailboxes'
+	// content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+	// `member.removed`.
+	//
+	// Takes a body of the `application/json` content type.
 	//
 	// Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
-	RemoveMember(ctx context.Context, memberId MemberId, params *RemoveMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	RemoveMember(ctx context.Context, memberId MemberId, params *RemoveMemberParams, body RemoveMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetMember Get a member
 	//
@@ -57144,6 +57281,54 @@ func (c *Client) SetMailboxDelegate(ctx context.Context, inboxId InboxId, member
 	return c.Client.Do(req)
 }
 
+// HandOverMailboxWithBody Give an orphaned personal mailbox a new owner
+//
+// A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+// read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+// the workspace, its owner; from then on that member reads it and names its delegates. The
+// caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+// `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+// `inbox_access.changed`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/inboxes/{inboxId}/hand-over (the `HandOverMailbox` operationId).
+func (c *Client) HandOverMailboxWithBody(ctx context.Context, inboxId InboxId, params *HandOverMailboxParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHandOverMailboxRequestWithBody(c.Server, inboxId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// HandOverMailbox Give an orphaned personal mailbox a new owner
+//
+// A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+// read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+// the workspace, its owner; from then on that member reads it and names its delegates. The
+// caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+// `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+// `inbox_access.changed`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/inboxes/{inboxId}/hand-over (the `HandOverMailbox` operationId).
+func (c *Client) HandOverMailbox(ctx context.Context, inboxId InboxId, params *HandOverMailboxParams, body HandOverMailboxJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHandOverMailboxRequest(c.Server, inboxId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // RotateInboxIdentitySecret Rotate the identity secret
 //
 // Owners, admins and API keys. Replaces the inbox's identity secret, which
@@ -58521,8 +58706,10 @@ func (c *Client) RenderMarkdown(ctx context.Context, params *RenderMarkdownParam
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+// workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+// delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+// admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+// `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
 // session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes any type of body and a specified content type.
@@ -58549,8 +58736,10 @@ func (c *Client) DeleteMeWithBody(ctx context.Context, contentType string, body 
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+// workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+// delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+// admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+// `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
 // session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes a body of the `application/json` content type.
@@ -59429,15 +59618,54 @@ func (c *Client) ListMembers(ctx context.Context, params *ListMembersParams, req
 	return c.Client.Do(req)
 }
 
+// RemoveMemberWithBody Remove a member
+//
+// Owners and admins only, with a member session; only an owner removes an owner. The last
+// owner cannot be removed.
+//
+// A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+// each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+// included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+// removes its delegates. Without a body, or when one is missing, the answer is `409
+// personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+// one transaction, and neither the request nor the answer carries any of the mailboxes'
+// content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+// `member.removed`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
+func (c *Client) RemoveMemberWithBody(ctx context.Context, memberId MemberId, params *RemoveMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveMemberRequestWithBody(c.Server, memberId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // RemoveMember Remove a member
 //
 // Owners and admins only, with a member session; only an owner removes an owner. The last
-// owner cannot be removed. A member who owns personal mailboxes answers `409
-// personal_mailbox` with their ids in `inbox_ids` until each is deleted.
+// owner cannot be removed.
+//
+// A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+// each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+// included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+// removes its delegates. Without a body, or when one is missing, the answer is `409
+// personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+// one transaction, and neither the request nor the answer carries any of the mailboxes'
+// content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+// `member.removed`.
+//
+// Takes a body of the `application/json` content type.
 //
 // Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
-func (c *Client) RemoveMember(ctx context.Context, memberId MemberId, params *RemoveMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewRemoveMemberRequest(c.Server, memberId, params)
+func (c *Client) RemoveMember(ctx context.Context, memberId MemberId, params *RemoveMemberParams, body RemoveMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveMemberRequest(c.Server, memberId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -84650,6 +84878,68 @@ func NewSetMailboxDelegateRequestWithBody(server string, inboxId InboxId, member
 	return req, nil
 }
 
+// NewHandOverMailboxRequest calls the generic HandOverMailbox builder with application/json body
+func NewHandOverMailboxRequest(server string, inboxId InboxId, params *HandOverMailboxParams, body HandOverMailboxJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewHandOverMailboxRequestWithBody(server, inboxId, params, "application/json", bodyReader)
+}
+
+// NewHandOverMailboxRequestWithBody constructs an http.Request for the HandOverMailbox method, with any body, and a specified content type
+func NewHandOverMailboxRequestWithBody(server string, inboxId InboxId, params *HandOverMailboxParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "inboxId", inboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/inboxes/%s/hand-over", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewRotateInboxIdentitySecretRequest constructs an http.Request for the RotateInboxIdentitySecret method
 func NewRotateInboxIdentitySecretRequest(server string, inboxId InboxId, params *RotateInboxIdentitySecretParams) (*http.Request, error) {
 	var err error
@@ -88804,8 +89094,19 @@ func NewListMembersRequest(server string, params *ListMembersParams) (*http.Requ
 	return req, nil
 }
 
-// NewRemoveMemberRequest constructs an http.Request for the RemoveMember method
-func NewRemoveMemberRequest(server string, memberId MemberId, params *RemoveMemberParams) (*http.Request, error) {
+// NewRemoveMemberRequest calls the generic RemoveMember builder with application/json body
+func NewRemoveMemberRequest(server string, memberId MemberId, params *RemoveMemberParams, body RemoveMemberJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRemoveMemberRequestWithBody(server, memberId, params, "application/json", bodyReader)
+}
+
+// NewRemoveMemberRequestWithBody constructs an http.Request for the RemoveMember method, with any body, and a specified content type
+func NewRemoveMemberRequestWithBody(server string, memberId MemberId, params *RemoveMemberParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -88830,10 +89131,12 @@ func NewRemoveMemberRequest(server string, memberId MemberId, params *RemoveMemb
 		return nil, err
 	}
 
-	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	if params != nil {
 
@@ -105047,6 +105350,34 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with PUT /v1/inboxes/{inboxId}/delegates/{memberId} (the `SetMailboxDelegate` operationId).
 	SetMailboxDelegateWithResponse(ctx context.Context, inboxId InboxId, memberId MemberId, params *SetMailboxDelegateParams, body SetMailboxDelegateJSONRequestBody, reqEditors ...RequestEditorFn) (*SetMailboxDelegateResponse, error)
 
+	// HandOverMailboxWithBodyWithResponse Give an orphaned personal mailbox a new owner
+	//
+	// A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+	// read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+	// the workspace, its owner; from then on that member reads it and names its delegates. The
+	// caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+	// `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+	// `inbox_access.changed`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/inboxes/{inboxId}/hand-over (the `HandOverMailbox` operationId).
+	HandOverMailboxWithBodyWithResponse(ctx context.Context, inboxId InboxId, params *HandOverMailboxParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HandOverMailboxResponse, error)
+
+	// HandOverMailboxWithResponse Give an orphaned personal mailbox a new owner
+	//
+	// A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+	// read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+	// the workspace, its owner; from then on that member reads it and names its delegates. The
+	// caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+	// `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+	// `inbox_access.changed`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/inboxes/{inboxId}/hand-over (the `HandOverMailbox` operationId).
+	HandOverMailboxWithResponse(ctx context.Context, inboxId InboxId, params *HandOverMailboxParams, body HandOverMailboxJSONRequestBody, reqEditors ...RequestEditorFn) (*HandOverMailboxResponse, error)
+
 	// RotateInboxIdentitySecretWithResponse Rotate the identity secret
 	//
 	// Owners, admins and API keys. Replaces the inbox's identity secret, which
@@ -105894,8 +106225,10 @@ type ClientWithResponsesInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-	// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+	// workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+	// delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+	// admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+	// `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
 	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -105912,8 +106245,10 @@ type ClientWithResponsesInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-	// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+	// workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+	// delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+	// admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+	// `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
 	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -106414,16 +106749,43 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /v1/members (the `ListMembers` operationId).
 	ListMembersWithResponse(ctx context.Context, params *ListMembersParams, reqEditors ...RequestEditorFn) (*ListMembersResponse, error)
 
+	// RemoveMemberWithBodyWithResponse Remove a member
+	//
+	// Owners and admins only, with a member session; only an owner removes an owner. The last
+	// owner cannot be removed.
+	//
+	// A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+	// each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+	// included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+	// removes its delegates. Without a body, or when one is missing, the answer is `409
+	// personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+	// one transaction, and neither the request nor the answer carries any of the mailboxes'
+	// content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+	// `member.removed`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
+	RemoveMemberWithBodyWithResponse(ctx context.Context, memberId MemberId, params *RemoveMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error)
+
 	// RemoveMemberWithResponse Remove a member
 	//
 	// Owners and admins only, with a member session; only an owner removes an owner. The last
-	// owner cannot be removed. A member who owns personal mailboxes answers `409
-	// personal_mailbox` with their ids in `inbox_ids` until each is deleted.
+	// owner cannot be removed.
 	//
-	// Returns a wrapper object for the known response body format(s).
+	// A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+	// each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+	// included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+	// removes its delegates. Without a body, or when one is missing, the answer is `409
+	// personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+	// one transaction, and neither the request nor the answer carries any of the mailboxes'
+	// content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+	// `member.removed`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
-	RemoveMemberWithResponse(ctx context.Context, memberId MemberId, params *RemoveMemberParams, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error)
+	RemoveMemberWithResponse(ctx context.Context, memberId MemberId, params *RemoveMemberParams, body RemoveMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error)
 
 	// GetMemberWithResponse Get a member
 	//
@@ -130985,6 +131347,82 @@ func (r SetMailboxDelegateResponse) ContentType() string {
 	return ""
 }
 
+type HandOverMailboxResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Inbox
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r HandOverMailboxResponse) GetJSON200() *Inbox {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r HandOverMailboxResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r HandOverMailboxResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r HandOverMailboxResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r HandOverMailboxResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r HandOverMailboxResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r HandOverMailboxResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r HandOverMailboxResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HandOverMailboxResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r HandOverMailboxResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type RotateInboxIdentitySecretResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -135951,6 +136389,8 @@ func (r ListMembersResponse) ContentType() string {
 type RemoveMemberResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
 	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
 	ApplicationproblemJSON401 *Problem
 	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
@@ -135959,6 +136399,11 @@ type RemoveMemberResponse struct {
 	ApplicationproblemJSON404 *Problem
 	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
 	ApplicationproblemJSON409 *Problem
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r RemoveMemberResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
 }
 
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
@@ -155328,6 +155773,46 @@ func (c *ClientWithResponses) SetMailboxDelegateWithResponse(ctx context.Context
 	return ParseSetMailboxDelegateResponse(rsp)
 }
 
+// HandOverMailboxWithBodyWithResponse Give an orphaned personal mailbox a new owner
+//
+// A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+// read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+// the workspace, its owner; from then on that member reads it and names its delegates. The
+// caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+// `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+// `inbox_access.changed`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/inboxes/{inboxId}/hand-over (the `HandOverMailbox` operationId).
+func (c *ClientWithResponses) HandOverMailboxWithBodyWithResponse(ctx context.Context, inboxId InboxId, params *HandOverMailboxParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HandOverMailboxResponse, error) {
+	rsp, err := c.HandOverMailboxWithBody(ctx, inboxId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHandOverMailboxResponse(rsp)
+}
+
+// HandOverMailboxWithResponse Give an orphaned personal mailbox a new owner
+//
+// A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+// read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+// the workspace, its owner; from then on that member reads it and names its delegates. The
+// caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+// `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+// `inbox_access.changed`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/inboxes/{inboxId}/hand-over (the `HandOverMailbox` operationId).
+func (c *ClientWithResponses) HandOverMailboxWithResponse(ctx context.Context, inboxId InboxId, params *HandOverMailboxParams, body HandOverMailboxJSONRequestBody, reqEditors ...RequestEditorFn) (*HandOverMailboxResponse, error) {
+	rsp, err := c.HandOverMailbox(ctx, inboxId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHandOverMailboxResponse(rsp)
+}
+
 // RotateInboxIdentitySecretWithResponse Rotate the identity secret
 //
 // Owners, admins and API keys. Replaces the inbox's identity secret, which
@@ -156529,8 +157014,10 @@ func (c *ClientWithResponses) RenderMarkdownWithResponse(ctx context.Context, pa
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+// workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+// delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+// admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+// `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
 // session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -156553,8 +157040,10 @@ func (c *ClientWithResponses) DeleteMeWithBodyWithResponse(ctx context.Context, 
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+// workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+// delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+// admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+// `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
 // session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -157307,17 +157796,50 @@ func (c *ClientWithResponses) ListMembersWithResponse(ctx context.Context, param
 	return ParseListMembersResponse(rsp)
 }
 
+// RemoveMemberWithBodyWithResponse Remove a member
+//
+// Owners and admins only, with a member session; only an owner removes an owner. The last
+// owner cannot be removed.
+//
+// A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+// each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+// included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+// removes its delegates. Without a body, or when one is missing, the answer is `409
+// personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+// one transaction, and neither the request nor the answer carries any of the mailboxes'
+// content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+// `member.removed`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
+func (c *ClientWithResponses) RemoveMemberWithBodyWithResponse(ctx context.Context, memberId MemberId, params *RemoveMemberParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error) {
+	rsp, err := c.RemoveMemberWithBody(ctx, memberId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveMemberResponse(rsp)
+}
+
 // RemoveMemberWithResponse Remove a member
 //
 // Owners and admins only, with a member session; only an owner removes an owner. The last
-// owner cannot be removed. A member who owns personal mailboxes answers `409
-// personal_mailbox` with their ids in `inbox_ids` until each is deleted.
+// owner cannot be removed.
 //
-// Returns a wrapper object for the known response body format(s).
+// A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+// each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+// included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+// removes its delegates. Without a body, or when one is missing, the answer is `409
+// personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+// one transaction, and neither the request nor the answer carries any of the mailboxes'
+// content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+// `member.removed`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
-func (c *ClientWithResponses) RemoveMemberWithResponse(ctx context.Context, memberId MemberId, params *RemoveMemberParams, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error) {
-	rsp, err := c.RemoveMember(ctx, memberId, params, reqEditors...)
+func (c *ClientWithResponses) RemoveMemberWithResponse(ctx context.Context, memberId MemberId, params *RemoveMemberParams, body RemoveMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error) {
+	rsp, err := c.RemoveMember(ctx, memberId, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -178538,6 +179060,67 @@ func ParseSetMailboxDelegateResponse(rsp *http.Response) (*SetMailboxDelegateRes
 	return response, nil
 }
 
+// ParseHandOverMailboxResponse parses an HTTP response from a HandOverMailboxWithResponse call
+func ParseHandOverMailboxResponse(rsp *http.Response) (*HandOverMailboxResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HandOverMailboxResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Inbox
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseRotateInboxIdentitySecretResponse parses an HTTP response from a RotateInboxIdentitySecretWithResponse call
 func ParseRotateInboxIdentitySecretResponse(rsp *http.Response) (*RotateInboxIdentitySecretResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -182434,6 +183017,13 @@ func ParseRemoveMemberResponse(rsp *http.Response) (*RemoveMemberResponse, error
 	switch {
 	case rsp.StatusCode == 204:
 		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem

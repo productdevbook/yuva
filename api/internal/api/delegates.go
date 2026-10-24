@@ -18,7 +18,7 @@ func ownMailbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID
 	if err != nil {
 		return in, err
 	}
-	if in.OwnerMemberID == nil {
+	if !in.Personal {
 		return in, errPersonalMailbox("only a personal mailbox has delegates")
 	}
 	if !ownsMailbox(p, in) {

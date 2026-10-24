@@ -177,7 +177,7 @@ func (s *Server) CreateWebhook(ctx context.Context, req oas.CreateWebhookRequest
 		if err != nil {
 			return nil, err
 		}
-		if in.OwnerMemberID != nil {
+		if in.Personal {
 			return nil, errPersonalMailbox("a personal mailbox sends no webhooks")
 		}
 	}
@@ -858,8 +858,8 @@ func withoutPersonal(ctx context.Context, q *store.Queries, ev store.Event, inbo
 		return append([]uuid.UUID{}, inboxes...), err
 	}
 	personal := make(map[uuid.UUID]bool, len(rows))
-	for _, r := range rows {
-		personal[r.ID] = true
+	for _, id := range rows {
+		personal[id] = true
 	}
 	if ev.InboxID != nil && personal[*ev.InboxID] {
 		return nil, nil

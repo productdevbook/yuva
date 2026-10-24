@@ -201,7 +201,7 @@ SELECT cv.id, cv.inbox_id, cv.subject, cv.created_at,
 FROM hits h
 JOIN conversations cv ON cv.workspace_id = $1 AND cv.id = h.conversation_id
 WHERE cv.contact_id <> $2 AND cv.trashed_at IS NULL
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $4::uuid))
   AND conversation_visible_to(cv.draft_of, $5::uuid)

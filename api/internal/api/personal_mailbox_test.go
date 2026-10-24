@@ -423,3 +423,116 @@ func TestPersonalMailboxOwnersLeaveDeletedWorkspace(t *testing.T) {
 		t.Fatalf("%d inboxes left after the purge", n)
 	}
 }
+
+func personalMailboxWithMail(t *testing.T, h *harness, c *client, memberID string) (string, string) {
+	t.Helper()
+	inbox := c.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Mine", "slug": unique("mine"), "owner_member_id": memberID}).body["inbox"].(map[string]any)["id"].(string)
+	address := unique("me") + "@example.com"
+	c.expect(http.StatusCreated, "POST", "/v1/inboxes/"+inbox+"/channels", map[string]any{"kind": "email", "name": "My mail", "email": map[string]any{"address": address}})
+	r := h.ingest(address, []byte(fmt.Sprintf(attachmentMail, address, newMessageID())), nil)
+	if r.status != http.StatusAccepted || r.str("conversation_id") == "" {
+		t.Fatalf("ingest: %d %v", r.status, r.body)
+	}
+	return inbox, r.str("conversation_id")
+}
+
+func TestPersonalMailboxOnLeave(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	key := tm.apiKey(h)
+	leaver, leaverID := tm.newAgent()
+	heir, heirID := tm.newAgent()
+	delegate, delegateID := tm.newAgent()
+	kept, dropped := "", ""
+	var keptConv string
+	kept, keptConv = personalMailboxWithMail(t, h, leaver, leaverID)
+	dropped, _ = personalMailboxWithMail(t, h, leaver, leaverID)
+	leaver.expect(http.StatusOK, "PUT", "/v1/inboxes/"+kept+"/delegates/"+delegateID, map[string]any{"access": "send"})
+	delegate.expect(http.StatusOK, "GET", "/v1/conversations/"+keptConv, nil)
+
+	remove := "/v1/members/" + leaverID
+	for _, body := range []any{nil, map[string]any{"mailboxes": []map[string]any{{"inbox_id": kept, "action": "delete"}}}} {
+		res := tm.owner.expect(http.StatusConflict, "DELETE", remove, body)
+		if res.str("code") != "personal_mailbox" || !strings.Contains(fmt.Sprint(res.body["inbox_ids"]), kept) || !strings.Contains(fmt.Sprint(res.body["inbox_ids"]), dropped) {
+			t.Fatalf("incomplete choice: %s", res.raw)
+		}
+	}
+	for _, bad := range [][]map[string]any{
+		{{"inbox_id": kept, "action": "hand_over"}, {"inbox_id": dropped, "action": "delete"}},
+		{{"inbox_id": kept, "action": "hand_over", "to_member_id": leaverID}, {"inbox_id": dropped, "action": "delete"}},
+		{{"inbox_id": kept, "action": "hand_over", "to_member_id": uuid.New().String()}, {"inbox_id": dropped, "action": "delete"}},
+		{{"inbox_id": kept, "action": "delete"}, {"inbox_id": dropped, "action": "delete"}, {"inbox_id": tm.inbox, "action": "delete"}},
+		{{"inbox_id": kept, "action": "delete"}, {"inbox_id": kept, "action": "delete"}, {"inbox_id": dropped, "action": "delete"}},
+	} {
+		tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "DELETE", remove, map[string]any{"mailboxes": bad})
+	}
+	choice := map[string]any{"mailboxes": []map[string]any{
+		{"inbox_id": kept, "action": "hand_over", "to_member_id": heirID},
+		{"inbox_id": dropped, "action": "delete"},
+	}}
+	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "DELETE", remove, choice)
+	key.expectProblem(http.StatusForbidden, "member_session_required", "DELETE", remove, choice)
+	if n := h.count("SELECT count(*) FROM members WHERE workspace_id = $1 AND id = $2", tm.ws, leaverID); n != 1 {
+		t.Fatal("a refused removal removed the member")
+	}
+	if res := tm.owner.do("DELETE", remove, choice); res.status != http.StatusNoContent || len(res.raw) != 0 {
+		t.Fatalf("remove with choices: %d %s", res.status, res.raw)
+	}
+	heir.expect(http.StatusOK, "GET", "/v1/conversations/"+keptConv, nil)
+	if got := heir.expect(http.StatusOK, "GET", "/v1/inboxes/"+kept, nil); got.str("owner_member_id") != heirID {
+		t.Fatalf("handed over: %s", got.raw)
+	}
+	delegate.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+keptConv, nil)
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+keptConv, nil)
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/inboxes/"+dropped, nil)
+	if n := h.count("SELECT count(*) FROM mailbox_delegates WHERE workspace_id = $1", tm.ws); n != 0 {
+		t.Fatalf("%d delegates outlived the hand-over", n)
+	}
+	for action, want := range map[string]int{"mailbox.handed_over": 1, "mailbox.deleted_on_leave": 1, "inbox.deleted": 1, "member.removed": 1} {
+		if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND action = $2", tm.ws, action); n != want {
+			t.Errorf("%d %s entries, want %d", n, action, want)
+		}
+	}
+
+	heir.expect(http.StatusOK, "PUT", "/v1/inboxes/"+kept+"/delegates/"+delegateID, map[string]any{"access": "read"})
+	tm.owner.expectProblem(http.StatusConflict, "personal_mailbox", "POST", "/v1/inboxes/"+kept+"/hand-over", map[string]any{"to_member_id": tm.agentID})
+	heirEmail := personEmail(heir)
+	heir.expect(http.StatusNoContent, "DELETE", "/v1/me", map[string]any{"email": heirEmail})
+	meta := tm.owner.expect(http.StatusOK, "GET", "/v1/inboxes/"+kept, nil)
+	if box, _ := meta.body["mailbox"].(map[string]any); meta.body["owner_member_id"] != nil || box == nil || box["orphaned"] != true || meta.body["purpose"] != "mail" {
+		t.Fatalf("orphaned: %s", meta.raw)
+	}
+	for _, c := range []*client{tm.owner, tm.agent, delegate, key} {
+		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+keptConv, nil)
+		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+keptConv+"/messages", nil)
+	}
+	if strings.Contains(string(tm.owner.expect(http.StatusOK, "GET", "/v1/conversations?limit=100", nil).raw), keptConv) {
+		t.Fatal("an owner lists a conversation of the orphaned mailbox")
+	}
+	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND action = 'mailbox.orphaned' AND target_id = $2", tm.ws, kept); n != 1 {
+		t.Fatalf("%d mailbox.orphaned entries", n)
+	}
+
+	hand := "/v1/inboxes/" + kept + "/hand-over"
+	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "POST", hand, map[string]any{"to_member_id": tm.agentID})
+	key.expectProblem(http.StatusForbidden, "member_session_required", "POST", hand, map[string]any{"to_member_id": tm.agentID})
+	tm.owner.expectProblem(http.StatusConflict, "personal_mailbox", "POST", "/v1/inboxes/"+tm.inbox+"/hand-over", map[string]any{"to_member_id": tm.agentID})
+	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", hand, map[string]any{"to_member_id": uuid.New().String()})
+	other := newTeam(t, h)
+	other.owner.workspace = tm.ws
+	if res := other.owner.do("POST", hand, map[string]any{"to_member_id": tm.agentID}); res.status/100 == 2 {
+		t.Fatalf("another workspace's owner handed the mailbox over: %s", res.raw)
+	}
+	other.owner.workspace = other.ws
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "POST", hand, map[string]any{"to_member_id": tm.agentID})
+	got := tm.owner.expect(http.StatusOK, "POST", hand, map[string]any{"to_member_id": tm.agentID})
+	if box, _ := got.body["mailbox"].(map[string]any); got.str("owner_member_id") != tm.agentID || box == nil || box["orphaned"] != false || box["access"] != nil {
+		t.Fatalf("hand-over: %s", got.raw)
+	}
+	tm.agent.expect(http.StatusOK, "GET", "/v1/conversations/"+keptConv, nil)
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+keptConv, nil)
+	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND action = 'mailbox.handed_over' AND target_id = $2", tm.ws, kept); n != 2 {
+		t.Fatalf("%d hand-overs audited, want 2", n)
+	}
+}

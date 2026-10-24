@@ -1464,6 +1464,7 @@ type Inbox struct {
 	Signature            string
 	SignatureImageIds    []uuid.UUID
 	OwnerMemberID        *uuid.UUID
+	Personal             bool
 }
 
 type InboxMember struct {

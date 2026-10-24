@@ -56,7 +56,7 @@ DELETE FROM status_pages WHERE workspace_id = $1 AND id = $2;
 SELECT * FROM status_pages p
 WHERE p.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR p.inbox_id = sqlc.narg(inbox_id)::uuid)
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = @viewer_id))
 ORDER BY p.created_at, p.id;
@@ -244,7 +244,7 @@ WHERE workspace_id = @workspace_id AND incident_id = @incident_id AND conversati
 SELECT sqlc.embed(c), l.linked_at FROM status_incident_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
 WHERE l.workspace_id = @workspace_id AND l.incident_id = @incident_id AND c.trashed_at IS NULL
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
@@ -256,7 +256,7 @@ LIMIT @lim;
 SELECT c.id FROM status_incident_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
 WHERE l.workspace_id = @workspace_id AND l.incident_id = @incident_id AND c.status <> 'closed' AND NOT c.spam AND c.trashed_at IS NULL
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
 ORDER BY l.linked_at, c.id;
@@ -266,7 +266,7 @@ SELECT sqlc.embed(i), p.name AS page_name, p.slug AS page_slug, p.custom_domain 
 JOIN status_incidents i ON i.workspace_id = l.workspace_id AND i.id = l.incident_id
 JOIN status_pages p ON p.workspace_id = i.workspace_id AND p.id = i.page_id
 WHERE l.workspace_id = @workspace_id AND l.conversation_id = @conversation_id
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = @viewer_id))
 ORDER BY l.linked_at DESC, i.id DESC;
@@ -308,7 +308,7 @@ WHERE workspace_id = @workspace_id AND reply_id = @reply_id AND conversation_id 
 SELECT t.outcome, count(*)::int AS n FROM linked_reply_targets t
 JOIN conversations c ON c.workspace_id = t.workspace_id AND c.id = t.conversation_id
 WHERE t.workspace_id = @workspace_id AND t.reply_id = @reply_id
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
 GROUP BY t.outcome;
@@ -317,7 +317,7 @@ GROUP BY t.outcome;
 SELECT t.conversation_id, t.outcome, t.reason, t.finished_at FROM linked_reply_targets t
 JOIN conversations c ON c.workspace_id = t.workspace_id AND c.id = t.conversation_id
 WHERE t.workspace_id = @workspace_id AND t.reply_id = @reply_id
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
   AND (sqlc.narg(cursor_id)::uuid IS NULL OR t.conversation_id > sqlc.narg(cursor_id)::uuid)

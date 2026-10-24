@@ -349,7 +349,7 @@ WHERE (r.label_id IS NOT NULL) = $5::bool AND (r.label_id IS NULL OR l.id IS NOT
   AND ($9::text IS NULL OR r.channel_kind = $9::text)
   AND ($10::uuid IS NULL OR t.id = $10::uuid)
   AND ($11::uuid IS NULL OR mb.id = $11::uuid)
-  AND (($12::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = $4 AND pmb.id = r.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($12::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = $4 AND pmb.id = r.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = $4 AND iv.inbox_id = r.inbox_id AND iv.viewer_id = $13::uuid))
 GROUP BY 1, 2, 3, 4

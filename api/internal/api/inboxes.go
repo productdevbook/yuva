@@ -87,7 +87,7 @@ func withImports(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, i
 func withMailboxes(ctx context.Context, q *store.Queries, p principal, items []oas.Inbox) error {
 	var ids []uuid.UUID
 	for _, in := range items {
-		if in.OwnerMemberId.IsSpecified() && !in.OwnerMemberId.IsNull() {
+		if in.Purpose == oas.InboxPurposeMail {
 			ids = append(ids, in.Id)
 		}
 	}
@@ -117,9 +117,8 @@ func withMailboxes(ctx context.Context, q *store.Queries, p principal, items []o
 			if addresses == nil {
 				addresses = []string{}
 			}
-			items[i].Mailbox = &oas.InboxMailbox{Addresses: addresses, Conversations: r.Conversations, StorageBytes: r.StorageBytes}
-			owner := items[i].OwnerMemberId.MustGet()
-			if ownsMailbox(p, store.Inbox{OwnerMemberID: &owner}) {
+			items[i].Mailbox = &oas.InboxMailbox{Addresses: addresses, Conversations: r.Conversations, StorageBytes: r.StorageBytes, Orphaned: r.OwnerMemberID == nil}
+			if ownsMailbox(p, store.Inbox{OwnerMemberID: r.OwnerMemberID, Personal: true}) {
 				items[i].Mailbox.Access = new(oas.MailboxAccessOwner)
 				continue
 			}
@@ -376,7 +375,7 @@ func manageInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUI
 	if err != nil {
 		return in, false, err
 	}
-	if in.OwnerMemberID == nil {
+	if !in.Personal {
 		return in, false, requireManagerOrKey(p)
 	}
 	if ownsMailbox(p, in) {
@@ -425,7 +424,7 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 		b.AssignmentMode != nil || b.AssignmentCap != nil || b.FeedbackCategories != nil || b.Sender != nil || b.Signature != nil) {
 		return nil, errPersonalMailbox("owners and admins change only the name of another member's personal mailbox")
 	}
-	if pre.OwnerMemberID != nil && b.Purpose != nil && *b.Purpose != oas.InboxPurposeMail {
+	if pre.Personal && b.Purpose != nil && *b.Purpose != oas.InboxPurposeMail {
 		return nil, errPersonalMailbox("a personal mailbox stays a mail inbox")
 	}
 	var out oas.Inbox
@@ -569,88 +568,102 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 	if err != nil {
 		return nil, err
 	}
-	var keys []string
 	var pages []uuid.UUID
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
-		if target.OwnerMemberID != nil {
-			parts, err := s.dropMailboxMigrations(ctx, q, p, req.InboxId)
-			if err != nil {
-				return err
-			}
-			keys = append(keys, parts...)
-		}
-		in, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId})
-		if store.IsNotFound(err) {
-			return errInboxGone
-		}
-		if err != nil {
-			return err
-		}
-		if keys, err = q.ListInboxStorageKeys(ctx, store.ListInboxStorageKeysParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId}); err != nil {
-			return err
-		}
-		raw, err := q.ListInboxRawKeys(ctx, store.ListInboxRawKeysParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
-		if err != nil {
-			return err
-		}
-		keys = append(keys, raw...)
-		if t, err := inboxTenant(ctx, q, p.workspaceID, req.InboxId); err != nil {
-			return err
-		} else if t != nil {
-			events.job(SESTenantDeleteArgs{Name: t.Name, Region: t.Region}, nil)
-		}
-		owned, err := q.ListInboxOwnDomains(ctx, store.ListInboxOwnDomainsParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
-		if err != nil {
-			return err
-		}
-		for _, o := range owned {
-			releaseCloudflareHostname(events, p.workspaceID, o.CfHostnameID, o.CustomDomain)
-			pages = append(pages, o.ID)
-		}
-		driven, err := slaConversationsOf(ctx, q, p.workspaceID, func(sp store.SlaPolicy) bool { return slices.Contains(sp.InboxIds, req.InboxId) })
-		if err != nil {
-			return err
-		}
-		if err := lockSLAConversations(ctx, q, p.workspaceID, driven); err != nil {
-			return err
-		}
-		convs, err := q.ListInboxConversationIDs(ctx, store.ListInboxConversationIDsParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
-		if err != nil {
-			return err
-		}
-		if err := forgetConversations(ctx, q, p.workspaceID, convs); err != nil {
-			return err
-		}
-		if err := s.scrubSlackInbox(ctx, q, events, p.workspaceID, req.InboxId); err != nil {
-			return err
-		}
-		if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: req.InboxId}); err != nil {
-			return err
-		}
-		if err := q.DeleteAssignmentTurns(ctx, store.DeleteAssignmentTurnsParams{WorkspaceID: p.workspaceID, PoolID: req.InboxId}); err != nil {
-			return err
-		}
-		if err := q.StripInboxFromSLAPolicies(ctx, store.StripInboxFromSLAPoliciesParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId, Now: s.now()}); err != nil {
-			return err
-		}
-		if err := s.syncSLAConversations(ctx, q, events, p.workspaceID, driven); err != nil {
-			return err
-		}
-		if err := s.audit(ctx, q, p, oas.AuditInboxDeleted, oas.AuditTargetInbox, in.ID, auditDetails{"name": in.Name}); err != nil {
-			return err
-		}
-		id := req.InboxId
-		events.deleteStored(p.workspaceID, keys)
-		events.add(realtime.InboxDeleted, &id, nil, oas.InboxRef{Id: id})
-		return nil
+		pages, err = s.deleteInboxTx(ctx, q, events, p, target)
+		return err
 	})
 	if err != nil {
 		return nil, err
 	}
+	s.forgetStatusDomains(pages)
+	return oas.DeleteInbox204Response{}, nil
+}
+
+func (s *Server) forgetStatusDomains(pages []uuid.UUID) {
 	for _, page := range pages {
 		s.statusDomainCache.forget(page)
 	}
-	return oas.DeleteInbox204Response{}, nil
+}
+
+// deleteInboxTx deletes the inbox with everything in it; the caller forgets the returned status
+// pages' domains after the commit.
+func (s *Server) deleteInboxTx(ctx context.Context, q *store.Queries, events *eventBatch, p principal, target store.Inbox) ([]uuid.UUID, error) {
+	var keys []string
+	var pages []uuid.UUID
+	if target.Personal {
+		parts, err := s.dropMailboxMigrations(ctx, q, p, target.ID)
+		if err != nil {
+			return nil, err
+		}
+		keys = append(keys, parts...)
+	}
+	in, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: target.ID})
+	if store.IsNotFound(err) {
+		return nil, errInboxGone
+	}
+	if err != nil {
+		return nil, err
+	}
+	stored, err := q.ListInboxStorageKeys(ctx, store.ListInboxStorageKeysParams{WorkspaceID: p.workspaceID, InboxID: in.ID})
+	if err != nil {
+		return nil, err
+	}
+	keys = append(keys, stored...)
+	raw, err := q.ListInboxRawKeys(ctx, store.ListInboxRawKeysParams{WorkspaceID: p.workspaceID, InboxID: in.ID})
+	if err != nil {
+		return nil, err
+	}
+	keys = append(keys, raw...)
+	if t, err := inboxTenant(ctx, q, p.workspaceID, in.ID); err != nil {
+		return nil, err
+	} else if t != nil {
+		events.job(SESTenantDeleteArgs{Name: t.Name, Region: t.Region}, nil)
+	}
+	owned, err := q.ListInboxOwnDomains(ctx, store.ListInboxOwnDomainsParams{WorkspaceID: p.workspaceID, InboxID: in.ID})
+	if err != nil {
+		return nil, err
+	}
+	for _, o := range owned {
+		releaseCloudflareHostname(events, p.workspaceID, o.CfHostnameID, o.CustomDomain)
+		pages = append(pages, o.ID)
+	}
+	driven, err := slaConversationsOf(ctx, q, p.workspaceID, func(sp store.SlaPolicy) bool { return slices.Contains(sp.InboxIds, in.ID) })
+	if err != nil {
+		return nil, err
+	}
+	if err := lockSLAConversations(ctx, q, p.workspaceID, driven); err != nil {
+		return nil, err
+	}
+	convs, err := q.ListInboxConversationIDs(ctx, store.ListInboxConversationIDsParams{WorkspaceID: p.workspaceID, InboxID: in.ID})
+	if err != nil {
+		return nil, err
+	}
+	if err := forgetConversations(ctx, q, p.workspaceID, convs); err != nil {
+		return nil, err
+	}
+	if err := s.scrubSlackInbox(ctx, q, events, p.workspaceID, in.ID); err != nil {
+		return nil, err
+	}
+	if _, err = q.DeleteInbox(ctx, store.DeleteInboxParams{WorkspaceID: p.workspaceID, ID: in.ID}); err != nil {
+		return nil, err
+	}
+	if err := q.DeleteAssignmentTurns(ctx, store.DeleteAssignmentTurnsParams{WorkspaceID: p.workspaceID, PoolID: in.ID}); err != nil {
+		return nil, err
+	}
+	if err := q.StripInboxFromSLAPolicies(ctx, store.StripInboxFromSLAPoliciesParams{WorkspaceID: p.workspaceID, InboxID: in.ID, Now: s.now()}); err != nil {
+		return nil, err
+	}
+	if err := s.syncSLAConversations(ctx, q, events, p.workspaceID, driven); err != nil {
+		return nil, err
+	}
+	if err := s.audit(ctx, q, p, oas.AuditInboxDeleted, oas.AuditTargetInbox, in.ID, auditDetails{"name": in.Name}); err != nil {
+		return nil, err
+	}
+	id := in.ID
+	events.deleteStored(p.workspaceID, keys)
+	events.add(realtime.InboxDeleted, &id, nil, oas.InboxRef{Id: id})
+	return pages, nil
 }
 
 func (s *Server) RotateInboxIdentitySecret(ctx context.Context, req oas.RotateInboxIdentitySecretRequestObject) (oas.RotateInboxIdentitySecretResponseObject, error) {
@@ -733,7 +746,7 @@ func (s *Server) GrantInboxAccess(ctx context.Context, req oas.GrantInboxAccessR
 	if err != nil {
 		return nil, err
 	}
-	if in.OwnerMemberID != nil {
+	if in.Personal {
 		return nil, errPersonalMailbox("only its owner reads a personal mailbox")
 	}
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {

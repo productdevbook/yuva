@@ -15,12 +15,12 @@ import (
 const createInbox = `-- name: CreateInbox :one
 INSERT INTO inboxes (id, workspace_id, name, slug, purpose, branding, default_locale, timezone, mode,
                      expected_reply_minutes, business_hours, identity_secret, ask_for_rating, rating_since,
-                     assignment_mode, assignment_cap, owner_member_id, created_at, updated_at)
+                     assignment_mode, assignment_cap, owner_member_id, personal, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
         $10, $11, $12, coalesce($13::bool, false),
         CASE WHEN $13::bool THEN $14::timestamptz END, $15, $16,
-        $17, $14, $14)
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id
+        $17, $17::uuid IS NOT NULL, $14, $14)
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal
 `
 
 type CreateInboxParams struct {
@@ -91,6 +91,7 @@ func (q *Queries) CreateInbox(ctx context.Context, arg CreateInboxParams) (Inbox
 		&i.Signature,
 		&i.SignatureImageIds,
 		&i.OwnerMemberID,
+		&i.Personal,
 	)
 	return i, err
 }
@@ -112,6 +113,36 @@ func (q *Queries) DeleteInbox(ctx context.Context, arg DeleteInboxParams) (int64
 	return result.RowsAffected(), nil
 }
 
+const deleteInboxDelegates = `-- name: DeleteInboxDelegates :many
+DELETE FROM mailbox_delegates WHERE workspace_id = $1 AND inbox_id = $2
+RETURNING member_id
+`
+
+type DeleteInboxDelegatesParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+}
+
+func (q *Queries) DeleteInboxDelegates(ctx context.Context, arg DeleteInboxDelegatesParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, deleteInboxDelegates, arg.WorkspaceID, arg.InboxID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var member_id uuid.UUID
+		if err := rows.Scan(&member_id); err != nil {
+			return nil, err
+		}
+		items = append(items, member_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const deleteMailboxDelegate = `-- name: DeleteMailboxDelegate :execrows
 DELETE FROM mailbox_delegates WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
 `
@@ -131,7 +162,7 @@ func (q *Queries) DeleteMailboxDelegate(ctx context.Context, arg DeleteMailboxDe
 }
 
 const getInbox = `-- name: GetInbox :one
-SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id FROM inboxes WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal FROM inboxes WHERE workspace_id = $1 AND id = $2
 `
 
 type GetInboxParams struct {
@@ -169,6 +200,7 @@ func (q *Queries) GetInbox(ctx context.Context, arg GetInboxParams) (Inbox, erro
 		&i.Signature,
 		&i.SignatureImageIds,
 		&i.OwnerMemberID,
+		&i.Personal,
 	)
 	return i, err
 }
@@ -299,7 +331,7 @@ func (q *Queries) InsertMailboxDelegate(ctx context.Context, arg InsertMailboxDe
 }
 
 const listInboxMailboxes = `-- name: ListInboxMailboxes :many
-SELECT i.id,
+SELECT i.id, i.owner_member_id,
        coalesce((SELECT array_agg(e.address ORDER BY e.address) FROM channels ch
                  JOIN email_channels e ON e.workspace_id = ch.workspace_id AND e.channel_id = ch.id
                  WHERE ch.workspace_id = i.workspace_id AND ch.inbox_id = i.id), '{}')::text[] AS addresses,
@@ -311,7 +343,7 @@ SELECT i.id,
                     JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
                     WHERE e.workspace_id = i.workspace_id AND c.inbox_id = i.id AND e.raw_key IS NOT NULL), 0))::bigint AS storage_bytes
 FROM inboxes i
-WHERE i.workspace_id = $1 AND i.id = ANY($2::uuid[]) AND i.owner_member_id IS NOT NULL
+WHERE i.workspace_id = $1 AND i.id = ANY($2::uuid[]) AND i.personal
 `
 
 type ListInboxMailboxesParams struct {
@@ -321,6 +353,7 @@ type ListInboxMailboxesParams struct {
 
 type ListInboxMailboxesRow struct {
 	ID            uuid.UUID
+	OwnerMemberID *uuid.UUID
 	Addresses     []string
 	Conversations int64
 	StorageBytes  int64
@@ -337,6 +370,7 @@ func (q *Queries) ListInboxMailboxes(ctx context.Context, arg ListInboxMailboxes
 		var i ListInboxMailboxesRow
 		if err := rows.Scan(
 			&i.ID,
+			&i.OwnerMemberID,
 			&i.Addresses,
 			&i.Conversations,
 			&i.StorageBytes,
@@ -510,9 +544,9 @@ func (q *Queries) ListInboxStorageKeys(ctx context.Context, arg ListInboxStorage
 }
 
 const listInboxes = `-- name: ListInboxes :many
-SELECT i.id, i.workspace_id, i.name, i.slug, i.branding, i.default_locale, i.timezone, i.mode, i.expected_reply_minutes, i.business_hours, i.identity_secret, i.created_at, i.updated_at, i.ask_for_rating, i.rating_since, i.sender_legal_name, i.sender_postal_address, i.sender_registration, i.sender_contact, i.feedback_categories, i.assignment_mode, i.assignment_cap, i.purpose, i.signature, i.signature_image_ids, i.owner_member_id FROM inboxes i
+SELECT i.id, i.workspace_id, i.name, i.slug, i.branding, i.default_locale, i.timezone, i.mode, i.expected_reply_minutes, i.business_hours, i.identity_secret, i.created_at, i.updated_at, i.ask_for_rating, i.rating_since, i.sender_legal_name, i.sender_postal_address, i.sender_registration, i.sender_contact, i.feedback_categories, i.assignment_mode, i.assignment_cap, i.purpose, i.signature, i.signature_image_ids, i.owner_member_id, i.personal FROM inboxes i
 WHERE i.workspace_id = $1
-  AND (($2::bool AND ($3::bool OR i.owner_member_id IS NULL)) OR EXISTS (
+  AND (($2::bool AND ($3::bool OR NOT i.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $4))
 ORDER BY i.name, i.id
@@ -566,6 +600,7 @@ func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inb
 			&i.Signature,
 			&i.SignatureImageIds,
 			&i.OwnerMemberID,
+			&i.Personal,
 		); err != nil {
 			return nil, err
 		}
@@ -578,7 +613,7 @@ func (q *Queries) ListInboxes(ctx context.Context, arg ListInboxesParams) ([]Inb
 }
 
 const listInboxesByID = `-- name: ListInboxesByID :many
-SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id FROM inboxes WHERE workspace_id = $1 AND id = ANY($2::uuid[])
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal FROM inboxes WHERE workspace_id = $1 AND id = ANY($2::uuid[])
 `
 
 type ListInboxesByIDParams struct {
@@ -622,6 +657,7 @@ func (q *Queries) ListInboxesByID(ctx context.Context, arg ListInboxesByIDParams
 			&i.Signature,
 			&i.SignatureImageIds,
 			&i.OwnerMemberID,
+			&i.Personal,
 		); err != nil {
 			return nil, err
 		}
@@ -747,8 +783,8 @@ func (q *Queries) ListMemberPersonalInboxIDs(ctx context.Context, arg ListMember
 }
 
 const listPersonalInboxes = `-- name: ListPersonalInboxes :many
-SELECT id, owner_member_id::uuid AS owner_member_id FROM inboxes
-WHERE workspace_id = $1 AND id = ANY($2::uuid[]) AND owner_member_id IS NOT NULL
+SELECT id FROM inboxes
+WHERE workspace_id = $1 AND id = ANY($2::uuid[]) AND personal
 `
 
 type ListPersonalInboxesParams struct {
@@ -756,24 +792,19 @@ type ListPersonalInboxesParams struct {
 	Ids         []uuid.UUID
 }
 
-type ListPersonalInboxesRow struct {
-	ID            uuid.UUID
-	OwnerMemberID uuid.UUID
-}
-
-func (q *Queries) ListPersonalInboxes(ctx context.Context, arg ListPersonalInboxesParams) ([]ListPersonalInboxesRow, error) {
+func (q *Queries) ListPersonalInboxes(ctx context.Context, arg ListPersonalInboxesParams) ([]uuid.UUID, error) {
 	rows, err := q.db.Query(ctx, listPersonalInboxes, arg.WorkspaceID, arg.Ids)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListPersonalInboxesRow
+	var items []uuid.UUID
 	for rows.Next() {
-		var i ListPersonalInboxesRow
-		if err := rows.Scan(&i.ID, &i.OwnerMemberID); err != nil {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -811,7 +842,7 @@ func (q *Queries) ListViewerInboxIDs(ctx context.Context, arg ListViewerInboxIDs
 }
 
 const lockInbox = `-- name: LockInbox :one
-SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockInboxParams struct {
@@ -849,6 +880,7 @@ func (q *Queries) LockInbox(ctx context.Context, arg LockInboxParams) (Inbox, er
 		&i.Signature,
 		&i.SignatureImageIds,
 		&i.OwnerMemberID,
+		&i.Personal,
 	)
 	return i, err
 }
@@ -902,7 +934,7 @@ SELECT EXISTS (
     SELECT 1 FROM inboxes i
     JOIN members m ON m.workspace_id = i.workspace_id AND m.id = $1
     WHERE i.workspace_id = $2 AND i.id = $3
-      AND ((m.role IN ('owner', 'admin') AND i.owner_member_id IS NULL) OR EXISTS (
+      AND ((m.role IN ('owner', 'admin') AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM member_inbox_access a
           WHERE a.workspace_id = i.workspace_id AND a.inbox_id = i.id AND a.member_id = m.id))
 ) AS access
@@ -922,9 +954,9 @@ func (q *Queries) MemberReadsInbox(ctx context.Context, arg MemberReadsInboxPara
 }
 
 const memberWritesInbox = `-- name: MemberWritesInbox :one
-SELECT (i.owner_member_id IS NULL OR i.owner_member_id = $1::uuid OR EXISTS (
+SELECT (NOT i.personal OR (i.owner_member_id IS NOT NULL AND (i.owner_member_id = $1::uuid OR EXISTS (
     SELECT 1 FROM mailbox_delegates d
-    WHERE d.workspace_id = i.workspace_id AND d.inbox_id = i.id AND d.member_id = $1 AND d.access = 'send'))::bool AS writes
+    WHERE d.workspace_id = i.workspace_id AND d.inbox_id = i.id AND d.member_id = $1 AND d.access = 'send'))))::bool AS writes
 FROM inboxes i WHERE i.workspace_id = $2 AND i.id = $3
 `
 
@@ -961,21 +993,6 @@ func (q *Queries) MoveFeedbackToOther(ctx context.Context, arg MoveFeedbackToOth
 	return result.RowsAffected(), nil
 }
 
-const releaseDeletedWorkspaceMailboxes = `-- name: ReleaseDeletedWorkspaceMailboxes :execrows
-UPDATE inboxes i SET owner_member_id = NULL
-FROM members m JOIN workspaces w ON w.id = m.workspace_id
-WHERE m.person_id = $1 AND w.deleted_at IS NOT NULL
-  AND i.workspace_id = m.workspace_id AND i.owner_member_id = m.id
-`
-
-func (q *Queries) ReleaseDeletedWorkspaceMailboxes(ctx context.Context, personID uuid.UUID) (int64, error) {
-	result, err := q.db.Exec(ctx, releaseDeletedWorkspaceMailboxes, personID)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
-}
-
 const revokeInboxAccess = `-- name: RevokeInboxAccess :execrows
 DELETE FROM inbox_members WHERE workspace_id = $1 AND inbox_id = $2 AND member_id = $3
 `
@@ -997,7 +1014,7 @@ func (q *Queries) RevokeInboxAccess(ctx context.Context, arg RevokeInboxAccessPa
 const setInboxFeedbackCategories = `-- name: SetInboxFeedbackCategories :one
 UPDATE inboxes SET feedback_categories = $1, updated_at = $2
 WHERE workspace_id = $3 AND id = $4
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal
 `
 
 type SetInboxFeedbackCategoriesParams struct {
@@ -1042,6 +1059,7 @@ func (q *Queries) SetInboxFeedbackCategories(ctx context.Context, arg SetInboxFe
 		&i.Signature,
 		&i.SignatureImageIds,
 		&i.OwnerMemberID,
+		&i.Personal,
 	)
 	return i, err
 }
@@ -1074,7 +1092,7 @@ func (q *Queries) SetInboxIdentitySecret(ctx context.Context, arg SetInboxIdenti
 const setInboxSignature = `-- name: SetInboxSignature :one
 UPDATE inboxes SET signature = $1, signature_image_ids = $2::uuid[], updated_at = $3
 WHERE workspace_id = $4 AND id = $5
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal
 `
 
 type SetInboxSignatureParams struct {
@@ -1121,6 +1139,7 @@ func (q *Queries) SetInboxSignature(ctx context.Context, arg SetInboxSignaturePa
 		&i.Signature,
 		&i.SignatureImageIds,
 		&i.OwnerMemberID,
+		&i.Personal,
 	)
 	return i, err
 }
@@ -1159,8 +1178,61 @@ func (q *Queries) SetMailboxDelegateAccess(ctx context.Context, arg SetMailboxDe
 	return i, err
 }
 
+const setMailboxOwner = `-- name: SetMailboxOwner :one
+UPDATE inboxes SET owner_member_id = $1::uuid, updated_at = $2
+WHERE workspace_id = $3 AND id = $4 AND personal
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal
+`
+
+type SetMailboxOwnerParams struct {
+	OwnerMemberID uuid.UUID
+	Now           time.Time
+	WorkspaceID   uuid.UUID
+	ID            uuid.UUID
+}
+
+func (q *Queries) SetMailboxOwner(ctx context.Context, arg SetMailboxOwnerParams) (Inbox, error) {
+	row := q.db.QueryRow(ctx, setMailboxOwner,
+		arg.OwnerMemberID,
+		arg.Now,
+		arg.WorkspaceID,
+		arg.ID,
+	)
+	var i Inbox
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Name,
+		&i.Slug,
+		&i.Branding,
+		&i.DefaultLocale,
+		&i.Timezone,
+		&i.Mode,
+		&i.ExpectedReplyMinutes,
+		&i.BusinessHours,
+		&i.IdentitySecret,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.AskForRating,
+		&i.RatingSince,
+		&i.SenderLegalName,
+		&i.SenderPostalAddress,
+		&i.SenderRegistration,
+		&i.SenderContact,
+		&i.FeedbackCategories,
+		&i.AssignmentMode,
+		&i.AssignmentCap,
+		&i.Purpose,
+		&i.Signature,
+		&i.SignatureImageIds,
+		&i.OwnerMemberID,
+		&i.Personal,
+	)
+	return i, err
+}
+
 const shareInbox = `-- name: ShareInbox :one
-SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE
+SELECT id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE
 `
 
 type ShareInboxParams struct {
@@ -1198,6 +1270,7 @@ func (q *Queries) ShareInbox(ctx context.Context, arg ShareInboxParams) (Inbox, 
 		&i.Signature,
 		&i.SignatureImageIds,
 		&i.OwnerMemberID,
+		&i.Personal,
 	)
 	return i, err
 }
@@ -1242,7 +1315,7 @@ UPDATE inboxes SET name = $1, slug = $2, purpose = $3, branding = $4, default_lo
     rating_since = CASE WHEN NOT $10::bool THEN NULL WHEN ask_for_rating THEN rating_since ELSE $13::timestamptz END,
     updated_at = $13
 WHERE workspace_id = $14 AND id = $15
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id, personal
 `
 
 type UpdateInboxParams struct {
@@ -1309,6 +1382,7 @@ func (q *Queries) UpdateInbox(ctx context.Context, arg UpdateInboxParams) (Inbox
 		&i.Signature,
 		&i.SignatureImageIds,
 		&i.OwnerMemberID,
+		&i.Personal,
 	)
 	return i, err
 }
@@ -1336,7 +1410,7 @@ const viewerReadsInbox = `-- name: ViewerReadsInbox :one
 SELECT EXISTS (
     SELECT 1 FROM inboxes i
     WHERE i.workspace_id = $1 AND i.id = $2
-      AND (($3::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND (($3::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $4))
 ) AS access

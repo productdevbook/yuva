@@ -166,7 +166,8 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 	if err := requireManager(p); err != nil {
 		return nil, err
 	}
-	err := s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
+	var pages []uuid.UUID
+	err := s.inTxWith(ctx, p.workspaceID, func(tx pgx.Tx, q *store.Queries, events *eventBatch) error {
 		target, err := lockedMember(ctx, q, p, req.MemberId)
 		if err != nil {
 			return err
@@ -183,10 +184,12 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 		if err != nil {
 			return err
 		}
-		if len(owned) > 0 {
-			e := errPersonalMailbox("the member owns personal mailboxes: delete them first")
-			e.Extra = map[string]any{"inbox_ids": owned}
-			return e
+		choices, err := leaveChoices(owned, req.Body, target.ID)
+		if err != nil {
+			return err
+		}
+		if pages, err = s.applyLeaveChoices(ctx, q, events, p, target.ID, choices); err != nil {
+			return err
 		}
 		if err := s.deleteMemberDrafts(ctx, tx, q, p.workspaceID, target.ID); err != nil {
 			return err
@@ -202,6 +205,7 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 	if err != nil {
 		return nil, err
 	}
+	s.forgetStatusDomains(pages)
 	return oas.RemoveMember204Response{}, nil
 }
 

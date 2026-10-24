@@ -274,7 +274,7 @@ func (s *Server) requireChannelManager(ctx context.Context, p principal, inboxID
 		inboxID = c.InboxID
 	}
 	in, ierr := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: inboxID})
-	if ierr != nil || in.OwnerMemberID == nil {
+	if ierr != nil || !in.Personal {
 		return err
 	}
 	if ownsMailbox(p, in) {

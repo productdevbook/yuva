@@ -177,7 +177,7 @@ func memberSendChannels(ctx context.Context, q *store.Queries, ws, member uuid.U
 	}
 	ids := make([]uuid.UUID, 0, len(inboxes))
 	for _, in := range inboxes {
-		if in.OwnerMemberID == nil || *in.OwnerMemberID == member {
+		if !in.Personal || (in.OwnerMemberID != nil && *in.OwnerMemberID == member) {
 			ids = append(ids, in.ID)
 		}
 	}

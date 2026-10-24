@@ -446,7 +446,7 @@ func (s *Server) SetInboxSlack(ctx context.Context, req oas.SetInboxSlackRequest
 	}
 	if in, err := visibleInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
-	} else if in.OwnerMemberID != nil {
+	} else if in.Personal {
 		return nil, errPersonalMailbox("a personal mailbox posts nothing to Slack")
 	}
 	b := req.Body

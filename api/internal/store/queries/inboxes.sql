@@ -1,11 +1,11 @@
 -- name: CreateInbox :one
 INSERT INTO inboxes (id, workspace_id, name, slug, purpose, branding, default_locale, timezone, mode,
                      expected_reply_minutes, business_hours, identity_secret, ask_for_rating, rating_since,
-                     assignment_mode, assignment_cap, owner_member_id, created_at, updated_at)
+                     assignment_mode, assignment_cap, owner_member_id, personal, created_at, updated_at)
 VALUES (@id, @workspace_id, @name, @slug, @purpose, @branding, @default_locale, @timezone, @mode,
         @expected_reply_minutes, @business_hours, @identity_secret, coalesce(sqlc.narg(ask_for_rating)::bool, false),
         CASE WHEN sqlc.narg(ask_for_rating)::bool THEN @now::timestamptz END, @assignment_mode, @assignment_cap,
-        sqlc.narg(owner_member_id), @now, @now)
+        sqlc.narg(owner_member_id), sqlc.narg(owner_member_id)::uuid IS NOT NULL, @now, @now)
 RETURNING *;
 
 -- name: GetInbox :one
@@ -20,7 +20,7 @@ SELECT * FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE;
 -- name: ListInboxes :many
 SELECT i.* FROM inboxes i
 WHERE i.workspace_id = @workspace_id
-  AND ((@all_inboxes::bool AND (@with_personal::bool OR i.owner_member_id IS NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND (@with_personal::bool OR NOT i.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id))
 ORDER BY i.name, i.id;
@@ -88,7 +88,7 @@ SELECT EXISTS (
 SELECT EXISTS (
     SELECT 1 FROM inboxes i
     WHERE i.workspace_id = @workspace_id AND i.id = @inbox_id
-      AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND ((@all_inboxes::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id))
 ) AS access;
@@ -98,26 +98,29 @@ SELECT EXISTS (
     SELECT 1 FROM inboxes i
     JOIN members m ON m.workspace_id = i.workspace_id AND m.id = @member_id
     WHERE i.workspace_id = @workspace_id AND i.id = @inbox_id
-      AND ((m.role IN ('owner', 'admin') AND i.owner_member_id IS NULL) OR EXISTS (
+      AND ((m.role IN ('owner', 'admin') AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM member_inbox_access a
           WHERE a.workspace_id = i.workspace_id AND a.inbox_id = i.id AND a.member_id = m.id))
 ) AS access;
 
 -- name: ListPersonalInboxes :many
-SELECT id, owner_member_id::uuid AS owner_member_id FROM inboxes
-WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) AND owner_member_id IS NOT NULL;
+SELECT id FROM inboxes
+WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) AND personal;
 
 -- name: ListMemberPersonalInboxIDs :many
 SELECT id FROM inboxes WHERE workspace_id = @workspace_id AND owner_member_id = @member_id ORDER BY id;
 
--- name: ReleaseDeletedWorkspaceMailboxes :execrows
-UPDATE inboxes i SET owner_member_id = NULL
-FROM members m JOIN workspaces w ON w.id = m.workspace_id
-WHERE m.person_id = @person_id AND w.deleted_at IS NOT NULL
-  AND i.workspace_id = m.workspace_id AND i.owner_member_id = m.id;
+-- name: SetMailboxOwner :one
+UPDATE inboxes SET owner_member_id = @owner_member_id::uuid, updated_at = @now
+WHERE workspace_id = @workspace_id AND id = @id AND personal
+RETURNING *;
+
+-- name: DeleteInboxDelegates :many
+DELETE FROM mailbox_delegates WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id
+RETURNING member_id;
 
 -- name: ListInboxMailboxes :many
-SELECT i.id,
+SELECT i.id, i.owner_member_id,
        coalesce((SELECT array_agg(e.address ORDER BY e.address) FROM channels ch
                  JOIN email_channels e ON e.workspace_id = ch.workspace_id AND e.channel_id = ch.id
                  WHERE ch.workspace_id = i.workspace_id AND ch.inbox_id = i.id), '{}')::text[] AS addresses,
@@ -129,7 +132,7 @@ SELECT i.id,
                     JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
                     WHERE e.workspace_id = i.workspace_id AND c.inbox_id = i.id AND e.raw_key IS NOT NULL), 0))::bigint AS storage_bytes
 FROM inboxes i
-WHERE i.workspace_id = @workspace_id AND i.id = ANY(@ids::uuid[]) AND i.owner_member_id IS NOT NULL;
+WHERE i.workspace_id = @workspace_id AND i.id = ANY(@ids::uuid[]) AND i.personal;
 
 -- name: MailboxDelegateAccess :one
 SELECT d.access FROM mailbox_delegates d
@@ -141,9 +144,9 @@ SELECT d.inbox_id, d.access FROM mailbox_delegates d
 WHERE d.workspace_id = @workspace_id AND d.member_id = @member_id AND d.inbox_id = ANY(@inbox_ids::uuid[]);
 
 -- name: MemberWritesInbox :one
-SELECT (i.owner_member_id IS NULL OR i.owner_member_id = @member_id::uuid OR EXISTS (
+SELECT (NOT i.personal OR (i.owner_member_id IS NOT NULL AND (i.owner_member_id = @member_id::uuid OR EXISTS (
     SELECT 1 FROM mailbox_delegates d
-    WHERE d.workspace_id = i.workspace_id AND d.inbox_id = i.id AND d.member_id = @member_id AND d.access = 'send'))::bool AS writes
+    WHERE d.workspace_id = i.workspace_id AND d.inbox_id = i.id AND d.member_id = @member_id AND d.access = 'send'))))::bool AS writes
 FROM inboxes i WHERE i.workspace_id = @workspace_id AND i.id = @inbox_id;
 
 -- name: ListMailboxDelegates :many

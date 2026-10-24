@@ -269,7 +269,7 @@ func createAPIKey(ctx context.Context, q *store.Queries, p principal, spec APIKe
 		} else if err != nil {
 			return store.ApiKey{}, "", err
 		}
-		if in.OwnerMemberID != nil {
+		if in.Personal {
 			return store.ApiKey{}, "", errPersonalMailbox("inbox_ids names a personal mailbox: keys never read one")
 		}
 	}

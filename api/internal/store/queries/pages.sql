@@ -21,7 +21,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = @workspace_id
       AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
-      AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND ((@all_inboxes::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
 ), rated AS (
@@ -102,7 +102,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = @workspace_id
       AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
-      AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND ((@all_inboxes::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
 ), days AS (
@@ -144,7 +144,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = @workspace_id
       AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
-      AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND ((@all_inboxes::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
 )
@@ -162,7 +162,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = @workspace_id
       AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
-      AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND ((@all_inboxes::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
 ), rated AS (

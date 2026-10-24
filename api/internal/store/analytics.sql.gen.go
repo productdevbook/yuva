@@ -1133,7 +1133,7 @@ func (q *Queries) ListAnalyticsIngestStats(ctx context.Context, arg ListAnalytic
 const listAnalyticsProperties = `-- name: ListAnalyticsProperties :many
 SELECT id, workspace_id, inbox_id, name, public_key, previous_key, previous_key_until, domains, platforms, timezone, currency, collection, consent_features, audience, excluded_paths, excluded_ips, path_rules, tracked_props, retention_months, visitor_key, rollup_version, first_event_at, last_event_at, created_by, created_at, updated_at, deleted_at, goals_version, cohorts_built_at FROM analytics_properties p
 WHERE p.workspace_id = $1 AND p.deleted_at IS NULL
-  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = $3))
 ORDER BY p.created_at, p.id

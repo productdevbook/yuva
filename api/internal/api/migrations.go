@@ -186,7 +186,7 @@ func personalTarget(ctx context.Context, q *store.Queries, workspaceID uuid.UUID
 	if store.IsNotFound(err) {
 		return nil, nil
 	}
-	if err != nil || in.OwnerMemberID == nil {
+	if err != nil || !in.Personal {
 		return nil, err
 	}
 	return &in, nil

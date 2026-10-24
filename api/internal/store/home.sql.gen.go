@@ -19,7 +19,7 @@ WHERE c.workspace_id = $2 AND c.last_activity_at >= $3::timestamptz
   AND c.created_at >= $3::timestamptz AND c.created_at <= $4::timestamptz AND NOT c.spam AND c.trashed_at IS NULL
   AND ($5::uuid IS NULL OR c.inbox_id = $5::uuid)
   AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
-  AND (($6::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($6::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))
   AND conversation_visible_to(c.draft_of, $8::uuid)
@@ -77,7 +77,7 @@ SELECT d.id, d.inbox_id, d.title, d.vote_count, d.stage::text AS stage
 FROM discussions d
 WHERE d.workspace_id = $1 AND d.kind = 'idea' AND d.state = 'published' AND d.stage NOT IN ('shipped', 'closed')
   AND ($2::uuid IS NULL OR d.inbox_id = $2::uuid)
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = $4::uuid))
 ORDER BY d.vote_count DESC, d.last_activity_at DESC, d.id DESC
@@ -139,7 +139,7 @@ WITH open AS (
     WHERE c.workspace_id = $1 AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
       AND ($2::uuid IS NULL OR c.inbox_id = $2::uuid)
       AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
-      AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+      AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4::uuid))
       AND conversation_visible_to(c.draft_of, $5::uuid)
@@ -245,7 +245,7 @@ const homeLastBroadcast = `-- name: HomeLastBroadcast :one
 SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id FROM broadcasts b
 WHERE b.workspace_id = $1 AND b.state = 'sent'
   AND ($2::uuid IS NULL OR b.inbox_id = $2::uuid)
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = $4::uuid))
 ORDER BY b.finished_at DESC NULLS LAST, b.id DESC
@@ -316,7 +316,7 @@ LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.
     AND conversation_visible_to(c.draft_of, $1::uuid)
 WHERE i.workspace_id = $2 AND i.purpose = 'support'
   AND ($3::uuid IS NULL OR i.id = $3::uuid)
-  AND (($4::bool AND i.owner_member_id IS NULL) OR EXISTS (
+  AND (($4::bool AND NOT i.personal) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $5::uuid))
 GROUP BY i.id, c.assignee_id, 3
@@ -376,7 +376,7 @@ WHERE c.workspace_id = $2 AND c.rated_at >= $3::timestamptz AND c.rated_at <= $4
   AND NOT c.spam AND c.kind <> 'feedback' AND c.trashed_at IS NULL
   AND ($5::uuid IS NULL OR c.inbox_id = $5::uuid)
   AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
-  AND (($6::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($6::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $7::uuid))
 GROUP BY 1, 2, 3
@@ -440,7 +440,7 @@ LEFT JOIN status_components c ON c.workspace_id = p.workspace_id AND c.page_id =
 LEFT JOIN status_component_groups g ON g.workspace_id = c.workspace_id AND g.id = c.group_id
 WHERE p.workspace_id = $1
   AND ($2::uuid IS NULL OR p.inbox_id = $2::uuid)
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = $4::uuid))
 ORDER BY p.created_at, p.id, g.position NULLS FIRST, g.name NULLS FIRST, g.id NULLS FIRST, c.position, c.name, c.id
@@ -503,7 +503,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = $2
       AND ($3::uuid IS NULL OR i.id = $3::uuid)
-      AND (($4::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND (($4::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $5::uuid))
 )
@@ -599,7 +599,7 @@ const listSetupParts = `-- name: ListSetupParts :many
 WITH visible AS (
     SELECT i.id, i.name, i.created_at, i.purpose FROM inboxes i
     WHERE i.workspace_id = $1
-      AND (($2::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND (($2::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $3::uuid))
 )
@@ -622,7 +622,7 @@ SELECT 'property', p.id, p.inbox_id, p.name, '', p.created_at, p.domains, p.plat
     row_number() OVER (ORDER BY p.created_at, p.id), ''
 FROM analytics_properties p
 WHERE $6::bool AND p.workspace_id = $1 AND p.deleted_at IS NULL
-  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = $3::uuid))
 UNION ALL
@@ -630,7 +630,7 @@ SELECT 'list', l.id, l.inbox_id, l.name, '', l.created_at, '{}', '{}', false,
     row_number() OVER (ORDER BY l.created_at DESC, l.id DESC), ''
 FROM mailing_lists l
 WHERE $7::bool AND l.workspace_id = $1 AND l.archived_at IS NULL AND l.kind = 'list'
-  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = $3::uuid))
 ORDER BY 1, 10

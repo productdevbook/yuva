@@ -953,7 +953,7 @@ SELECT DISTINCT ON (m.id) m.id, p.name, m.created_at FROM realtime_connections r
 JOIN members m ON m.workspace_id = rc.workspace_id AND m.id = rc.member_id
 JOIN people p ON p.id = m.person_id
 WHERE rc.workspace_id = $1 AND rc.seen_at > $2 AND p.availability = 'auto'
-  AND ((m.role IN ('owner', 'admin') AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = m.workspace_id AND pmb.id = $3 AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((m.role IN ('owner', 'admin') AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = m.workspace_id AND pmb.id = $3 AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM member_inbox_access im
       WHERE im.workspace_id = m.workspace_id AND im.inbox_id = $3 AND im.member_id = m.id))
 

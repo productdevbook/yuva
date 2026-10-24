@@ -965,8 +965,10 @@ paths:
         follows go, and in each workspace the contact linked to them is deleted when it has no
         conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
         person is the only owner of a workspace: make someone else an owner or delete that
-        workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-        personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+        workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+        delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+        admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+        `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
         session made through single sign-on is refused with `403 sso_session_scope`.
       tags: [me]
       security:
@@ -2466,17 +2468,33 @@ paths:
       summary: Remove a member
       description: |
         Owners and admins only, with a member session; only an owner removes an owner. The last
-        owner cannot be removed. A member who owns personal mailboxes answers `409
-        personal_mailbox` with their ids in `inbox_ids` until each is deleted.
+        owner cannot be removed.
+
+        A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+        each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+        included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+        removes its delegates. Without a body, or when one is missing, the answer is `409
+        personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+        one transaction, and neither the request nor the answer carries any of the mailboxes'
+        content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+        `member.removed`.
       tags: [workspace]
       security:
         - session: []
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
         - $ref: "#/components/parameters/MemberId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberRemoval"
       responses:
         "204":
           description: Removed.
+        "400":
+          $ref: "#/components/responses/Problem"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -2987,6 +3005,46 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+  /v1/inboxes/{inboxId}/hand-over:
+    post:
+      operationId: handOverMailbox
+      summary: Give an orphaned personal mailbox a new owner
+      description: |
+        A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+        read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+        the workspace, its owner; from then on that member reads it and names its delegates. The
+        caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+        `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+        `inbox_access.changed`.
+      tags: [inboxes]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/InboxId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MailboxHandOver"
+      responses:
+        "200":
+          description: The mailbox with its new owner, as its metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inbox"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/inboxes/{inboxId}/delegates:
     get:
@@ -21778,6 +21836,9 @@ components:
         - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
           delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
           the personal mailbox.
+        - `mailbox.handed_over`: `from_member_id` (absent for an orphaned mailbox) and
+          `to_member_id`. `mailbox.deleted_on_leave`: `member_id`, `name`. `mailbox.orphaned`:
+          `member_id`. The target is the personal mailbox.
         - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
           `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
           `inbox_name`.
@@ -21874,6 +21935,9 @@ components:
         - inbox.purpose_changed
         - mailbox.delegate_granted
         - mailbox.delegate_revoked
+        - mailbox.handed_over
+        - mailbox.deleted_on_leave
+        - mailbox.orphaned
         - conversation.trashed
         - conversation.restored
         - conversation.deleted
@@ -21921,7 +21985,7 @@ components:
         - member_address.added
         - member_address.verified
         - member_address.removed
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditMailboxDelegateGranted, AuditMailboxDelegateRevoked, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditMailboxDelegateGranted, AuditMailboxDelegateRevoked, AuditMailboxHandedOver, AuditMailboxDeletedOnLeave, AuditMailboxOrphaned, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule, mailbox]
@@ -23193,7 +23257,8 @@ components:
           type: [string, "null"]
           format: uuid
           description: |
-            The member whose personal mailbox this is; `null` for a shared inbox. Only that member
+            The member whose personal mailbox this is; `null` for a shared inbox and for an orphaned
+            mailbox (`mailbox.orphaned`). Only that member
             and the delegates they name (`PUT /v1/inboxes/{id}/delegates/{memberId}`) read its
             conversations, messages, attachments and events, and only its owner its own drafts:
             owners, admins, API keys, webhooks, automation rules and other members' OAuth tokens
@@ -23288,16 +23353,55 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MailboxDelegate"
+    MemberRemoval:
+      type: object
+      description: What happens to the personal mailboxes of a member who is removed.
+      properties:
+        mailboxes:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/MailboxOnLeave"
+    MailboxOnLeave:
+      type: object
+      required: [inbox_id, action]
+      properties:
+        inbox_id:
+          type: string
+          format: uuid
+          description: One of the leaving member's personal mailboxes.
+        action:
+          type: string
+          enum: [delete, hand_over]
+          x-enum-varnames: [MailboxOnLeaveDelete, MailboxOnLeaveHandOver]
+        to_member_id:
+          type: string
+          format: uuid
+          description: The new owner, another member of the workspace; with `hand_over` only.
+    MailboxHandOver:
+      type: object
+      required: [to_member_id]
+      properties:
+        to_member_id:
+          type: string
+          format: uuid
+          description: The member who becomes the mailbox's owner.
     InboxMailbox:
       type: object
       description: |
         A personal mailbox's size and addresses, the part of it owners and admins see. Present on
         personal mailboxes only.
-      required: [addresses, conversations, storage_bytes]
+      required: [addresses, conversations, storage_bytes, orphaned]
       properties:
         access:
           $ref: "#/components/schemas/MailboxAccess"
           description: The caller's own access; absent when the caller sees only this metadata.
+        orphaned:
+          type: boolean
+          description: |
+            Its owner deleted their account: `owner_member_id` is `null`, nobody reads it, and an
+            owner or admin hands it over (`POST /v1/inboxes/{id}/hand-over`) or deletes it. It never
+            becomes a shared inbox.
         addresses:
           type: array
           items:

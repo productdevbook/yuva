@@ -16,7 +16,7 @@ SELECT m.* FROM migrations m
 LEFT JOIN inboxes i ON i.workspace_id = m.workspace_id AND i.id = m.inbox_id
 WHERE m.workspace_id = @workspace_id
   AND (cardinality(@states::text[]) = 0 OR m.state = ANY(@states::text[]))
-  AND (i.owner_member_id IS NULL OR i.owner_member_id = @viewer_id::uuid)
+  AND (i.id IS NULL OR NOT i.personal OR i.owner_member_id = @viewer_id::uuid)
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (m.created_at, m.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY m.created_at DESC, m.id DESC

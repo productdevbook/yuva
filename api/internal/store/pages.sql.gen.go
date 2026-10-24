@@ -51,7 +51,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = $1
       AND ($4::uuid IS NULL OR i.id = $4::uuid)
-      AND (($5::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND (($5::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $6::uuid))
 )
@@ -98,7 +98,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = $1
       AND ($6::uuid IS NULL OR i.id = $6::uuid)
-      AND (($7::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND (($7::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $8::uuid))
 ), rated AS (
@@ -241,7 +241,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = $1
       AND ($2::uuid IS NULL OR i.id = $2::uuid)
-      AND (($3::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND (($3::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $4::uuid))
 ), rated AS (
@@ -371,7 +371,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = $1
       AND ($2::uuid IS NULL OR i.id = $2::uuid)
-      AND (($3::bool AND i.owner_member_id IS NULL) OR EXISTS (
+      AND (($3::bool AND NOT i.personal) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $4::uuid))
 ), days AS (

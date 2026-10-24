@@ -1149,6 +1149,9 @@ const (
 	AuditListConsentExported                 AuditAction = "list.consent_exported"
 	AuditMailboxDelegateGranted              AuditAction = "mailbox.delegate_granted"
 	AuditMailboxDelegateRevoked              AuditAction = "mailbox.delegate_revoked"
+	AuditMailboxDeletedOnLeave               AuditAction = "mailbox.deleted_on_leave"
+	AuditMailboxHandedOver                   AuditAction = "mailbox.handed_over"
+	AuditMailboxOrphaned                     AuditAction = "mailbox.orphaned"
 	AuditMemberAddressAdded                  AuditAction = "member_address.added"
 	AuditMemberAddressRemoved                AuditAction = "member_address.removed"
 	AuditMemberAddressVerified               AuditAction = "member_address.verified"
@@ -1261,6 +1264,12 @@ func (e AuditAction) Valid() bool {
 	case AuditMailboxDelegateGranted:
 		return true
 	case AuditMailboxDelegateRevoked:
+		return true
+	case AuditMailboxDeletedOnLeave:
+		return true
+	case AuditMailboxHandedOver:
+		return true
+	case AuditMailboxOrphaned:
 		return true
 	case AuditMemberAddressAdded:
 		return true
@@ -4769,6 +4778,24 @@ func (e MailboxDelegateAccess) Valid() bool {
 	case DelegateRead:
 		return true
 	case DelegateSend:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MailboxOnLeaveAction.
+const (
+	MailboxOnLeaveDelete   MailboxOnLeaveAction = "delete"
+	MailboxOnLeaveHandOver MailboxOnLeaveAction = "hand_over"
+)
+
+// Valid indicates whether the value is a known member of the MailboxOnLeaveAction enum.
+func (e MailboxOnLeaveAction) Valid() bool {
+	switch e {
+	case MailboxOnLeaveDelete:
+		return true
+	case MailboxOnLeaveHandOver:
 		return true
 	default:
 		return false
@@ -10148,6 +10175,9 @@ type Attributes map[string]interface{}
 //   - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
 //     delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
 //     the personal mailbox.
+//   - `mailbox.handed_over`: `from_member_id` (absent for an orphaned mailbox) and
+//     `to_member_id`. `mailbox.deleted_on_leave`: `member_id`, `name`. `mailbox.orphaned`:
+//     `member_id`. The target is the personal mailbox.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 //     `inbox_name`.
@@ -10279,6 +10309,9 @@ type AuditEntry struct {
 	// - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
 	//   delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
 	//   the personal mailbox.
+	// - `mailbox.handed_over`: `from_member_id` (absent for an orphaned mailbox) and
+	//   `to_member_id`. `mailbox.deleted_on_leave`: `member_id`, `name`. `mailbox.orphaned`:
+	//   `member_id`. The target is the personal mailbox.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 	//   `inbox_name`.
@@ -17669,7 +17702,8 @@ type Inbox struct {
 	Mode InboxMode `json:"mode"`
 	Name string    `json:"name"`
 
-	// OwnerMemberId The member whose personal mailbox this is; `null` for a shared inbox. Only that member
+	// OwnerMemberId The member whose personal mailbox this is; `null` for a shared inbox and for an orphaned
+	// mailbox (`mailbox.orphaned`). Only that member
 	// and the delegates they name (`PUT /v1/inboxes/{id}/delegates/{memberId}`) read its
 	// conversations, messages, attachments and events, and only its owner its own drafts:
 	// owners, admins, API keys, webhooks, automation rules and other members' OAuth tokens
@@ -17889,6 +17923,11 @@ type InboxMailbox struct {
 
 	// Conversations Its conversations, trashed ones included.
 	Conversations int64 `json:"conversations"`
+
+	// Orphaned Its owner deleted their account: `owner_member_id` is `null`, nobody reads it, and an
+	// owner or admin hands it over (`POST /v1/inboxes/{id}/hand-over`) or deletes it. It never
+	// becomes a shared inbox.
+	Orphaned bool `json:"orphaned"`
 
 	// StorageBytes The size of its attachments and stored raw e-mails.
 	StorageBytes int64 `json:"storage_bytes"`
@@ -18761,6 +18800,26 @@ type MailboxDelegateList struct {
 	Items []MailboxDelegate `json:"items"`
 }
 
+// MailboxHandOver defines model for MailboxHandOver.
+type MailboxHandOver struct {
+	// ToMemberId The member who becomes the mailbox's owner.
+	ToMemberId uuid.UUID `json:"to_member_id"`
+}
+
+// MailboxOnLeave defines model for MailboxOnLeave.
+type MailboxOnLeave struct {
+	Action MailboxOnLeaveAction `json:"action"`
+
+	// InboxId One of the leaving member's personal mailboxes.
+	InboxId uuid.UUID `json:"inbox_id"`
+
+	// ToMemberId The new owner, another member of the workspace; with `hand_over` only.
+	ToMemberId *uuid.UUID `json:"to_member_id,omitempty"`
+}
+
+// MailboxOnLeaveAction defines model for MailboxOnLeave.Action.
+type MailboxOnLeaveAction string
+
 // MailingList defines model for MailingList.
 type MailingList struct {
 	ArchivedAt *time.Time `json:"archived_at,omitempty"`
@@ -18993,6 +19052,11 @@ type MemberPresenceEvent struct {
 
 // MemberPresenceEventType defines model for MemberPresenceEvent.Type.
 type MemberPresenceEventType string
+
+// MemberRemoval What happens to the personal mailboxes of a member who is removed.
+type MemberRemoval struct {
+	Mailboxes *[]MailboxOnLeave `json:"mailboxes,omitempty"`
+}
 
 // MemberSignature defines model for MemberSignature.
 type MemberSignature struct {
@@ -27607,6 +27671,12 @@ type SetMailboxDelegateParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// HandOverMailboxParams defines parameters for HandOverMailbox.
+type HandOverMailboxParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // RotateInboxIdentitySecretParams defines parameters for RotateInboxIdentitySecret.
 type RotateInboxIdentitySecretParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -30145,6 +30215,9 @@ type CreateChannelJSONRequestBody = ChannelCreate
 // SetMailboxDelegateJSONRequestBody defines body for SetMailboxDelegate for application/json ContentType.
 type SetMailboxDelegateJSONRequestBody = MailboxDelegateInput
 
+// HandOverMailboxJSONRequestBody defines body for HandOverMailbox for application/json ContentType.
+type HandOverMailboxJSONRequestBody = MailboxHandOver
+
 // SetInboxSlackJSONRequestBody defines body for SetInboxSlack for application/json ContentType.
 type SetInboxSlackJSONRequestBody = InboxSlackUpdate
 
@@ -30222,6 +30295,9 @@ type StartMySlackLinkJSONRequestBody = SlackLinkStart
 
 // ConfirmMySlackLinkJSONRequestBody defines body for ConfirmMySlackLink for application/json ContentType.
 type ConfirmMySlackLinkJSONRequestBody = SlackLinkConfirm
+
+// RemoveMemberJSONRequestBody defines body for RemoveMember for application/json ContentType.
+type RemoveMemberJSONRequestBody = MemberRemoval
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
@@ -35520,6 +35596,9 @@ type ServerInterface interface {
 	// SetMailboxDelegate Let a member read or write in a personal mailbox
 	// (PUT /v1/inboxes/{inboxId}/delegates/{memberId})
 	SetMailboxDelegate(w http.ResponseWriter, r *http.Request, inboxId InboxId, memberId MemberId, params SetMailboxDelegateParams)
+	// HandOverMailbox Give an orphaned personal mailbox a new owner
+	// (POST /v1/inboxes/{inboxId}/hand-over)
+	HandOverMailbox(w http.ResponseWriter, r *http.Request, inboxId InboxId, params HandOverMailboxParams)
 	// RotateInboxIdentitySecret Rotate the identity secret
 	// (POST /v1/inboxes/{inboxId}/identity-secret)
 	RotateInboxIdentitySecret(w http.ResponseWriter, r *http.Request, inboxId InboxId, params RotateInboxIdentitySecretParams)
@@ -54138,6 +54217,56 @@ func (siw *ServerInterfaceWrapper) SetMailboxDelegate(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
+// HandOverMailbox operation middleware
+func (siw *ServerInterfaceWrapper) HandOverMailbox(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "inboxId" -------------
+	var inboxId InboxId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "inboxId", r.PathValue("inboxId"), &inboxId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inboxId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params HandOverMailboxParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.HandOverMailbox(w, r, inboxId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // RotateInboxIdentitySecret operation middleware
 func (siw *ServerInterfaceWrapper) RotateInboxIdentitySecret(w http.ResponseWriter, r *http.Request) {
 
@@ -66492,6 +66621,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/inboxes/{inboxId}/members", wrapper.ListInboxMembers)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/inboxes/{inboxId}/members/{memberId}", wrapper.RevokeInboxAccess)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/inboxes/{inboxId}/members/{memberId}", wrapper.GrantInboxAccess)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/inboxes/{inboxId}/hand-over", wrapper.HandOverMailbox)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/inboxes/{inboxId}/delegates", wrapper.ListMailboxDelegates)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/inboxes/{inboxId}/delegates/{memberId}", wrapper.RemoveMailboxDelegate)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/inboxes/{inboxId}/delegates/{memberId}", wrapper.SetMailboxDelegate)
@@ -95972,6 +96102,102 @@ func (response SetMailboxDelegate422ApplicationProblemPlusJSONResponse) VisitSet
 	return err
 }
 
+type HandOverMailboxRequestObject struct {
+	InboxId InboxId `json:"inboxId"`
+	Params  HandOverMailboxParams
+	Body    *HandOverMailboxJSONRequestBody
+}
+
+type HandOverMailboxResponseObject interface {
+	VisitHandOverMailboxResponse(w http.ResponseWriter) error
+}
+
+type HandOverMailbox200JSONResponse Inbox
+
+func (response HandOverMailbox200JSONResponse) VisitHandOverMailboxResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type HandOverMailbox400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response HandOverMailbox400ApplicationProblemPlusJSONResponse) VisitHandOverMailboxResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type HandOverMailbox401ApplicationProblemPlusJSONResponse Problem
+
+func (response HandOverMailbox401ApplicationProblemPlusJSONResponse) VisitHandOverMailboxResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type HandOverMailbox403ApplicationProblemPlusJSONResponse Problem
+
+func (response HandOverMailbox403ApplicationProblemPlusJSONResponse) VisitHandOverMailboxResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type HandOverMailbox404ApplicationProblemPlusJSONResponse Problem
+
+func (response HandOverMailbox404ApplicationProblemPlusJSONResponse) VisitHandOverMailboxResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type HandOverMailbox409ApplicationProblemPlusJSONResponse Problem
+
+func (response HandOverMailbox409ApplicationProblemPlusJSONResponse) VisitHandOverMailboxResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type RotateInboxIdentitySecretRequestObject struct {
 	InboxId InboxId `json:"inboxId"`
 	Params  RotateInboxIdentitySecretParams
@@ -101667,6 +101893,7 @@ func (response ListMembers403ApplicationProblemPlusJSONResponse) VisitListMember
 type RemoveMemberRequestObject struct {
 	MemberId MemberId `json:"memberId"`
 	Params   RemoveMemberParams
+	Body     *RemoveMemberJSONRequestBody
 }
 
 type RemoveMemberResponseObject interface {
@@ -101681,9 +101908,23 @@ func (response RemoveMember204Response) VisitRemoveMemberResponse(w http.Respons
 	return nil
 }
 
-type RemoveMember401ApplicationProblemPlusJSONResponse struct {
+type RemoveMember400ApplicationProblemPlusJSONResponse struct {
 	ProblemApplicationProblemPlusJSONResponse
 }
+
+func (response RemoveMember400ApplicationProblemPlusJSONResponse) VisitRemoveMemberResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type RemoveMember401ApplicationProblemPlusJSONResponse Problem
 
 func (response RemoveMember401ApplicationProblemPlusJSONResponse) VisitRemoveMemberResponse(w http.ResponseWriter) error {
 
@@ -113644,6 +113885,9 @@ type StrictServerInterface interface {
 	// SetMailboxDelegate Let a member read or write in a personal mailbox
 	// (PUT /v1/inboxes/{inboxId}/delegates/{memberId})
 	SetMailboxDelegate(ctx context.Context, request SetMailboxDelegateRequestObject) (SetMailboxDelegateResponseObject, error)
+	// HandOverMailbox Give an orphaned personal mailbox a new owner
+	// (POST /v1/inboxes/{inboxId}/hand-over)
+	HandOverMailbox(ctx context.Context, request HandOverMailboxRequestObject) (HandOverMailboxResponseObject, error)
 	// RotateInboxIdentitySecret Rotate the identity secret
 	// (POST /v1/inboxes/{inboxId}/identity-secret)
 	RotateInboxIdentitySecret(ctx context.Context, request RotateInboxIdentitySecretRequestObject) (RotateInboxIdentitySecretResponseObject, error)
@@ -123551,6 +123795,40 @@ func (sh *strictHandler) SetMailboxDelegate(w http.ResponseWriter, r *http.Reque
 	}
 }
 
+// HandOverMailbox operation middleware
+func (sh *strictHandler) HandOverMailbox(w http.ResponseWriter, r *http.Request, inboxId InboxId, params HandOverMailboxParams) {
+	var request HandOverMailboxRequestObject
+
+	request.InboxId = inboxId
+	request.Params = params
+
+	var body HandOverMailboxJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.HandOverMailbox(ctx, request.(HandOverMailboxRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "HandOverMailbox")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(HandOverMailboxResponseObject); ok {
+		if err := validResponse.VisitHandOverMailboxResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // RotateInboxIdentitySecret operation middleware
 func (sh *strictHandler) RotateInboxIdentitySecret(w http.ResponseWriter, r *http.Request, inboxId InboxId, params RotateInboxIdentitySecretParams) {
 	var request RotateInboxIdentitySecretRequestObject
@@ -125776,6 +126054,16 @@ func (sh *strictHandler) RemoveMember(w http.ResponseWriter, r *http.Request, me
 
 	request.MemberId = memberId
 	request.Params = params
+
+	var body RemoveMemberJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+			return
+		}
+	} else {
+		request.Body = &body
+	}
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
 		return sh.ssi.RemoveMember(ctx, request.(RemoveMemberRequestObject))

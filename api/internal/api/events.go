@@ -109,10 +109,15 @@ func (b *eventBatch) conversation(typ string, c store.Conversation, data any) {
 // inTx writes the queued events last, so the per-workspace event lock is the final lock a
 // transaction takes and event ids follow commit order within a workspace.
 func (s *Server) inTx(ctx context.Context, workspaceID uuid.UUID, fn func(q *store.Queries, ev *eventBatch) error) error {
+	return s.inTxWith(ctx, workspaceID, func(_ pgx.Tx, q *store.Queries, ev *eventBatch) error { return fn(q, ev) })
+}
+
+// inTxWith is inTx for work that also needs the transaction itself.
+func (s *Server) inTxWith(ctx context.Context, workspaceID uuid.UUID, fn func(tx pgx.Tx, q *store.Queries, ev *eventBatch) error) error {
 	var boards []boardRef
 	err := s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
 		var ev eventBatch
-		if err := fn(q, &ev); err != nil {
+		if err := fn(tx, q, &ev); err != nil {
 			return err
 		}
 		if err := s.syncSLA(ctx, q, workspaceID, &ev); err != nil {

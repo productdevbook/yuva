@@ -44,10 +44,10 @@ WHERE c.workspace_id = @workspace_id
        AND NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
   AND (NOT EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
-                   WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND ci.owner_member_id IS NOT NULL)
+                   WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND ci.personal)
        OR EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
                   WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id
-                    AND (ci.owner_member_id IS NULL OR EXISTS (
+                    AND (NOT ci.personal OR EXISTS (
                         SELECT 1 FROM inbox_viewers iv
                         WHERE iv.workspace_id = ci.workspace_id AND iv.inbox_id = ci.id AND iv.viewer_id = @personal_viewer_id::uuid)))
        OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))
@@ -86,10 +86,10 @@ WHERE c.workspace_id = @workspace_id
        AND NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
   AND (NOT EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
-                   WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND ci.owner_member_id IS NOT NULL)
+                   WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND ci.personal)
        OR EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
                   WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id
-                    AND (ci.owner_member_id IS NULL OR EXISTS (
+                    AND (NOT ci.personal OR EXISTS (
                         SELECT 1 FROM inbox_viewers iv
                         WHERE iv.workspace_id = ci.workspace_id AND iv.inbox_id = ci.id AND iv.viewer_id = @personal_viewer_id::uuid)))
        OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))
@@ -122,7 +122,7 @@ FROM (
     WHERE x.workspace_id = @workspace_id AND x.contact_id = ANY(@contact_ids::uuid[])
 ) t
 JOIN inboxes i ON i.workspace_id = @workspace_id AND i.id = t.inbox_id
-WHERE ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
+WHERE ((@all_inboxes::bool AND NOT i.personal) OR EXISTS (
     SELECT 1 FROM inbox_viewers iv
     WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
 ORDER BY t.contact_id, i.name, i.id;
@@ -133,7 +133,7 @@ SELECT c.id, c.last_active_at, count(cv.id) AS conversations,
        coalesce(max(coalesce(cv.last_message_at, cv.created_at)), c.created_at)::timestamptz AS last_conversation_at
 FROM contacts c
 LEFT JOIN conversations cv ON cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND NOT cv.spam AND cv.trashed_at IS NULL
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND conversation_visible_to(cv.draft_of, sqlc.narg(viewer_member_id)::uuid)
@@ -148,7 +148,7 @@ FROM (
     JOIN conversations cv ON cv.workspace_id = i.workspace_id AND cv.id = i.conversation_id
     WHERE i.workspace_id = @workspace_id AND cv.contact_id = @contact_id AND NOT cv.spam AND cv.trashed_at IS NULL
       AND i.kind = 'message' AND i.direction = 'in'
-      AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+      AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.personal)) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = @viewer_id::uuid))
     GROUP BY i.conversation_id
@@ -163,7 +163,7 @@ GROUP BY a.conversation_id, a.asked_at;
 SELECT cv.rating::text AS rating, count(*) AS n
 FROM conversations cv
 WHERE cv.workspace_id = @workspace_id AND cv.contact_id = @contact_id AND NOT cv.spam AND cv.kind <> 'feedback' AND cv.rating IS NOT NULL AND cv.trashed_at IS NULL
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 GROUP BY 1;
@@ -214,10 +214,10 @@ SELECT EXISTS (SELECT 1 FROM contacts WHERE workspace_id = $1 AND id = $2) AS fo
 
 -- name: ContactPersonalOnly :one
 SELECT (EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
-               WHERE cv.workspace_id = @workspace_id AND cv.contact_id = @contact_id AND ci.owner_member_id IS NOT NULL)
+               WHERE cv.workspace_id = @workspace_id AND cv.contact_id = @contact_id AND ci.personal)
    AND NOT EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
                    WHERE cv.workspace_id = @workspace_id AND cv.contact_id = @contact_id
-                     AND (ci.owner_member_id IS NULL OR EXISTS (
+                     AND (NOT ci.personal OR EXISTS (
                          SELECT 1 FROM inbox_viewers iv
                          WHERE iv.workspace_id = ci.workspace_id AND iv.inbox_id = ci.id AND iv.viewer_id = @viewer_id)))
    AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = @workspace_id AND x.contact_id = @contact_id))::bool

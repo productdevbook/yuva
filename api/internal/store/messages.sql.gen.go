@@ -215,7 +215,7 @@ const countDrafts = `-- name: CountDrafts :one
 SELECT count(*) FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 WHERE m.workspace_id = $1 AND m.draft AND c.trashed_at IS NULL
-  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3))
   AND draft_visible_to(m.draft, m.author_type, m.author_member_id, $4::uuid)
@@ -263,7 +263,7 @@ const countUnseenMentions = `-- name: CountUnseenMentions :one
 SELECT count(*) FROM member_mentions v
 WHERE v.workspace_id = $1 AND v.member_id = $2 AND v.mentions @> ARRAY[$2::uuid]
   AND NOT v.seen
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = v.workspace_id AND iv.inbox_id = v.inbox_id AND iv.viewer_id = $2))
 `
@@ -1205,7 +1205,7 @@ JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversatio
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = $1 AND m.draft AND c.trashed_at IS NULL
-  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3))
   AND draft_visible_to(m.draft, m.author_type, m.author_member_id, $4::uuid)
@@ -1466,7 +1466,7 @@ FROM member_mentions v
 JOIN messages m ON m.workspace_id = v.workspace_id AND m.id = v.message_id
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 WHERE v.workspace_id = $1 AND v.member_id = $2 AND v.mentions @> ARRAY[$2::uuid]
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = v.workspace_id AND iv.inbox_id = v.inbox_id AND iv.viewer_id = $2))
   AND ($4::timestamptz IS NULL
@@ -1940,7 +1940,7 @@ SELECT v.workspace_id, v.member_id, v.message_id, $1
 FROM member_mentions v
 WHERE v.workspace_id = $2 AND v.member_id = $3 AND v.mentions @> ARRAY[$3::uuid]
   AND NOT v.seen
-  AND (($4::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($4::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = v.workspace_id AND iv.inbox_id = v.inbox_id AND iv.viewer_id = $3))
 ON CONFLICT DO NOTHING

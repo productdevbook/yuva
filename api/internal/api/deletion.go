@@ -13,6 +13,7 @@ import (
 	"github.com/riverqueue/river"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -490,23 +491,25 @@ func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperat
 		if err != nil {
 			return err
 		}
-		var mailboxes []uuid.UUID
-		for _, m := range memberships {
-			ids, err := q.ListMemberPersonalInboxIDs(ctx, store.ListMemberPersonalInboxIDsParams{WorkspaceID: m.WorkspaceID, MemberID: &m.MemberID})
-			if err != nil {
-				return err
-			}
-			mailboxes = append(mailboxes, ids...)
-		}
-		if len(mailboxes) > 0 {
-			e := errPersonalMailbox("you own personal mailboxes: delete them first")
-			e.Extra = map[string]any{"inbox_ids": mailboxes}
-			return e
-		}
+		orphaned, orphanedIDs := map[uuid.UUID]*eventBatch{}, map[uuid.UUID][]uuid.UUID{}
 		for _, m := range memberships {
 			by := principal{workspaceID: m.WorkspaceID}
 			if !byOperator {
 				by.memberID = m.MemberID
+			}
+			mailboxes, err := q.ListMemberPersonalInboxIDs(ctx, store.ListMemberPersonalInboxIDsParams{WorkspaceID: m.WorkspaceID, MemberID: &m.MemberID})
+			if err != nil {
+				return err
+			}
+			if len(mailboxes) > 0 {
+				if err := q.LockInboxAccess(ctx, m.WorkspaceID); err != nil {
+					return err
+				}
+				ev := &eventBatch{}
+				if err := s.orphanMailboxes(ctx, q, ev, by, m.MemberID, mailboxes); err != nil {
+					return err
+				}
+				orphaned[m.WorkspaceID], orphanedIDs[m.WorkspaceID] = ev, mailboxes
 			}
 			if err := s.audit(ctx, q, by, oas.AuditMemberRemoved, oas.AuditTargetMember, m.MemberID, auditDetails{"role": m.Role, "reason": "account_deleted"}); err != nil {
 				return err
@@ -518,11 +521,30 @@ func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperat
 				return err
 			}
 		}
-		if _, err := q.ReleaseDeletedWorkspaceMailboxes(ctx, person.ID); err != nil {
+		if _, err := q.DeletePerson(ctx, person.ID); err != nil {
 			return err
 		}
-		_, err = q.DeletePerson(ctx, person.ID)
-		return err
+		for _, m := range memberships {
+			ev := orphaned[m.WorkspaceID]
+			if ev == nil {
+				continue
+			}
+			for _, id := range orphanedIDs[m.WorkspaceID] {
+				in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: m.WorkspaceID, ID: id})
+				if err != nil {
+					return err
+				}
+				body, err := memberInbox(ctx, q, in)
+				if err != nil {
+					return err
+				}
+				ev.add(realtime.InboxUpdated, &in.ID, nil, body)
+			}
+			if _, err := writeEvents(ctx, q, m.WorkspaceID, ev.items); err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 	if err != nil {
 		return err

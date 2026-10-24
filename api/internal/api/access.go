@@ -74,7 +74,7 @@ func ownsMailbox(p principal, in store.Inbox) bool {
 // rightIn is the owner's full right, a delegate's read or send, or nothing; keys, rules and other
 // members' grants never reach a personal mailbox.
 func rightIn(ctx context.Context, q *store.Queries, p principal, in store.Inbox) (mailboxRight, error) {
-	if in.OwnerMemberID == nil || p.auto || ownsMailbox(p, in) || (p.mailbox != uuid.Nil() && p.mailbox == in.ID) {
+	if !in.Personal || p.auto || ownsMailbox(p, in) || (p.mailbox != uuid.Nil() && p.mailbox == in.ID) {
 		return rightFull, nil
 	}
 	if p.isKey() || p.rule != nil || p.memberID == uuid.Nil() {
@@ -146,7 +146,7 @@ func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UU
 // delegates and migrations. Its delegates get 404 like everyone else.
 func ownedInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {
 	in, err := visibleInbox(ctx, q, p, id)
-	if err == nil && in.OwnerMemberID != nil && !p.auto && !ownsMailbox(p, in) {
+	if err == nil && in.Personal && !p.auto && !ownsMailbox(p, in) {
 		return in, errInboxGone
 	}
 	return in, err

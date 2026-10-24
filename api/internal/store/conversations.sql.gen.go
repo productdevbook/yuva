@@ -32,7 +32,7 @@ const countOpenConversations = `-- name: CountOpenConversations :many
 SELECT c.inbox_id, c.assignee_id, c.team_id, c.spam, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL
-  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
   AND conversation_visible_to(c.draft_of, $4::uuid)
@@ -98,7 +98,7 @@ SELECT cl.label_id, count(*) AS n
 FROM conversations c
 JOIN conversation_labels cl ON cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id
 WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam
-  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
   AND conversation_visible_to(c.draft_of, $4::uuid)
@@ -155,7 +155,7 @@ const countOpenFeedback = `-- name: CountOpenFeedback :many
 SELECT (c.feedback->>'category')::text AS category, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = $1 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam AND c.kind = 'feedback'
-  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($2::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $3::uuid))
   AND conversation_visible_to(c.draft_of, $4::uuid)
@@ -212,7 +212,7 @@ const countStarredConversations = `-- name: CountStarredConversations :one
 SELECT count(*) FROM conversations c
 JOIN conversation_stars st ON st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $1
 WHERE c.workspace_id = $2 AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4::uuid))
   AND conversation_visible_to(c.draft_of, $5::uuid)
@@ -706,7 +706,7 @@ LEFT JOIN LATERAL (
       AND sm.scheduled_by = $1::uuid AND sm.conversation_id = c.id AND sm.scheduled_at IS NOT NULL
     ORDER BY sm.scheduled_at LIMIT 1) sched ON true
 WHERE c.workspace_id = $2
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))
   AND conversation_visible_to(c.draft_of, $5::uuid)

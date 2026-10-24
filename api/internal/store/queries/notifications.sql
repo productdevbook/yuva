@@ -5,7 +5,7 @@ WHERE workspace_id = @workspace_id AND id = @id;
 -- name: ListInboxNotifications :many
 SELECT n.* FROM inbox_notifications n
 WHERE n.workspace_id = @workspace_id AND n.member_id = @member_id
-  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = n.workspace_id AND pmb.id = n.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = n.workspace_id AND pmb.id = n.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM member_inbox_access im
       WHERE im.workspace_id = n.workspace_id AND im.inbox_id = n.inbox_id AND im.member_id = n.member_id))
 ORDER BY n.updated_at, n.inbox_id;
@@ -27,7 +27,7 @@ SELECT m.id, m.role, m.person_id, m.notification_events, m.notification_email_de
        p.email, p.locale, p.availability
 FROM members m JOIN people p ON p.id = m.person_id
 WHERE m.workspace_id = @workspace_id
-  AND ((m.role IN ('owner', 'admin') AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = m.workspace_id AND pmb.id = @inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND ((m.role IN ('owner', 'admin') AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = m.workspace_id AND pmb.id = @inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM member_inbox_access im
       WHERE im.workspace_id = m.workspace_id AND im.inbox_id = @inbox_id AND im.member_id = m.id))
 

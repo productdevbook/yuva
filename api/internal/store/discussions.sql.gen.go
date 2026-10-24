@@ -1309,7 +1309,7 @@ const listTeamDiscussionPosts = `-- name: ListTeamDiscussionPosts :many
 SELECT p.id, p.workspace_id, p.discussion_id, p.parent_post_id, p.opening, p.author_type, p.author_member_id, p.author_contact_id, p.body, p.state, p.created_at, p.edited_at, p.deleted_at, p.votes, p.author_name, p.author_person_id, p.via FROM discussion_post_view p
 JOIN discussions d ON d.workspace_id = p.workspace_id AND d.id = p.discussion_id
 WHERE p.workspace_id = $1 AND p.state = $2 AND p.deleted_at IS NULL
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = $4::uuid))
   AND ($5::uuid IS NULL OR d.inbox_id = $5::uuid)
@@ -1386,7 +1386,7 @@ func (q *Queries) ListTeamDiscussionPosts(ctx context.Context, arg ListTeamDiscu
 const listTeamDiscussions = `-- name: ListTeamDiscussions :many
 SELECT d.id, d.workspace_id, d.inbox_id, d.channel_id, d.page, d.page_title, d.title, d.opening_post_id, d.state, d.locked_at, d.answer_post_id, d.answered_at, d.reply_count, d.pending_posts, d.hidden_posts, d.conversation_id, d.created_at, d.last_activity_at, d.kind, d.board_id, d.stage, d.stage_changed_at, d.vote_count, d.search FROM discussions d
 WHERE d.workspace_id = $1 AND d.kind = $2::text
-  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = $4::uuid))
   AND ($5::uuid IS NULL OR d.inbox_id = $5::uuid)
