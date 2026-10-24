@@ -251,3 +251,66 @@ func TestBulkSpam(t *testing.T) {
 	}
 	tm.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{a}, "spam": true, "trashed": true})
 }
+
+func TestPersonalMailboxTrash(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	shared := h.ingest(et.address, []byte(fmt.Sprintf(attachmentMail, et.address, newMessageID())), nil).str("conversation_id")
+	h.trashBySQL(et.ws, shared)
+	pm := et.personalMailbox(h)
+	mine := pm.trashedConversation(h, et.ws)
+	delegate, delegateID := et.newAgent()
+	pm.owner.expect(http.StatusOK, "PUT", "/v1/inboxes/"+pm.inbox+"/delegates/"+delegateID, map[string]any{"access": "send"})
+	pm.owner.expect(http.StatusOK, "PUT", "/v1/inboxes/"+pm.inbox+"/delegates/"+et.ownerMemberID(t), map[string]any{"access": "send"})
+	trashCount := func(c *client) any {
+		return c.expect(http.StatusOK, "GET", "/v1/conversations/counts", nil).body["trash"]
+	}
+
+	if ids := listedIDs(pm.owner, "&trashed=true"); fmt.Sprint(ids) != fmt.Sprint([]string{mine}) {
+		t.Fatalf("owner's trash: %v", ids)
+	}
+	if n := trashCount(pm.owner); n != float64(1) {
+		t.Fatalf("owner's trash count: %v", n)
+	}
+	if ids := listedIDs(pm.owner, ""); has(ids, mine) {
+		t.Fatalf("trashed in the open list: %v", ids)
+	}
+	pm.owner.expect(http.StatusOK, "GET", "/v1/conversations/"+mine, nil)
+	att := lastOf(messages(pm.owner, mine), "message")["attachments"].([]any)[0].(map[string]any)["id"].(string)
+	pm.owner.expect(http.StatusOK, "GET", "/v1/attachments/"+att, nil)
+	pm.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+shared, nil)
+	pm.owner.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/conversations/"+shared+"/restore", nil)
+
+	for name, c := range map[string]*client{"agent delegate": delegate, "owner delegate": et.owner} {
+		if ids := listedIDs(c, "&trashed=true"); has(ids, mine) {
+			t.Fatalf("%s sees the trash: %v", name, ids)
+		}
+		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+mine, nil)
+		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/attachments/"+att, nil)
+		c.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/"+mine+"/restore", nil)
+	}
+	if n := trashCount(delegate); n != float64(0) {
+		t.Fatalf("delegate's trash count: %v", n)
+	}
+	if ids := listedIDs(et.owner, "&trashed=true"); fmt.Sprint(ids) != fmt.Sprint([]string{shared}) {
+		t.Fatalf("workspace owner's trash: %v", ids)
+	}
+	if n := trashCount(et.owner); n != float64(1) {
+		t.Fatalf("workspace owner's trash count: %v", n)
+	}
+
+	other := newTeam(t, h)
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/conversations/"+mine+"/restore", nil)
+	if ids := listedIDs(other.owner, "&trashed=true"); len(ids) != 0 {
+		t.Fatalf("other workspace: %v", ids)
+	}
+
+	restored := pm.owner.expect(http.StatusOK, "POST", "/v1/conversations/"+mine+"/restore", nil)
+	if restored.body["trashed_at"] != nil {
+		t.Fatalf("restore: %s", restored.raw)
+	}
+	if ids := listedIDs(pm.owner, "&trashed=true"); len(ids) != 0 || trashCount(pm.owner) != float64(0) {
+		t.Fatalf("after restore: %v", ids)
+	}
+}

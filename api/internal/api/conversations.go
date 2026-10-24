@@ -536,9 +536,11 @@ func (s *Server) parseConversationFilter(ctx context.Context, q *store.Queries, 
 		return none, onParam("q", err)
 	}
 	if arg.Trashed {
-		if err := requireTrashManager(p); err != nil {
-			return none, onParam("trashed", err)
+		ok, ownOnly := trashView(p)
+		if !ok {
+			return none, onParam("trashed", errNoTrashView(p))
 		}
+		arg.TrashOwner, arg.TrashOwnOnly = p.memberRef(), ownOnly
 	} else if arg.Spam == nil {
 		arg.Spam = new(false)
 	}
@@ -773,6 +775,17 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 	out.Inboxes, out.Assignees, out.Teams = sortedCounts(perInbox), sortedCounts(perAssignee), sortedCounts(perTeam)
 	for _, r := range byLabel {
 		out.Labels = append(out.Labels, oas.CountByID{Id: r.LabelID, Count: r.N})
+	}
+	if ok, _ := trashView(p); ok {
+		owner, manager := trashScope(p)
+		row, err := s.st.CountDeletableTrash(ctx, store.CountDeletableTrashParams{
+			WorkspaceID: p.workspaceID, ViewerMemberID: p.memberRef(), OwnerMemberID: owner, Manager: manager,
+			AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), At: s.dbAt(),
+		})
+		if err != nil {
+			return nil, err
+		}
+		out.Trash = row.N
 	}
 	return out, nil
 }

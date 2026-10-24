@@ -4965,8 +4965,12 @@ paths:
           description: |
             `true` lists only the conversations in the trash (the Trash view), which every other
             list, count and search leaves out. Owners and admins, and keys and tokens with
-            `conversations:delete`; agents get `403 forbidden`. `false` or absent lists what is not
-            in the trash.
+            `conversations:delete`, see the trash of the inboxes they see but personal mailboxes;
+            the trash of a personal mailbox is shown only to its owner, whatever their role
+            (session or the owner's own token). Delegates never see it. An agent sees only the
+            trash of their own personal mailboxes, and gets `403 forbidden` without one only by
+            their token lacking `conversations:delete`. `false` or absent lists what is not in the
+            trash.
           schema:
             type: boolean
             default: false
@@ -5693,8 +5697,9 @@ paths:
       operationId: getConversation
       summary: Get a conversation
       description: |
-        A conversation in the trash answers `404` except to those who may see the trash (owners,
-        admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
+        A conversation in the trash answers `404` except to those who see that trash (owners,
+        admins, keys and tokens with `conversations:delete` outside personal mailboxes; a personal
+        mailbox's owner in it), who get it with `trashed_at`.
 
         Scope: `conversations:read`.
       tags: [conversations]
@@ -5800,7 +5805,8 @@ paths:
         Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
         assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
         until the retention job deletes it. Restoring a conversation that is not in the trash
-        answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+        answers it unchanged. Who may, as for `DELETE`, and besides a personal mailbox's owner
+        whatever their role, who alone restores in it (others `403 forbidden` or `404`). Emits `conversation.restored`; the audit
         log records `conversation.restored`.
 
         Scope: `conversations:delete`.
@@ -26592,8 +26598,15 @@ components:
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams, starred]
+      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams, starred, trash]
       properties:
+        trash:
+          type: integer
+          format: int64
+          description: |
+            Conversations in the trash the caller sees (as `trashed=true` lists them), whatever
+            `kind` or `purpose`: the number `POST /v1/conversations/trash/empty` takes as
+            `confirm_count`. `0` for callers who see no trash.
         feedback:
           type: integer
           format: int64

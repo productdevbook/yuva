@@ -50,6 +50,8 @@ WHERE c.workspace_id = @workspace_id
   AND (sqlc.narg(broadcast_id)::uuid IS NULL OR c.broadcast_id = sqlc.narg(broadcast_id)::uuid)
   AND (sqlc.narg(spam)::bool IS NULL OR c.spam = sqlc.narg(spam)::bool)
   AND (c.trashed_at IS NOT NULL) = @trashed::bool
+  AND (NOT @trashed::bool OR NOT EXISTS (SELECT 1 FROM inboxes ti WHERE ti.workspace_id = c.workspace_id AND ti.id = c.inbox_id AND ti.personal AND ti.owner_member_id IS DISTINCT FROM sqlc.narg(trash_owner)::uuid))
+  AND (NOT @trash_own_only::bool OR EXISTS (SELECT 1 FROM inboxes ti WHERE ti.workspace_id = c.workspace_id AND ti.id = c.inbox_id AND ti.personal))
   AND (sqlc.narg(kinds)::text[] IS NULL OR c.kind = ANY(sqlc.narg(kinds)::text[]))
   AND (sqlc.narg(channel_kinds)::text[] IS NULL OR c.channel_kind = ANY(sqlc.narg(channel_kinds)::text[]))
   AND (sqlc.narg(site)::text IS NULL OR left(c.page_url, length(sqlc.narg(site)::text) + 1) = sqlc.narg(site)::text || '/')

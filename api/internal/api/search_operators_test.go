@@ -147,7 +147,7 @@ func runSearchOperators(t *testing.T) {
 	check(o, "in:trash", []string{convB})
 	check(o, "has:attachment", nil)
 	check(o, "in:archive", nil)
-	et.agent.expectProblem(http.StatusForbidden, "forbidden", "GET", "/v1/conversations?q=in%3Atrash", nil)
+	check(et.agent, "in:trash", nil)
 	check(o, "-in:trash from:alice", []string{convA})
 
 	stamp := time.Date(2026, 3, 10, 21, 30, 0, 0, time.UTC)

@@ -14138,8 +14138,13 @@ type ConversationCounts struct {
 	Starred int64 `json:"starred"`
 
 	// Teams Per assigned team id.
-	Teams      []CountByID `json:"teams"`
-	Unassigned int64       `json:"unassigned"`
+	Teams []CountByID `json:"teams"`
+
+	// Trash Conversations in the trash the caller sees (as `trashed=true` lists them), whatever
+	// `kind` or `purpose`: the number `POST /v1/conversations/trash/empty` takes as
+	// `confirm_count`. `0` for callers who see no trash.
+	Trash      int64 `json:"trash"`
+	Unassigned int64 `json:"unassigned"`
 }
 
 // ConversationCreate defines model for ConversationCreate.
@@ -27007,8 +27012,12 @@ type ListConversationsParams struct {
 
 	// Trashed `true` lists only the conversations in the trash (the Trash view), which every other
 	// list, count and search leaves out. Owners and admins, and keys and tokens with
-	// `conversations:delete`; agents get `403 forbidden`. `false` or absent lists what is not
-	// in the trash.
+	// `conversations:delete`, see the trash of the inboxes they see but personal mailboxes;
+	// the trash of a personal mailbox is shown only to its owner, whatever their role
+	// (session or the owner's own token). Delegates never see it. An agent sees only the
+	// trash of their own personal mailboxes, and gets `403 forbidden` without one only by
+	// their token lacking `conversations:delete`. `false` or absent lists what is not in the
+	// trash.
 	Trashed *bool `form:"trashed,omitempty" json:"trashed,omitempty"`
 
 	// Kind Only conversations of these kinds, e.g. `feedback` for the feedback view. Repeat the
@@ -39964,8 +39973,9 @@ type ClientInterface interface {
 
 	// GetConversation Get a conversation
 	//
-	// A conversation in the trash answers `404` except to those who may see the trash (owners,
-	// admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
+	// A conversation in the trash answers `404` except to those who see that trash (owners,
+	// admins, keys and tokens with `conversations:delete` outside personal mailboxes; a personal
+	// mailbox's owner in it), who get it with `trashed_at`.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -40590,7 +40600,8 @@ type ClientInterface interface {
 	// Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
 	// assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
 	// until the retention job deletes it. Restoring a conversation that is not in the trash
-	// answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+	// answers it unchanged. Who may, as for `DELETE`, and besides a personal mailbox's owner
+	// whatever their role, who alone restores in it (others `403 forbidden` or `404`). Emits `conversation.restored`; the audit
 	// log records `conversation.restored`.
 	//
 	// Scope: `conversations:delete`.
@@ -54440,8 +54451,9 @@ func (c *Client) TrashConversation(ctx context.Context, conversationId Conversat
 
 // GetConversation Get a conversation
 //
-// A conversation in the trash answers `404` except to those who may see the trash (owners,
-// admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
+// A conversation in the trash answers `404` except to those who see that trash (owners,
+// admins, keys and tokens with `conversations:delete` outside personal mailboxes; a personal
+// mailbox's owner in it), who get it with `trashed_at`.
 //
 // Scope: `conversations:read`.
 //
@@ -55316,7 +55328,8 @@ func (c *Client) MarkConversationRead(ctx context.Context, conversationId Conver
 // Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
 // assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
 // until the retention job deletes it. Restoring a conversation that is not in the trash
-// answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+// answers it unchanged. Who may, as for `DELETE`, and besides a personal mailbox's owner
+// whatever their role, who alone restores in it (others `403 forbidden` or `404`). Emits `conversation.restored`; the audit
 // log records `conversation.restored`.
 //
 // Scope: `conversations:delete`.
@@ -105164,8 +105177,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetConversationWithResponse Get a conversation
 	//
-	// A conversation in the trash answers `404` except to those who may see the trash (owners,
-	// admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
+	// A conversation in the trash answers `404` except to those who see that trash (owners,
+	// admins, keys and tokens with `conversations:delete` outside personal mailboxes; a personal
+	// mailbox's owner in it), who get it with `trashed_at`.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -105808,7 +105822,8 @@ type ClientWithResponsesInterface interface {
 	// Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
 	// assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
 	// until the retention job deletes it. Restoring a conversation that is not in the trash
-	// answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+	// answers it unchanged. Who may, as for `DELETE`, and besides a personal mailbox's owner
+	// whatever their role, who alone restores in it (others `403 forbidden` or `404`). Emits `conversation.restored`; the audit
 	// log records `conversation.restored`.
 	//
 	// Scope: `conversations:delete`.
@@ -155875,8 +155890,9 @@ func (c *ClientWithResponses) TrashConversationWithResponse(ctx context.Context,
 
 // GetConversationWithResponse Get a conversation
 //
-// A conversation in the trash answers `404` except to those who may see the trash (owners,
-// admins, keys and tokens with `conversations:delete`), who get it with `trashed_at`.
+// A conversation in the trash answers `404` except to those who see that trash (owners,
+// admins, keys and tokens with `conversations:delete` outside personal mailboxes; a personal
+// mailbox's owner in it), who get it with `trashed_at`.
 //
 // Scope: `conversations:read`.
 //
@@ -156669,7 +156685,8 @@ func (c *ClientWithResponses) MarkConversationReadWithResponse(ctx context.Conte
 // Clears `trashed_at` and `trashed_by`; the conversation is where it was, with its status,
 // assignee and labels. A conversation whose 30 days are over answers `409 trash_expired`
 // until the retention job deletes it. Restoring a conversation that is not in the trash
-// answers it unchanged. Who may, as for `DELETE`. Emits `conversation.restored`; the audit
+// answers it unchanged. Who may, as for `DELETE`, and besides a personal mailbox's owner
+// whatever their role, who alone restores in it (others `403 forbidden` or `404`). Emits `conversation.restored`; the audit
 // log records `conversation.restored`.
 //
 // Scope: `conversations:delete`.

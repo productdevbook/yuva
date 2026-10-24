@@ -28,12 +28,54 @@ func requireTrashManager(p principal) error {
 	return requireScope(p, oas.ConversationsDelete)
 }
 
-// readableConversation lets those who may see the trash read a trashed conversation.
-func readableConversation(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Conversation, error) {
-	if requireTrashManager(p) == nil {
-		return visibleConversationOrTrashed(ctx, q, p, id, false)
+func trashView(p principal) (ok, ownOnly bool) {
+	if requireScope(p, oas.ConversationsDelete) != nil || p.rule != nil || p.auto {
+		return false, false
 	}
-	return visibleConversation(ctx, q, p, id, false)
+	if requireManagerOrKey(p) == nil {
+		return true, false
+	}
+	return p.memberRef() != nil, true
+}
+
+func errNoTrashView(p principal) error {
+	if err := requireTrashManager(p); err != nil {
+		return err
+	}
+	return errForbidden
+}
+
+func seesTrashIn(ctx context.Context, q *store.Queries, p principal, inboxID uuid.UUID) (bool, error) {
+	if ok, _ := trashView(p); !ok {
+		return false, nil
+	}
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: inboxID})
+	if store.IsNotFound(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	if in.Personal {
+		return ownsMailbox(p, in), nil
+	}
+	return requireManagerOrKey(p) == nil, nil
+}
+
+// readableConversation lets those who see a trash read the trashed conversations in it.
+func readableConversation(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Conversation, error) {
+	c, err := visibleConversationOrTrashed(ctx, q, p, id, false)
+	if err != nil || c.TrashedAt == nil {
+		return c, err
+	}
+	ok, err := seesTrashIn(ctx, q, p, c.InboxID)
+	if err != nil {
+		return c, err
+	}
+	if !ok {
+		return c, errConversationGone
+	}
+	return c, nil
 }
 
 func (s *Server) TrashConversation(ctx context.Context, req oas.TrashConversationRequestObject) (oas.TrashConversationResponseObject, error) {
@@ -55,8 +97,8 @@ func (s *Server) TrashConversation(ctx context.Context, req oas.TrashConversatio
 
 func (s *Server) RestoreConversation(ctx context.Context, req oas.RestoreConversationRequestObject) (oas.RestoreConversationResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireTrashManager(p); err != nil {
-		return nil, err
+	if ok, _ := trashView(p); !ok {
+		return nil, errNoTrashView(p)
 	}
 	var out oas.Conversation
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
@@ -81,6 +123,11 @@ func (s *Server) setTrashed(ctx context.Context, q *store.Queries, events *event
 	cur, err := visibleConversationOrTrashed(ctx, q, p, id, true)
 	if err != nil {
 		return oas.Conversation{}, err
+	}
+	if !trash {
+		if err := mayDeleteForever(ctx, q, p, cur); err != nil {
+			return oas.Conversation{}, err
+		}
 	}
 	now := s.now()
 	var next store.Conversation

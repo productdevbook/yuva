@@ -763,69 +763,71 @@ WHERE c.workspace_id = $2
   AND ($8::uuid IS NULL OR c.broadcast_id = $8::uuid)
   AND ($9::bool IS NULL OR c.spam = $9::bool)
   AND (c.trashed_at IS NOT NULL) = $10::bool
-  AND ($11::text[] IS NULL OR c.kind = ANY($11::text[]))
-  AND ($12::text[] IS NULL OR c.channel_kind = ANY($12::text[]))
-  AND ($13::text IS NULL OR left(c.page_url, length($13::text) + 1) = $13::text || '/')
-  AND ($14::text IS NULL OR c.feedback->>'category' = $14::text)
-  AND ($15::text IS NULL OR c.page_url = $15::text)
-  AND ($16::text[] IS NULL OR c.status = ANY($16::text[]))
-  AND ($17::uuid IS NULL OR EXISTS (
+  AND (NOT $10::bool OR NOT EXISTS (SELECT 1 FROM inboxes ti WHERE ti.workspace_id = c.workspace_id AND ti.id = c.inbox_id AND ti.personal AND ti.owner_member_id IS DISTINCT FROM $11::uuid))
+  AND (NOT $12::bool OR EXISTS (SELECT 1 FROM inboxes ti WHERE ti.workspace_id = c.workspace_id AND ti.id = c.inbox_id AND ti.personal))
+  AND ($13::text[] IS NULL OR c.kind = ANY($13::text[]))
+  AND ($14::text[] IS NULL OR c.channel_kind = ANY($14::text[]))
+  AND ($15::text IS NULL OR left(c.page_url, length($15::text) + 1) = $15::text || '/')
+  AND ($16::text IS NULL OR c.feedback->>'category' = $16::text)
+  AND ($17::text IS NULL OR c.page_url = $17::text)
+  AND ($18::text[] IS NULL OR c.status = ANY($18::text[]))
+  AND ($19::uuid IS NULL OR EXISTS (
       SELECT 1 FROM roadmap_idea_conversations ri
-      WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id AND ri.idea_id = $17::uuid))
-  AND (NOT $18::bool OR (c.kind = 'feedback' AND NOT EXISTS (
+      WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id AND ri.idea_id = $19::uuid))
+  AND (NOT $20::bool OR (c.kind = 'feedback' AND NOT EXISTS (
       SELECT 1 FROM roadmap_idea_conversations ri
       WHERE ri.workspace_id = c.workspace_id AND ri.conversation_id = c.id)))
-  AND (NOT $19::bool OR c.assignee_id IS NULL)
-  AND ($20::uuid IS NULL OR c.assignee_id = $20::uuid)
-  AND ($21::uuid IS NULL OR c.team_id = $21::uuid)
-  AND ($22::uuid IS NULL OR c.team_id IN (
+  AND (NOT $21::bool OR c.assignee_id IS NULL)
+  AND ($22::uuid IS NULL OR c.assignee_id = $22::uuid)
+  AND ($23::uuid IS NULL OR c.team_id = $23::uuid)
+  AND ($24::uuid IS NULL OR c.team_id IN (
       SELECT tm.team_id FROM team_members tm
-      WHERE tm.workspace_id = c.workspace_id AND tm.member_id = $22::uuid))
-  AND ($23::uuid IS NULL OR EXISTS (
+      WHERE tm.workspace_id = c.workspace_id AND tm.member_id = $24::uuid))
+  AND ($25::uuid IS NULL OR EXISTS (
       SELECT 1 FROM conversation_labels cl
-      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $23::uuid))
-  AND ($24::jsonb IS NULL OR c.fields @> $24::jsonb)
-  AND ($25::bool IS NULL OR $25::bool = EXISTS (
+      WHERE cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id AND cl.label_id = $25::uuid))
+  AND ($26::jsonb IS NULL OR c.fields @> $26::jsonb)
+  AND ($27::bool IS NULL OR $27::bool = EXISTS (
       SELECT 1 FROM conversation_member_states s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id
-        AND s.member_id = $26::uuid AND s.pinned_at IS NOT NULL))
-  AND ($27::text IS NULL OR EXISTS (
+        AND s.member_id = $28::uuid AND s.pinned_at IS NOT NULL))
+  AND ($29::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
-      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $27::text))
-  AND ($28::bool IS NULL OR $28::bool = EXISTS (
+      WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = $29::text))
+  AND ($30::bool IS NULL OR $30::bool = EXISTS (
       SELECT 1 FROM conversation_stars st
-      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $29::uuid))
-  AND ($30::uuid IS NULL OR EXISTS (
+      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $31::uuid))
+  AND ($32::uuid IS NULL OR EXISTS (
       SELECT 1 FROM messages sm
       WHERE sm.workspace_id = c.workspace_id AND sm.conversation_id = c.id AND sm.kind = 'message' AND sm.direction = 'out'
-        AND NOT sm.draft AND (sm.author_member_id = $30::uuid OR sm.sent_by_member_id = $30::uuid)))
-  AND ($31::text IS NULL OR (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($31::text, 'İı', 'ii'))
+        AND NOT sm.draft AND (sm.author_member_id = $32::uuid OR sm.sent_by_member_id = $32::uuid)))
+  AND ($33::text IS NULL OR (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($33::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($31::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($33::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($31::text, 'İı', 'ii')))))
-  AND ($32::text IS NULL OR NOT (
-      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($32::text, 'İı', 'ii'))
+            AND ct.search @@ websearch_to_tsquery('simple', translate($33::text, 'İı', 'ii')))))
+  AND ($34::text IS NULL OR NOT (
+      to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate($34::text, 'İı', 'ii'))
       OR EXISTS (
           SELECT 1 FROM messages m
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft
-            AND m.search @@ websearch_to_tsquery('simple', translate($32::text, 'İı', 'ii')))
+            AND m.search @@ websearch_to_tsquery('simple', translate($34::text, 'İı', 'ii')))
       OR EXISTS (
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
-            AND ct.search @@ websearch_to_tsquery('simple', translate($32::text, 'İı', 'ii')))))
-  AND NOT $33::bool
-  AND (NOT $34::bool OR c.id = ANY($35::uuid[]))
-  AND NOT (c.id = ANY(coalesce($36::uuid[], '{}')))
-  AND (coalesce(cardinality($37::text[]), 0) = 0 OR NOT EXISTS (
+            AND ct.search @@ websearch_to_tsquery('simple', translate($34::text, 'İı', 'ii')))))
+  AND NOT $35::bool
+  AND (NOT $36::bool OR c.id = ANY($37::uuid[]))
+  AND NOT (c.id = ANY(coalesce($38::uuid[], '{}')))
+  AND (coalesce(cardinality($39::text[]), 0) = 0 OR NOT EXISTS (
       SELECT 1 FROM (
-          SELECT ($37::text[])[i] AS v, ($38::bool[])[i] AS neg
-          FROM generate_series(1, cardinality($37::text[])) AS i) o
+          SELECT ($39::text[])[i] AS v, ($40::bool[])[i] AS neg
+          FROM generate_series(1, cardinality($39::text[])) AS i) o
       WHERE o.neg = EXISTS (
           SELECT 1 FROM messages m
           LEFT JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
@@ -841,15 +843,6 @@ WHERE c.workspace_id = $2
                   SELECT 1 FROM members mb JOIN people pe ON pe.id = mb.person_id
                   WHERE mb.workspace_id = m.workspace_id AND mb.id = m.author_member_id
                     AND (pe.name ILIKE o.v OR pe.email ILIKE o.v)))))))
-  AND (coalesce(cardinality($39::text[]), 0) = 0 OR NOT EXISTS (
-      SELECT 1 FROM (
-          SELECT ($39::text[])[i] AS v, ($40::bool[])[i] AS neg
-          FROM generate_series(1, cardinality($39::text[])) AS i) o
-      WHERE o.neg = EXISTS (
-          SELECT 1 FROM messages m
-          JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
-          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
-            AND address_text(me.to_addresses) ILIKE o.v)))
   AND (coalesce(cardinality($41::text[]), 0) = 0 OR NOT EXISTS (
       SELECT 1 FROM (
           SELECT ($41::text[])[i] AS v, ($42::bool[])[i] AS neg
@@ -858,26 +851,35 @@ WHERE c.workspace_id = $2
           SELECT 1 FROM messages m
           JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
           WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
-            AND address_text(me.cc_addresses) ILIKE o.v)))
+            AND address_text(me.to_addresses) ILIKE o.v)))
   AND (coalesce(cardinality($43::text[]), 0) = 0 OR NOT EXISTS (
       SELECT 1 FROM (
           SELECT ($43::text[])[i] AS v, ($44::bool[])[i] AS neg
           FROM generate_series(1, cardinality($43::text[])) AS i) o
+      WHERE o.neg = EXISTS (
+          SELECT 1 FROM messages m
+          JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+            AND address_text(me.cc_addresses) ILIKE o.v)))
+  AND (coalesce(cardinality($45::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT ($45::text[])[i] AS v, ($46::bool[])[i] AS neg
+          FROM generate_series(1, cardinality($45::text[])) AS i) o
       WHERE o.neg = to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate(o.v, 'İı', 'ii'))))
-  AND (($45::timestamptz IS NULL AND $46::timestamptz IS NULL) OR EXISTS (
+  AND (($47::timestamptz IS NULL AND $48::timestamptz IS NULL) OR EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
-        AND ($45::timestamptz IS NULL OR m.created_at >= $45::timestamptz)
-        AND ($46::timestamptz IS NULL OR m.created_at < $46::timestamptz)))
-  AND ($47::timestamptz IS NULL OR NOT EXISTS (
-      SELECT 1 FROM messages m WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward') AND m.created_at >= $47::timestamptz))
-  AND ($48::timestamptz IS NULL OR NOT EXISTS (
-      SELECT 1 FROM messages m WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward') AND m.created_at < $48::timestamptz))
-  AND ($49::bool IS NULL OR $49::bool = EXISTS (
+        AND ($47::timestamptz IS NULL OR m.created_at >= $47::timestamptz)
+        AND ($48::timestamptz IS NULL OR m.created_at < $48::timestamptz)))
+  AND ($49::timestamptz IS NULL OR NOT EXISTS (
+      SELECT 1 FROM messages m WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward') AND m.created_at >= $49::timestamptz))
+  AND ($50::timestamptz IS NULL OR NOT EXISTS (
+      SELECT 1 FROM messages m WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward') AND m.created_at < $50::timestamptz))
+  AND ($51::bool IS NULL OR $51::bool = EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
         AND (m.author_member_id = $5::uuid OR m.sent_by_member_id = $5::uuid OR m.on_behalf_of_member_id = $5::uuid)))
-  AND ($50::bool IS NULL OR $50::bool = EXISTS (
+  AND ($52::bool IS NULL OR $52::bool = EXISTS (
       SELECT 1 FROM messages m
       JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
@@ -887,58 +889,58 @@ WHERE c.workspace_id = $2
             UNION
             SELECT ma.address FROM member_addresses ma
             WHERE ma.workspace_id = $2 AND ma.member_id = $5::uuid AND ma.verified_at IS NOT NULL)))
-  AND ($51::bool IS NULL OR $51::bool = EXISTS (
+  AND ($53::bool IS NULL OR $53::bool = EXISTS (
       SELECT 1 FROM attachments a JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
       WHERE a.workspace_id = c.workspace_id AND a.conversation_id = c.id AND NOT a.inline
         AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')))
-  AND ($52::bool IS NULL OR $52::bool = EXISTS (
+  AND ($54::bool IS NULL OR $54::bool = EXISTS (
       SELECT 1 FROM conversation_stars st
       WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $5::uuid))
-  AND ($53::bool IS NULL OR $53::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+  AND ($55::bool IS NULL OR $55::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
       SELECT 1 FROM conversation_stars st
       WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $5::uuid)))
-  AND ($54::bool IS NULL OR $54::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'open' AND c.trashed_at IS NULL))
-  AND ($55::bool IS NULL OR $55::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'snoozed' AND c.trashed_at IS NULL))
-  AND ($56::bool IS NULL OR $56::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'closed' AND c.trashed_at IS NULL))
-  AND ($57::bool IS NULL OR $57::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.trashed_at IS NOT NULL))
-  AND ($58::bool IS NULL OR $58::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+  AND ($56::bool IS NULL OR $56::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'open' AND c.trashed_at IS NULL))
+  AND ($57::bool IS NULL OR $57::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'snoozed' AND c.trashed_at IS NULL))
+  AND ($58::bool IS NULL OR $58::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'closed' AND c.trashed_at IS NULL))
+  AND ($59::bool IS NULL OR $59::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.trashed_at IS NOT NULL))
+  AND ($60::bool IS NULL OR $60::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.kind = 'message' AND m.direction = 'out'
         AND NOT m.draft AND (m.author_member_id = $5::uuid OR m.sent_by_member_id = $5::uuid OR m.on_behalf_of_member_id = $5::uuid))))
-  AND ($59::bool IS NULL OR $59::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+  AND ($61::bool IS NULL OR $61::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.draft AND m.scheduled_at IS NULL
         AND m.author_type = 'member' AND m.author_member_id = $5::uuid)))
-  AND ($60::bool IS NULL OR $60::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+  AND ($62::bool IS NULL OR $62::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
       SELECT 1 FROM messages m
       WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
         AND m.scheduled_by = $5::uuid AND m.scheduled_at IS NOT NULL)))
-  AND ($61::text[] IS NULL OR EXISTS (
+  AND ($63::text[] IS NULL OR EXISTS (
       SELECT 1 FROM conversation_sla s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id AND s.dropped_at IS NULL
         AND (CASE
-            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $62::timestamptz THEN 'breached'
+            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $64::timestamptz THEN 'breached'
             WHEN c.sla_due_at IS NOT NULL AND s.warn_minutes > 0
-                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= $62::timestamptz THEN 'due_soon'
+                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= $64::timestamptz THEN 'due_soon'
             WHEN c.sla_due_at IS NOT NULL THEN 'on_track'
             WHEN s.paused_at IS NOT NULL THEN 'paused'
             WHEN s.first_reply_breached_at IS NOT NULL OR s.next_reply_breached_at IS NOT NULL OR s.resolution_breached_at IS NOT NULL THEN 'breached'
             WHEN (s.first_reply_target_s IS NOT NULL AND s.first_reply_met_at IS NOT NULL)
                 OR (s.next_reply_target_s IS NOT NULL AND s.next_reply_met_at IS NOT NULL)
                 OR (s.resolution_target_s IS NOT NULL AND s.resolution_met_at IS NOT NULL) THEN 'met'
-            ELSE 'on_track' END) = ANY ($61::text[])))
-  AND ($63::timestamptz IS NULL OR CASE
-      WHEN $1::uuid IS NOT NULL THEN sched.at > $64::timestamptz
-          OR (sched.at = $64::timestamptz
-              AND (c.last_activity_at, c.id) < ($63::timestamptz, $65::uuid))
-      WHEN NOT $66::bool THEN (c.last_activity_at, c.id) < ($63::timestamptz, $65::uuid)
-      WHEN $64::timestamptz IS NULL THEN c.sla_due_at IS NULL
-          AND (c.last_activity_at, c.id) < ($63::timestamptz, $65::uuid)
-      ELSE c.sla_due_at IS NULL OR c.sla_due_at > $64::timestamptz
-          OR (c.sla_due_at = $64::timestamptz
-              AND (c.last_activity_at, c.id) < ($63::timestamptz, $65::uuid)) END)
-ORDER BY CASE WHEN $66::bool THEN c.sla_due_at END ASC NULLS LAST, sched.at ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
-LIMIT $67
+            ELSE 'on_track' END) = ANY ($63::text[])))
+  AND ($65::timestamptz IS NULL OR CASE
+      WHEN $1::uuid IS NOT NULL THEN sched.at > $66::timestamptz
+          OR (sched.at = $66::timestamptz
+              AND (c.last_activity_at, c.id) < ($65::timestamptz, $67::uuid))
+      WHEN NOT $68::bool THEN (c.last_activity_at, c.id) < ($65::timestamptz, $67::uuid)
+      WHEN $66::timestamptz IS NULL THEN c.sla_due_at IS NULL
+          AND (c.last_activity_at, c.id) < ($65::timestamptz, $67::uuid)
+      ELSE c.sla_due_at IS NULL OR c.sla_due_at > $66::timestamptz
+          OR (c.sla_due_at = $66::timestamptz
+              AND (c.last_activity_at, c.id) < ($65::timestamptz, $67::uuid)) END)
+ORDER BY CASE WHEN $68::bool THEN c.sla_due_at END ASC NULLS LAST, sched.at ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
+LIMIT $69
 `
 
 type ListConversationsParams struct {
@@ -952,6 +954,8 @@ type ListConversationsParams struct {
 	BroadcastID     *uuid.UUID
 	Spam            *bool
 	Trashed         bool
+	TrashOwner      *uuid.UUID
+	TrashOwnOnly    bool
 	Kinds           []string
 	ChannelKinds    []string
 	Site            *string
@@ -1028,6 +1032,8 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.BroadcastID,
 		arg.Spam,
 		arg.Trashed,
+		arg.TrashOwner,
+		arg.TrashOwnOnly,
 		arg.Kinds,
 		arg.ChannelKinds,
 		arg.Site,

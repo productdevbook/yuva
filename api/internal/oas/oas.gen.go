@@ -14092,8 +14092,13 @@ type ConversationCounts struct {
 	Starred int64 `json:"starred"`
 
 	// Teams Per assigned team id.
-	Teams      []CountByID `json:"teams"`
-	Unassigned int64       `json:"unassigned"`
+	Teams []CountByID `json:"teams"`
+
+	// Trash Conversations in the trash the caller sees (as `trashed=true` lists them), whatever
+	// `kind` or `purpose`: the number `POST /v1/conversations/trash/empty` takes as
+	// `confirm_count`. `0` for callers who see no trash.
+	Trash      int64 `json:"trash"`
+	Unassigned int64 `json:"unassigned"`
 }
 
 // ConversationCreate defines model for ConversationCreate.
@@ -26907,8 +26912,12 @@ type ListConversationsParams struct {
 
 	// Trashed `true` lists only the conversations in the trash (the Trash view), which every other
 	// list, count and search leaves out. Owners and admins, and keys and tokens with
-	// `conversations:delete`; agents get `403 forbidden`. `false` or absent lists what is not
-	// in the trash.
+	// `conversations:delete`, see the trash of the inboxes they see but personal mailboxes;
+	// the trash of a personal mailbox is shown only to its owner, whatever their role
+	// (session or the owner's own token). Delegates never see it. An agent sees only the
+	// trash of their own personal mailboxes, and gets `403 forbidden` without one only by
+	// their token lacking `conversations:delete`. `false` or absent lists what is not in the
+	// trash.
 	Trashed *bool `form:"trashed,omitempty" json:"trashed,omitempty"`
 
 	// Kind Only conversations of these kinds, e.g. `feedback` for the feedback view. Repeat the

@@ -54,7 +54,6 @@ func TestTrashWhoMayAndWhereItShows(t *testing.T) {
 
 	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "DELETE", "/v1/conversations/"+conv, nil)
 	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/"+conv+"/restore", nil)
-	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "GET", "/v1/conversations?trashed=true", nil)
 	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{conv}, "trashed": true})
 	plainKey := tm.apiKey(h)
 	plainKey.expectProblem(http.StatusForbidden, "insufficient_scope", "DELETE", "/v1/conversations/"+conv, nil)
@@ -106,6 +105,11 @@ func TestTrashWhoMayAndWhereItShows(t *testing.T) {
 	if ids := listedIDs(key, "&trashed=true&q=zanzibar"); len(ids) != 1 {
 		t.Fatalf("trash search: %v", ids)
 	}
+	if ids := listedIDs(tm.agent, "&trashed=true"); len(ids) != 0 {
+		t.Fatalf("agent sees shared trash: %v", ids)
+	}
+	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+conv, nil)
+	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/"+conv+"/restore", nil)
 	if ids := listedIDs(other.owner, "&trashed=true"); len(ids) != 0 {
 		t.Fatalf("other workspace's trash: %v", ids)
 	}

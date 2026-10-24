@@ -55,17 +55,12 @@ func TestSavedViewFiltersUseTheListParser(t *testing.T) {
 		"field.plan":   {"field.plan": "enterprise"},
 		"label_id":     {"label_id": tm.inbox},
 		"contact_id":   {"contact_id": tm.ws},
-		"trashed":      {"trashed": "true"},
 		"q":            {"q": strings.Repeat("a", 201)},
 		"channel_kind": {"channel_kind": "fax"},
 		"sla_state":    {"sla_state": "late"},
 		"sort":         {"sort": "oldest"},
 	} {
-		c := tm.owner
-		if param == "trashed" {
-			c = tm.agent
-		}
-		r := c.do("POST", "/v1/views", map[string]any{"visibility": "personal", "name": "Bad", "filters": filters})
+		r := tm.owner.do("POST", "/v1/views", map[string]any{"visibility": "personal", "name": "Bad", "filters": filters})
 		expectField(t, r, http.StatusBadRequest, "validation_failed", param)
 	}
 

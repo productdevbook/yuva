@@ -4581,6 +4581,14 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   mailbox they do not read, cut to what `GET /v1/inboxes/{id}` shows them (no signature, import, SES
   tenant or access), so a panel sees a mailbox become orphaned; every other event of it stays hidden.
   An `inbox.updated` whose inbox is already gone when the filter runs is cut the same way.
+- **Trash of a personal mailbox (#198).** Only the mailbox's owner sees, counts, restores and
+  deletes for good what is in its trash, whatever their role, through a member session or their own
+  OAuth grant with `conversations:delete`. Delegates never do (`404` on the conversation, `403
+  forbidden` on restore and delete), and the Trash view, the `trash` count and empty-trash of owners,
+  admins and keys leave other people's personal mailboxes out. An agent's Trash view
+  (`GET /v1/conversations?trashed=true`, `GET /v1/conversations/counts` `trash`) holds only their own
+  personal mailboxes, so it is empty without one; the trash of shared inboxes stays closed to
+  agents (`403 forbidden` on restore and delete, `404` on reading).
 - **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
   or hands it to a named member; nobody reads it before that choice.
 - **Sending as a person.** A mail goes from the channel address with the member's name, or from the
@@ -4651,8 +4659,24 @@ they belong to no channel. (#136, migration 00095)
   `403 forbidden` in every inbox, so a mistake cannot be hidden. `/v1/conversations/bulk` takes
   `trashed: true|false` alone for up to 100, per-item results as for the other bulk changes;
   a `trashed` change needs `conversations:delete` only, every other bulk change
-  `conversations:write`.
+  `conversations:write`. The bulk change also takes `spam: true|false` (#198) as
+  `PATCH` does, combinable with the other changes but not with `trashed`.
   Trashing or restoring twice answers the conversation unchanged, without an event or entry.
+- Deleting for good (#198): `POST /v1/conversations/delete` takes up to 100 ids of trashed
+  conversations and deletes them in one transaction through the trash purge's batch delete
+  (workspace row locked, rows `FOR UPDATE`, stored files through `storage_delete`), with one
+  `conversation.deleted` event each; the answer is `{deleted, failed}`, failures per id
+  (`409 not_trashed`, `404 not_found`, `403 forbidden`) in request order. Who may: as for
+  trashing, and in a personal mailbox only its owner (see Team mail). Cannot be undone.
+- Emptying the trash (#198): `POST /v1/conversations/trash/empty` with `confirm_count`, the number
+  the person confirmed (`GET /v1/conversations/counts` `trash`). A different number than the
+  caller's trash holds answers `409 count_changed` with `count`; otherwise it answers `202
+  {count}` and, when there is anything, queues the River job `trash_empty` in the same
+  transaction. The job is bounded: it deletes only conversations trashed up to the request's
+  database time (`until`), so what is trashed afterwards stays, and only those the caller saw
+  (the job carries the principal: member, key or grant, role, inbox limit). It deletes 200 per
+  transaction for about 30 seconds a run and then queues its own continuation in the last
+  transaction, so a large trash never hits a timeout and a crash repeats at most one batch.
 - A trashed conversation is read-only and left out of every list, count, search, stat, Home
   figure, contact summary, docs and analytics support figure, linked replies and roadmap link
   counts, drafts, mentions, rating links, chat continuity mail, the automation run log
@@ -4689,7 +4713,10 @@ they belong to no channel. (#136, migration 00095)
   the rest. Index `events (workspace_id, conversation_id)` makes this cheap.
 - Audit log: `conversation.trashed`, `conversation.restored` (the member, key or grant) and
   `conversation.deleted` (actor kind `system`, no id or name), target type `conversation`, details
-  `inbox_id` only, never the subject or content.
+  `inbox_id` only, never the subject or content. Deleting for good writes one
+  `conversations.deleted` (target type `conversations`) and an emptied trash one `trash.emptied`
+  when its job ends (target type `trash`), both with the caller as actor, the workspace's id as
+  target id and `{count}` as details, never ids, subjects or content.
 - MCP has no delete or restore tool (deletes are left out on purpose, see MCP coverage);
   `get_conversation` and the conversation resource answer "no such conversation" for a trashed
   one even to an owner's token with `conversations:delete`.
@@ -4763,7 +4790,8 @@ they belong to no channel. (#136, migration 00095)
   `workspace.broadcast_approval_requested`, and the operator's `workspace.broadcasts_approved`,
   `workspace.broadcasts_denied`, `workspace.broadcasts_suspended` and
   `workspace.broadcast_limit_changed`; `conversation.trashed`, `conversation.restored`,
-  `conversation.deleted` (actor `system`) and `message.redacted` (target type `message`); the
+  `conversation.deleted` (actor `system`), `conversations.deleted` (target type `conversations`),
+  `trash.emptied` (target type `trash`) and `message.redacted` (target type `message`); the
   single sign-on actions (targets `sso` and `sso_domain`, see Single sign-on (M33)). Revocations and deletes write their entry only when the row
   changed, so repeated or concurrent calls record one; a password sent again unchanged records
   nothing. No row holds message content, a secret, a password, a webhook URL (only its host), or a
@@ -4817,6 +4845,15 @@ they belong to no channel. (#136, migration 00095)
   `GET /v1/contacts/{id}/participations` lists the other contacts' conversations that hold one of
   the contact's addresses as a participant or in a stored recipient list; someone only copied gets
   a contact with their address first.
+- Deleting contacts in bulk (#199): `POST /v1/contacts/delete` takes up to 100 `ids` and
+  `confirm_count`, the number of different ids the person confirmed; another number answers `409
+  count_changed` with `count`. Each contact is deleted as `DELETE /v1/contacts/by-external-id` deletes one, in its
+  own transaction, with failures per id in `failed`; owners, admins and full keys only, scope
+  `contacts:write`. Before a deletion the panel reads `GET /v1/contacts/{id}/deletion-preview`:
+  `conversation_count` (the conversations the caller sees, trashed ones included only for those
+  who see the trash) and `has_hidden_conversations`, `true` when the contact also has
+  conversations in personal mailboxes the caller does not read, which go too. It names no mailbox
+  and counts none of them.
 - Deleting conversations for good (contact deletion, inbox deletion, retention, the trash purge,
   migration cutover) deletes in the same transaction their stored events and webhook deliveries,
   pending or kept, by index, never by searching payloads (#189): migration 00122 adds
