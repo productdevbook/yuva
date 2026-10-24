@@ -13,6 +13,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -90,14 +91,16 @@ type setupList struct {
 }
 
 type setupStateOut struct {
-	ServerURL     string             `json:"server_url"`
-	ServerVersion string             `json:"server_version"`
-	Inboxes       []setupInbox       `json:"inboxes"`
-	Properties    []setupProperty    `json:"analytics_properties"`
-	Lists         []setupList        `json:"mailing_lists"`
-	NoSender      []setupInbox       `json:"inboxes_without_sender,omitempty" jsonschema:"inboxes with mailing lists but no sender identity (legal name and postal address); their broadcasts are blocked until update_inbox_sender sets it from the person's own values"`
-	NotVisible    []string           `json:"not_visible,omitempty" jsonschema:"parts this connection cannot read, with the scope to grant"`
-	Integrations  []setupIntegration `json:"integrations" jsonschema:"what Yuva can add to a project, how to tell it fits and how to set it up"`
+	ServerURL     string              `json:"server_url"`
+	ServerVersion string              `json:"server_version"`
+	Focus         string              `json:"focus,omitempty" jsonschema:"what the owner said the workspace is for: support, mail (team mail inboxes) or both; absent until they answered"`
+	Setup         []oas.HomeSetupItem `json:"setup,omitempty" jsonschema:"the setup checklist Home shows: one item per part, with how many are set up; absent when this connection cannot read every part"`
+	Inboxes       []setupInbox        `json:"inboxes"`
+	Properties    []setupProperty     `json:"analytics_properties"`
+	Lists         []setupList         `json:"mailing_lists"`
+	NoSender      []setupInbox        `json:"inboxes_without_sender,omitempty" jsonschema:"inboxes with mailing lists but no sender identity (legal name and postal address); their broadcasts are blocked until update_inbox_sender sets it from the person's own values"`
+	NotVisible    []string            `json:"not_visible,omitempty" jsonschema:"parts this connection cannot read, with the scope to grant"`
+	Integrations  []setupIntegration  `json:"integrations" jsonschema:"what Yuva can add to a project, how to tell it fits and how to set it up"`
 }
 
 type reportIssueIn struct {
@@ -125,7 +128,7 @@ var issueAreas = []any{"widget", "js-sdk", "swift-sdk", "kotlin-sdk", "go-sdk", 
 
 var mcpInitTools = []mcpTool{
 	defineTool("get_setup_state", "See what Yuva is set up",
-		"Returns what this workspace already has (inboxes and their channels, analytics properties, mailing lists, inboxes whose lists lack a sender identity) and the catalog of what Yuva can add to a project: what each part does, what in a codebase suggests it fits, and the prompt or tools that set it up. Use it with the init prompt to recommend a plan for the project you are working in. Read only.",
+		"Returns what this workspace already has (what its owner said it is for, the setup checklist Home shows, inboxes and their channels, analytics properties, mailing lists, inboxes whose lists lack a sender identity) and the catalog of what Yuva can add to a project: what each part does, what in a codebase suggests it fits, and the prompt or tools that set it up. Use it with the init prompt to recommend a plan for the project you are working in. Read only.",
 		readOnly, nil, mcpTool{},
 		func(ctx context.Context, c *mcpCall, _ setupStateIn) (setupStateOut, error) {
 			return c.setupState(ctx)
@@ -164,6 +167,16 @@ func (c *mcpCall) setupState(ctx context.Context) (setupStateOut, error) {
 	parts, err := c.s.setupParts(ctx, c.p, want)
 	if err != nil {
 		return out, err
+	}
+	w, err := c.s.st.GetWorkspace(ctx, c.p.workspaceID)
+	if err != nil {
+		return out, err
+	}
+	if w.Focus != nil {
+		out.Focus = *w.Focus
+	}
+	if len(out.NotVisible) == 0 {
+		out.Setup = parts.checklist()
 	}
 	var ids []uuid.UUID
 	for _, chs := range parts.channels {

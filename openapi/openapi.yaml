@@ -20991,9 +20991,19 @@ components:
             `drafts:send` sends drafts. Members always may.
         broadcasts:
           $ref: "#/components/schemas/WorkspaceBroadcasts"
+        focus:
+          $ref: "#/components/schemas/WorkspaceFocus"
         created_at:
           type: string
           format: date-time
+    WorkspaceFocus:
+      type: string
+      description: |
+        What the workspace is for, as its owner answered: `support` (support inboxes), `mail`
+        (team mail inboxes) or `both`. The panel orders the setup cards and the rail by it. Absent
+        until it is set: a new workspace has not been asked yet. Workspaces made before it existed
+        start as `both` when they have a `mail` inbox, else `support`.
+      enum: [support, mail, both]
     WorkspaceCreate:
       type: object
       required: [name]
@@ -21018,6 +21028,10 @@ components:
         broadcasts_by_keys:
           type: boolean
           description: Whether API keys and OAuth tokens with `broadcasts:send` may schedule and resume broadcasts. Owners and admins, with a member session.
+        focus:
+          allOf:
+            - $ref: "#/components/schemas/WorkspaceFocus"
+          description: Owners and admins, with a member session. It cannot be cleared once set.
     AuditActorKind:
       type: string
       description: |
@@ -21092,6 +21106,7 @@ components:
         - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
         - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
           (booleans).
+        - `workspace.focus_changed`: `from` (`null` when it was not set), `to`.
         - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
           `workspace.broadcasts_denied`: `reason` when the operator gave one.
           `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
@@ -21178,6 +21193,7 @@ components:
         - workspace.retention_changed
         - workspace.bots_may_send_changed
         - workspace.broadcasts_by_keys_changed
+        - workspace.focus_changed
         - workspace.broadcast_approval_requested
         - workspace.broadcasts_approved
         - workspace.broadcasts_denied
@@ -21210,7 +21226,7 @@ components:
         - automation_rule.created
         - automation_rule.updated
         - automation_rule.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
@@ -25433,7 +25449,8 @@ components:
           type: array
           description: |
             One item per part of the setup hub, in this order: `chat` (live chat channels),
-            `email` (e-mail channels), `app` (app channels), `docs` (chat channels that
+            `email` (e-mail channels), `mail` (team mail inboxes, purpose `mail`, with at least one
+            e-mail channel), `app` (app channels), `docs` (chat channels that
             documentation pages have used: ratings, feedback or discussions), `analytics`
             (properties; only when the server collects analytics) and `newsletter` (mailing
             lists that are not archived). An item is `done` when its `count` is above zero.
@@ -25445,7 +25462,7 @@ components:
       properties:
         id:
           type: string
-          enum: [chat, email, app, docs, analytics, newsletter]
+          enum: [chat, email, mail, app, docs, analytics, newsletter]
         done:
           type: boolean
         count:

@@ -75,10 +75,10 @@ func TestHomeEmptyWorkspace(t *testing.T) {
 		t.Fatalf("broadcasts of an empty workspace: %s", r.raw)
 	}
 	got := checklist(t, r)
-	if got["order"][0] != "[chat email app docs analytics newsletter]" {
+	if got["order"][0] != "[chat email mail app docs analytics newsletter]" {
 		t.Fatalf("checklist order: %v", got["order"][0])
 	}
-	for _, id := range []string{"chat", "email", "app", "docs", "analytics", "newsletter"} {
+	for _, id := range []string{"chat", "email", "mail", "app", "docs", "analytics", "newsletter"} {
 		if got[id] != [2]any{false, float64(0)} {
 			t.Fatalf("%s of an empty workspace: %v", id, got[id])
 		}
@@ -247,7 +247,7 @@ func TestHomeWithoutAnalyticsOrBroadcasts(t *testing.T) {
 	if r.body["analytics"] != nil || r.body["broadcasts"] != nil || r.body["ideas"] != nil {
 		t.Fatalf("a server without analytics, broadcasts and roadmaps: %s", r.raw)
 	}
-	if got := checklist(t, r); got["order"][0] != "[chat email app docs newsletter]" {
+	if got := checklist(t, r); got["order"][0] != "[chat email mail app docs newsletter]" {
 		t.Fatalf("checklist without analytics: %v", got["order"][0])
 	}
 }

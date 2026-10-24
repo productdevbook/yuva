@@ -50,6 +50,11 @@ UPDATE workspaces SET bots_may_send = @bots_may_send
 WHERE id = @id
 RETURNING *;
 
+-- name: SetWorkspaceFocus :one
+UPDATE workspaces SET focus = @focus::text
+WHERE id = @id
+RETURNING *;
+
 -- name: ListWorkspaceRetention :many
 SELECT id, retention_days::integer AS retention_days FROM workspaces WHERE retention_days IS NOT NULL ORDER BY id;
 

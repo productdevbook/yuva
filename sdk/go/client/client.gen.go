@@ -1181,6 +1181,7 @@ const (
 	AuditWorkspaceBroadcastsByKeysChanged    AuditAction = "workspace.broadcasts_by_keys_changed"
 	AuditWorkspaceBroadcastsDenied           AuditAction = "workspace.broadcasts_denied"
 	AuditWorkspaceBroadcastsSuspended        AuditAction = "workspace.broadcasts_suspended"
+	AuditWorkspaceFocusChanged               AuditAction = "workspace.focus_changed"
 	AuditWorkspaceRetentionChanged           AuditAction = "workspace.retention_changed"
 	AuditWorkspaceSlackConnected             AuditAction = "workspace.slack_connected"
 	AuditWorkspaceSlackDisconnected          AuditAction = "workspace.slack_disconnected"
@@ -1320,6 +1321,8 @@ func (e AuditAction) Valid() bool {
 	case AuditWorkspaceBroadcastsDenied:
 		return true
 	case AuditWorkspaceBroadcastsSuspended:
+		return true
+	case AuditWorkspaceFocusChanged:
 		return true
 	case AuditWorkspaceRetentionChanged:
 		return true
@@ -3973,6 +3976,7 @@ const (
 	HomeSetupItemIdChat       HomeSetupItemId = "chat"
 	HomeSetupItemIdDocs       HomeSetupItemId = "docs"
 	HomeSetupItemIdEmail      HomeSetupItemId = "email"
+	HomeSetupItemIdMail       HomeSetupItemId = "mail"
 	HomeSetupItemIdNewsletter HomeSetupItemId = "newsletter"
 )
 
@@ -3988,6 +3992,8 @@ func (e HomeSetupItemId) Valid() bool {
 	case HomeSetupItemIdDocs:
 		return true
 	case HomeSetupItemIdEmail:
+		return true
+	case HomeSetupItemIdMail:
 		return true
 	case HomeSetupItemIdNewsletter:
 		return true
@@ -7491,6 +7497,27 @@ func (e Weekday) Valid() bool {
 	}
 }
 
+// Defines values for WorkspaceFocus.
+const (
+	WorkspaceFocusBoth    WorkspaceFocus = "both"
+	WorkspaceFocusMail    WorkspaceFocus = "mail"
+	WorkspaceFocusSupport WorkspaceFocus = "support"
+)
+
+// Valid indicates whether the value is a known member of the WorkspaceFocus enum.
+func (e WorkspaceFocus) Valid() bool {
+	switch e {
+	case WorkspaceFocusBoth:
+		return true
+	case WorkspaceFocusMail:
+		return true
+	case WorkspaceFocusSupport:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConsentFormat.
 const (
 	ConsentFormatCsv  ConsentFormat = "csv"
@@ -10046,6 +10073,7 @@ type Attributes map[string]interface{}
 //   - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
 //   - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
 //     (booleans).
+//   - `workspace.focus_changed`: `from` (`null` when it was not set), `to`.
 //   - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
 //     `workspace.broadcasts_denied`: `reason` when the operator gave one.
 //     `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
@@ -10170,6 +10198,7 @@ type AuditEntry struct {
 	// - `workspace.retention_changed`: `from`, `to` (days; `null` keeps everything).
 	// - `workspace.bots_may_send_changed`, `workspace.broadcasts_by_keys_changed`: `from`, `to`
 	//   (booleans).
+	// - `workspace.focus_changed`: `from` (`null` when it was not set), `to`.
 	// - `workspace.broadcast_approval_requested`: none. `workspace.broadcasts_approved`,
 	//   `workspace.broadcasts_denied`: `reason` when the operator gave one.
 	//   `workspace.broadcasts_suspended`: `reason`, `paused_broadcasts` (by the operator).
@@ -17183,7 +17212,8 @@ type HomeProperty struct {
 // HomeSetup defines model for HomeSetup.
 type HomeSetup struct {
 	// Items One item per part of the setup hub, in this order: `chat` (live chat channels),
-	// `email` (e-mail channels), `app` (app channels), `docs` (chat channels that
+	// `email` (e-mail channels), `mail` (team mail inboxes, purpose `mail`, with at least one
+	// e-mail channel), `app` (app channels), `docs` (chat channels that
 	// documentation pages have used: ratings, feedback or discussions), `analytics`
 	// (properties; only when the server collects analytics) and `newsletter` (mailing
 	// lists that are not archived). An item is `done` when its `count` is above zero.
@@ -24361,8 +24391,14 @@ type Workspace struct {
 	BotsMaySend bool                `json:"bots_may_send"`
 	Broadcasts  WorkspaceBroadcasts `json:"broadcasts"`
 	CreatedAt   time.Time           `json:"created_at"`
-	Id          uuid.UUID           `json:"id"`
-	Name        string              `json:"name"`
+
+	// Focus What the workspace is for, as its owner answered: `support` (support inboxes), `mail`
+	// (team mail inboxes) or `both`. The panel orders the setup cards and the rail by it. Absent
+	// until it is set: a new workspace has not been asked yet. Workspaces made before it existed
+	// start as `both` when they have a `mail` inbox, else `support`.
+	Focus *WorkspaceFocus `json:"focus,omitempty"`
+	Id    uuid.UUID       `json:"id"`
+	Name  string          `json:"name"`
 
 	// RetentionDays Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Absent when everything is kept.
 	RetentionDays *int32 `json:"retention_days,omitempty"`
@@ -24403,6 +24439,12 @@ type WorkspaceDeletion struct {
 	Name string `json:"name"`
 }
 
+// WorkspaceFocus What the workspace is for, as its owner answered: `support` (support inboxes), `mail`
+// (team mail inboxes) or `both`. The panel orders the setup cards and the rail by it. Absent
+// until it is set: a new workspace has not been asked yet. Workspaces made before it existed
+// start as `both` when they have a `mail` inbox, else `support`.
+type WorkspaceFocus string
+
 // WorkspaceUpdate Only the fields sent change; at least one is required.
 type WorkspaceUpdate struct {
 	// BotsMaySend Owners and admins, with a member session.
@@ -24410,6 +24452,9 @@ type WorkspaceUpdate struct {
 
 	// BroadcastsByKeys Whether API keys and OAuth tokens with `broadcasts:send` may schedule and resume broadcasts. Owners and admins, with a member session.
 	BroadcastsByKeys *bool `json:"broadcasts_by_keys,omitempty"`
+
+	// Focus Owners and admins, with a member session. It cannot be cleared once set.
+	Focus *WorkspaceFocus `json:"focus,omitempty"`
 
 	// RetentionDays `null` keeps everything. Owners, or an API key with `workspace:manage`.
 	RetentionDays nullable.Nullable[int32] `json:"retention_days,omitempty"`

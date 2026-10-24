@@ -1074,6 +1074,9 @@ func (s *Server) workspaceBody(ctx context.Context, w store.Workspace) (oas.Work
 
 func (s *Server) workspaceBodyQ(ctx context.Context, q *store.Queries, w store.Workspace) (oas.Workspace, error) {
 	out := oas.Workspace{Id: w.ID, Name: w.Name, RetentionDays: w.RetentionDays, BotsMaySend: w.BotsMaySend, CreatedAt: w.CreatedAt}
+	if w.Focus != nil {
+		out.Focus = new(oas.WorkspaceFocus(*w.Focus))
+	}
 	out.Broadcasts = oas.WorkspaceBroadcasts{
 		Mode: oas.BroadcastsMode(s.broadcastMode()), Status: oas.BroadcastsStatus(w.BroadcastsStatus), Reason: w.BroadcastsStatusReason,
 		StatusAt: w.BroadcastsStatusAt, ByKeys: w.BroadcastsByKeys,

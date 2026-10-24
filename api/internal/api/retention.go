@@ -20,15 +20,18 @@ const retentionBatch = 200
 func (s *Server) UpdateWorkspace(ctx context.Context, req oas.UpdateWorkspaceRequestObject) (oas.UpdateWorkspaceResponseObject, error) {
 	p := principalFrom(ctx)
 	b := req.Body
-	if !b.RetentionDays.IsSpecified() && b.BotsMaySend == nil && b.BroadcastsByKeys == nil {
-		return nil, errValidation("send retention_days, bots_may_send or broadcasts_by_keys")
+	if !b.RetentionDays.IsSpecified() && b.BotsMaySend == nil && b.BroadcastsByKeys == nil && b.Focus == nil {
+		return nil, errValidation("send retention_days, bots_may_send, broadcasts_by_keys or focus")
+	}
+	if b.Focus != nil && !b.Focus.Valid() {
+		return nil, errValidation("focus must be support, mail or both")
 	}
 	if b.RetentionDays.IsSpecified() && !p.isKey() {
 		if err := requireOwner(p); err != nil {
 			return nil, err
 		}
 	}
-	if b.BotsMaySend != nil || b.BroadcastsByKeys != nil {
+	if b.BotsMaySend != nil || b.BroadcastsByKeys != nil || b.Focus != nil {
 		if p.isGrant() {
 			return nil, errMemberSessionRequired
 		}
@@ -81,7 +84,18 @@ func (s *Server) UpdateWorkspace(ctx context.Context, req oas.UpdateWorkspaceReq
 				return err
 			}
 			if from != w.BroadcastsByKeys {
-				return s.audit(ctx, q, p, oas.AuditWorkspaceBroadcastsByKeysChanged, oas.AuditTargetWorkspace, p.workspaceID, auditDetails{"from": from, "to": w.BroadcastsByKeys})
+				if err := s.audit(ctx, q, p, oas.AuditWorkspaceBroadcastsByKeysChanged, oas.AuditTargetWorkspace, p.workspaceID, auditDetails{"from": from, "to": w.BroadcastsByKeys}); err != nil {
+					return err
+				}
+			}
+		}
+		if b.Focus != nil {
+			from := w.Focus
+			if w, err = q.SetWorkspaceFocus(ctx, store.SetWorkspaceFocusParams{ID: p.workspaceID, Focus: string(*b.Focus)}); err != nil {
+				return err
+			}
+			if !equalPtr(from, w.Focus) {
+				return s.audit(ctx, q, p, oas.AuditWorkspaceFocusChanged, oas.AuditTargetWorkspace, p.workspaceID, auditDetails{"from": from, "to": w.Focus})
 			}
 		}
 		return nil

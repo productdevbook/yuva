@@ -47,7 +47,18 @@ func (s *Server) setupParts(ctx context.Context, p principal, want setupWant) (s
 }
 
 func (sp setupParts) checklist() []oas.HomeSetupItem {
-	var chat, email, app, docs int64
+	var chat, email, mail, app, docs int64
+	for _, in := range sp.inboxes {
+		if in.Purpose != string(oas.InboxPurposeMail) {
+			continue
+		}
+		for _, ch := range sp.channels[in.ID] {
+			if ch.Kind == string(oas.ChannelKindEmail) {
+				mail++
+				break
+			}
+		}
+	}
 	for _, chs := range sp.channels {
 		for _, ch := range chs {
 			switch ch.Kind {
@@ -67,7 +78,7 @@ func (sp setupParts) checklist() []oas.HomeSetupItem {
 		return oas.HomeSetupItem{Id: id, Count: n, Done: n > 0}
 	}
 	out := []oas.HomeSetupItem{
-		item(oas.HomeSetupItemIdChat, chat), item(oas.HomeSetupItemIdEmail, email), item(oas.HomeSetupItemIdApp, app), item(oas.HomeSetupItemIdDocs, docs),
+		item(oas.HomeSetupItemIdChat, chat), item(oas.HomeSetupItemIdEmail, email), item(oas.HomeSetupItemIdMail, mail), item(oas.HomeSetupItemIdApp, app), item(oas.HomeSetupItemIdDocs, docs),
 	}
 	if sp.analytics {
 		out = append(out, item(oas.HomeSetupItemIdAnalytics, int64(len(sp.properties))))

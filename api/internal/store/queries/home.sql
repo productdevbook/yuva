@@ -151,7 +151,7 @@ LIMIT 1;
 
 -- name: ListSetupParts :many
 WITH visible AS (
-    SELECT i.id, i.name, i.created_at FROM inboxes i
+    SELECT i.id, i.name, i.created_at, i.purpose FROM inboxes i
     WHERE i.workspace_id = @workspace_id
       AND (@all_inboxes::bool OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
@@ -159,7 +159,7 @@ WITH visible AS (
 )
 SELECT 'inbox'::text AS part, v.id, NULL::uuid AS inbox_id, v.name, ''::text AS kind, v.created_at,
     '{}'::text[] AS domains, '{}'::text[] AS platforms, false AS docs,
-    row_number() OVER (ORDER BY v.name, v.id) AS pos
+    row_number() OVER (ORDER BY v.name, v.id) AS pos, v.purpose
 FROM visible v
 WHERE @with_inboxes::bool
 UNION ALL
@@ -168,12 +168,12 @@ SELECT 'channel', ch.id, ch.inbox_id, ch.name, ch.kind, ch.created_at, '{}', '{}
         EXISTS (SELECT 1 FROM page_ratings r WHERE r.workspace_id = ch.workspace_id AND r.channel_id = ch.id)
         OR EXISTS (SELECT 1 FROM conversations c WHERE c.workspace_id = ch.workspace_id AND c.channel_id = ch.id AND c.page_url IS NOT NULL)
         OR EXISTS (SELECT 1 FROM discussions d WHERE d.workspace_id = ch.workspace_id AND d.inbox_id = ch.inbox_id AND d.channel_id = ch.id AND d.kind = 'page')),
-    row_number() OVER (ORDER BY ch.created_at, ch.id)
+    row_number() OVER (ORDER BY ch.created_at, ch.id), ''
 FROM channels ch
 WHERE @with_inboxes::bool AND @with_channels::bool AND ch.workspace_id = @workspace_id AND ch.inbox_id IN (SELECT id FROM visible)
 UNION ALL
 SELECT 'property', p.id, p.inbox_id, p.name, '', p.created_at, p.domains, p.platforms, false,
-    row_number() OVER (ORDER BY p.created_at, p.id)
+    row_number() OVER (ORDER BY p.created_at, p.id), ''
 FROM analytics_properties p
 WHERE @with_properties::bool AND p.workspace_id = @workspace_id AND p.deleted_at IS NULL
   AND (@all_inboxes::bool OR EXISTS (
@@ -181,7 +181,7 @@ WHERE @with_properties::bool AND p.workspace_id = @workspace_id AND p.deleted_at
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 UNION ALL
 SELECT 'list', l.id, l.inbox_id, l.name, '', l.created_at, '{}', '{}', false,
-    row_number() OVER (ORDER BY l.created_at DESC, l.id DESC)
+    row_number() OVER (ORDER BY l.created_at DESC, l.id DESC), ''
 FROM mailing_lists l
 WHERE @with_lists::bool AND l.workspace_id = @workspace_id AND l.archived_at IS NULL AND l.kind = 'list'
   AND (@all_inboxes::bool OR EXISTS (

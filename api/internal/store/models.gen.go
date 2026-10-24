@@ -2823,6 +2823,7 @@ type Workspace struct {
 	BroadcastDailyLimit    *int32
 	BroadcastsByKeys       bool
 	AnalyticsMonthlyEvents *int64
+	Focus                  *string
 }
 
 type WorkspaceKey struct {
