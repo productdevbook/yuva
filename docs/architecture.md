@@ -4451,6 +4451,9 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   `conversations` count leaves out unsent drafts. Removing its owner or deleting their account answers
   `409 personal_mailbox` with `inbox_ids` until #172; in a soft-deleted workspace the owner link is
   cleared instead, and the purge deletes the mailbox.
+  Contacts stay workspace-wide: an address known only from a personal mailbox still answers
+  `409 email_taken` when someone adds it as a contact, and a shared inbox writing to it reuses that
+  contact; only the mail in the personal mailbox is private, not the contact record.
 - **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
   or hands it to a named member; nobody reads it before that choice.
 - **Sending as a person.** A mail goes from the channel address with the member's name, or from the
