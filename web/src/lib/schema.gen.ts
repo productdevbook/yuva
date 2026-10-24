@@ -281,8 +281,10 @@ export interface paths {
          *     follows go, and in each workspace the contact linked to them is deleted when it has no
          *     conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
          *     person is the only owner of a workspace: make someone else an owner or delete that
-         *     workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
-         *     personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
+         *     workspace first. Their personal mailboxes are not deleted: each loses its owner and its
+         *     delegates and becomes orphaned (`Inbox.mailbox.orphaned`), read by nobody, until an owner or
+         *     admin hands it to a member (`POST /v1/inboxes/{id}/hand-over`) or deletes it; audited as
+         *     `mailbox.orphaned`. Needs a member session; the body repeats the person's e-mail address. A
          *     session made through single sign-on is refused with `403 sso_session_scope`.
          */
         delete: operations["deleteMe"];
@@ -1282,8 +1284,16 @@ export interface paths {
         /**
          * Remove a member
          * @description Owners and admins only, with a member session; only an owner removes an owner. The last
-         *     owner cannot be removed. A member who owns personal mailboxes answers `409
-         *     personal_mailbox` with their ids in `inbox_ids` until each is deleted.
+         *     owner cannot be removed.
+         *
+         *     A member who owns personal mailboxes is removed only with a body whose `mailboxes` names
+         *     each of them once: `delete` deletes it as `DELETE /v1/inboxes/{id}` does (its migrations
+         *     included), `hand_over` makes `to_member_id`, another member of the workspace, its owner and
+         *     removes its delegates. Without a body, or when one is missing, the answer is `409
+         *     personal_mailbox` with all their ids in `inbox_ids`. The choices and the removal happen in
+         *     one transaction, and neither the request nor the answer carries any of the mailboxes'
+         *     content. Audited as `mailbox.handed_over` and `mailbox.deleted_on_leave` besides
+         *     `member.removed`.
          */
         delete: operations["removeMember"];
         options?: never;
@@ -1606,6 +1616,95 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/inboxes/{inboxId}/hand-over": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Give an orphaned personal mailbox a new owner
+         * @description A personal mailbox whose owner deleted their account is orphaned (`mailbox.orphaned`) and
+         *     read by nobody. An owner or admin, with a member session, makes `to_member_id`, a member of
+         *     the workspace, its owner; from then on that member reads it and names its delegates. The
+         *     caller reads nothing of it. A mailbox that still has an owner, or a shared inbox, answers
+         *     `409 personal_mailbox`. Audited as `mailbox.handed_over`; the new owner gets
+         *     `inbox_access.changed`.
+         */
+        post: operations["handOverMailbox"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/inboxes/{inboxId}/delegates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List a personal mailbox's delegates
+         * @description The members the owner of a personal mailbox lets read it (`read`) or also write in it
+         *     (`send`), oldest first. Only the mailbox's owner, with a member session; everyone else,
+         *     delegates, owners and admins included, gets `404`. A shared inbox answers `409
+         *     personal_mailbox` to those who see it.
+         */
+        get: operations["listMailboxDelegates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/inboxes/{inboxId}/delegates/{memberId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Let a member read or write in a personal mailbox
+         * @description Only the mailbox's owner, with a member session; everyone else gets `404` (a delegate
+         *     cannot pass the access on, and owners and admins cannot grant it). Any member of the
+         *     workspace may be a delegate; the owner naming themself answers `422 self_delegation`.
+         *
+         *     `read` reads everything the owner reads: conversations, messages, notes, attachments,
+         *     raw e-mails, events, search, counts, Home and notifications, but never the owner's own
+         *     drafts. `send` also replies, composes, forwards, writes notes and changes status, star,
+         *     snooze, assignee and labels; mail a delegate sends goes "on behalf of" the owner (see
+         *     `Message.on_behalf_of_member_id`). Neither manages the mailbox: settings, channels,
+         *     delegates, migrations and deleting it stay with the owner.
+         *
+         *     Setting the access a delegate already has changes nothing. A new delegate's
+         *     `inbox_access.changed` reaches their open connections. Audited as
+         *     `mailbox.delegate_granted`.
+         */
+        put: operations["setMailboxDelegate"];
+        post?: never;
+        /**
+         * Take a delegate's access away
+         * @description Only the mailbox's owner, with a member session; everyone else gets `404`. Takes effect at
+         *     once: the member's next request about the mailbox answers `404`, and their open realtime
+         *     connections stop receiving its events (`inbox_access.changed` with `granted: false`).
+         *     Removing someone who is not a delegate changes nothing. Audited as
+         *     `mailbox.delegate_revoked`.
+         */
+        delete: operations["removeMailboxDelegate"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/teams": {
         parameters: {
             query?: never;
@@ -1851,8 +1950,12 @@ export interface paths {
         };
         /**
          * List automation rules
-         * @description In `position` order. Callers limited to some inboxes (agents, inbox-limited keys) see the
-         *     workspace rules and the rules of their inboxes.
+         * @description In `position` order; each list is one position scope. Without `inbox_id`, the workspace's
+         *     rules outside personal mailboxes: callers limited to some inboxes (agents, inbox-limited
+         *     keys) see the workspace rules and the rules of their inboxes. With `inbox_id` of an inbox
+         *     the caller sees, only that inbox's rules. A personal mailbox's filters are listed only with
+         *     its `inbox_id` and only to its owner (session or own grant); anyone else, owners, admins
+         *     and keys included, gets `404`.
          *
          *     Scope: `automations:read`.
          */
@@ -1860,11 +1963,14 @@ export interface paths {
         put?: never;
         /**
          * Create an automation rule
-         * @description Owners, admins and API keys not limited to inboxes. The rule goes last in the order and
-         *     runs for triggers that happen after it is saved. A workspace holds at most 100 rules
-         *     (`403 automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint,
-         *     custom field and the inbox a rule names must exist in the workspace (`400
-         *     validation_failed`); one deleted later makes the actions that need it fail.
+         * @description Owners, admins and API keys not limited to inboxes; a filter of a personal mailbox
+         *     (`inbox_id` of one, trigger `mail_received`) only its owner, with any role. The rule goes
+         *     last in the order and runs for triggers that happen after it is saved. A workspace holds at
+         *     most 100 rules, and each personal mailbox at most 100 filters besides (`403
+         *     automation_rule_limit`). Every label, member, team, canned reply, webhook endpoint, custom
+         *     field and the inbox a rule names must exist in the workspace (`400 validation_failed`); one
+         *     deleted later makes the actions that need it fail. Members a filter stars for, assigns or
+         *     notifies must read its inbox (`400 validation_failed`).
          *
          *     Scope: `automations:manage`.
          */
@@ -1885,8 +1991,10 @@ export interface paths {
         get?: never;
         /**
          * Reorder automation rules
-         * @description Owners, admins and API keys not limited to inboxes. `ids` names every rule of the workspace
-         *     once, in the new order (`400 validation_failed` otherwise).
+         * @description Owners, admins and API keys not limited to inboxes: `ids` names every rule of the workspace
+         *     but the filters of personal mailboxes once, in the new order. A personal mailbox's owner
+         *     reorders its filters with `ids` naming every one of them once. Anything else is `400
+         *     validation_failed`. The answer lists the rules the caller sees.
          *
          *     Scope: `automations:manage`.
          */
@@ -1916,8 +2024,8 @@ export interface paths {
         post?: never;
         /**
          * Delete an automation rule
-         * @description Owners, admins and API keys not limited to inboxes. Its log goes with it; what it already
-         *     changed stays.
+         * @description Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+         *     owner (`404` to everyone else). Its log goes with it; what it already changed stays.
          *
          *     Scope: `automations:manage`.
          */
@@ -1926,7 +2034,8 @@ export interface paths {
         head?: never;
         /**
          * Update an automation rule
-         * @description Owners, admins and API keys not limited to inboxes. Only what is sent changes;
+         * @description Owners, admins and API keys not limited to inboxes; a personal mailbox's filter only its
+         *     owner (`404` to everyone else), and it stays in that mailbox. Only what is sent changes;
          *     `conditions` and `actions` are replaced whole. The caller becomes the rule's `saved_by`
          *     when the change alters `trigger`, `idle_minutes`, `inbox_id`, `conditions`, `actions` or
          *     `enabled` (not a rename), which decides whether its replies may go out while
@@ -3815,6 +3924,34 @@ export interface paths {
          *     Scope: `conversations:read`.
          */
         get: operations["getMessageEmail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messages/{messageId}/filter-suggestion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Draft a mail filter from an e-mail
+         * @description "Filter messages like this": a draft `AutomationRuleCreate` for an e-mail that arrived in a
+         *     `mail` inbox, for the panel to fill its form with. It names the inbox, the trigger
+         *     `mail_received` and the conditions `from` (the sender's address) and `list_id` when the
+         *     e-mail has one, else `subject` (this e-mail's own subject); a value that would not be 3 to
+         *     200 characters is left out, so the draft saves as it is once it has an action. It has no
+         *     actions yet. Nothing is saved. A message the
+         *     caller cannot read, or one that did not arrive by e-mail in a `mail` inbox, answers `404`.
+         *
+         *     Scope: `conversations:read`.
+         */
+        get: operations["getMessageFilterSuggestion"];
         put?: never;
         post?: never;
         delete?: never;
@@ -12803,6 +12940,12 @@ export interface components {
          *       `yuva channel prove`.
          *     - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
          *       `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
+         *     - `mailbox.delegate_granted`: `member_id`, `access`, and `from` when it changed a
+         *       delegate's access. `mailbox.delegate_revoked`: `member_id`, `access`. The target is
+         *       the personal mailbox.
+         *     - `mailbox.handed_over`: `from_member_id` (absent for an orphaned mailbox) and
+         *       `to_member_id`. `mailbox.deleted_on_leave`: `member_id`, `name`. `mailbox.orphaned`:
+         *       `member_id`. The target is the personal mailbox.
          *     - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
          *       `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
          *       `inbox_name`.
@@ -12871,9 +13014,9 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.created" | "inbox.deleted" | "inbox.purpose_changed" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.created" | "inbox.deleted" | "inbox.purpose_changed" | "mailbox.delegate_granted" | "mailbox.delegate_revoked" | "mailbox.handed_over" | "mailbox.deleted_on_leave" | "mailbox.orphaned" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed";
         /** @enum {string} */
-        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule";
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule" | "mailbox";
         AuditTarget: {
             type: components["schemas"]["AuditTargetType"];
             /**
@@ -13503,6 +13646,7 @@ export interface components {
             sla_breached: components["schemas"]["NotificationChannels"];
             forward_answer: components["schemas"]["NotificationChannels"];
             scheduled_send_failed: components["schemas"]["NotificationChannels"];
+            mail_forwarded: components["schemas"]["NotificationChannels"];
         };
         /** @description Some events and their channels. */
         NotificationEventsUpdate: {
@@ -13516,6 +13660,7 @@ export interface components {
             sla_breached?: components["schemas"]["NotificationChannels"];
             forward_answer?: components["schemas"]["NotificationChannels"];
             scheduled_send_failed?: components["schemas"]["NotificationChannels"];
+            mail_forwarded?: components["schemas"]["NotificationChannels"];
         };
         NotificationSettings: {
             events: components["schemas"]["NotificationEvents"];
@@ -13550,7 +13695,7 @@ export interface components {
              * @description What caused it (see the `notifications` tag), or `test`.
              * @enum {string}
              */
-            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "sla_warning" | "sla_breached" | "forward_answer" | "scheduled_send_failed" | "test";
+            event: "new_live_conversation" | "new_async_conversation" | "message_in_my_conversation" | "message_in_unassigned_conversation" | "assigned_to_me" | "mentioned" | "sla_warning" | "sla_breached" | "forward_answer" | "scheduled_send_failed" | "mail_forwarded" | "test";
             /**
              * @description The inbox name and the contact's name.
              * @example Support · Ayşe Yılmaz
@@ -13686,10 +13831,12 @@ export interface components {
             purpose: components["schemas"]["InboxPurpose"];
             /**
              * Format: uuid
-             * @description The member whose personal mailbox this is; `null` for a shared inbox. Only that member
-             *     reads its conversations, messages, attachments, drafts and events: owners, admins,
-             *     API keys, webhooks, automation rules and other members' OAuth tokens get `404` or
-             *     nothing, as for an inbox they cannot see. Set on creation only.
+             * @description The member whose personal mailbox this is; `null` for a shared inbox and for an orphaned
+             *     mailbox (`mailbox.orphaned`). Only that member
+             *     and the delegates they name (`PUT /v1/inboxes/{id}/delegates/{memberId}`) read its
+             *     conversations, messages, attachments and events, and only its owner its own drafts:
+             *     owners, admins, API keys, webhooks, automation rules and other members' OAuth tokens
+             *     get `404` or nothing, as for an inbox they cannot see. Set on creation only.
              */
             owner_member_id: string | null;
             mailbox?: components["schemas"]["InboxMailbox"];
@@ -13729,10 +13876,70 @@ export interface components {
             updated_at: string;
         };
         /**
+         * @description What the caller may do in a personal mailbox: `owner` (everything, managing it included),
+         *     `send` (a delegate who reads and writes) or `read` (a delegate who reads).
+         * @enum {string}
+         */
+        MailboxAccess: "owner" | "send" | "read";
+        /** @enum {string} */
+        MailboxDelegateAccess: "read" | "send";
+        MailboxDelegateInput: {
+            access: components["schemas"]["MailboxDelegateAccess"];
+        };
+        MailboxDelegate: {
+            /** Format: uuid */
+            member_id: string;
+            name: string;
+            /** Format: email */
+            email: string;
+            access: components["schemas"]["MailboxDelegateAccess"];
+            /**
+             * Format: date-time
+             * @description When the member became a delegate.
+             */
+            created_at: string;
+        };
+        MailboxDelegateList: {
+            items: components["schemas"]["MailboxDelegate"][];
+        };
+        /** @description What happens to the personal mailboxes of a member who is removed. */
+        MemberRemoval: {
+            mailboxes?: components["schemas"]["MailboxOnLeave"][];
+        };
+        MailboxOnLeave: {
+            /**
+             * Format: uuid
+             * @description One of the leaving member's personal mailboxes.
+             */
+            inbox_id: string;
+            /** @enum {string} */
+            action: "delete" | "hand_over";
+            /**
+             * Format: uuid
+             * @description The new owner, another member of the workspace; with `hand_over` only.
+             */
+            to_member_id?: string;
+        };
+        MailboxHandOver: {
+            /**
+             * Format: uuid
+             * @description The member who becomes the mailbox's owner.
+             */
+            to_member_id: string;
+        };
+        /**
          * @description A personal mailbox's size and addresses, the part of it owners and admins see. Present on
          *     personal mailboxes only.
          */
         InboxMailbox: {
+            /** @description The caller's own access; absent when the caller sees only this metadata. */
+            access?: components["schemas"]["MailboxAccess"];
+            /**
+             * @description Its owner deleted their account: `owner_member_id` is `null`, nobody reads it, and an
+             *     owner or admin hands it over (`POST /v1/inboxes/{id}/hand-over`) or deletes it. It never
+             *     becomes a shared inbox.
+             */
+            orphaned: boolean;
             /** @description The addresses of its e-mail channels. */
             addresses: string[];
             /**
@@ -16005,6 +16212,13 @@ export interface components {
             rule?: components["schemas"]["AutomationRuleRef"];
             /** @description What an outgoing `forward` sent and to whom; absent for everything else. */
             forward?: components["schemas"]["MessageForward"];
+            /**
+             * Format: uuid
+             * @description The owner of the personal mailbox a delegate wrote this outgoing message for; `author`
+             *     is the delegate. The e-mail's `From:` is what the owner's own mail uses and its
+             *     `Sender:` names the delegate with the mailbox's channel address. Absent otherwise.
+             */
+            on_behalf_of_member_id?: string;
             /**
              * @description The author's signature the e-mail carries below the reply, as sanitized HTML, fixed when
              *     the message (or its draft) was written; absent when it carries none. `body` and `html`
@@ -18352,10 +18566,13 @@ export interface components {
          *     `message_received`: the contact wrote (not imported messages or drafts). `status_changed`:
          *     the status changed, also when a contact's message or the snooze time reopened it.
          *     `idle`: nothing was written in an open or pending conversation for `idle_minutes`
-         *     (checked every 5 minutes; once per quiet period).
+         *     (checked every 5 minutes; once per quiet period). `mail_received`: an e-mail arrived in a
+         *     `mail` inbox, the first of a conversation or a later one (not drafts, sent mail, imported
+         *     mail or delivery reports from a mail server); only for rules with the `inbox_id` of a
+         *     `mail` inbox, and the only trigger of a personal mailbox's filters.
          * @enum {string}
          */
-        AutomationTrigger: "conversation_created" | "message_received" | "status_changed" | "idle";
+        AutomationTrigger: "conversation_created" | "message_received" | "status_changed" | "idle" | "mail_received";
         /**
          * @description What a condition tests, and the operators it takes:
          *     - `channel_kind` (`in`, `not_in`; `ChannelKind` values), `kind` (`ConversationKind`),
@@ -18371,9 +18588,15 @@ export interface components {
          *       with team ids, `is_set`, `is_not_set`), `assignee` (`is_set`, `is_not_set`).
          *     - `business_hours` (`equals` `inside` or `outside`): the inbox's business hours now; an
          *       inbox without hours is always inside.
+         *     - `mail_received` only, on the e-mail that arrived: `from` (its sender address), `to`,
+         *       `cc` (one of its addresses), `list_id` (its `List-Id`, lower-cased and without angle
+         *       brackets) with `contains` and `not_contains`, case-insensitive, a value of 3 to 200
+         *       characters (no spaces or commas for addresses); `has_attachment` (`equals` `true` or
+         *       `false`): it carries a file that is not shown inline. Other triggers refuse them (`400
+         *       validation_failed`).
          * @enum {string}
          */
-        AutomationConditionField: "channel_kind" | "kind" | "feedback_category" | "priority" | "status" | "subject" | "body" | "contact_attribute" | "custom_field" | "label" | "team" | "assignee" | "business_hours";
+        AutomationConditionField: "channel_kind" | "kind" | "feedback_category" | "priority" | "status" | "subject" | "body" | "contact_attribute" | "custom_field" | "label" | "team" | "assignee" | "business_hours" | "from" | "to" | "cc" | "has_attachment" | "list_id";
         /** @enum {string} */
         AutomationConditionOperator: "in" | "not_in" | "equals" | "not_equals" | "contains" | "not_contains" | "is_set" | "is_not_set";
         /**
@@ -18402,20 +18625,30 @@ export interface components {
          *       automatic reply (`Auto-Submitted: auto-replied` by e-mail); see `AutomationRuleAuthor`
          *       for `bots_may_send`.
          *     - `send_webhook` (`webhook_id`): `automation.triggered` to that endpoint.
+         *     - `mail_received` only: `star` (`member_ids`, members who read the inbox; on a personal
+         *       mailbox it may be left out and then means its owner), `archive` (status `closed`, the
+         *       Archive folder), `trash` (as `POST /v1/conversations/{id}/trash`), `forward_to_member`
+         *       (`member_id`, a member who reads the inbox: the `mail_forwarded` notification). A
+         *       shared mail inbox's filter takes every action; a personal mailbox's filter takes only
+         *       these and `add_labels`, `remove_labels`, `assign_member`, `unassign`, `set_priority`,
+         *       `set_status` and `snooze`. A member a filter stars for, assigns or forwards to who no
+         *       longer reads the inbox when it runs fails the run with `no_access`.
          * @enum {string}
          */
-        AutomationActionType: "add_labels" | "remove_labels" | "assign_member" | "assign_team" | "assign_pool" | "unassign" | "set_priority" | "set_status" | "snooze" | "add_note" | "send_reply" | "send_webhook";
+        AutomationActionType: "add_labels" | "remove_labels" | "assign_member" | "assign_team" | "assign_pool" | "unassign" | "set_priority" | "set_status" | "snooze" | "add_note" | "send_reply" | "send_webhook" | "star" | "archive" | "trash" | "forward_to_member";
         /**
          * @description Each type at most once per rule, and only the fields its type uses (`400
          *     validation_failed` otherwise); `set_status` and `snooze` exclude each other, as do
-         *     `assign_member`, `assign_pool` and `unassign`, and `add_labels` and `remove_labels` share
-         *     no label.
+         *     `assign_member`, `assign_pool` and `unassign`, `archive` excludes `set_status` and
+         *     `snooze`, `forward_to_member` excludes `trash`, and `add_labels` and `remove_labels`
+         *     share no label.
          */
         AutomationAction: {
             type: components["schemas"]["AutomationActionType"];
             label_ids?: string[];
             /** Format: uuid */
             member_id?: string;
+            member_ids?: string[];
             /** Format: uuid */
             team_id?: string;
             priority?: components["schemas"]["Priority"];
@@ -18456,7 +18689,8 @@ export interface components {
             enabled: boolean;
             /**
              * Format: int32
-             * @description Its place in the workspace's one list, from 0.
+             * @description Its place in the workspace's one list, from 0; a personal mailbox's filter, its place
+             *     among that mailbox's filters.
              */
             position: number;
             /**
@@ -18508,6 +18742,15 @@ export interface components {
             conditions?: components["schemas"]["AutomationCondition"][];
             actions?: components["schemas"]["AutomationAction"][];
         };
+        /** @description A draft rule body; add actions and send it to `POST /v1/automation-rules`. */
+        MailFilterSuggestion: {
+            name: string;
+            /** Format: uuid */
+            inbox_id: string;
+            trigger: components["schemas"]["AutomationTrigger"];
+            conditions: components["schemas"]["AutomationCondition"][];
+            actions: components["schemas"]["AutomationAction"][];
+        };
         AutomationRuleList: {
             items: components["schemas"]["AutomationRule"][];
         };
@@ -18549,7 +18792,8 @@ export interface components {
              *     contact, spam, a rule reply in the last hour or three in the last day),
              *     `bot_sending_disabled` (see
              *     `AutomationRuleAuthor`), `label_gone`,
-             *     `canned_reply_gone`, `webhook_unavailable`.
+             *     `canned_reply_gone`, `webhook_unavailable`, `no_access` (a member a filter stars for,
+             *     assigns or notifies no longer reads the inbox).
              */
             error?: string;
             /** @description `failed` only: a sentence for people. */
@@ -18690,7 +18934,8 @@ export interface components {
         };
         /**
          * @description A member's effective access to an inbox flipped: through their own grant, a team they joined
-         *     or left, or a team that was granted the inbox, lost it or was deleted. Reload the inboxes,
+         *     or left, a team that was granted the inbox, lost it or was deleted, or becoming or ceasing
+         *     to be a delegate of a personal mailbox. Reload the inboxes,
          *     conversations and teams when it is about you.
          */
         InboxAccessChangedEvent: {
@@ -28788,7 +29033,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["MemberRemoval"];
+            };
+        };
         responses: {
             /** @description Removed. */
             204: {
@@ -28797,6 +29046,7 @@ export interface operations {
                 };
                 content?: never;
             };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
@@ -29355,6 +29605,133 @@ export interface operations {
             404: components["responses"]["Problem"];
         };
     };
+    handOverMailbox: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MailboxHandOver"];
+            };
+        };
+        responses: {
+            /** @description The mailbox with its new owner, as its metadata. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Inbox"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    listMailboxDelegates: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The delegates. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MailboxDelegateList"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
+    setMailboxDelegate: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+                memberId: components["parameters"]["MemberId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MailboxDelegateInput"];
+            };
+        };
+        responses: {
+            /** @description The delegate. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MailboxDelegate"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            422: components["responses"]["Problem"];
+        };
+    };
+    removeMailboxDelegate: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                inboxId: components["parameters"]["InboxId"];
+                memberId: components["parameters"]["MemberId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The member is no longer a delegate. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+        };
+    };
     listTeams: {
         parameters: {
             query?: never;
@@ -29788,7 +30165,10 @@ export interface operations {
     };
     listAutomationRules: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Only this inbox's rules; a personal mailbox's filters need it. */
+                inbox_id?: string;
+            };
             header?: {
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
@@ -29807,8 +30187,10 @@ export interface operations {
                     "application/json": components["schemas"]["AutomationRuleList"];
                 };
             };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     createAutomationRule: {
@@ -32398,6 +32780,34 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MessageEmailDetail"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getMessageFilterSuggestion: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                messageId: components["parameters"]["MessageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The draft filter. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MailFilterSuggestion"];
                 };
             };
             401: components["responses"]["Problem"];

@@ -1304,6 +1304,10 @@ msgstr "Luonnos kirjoitettiin"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Tiedoston sisältö ei vastaa sen tyyppiä. Tarkista tiedosto ja yritä uudelleen."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Suodatin tarkastaa jokaisen tänne saapuvan viestin ja tähdittää, arkistoi, siirtää roskakoriin, merkitsee tunnisteilla tai antaa sen jäsenelle. Suodattimet toimivat tämän luettelon järjestyksessä."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "Lista koostuu ihmisistä, jotka ovat suostuneet kuulemaan sinusta. Jokai
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro on vastaus ja toimintoja: tunnisteet, vastuuhenkilö, tila, prioriteetti tai torkku. Kirjoita vastauskenttään / ja pikakomento; toiminnot suoritetaan, kun vastaus lähetetään."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Sähköposti saapuu"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Sähköpostisuodatin ilmoittaa minulle"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Hyväksytty"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Arkistoi"
 
@@ -3077,6 +3090,10 @@ msgstr "Avustajat, {drafts} luonnosta odottaa"
 msgid "Async"
 msgstr "Asynkroninen"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Vähintään 3 merkkiä"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Enintään {max} osoitetta"
@@ -3246,6 +3263,10 @@ msgstr "Takaisin asetuksiin"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Takaisin listaan"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Takaisin viestiin"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Ehto"
 msgid "Conditions"
 msgstr "Ehdot"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Ehdot: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Luo luonnos"
 msgid "Create field"
 msgstr "Luo kenttä"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Luo suodatin"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Heikentynyt suorituskyky"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Poista merkintä"
 msgid "Delete the field {name}?"
 msgstr "Poistetaanko kenttä {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "Poistetaanko suodatin {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "Poistetaanko tunniste {name}?"
@@ -5453,7 +5482,7 @@ msgstr "Poista Yuvaa varten luomasi OAuth-asiakas"
 msgid "Delete the policy {name}?"
 msgstr "Poistetaanko käytäntö {name}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "Poistetaanko sääntö {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "Jokainen kaikkine viesteineen ja muistiinpanoineen"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Muokkaa tietoja ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Muokkaa kenttää"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Muokkaa suodatinta"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Tyhjä ensimmäisillä riveillä"
 msgid "Enabled"
 msgstr "Käytössä"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Käytössä: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Jokainen signaali, myöhästynyt signaali ja lähetetty tila viimeisten 
 msgid "Every check of the last 30 days, newest first."
 msgstr "Jokainen tarkistus viimeisen 30 päivän ajalta, uusin ensin."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "jokainen keskustelu"
 
@@ -6550,6 +6583,10 @@ msgstr "Työtilan jokainen postilaatikko, myös myöhemmin lisättävät."
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Kaikki kielet. Lisää kieli säilyttääksesi vain sitä käyttävät kontaktit; tr säilyttää myös tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "jokainen sähköposti"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Suodata tiimin mukaan"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Suodata tyypin, sivuston, lähetyksen ja SLA:n mukaan"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Suodata viestit kuten viimeisin viesti"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Suodata viestit kuten tämä"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Suodattimet"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Luovutettu henkilölle {name}"
 msgid "has an attachment"
 msgstr "sisältää liitteen"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Sisältää liitteen"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "On avoin keskustelu"
@@ -7889,7 +7943,7 @@ msgstr "Tunnistettu"
 msgid "Identity secret"
 msgstr "Identiteettisalaisuus"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Epäaktiivinen {idle} min"
 
@@ -8532,7 +8586,7 @@ msgstr "Sen suostumustieto poistetaan sen mukana. Koska he perivät tilauksen, o
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Sen historia poistetaan. Häiriöt, jotka mainitsivat sen, eivät enää mainitse."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Sen loki poistuu sen mukana. Mitä se on jo muuttanut, säilyy. Tätä ei voi perua."
 
@@ -9260,7 +9314,7 @@ msgstr "Lukittu"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Lukittu: lukijat eivät voi enää kirjoittaa tänne. Sinä voit yhä."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Loki"
 
@@ -9346,6 +9400,7 @@ msgstr "Teki kertakirjautumisesta pakollisen"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Postilaatikot"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir zipissä"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Postituslista (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Eniten ääniä"
 msgid "Move {0} to the Trash?"
 msgstr "Siirretäänkö {0} roskakoriin?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Siirrä {name}. Vedä tai paina Alt-näppäintä nuolinäppäimillä."
@@ -10041,7 +10100,7 @@ msgstr "Siirrä {name}. Vedä tai paina Alt-näppäintä nuolinäppäimillä."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Siirrä keskusteluja roskakoriin, palauta ne ja lue roskakoria"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Siirrä edelliseen tai seuraavaan vaiheeseen"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Siirrä roskakoriin"
 
@@ -10163,7 +10223,7 @@ msgstr "Siirrä roskakoriin (#)"
 msgid "Move to Yuva"
 msgstr "Siirry Yuvaan"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Siirretty Saapuneisiin"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Siirretty roskakoriin"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Siirtää viestin arkistoon."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Siirtää viestin roskakoriin. Suoritetaan muiden toimintojen jälkeen."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Uusi merkintä"
 msgid "New field"
 msgstr "Uusi kenttä"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Uusi suodatin"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Uusi idea"
@@ -10569,8 +10642,8 @@ msgstr "Uusi käytäntö"
 msgid "New reply in <0>{title}</0>"
 msgstr "Uusi vastaus keskustelussa <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Uusi sääntö"
 
@@ -10695,6 +10768,7 @@ msgstr "Yöllinen varmuuskopio"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Ei"
@@ -10985,6 +11059,10 @@ msgstr "Ei vielä kenttiä."
 msgid "No file is accepted."
 msgstr "Tiedostoja ei hyväksytä."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Ei vielä suodattimia."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "Tällä aikavälillä ei ole vielä vasteaikoja."
 msgid "No results"
 msgstr "Ei tuloksia"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Ei vielä sääntöjä."
 
@@ -11797,6 +11875,10 @@ msgstr "Ilmoitukset on estetty tälle sivustolle. Salli ne selaimesi sivustoaset
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Ilmoituksia ei sallittu."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Ilmoita jäsenelle"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Viimeaikaiset käynnit"
 msgid "Recently active"
 msgstr "Äskettäin aktiiviset"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Vastaanottaja (Kopio)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Vastaanottaja (Vastaanottaja)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "vastaanottajan osoite"
@@ -15695,6 +15785,7 @@ msgstr "Lähetä webhook-päätepisteeseen"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Lähettäjä"
@@ -16873,6 +16964,7 @@ msgstr "Vaihe"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Lisää tähti"
 
@@ -16884,6 +16976,10 @@ msgstr "Lisää tähti (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Tähditä viesti pitääksesi sen täällä."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Tähti käyttäjälle"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Tähditetyt"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "tähdellä merkitsemäsi"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Tähdittää viestin sinulle."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Tällä ominaisuudella on jo tavoite tällä nimellä."
 msgid "This property already has a segment with this name."
 msgstr "Tällä ominaisuudella on jo segmentti tällä nimellä."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Tätä vastausta ei lähetetä, ennen kuin omistaja tai ylläpitäjä tallentaa sekä tämän säännön että valmiin vastauksen {title} tai botit saavat lähettää API-avainten asetuksissa."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Tätä vastausta ei lähetetä, ennen kuin omistaja tai ylläpitäjä tallentaa valmiin vastauksen {title} tai botit saavat lähettää API-avainten asetuksissa."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Tätä vastausta ei lähetetä, ennen kuin omistaja tai ylläpitäjä tallentaa tämän säännön tai botit saavat lähettää API-avainten asetuksissa."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Kun {first} kirjoittaa uudelleen"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Kun sähköpostilaatikon suodatin nimeää sinut saapuneelle viestille."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Kun ajastettu viesti jää luonnokseksi, koska se hylättiin."
 
@@ -20920,6 +21024,7 @@ msgstr "Kirjoita viestisi…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Kyllä"

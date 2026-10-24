@@ -9,7 +9,13 @@ import type {
   AutomationTrigger,
 } from "@/lib/api"
 
-export const TRIGGERS: AutomationTrigger[] = ["conversation_created", "message_received", "status_changed", "idle"]
+export const TRIGGERS: AutomationTrigger[] = [
+  "conversation_created",
+  "message_received",
+  "status_changed",
+  "idle",
+  "mail_received",
+]
 export const OUTCOMES: AutomationRunOutcome[] = ["applied", "failed", "not_matched"]
 
 export const CONDITION_FIELDS: AutomationConditionField[] = [
@@ -26,7 +32,27 @@ export const CONDITION_FIELDS: AutomationConditionField[] = [
   "assignee",
   "business_hours",
   "custom_field",
+  "from",
+  "to",
+  "cc",
+  "list_id",
+  "has_attachment",
 ]
+
+export const MAIL_FIELDS: AutomationConditionField[] = ["from", "to", "cc", "list_id", "has_attachment"]
+export const MAIL_ACTIONS: AutomationActionType[] = ["star", "archive", "trash", "forward_to_member"]
+export const PERSONAL_ACTIONS: AutomationActionType[] = [
+  "add_labels",
+  "remove_labels",
+  "assign_member",
+  "unassign",
+  "set_priority",
+  "set_status",
+  "snooze",
+  ...MAIL_ACTIONS,
+]
+export const MIN_MAIL_TEXT = 3
+export const MAX_MAIL_TEXT = 200
 
 export const ACTION_TYPES: AutomationActionType[] = [
   "add_labels",
@@ -41,6 +67,10 @@ export const ACTION_TYPES: AutomationActionType[] = [
   "add_note",
   "send_reply",
   "send_webhook",
+  "star",
+  "archive",
+  "trash",
+  "forward_to_member",
 ]
 
 export const MAX_ACTIONS = 10
@@ -75,11 +105,19 @@ export const OPERATORS: Record<AutomationConditionField, AutomationConditionOper
   custom_field: FIELD,
   assignee: SET,
   business_hours: ["equals"],
+  from: TEXT,
+  to: TEXT,
+  cc: TEXT,
+  list_id: TEXT,
+  has_attachment: ["equals"],
 }
 
 export const EXCLUSIVE: AutomationActionType[][] = [
   ["set_status", "snooze"],
   ["assign_member", "assign_pool", "unassign"],
+  ["archive", "set_status"],
+  ["archive", "snooze"],
+  ["trash", "forward_to_member"],
 ]
 
 export function operatorShape(op: AutomationConditionOperator): "values" | "value" | "none" {
@@ -95,6 +133,7 @@ export function useAutomationText() {
     message_received: t`The contact writes a message`,
     status_changed: t`The status changes`,
     idle: t`A conversation is idle`,
+    mail_received: t`A mail arrives`,
   }
   const field: Record<AutomationConditionField, string> = {
     channel_kind: t`Channel`,
@@ -110,6 +149,11 @@ export function useAutomationText() {
     team: t`Team`,
     assignee: t`Assignee`,
     business_hours: t`Business hours`,
+    from: t`Sender`,
+    to: t`Recipient (To)`,
+    cc: t`Recipient (Cc)`,
+    list_id: t`Mailing list (List-Id)`,
+    has_attachment: t`Has an attachment`,
   }
   const operator: Record<AutomationConditionOperator, string> = {
     in: t`is any of`,
@@ -134,6 +178,10 @@ export function useAutomationText() {
     add_note: t`Add an internal note`,
     send_reply: t`Reply with a canned reply`,
     send_webhook: t`Send to a webhook endpoint`,
+    star: t`Star`,
+    archive: t`Archive`,
+    trash: t`Move to the Trash`,
+    forward_to_member: t`Notify a member`,
   }
   const outcome: Record<AutomationRunOutcome, string> = {
     applied: t`Applied`,
@@ -147,6 +195,7 @@ export function useAutomationText() {
     not_run: t`not run`,
   }
   const kind = { conversation: t`Conversation`, feedback: t`Feedback` }
+  const attachment = { true: t`Yes`, false: t`No` }
   const inside = { inside: t`Inside business hours`, outside: t`Outside business hours` }
   const reason: Record<string, string> = {
     auto_reply: t`Reply held back to protect the customer`,
@@ -160,5 +209,5 @@ export function useAutomationText() {
     canned_reply_gone: t`The canned reply was deleted`,
     webhook_unavailable: t`The webhook endpoint is off or not available here`,
   }
-  return { trigger, field, operator, action, outcome, result, kind, inside, reason }
+  return { trigger, field, operator, action, outcome, result, kind, inside, attachment, reason }
 }

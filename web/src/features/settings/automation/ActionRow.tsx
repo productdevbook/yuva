@@ -12,17 +12,21 @@ import { useAutomationText } from "@/features/settings/automation/text"
 import { useWebhooks } from "@/features/settings/webhooks/queries"
 import { ChoiceSelect } from "@/features/settings/ui"
 import type { ConversationStatus, Priority } from "@/lib/api"
-import { useCannedReplies, useLabels, useMembers, useTeams } from "@/lib/workspace"
+import { useCannedReplies, useInboxMembers, useLabels, useMembers, useTeams } from "@/lib/workspace"
 
 const PRIORITIES: Priority[] = ["urgent", "high", "normal", "low"]
 const STATUSES: ConversationStatus[] = ["open", "pending", "closed"]
 
 export function ActionRow({
   a,
+  inboxId,
+  personal,
   onChange,
   onRemove,
 }: {
   a: ActionDraft
+  inboxId: string
+  personal: boolean
   onChange: (next: ActionDraft) => void
   onRemove: () => void
 }) {
@@ -30,7 +34,9 @@ export function ActionRow({
   const text = useAutomationText()
   const enums = useEnumText()
   const labels = useLabels().data ?? []
-  const members = useMembers().data ?? []
+  const all = useMembers().data ?? []
+  const readers = useInboxMembers(inboxId || undefined).data
+  const members = inboxId && readers ? readers : all
   const teams = useTeams().data ?? []
   const replies = useCannedReplies().data ?? []
   const hooks = useWebhooks().data ?? []
@@ -120,6 +126,37 @@ export function ActionRow({
           aria-label={t`Note`}
           placeholder={t`Only the team sees this`}
           onChange={(e) => onChange({ ...a, body: e.target.value })}
+        />
+      )
+      break
+    case "star":
+      body = personal ? (
+        <p className="text-small text-faint">{t`Stars the mail for you.`}</p>
+      ) : members.length === 0 ? (
+        <p className="text-small text-faint">{t`Nothing to pick from yet.`}</p>
+      ) : (
+        <ChipMulti
+          value={a.member_ids ?? []}
+          onChange={(member_ids) => onChange({ ...a, member_ids })}
+          options={members.map((m) => [m.id, m.name || m.email] as const)}
+          label={t`Star for`}
+        />
+      )
+      break
+    case "archive":
+      body = <p className="text-small text-faint">{t`Moves the mail to the Archive.`}</p>
+      break
+    case "trash":
+      body = <p className="text-small text-faint">{t`Moves the mail to the Trash. Runs after the other actions.`}</p>
+      break
+    case "forward_to_member":
+      body = (
+        <ChoiceSelect
+          value={a.member_id ?? ""}
+          onChange={(member_id) => onChange({ ...a, member_id })}
+          options={members.map((m) => [m.id, m.name || m.email] as const)}
+          placeholder={t`Pick a member`}
+          label={t`Member`}
         />
       )
       break

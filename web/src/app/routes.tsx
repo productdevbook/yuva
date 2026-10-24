@@ -14,6 +14,7 @@ import { ContactsHome } from "@/features/contact/ContactsColumn"
 import { DocsPage } from "@/features/docs/DocsPage"
 import { HomePage } from "@/features/home/HomePage"
 import { ChatsPage } from "@/features/inbox/ChatsPage"
+import { MailFiltersPage } from "@/features/mail/MailFiltersPage"
 import { MailPage } from "@/features/mail/MailPage"
 import { MigrationsPage } from "@/features/migrations/MigrationsPage"
 import { MigrationPage, NewMigrationPage } from "@/features/migrations/Wizard"
@@ -167,6 +168,7 @@ export function AppRoutes() {
           <Route path="conversations/:conversationId" element={<ChatsPage />} />
           <Route path="mail" element={<MailPage />} />
           <Route path="mail/:box" element={<MailPage />} />
+          <Route path="mail/:box/filters" element={<MailFiltersPage />} />
           <Route path="mail/:box/:folder" element={<MailPage />} />
           <Route path="mail/:box/:folder/:conversationId" element={<MailPage />} />
           <Route path="mentions" element={<ChatsPage />} />

@@ -1304,6 +1304,10 @@ msgstr "초안이 작성되었을 때"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "파일 내용이 형식과 일치하지 않습니다. 파일을 확인하고 다시 시도하세요."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "필터는 여기로 도착하는 모든 메일을 살펴보고 별표를 달거나, 보관하거나, 휴지통으로 옮기거나, 라벨을 붙이거나, 멤버에게 넘깁니다. 필터는 이 목록의 순서대로 실행됩니다."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "목록은 당신의 소식을 받는 데 동의한 사람들입니다. �
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "매크로는 답변과 동작(라벨, 담당자, 상태, 우선순위, 일시 중지)의 묶음입니다. 답변 창에서 /와 단축 이름을 입력하면 답변을 보낼 때 동작이 적용됩니다."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "메일이 도착했을 때"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "메일 필터가 나에게 알림"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "승인됨"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "보관"
 
@@ -3077,6 +3090,10 @@ msgstr "어시스턴트, 초안 {drafts}개 대기 중"
 msgid "Async"
 msgstr "비동기"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "3자 이상"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "주소는 최대 {max}개입니다"
@@ -3246,6 +3263,10 @@ msgstr "설정으로 돌아가기"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "리스트로 돌아가기"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "메일로 돌아가기"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "조건"
 msgid "Conditions"
 msgstr "조건"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "조건: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "초안 만들기"
 msgid "Create field"
 msgstr "필드 만들기"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "필터 만들기"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "성능 저하"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "항목 삭제"
 msgid "Delete the field {name}?"
 msgstr "{name} 필드를 삭제할까요?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "{name} 필터를 삭제할까요?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "레이블 {name}을(를) 삭제할까요?"
@@ -5453,7 +5482,7 @@ msgstr "Yuva용으로 만든 OAuth 클라이언트 삭제"
 msgid "Delete the policy {name}?"
 msgstr "{name} 정책을 삭제할까요?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "규칙 {name}을(를) 삭제할까요?"
 
@@ -6222,7 +6251,7 @@ msgstr "각각 모든 메시지와 메모 포함"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "세부 정보 편집({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "필드 편집"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "필터 편집"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "첫 행이 비어 있음"
 msgid "Enabled"
 msgstr "사용"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "켜짐: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "최근 30일의 모든 비트, 누락된 비트, 보낸 상태를 최신
 msgid "Every check of the last 30 days, newest first."
 msgstr "최근 30일의 모든 확인, 최신순입니다."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "모든 대화"
 
@@ -6550,6 +6583,10 @@ msgstr "워크스페이스의 모든 받은 편지함(나중에 추가하는 것
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "모든 언어. 언어를 추가하면 그 언어를 쓰는 연락처만 남으며, tr은 tr-TR도 포함합니다."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "모든 메일"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "팀으로 필터"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "유형, 사이트, 발송, SLA로 필터링"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "최근 메일과 비슷한 메시지 필터링"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "이와 비슷한 메시지 필터링"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "필터"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "{name}님에게 넘겼습니다"
 msgid "has an attachment"
 msgstr "첨부 파일이 있음"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "첨부 파일 있음"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "열린 대화 있음"
@@ -7889,7 +7943,7 @@ msgstr "원인 파악됨"
 msgid "Identity secret"
 msgstr "ID 시크릿"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "{idle}분간 비활성"
 
@@ -8532,7 +8586,7 @@ msgstr "동의 기록도 함께 삭제됩니다. 구독을 취소했기 때문�
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "기록이 삭제됩니다. 이를 언급한 인시던트는 더 이상 언급하지 않습니다."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "로그도 함께 삭제됩니다. 이미 변경한 내용은 그대로 남습니다. 이 작업은 되돌릴 수 없습니다."
 
@@ -9260,7 +9314,7 @@ msgstr "잠김"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "잠김: 독자는 더 이상 여기에 글을 쓸 수 없습니다. 나는 쓸 수 있습니다."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "로그"
 
@@ -9346,6 +9400,7 @@ msgstr "싱글 사인온을 필수로 바꿨습니다"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "메일함"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "zip 안의 Maildir"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "메일링 리스트 (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "투표가 많은 순"
 msgid "Move {0} to the Trash?"
 msgstr "{0}개를 휴지통으로 이동할까요?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} 이동. 드래그하거나 Alt 키와 화살표 키를 누르세요."
@@ -10041,7 +10100,7 @@ msgstr "{name} 이동. 드래그하거나 Alt 키와 화살표 키를 누르세�
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "대화를 휴지통으로 이동하고, 복원하고, 휴지통 읽기"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "이전 또는 다음 단계로 이동"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "휴지통으로 이동"
 
@@ -10163,7 +10223,7 @@ msgstr "휴지통으로 이동 (#)"
 msgid "Move to Yuva"
 msgstr "Yuva로 옮기기"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "받은 편지함으로 옮겼습니다"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "휴지통으로 이동했습니다"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "메일을 보관함으로 옮깁니다."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "메일을 휴지통으로 옮깁니다. 다른 동작 뒤에 실행됩니다."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "새 항목"
 msgid "New field"
 msgstr "새 필드"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "새 필터"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "새 아이디어"
@@ -10569,8 +10642,8 @@ msgstr "새 정책"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0>에 새 답글"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "새 규칙"
 
@@ -10695,6 +10768,7 @@ msgstr "야간 백업"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "아니요"
@@ -10985,6 +11059,10 @@ msgstr "아직 필드가 없습니다."
 msgid "No file is accepted."
 msgstr "어떤 파일도 허용되지 않습니다."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "아직 필터가 없습니다."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "이 기간에는 아직 응답 시간이 없습니다."
 msgid "No results"
 msgstr "결과 없음"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "아직 규칙이 없습니다."
 
@@ -11797,6 +11875,10 @@ msgstr "이 사이트의 알림이 차단되어 있습니다. 브라우저의 �
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "알림이 허용되지 않았습니다."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "멤버에게 알림"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "최근 방문"
 msgid "Recently active"
 msgstr "최근 활동"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "수신자 (참조)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "수신자 (받는 사람)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "받는 사람 주소"
@@ -15695,6 +15785,7 @@ msgstr "웹훅 엔드포인트로 보내기"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "발신자"
@@ -16873,6 +16964,7 @@ msgstr "단계"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "별표"
 
@@ -16884,6 +16976,10 @@ msgstr "별표 (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "메일에 별표를 하면 여기에 남습니다."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "별표 대상"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "별표편지함"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "내가 별표를 단"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "나를 위해 메일에 별표를 답니다."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "이 속성에는 같은 이름의 목표가 이미 있습니다."
 msgid "This property already has a segment with this name."
 msgstr "이 속성에는 같은 이름의 세그먼트가 이미 있습니다."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "소유자나 관리자가 이 규칙과 저장된 답장 {title}을(를) 모두 저장하거나 API 키 설정에서 봇의 발송이 허용될 때까지 이 답장은 전송되지 않습니다."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "소유자나 관리자가 저장된 답장 {title}을(를) 저장하거나 API 키 설정에서 봇의 발송이 허용될 때까지 이 답장은 전송되지 않습니다."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "소유자나 관리자가 이 규칙을 저장하거나 API 키 설정에서 봇의 발송이 허용될 때까지 이 답장은 전송되지 않습니다."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "{first}님이 다시 글을 쓰면"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "메일 받은편지함의 필터가 도착한 메일에 대해 나를 지정할 때."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "예약한 메시지가 거부되어 임시 보관 상태로 남을 때."
 
@@ -20920,6 +21024,7 @@ msgstr "메일을 작성하세요…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "예"

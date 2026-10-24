@@ -1304,6 +1304,10 @@ msgstr "ฉบับร่างถูกเขียนขึ้น"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "เนื้อหาของไฟล์ไม่ตรงกับประเภทของไฟล์ ตรวจสอบไฟล์แล้วลองอีกครั้ง"
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "ตัวกรองจะตรวจอีเมลทุกฉบับที่เข้ามาที่นี่ แล้วติดดาว เก็บถาวร ย้ายไปถังขยะ ติดป้ายกำกับ หรือส่งต่อให้สมาชิก ตัวกรองทำงานตามลำดับของรายการนี้"
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "รายชื่อคือผู้ที่ยินยอมรั
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "มาโครคือคำตอบพร้อมการดำเนินการ ได้แก่ ป้ายกำกับ ผู้รับผิดชอบ สถานะ ลำดับความสำคัญ หรือเลื่อนเตือน พิมพ์ / และชื่อย่อในช่องตอบ การดำเนินการจะทำเมื่อส่งคำตอบ"
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "เมื่อมีอีเมลเข้ามา"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "ตัวกรองอีเมลแจ้งเตือนฉัน"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "อนุมัติแล้ว"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "เก็บถาวร"
 
@@ -3077,6 +3090,10 @@ msgstr "ผู้ช่วย ฉบับร่างรออยู่ {drafts
 msgid "Async"
 msgstr "อะซิงก์"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "อย่างน้อย 3 ตัวอักษร"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "ได้สูงสุด {max} ที่อยู่"
@@ -3246,6 +3263,10 @@ msgstr "กลับไปที่การตั้งค่า"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "กลับไปที่รายการ"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "กลับไปที่อีเมล"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "เงื่อนไข"
 msgid "Conditions"
 msgstr "เงื่อนไข"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "เงื่อนไข: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "สร้างฉบับร่าง"
 msgid "Create field"
 msgstr "สร้างฟิลด์"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "สร้างตัวกรอง"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "ประสิทธิภาพลดลง"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "ลบรายการ"
 msgid "Delete the field {name}?"
 msgstr "ลบฟิลด์ {name} หรือไม่"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "ลบตัวกรอง {name} ไหม"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "ลบป้ายกำกับ {name} ไหม"
@@ -5453,7 +5482,7 @@ msgstr "ลบไคลเอนต์ OAuth ที่คุณสร้าง�
 msgid "Delete the policy {name}?"
 msgstr "ลบนโยบาย {name} ไหม"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "ลบกฎ {name} หรือไม่"
 
@@ -6222,7 +6251,7 @@ msgstr "แต่ละรายการพร้อมข้อความแ
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "แก้ไขรายละเอียด ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "แก้ไขฟิลด์"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "แก้ไขตัวกรอง"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "ว่างในไม่กี่แถวแรก"
 msgid "Enabled"
 msgstr "เปิดใช้งาน"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "เปิด: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "ทุกสัญญาณ สัญญาณที่พลาด แ�
 msgid "Every check of the last 30 days, newest first."
 msgstr "ทุกการตรวจสอบใน 30 วันที่ผ่านมา เรียงใหม่สุดก่อน"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "ทุกการสนทนา"
 
@@ -6550,6 +6583,10 @@ msgstr "ทุกกล่องข้อความของพื้นที
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "ทุกภาษา เพิ่มภาษาเพื่อเก็บเฉพาะผู้ติดต่อที่ใช้ภาษานั้น tr เก็บ tr-TR ด้วย"
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "ทุกอีเมล"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "กรองตามทีม"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "กรองตามประเภท ไซต์ การส่ง และ SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "กรองข้อความที่คล้ายอีเมลล่าสุด"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "กรองข้อความที่คล้ายนี้"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "ตัวกรอง"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "ส่งต่อให้ {name} แล้ว"
 msgid "has an attachment"
 msgstr "มีไฟล์แนบ"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "มีไฟล์แนบ"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "มีการสนทนาที่เปิดอยู่"
@@ -7889,7 +7943,7 @@ msgstr "ระบุสาเหตุแล้ว"
 msgid "Identity secret"
 msgstr "Identity secret"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "ไม่มีความเคลื่อนไหว {idle} นาที"
 
@@ -8532,7 +8586,7 @@ msgstr "บันทึกความยินยอมจะถูกลบไ
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "ประวัติจะถูกลบ เหตุการณ์ที่เคยกล่าวถึงจะไม่กล่าวถึงอีก"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "บันทึกของกฎจะถูกลบไปด้วย สิ่งที่กฎเปลี่ยนไปแล้วจะยังอยู่ การดำเนินการนี้ย้อนกลับไม่ได้"
 
@@ -9260,7 +9314,7 @@ msgstr "ล็อกแล้ว"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "ล็อกแล้ว ผู้อ่านเขียนที่นี่ไม่ได้อีก แต่คุณยังเขียนได้"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "บันทึก"
 
@@ -9346,6 +9400,7 @@ msgstr "ตั้งการลงชื่อเข้าใช้ครั้
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "กล่องจดหมาย"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir ในไฟล์ zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "เมลลิงลิสต์ (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "โหวตมากที่สุด"
 msgid "Move {0} to the Trash?"
 msgstr "ย้าย {0} รายการไปที่ถังขยะไหม"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "ย้าย {name} ลากหรือกด Alt พร้อมปุ่มลูกศร"
@@ -10041,7 +10100,7 @@ msgstr "ย้าย {name} ลากหรือกด Alt พร้อมป�
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "ย้ายการสนทนาไปที่ถังขยะ กู้คืน และอ่านถังขยะ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "ย้ายไปยังขั้นก่อนหน้าหรื
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "ย้ายไปที่ถังขยะ"
 
@@ -10163,7 +10223,7 @@ msgstr "ย้ายไปที่ถังขยะ (#)"
 msgid "Move to Yuva"
 msgstr "ย้ายมา Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "ย้ายกลับไปที่กล่องจดหมาย
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "ย้ายไปที่ถังขยะแล้ว"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "ย้ายอีเมลไปที่ที่เก็บถาวร"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "ย้ายอีเมลไปที่ถังขยะ ทำงานหลังการดำเนินการอื่น"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "รายการใหม่"
 msgid "New field"
 msgstr "ฟิลด์ใหม่"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "ตัวกรองใหม่"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "ไอเดียใหม่"
@@ -10569,8 +10642,8 @@ msgstr "นโยบายใหม่"
 msgid "New reply in <0>{title}</0>"
 msgstr "การตอบกลับใหม่ใน <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "กฎใหม่"
 
@@ -10695,6 +10768,7 @@ msgstr "การสำรองข้อมูลกลางคืน"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "ไม่"
@@ -10985,6 +11059,10 @@ msgstr "ยังไม่มีฟิลด์"
 msgid "No file is accepted."
 msgstr "ไม่รับไฟล์ใดเลย"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "ยังไม่มีตัวกรอง"
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "ยังไม่มีเวลาตอบสนองในช่ว
 msgid "No results"
 msgstr "ไม่มีผลลัพธ์"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "ยังไม่มีกฎ"
 
@@ -11797,6 +11875,10 @@ msgstr "การแจ้งเตือนถูกบล็อกสำหร
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "ไม่ได้อนุญาตการแจ้งเตือน"
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "แจ้งสมาชิก"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "การเข้าชมล่าสุด"
 msgid "Recently active"
 msgstr "ใช้งานล่าสุด"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "ผู้รับ (สำเนา)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "ผู้รับ (ถึง)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "ที่อยู่ผู้รับ"
@@ -15695,6 +15785,7 @@ msgstr "ส่งไปยังปลายทางเว็บฮุก"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "ผู้ส่ง"
@@ -16873,6 +16964,7 @@ msgstr "ขั้น"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "ติดดาว"
 
@@ -16884,6 +16976,10 @@ msgstr "ติดดาว (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "ติดดาวอีเมลเพื่อเก็บไว้ที่นี่"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "ติดดาวให้"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "ติดดาว"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "ที่คุณติดดาว"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "ติดดาวอีเมลให้คุณ"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "พร็อพเพอร์ตีนี้มีเป้าหมา
 msgid "This property already has a segment with this name."
 msgstr "พร็อพเพอร์ตีนี้มีเซกเมนต์ที่ใช้ชื่อนี้อยู่แล้ว"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "การตอบกลับนี้จะไม่ถูกส่งจนกว่าเจ้าของหรือผู้ดูแลจะบันทึกทั้งกฎนี้และคำตอบสำเร็จรูป {title} หรือบอทได้รับอนุญาตให้ส่งในการตั้งค่าคีย์ API"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "การตอบกลับนี้จะไม่ถูกส่งจนกว่าเจ้าของหรือผู้ดูแลจะบันทึกคำตอบสำเร็จรูป {title} หรือบอทได้รับอนุญาตให้ส่งในการตั้งค่าคีย์ API"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "การตอบกลับนี้จะไม่ถูกส่งจนกว่าเจ้าของหรือผู้ดูแลจะบันทึกกฎนี้ หรือบอทได้รับอนุญาตให้ส่งในการตั้งค่าคีย์ API"
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "เมื่อ {first} เขียนอีกครั้ง"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "เมื่อตัวกรองของกล่องอีเมลระบุชื่อคุณสำหรับอีเมลที่เข้ามา"
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "เมื่อข้อความที่ตั้งเวลาไว้ค้างเป็นฉบับร่างเพราะถูกปฏิเสธ"
 
@@ -20920,6 +21024,7 @@ msgstr "เขียนเมลของคุณ…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "ใช่"

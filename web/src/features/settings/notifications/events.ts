@@ -16,6 +16,7 @@ export const EVENTS: EventName[] = [
   "sla_breached",
   "forward_answer",
   "scheduled_send_failed",
+  "mail_forwarded",
 ]
 
 export const DELAYS = [5, 15, 30, 60, 120, 240, 1440]
@@ -56,6 +57,10 @@ export function useEventText(): Record<EventName, { label: string; hint: string 
     scheduled_send_failed: {
       label: t`A scheduled mail could not be sent`,
       hint: t`When a message you scheduled stays a draft because it was refused.`,
+    },
+    mail_forwarded: {
+      label: t`A mail filter notifies me`,
+      hint: t`When a filter of a mail inbox names you for a mail that arrived.`,
     },
   }
 }

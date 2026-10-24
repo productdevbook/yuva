@@ -1304,6 +1304,10 @@ msgstr "Bir taslak yazıldı"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeniden deneyin."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Bir filtre buraya gelen her postaya bakar; yıldızlar, arşivler, çöpe taşır, etiketler ya da bir üyeye iletir. Filtreler bu listenin sırasıyla çalışır."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "Bir liste, sizden haber almayı kabul edenlerdir. Her abone, dışa akta
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro, bir yanıt ve eylemlerdir: etiketler, atanan kişi, durum, öncelik veya erteleme. Yazı alanında / ve kısayolunu yazın; yanıt gönderilirken eylemler uygulanır."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Bir posta geldiğinde"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Bir posta filtresi beni bilgilendiriyor"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Onaylandı"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Arşivle"
 
@@ -3077,6 +3090,10 @@ msgstr "Asistanlar, bekleyen {drafts} taslak"
 msgid "Async"
 msgstr "Eşzamansız"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "En az 3 karakter"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "En fazla {max} adres"
@@ -3246,6 +3263,10 @@ msgstr "Kuruluma dön"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Listeye dön"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Postaya dön"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Koşul"
 msgid "Conditions"
 msgstr "Koşullar"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Koşullar: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Taslak oluştur"
 msgid "Create field"
 msgstr "Alanı oluştur"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Filtre oluştur"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Düşük performans"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Kaydı sil"
 msgid "Delete the field {name}?"
 msgstr "{name} alanı silinsin mi?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "{name} filtresi silinsin mi?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "{name} etiketi silinsin mi?"
@@ -5453,7 +5482,7 @@ msgstr "Yuva için oluşturduğunuz OAuth istemcisini silin"
 msgid "Delete the policy {name}?"
 msgstr "{name} politikası silinsin mi?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "{name} kuralı silinsin mi?"
 
@@ -6222,7 +6251,7 @@ msgstr "Her biri tüm mesajları ve notlarıyla"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Ayrıntıları düzenle ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Alanı düzenle"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Filtreyi düzenle"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "İlk satırlarda boş"
 msgid "Enabled"
 msgstr "Açık"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Açık: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Son 30 günün tüm sinyalleri, kaçan sinyalleri ve gönderilen durumla
 msgid "Every check of the last 30 days, newest first."
 msgstr "Son 30 günün her kontrolü, en yeni en üstte."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "her konuşma"
 
@@ -6550,6 +6583,10 @@ msgstr "Çalışma alanındaki her gelen kutusu, sonradan ekleyecekleriniz dahil
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Tüm diller. Yalnızca o dili kullanan kişileri tutmak için bir dil ekleyin; tr, tr-TR'yi de kapsar."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "her posta"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Ekibe göre süz"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Türe, siteye, yayına ve SLA'ya göre süz"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Son postaya benzeyen iletileri filtrele"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Buna benzeyen iletileri filtrele"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Filtreler"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Verildi: {name}"
 msgid "has an attachment"
 msgstr "ekli dosyası var"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Eki var"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Açık konuşması olan"
@@ -7889,7 +7943,7 @@ msgstr "Belirlendi"
 msgid "Identity secret"
 msgstr "Kimlik anahtarı"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "{idle} dk hareketsiz"
 
@@ -8532,7 +8586,7 @@ msgstr "İzin kaydı da birlikte silinir. Abonelikten çıktığı için adres r
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Geçmişi silinir. Onu anan olaylar artık anmaz."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Günlüğü de silinir. Kuralın şimdiye dek yaptığı değişiklikler kalır. Bu geri alınamaz."
 
@@ -9260,7 +9314,7 @@ msgstr "Kilitli"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Kilitli: okuyucular artık buraya yazamaz. Siz hâlâ yazabilirsiniz."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Günlük"
 
@@ -9346,6 +9400,7 @@ msgstr "Tek oturum açmayı zorunlu yaptı"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Posta kutuları"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Zip içinde Maildir"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Posta listesi (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "En çok oy"
 msgid "Move {0} to the Trash?"
 msgstr "{0} konuşma Çöp kutusuna taşınsın mı?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} öğesini taşı. Sürükleyin veya Alt ile ok tuşlarına basın."
@@ -10041,7 +10100,7 @@ msgstr "{name} öğesini taşı. Sürükleyin veya Alt ile ok tuşlarına basın
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Konuşmaları Çöp kutusuna taşı, geri al ve Çöp kutusunu oku"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Önceki veya sonraki aşamaya taşı"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Çöp kutusuna taşı"
 
@@ -10163,7 +10223,7 @@ msgstr "Çöp kutusuna taşı (#)"
 msgid "Move to Yuva"
 msgstr "Yuva'ya taşı"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Gelen kutusuna taşındı"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Çöp kutusuna taşındı"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Postayı Arşiv'e taşır."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Postayı Çöp kutusuna taşır. Diğer eylemlerden sonra çalışır."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Yeni kayıt"
 msgid "New field"
 msgstr "Yeni alan"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Yeni filtre"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Yeni fikir"
@@ -10569,8 +10642,8 @@ msgstr "Yeni politika"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> tartışmasında yeni yanıt"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Yeni kural"
 
@@ -10695,6 +10768,7 @@ msgstr "Gece yedeklemesi"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Hayır"
@@ -10985,6 +11059,10 @@ msgstr "Henüz alan yok."
 msgid "No file is accepted."
 msgstr "Hiçbir dosya kabul edilmiyor."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Henüz filtre yok."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "Bu aralıkta henüz yanıt süresi yok."
 msgid "No results"
 msgstr "Sonuç yok"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Henüz kural yok."
 
@@ -11797,6 +11875,10 @@ msgstr "Bu site için bildirimler engellenmiş. Tarayıcının site ayarlarında
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Bildirimlere izin verilmedi."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Bir üyeyi bilgilendir"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Son ziyaretler"
 msgid "Recently active"
 msgstr "Son zamanlarda etkin"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Alıcı (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Alıcı (Kime)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "alıcı adresi"
@@ -15695,6 +15785,7 @@ msgstr "Bir web kancası uç noktasına gönder"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Gönderen"
@@ -16873,6 +16964,7 @@ msgstr "Aşama"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Yıldız ekle"
 
@@ -16884,6 +16976,10 @@ msgstr "Yıldız ekle (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Burada tutmak için bir e-postaya yıldız ekleyin."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Yıldızlanacak üyeler"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Yıldızlı"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "sizin yıldızladığınız"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Postayı sizin için yıldızlar."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Bu mülkte bu adla bir hedef zaten var."
 msgid "This property already has a segment with this name."
 msgstr "Bu mülkte bu adla bir segment zaten var."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Bir sahip veya yönetici hem bu kuralı hem de {title} hazır yanıtını kaydedene ya da API anahtarı ayarlarında botların göndermesine izin verilene kadar bu yanıt gönderilmez."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Bir sahip veya yönetici {title} hazır yanıtını kaydedene ya da API anahtarı ayarlarında botların göndermesine izin verilene kadar bu yanıt gönderilmez."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Bir sahip veya yönetici bu kuralı kaydedene ya da API anahtarı ayarlarında botların göndermesine izin verilene kadar bu yanıt gönderilmez."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "{first} tekrar yazınca"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Bir posta gelen kutusunun filtresi, gelen bir posta için sizi seçtiğinde."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Zamanladığınız bir ileti reddedildiği için taslak olarak kaldığında."
 
@@ -20920,6 +21024,7 @@ msgstr "Postanızı yazın…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Evet"

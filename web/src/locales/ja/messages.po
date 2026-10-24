@@ -1304,6 +1304,10 @@ msgstr "ドラフトが作成されたとき"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ファイルの内容が種類と一致しません。ファイルを確認して、もう一度お試しください。"
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "フィルターはここに届くすべてのメールを確認し、スターを付ける、アーカイブする、ゴミ箱に移す、ラベルを付ける、メンバーに渡すといった処理を行います。フィルターはこの一覧の順に実行されます。"
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "リストとは、あなたからの連絡に同意した人たちです
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "マクロは、返信とアクション（ラベル、担当者、ステータス、優先度、スヌーズ）の組み合わせです。返信欄で / とショートカットを入力すると、返信の送信時にアクションが適用されます。"
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "メールが届いたとき"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "メールフィルターから通知を受け取る"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "承認済み"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "アーカイブ"
 
@@ -3077,6 +3090,10 @@ msgstr "アシスタント、ドラフト {drafts} 件が待機中"
 msgid "Async"
 msgstr "非同期"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "3文字以上"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "アドレスは最大 {max} 件です"
@@ -3246,6 +3263,10 @@ msgstr "設定に戻る"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "リストに戻る"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "メールに戻る"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "条件"
 msgid "Conditions"
 msgstr "条件"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "条件: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "ドラフトを作成"
 msgid "Create field"
 msgstr "フィールドを作成"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "フィルターを作成"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "パフォーマンス低下"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "エントリを削除"
 msgid "Delete the field {name}?"
 msgstr "フィールド「{name}」を削除しますか？"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "フィルター「{name}」を削除しますか?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "ラベル {name} を削除しますか?"
@@ -5453,7 +5482,7 @@ msgstr "Yuva 用に作成した OAuth クライアントを削除"
 msgid "Delete the policy {name}?"
 msgstr "ポリシー「{name}」を削除しますか？"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "ルール {name} を削除しますか?"
 
@@ -6222,7 +6251,7 @@ msgstr "すべてのメッセージとメモを含む各会話"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "詳細を編集（{editKey}）"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "フィールドを編集"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "フィルターを編集"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "最初の行が空"
 msgid "Enabled"
 msgstr "有効"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "オン: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "過去 30 日間のすべてのビート、欠落したビート、送�
 msgid "Every check of the last 30 days, newest first."
 msgstr "過去 30 日間のすべてのチェック。新しい順です。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "すべての会話"
 
@@ -6550,6 +6583,10 @@ msgstr "ワークスペースのすべての受信トレイ(後から追加す�
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "すべての言語。言語を追加すると、その言語を使う連絡先のみ残ります。tr を指定すると tr-TR も含まれます。"
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "すべてのメール"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "チームで絞り込む"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "種類、サイト、配信、SLA で絞り込む"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "最新のメールと同様のメッセージをフィルター"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "このようなメッセージをフィルター"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "フィルター"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "{name} に引き継ぎました"
 msgid "has an attachment"
 msgstr "添付ファイルがある"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "添付ファイルあり"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "未完了の会話あり"
@@ -7889,7 +7943,7 @@ msgstr "原因特定済み"
 msgid "Identity secret"
 msgstr "アイデンティティシークレット"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "{idle} 分間非アクティブ"
 
@@ -8532,7 +8586,7 @@ msgstr "同意記録も一緒に削除されます。配信停止済みのため
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "履歴は削除されます。これを挙げていたインシデントは挙げなくなります。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "ログも一緒に削除されます。すでに変更された内容はそのまま残ります。この操作は元に戻せません。"
 
@@ -9260,7 +9314,7 @@ msgstr "ロック中"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "ロック中: 閲覧者はここに書き込めません。あなたは書き込めます。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "ログ"
 
@@ -9346,6 +9400,7 @@ msgstr "シングルサインオンを必須にしました"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "メールボックス"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "zip 内の Maildir"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "メーリングリスト (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "投票が多い順"
 msgid "Move {0} to the Trash?"
 msgstr "{0} 件をゴミ箱に移動しますか？"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} を移動します。ドラッグするか、Alt キーと矢印キーを押してください。"
@@ -10041,7 +10100,7 @@ msgstr "{name} を移動します。ドラッグするか、Alt キーと矢印�
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "会話をゴミ箱に移動し、復元し、ゴミ箱を読み取る"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "前または次のステージに移動"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "ゴミ箱に移動"
 
@@ -10163,7 +10223,7 @@ msgstr "ゴミ箱に移動 (#)"
 msgid "Move to Yuva"
 msgstr "Yuva に移行"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "受信トレイに戻しました"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "ゴミ箱に移動しました"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "メールをアーカイブに移します。"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "メールをゴミ箱に移します。ほかの操作のあとに実行されます。"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "新しいエントリ"
 msgid "New field"
 msgstr "新しいフィールド"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "新しいフィルター"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "新しいアイデア"
@@ -10569,8 +10642,8 @@ msgstr "新しいポリシー"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> に新しい返信"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "新しいルール"
 
@@ -10695,6 +10768,7 @@ msgstr "夜間バックアップ"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "いいえ"
@@ -10985,6 +11059,10 @@ msgstr "フィールドはまだありません。"
 msgid "No file is accepted."
 msgstr "どのファイルも受け付けません。"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "フィルターはまだありません。"
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "この期間の応答時間はまだありません。"
 msgid "No results"
 msgstr "結果なし"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "ルールはまだありません。"
 
@@ -11797,6 +11875,10 @@ msgstr "このサイトの通知はブロックされています。ブラウザ
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "通知は許可されませんでした。"
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "メンバーに通知"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "最近の訪問"
 msgid "Recently active"
 msgstr "最近のアクティブ"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "宛先 (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "宛先 (To)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "宛先のアドレス"
@@ -15695,6 +15785,7 @@ msgstr "Webhook エンドポイントに送信"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "送信者"
@@ -16873,6 +16964,7 @@ msgstr "ステージ"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "スターを付ける"
 
@@ -16884,6 +16976,10 @@ msgstr "スターを付ける (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "メールにスターを付けるとここに残ります。"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "スターを付けるメンバー"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "スター付き"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "自分がスターを付けた"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "あなたのためにメールにスターを付けます。"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "このプロパティにはすでに同じ名前のゴールがありま
 msgid "This property already has a segment with this name."
 msgstr "このプロパティにはすでに同じ名前のセグメントがあります。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "オーナーまたは管理者がこのルールと定型返信 {title} の両方を保存するか、API キーの設定でボットの送信が許可されるまで、この返信は送信されません。"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "オーナーまたは管理者が定型返信 {title} を保存するか、API キーの設定でボットの送信が許可されるまで、この返信は送信されません。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "オーナーまたは管理者がこのルールを保存するか、API キーの設定でボットの送信が許可されるまで、この返信は送信されません。"
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "{first} が再度書き込んだとき"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "メールの受信箱のフィルターが、届いたメールについてあなたを指定したとき。"
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "予約したメッセージが拒否されて下書きのままになったとき。"
 
@@ -20920,6 +21024,7 @@ msgstr "メールを書く…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "はい"

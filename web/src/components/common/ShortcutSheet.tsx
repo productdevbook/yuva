@@ -82,6 +82,7 @@ export const MAIL_KEYS = {
   changeTime: "l",
   cancelSchedule: "L",
   sendAgain: "D",
+  filter: "F",
 } as const
 
 export const DISCUSSION_KEYS = {
@@ -357,6 +358,7 @@ export function ShortcutSheet({
         [k(MAIL_KEYS.restore), t`Restore from the Trash`],
         [k(MAIL_KEYS.star), t`Star or unstar`],
         [k(MAIL_KEYS.snooze), t`Snooze`],
+        [k(MAIL_KEYS.filter), t`Filter messages like the latest mail`],
         [k(MAIL_KEYS.unread), t`Mark as unread and go back to the list`],
         [k(MAIL_KEYS.quoted), t`Show or hide quoted text`],
         [k(MAIL_KEYS.expand), t`Expand or collapse every message`],

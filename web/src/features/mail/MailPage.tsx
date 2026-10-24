@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, ChevronDownIcon, MailIcon, MailOpenIcon, PenSquareIcon } from "lucide-react"
+import { CheckIcon, ChevronDownIcon, FilterIcon, MailIcon, MailOpenIcon, PenSquareIcon } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { useDefaultLayout } from "react-resizable-panels"
 import { Link, Navigate, useLocation, useNavigate } from "react-router"
@@ -19,6 +19,7 @@ import { ListHead, UnderlineTabs } from "@/features/inbox/ListHead"
 import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import {
   mailPath,
+  useFilterAccess,
   useFolderLabels,
   useFolders,
   useMailInboxes,
@@ -84,6 +85,36 @@ function BoxPicker({ box, folder }: { box: string; folder: Folder }) {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+function FiltersLink({ box, compact }: { box: string; compact?: boolean }) {
+  const { t } = useLingui()
+  const allowed = useFilterAccess(box)
+  if (!allowed) return null
+  if (compact)
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        className={cn(look.btn, "px-0")}
+        render={<Link to={`/mail/${box}/filters`} />}
+        aria-label={t`Filters`}
+        data-testid="mail-filters-link"
+      >
+        <FilterIcon className="text-faint" />
+      </Button>
+    )
+  return (
+    <Button
+      variant="outline"
+      className={cn(look.btn, "gap-1.5")}
+      render={<Link to={`/mail/${box}/filters`} />}
+      data-testid="mail-filters-link"
+    >
+      <FilterIcon className="text-faint" />
+      <Trans>Filters</Trans>
+    </Button>
   )
 }
 
@@ -209,6 +240,7 @@ export function MailPage() {
           action={
             <>
               <BoxPicker box={box} folder={folder} />
+              <FiltersLink box={box} compact />
               <ComposeButton onClick={() => setComposing({})} />
             </>
           }
@@ -246,6 +278,7 @@ export function MailPage() {
         actions={
           <>
             <BoxPicker box={box} folder={folder} />
+            <FiltersLink box={box} />
             <ComposeButton onClick={() => setComposing({})} />
           </>
         }

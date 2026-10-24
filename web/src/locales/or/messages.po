@@ -1304,6 +1304,10 @@ msgstr "ଏକ ଡ୍ରାଫ୍ଟ ଲେଖାଗଲା"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ଫାଇଲ୍ର ବିଷୟବସ୍ତୁ ଏହାର ପ୍ରକାର ସହ ମେଳ ଖାଉନାହିଁ। ଫାଇଲ୍ ଯାଞ୍ଚ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "ଫିଲ୍ଟର ଏଠାକୁ ଆସୁଥିବା ପ୍ରତ୍ୟେକ ମେଲ୍ ଦେଖେ ଏବଂ ତାହାକୁ ତାରା ଦିଏ, ଆର୍କାଇଭ୍ କରେ, ଟ୍ରାସ୍‌କୁ ନିଏ, ଲେବଲ୍ ଲଗାଏ କିମ୍ବା କୌଣସି ସଦସ୍ୟଙ୍କୁ ଦିଏ। ଫିଲ୍ଟର ଏହି ତାଲିକାର କ୍ରମରେ ଚାଲେ।"
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "ତାଲିକା ହେଉଛି ସେହି ଲୋକମାନେ �
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "ମ୍ୟାକ୍ରୋ ହେଉଛି ଏକ ଉତ୍ତର ଓ କିଛି କାର୍ଯ୍ୟ: ଲେବଲ୍, ଦାୟିତ୍ୱପ୍ରାପ୍ତ ବ୍ୟକ୍ତି, ସ୍ଥିତି, ପ୍ରାଥମିକତା କିମ୍ବା ସ୍ନୁଜ୍। ଉତ୍ତର ବାକ୍ସରେ / ଓ ତାହାର ସର୍ଟକଟ୍ ଲେଖନ୍ତୁ; ଉତ୍ତର ପଠାଇଲେ କାର୍ଯ୍ୟଗୁଡ଼ିକ ପ୍ରୟୋଗ ହୁଏ।"
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "ମେଲ୍ ଆସେ"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "ମେଲ୍ ଫିଲ୍ଟର ମୋତେ ଜଣାଏ"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "ଅନୁମୋଦିତ"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "ଆର୍କାଇଭ୍ କରନ୍ତୁ"
 
@@ -3077,6 +3090,10 @@ msgstr "ସହାୟକ, {drafts} ଡ୍ରାଫ୍ଟ ଅପେକ୍ଷାର
 msgid "Async"
 msgstr "ଅସିଙ୍କ୍"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "ଅତିକମ୍‌ରେ 3 ଅକ୍ଷର"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "ସର୍ବାଧିକ {max}ଟି ଠିକଣା"
@@ -3246,6 +3263,10 @@ msgstr "ସେଟଅପ୍କୁ ଫେରନ୍ତୁ"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "ତାଲିକାକୁ ଫେରନ୍ତୁ"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "ମେଲ୍‌କୁ ଫେରନ୍ତୁ"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "ସର୍ତ୍ତ"
 msgid "Conditions"
 msgstr "ସର୍ତ୍ତ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "ସର୍ତ୍ତ: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "ଡ୍ରାଫ୍ଟ ତିଆରି କରନ୍ତୁ"
 msgid "Create field"
 msgstr "ଫିଲ୍ଡ ତିଆରି କରନ୍ତୁ"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "ଫିଲ୍ଟର ତିଆରି କରନ୍ତୁ"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "ହ୍ରାସ ପାଇଥିବା କାର୍ଯ୍ୟଦକ୍ଷ�
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "ଏଣ୍ଟ୍ରି ଡିଲିଟ୍ କରନ୍ତୁ"
 msgid "Delete the field {name}?"
 msgstr "{name} ଫିଲ୍ଡ ଡିଲିଟ୍ କରିବେ?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "ଫିଲ୍ଟର {name} ଲିଭାଇବେ?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "ଲେବଲ୍ {name} ଡିଲିଟ୍ କରିବେ?"
@@ -5453,7 +5482,7 @@ msgstr "ଆପଣ Yuva ପାଇଁ ତିଆରି କରିଥିବା OAuth 
 msgid "Delete the policy {name}?"
 msgstr "ନୀତି {name} ଡିଲିଟ୍ କରିବେ?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "ନିୟମ {name} ବିଲୋପ କରିବେ?"
 
@@ -6222,7 +6251,7 @@ msgstr "ପ୍ରତ୍ୟେକ ଏହାର ସମସ୍ତ ସଂଦେଶ �
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "ବିବରଣୀ ସମ୍ପାଦନ କରନ୍ତୁ ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "ଫିଲ୍ଡ ସମ୍ପାଦନା"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "ଫିଲ୍ଟର ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "ପ୍ରଥମ ଧାଡ଼ିରେ ଖାଲି"
 msgid "Enabled"
 msgstr "ସକ୍ଷମ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "ଚାଲୁ: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "ଗତ 30 ଦିନର ପ୍ରତ୍ୟେକ ସଙ୍କେତ, ଛ�
 msgid "Every check of the last 30 days, newest first."
 msgstr "ଶେଷ 30 ଦିନର ପ୍ରତ୍ୟେକ ଯାଞ୍ଚ, ନୂଆ ଆଗରେ।"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "ପ୍ରତ୍ୟେକ ବାର୍ତ୍ତାଳାପ"
 
@@ -6550,6 +6583,10 @@ msgstr "ୱାର୍କସ୍ପେସ୍ର ପ୍ରତ୍ୟେକ ଇନବ�
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "ପ୍ରତ୍ୟେକ ଭାଷା। ସେହି ଭାଷା ବ୍ୟବହାର କରୁଥିବା ଯୋଗାଯୋଗ ରଖିବାକୁ ଭାଷା ଯୋଡ଼ନ୍ତୁ; tr, tr-TR ମଧ୍ୟ ରଖେ।"
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "ପ୍ରତ୍ୟେକ ମେଲ୍"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "ଦଳ ଅନୁସାରେ ଫିଲ୍ଟର୍ କରନ୍ତୁ"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "ପ୍ରକାର, ସାଇଟ୍, ପ୍ରସାରଣ ଓ SLA ଅନୁଯାୟୀ ଫିଲ୍ଟର୍ କରନ୍ତୁ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "ଶେଷ ମେଲ୍ ପରି ବାର୍ତ୍ତା ଫିଲ୍ଟର କରନ୍ତୁ"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "ଏହାପରି ବାର୍ତ୍ତା ଫିଲ୍ଟର କରନ୍ତୁ"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "ଫିଲ୍ଟର"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "{name} ଙ୍କୁ ହସ୍ତାନ୍ତର ହେଲା"
 msgid "has an attachment"
 msgstr "ସଂଲଗ୍ନ ଅଛି"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "ଆଟାଚମେଣ୍ଟ ଅଛି"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "ଏକ ଖୋଲା କଥାବାର୍ତ୍ତା ଅଛି"
@@ -7889,7 +7943,7 @@ msgstr "କାରଣ ଚିହ୍ନଟ ହେଲା"
 msgid "Identity secret"
 msgstr "ଆଇଡେଣ୍ଟିଟି ସିକ୍ରେଟ୍"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "{idle} ମିନିଟ୍ ଧରି ନିଷ୍କ୍ରିୟ"
 
@@ -8532,7 +8586,7 @@ msgstr "ଏହାର ସମ୍ମତି ରେକର୍ଡ ଏହା ସହ ଡ�
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "ଏହାର ଇତିହାସ ବିଲୋପ ହୁଏ। ଯେଉଁ ଘଟଣା ଏହାର ଉଲ୍ଲେଖ କରିଥିଲା ସେ ଆଉ କରେ ନାହିଁ।"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "ଏହାର ଲଗ୍ ମଧ୍ୟ ସାଥିରେ ବିଲୋପ ହୁଏ। ଏହା ଯାହା ପୂର୍ବରୁ ବଦଳାଇଛି ତାହା ରହେ। ଏହା ଫେରାଇ ହେବ ନାହିଁ।"
 
@@ -9260,7 +9314,7 @@ msgstr "ଲକ୍ ହୋଇଛି"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "ଲକ୍ ହୋଇଛି: ପାଠକମାନେ ଆଉ ଏଠାରେ ଲେଖିପାରିବେ ନାହିଁ। ଆପଣ ଲେଖିପାରିବେ।"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "ଲଗ୍"
 
@@ -9346,6 +9400,7 @@ msgstr "ସିଙ୍ଗଲ୍ ସାଇନ୍-ଅନ୍ ବାଧ୍ୟତାମ
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "ମେଲବକ୍ସ"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "zip ରେ Maildir"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "ମେଲିଂ ତାଲିକା (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "ସର୍ବାଧିକ ଭୋଟ୍"
 msgid "Move {0} to the Trash?"
 msgstr "{0} କୁ ଟ୍ରାସ୍‌କୁ ନେବେ?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} କୁ ଘୁଞ୍ଚାନ୍ତୁ। ଟାଣନ୍ତୁ, କିମ୍ବା ତୀର କୀ ସହ Alt ଦାବନ୍ତୁ।"
@@ -10041,7 +10100,7 @@ msgstr "{name} କୁ ଘୁଞ୍ଚାନ୍ତୁ। ଟାଣନ୍ତୁ, �
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "ବାର୍ତ୍ତାଳାପକୁ ଟ୍ରାସ୍‌କୁ ନିଅନ୍ତୁ, ପୁନଃସ୍ଥାପନ କରନ୍ତୁ ଏବଂ ଟ୍ରାସ୍ ପଢ଼ନ୍ତୁ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "ପୂର୍ବ କିମ୍ବା ପରବର୍ତ୍ତୀ ପର୍
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "ଟ୍ରାସ୍‌କୁ ନିଅନ୍ତୁ"
 
@@ -10163,7 +10223,7 @@ msgstr "ଆବର୍ଜନାକୁ ନିଅନ୍ତୁ (#)"
 msgid "Move to Yuva"
 msgstr "Yuva କୁ ଘୁଞ୍ଚାନ୍ତୁ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "ଇନବକ୍ସକୁ ଫେରାଇ ଦିଆଗଲା"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "ଟ୍ରାସ୍‌କୁ ନିଆଗଲା"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "ମେଲ୍‌କୁ ଆର୍କାଇଭ୍‌କୁ ନିଏ।"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "ମେଲ୍‌କୁ ଟ୍ରାସ୍‌କୁ ନିଏ। ଅନ୍ୟ କାର୍ଯ୍ୟ ପରେ ଚାଲେ।"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "ନୂଆ ଏଣ୍ଟ୍ରି"
 msgid "New field"
 msgstr "ନୂଆ ଫିଲ୍ଡ"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "ନୂଆ ଫିଲ୍ଟର"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "ନୂଆ ଧାରଣା"
@@ -10569,8 +10642,8 @@ msgstr "ନୂଆ ନୀତି"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> ରେ ନୂଆ ଉତ୍ତର"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "ନୂଆ ନିୟମ"
 
@@ -10695,6 +10768,7 @@ msgstr "ରାତିର ବ୍ୟାକଅପ୍"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "ନା"
@@ -10985,6 +11059,10 @@ msgstr "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଫିଲ୍ଡ ନାହ
 msgid "No file is accepted."
 msgstr "କୌଣସି ଫାଇଲ୍ ଗ୍ରହଣ କରାଯାଏ ନାହିଁ।"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଫିଲ୍ଟର ନାହିଁ।"
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "ଏହି ପରିସରରେ ଏପର୍ଯ୍ୟନ୍ତ କୌଣ
 msgid "No results"
 msgstr "ଫଳାଫଳ ନାହିଁ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ନିୟମ ନାହିଁ।"
 
@@ -11797,6 +11875,10 @@ msgstr "ଏହି ସାଇଟ୍ ପାଇଁ ବିଜ୍ଞପ୍ତି ଅ�
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "ବିଜ୍ଞପ୍ତିକୁ ଅନୁମତି ଦିଆଗଲା ନାହିଁ।"
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "ସଦସ୍ୟଙ୍କୁ ଜଣାନ୍ତୁ"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "ସାମ୍ପ୍ରତିକ ପରିଦର୍ଶନ"
 msgid "Recently active"
 msgstr "ସମ୍ପ୍ରତି ସକ୍ରିୟ"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "ପ୍ରାପକ (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "ପ୍ରାପକ (To)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "ପ୍ରାପକଙ୍କ ଠିକଣା"
@@ -15695,6 +15785,7 @@ msgstr "ୱେବହୁକ୍ ଏଣ୍ଡପଏଣ୍ଟକୁ ପଠାନ୍�
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "ପ୍ରେରକ"
@@ -16873,6 +16964,7 @@ msgstr "ପର୍ଯ୍ୟାୟ"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "ତାରା ଦିଅନ୍ତୁ"
 
@@ -16884,6 +16976,10 @@ msgstr "ତାରା ଦିଅନ୍ତୁ (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "ମେଲକୁ ଏଠାରେ ରଖିବା ପାଇଁ ତାରା ଦିଅନ୍ତୁ।"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "ଏହା ପାଇଁ ତାରା"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "ତାରାଯୁକ୍ତ"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "ଆପଣ ତାରା ଦେଇଥିବା"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "ଆପଣଙ୍କ ପାଇଁ ମେଲ୍‌କୁ ତାରା ଦିଏ।"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "ଏହି ପ୍ରପର୍ଟିରେ ଏହି ନାମର ଲକ�
 msgid "This property already has a segment with this name."
 msgstr "ଏହି ପ୍ରପର୍ଟିରେ ଏହି ନାମର ସେଗ୍ମେଣ୍ଟ ପୂର୍ବରୁ ଅଛି।"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "ମାଲିକ ବା ଆଡମିନ୍ ଏହି ନିୟମ ଓ ପ୍ରସ୍ତୁତ ଉତ୍ତର {title} ଉଭୟ ସେଭ୍ ନକରିବା ପର୍ଯ୍ୟନ୍ତ, କିମ୍ବା API କି ସେଟିଂସରେ ବଟ୍‌ମାନଙ୍କୁ ପଠାଇବାକୁ ଅନୁମତି ନମିଳିବା ପର୍ଯ୍ୟନ୍ତ ଏହି ଉତ୍ତର ପଠାଯିବ ନାହିଁ।"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "ମାଲିକ ବା ଆଡମିନ୍ ପ୍ରସ୍ତୁତ ଉତ୍ତର {title} ସେଭ୍ ନକରିବା ପର୍ଯ୍ୟନ୍ତ, କିମ୍ବା API କି ସେଟିଂସରେ ବଟ୍‌ମାନଙ୍କୁ ପଠାଇବାକୁ ଅନୁମତି ନମିଳିବା ପର୍ଯ୍ୟନ୍ତ ଏହି ଉତ୍ତର ପଠାଯିବ ନାହିଁ।"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "ମାଲିକ ବା ଆଡମିନ୍ ଏହି ନିୟମ ସେଭ୍ ନକରିବା ପର୍ଯ୍ୟନ୍ତ, କିମ୍ବା API କି ସେଟିଂସରେ ବଟ୍‌ମାନଙ୍କୁ ପଠାଇବାକୁ ଅନୁମତି ନମିଳିବା ପର୍ଯ୍ୟନ୍ତ ଏହି ଉତ୍ତର ପଠାଯିବ ନାହିଁ।"
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "ଯେତେବେଳେ {first} ପୁଣି ଲେଖନ୍ତି"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "ଯେତେବେଳେ ମେଲ୍ ଇନବକ୍ସର ଫିଲ୍ଟର ଆସିଥିବା ମେଲ୍ ପାଇଁ ଆପଣଙ୍କୁ ନାମ ଦିଏ।"
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "ନିର୍ଦ୍ଧାରିତ ବାର୍ତ୍ତା ପ୍ରତ୍ୟାଖ୍ୟାନ ହେବାରୁ ଡ୍ରାଫ୍ଟ ହୋଇ ରହିଲେ।"
 
@@ -20920,6 +21024,7 @@ msgstr "ଆପଣଙ୍କ ମେଲ୍ ଲେଖନ୍ତୁ…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "ହଁ"

@@ -1304,6 +1304,10 @@ msgstr "Ένα πρόχειρο γράφτηκε"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Το περιεχόμενο ενός αρχείου δεν ταιριάζει με τον τύπο του. Ελέγξτε το αρχείο και δοκιμάστε ξανά."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Ένα φίλτρο ελέγχει κάθε μήνυμα που φτάνει εδώ και το επισημαίνει με αστέρι, το αρχειοθετεί, το μεταφέρει στον κάδο, του βάζει ετικέτες ή το δίνει σε ένα μέλος. Τα φίλτρα εκτελούνται με τη σειρά αυτής της λίστας."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "Μια λίστα είναι όσοι συμφώνησαν να ακού
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Η μακροεντολή είναι μια απάντηση με ενέργειες: ετικέτες, υπεύθυνος, κατάσταση, προτεραιότητα ή αναβολή. Πληκτρολογήστε / και τη συντόμευση στο πλαίσιο απάντησης· οι ενέργειες εφαρμόζονται κατά την αποστολή."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Φτάνει ένα μήνυμα"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Ένα φίλτρο αλληλογραφίας με ειδοποιεί"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Εγκρίθηκε"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Αρχειοθέτηση"
 
@@ -3077,6 +3090,10 @@ msgstr "Βοηθοί, πρόχειρα σε αναμονή: {drafts}"
 msgid "Async"
 msgstr "Ασύγχρονα"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Τουλάχιστον 3 χαρακτήρες"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Το πολύ {max} διευθύνσεις"
@@ -3246,6 +3263,10 @@ msgstr "Πίσω στη ρύθμιση"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Πίσω στη λίστα"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Πίσω στο μήνυμα"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Συνθήκη"
 msgid "Conditions"
 msgstr "Συνθήκες"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Συνθήκες: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Δημιουργία πρόχειρου"
 msgid "Create field"
 msgstr "Δημιουργία πεδίου"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Δημιουργία φίλτρου"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Μειωμένη απόδοση"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Διαγραφή της καταχώρισης"
 msgid "Delete the field {name}?"
 msgstr "Διαγραφή του πεδίου {name};"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "Διαγραφή του φίλτρου {name};"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "Διαγραφή της ετικέτας {name};"
@@ -5453,7 +5482,7 @@ msgstr "Διαγράψτε τον πελάτη OAuth που δημιουργήσ
 msgid "Delete the policy {name}?"
 msgstr "Διαγραφή της πολιτικής {name};"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "Διαγραφή του κανόνα {name};"
 
@@ -6222,7 +6251,7 @@ msgstr "Καθεμία με όλα της τα μηνύματα και τις σ
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Επεξεργασία λεπτομερειών ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Επεξεργασία πεδίου"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Επεξεργασία φίλτρου"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Κενό στις πρώτες γραμμές"
 msgid "Enabled"
 msgstr "Ενεργή"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Ενεργός: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Κάθε σήμα, χαμένο σήμα και απεσταλμένη �
 msgid "Every check of the last 30 days, newest first."
 msgstr "Κάθε έλεγχος των τελευταίων 30 ημερών, με τον πιο πρόσφατο πρώτο."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "κάθε συνομιλία"
 
@@ -6550,6 +6583,10 @@ msgstr "Όλα τα εισερχόμενα του χώρου εργασίας, �
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Κάθε γλώσσα. Προσθέστε μια γλώσσα για να κρατήσετε μόνο επαφές που τη χρησιμοποιούν· το tr κρατά και το tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "κάθε μήνυμα"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Φίλτρο ανά ομάδα"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Φιλτράρισμα ανά τύπο, ιστότοπο, αποστολή και SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Φιλτράρισμα μηνυμάτων όπως το τελευταίο μήνυμα"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Φιλτράρισμα μηνυμάτων όπως αυτό"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Φίλτρα"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Παραδόθηκε στον/στην {name}"
 msgid "has an attachment"
 msgstr "έχει συνημμένο"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Έχει συνημμένο"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Έχει ανοιχτή συνομιλία"
@@ -7889,7 +7943,7 @@ msgstr "Εντοπίστηκε"
 msgid "Identity secret"
 msgstr "Μυστικό ταυτότητας"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Ανενεργή για {idle} λεπτά"
 
@@ -8532,7 +8586,7 @@ msgstr "Η καταγραφή συναίνεσής του διαγράφεται
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Το ιστορικό του διαγράφεται. Τα περιστατικά που το ανέφεραν δεν το αναφέρουν πια."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Το αρχείο καταγραφής του διαγράφεται μαζί του. Ό,τι έχει ήδη αλλάξει παραμένει. Αυτό δεν αναιρείται."
 
@@ -9260,7 +9314,7 @@ msgstr "Κλειδωμένο"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Κλειδωμένο: οι αναγνώστες δεν μπορούν πια να γράφουν εδώ. Εσείς μπορείτε."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Αρχείο καταγραφής"
 
@@ -9346,6 +9400,7 @@ msgstr "Έκανε την ενιαία σύνδεση υποχρεωτική"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Γραμματοκιβώτια"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir σε zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Λίστα αλληλογραφίας (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Περισσότερες ψήφοι"
 msgid "Move {0} to the Trash?"
 msgstr "Να μεταφερθούν στον Κάδο: {0};"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Μετακίνηση του {name}. Σύρετε ή πατήστε Alt με τα βέλη."
@@ -10041,7 +10100,7 @@ msgstr "Μετακίνηση του {name}. Σύρετε ή πατήστε Alt �
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Μεταφορά συνομιλιών στον Κάδο, επαναφορά τους και ανάγνωση του Κάδου"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Μετακίνηση στο προηγούμενο ή στο επόμε�
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Μεταφορά στον Κάδο"
 
@@ -10163,7 +10223,7 @@ msgstr "Μετακίνηση στον κάδο (#)"
 msgid "Move to Yuva"
 msgstr "Μετακίνηση στο Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Επέστρεψε στα Εισερχόμενα"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Μεταφέρθηκε στον Κάδο"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Μεταφέρει το μήνυμα στο αρχείο."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Μεταφέρει το μήνυμα στον κάδο. Εκτελείται μετά τις άλλες ενέργειες."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Νέα καταχώριση"
 msgid "New field"
 msgstr "Νέο πεδίο"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Νέο φίλτρο"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Νέα ιδέα"
@@ -10569,8 +10642,8 @@ msgstr "Νέα πολιτική"
 msgid "New reply in <0>{title}</0>"
 msgstr "Νέα απάντηση στο <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Νέος κανόνας"
 
@@ -10695,6 +10768,7 @@ msgstr "Νυχτερινό αντίγραφο ασφαλείας"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Όχι"
@@ -10985,6 +11059,10 @@ msgstr "Δεν υπάρχουν ακόμη πεδία."
 msgid "No file is accepted."
 msgstr "Δεν γίνεται δεκτό κανένα αρχείο."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Δεν υπάρχουν φίλτρα ακόμη."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "Δεν υπάρχουν ακόμη χρόνοι απόκρισης σε 
 msgid "No results"
 msgstr "Κανένα αποτέλεσμα"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Δεν υπάρχουν ακόμη κανόνες."
 
@@ -11797,6 +11875,10 @@ msgstr "Οι ειδοποιήσεις είναι αποκλεισμένες γι
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Οι ειδοποιήσεις δεν επιτράπηκαν."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Ειδοποίηση μέλους"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Πρόσφατες επισκέψεις"
 msgid "Recently active"
 msgstr "Ενεργοί πρόσφατα"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Παραλήπτης (Κοιν.)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Παραλήπτης (Προς)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "διεύθυνση παραλήπτη"
@@ -15695,6 +15785,7 @@ msgstr "Αποστολή σε τελικό σημείο webhook"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Αποστολέας"
@@ -16873,6 +16964,7 @@ msgstr "Στάδιο"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Αστέρι"
 
@@ -16884,6 +16976,10 @@ msgstr "Αστέρι (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Βάλτε αστέρι σε ένα e-mail για να μείνει εδώ."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Αστέρι για"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Με αστέρι"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "με αστέρι από εσάς"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Επισημαίνει το μήνυμα με αστέρι για εσάς."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Αυτή η ιδιότητα έχει ήδη στόχο με αυτό τ
 msgid "This property already has a segment with this name."
 msgstr "Αυτή η ιδιότητα έχει ήδη τμήμα με αυτό το όνομα."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Αυτή η απάντηση δεν θα σταλεί μέχρι ένας ιδιοκτήτης ή διαχειριστής να αποθηκεύσει και αυτόν τον κανόνα και την έτοιμη απάντηση {title}, ή να επιτραπεί στα bots να στέλνουν στις ρυθμίσεις των κλειδιών API."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Αυτή η απάντηση δεν θα σταλεί μέχρι ένας ιδιοκτήτης ή διαχειριστής να αποθηκεύσει την έτοιμη απάντηση {title}, ή να επιτραπεί στα bots να στέλνουν στις ρυθμίσεις των κλειδιών API."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Αυτή η απάντηση δεν θα σταλεί μέχρι ένας ιδιοκτήτης ή διαχειριστής να αποθηκεύσει αυτόν τον κανόνα, ή να επιτραπεί στα bots να στέλνουν στις ρυθμίσεις των κλειδιών API."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Όταν γράψει ξανά ο/η {first}"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Όταν ένα φίλτρο γραμματοκιβωτίου σας ορίζει για ένα μήνυμα που έφτασε."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Όταν ένα προγραμματισμένο μήνυμα μένει πρόχειρο επειδή απορρίφθηκε."
 
@@ -20920,6 +21024,7 @@ msgstr "Γράψτε το μήνυμά σας…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Ναι"

@@ -8,7 +8,7 @@ import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { blankCondition, type CondDraft } from "@/features/settings/automation/draft"
-import { CONDITION_FIELDS, OPERATORS, operatorShape, useAutomationText } from "@/features/settings/automation/text"
+import { MAIL_FIELDS, OPERATORS, operatorShape, useAutomationText } from "@/features/settings/automation/text"
 import { ChoiceSelect } from "@/features/settings/ui"
 import type { AutomationConditionField, ChannelKind, ConversationStatus, Priority } from "@/lib/api"
 import { useCustomFields, useLabels, useTeams } from "@/lib/workspace"
@@ -48,10 +48,12 @@ function useChoices(field: AutomationConditionField): (readonly [string, string]
 
 export function ConditionRow({
   c,
+  fields: allowed,
   onChange,
   onRemove,
 }: {
   c: CondDraft
+  fields: AutomationConditionField[]
   onChange: (next: CondDraft) => void
   onRemove: () => void
 }) {
@@ -69,7 +71,7 @@ export function ConditionRow({
         <ChoiceSelect<AutomationConditionField>
           value={c.field}
           onChange={(field) => onChange({ ...blankCondition(field), id: c.id })}
-          options={CONDITION_FIELDS.map((f) => [f, text.field[f]] as const)}
+          options={allowed.map((f) => [f, text.field[f]] as const)}
           label={t`Condition`}
           className="w-44"
         />
@@ -106,7 +108,17 @@ export function ConditionRow({
           <XIcon />
         </Button>
       </div>
-      {c.field === "business_hours" ? (
+      {c.field === "has_attachment" ? (
+        <ChipGroup
+          value={c.value}
+          onChange={(value) => onChange({ ...c, value })}
+          options={[
+            ["true", text.attachment.true],
+            ["false", text.attachment.false],
+          ]}
+          label={text.field.has_attachment}
+        />
+      ) : c.field === "business_hours" ? (
         <ChipGroup
           value={c.value}
           onChange={(value) => onChange({ ...c, value })}
@@ -131,7 +143,7 @@ export function ConditionRow({
         <Input
           value={c.value}
           maxLength={500}
-          placeholder={t`Text`}
+          placeholder={MAIL_FIELDS.includes(c.field) ? t`At least 3 characters` : t`Text`}
           aria-label={t`Text`}
           onChange={(e) => onChange({ ...c, value: e.target.value })}
         />

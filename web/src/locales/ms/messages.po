@@ -1304,6 +1304,10 @@ msgstr "Draf ditulis"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Kandungan fail tidak sepadan dengan jenisnya. Semak fail dan cuba lagi."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Penapis memeriksa setiap e-mel yang tiba di sini lalu memberinya bintang, mengarkibkannya, memindahkannya ke tong sampah, melabelkannya atau menyerahkannya kepada ahli. Penapis berjalan mengikut susunan senarai ini."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "Senarai ialah mereka yang bersetuju untuk mendengar daripada anda. Setia
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro ialah balasan serta tindakan: label, penanggungjawab, status, keutamaan atau tangguh. Taip / dan pintasannya dalam kotak balasan; tindakan dilaksanakan apabila balasan dihantar."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "E-mel tiba"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Penapis e-mel memberitahu saya"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Diluluskan"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Arkib"
 
@@ -3077,6 +3090,10 @@ msgstr "Pembantu, {drafts} draf menunggu"
 msgid "Async"
 msgstr "Tak segerak"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Sekurang-kurangnya 3 aksara"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Paling banyak {max} alamat"
@@ -3246,6 +3263,10 @@ msgstr "Kembali ke persediaan"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Kembali ke senarai"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Kembali ke e-mel"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Syarat"
 msgid "Conditions"
 msgstr "Syarat"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Syarat: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Cipta draf"
 msgid "Create field"
 msgstr "Cipta medan"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Cipta penapis"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Prestasi merosot"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Padam entri"
 msgid "Delete the field {name}?"
 msgstr "Padam medan {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "Padam penapis {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "Padam label {name}?"
@@ -5453,7 +5482,7 @@ msgstr "Padam klien OAuth yang anda cipta untuk Yuva"
 msgid "Delete the policy {name}?"
 msgstr "Padam dasar {name}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "Padam peraturan {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "Masing-masing dengan semua mesej dan notanya"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Edit butiran ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Edit medan"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Edit penapis"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Kosong dalam baris pertama"
 msgid "Enabled"
 msgstr "Didayakan"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Aktif: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Setiap isyarat, isyarat terlepas dan status dihantar dalam 30 hari lepas
 msgid "Every check of the last 30 days, newest first."
 msgstr "Setiap semakan dalam 30 hari lepas, yang terbaharu dahulu."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "setiap perbualan"
 
@@ -6550,6 +6583,10 @@ msgstr "Setiap peti masuk ruang kerja, termasuk yang anda tambah kemudian."
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Setiap bahasa. Tambah bahasa untuk mengekalkan hanya kenalan yang menggunakannya; tr juga mengekalkan tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "setiap e-mel"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Tapis mengikut pasukan"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Tapis mengikut jenis, tapak, siaran dan SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Tapis mesej seperti e-mel terkini"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Tapis mesej seperti ini"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Penapis"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Diserahkan kepada {name}"
 msgid "has an attachment"
 msgstr "ada lampiran"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Ada lampiran"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Ada perbualan terbuka"
@@ -7889,7 +7943,7 @@ msgstr "Dikenal pasti"
 msgid "Identity secret"
 msgstr "Rahsia identiti"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Tidak aktif {idle} min"
 
@@ -8532,7 +8586,7 @@ msgstr "Rekod persetujuannya dipadam bersamanya. Kerana mereka menyahlanggan, al
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Sejarahnya dipadam. Insiden yang menyebutnya tidak lagi menyebutnya."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Lognya turut dipadam. Apa yang telah diubahnya kekal. Ini tidak boleh dibatalkan."
 
@@ -9260,7 +9314,7 @@ msgstr "Dikunci"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Dikunci: pembaca tidak lagi boleh menulis di sini. Anda masih boleh."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Log"
 
@@ -9346,6 +9400,7 @@ msgstr "Mewajibkan log masuk tunggal"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Peti mel"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir dalam zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Senarai mel (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Undi terbanyak"
 msgid "Move {0} to the Trash?"
 msgstr "Alihkan {0} ke Sampah?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Alihkan {name}. Seret, atau tekan Alt dengan kekunci anak panah."
@@ -10041,7 +10100,7 @@ msgstr "Alihkan {name}. Seret, atau tekan Alt dengan kekunci anak panah."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Alihkan perbualan ke Sampah, pulihkannya dan baca Sampah"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Alihkan ke peringkat sebelumnya atau seterusnya"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Alihkan ke Sampah"
 
@@ -10163,7 +10223,7 @@ msgstr "Alihkan ke Sampah (#)"
 msgid "Move to Yuva"
 msgstr "Pindah ke Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Dikembalikan ke Peti masuk"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Dialihkan ke Sampah"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Mengalihkan e-mel ke arkib."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Mengalihkan e-mel ke tong sampah. Berjalan selepas tindakan lain."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Entri baharu"
 msgid "New field"
 msgstr "Medan baharu"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Penapis baharu"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Idea baharu"
@@ -10569,8 +10642,8 @@ msgstr "Dasar baharu"
 msgid "New reply in <0>{title}</0>"
 msgstr "Balasan baharu dalam <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Peraturan baharu"
 
@@ -10695,6 +10768,7 @@ msgstr "Sandaran malam"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Tidak"
@@ -10985,6 +11059,10 @@ msgstr "Belum ada medan."
 msgid "No file is accepted."
 msgstr "Tiada fail diterima."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Belum ada penapis."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "Belum ada masa tindak balas dalam julat ini."
 msgid "No results"
 msgstr "Tiada hasil"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Belum ada peraturan."
 
@@ -11797,6 +11875,10 @@ msgstr "Pemberitahuan disekat untuk tapak ini. Benarkan dalam tetapan tapak pela
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Pemberitahuan tidak dibenarkan."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Beritahu ahli"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Lawatan terkini"
 msgid "Recently active"
 msgstr "Aktif baru-baru ini"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Penerima (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Penerima (Kepada)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "alamat penerima"
@@ -15695,6 +15785,7 @@ msgstr "Hantar ke titik akhir webhook"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Penghantar"
@@ -16873,6 +16964,7 @@ msgstr "Peringkat"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Bintangkan"
 
@@ -16884,6 +16976,10 @@ msgstr "Bintangkan (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Bintangkan mel untuk menyimpannya di sini."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Bintang untuk"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Berbintang"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "anda beri bintang"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Memberi bintang pada e-mel untuk anda."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Properti ini sudah mempunyai matlamat dengan nama ini."
 msgid "This property already has a segment with this name."
 msgstr "Properti ini sudah mempunyai segmen dengan nama ini."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Balasan ini tidak akan dihantar sehingga pemilik atau pentadbir menyimpan peraturan ini dan balasan tersimpan {title}, atau bot dibenarkan menghantar dalam tetapan kunci API."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Balasan ini tidak akan dihantar sehingga pemilik atau pentadbir menyimpan balasan tersimpan {title}, atau bot dibenarkan menghantar dalam tetapan kunci API."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Balasan ini tidak akan dihantar sehingga pemilik atau pentadbir menyimpan peraturan ini, atau bot dibenarkan menghantar dalam tetapan kunci API."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Apabila {first} menulis semula"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Apabila penapis peti masuk e-mel menamakan anda untuk e-mel yang tiba."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Apabila mesej yang dijadualkan kekal sebagai draf kerana ditolak."
 
@@ -20920,6 +21024,7 @@ msgstr "Tulis mel anda…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Ya"

@@ -1304,6 +1304,10 @@ msgstr "טיוטה נכתבה"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "תוכן הקובץ אינו תואם לסוג שלו. בדוק את הקובץ ונסה שוב."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "מסנן בודק כל דואר שמגיע לכאן ומסמן אותו בכוכב, מעביר לארכיון, מעביר לפח, מוסיף תוויות או מוסר אותו לחבר. מסננים פועלים לפי סדר הרשימה הזו."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "רשימה היא האנשים שהסכימו לשמוע ממך. לכל 
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "מאקרו הוא תשובה עם פעולות: תוויות, אחראי, סטטוס, עדיפות או דחייה. הקלידו / והקיצור בשדה התשובה; הפעולות מתבצעות עם שליחת התשובה."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "דואר מגיע"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "מסנן דואר מתריע לי"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "אושר"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "ארכיון"
 
@@ -3077,6 +3090,10 @@ msgstr "עוזרים, {drafts} טיוטות ממתינות"
 msgid "Async"
 msgstr "אסינכרוני"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "לפחות 3 תווים"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "לכל היותר {max} כתובות"
@@ -3246,6 +3263,10 @@ msgstr "חזרה להגדרה"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "חזרה לרשימה"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "חזרה לדואר"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "תנאי"
 msgid "Conditions"
 msgstr "תנאים"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "תנאים: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "יצירת טיוטה"
 msgid "Create field"
 msgstr "יצירת שדה"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "יצירת מסנן"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "ביצועים מופחתים"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "מחיקת הרשומה"
 msgid "Delete the field {name}?"
 msgstr "למחוק את השדה {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "למחוק את המסנן {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "למחוק את התווית {name}?"
@@ -5453,7 +5482,7 @@ msgstr "מחק את לקוח ה-OAuth שיצרת עבור Yuva"
 msgid "Delete the policy {name}?"
 msgstr "למחוק את המדיניות {name}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "למחוק את הכלל {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "כל אחת עם כל ההודעות וההערות שלה"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "עריכת פרטים ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "עריכת שדה"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "עריכת מסנן"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "ריק בשורות הראשונות"
 msgid "Enabled"
 msgstr "פעילה"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "פעיל: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "כל אות, אות שהוחמץ ומצב שנשלח ב־30 הימים �
 msgid "Every check of the last 30 days, newest first."
 msgstr "כל הבדיקות ב-30 הימים האחרונים, החדשות ראשונות."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "כל שיחה"
 
@@ -6550,6 +6583,10 @@ msgstr "כל תיבות הדואר של סביבת העבודה, כולל כאל
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "כל השפות. הוסף שפה כדי לשמור רק אנשי קשר שמשתמשים בה; tr שומרת גם tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "כל דואר"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "סינון לפי צוות"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "סינון לפי סוג, אתר, שליחה ו-SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "סינון הודעות כמו הדואר האחרון"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "סינון הודעות כמו זו"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "מסננים"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "הועברה אל {name}"
 msgid "has an attachment"
 msgstr "יש לה קובץ מצורף"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "יש קובץ מצורף"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "יש לו שיחה פתוחה"
@@ -7889,7 +7943,7 @@ msgstr "זוהה"
 msgid "Identity secret"
 msgstr "סוד זהות"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "לא פעילה {idle} דק׳"
 
@@ -8532,7 +8586,7 @@ msgstr "רשומת ההסכמה שלו נמחקת איתו. מכיוון שהו�
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "ההיסטוריה שלו נמחקת. אירועים שהזכירו אותו כבר לא מזכירים אותו."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "היומן שלו נמחק איתו. מה שכבר שינה נשאר. אי אפשר לבטל זאת."
 
@@ -9260,7 +9314,7 @@ msgstr "נעול"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "נעול: קוראים כבר לא יכולים לכתוב כאן. אתה עדיין יכול."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "יומן"
 
@@ -9346,6 +9400,7 @@ msgstr "הפך/ה את ההתחברות היחידה לחובה"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "תיבות דואר"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir בתוך zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "רשימת תפוצה (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "הכי הרבה הצבעות"
 msgid "Move {0} to the Trash?"
 msgstr "להעביר {0} לפח?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "העברת {name}. גררו, או לחצו Alt עם מקשי החצים."
@@ -10041,7 +10100,7 @@ msgstr "העברת {name}. גררו, או לחצו Alt עם מקשי החצים.
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "העברת שיחות לפח, שחזורן וקריאת הפח"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "העברה לשלב הקודם או הבא"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "העברה לפח"
 
@@ -10163,7 +10223,7 @@ msgstr "העברה לפח (#)"
 msgid "Move to Yuva"
 msgstr "מעבר ל-Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "הוחזר לדואר הנכנס"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "הועברה לפח"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "מעביר את הדואר לארכיון."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "מעביר את הדואר לפח. פועל אחרי הפעולות האחרות."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "רשומה חדשה"
 msgid "New field"
 msgstr "שדה חדש"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "מסנן חדש"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "רעיון חדש"
@@ -10569,8 +10642,8 @@ msgstr "מדיניות חדשה"
 msgid "New reply in <0>{title}</0>"
 msgstr "תגובה חדשה ב-<0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "כלל חדש"
 
@@ -10695,6 +10768,7 @@ msgstr "גיבוי לילי"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "לא"
@@ -10985,6 +11059,10 @@ msgstr "עדיין אין שדות."
 msgid "No file is accepted."
 msgstr "אף קובץ לא מתקבל."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "אין עדיין מסננים."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "עדיין אין זמני תגובה בטווח הזה."
 msgid "No results"
 msgstr "אין תוצאות"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "עדיין אין כללים."
 
@@ -11797,6 +11875,10 @@ msgstr "התראות חסומות לאתר הזה. אפשר אותן בהגדר�
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "התראות לא אושרו."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "התראה לחבר"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "ביקורים אחרונים"
 msgid "Recently active"
 msgstr "פעילים לאחרונה"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "נמען (עותק)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "נמען (אל)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "כתובת הנמען"
@@ -15695,6 +15785,7 @@ msgstr "שליחה לנקודת קצה של Webhook"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "שולח"
@@ -16873,6 +16964,7 @@ msgstr "שלב"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "סימון בכוכב"
 
@@ -16884,6 +16976,10 @@ msgstr "סימון בכוכב (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "סמנו מייל בכוכב כדי לשמור אותו כאן."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "כוכב עבור"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "מסומנים בכוכב"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "סימנת בכוכב"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "מסמן את הדואר בכוכב עבורך."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "לנכס הזה כבר יש יעד בשם הזה."
 msgid "This property already has a segment with this name."
 msgstr "לנכס הזה כבר יש פלח בשם הזה."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "התשובה הזו לא תישלח עד שבעלים או מנהל ישמרו גם את הכלל הזה וגם את התשובה המוכנה {title}, או עד שבוטים יורשו לשלוח בהגדרות מפתחות ה-API."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "התשובה הזו לא תישלח עד שבעלים או מנהל ישמרו את התשובה המוכנה {title}, או עד שבוטים יורשו לשלוח בהגדרות מפתחות ה-API."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "התשובה הזו לא תישלח עד שבעלים או מנהל ישמרו את הכלל הזה, או עד שבוטים יורשו לשלוח בהגדרות מפתחות ה-API."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "כש-{first} כותב שוב"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "כאשר מסנן של תיבת דואר מציין אותך עבור דואר שהגיע."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "כשהודעה מתוזמנת נשארת טיוטה כי היא נדחתה."
 
@@ -20920,6 +21024,7 @@ msgstr "כתבו את המכתב…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "כן"

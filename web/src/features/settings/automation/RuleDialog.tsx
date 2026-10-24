@@ -1,3 +1,4 @@
+import { isPersonal } from "@/features/mail/folders"
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { PlusIcon, TriangleAlertIcon } from "lucide-react"
@@ -12,18 +13,20 @@ import { Switch } from "@/components/ui/switch"
 import { ActionRow } from "@/features/settings/automation/ActionRow"
 import { ConditionRow } from "@/features/settings/automation/ConditionRow"
 import {
+  actionTypes,
   blankAction,
   blankCondition,
   blocked,
+  conditionFields,
   fromRule,
   idleValid,
   isComplete,
+  sanitize,
   toBody,
   type Draft,
 } from "@/features/settings/automation/draft"
 import { useAuthorityCheck } from "@/features/settings/automation/queries"
 import {
-  ACTION_TYPES,
   MAX_ACTIONS,
   MAX_CONDITIONS,
   MAX_IDLE,
@@ -39,6 +42,7 @@ import {
   type AutomationActionType,
   type AutomationRule,
   type AutomationRuleUpdate,
+  type MailFilterSuggestion,
 } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -56,7 +60,9 @@ function Problem({ error }: { error: unknown }) {
   return <ErrorLine error={error} />
 }
 
-function Form({ rule, onClose }: { rule: AutomationRule | null; onClose: () => void }) {
+type Source = { rule: AutomationRule | null; prefill?: MailFilterSuggestion; inboxId?: string; filter?: boolean }
+
+function Form({ rule, prefill, inboxId: fixed, filter, onClose }: Source & { onClose: () => void }) {
   const { t } = useLingui()
   const text = useAutomationText()
   const qc = useQueryClient()
@@ -64,15 +70,26 @@ function Form({ rule, onClose }: { rule: AutomationRule | null; onClose: () => v
   const inboxes = useInboxes().data ?? []
   const replies = useCannedReplies().data ?? []
   const authority = useAuthorityCheck()
-  const [draft, setDraft] = useState<Draft>(() => fromRule(rule))
-  const [scope, setScope] = useState<Scope>(rule?.inbox_id ? "inbox" : "workspace")
-  const set = (patch: Partial<Draft>) => setDraft((d) => ({ ...d, ...patch }))
-  const effective: Draft = { ...draft, inboxId: scope === "inbox" ? draft.inboxId : "" }
-  const complete = isComplete(effective) && (scope === "workspace" || effective.inboxId !== "")
-  const body = toBody(effective)
+  const [raw, setRaw] = useState<Draft>(() => {
+    const d = fromRule(rule ?? prefill ?? null)
+    if (!rule && fixed) d.inboxId = fixed
+    if (!rule && fixed && !prefill) d.trigger = "mail_received"
+    return d
+  })
+  const [scope, setScope] = useState<Scope>(rule?.inbox_id || prefill || fixed ? "inbox" : "workspace")
+  const inbox = inboxes.find((i) => i.id === (scope === "inbox" ? raw.inboxId : ""))
+  const personal = isPersonal(inbox)
+  const draft = sanitize({ ...raw, inboxId: scope === "inbox" ? raw.inboxId : "" }, inbox)
+  const set = (patch: Partial<Draft>) => setRaw(sanitize({ ...draft, ...patch }, inbox))
+  const complete = isComplete(draft, personal) && (scope === "workspace" || draft.inboxId !== "")
+  const body = toBody(draft)
   const changed = !rule || JSON.stringify(body) !== JSON.stringify(toBody(fromRule(rule)))
   const taken = draft.actions.map((a) => a.type)
-  const addable = ACTION_TYPES.filter((type) => !blocked(type, taken))
+  const addable = actionTypes(draft.trigger, personal).filter((type) => !blocked(type, taken))
+  const triggers = personal
+    ? (["mail_received"] as const)
+    : TRIGGERS.filter((x) => x !== "mail_received" || inbox?.purpose === "mail")
+  const fields = conditionFields(draft.trigger)
   const warning = authority.problem(
     { actions: body.actions, saved_by: { type: "member", member_id: membership.member_id } },
     replies
@@ -134,26 +151,38 @@ function Form({ rule, onClose }: { rule: AutomationRule | null; onClose: () => v
           data-testid="rule-enabled"
         />
       </ToggleRow>
-      <Field label={<Trans>Applies to</Trans>}>
-        <ChipGroup<Scope>
-          value={scope}
-          onChange={setScope}
-          options={[
-            ["workspace", t`Every inbox`],
-            ["inbox", t`One inbox`],
-          ]}
-          label={t`Applies to`}
-        />
-        {scope === "inbox" && (
-          <ChoiceSelect
-            value={draft.inboxId}
-            onChange={(inboxId) => set({ inboxId })}
-            options={inboxes.map((i) => [i.id, i.name] as const)}
-            placeholder={t`Pick an inbox`}
-            label={t`Inbox`}
+      {!fixed && (
+        <Field label={<Trans>Applies to</Trans>}>
+          <ChipGroup<Scope>
+            value={scope}
+            onChange={(next) => {
+              setScope(next)
+              setRaw(draft)
+            }}
+            options={[
+              ["workspace", t`Every inbox`],
+              ["inbox", t`One inbox`],
+            ]}
+            label={t`Applies to`}
           />
-        )}
-      </Field>
+          {scope === "inbox" && (
+            <ChoiceSelect
+              value={draft.inboxId}
+              onChange={(inboxId) =>
+                setRaw(
+                  sanitize(
+                    { ...draft, inboxId },
+                    inboxes.find((i) => i.id === inboxId)
+                  )
+                )
+              }
+              options={inboxes.map((i) => [i.id, i.name] as const)}
+              placeholder={t`Pick an inbox`}
+              label={t`Inbox`}
+            />
+          )}
+        </Field>
+      )}
       <fieldset className="flex flex-col gap-3 rounded-xl border p-4">
         <legend className="px-1 text-small font-medium text-muted-foreground">
           <Trans>When</Trans>
@@ -161,7 +190,7 @@ function Form({ rule, onClose }: { rule: AutomationRule | null; onClose: () => v
         <ChoiceSelect
           value={draft.trigger}
           onChange={(trigger) => set({ trigger })}
-          options={TRIGGERS.map((x) => [x, text.trigger[x]] as const)}
+          options={triggers.map((x) => [x, text.trigger[x]] as const)}
           label={t`Trigger`}
         />
         {draft.trigger === "idle" && (
@@ -199,6 +228,7 @@ function Form({ rule, onClose }: { rule: AutomationRule | null; onClose: () => v
               <ConditionRow
                 key={c.id}
                 c={c}
+                fields={fields}
                 onChange={(next) => set({ conditions: draft.conditions.map((x) => (x.id === c.id ? next : x)) })}
                 onRemove={() => set({ conditions: draft.conditions.filter((x) => x.id !== c.id) })}
               />
@@ -227,6 +257,8 @@ function Form({ rule, onClose }: { rule: AutomationRule | null; onClose: () => v
               <ActionRow
                 key={a.id}
                 a={a}
+                inboxId={draft.inboxId}
+                personal={personal}
                 onChange={(next) => set({ actions: draft.actions.map((x) => (x.id === a.id ? next : x)) })}
                 onRemove={() => set({ actions: draft.actions.filter((x) => x.id !== a.id) })}
               />
@@ -260,21 +292,34 @@ function Form({ rule, onClose }: { rule: AutomationRule | null; onClose: () => v
       <Problem error={save.error} />
       <DialogFooter>
         <Button type="submit" disabled={save.isPending || !complete || !changed} data-testid="rule-save">
-          {rule ? <Trans>Save</Trans> : <Trans>Create rule</Trans>}
+          {rule ? <Trans>Save</Trans> : filter ? <Trans>Create filter</Trans> : <Trans>Create rule</Trans>}
         </Button>
       </DialogFooter>
     </form>
   )
 }
 
-export function RuleDialog({ rule, onClose }: { rule: AutomationRule | null; onClose: () => void }) {
+export function RuleDialog({ onClose, ...source }: Source & { onClose: () => void }) {
+  const { rule, filter } = source
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{rule ? <Trans>Edit rule</Trans> : <Trans>New rule</Trans>}</DialogTitle>
+          <DialogTitle>
+            {filter ? (
+              rule ? (
+                <Trans>Edit filter</Trans>
+              ) : (
+                <Trans>New filter</Trans>
+              )
+            ) : rule ? (
+              <Trans>Edit rule</Trans>
+            ) : (
+              <Trans>New rule</Trans>
+            )}
+          </DialogTitle>
         </DialogHeader>
-        <Form rule={rule} onClose={onClose} />
+        <Form {...source} onClose={onClose} />
       </DialogContent>
     </Dialog>
   )

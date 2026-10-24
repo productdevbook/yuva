@@ -1304,6 +1304,10 @@ msgstr "Se escribió un borrador"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "El contenido de un archivo no coincide con su tipo. Revisa el archivo y vuelve a intentarlo."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Un filtro revisa cada correo que llega aquí y lo marca con una estrella, lo archiva, lo manda a la papelera, le pone etiquetas o se lo pasa a un miembro. Los filtros se ejecutan en el orden de esta lista."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "Una lista reúne a quienes aceptaron recibir noticias tuyas. Cada suscri
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Una macro es una respuesta más acciones: etiquetas, responsable, estado, prioridad o posponer. Escribe / y su atajo en el redactor; las acciones se aplican al enviar la respuesta."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Llega un correo"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Un filtro de correo me avisa"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Aprobado"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Archivar"
 
@@ -3077,6 +3090,10 @@ msgstr "Asistentes, {drafts} borradores esperando"
 msgid "Async"
 msgstr "Asíncrono"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Al menos 3 caracteres"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Como máximo {max} direcciones"
@@ -3246,6 +3263,10 @@ msgstr "Volver a la configuración"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Volver a la lista"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Volver al correo"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Condición"
 msgid "Conditions"
 msgstr "Condiciones"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Condiciones: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Crear borrador"
 msgid "Create field"
 msgstr "Crear campo"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Crear filtro"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Rendimiento degradado"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Eliminar la entrada"
 msgid "Delete the field {name}?"
 msgstr "¿Eliminar el campo {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "¿Eliminar el filtro {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "¿Eliminar la etiqueta {name}?"
@@ -5453,7 +5482,7 @@ msgstr "Elimina el cliente OAuth que creaste para Yuva"
 msgid "Delete the policy {name}?"
 msgstr "¿Eliminar la política {name}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "¿Eliminar la regla {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "Cada una con todos sus mensajes y notas"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Editar detalles ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Editar campo"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Editar filtro"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Vacío en las primeras filas"
 msgid "Enabled"
 msgstr "Activada"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Activada: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Cada latido, latido perdido y estado enviado de los últimos 30 días, d
 msgid "Every check of the last 30 days, newest first."
 msgstr "Cada comprobación de los últimos 30 días, la más reciente primero."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "toda conversación"
 
@@ -6550,6 +6583,10 @@ msgstr "Todos los buzones del espacio de trabajo, incluidos los que añadas más
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Todos los idiomas. Añade un idioma para conservar solo los contactos que lo usan; tr conserva también tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "cada correo"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Filtrar por equipo"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Filtrar por tipo, sitio, difusión y SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Filtrar mensajes como el último correo"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Filtrar mensajes como este"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Filtros"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Pasado a {name}"
 msgid "has an attachment"
 msgstr "tiene un adjunto"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Tiene un adjunto"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Tiene una conversación abierta"
@@ -7889,7 +7943,7 @@ msgstr "Identificado"
 msgid "Identity secret"
 msgstr "Secreto de identidad"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Inactiva {idle} min"
 
@@ -8532,7 +8586,7 @@ msgstr "Su registro de consentimiento se elimina con él. Como se dio de baja, l
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Se elimina su historial. Los incidentes que lo nombraban ya no lo hacen."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Su registro se elimina con ella. Lo que ya cambió se queda. No se puede deshacer."
 
@@ -9260,7 +9314,7 @@ msgstr "Bloqueado"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Bloqueado: los lectores ya no pueden escribir aquí. Tú sí."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Registro"
 
@@ -9346,6 +9400,7 @@ msgstr "Hizo obligatorio el inicio de sesión único"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Buzones"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir en un zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Lista de correo (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Más votos"
 msgid "Move {0} to the Trash?"
 msgstr "¿Mover {0} a la papelera?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Mover {name}. Arrastra, o pulsa Alt con las flechas."
@@ -10041,7 +10100,7 @@ msgstr "Mover {name}. Arrastra, o pulsa Alt con las flechas."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Mover conversaciones a la papelera, restaurarlas y leer la papelera"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Mover a la etapa anterior o siguiente"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Mover a la papelera"
 
@@ -10163,7 +10223,7 @@ msgstr "Mover a la papelera (#)"
 msgid "Move to Yuva"
 msgstr "Pasar a Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Devuelto a Recibidos"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Movida a la papelera"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Mueve el correo al archivo."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Mueve el correo a la papelera. Se ejecuta después de las demás acciones."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Nueva entrada"
 msgid "New field"
 msgstr "Campo nuevo"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Nuevo filtro"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Nueva idea"
@@ -10569,8 +10642,8 @@ msgstr "Nueva política"
 msgid "New reply in <0>{title}</0>"
 msgstr "Respuesta nueva en <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Nueva regla"
 
@@ -10695,6 +10768,7 @@ msgstr "Copia de seguridad nocturna"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "No"
@@ -10985,6 +11059,10 @@ msgstr "Aún no hay campos."
 msgid "No file is accepted."
 msgstr "No se acepta ningún archivo."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Aún no hay filtros."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "Todavía no hay tiempos de respuesta en este intervalo."
 msgid "No results"
 msgstr "Sin resultados"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Aún no hay reglas."
 
@@ -11797,6 +11875,10 @@ msgstr "Las notificaciones están bloqueadas para este sitio. Permítelas en los
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "No se permitieron las notificaciones."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Avisar a un miembro"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Visitas recientes"
 msgid "Recently active"
 msgstr "Activos recientemente"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Destinatario (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Destinatario (Para)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "dirección del destinatario"
@@ -15695,6 +15785,7 @@ msgstr "Enviar a un endpoint de webhook"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Remitente"
@@ -16873,6 +16964,7 @@ msgstr "Etapa"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Destacar"
 
@@ -16884,6 +16976,10 @@ msgstr "Destacar (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Destaca un correo para guardarlo aquí."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Estrella para"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Destacados"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "marcado por usted con estrella"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Marca el correo con una estrella para ti."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Esta propiedad ya tiene un objetivo con este nombre."
 msgid "This property already has a segment with this name."
 msgstr "Esta propiedad ya tiene un segmento con este nombre."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Esta respuesta no se enviará hasta que un propietario o administrador guarde tanto esta regla como la respuesta predefinida {title}, o se permita enviar a los bots en los ajustes de claves de API."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Esta respuesta no se enviará hasta que un propietario o administrador guarde la respuesta predefinida {title}, o se permita enviar a los bots en los ajustes de claves de API."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Esta respuesta no se enviará hasta que un propietario o administrador guarde esta regla, o se permita enviar a los bots en los ajustes de claves de API."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Cuando {first} vuelva a escribir"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Cuando un filtro de un buzón de correo te nombra para un correo recibido."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Cuando un mensaje que programaste queda como borrador porque fue rechazado."
 
@@ -20920,6 +21024,7 @@ msgstr "Escribe tu correo…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Sí"

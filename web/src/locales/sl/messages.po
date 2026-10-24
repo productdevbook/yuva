@@ -1304,6 +1304,10 @@ msgstr "Osnutek je bil napisan"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Vsebina datoteke se ne ujema z njeno vrsto. Preverite datoteko in poskusite znova."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Filter pregleda vsako e-pošto, ki prispe sem, in jo označi z zvezdico, arhivira, premakne v koš, opremi z oznakami ali preda članu. Filtri se izvajajo v vrstnem redu tega seznama."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "Seznam so ljudje, ki so privolili, da jim pošiljate sporočila. Vsak na
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro je odgovor in dejanja: oznake, dodeljena oseba, stanje, prednost ali preložitev. V polje za odgovor vtipkajte / in bližnjico; dejanja se izvedejo ob pošiljanju odgovora."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Prispe e-pošta"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Filter pošte me obvesti"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Odobreno"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Arhiviraj"
 
@@ -3077,6 +3090,10 @@ msgstr "Pomočniki, čaka {drafts} osnutkov"
 msgid "Async"
 msgstr "Asinhrono"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Vsaj 3 znaki"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Največ {max} naslovov"
@@ -3246,6 +3263,10 @@ msgstr "Nazaj na nastavitev"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Nazaj na seznam"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Nazaj na e-pošto"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Pogoj"
 msgid "Conditions"
 msgstr "Pogoji"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Pogoji: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Ustvari osnutek"
 msgid "Create field"
 msgstr "Ustvari polje"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Ustvari filter"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Zmanjšana zmogljivost"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Izbriši zapis"
 msgid "Delete the field {name}?"
 msgstr "Izbrišem polje {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "Izbrišem filter {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "Izbrisati oznako {name}?"
@@ -5453,7 +5482,7 @@ msgstr "Izbrišite odjemalca OAuth, ki ste ga ustvarili za Yuvo"
 msgid "Delete the policy {name}?"
 msgstr "Izbrisati pravilo {name}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "Izbrišem pravilo {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "Vsak z vsemi svojimi sporočili in opombami"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Uredi podrobnosti ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Uredi polje"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Uredi filter"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Prazno v prvih vrsticah"
 msgid "Enabled"
 msgstr "Vklopljeno"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Vklopljeno: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Vsak signal, zamujen signal in poslano stanje zadnjih 30 dni, najnovejš
 msgid "Every check of the last 30 days, newest first."
 msgstr "Vsako preverjanje zadnjih 30 dni, najnovejše prvo."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "vsak pogovor"
 
@@ -6550,6 +6583,10 @@ msgstr "Vsak nabiralnik delovnega prostora, vključno s tistimi, ki jih dodate p
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Vsak jezik. Dodajte jezik, da obdržite samo stike, ki ga uporabljajo; tr obdrži tudi tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "vsaka e-pošta"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Filtriraj po ekipi"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Filtriraj po vrsti, spletnem mestu, pošiljanju in SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Filtriraj sporočila kot zadnja e-pošta"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Filtriraj sporočila, kot je to"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Filtri"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Predano uporabniku {name}"
 msgid "has an attachment"
 msgstr "ima prilogo"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Ima prilogo"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Ima odprt pogovor"
@@ -7889,7 +7943,7 @@ msgstr "Ugotovljeno"
 msgid "Identity secret"
 msgstr "Skrivnost identitete"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Neaktiven {idle} min"
 
@@ -8532,7 +8586,7 @@ msgstr "Njegov zapis o soglasju se izbriše z njim. Ker so se odjavili, si naslo
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Njegova zgodovina se izbriše. Incidenti, ki so ga omenjali, ga ne omenjajo več."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Z njim se izbriše tudi njegov dnevnik. Kar je že spremenilo, ostane. Tega ni mogoče razveljaviti."
 
@@ -9260,7 +9314,7 @@ msgstr "Zaklenjeno"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Zaklenjeno: bralci tukaj ne morejo več pisati. Vi še vedno lahko."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Dnevnik"
 
@@ -9346,6 +9400,7 @@ msgstr "Enotno prijavo naredil(a) obvezno"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Nabiralniki"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir v arhivu zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Poštni seznam (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Največ glasov"
 msgid "Move {0} to the Trash?"
 msgstr "Premaknem {0} v koš?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Premakni {name}. Povlecite ali pritisnite Alt s puščicami."
@@ -10041,7 +10100,7 @@ msgstr "Premakni {name}. Povlecite ali pritisnite Alt s puščicami."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Premikanje pogovorov v koš, njihovo obnavljanje in branje koša"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Premakni v prejšnjo ali naslednjo fazo"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Premakni v koš"
 
@@ -10163,7 +10223,7 @@ msgstr "Premakni v koš (#)"
 msgid "Move to Yuva"
 msgstr "Preselite se v Yuvo"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Premaknjeno v Prejeto"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Premaknjeno v koš"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Premakne e-pošto v arhiv."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Premakne e-pošto v koš. Izvede se po drugih dejanjih."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Nov zapis"
 msgid "New field"
 msgstr "Novo polje"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Nov filter"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Nova ideja"
@@ -10569,8 +10642,8 @@ msgstr "Novo pravilo"
 msgid "New reply in <0>{title}</0>"
 msgstr "Nov odgovor v <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Novo pravilo"
 
@@ -10695,6 +10768,7 @@ msgstr "Nočna varnostna kopija"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Ne"
@@ -10985,6 +11059,10 @@ msgstr "Polj še ni."
 msgid "No file is accepted."
 msgstr "Nobena datoteka ni sprejeta."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Še ni filtrov."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "V tem obdobju še ni odzivnih časov."
 msgid "No results"
 msgstr "Ni rezultatov"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Še ni pravil."
 
@@ -11797,6 +11875,10 @@ msgstr "Obvestila so za to spletno mesto blokirana. Dovolite jih v nastavitvah s
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Obvestila niso bila dovoljena."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Obvesti člana"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Nedavni obiski"
 msgid "Recently active"
 msgstr "Nedavno aktivni"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Prejemnik (Kp)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Prejemnik (Za)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "naslov prejemnika"
@@ -15695,6 +15785,7 @@ msgstr "Pošlji na končno točko webhooka"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Pošiljatelj"
@@ -16873,6 +16964,7 @@ msgstr "Faza"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Označi z zvezdico"
 
@@ -16884,6 +16976,10 @@ msgstr "Označi z zvezdico (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Označite sporočilo z zvezdico, da ostane tukaj."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Zvezdica za"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Z zvezdico"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "z vašo zvezdico"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Označi e-pošto z zvezdico za vas."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Ta lastnost že ima cilj s tem imenom."
 msgid "This property already has a segment with this name."
 msgstr "Ta lastnost že ima segment s tem imenom."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Ta odgovor ne bo poslan, dokler lastnik ali skrbnik ne shrani tako tega pravila kot pripravljenega odgovora {title} ali dokler roboti ne smejo pošiljati v nastavitvah ključev API."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Ta odgovor ne bo poslan, dokler lastnik ali skrbnik ne shrani pripravljenega odgovora {title} ali dokler roboti ne smejo pošiljati v nastavitvah ključev API."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Ta odgovor ne bo poslan, dokler lastnik ali skrbnik ne shrani tega pravila ali dokler roboti ne smejo pošiljati v nastavitvah ključev API."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Ko {first} znova napiše"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Ko vas filter poštnega predala navede pri prispeli e-pošti."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Ko načrtovano sporočilo ostane osnutek, ker je bilo zavrnjeno."
 
@@ -20920,6 +21024,7 @@ msgstr "Napišite e-pošto…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Da"

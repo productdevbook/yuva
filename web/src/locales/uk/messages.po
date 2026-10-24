@@ -1304,6 +1304,10 @@ msgstr "Чернетку написано"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Вміст файлу не відповідає його типу. Перевірте файл і спробуйте знову."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Фільтр переглядає кожен лист, що сюди надходить, і ставить йому зірку, архівує, переносить до кошика, додає мітки або передає учаснику. Фільтри виконуються в порядку цього списку."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "Список — це люди, які погодилися отриму
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Макрос — це відповідь плюс дії: мітки, відповідальний, статус, пріоритет або відкласти. Введіть у полі відповіді / і скорочення; дії виконаються під час надсилання відповіді."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Надходить лист"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Поштовий фільтр сповіщає мене"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Схвалено"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Архівувати"
 
@@ -3077,6 +3090,10 @@ msgstr "Асистенти, чернеток очікує: {drafts}"
 msgid "Async"
 msgstr "Асинхронно"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Щонайменше 3 символи"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Не більше {max} адрес"
@@ -3246,6 +3263,10 @@ msgstr "Назад до налаштування"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Назад до списку"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Назад до листа"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Умова"
 msgid "Conditions"
 msgstr "Умови"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Умови: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Створити чернетку"
 msgid "Create field"
 msgstr "Створити поле"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Створити фільтр"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Знижена продуктивність"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Видалити запис"
 msgid "Delete the field {name}?"
 msgstr "Видалити поле {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "Видалити фільтр {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "Видалити мітку {name}?"
@@ -5453,7 +5482,7 @@ msgstr "Видаліть клієнт OAuth, створений для Yuva"
 msgid "Delete the policy {name}?"
 msgstr "Видалити політику «{name}»?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "Видалити правило {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "Кожна з усіма повідомленнями й нотатка�
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Змінити подробиці ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Редагувати поле"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Змінити фільтр"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Порожньо в перших рядках"
 msgid "Enabled"
 msgstr "Увімкнено"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Увімкнено: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Кожен сигнал, пропущений сигнал і надіс
 msgid "Every check of the last 30 days, newest first."
 msgstr "Усі перевірки за останні 30 днів, спочатку нові."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "кожна розмова"
 
@@ -6550,6 +6583,10 @@ msgstr "Кожна скринька робочого простору, зокр�
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Усі мови. Додайте мову, щоб залишити лише контакти, які нею користуються; tr також залишає tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "кожен лист"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Фільтр за командою"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Фільтр за типом, сайтом, розсилкою та SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Фільтрувати повідомлення, як останній лист"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Фільтрувати повідомлення, як це"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Фільтри"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Передано: {name}"
 msgid "has an attachment"
 msgstr "має вкладення"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Має вкладення"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Є відкрита розмова"
@@ -7889,7 +7943,7 @@ msgstr "Причину виявлено"
 msgid "Identity secret"
 msgstr "Секрет особи"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Неактивна {idle} хв"
 
@@ -8532,7 +8586,7 @@ msgstr "Запис про згоду видаляється разом з ним
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Його історія видаляється. Інциденти, що його згадували, більше не згадують."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Його журнал видаляється разом із ним. Уже зроблені зміни залишаються. Це не можна скасувати."
 
@@ -9260,7 +9314,7 @@ msgstr "Заблоковано"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Заблоковано: читачі більше не можуть тут писати. Ви можете."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Журнал"
 
@@ -9346,6 +9400,7 @@ msgstr "Зробив(ла) єдиний вхід обов’язковим"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Поштові скриньки"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir у zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Розсилка (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Найбільше голосів"
 msgid "Move {0} to the Trash?"
 msgstr "Перемістити до кошика: {0}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Перемістити «{name}». Перетягніть або натисніть Alt зі стрілками."
@@ -10041,7 +10100,7 @@ msgstr "Перемістити «{name}». Перетягніть або нат�
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Переміщувати розмови до кошика, відновлювати їх і читати кошик"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Перенести на попередній або наступний �
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Перемістити до кошика"
 
@@ -10163,7 +10223,7 @@ msgstr "Перемістити до кошика (#)"
 msgid "Move to Yuva"
 msgstr "Перейти до Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Повернуто до Вхідних"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Переміщено до кошика"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Переносить лист до архіву."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Переносить лист до кошика. Виконується після решти дій."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Новий запис"
 msgid "New field"
 msgstr "Нове поле"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Новий фільтр"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Нова ідея"
@@ -10569,8 +10642,8 @@ msgstr "Нова політика"
 msgid "New reply in <0>{title}</0>"
 msgstr "Нова відповідь у <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Нове правило"
 
@@ -10695,6 +10768,7 @@ msgstr "Нічне резервне копіювання"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Ні"
@@ -10985,6 +11059,10 @@ msgstr "Полів поки немає."
 msgid "No file is accepted."
 msgstr "Жодні файли не приймаються."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Фільтрів ще немає."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "За цей період часу відповіді поки немає
 msgid "No results"
 msgstr "Немає результатів"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Правил поки немає."
 
@@ -11797,6 +11875,10 @@ msgstr "Сповіщення заблоковано для цього сайту
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Сповіщення не було дозволено."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Сповістити учасника"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Нещодавні візити"
 msgid "Recently active"
 msgstr "Нещодавно були активні"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Одержувач (Копія)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Одержувач (Кому)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "адреса одержувача"
@@ -15695,6 +15785,7 @@ msgstr "Надіслати на кінцеву точку вебхука"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Відправник"
@@ -16873,6 +16964,7 @@ msgstr "Етап"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Позначити зірочкою"
 
@@ -16884,6 +16976,10 @@ msgstr "Позначити зірочкою (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Позначте лист зірочкою, щоб він був тут."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Зірка для"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Із зірочкою"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "позначено вами зірочкою"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Ставить листу зірку для вас."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "У цього ресурсу вже є ціль з такою назво
 msgid "This property already has a segment with this name."
 msgstr "У цього ресурсу вже є сегмент з такою назвою."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Ця відповідь не буде надіслана, доки власник або адміністратор не збереже і це правило, і готову відповідь {title}, або доки ботам не дозволять надсилати в налаштуваннях API-ключів."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Ця відповідь не буде надіслана, доки власник або адміністратор не збереже готову відповідь {title}, або доки ботам не дозволять надсилати в налаштуваннях API-ключів."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Ця відповідь не буде надіслана, доки власник або адміністратор не збереже це правило, або доки ботам не дозволять надсилати в налаштуваннях API-ключів."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Коли {first} напише знову"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Коли фільтр поштової скриньки призначає вас на отриманий лист."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Коли заплановане повідомлення лишається чернеткою, бо його відхилили."
 
@@ -20920,6 +21024,7 @@ msgstr "Напишіть листа…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Так"

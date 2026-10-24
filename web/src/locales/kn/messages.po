@@ -1304,6 +1304,10 @@ msgstr "ಒಂದು ಡ್ರಾಫ್ಟ್ ಬರೆಯಲಾಯಿತು"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ಫೈಲ್‌ನ ವಿಷಯ ಅದರ ಪ್ರಕಾರಕ್ಕೆ ಹೊಂದುವುದಿಲ್ಲ. ಫೈಲ್ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "ಫಿಲ್ಟರ್ ಇಲ್ಲಿಗೆ ಬರುವ ಪ್ರತಿ ಮೇಲ್ ಅನ್ನು ನೋಡಿ ಅದಕ್ಕೆ ನಕ್ಷತ್ರ ಹಾಕುತ್ತದೆ, ಆರ್ಕೈವ್ ಮಾಡುತ್ತದೆ, ಕಸದ ಬುಟ್ಟಿಗೆ ಸರಿಸುತ್ತದೆ, ಲೇಬಲ್ ಹಾಕುತ್ತದೆ ಅಥವಾ ಒಬ್ಬ ಸದಸ್ಯರಿಗೆ ವಹಿಸುತ್ತದೆ. ಫಿಲ್ಟರ್‌ಗಳು ಈ ಪಟ್ಟಿಯ ಕ್ರಮದಲ್ಲಿ ಓಡುತ್ತವೆ."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "ಪಟ್ಟಿ ಎಂದರೆ ನಿಮ್ಮಿಂದ ಸಂದೇಶ
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "ಮ್ಯಾಕ್ರೋ ಎಂದರೆ ಒಂದು ಉತ್ತರ ಮತ್ತು ಕ್ರಿಯೆಗಳು: ಲೇಬಲ್‌ಗಳು, ಜವಾಬ್ದಾರರು, ಸ್ಥಿತಿ, ಆದ್ಯತೆ ಅಥವಾ ಸ್ನೂಜ್. ಉತ್ತರ ಪೆಟ್ಟಿಗೆಯಲ್ಲಿ / ಮತ್ತು ಅದರ ಶಾರ್ಟ್‌ಕಟ್ ಟೈಪ್ ಮಾಡಿ; ಉತ್ತರ ಕಳುಹಿಸಿದಾಗ ಕ್ರಿಯೆಗಳು ಅನ್ವಯವಾಗುತ್ತವೆ."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "ಮೇಲ್ ಬಂದಾಗ"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "ಮೇಲ್ ಫಿಲ್ಟರ್ ನನಗೆ ತಿಳಿಸುತ್ತದೆ"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "ಆರ್ಕೈವ್"
 
@@ -3077,6 +3090,10 @@ msgstr "ಸಹಾಯಕರು, {drafts} ಡ್ರಾಫ್ಟ್‌ಗಳು ಕ
 msgid "Async"
 msgstr "ಅಸಿಂಕ್"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "ಕನಿಷ್ಠ 3 ಅಕ್ಷರಗಳು"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "ಗರಿಷ್ಠ {max} ವಿಳಾಸಗಳು"
@@ -3246,6 +3263,10 @@ msgstr "ಸೆಟಪ್‌ಗೆ ಹಿಂತಿರುಗಿ"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "ಪಟ್ಟಿಗೆ ಹಿಂತಿರುಗಿ"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "ಮೇಲ್‌ಗೆ ಹಿಂತಿರುಗಿ"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "ಷರತ್ತು"
 msgid "Conditions"
 msgstr "ಷರತ್ತುಗಳು"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "ಷರತ್ತುಗಳು: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "ಡ್ರಾಫ್ಟ್ ರಚಿಸಿ"
 msgid "Create field"
 msgstr "ಕ್ಷೇತ್ರ ರಚಿಸಿ"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "ಫಿಲ್ಟರ್ ರಚಿಸಿ"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "ಕಡಿಮೆಯಾದ ಕಾರ್ಯಕ್ಷಮತೆ"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "ನಮೂದು ಅಳಿಸಿ"
 msgid "Delete the field {name}?"
 msgstr "{name} ಕ್ಷೇತ್ರವನ್ನು ಅಳಿಸಬೇಕೆ?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "ಫಿಲ್ಟರ್ {name} ಅಳಿಸಬೇಕೇ?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "{name} ಲೇಬಲ್ ಅಳಿಸಬೇಕೇ?"
@@ -5453,7 +5482,7 @@ msgstr "ನೀವು Yuva ಗಾಗಿ ರಚಿಸಿದ OAuth ಕ್ಲೈಂ�
 msgid "Delete the policy {name}?"
 msgstr "ನೀತಿ {name} ಅಳಿಸಬೇಕೇ?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "ನಿಯಮ {name} ಅನ್ನು ಅಳಿಸಬೇಕೇ?"
 
@@ -6222,7 +6251,7 @@ msgstr "ಪ್ರತಿಯೊಂದೂ ಅದರ ಎಲ್ಲಾ ಸಂದೇಶ
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "ವಿವರಗಳನ್ನು ಸಂಪಾದಿಸಿ ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "ಕ್ಷೇತ್ರ ಸಂಪಾದಿಸಿ"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "ಫಿಲ್ಟರ್ ಸಂಪಾದಿಸಿ"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "ಮೊದಲ ಸಾಲುಗಳಲ್ಲಿ ಖಾಲಿ"
 msgid "Enabled"
 msgstr "ಸಕ್ರಿಯ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "ಆನ್: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "ಕಳೆದ 30 ದಿನಗಳ ಪ್ರತಿಯೊಂದು ಸಂಕ
 msgid "Every check of the last 30 days, newest first."
 msgstr "ಕಳೆದ 30 ದಿನಗಳ ಪ್ರತಿ ಪರಿಶೀಲನೆ, ಹೊಸದು ಮೊದಲು."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "ಪ್ರತಿ ಸಂಭಾಷಣೆ"
 
@@ -6550,6 +6583,10 @@ msgstr "ನೀವು ನಂತರ ಸೇರಿಸುವ ಇನ್‌ಬಾಕ್
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "ಎಲ್ಲಾ ಭಾಷೆಗಳು. ಆ ಭಾಷೆ ಬಳಸುವ ಸಂಪರ್ಕಗಳನ್ನು ಮಾತ್ರ ಉಳಿಸಲು ಭಾಷೆ ಸೇರಿಸಿ; tr ಕೂಡ tr-TR ಅನ್ನು ಉಳಿಸುತ್ತದೆ."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "ಪ್ರತಿ ಮೇಲ್"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "ತಂಡದ ಪ್ರಕಾರ ಫಿಲ್ಟರ್ ಮಾಡಿ"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "ಪ್ರಕಾರ, ಸೈಟ್, ಪ್ರಸಾರ ಮತ್ತು SLA ಪ್ರಕಾರ ಫಿಲ್ಟರ್ ಮಾಡಿ"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "ಇತ್ತೀಚಿನ ಮೇಲ್‌ನಂತಹ ಸಂದೇಶಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "ಇದರಂತಹ ಸಂದೇಶಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "ಫಿಲ್ಟರ್‌ಗಳು"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "{name} ಅವರಿಗೆ ಹಸ್ತಾಂತರಿಸಲಾಗಿದ�
 msgid "has an attachment"
 msgstr "ಲಗತ್ತು ಇದೆ"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "ಲಗತ್ತು ಇದೆ"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "ತೆರೆದ ಸಂಭಾಷಣೆ ಇದೆ"
@@ -7889,7 +7943,7 @@ msgstr "ಕಾರಣ ಗುರುತಿಸಲಾಗಿದೆ"
 msgid "Identity secret"
 msgstr "ಐಡೆಂಟಿಟಿ ಸೀಕ್ರೆಟ್"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "{idle} ನಿಮಿಷದಿಂದ ನಿಷ್ಕ್ರಿಯ"
 
@@ -8532,7 +8586,7 @@ msgstr "ಅದರ ಒಪ್ಪಿಗೆ ದಾಖಲೆಯನ್ನು ಅದರ
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "ಅದರ ಇತಿಹಾಸ ಅಳಿಸಲ್ಪಡುತ್ತದೆ. ಅದನ್ನು ಉಲ್ಲೇಖಿಸಿದ ಘಟನೆಗಳು ಇನ್ನು ಉಲ್ಲೇಖಿಸುವುದಿಲ್ಲ."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "ಅದರ ಲಾಗ್ ಕೂಡ ಅದರೊಂದಿಗೆ ಅಳಿಸಿಹೋಗುತ್ತದೆ. ಅದು ಈಗಾಗಲೇ ಬದಲಿಸಿದ್ದು ಉಳಿಯುತ್ತದೆ. ಇದನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗದು."
 
@@ -9260,7 +9314,7 @@ msgstr "ಲಾಕ್ ಆಗಿದೆ"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "ಲಾಕ್ ಆಗಿದೆ: ಓದುಗರು ಇನ್ನು ಇಲ್ಲಿ ಬರೆಯಲಾಗದು. ನೀವು ಇನ್ನೂ ಬರೆಯಬಹುದು."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "ಲಾಗ್"
 
@@ -9346,6 +9400,7 @@ msgstr "ಸಿಂಗಲ್ ಸೈನ್-ಆನ್ ಅನ್ನು ಕಡ್ಡ�
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "ಮೇಲ್‌ಬಾಕ್ಸ್‌ಗಳು"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "zip ನಲ್ಲಿ Maildir"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "ಮೇಲಿಂಗ್ ಪಟ್ಟಿ (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "ಅತಿ ಹೆಚ್ಚು ಮತಗಳು"
 msgid "Move {0} to the Trash?"
 msgstr "{0} ಅನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಬೇಕೇ?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name} ಸರಿಸಿ. ಎಳೆಯಿರಿ, ಅಥವಾ ಬಾಣದ ಕೀಗಳೊಂದಿಗೆ Alt ಒತ್ತಿ."
@@ -10041,7 +10100,7 @@ msgstr "{name} ಸರಿಸಿ. ಎಳೆಯಿರಿ, ಅಥವಾ ಬಾಣದ
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "ಸಂಭಾಷಣೆಗಳನ್ನು ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಿ, ಮರುಸ್ಥಾಪಿಸಿ ಮತ್ತು ಟ್ರ್ಯಾಶ್ ಓದಿ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "ಹಿಂದಿನ ಅಥವಾ ಮುಂದಿನ ಹಂತಕ್ಕೆ
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಿ"
 
@@ -10163,7 +10223,7 @@ msgstr "ಕಸದ ಬುಟ್ಟಿಗೆ ಸರಿಸಿ (#)"
 msgid "Move to Yuva"
 msgstr "Yuva ಗೆ ಸರಿಸಿ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "ಇನ್‌ಬಾಕ್ಸ್‌ಗೆ ಹಿಂತಿರುಗಿಸ�
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಲಾಗಿದೆ"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "ಮೇಲ್ ಅನ್ನು ಆರ್ಕೈವ್‌ಗೆ ಸರಿಸುತ್ತದೆ."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "ಮೇಲ್ ಅನ್ನು ಕಸದ ಬುಟ್ಟಿಗೆ ಸರಿಸುತ್ತದೆ. ಇತರ ಕ್ರಿಯೆಗಳ ನಂತರ ಓಡುತ್ತದೆ."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "ಹೊಸ ನಮೂದು"
 msgid "New field"
 msgstr "ಹೊಸ ಕ್ಷೇತ್ರ"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "ಹೊಸ ಫಿಲ್ಟರ್"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "ಹೊಸ ಐಡಿಯಾ"
@@ -10569,8 +10642,8 @@ msgstr "ಹೊಸ ನೀತಿ"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> ನಲ್ಲಿ ಹೊಸ ಉತ್ತರ"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "ಹೊಸ ನಿಯಮ"
 
@@ -10695,6 +10768,7 @@ msgstr "ರಾತ್ರಿ ಬ್ಯಾಕಪ್"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "ಇಲ್ಲ"
@@ -10985,6 +11059,10 @@ msgstr "ಇನ್ನೂ ಯಾವುದೇ ಕ್ಷೇತ್ರಗಳಿಲ್�
 msgid "No file is accepted."
 msgstr "ಯಾವುದೇ ಫೈಲ್ ಅನ್ನು ಸ್ವೀಕರಿಸಲಾಗುವುದಿಲ್ಲ."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "ಇನ್ನೂ ಫಿಲ್ಟರ್‌ಗಳಿಲ್ಲ."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "ಈ ಅವಧಿಯಲ್ಲಿ ಇನ್ನೂ ಪ್ರತಿಕ್ರ
 msgid "No results"
 msgstr "ಫಲಿತಾಂಶಗಳಿಲ್ಲ"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "ಇನ್ನೂ ನಿಯಮಗಳಿಲ್ಲ."
 
@@ -11797,6 +11875,10 @@ msgstr "ಈ ಸೈಟ್‌ಗೆ ಅಧಿಸೂಚನೆಗಳನ್ನು ನ
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "ಅಧಿಸೂಚನೆಗಳನ್ನು ಅನುಮತಿಸಲಾಗಲಿಲ್ಲ."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "ಸದಸ್ಯರಿಗೆ ತಿಳಿಸಿ"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "ಇತ್ತೀಚಿನ ಭೇಟಿಗಳು"
 msgid "Recently active"
 msgstr "ಇತ್ತೀಚೆಗೆ ಸಕ್ರಿಯ"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "ಸ್ವೀಕೃತದಾರ (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "ಸ್ವೀಕೃತದಾರ (To)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "ಸ್ವೀಕರಿಸುವವರ ವಿಳಾಸ"
@@ -15695,6 +15785,7 @@ msgstr "ವೆಬ್‌ಹುಕ್ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ಗ�
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "ಕಳುಹಿಸುವವರು"
@@ -16873,6 +16964,7 @@ msgstr "ಹಂತ"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "ನಕ್ಷತ್ರ ಹಾಕಿ"
 
@@ -16884,6 +16976,10 @@ msgstr "ನಕ್ಷತ್ರ ಹಾಕಿ (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "ಮೇಲ್ ಅನ್ನು ಇಲ್ಲಿ ಇರಿಸಲು ಅದಕ್ಕೆ ನಕ್ಷತ್ರ ಹಾಕಿ."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "ಇವರಿಗೆ ನಕ್ಷತ್ರ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "ನಕ್ಷತ್ರ ಹಾಕಿದವು"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "ನೀವು ನಕ್ಷತ್ರ ಹಾಕಿದ್ದು"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "ನಿಮಗಾಗಿ ಮೇಲ್‌ಗೆ ನಕ್ಷತ್ರ ಹಾಕುತ್ತದೆ."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "ಈ ಪ್ರಾಪರ್ಟಿಯಲ್ಲಿ ಈ ಹೆಸರಿನ �
 msgid "This property already has a segment with this name."
 msgstr "ಈ ಪ್ರಾಪರ್ಟಿಯಲ್ಲಿ ಈ ಹೆಸರಿನ ಸೆಗ್ಮೆಂಟ್ ಈಗಾಗಲೇ ಇದೆ."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಈ ನಿಯಮ ಮತ್ತು ಸಿದ್ಧ ಉತ್ತರ {title} ಎರಡನ್ನೂ ಉಳಿಸುವವರೆಗೆ, ಅಥವಾ API ಕೀ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಬಾಟ್‌ಗಳಿಗೆ ಕಳುಹಿಸಲು ಅನುಮತಿ ಸಿಗುವವರೆಗೆ ಈ ಉತ್ತರ ಕಳುಹಿಸಲಾಗುವುದಿಲ್ಲ."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಸಿದ್ಧ ಉತ್ತರ {title} ಅನ್ನು ಉಳಿಸುವವರೆಗೆ, ಅಥವಾ API ಕೀ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಬಾಟ್‌ಗಳಿಗೆ ಕಳುಹಿಸಲು ಅನುಮತಿ ಸಿಗುವವರೆಗೆ ಈ ಉತ್ತರ ಕಳುಹಿಸಲಾಗುವುದಿಲ್ಲ."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕರು ಈ ನಿಯಮವನ್ನು ಉಳಿಸುವವರೆಗೆ, ಅಥವಾ API ಕೀ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಬಾಟ್‌ಗಳಿಗೆ ಕಳುಹಿಸಲು ಅನುಮತಿ ಸಿಗುವವರೆಗೆ ಈ ಉತ್ತರ ಕಳುಹಿಸಲಾಗುವುದಿಲ್ಲ."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "{first} ಮತ್ತೆ ಬರೆದಾಗ"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "ಮೇಲ್ ಇನ್‌ಬಾಕ್ಸ್‌ನ ಫಿಲ್ಟರ್ ಬಂದ ಮೇಲ್‌ಗಾಗಿ ನಿಮ್ಮನ್ನು ಹೆಸರಿಸಿದಾಗ."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "ನಿಗದಿಪಡಿಸಿದ ಸಂದೇಶ ತಿರಸ್ಕೃತವಾಗಿ ಕರಡಾಗಿ ಉಳಿದಾಗ."
 
@@ -20920,6 +21024,7 @@ msgstr "ನಿಮ್ಮ ಮೇಲ್ ಬರೆಯಿರಿ…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "ಹೌದು"

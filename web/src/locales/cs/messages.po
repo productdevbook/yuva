@@ -1304,6 +1304,10 @@ msgstr "Koncept byl napsán"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Obsah souboru neodpovídá jeho typu. Zkontrolujte soubor a zkuste to znovu."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Filtr zkontroluje každý e-mail, který sem dorazí, a označí ho hvězdičkou, archivuje ho, přesune do koše, opatří štítky nebo ho předá členovi. Filtry se spouštějí v pořadí tohoto seznamu."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "Seznam tvoří lidé, kteří souhlasili, že od vás budou dostávat zp
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Makro je odpověď plus akce: štítky, přiřazená osoba, stav, priorita nebo odložení. Napište do pole odpovědi / a zkratku; akce se provedou při odeslání odpovědi."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Přijde e-mail"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Filtr pošty mi dá vědět"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Schváleno"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Archivovat"
 
@@ -3077,6 +3090,10 @@ msgstr "Asistenti, čeká {drafts} konceptů"
 msgid "Async"
 msgstr "Asynchronní"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Alespoň 3 znaky"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Nejvýše {max} adres"
@@ -3246,6 +3263,10 @@ msgstr "Zpět k nastavení"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Zpět na seznam"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Zpět na e-mail"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Podmínka"
 msgid "Conditions"
 msgstr "Podmínky"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Podmínky: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Vytvořit koncept"
 msgid "Create field"
 msgstr "Vytvořit pole"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Vytvořit filtr"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Snížený výkon"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Smazat záznam"
 msgid "Delete the field {name}?"
 msgstr "Smazat pole {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "Smazat filtr {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "Smazat štítek {name}?"
@@ -5453,7 +5482,7 @@ msgstr "Smažte klienta OAuth, kterého jste pro Yuvu vytvořili"
 msgid "Delete the policy {name}?"
 msgstr "Smazat politiku {name}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "Smazat pravidlo {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "Každá se všemi svými zprávami a poznámkami"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Upravit podrobnosti ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Upravit pole"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Upravit filtr"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Prázdné v prvních řádcích"
 msgid "Enabled"
 msgstr "Zapnuto"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Zapnuto: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Každý signál, zmeškaný signál a odeslaný stav za posledních 30 d
 msgid "Every check of the last 30 days, newest first."
 msgstr "Každá kontrola za posledních 30 dní, nejnovější první."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "každá konverzace"
 
@@ -6550,6 +6583,10 @@ msgstr "Každá schránka pracovního prostoru, včetně těch, které přidáte
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Každý jazyk. Přidejte jazyk, abyste ponechali jen kontakty, které ho používají; tr ponechá i tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "každý e-mail"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Filtrovat podle týmu"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Filtrovat podle typu, webu, rozesílky a SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Filtrovat zprávy jako poslední e-mail"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Filtrovat zprávy jako tato"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Filtry"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Předáno uživateli {name}"
 msgid "has an attachment"
 msgstr "má přílohu"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Má přílohu"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Má otevřenou konverzaci"
@@ -7889,7 +7943,7 @@ msgstr "Identifikováno"
 msgid "Identity secret"
 msgstr "Tajný klíč identity"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Neaktivní {idle} min"
 
@@ -8532,7 +8586,7 @@ msgstr "Její záznam o souhlasu se s ní smaže. Protože se odhlásili, adresa
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Jeho historie se smaže. Incidenty, které ji zmiňovaly, ji už nezmiňují."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Smaže se i jeho záznam. To, co už změnilo, zůstane. Nelze to vrátit zpět."
 
@@ -9260,7 +9314,7 @@ msgstr "Zamčeno"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Zamčeno: čtenáři sem už nemohou psát. Vy stále můžete."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Záznam"
 
@@ -9346,6 +9400,7 @@ msgstr "Nastavil(a) jednotné přihlašování jako povinné"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Schránky"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir v archivu zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Mailing list (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Nejvíce hlasů"
 msgid "Move {0} to the Trash?"
 msgstr "Přesunout {0} do koše?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Přesunout {name}. Přetáhněte, nebo stiskněte Alt se šipkami."
@@ -10041,7 +10100,7 @@ msgstr "Přesunout {name}. Přetáhněte, nebo stiskněte Alt se šipkami."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Přesouvat konverzace do koše, obnovovat je a číst koš"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Přesunout do předchozí nebo další fáze"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Přesunout do koše"
 
@@ -10163,7 +10223,7 @@ msgstr "Přesunout do koše (#)"
 msgid "Move to Yuva"
 msgstr "Přejít na Yuvu"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Přesunuto do Doručené pošty"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Přesunuto do koše"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Přesune e-mail do archivu."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Přesune e-mail do koše. Spustí se po ostatních akcích."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Nový záznam"
 msgid "New field"
 msgstr "Nové pole"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Nový filtr"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Nový nápad"
@@ -10569,8 +10642,8 @@ msgstr "Nová politika"
 msgid "New reply in <0>{title}</0>"
 msgstr "Nová odpověď v <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Nové pravidlo"
 
@@ -10695,6 +10768,7 @@ msgstr "Noční záloha"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Ne"
@@ -10985,6 +11059,10 @@ msgstr "Zatím žádná pole."
 msgid "No file is accepted."
 msgstr "Nepřijímá se žádný soubor."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Zatím žádné filtry."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "V tomto rozsahu zatím nejsou žádné doby odezvy."
 msgid "No results"
 msgstr "Žádné výsledky"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Zatím žádná pravidla."
 
@@ -11797,6 +11875,10 @@ msgstr "Oznámení jsou pro tento web zablokována. Povolte je v nastavení web�
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Oznámení nebyla povolena."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Upozornit člena"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Nedávné návštěvy"
 msgid "Recently active"
 msgstr "Nedávno aktivní"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Příjemce (Kopie)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Příjemce (Komu)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "adresa příjemce"
@@ -15695,6 +15785,7 @@ msgstr "Odeslat na koncový bod webhooku"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Odesílatel"
@@ -16873,6 +16964,7 @@ msgstr "Fáze"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Označit hvězdičkou"
 
@@ -16884,6 +16976,10 @@ msgstr "Označit hvězdičkou (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Označte e-mail hvězdičkou, aby zůstal tady."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Hvězdička pro"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "S hvězdičkou"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "označeno vámi hvězdičkou"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Označí e-mail hvězdičkou pro vás."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Tato vlastnost už má cíl s tímto názvem."
 msgid "This property already has a segment with this name."
 msgstr "Tato vlastnost už má segment s tímto názvem."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Tato odpověď se neodešle, dokud vlastník nebo správce neuloží jak toto pravidlo, tak připravenou odpověď {title}, nebo dokud boti nesmějí odesílat v nastavení klíčů API."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Tato odpověď se neodešle, dokud vlastník nebo správce neuloží připravenou odpověď {title}, nebo dokud boti nesmějí odesílat v nastavení klíčů API."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Tato odpověď se neodešle, dokud vlastník nebo správce neuloží toto pravidlo, nebo dokud boti nesmějí odesílat v nastavení klíčů API."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Když {first} znovu napíše"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Když vás filtr schránky uvede u přijatého e-mailu."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Když naplánovaná zpráva zůstane konceptem, protože byla odmítnuta."
 
@@ -20920,6 +21024,7 @@ msgstr "Napište e-mail…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Ano"

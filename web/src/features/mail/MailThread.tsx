@@ -5,6 +5,7 @@ import {
   ChevronDownIcon,
   ClockIcon,
   FileDownIcon,
+  FilterIcon,
   InboxIcon,
   MailIcon,
   PaperclipIcon,
@@ -60,6 +61,8 @@ import {
 } from "@/features/conversation/queries"
 import { look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
+import { FilterDialog } from "@/features/mail/FilterDialog"
+import { useFilterAccess } from "@/features/mail/folders"
 import { useStar } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useMediaQuery } from "@/hooks/use-media-query"
@@ -141,12 +144,14 @@ function MailCard({
   contactName,
   open,
   onToggle,
+  onFilter,
 }: {
   m: Message
   ctx: ThreadContext
   contactName: string
   open: boolean
   onToggle: () => void
+  onFilter?: () => void
 }) {
   const { t, i18n } = useLingui()
   const { workspaceId } = useSession()
@@ -226,11 +231,25 @@ function MailCard({
       )}
       <footer className="flex flex-wrap items-center gap-1 border-t px-2 py-1">
         <MailControls mail={mail} />
+        {onFilter && (
+          <button
+            type="button"
+            onClick={onFilter}
+            className="ms-auto inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-small text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            data-testid="mail-filter-like"
+          >
+            <FilterIcon className="size-3.5" />
+            <Trans>Filter messages like this</Trans>
+          </button>
+        )}
         {e?.raw && (
           <a
             href={rawMessageUrl(m.id, workspaceId)}
             download
-            className="ms-auto inline-flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className={cn(
+              "inline-flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+              !onFilter && "ms-auto"
+            )}
             title={t`Download the original e-mail (.eml)`}
             data-testid="raw-download"
           >
@@ -330,6 +349,8 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
   const reply = useRef<ReplyHandle>(null)
   const scroller = useRef<HTMLDivElement>(null)
   const [snoozing, setSnoozing] = useState(false)
+  const [filtering, setFiltering] = useState<string | null>(null)
+  const mayFilter = useFilterAccess(c.inbox_id)
   const [timing, setTiming] = useState<string | null>(null)
   const draftActions = useDraftActions()
   const [expandQuoted, setExpandQuoted] = useState(false)
@@ -382,6 +403,8 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
 
   const contactEmails = contact?.emails.map((e) => e.toLowerCase()) ?? []
   const inbound = shown.filter((m) => m.kind === "message" && m.direction !== "out")
+  const filterable = (m: Message) => mayFilter && !trashed && !m.draft && !!m.email && m.direction === "in"
+  const latestFilterable = shown.findLast((m) => m.kind === "message" && filterable(m))
   const lastContactMail = inbound.findLast(
     (m) => m.author.type === "contact" && !!m.email?.from && contactEmails.includes(m.email.from.toLowerCase())
   )
@@ -495,6 +518,7 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
           [MAIL_KEYS.star]: toggleStar,
           [MAIL_KEYS.unread]: markUnread,
           [MAIL_KEYS.snooze]: () => setSnoozing(true),
+          [MAIL_KEYS.filter]: () => latestFilterable && setFiltering(latestFilterable.id),
           [MAIL_KEYS.quoted]: () => setExpandQuoted((x) => !x),
           [MAIL_KEYS.expand]: () => setAllOpen((x) => !x),
           ...cardKeys,
@@ -618,6 +642,7 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
                 contactName={name}
                 open={isOpen(m)}
                 onToggle={() => toggleOne(m.id)}
+                onFilter={m.kind === "message" && filterable(m) ? () => setFiltering(m.id) : undefined}
               />
             )
           )}
@@ -706,6 +731,7 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
         </div>
       )}
       {confirmDialog}
+      {filtering && <FilterDialog messageId={filtering} onClose={() => setFiltering(null)} />}
     </section>
   )
 }

@@ -103,7 +103,8 @@ export const keys = {
   teams: (ws: string) => ["ws", ws, "teams"] as const,
   customFields: (ws: string) => ["ws", ws, "custom-fields"] as const,
   slaPolicies: (ws: string) => ["ws", ws, "sla-policies"] as const,
-  automationRules: (ws: string) => ["ws", ws, "automation-rules"] as const,
+  automationRules: (ws: string, inboxId?: string) =>
+    inboxId ? (["ws", ws, "automation-rules", inboxId] as const) : (["ws", ws, "automation-rules"] as const),
   automationRuns: (ws: string, rule: string, outcome: string) =>
     ["ws", ws, "automation-rules", "runs", rule, outcome] as const,
   contact: (ws: string, id: string) => ["ws", ws, "contact", id] as const,

@@ -1304,6 +1304,10 @@ msgstr "డ్రాఫ్ట్ రాయబడింది"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "ఫైల్ కంటెంట్ దాని రకంతో సరిపోలడం లేదు. ఫైల్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "ఫిల్టర్ ఇక్కడికి వచ్చే ప్రతి మెయిల్‌ను చూసి దానికి నక్షత్రం పెడుతుంది, ఆర్కైవ్ చేస్తుంది, ట్రాష్‌లోకి తరలిస్తుంది, లేబుల్స్ పెడుతుంది లేదా ఒక సభ్యునికి అప్పగిస్తుంది. ఫిల్టర్లు ఈ జాబితా క్రమంలో నడుస్తాయి."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "జాబితా అంటే మీ నుండి సందేశ�
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "మాక్రో అంటే ఒక సమాధానం మరియు చర్యలు: లేబుళ్లు, బాధ్యుడు, స్థితి, ప్రాధాన్యత లేదా స్నూజ్. సమాధాన పెట్టెలో / మరియు దాని షార్ట్‌కట్ టైప్ చేయండి; సమాధానం పంపినప్పుడు చర్యలు వర్తిస్తాయి."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "మెయిల్ వచ్చినప్పుడు"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "మెయిల్ ఫిల్టర్ నాకు తెలియజేస్తుంది"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "ఆమోదించబడింది"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "ఆర్కైవ్ చేయండి"
 
@@ -3077,6 +3090,10 @@ msgstr "అసిస్టెంట్‌లు, {drafts} డ్రాఫ్ట�
 msgid "Async"
 msgstr "అసింక్"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "కనీసం 3 అక్షరాలు"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "గరిష్ఠంగా {max} చిరునామాలు"
@@ -3246,6 +3263,10 @@ msgstr "సెటప్‌కు తిరిగి"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "లిస్ట్‌కు తిరిగి"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "మెయిల్‌కు తిరిగి వెళ్లండి"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "షరతు"
 msgid "Conditions"
 msgstr "షరతులు"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "షరతులు: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "డ్రాఫ్ట్‌ను సృష్టించండి"
 msgid "Create field"
 msgstr "ఫీల్డ్ సృష్టించండి"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "ఫిల్టర్ సృష్టించండి"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "తగ్గిన పనితీరు"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "ఎంట్రీని తొలగించండి"
 msgid "Delete the field {name}?"
 msgstr "{name} ఫీల్డ్‌ను తొలగించాలా?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "{name} ఫిల్టర్‌ను తొలగించాలా?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "{name} లేబుల్‌ను తొలగించాలా?"
@@ -5453,7 +5482,7 @@ msgstr "మీరు Yuva కోసం సృష్టించిన OAuth క�
 msgid "Delete the policy {name}?"
 msgstr "{name} విధానాన్ని తొలగించాలా?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "నియమం {name} ను తొలగించాలా?"
 
@@ -6222,7 +6251,7 @@ msgstr "ప్రతిదీ దాని అన్ని సందేశాల
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "వివరాలను సవరించండి ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "ఫీల్డ్‌ను సవరించండి"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "ఫిల్టర్‌ను సవరించండి"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "మొదటి అడ్డు వరుసల్లో ఖాళీ"
 msgid "Enabled"
 msgstr "ప్రారంభించబడింది"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "ఆన్: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "గత 30 రోజుల ప్రతి సంకేతం, తప్�
 msgid "Every check of the last 30 days, newest first."
 msgstr "గత 30 రోజుల ప్రతి తనిఖీ, కొత్తది ముందు."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "ప్రతి సంభాషణ"
 
@@ -6550,6 +6583,10 @@ msgstr "వర్క్‌స్పేస్‌లోని ప్రతి ఇ�
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "ప్రతి భాష. ఆ భాష వాడే కాంటాక్ట్‌లను మాత్రమే ఉంచడానికి భాషను జోడించండి; tr, tr-TR ను కూడా ఉంచుతుంది."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "ప్రతి మెయిల్"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "బృందం ప్రకారం ఫిల్టర్ చేయం
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "రకం, సైట్, ప్రసారం, SLA ప్రకారం ఫిల్టర్ చేయండి"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "తాజా మెయిల్ లాంటి సందేశాలను ఫిల్టర్ చేయండి"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "ఇలాంటి సందేశాలను ఫిల్టర్ చేయండి"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "ఫిల్టర్లు"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "{name} కు అప్పగించబడింది"
 msgid "has an attachment"
 msgstr "జోడింపు ఉంది"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "అటాచ్‌మెంట్ ఉంది"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "తెరిచి ఉన్న సంభాషణ ఉంది"
@@ -7889,7 +7943,7 @@ msgstr "గుర్తించబడింది"
 msgid "Identity secret"
 msgstr "ఐడెంటిటీ సీక్రెట్"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "{idle} నిమిషాలుగా నిష్క్రియం"
 
@@ -8532,7 +8586,7 @@ msgstr "దాని సమ్మతి రికార్డ్ దానిత
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "దాని చరిత్ర తొలగించబడుతుంది. దాన్ని పేర్కొన్న ఘటనలు ఇకపై పేర్కొనవు."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "దాని లాగ్ కూడా దానితో పాటు తొలగిపోతుంది. అది ఇప్పటికే మార్చినవి అలాగే ఉంటాయి. దీన్ని రద్దు చేయలేరు."
 
@@ -9260,7 +9314,7 @@ msgstr "లాక్ చేయబడింది"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "లాక్ చేయబడింది: పాఠకులు ఇకపై ఇక్కడ రాయలేరు. మీరు ఇంకా రాయగలరు."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "లాగ్"
 
@@ -9346,6 +9400,7 @@ msgstr "సింగిల్ సైన్-ఆన్‌ను తప్పని
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "మెయిల్‌బాక్స్‌లు"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "జిప్‌లో Maildir"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "మెయిలింగ్ జాబితా (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "అత్యధిక ఓట్లు"
 msgid "Move {0} to the Trash?"
 msgstr "{0} ను ట్రాష్‌కు తరలించాలా?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "{name}ను తరలించండి. లాగండి, లేదా బాణం కీలతో Alt నొక్కండి."
@@ -10041,7 +10100,7 @@ msgstr "{name}ను తరలించండి. లాగండి, లేద�
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "సంభాషణలను ట్రాష్‌కు తరలించండి, పునరుద్ధరించండి, ట్రాష్ చదవండి"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "మునుపటి లేదా తదుపరి దశకు త�
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "ట్రాష్‌కు తరలించండి"
 
@@ -10163,7 +10223,7 @@ msgstr "ట్రాష్‌కు తరలించు (#)"
 msgid "Move to Yuva"
 msgstr "Yuva కు తరలించండి"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "ఇన్‌బాక్స్‌కు తిరిగి పంపా�
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "ట్రాష్‌కు తరలించబడింది"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "మెయిల్‌ను ఆర్కైవ్‌కు తరలిస్తుంది."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "మెయిల్‌ను ట్రాష్‌కు తరలిస్తుంది. ఇతర చర్యల తర్వాత నడుస్తుంది."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "కొత్త ఎంట్రీ"
 msgid "New field"
 msgstr "కొత్త ఫీల్డ్"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "కొత్త ఫిల్టర్"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "కొత్త ఆలోచన"
@@ -10569,8 +10642,8 @@ msgstr "కొత్త విధానం"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> లో కొత్త జవాబు"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "కొత్త నియమం"
 
@@ -10695,6 +10768,7 @@ msgstr "రాత్రి బ్యాకప్"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "కాదు"
@@ -10985,6 +11059,10 @@ msgstr "ఇంకా ఫీల్డ్‌లు లేవు."
 msgid "No file is accepted."
 msgstr "ఏ ఫైల్ అంగీకరించబడదు."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "ఇంకా ఫిల్టర్లు లేవు."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "ఈ పరిధిలో ఇంకా ప్రతిస్పందన
 msgid "No results"
 msgstr "ఫలితాలు లేవు"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "ఇంకా నియమాలు లేవు."
 
@@ -11797,6 +11875,10 @@ msgstr "ఈ సైట్‌కు నోటిఫికేషన్‌లు బ
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "నోటిఫికేషన్‌లు అనుమతించబడలేదు."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "సభ్యునికి తెలియజేయండి"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "ఇటీవలి సందర్శనలు"
 msgid "Recently active"
 msgstr "ఇటీవల యాక్టివ్"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "గ్రహీత (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "గ్రహీత (To)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "గ్రహీత చిరునామా"
@@ -15695,6 +15785,7 @@ msgstr "వెబ్‌హుక్ ఎండ్‌పాయింట్‌క�
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "పంపేవారు"
@@ -16873,6 +16964,7 @@ msgstr "దశ"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "నక్షత్రం పెట్టు"
 
@@ -16884,6 +16976,10 @@ msgstr "నక్షత్రం పెట్టు (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "మెయిల్‌ను ఇక్కడ ఉంచడానికి నక్షత్రం పెట్టండి."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "నక్షత్రం ఎవరికి"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "నక్షత్రం ఉన్నవి"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "మీరు నక్షత్రం పెట్టినవి"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "మీ కోసం మెయిల్‌కు నక్షత్రం పెడుతుంది."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "ఈ ప్రాపర్టీకి ఈ పేరుతో లక్�
 msgid "This property already has a segment with this name."
 msgstr "ఈ ప్రాపర్టీకి ఈ పేరుతో సెగ్మెంట్ ఇప్పటికే ఉంది."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "యజమాని లేదా అడ్మిన్ ఈ నియమాన్ని మరియు సిద్ధ ప్రత్యుత్తరం {title} రెండింటినీ సేవ్ చేసే వరకు, లేదా API కీ సెట్టింగ్‌లలో బాట్‌లకు పంపడానికి అనుమతి వచ్చే వరకు ఈ ప్రత్యుత్తరం పంపబడదు."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "యజమాని లేదా అడ్మిన్ సిద్ధ ప్రత్యుత్తరం {title} ను సేవ్ చేసే వరకు, లేదా API కీ సెట్టింగ్‌లలో బాట్‌లకు పంపడానికి అనుమతి వచ్చే వరకు ఈ ప్రత్యుత్తరం పంపబడదు."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "యజమాని లేదా అడ్మిన్ ఈ నియమాన్ని సేవ్ చేసే వరకు, లేదా API కీ సెట్టింగ్‌లలో బాట్‌లకు పంపడానికి అనుమతి వచ్చే వరకు ఈ ప్రత్యుత్తరం పంపబడదు."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "{first} మళ్లీ రాసినప్పుడు"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "మెయిల్ ఇన్‌బాక్స్ ఫిల్టర్ వచ్చిన మెయిల్ కోసం మిమ్మల్ని పేర్కొన్నప్పుడు."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "షెడ్యూల్ చేసిన సందేశం తిరస్కరించబడి డ్రాఫ్ట్‌గా మిగిలినప్పుడు."
 
@@ -20920,6 +21024,7 @@ msgstr "మీ మెయిల్ రాయండి…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "అవును"

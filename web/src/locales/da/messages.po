@@ -1304,6 +1304,10 @@ msgstr "En kladde blev skrevet"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "En fils indhold passer ikke til dens type. Tjek filen, og prøv igen."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Et filter ser på hver mail, der kommer hertil, og stjernemarkerer den, arkiverer den, flytter den til papirkurven, sætter etiketter på den eller giver den til et medlem. Filtre kører i rækkefølgen på denne liste."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "En liste er dem, der har sagt ja til at høre fra dig. Hver abonnent har
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "En makro er et svar plus handlinger: etiketter, ansvarlig, status, prioritet eller udsæt. Skriv / og genvejen i svarfeltet; handlingerne udføres, når svaret sendes."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Der kommer en mail"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Et mailfilter giver mig besked"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Godkendt"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Arkivér"
 
@@ -3077,6 +3090,10 @@ msgstr "Assistenter, {drafts} kladder venter"
 msgid "Async"
 msgstr "Asynkron"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Mindst 3 tegn"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Højst {max} adresser"
@@ -3246,6 +3263,10 @@ msgstr "Tilbage til opsætningen"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Tilbage til listen"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Tilbage til mailen"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Betingelse"
 msgid "Conditions"
 msgstr "Betingelser"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Betingelser: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Opret kladde"
 msgid "Create field"
 msgstr "Opret felt"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Opret filter"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Forringet ydeevne"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Slet indlægget"
 msgid "Delete the field {name}?"
 msgstr "Slet feltet {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "Slet filteret {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "Slet etiketten {name}?"
@@ -5453,7 +5482,7 @@ msgstr "Slet den OAuth-klient, du oprettede til Yuva"
 msgid "Delete the policy {name}?"
 msgstr "Slet politikken {name}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "Slet reglen {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "Hver med alle sine beskeder og noter"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Rediger detaljer ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Rediger felt"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Rediger filter"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Tomt i de første rækker"
 msgid "Enabled"
 msgstr "Aktiveret"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Aktiv: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Hvert signal, mistet signal og sendt tilstand de seneste 30 dage, nyeste
 msgid "Every check of the last 30 days, newest first."
 msgstr "Hvert tjek de seneste 30 dage, det nyeste først."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "hver samtale"
 
@@ -6550,6 +6583,10 @@ msgstr "Alle arbejdsområdets postkasser, også dem, du tilføjer senere."
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Alle sprog. Tilføj et sprog for kun at beholde kontakter, der bruger det; tr beholder også tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "hver mail"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Filtrer efter team"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Filtrer efter type, websted, udsendelse og SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Filtrer beskeder som den seneste mail"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Filtrer beskeder som denne"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Filtre"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Givet videre til {name}"
 msgid "has an attachment"
 msgstr "har en vedhæftning"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Har en vedhæftet fil"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Har en åben samtale"
@@ -7889,7 +7943,7 @@ msgstr "Identificeret"
 msgid "Identity secret"
 msgstr "Identitetshemmelighed"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Inaktiv i {idle} min."
 
@@ -8532,7 +8586,7 @@ msgstr "Dens samtykkebevis slettes sammen med den. Fordi personen afmeldte sig, 
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Dens historik slettes. Hændelser, der nævnte den, gør det ikke længere."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Dens log slettes med den. Det, den allerede har ændret, bliver. Det kan ikke fortrydes."
 
@@ -9260,7 +9314,7 @@ msgstr "Låst"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Låst: læsere kan ikke længere skrive her. Det kan du."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Log"
 
@@ -9346,6 +9400,7 @@ msgstr "Gjorde single sign-on obligatorisk"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Postkasser"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir i en zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Mailingliste (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Flest stemmer"
 msgid "Move {0} to the Trash?"
 msgstr "Flyt {0} til papirkurven?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Flyt {name}. Træk, eller tryk på Alt med piletasterne."
@@ -10041,7 +10100,7 @@ msgstr "Flyt {name}. Træk, eller tryk på Alt med piletasterne."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Flyt samtaler til papirkurven, gendan dem og læs papirkurven"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Flyt til forrige eller næste fase"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Flyt til papirkurven"
 
@@ -10163,7 +10223,7 @@ msgstr "Flyt til papirkurven (#)"
 msgid "Move to Yuva"
 msgstr "Flyt til Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Flyttet til Indbakken"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Flyttet til papirkurven"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Flytter mailen til arkivet."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Flytter mailen til papirkurven. Kører efter de andre handlinger."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Nyt indlæg"
 msgid "New field"
 msgstr "Nyt felt"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Nyt filter"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Ny idé"
@@ -10569,8 +10642,8 @@ msgstr "Ny politik"
 msgid "New reply in <0>{title}</0>"
 msgstr "Nyt svar i <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Ny regel"
 
@@ -10695,6 +10768,7 @@ msgstr "Natlig sikkerhedskopi"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Nej"
@@ -10985,6 +11059,10 @@ msgstr "Ingen felter endnu."
 msgid "No file is accepted."
 msgstr "Ingen filer accepteres."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Ingen filtre endnu."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "Ingen svartider i dette interval endnu."
 msgid "No results"
 msgstr "Ingen resultater"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Ingen regler endnu."
 
@@ -11797,6 +11875,10 @@ msgstr "Notifikationer er blokeret for dette websted. Tillad dem i din browsers 
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Notifikationer blev ikke tilladt."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Giv et medlem besked"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Seneste besøg"
 msgid "Recently active"
 msgstr "Nylig aktive"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Modtager (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Modtager (Til)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "modtagerens adresse"
@@ -15695,6 +15785,7 @@ msgstr "Send til et webhook-endpoint"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Afsender"
@@ -16873,6 +16964,7 @@ msgstr "Fase"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Stjernemarkér"
 
@@ -16884,6 +16976,10 @@ msgstr "Stjernemarkér (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Stjernemarkér en mail for at beholde den her."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Stjerne til"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Stjernemarkeret"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "stjernemarkeret af dig"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Stjernemarkerer mailen for dig."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Denne property har allerede et mål med dette navn."
 msgid "This property already has a segment with this name."
 msgstr "Denne property har allerede et segment med dette navn."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Dette svar sendes først, når en ejer eller administrator gemmer både reglen og det færdige svar {title}, eller bots må sende i indstillingerne for API-nøgler."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Dette svar sendes først, når en ejer eller administrator gemmer det færdige svar {title}, eller bots må sende i indstillingerne for API-nøgler."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Dette svar sendes først, når en ejer eller administrator gemmer reglen, eller bots må sende i indstillingerne for API-nøgler."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Når {first} skriver igen"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Når et filter i en mailindbakke udpeger dig til en mail, der er kommet."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Når en planlagt besked bliver en kladde, fordi den blev afvist."
 
@@ -20920,6 +21024,7 @@ msgstr "Skriv din mail…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Ja"

@@ -2,6 +2,7 @@ import { useLingui } from "@lingui/react/macro"
 import { useMemo } from "react"
 import { useLocation } from "react-router"
 
+import type { Inbox } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useInboxes } from "@/lib/workspace"
@@ -65,4 +66,15 @@ export function useMailRoute() {
   const known = box === "all" || inboxes.some((i) => i.id === box)
   const f = FOLDERS.includes(folder as Folder) ? (folder as Folder) : "inbox"
   return { box: known ? box : "all", folder: f, id: conversationId ?? null }
+}
+
+export function isPersonal(inbox: Inbox | undefined) {
+  return !!inbox && (!!inbox.owner_member_id || !!inbox.mailbox)
+}
+
+export function useFilterAccess(box: string) {
+  const { canManage, membership } = useSession()
+  const inbox = useMailInboxes().find((i) => i.id === box)
+  if (!inbox || inbox.mailbox?.orphaned) return false
+  return isPersonal(inbox) ? inbox.owner_member_id === membership.member_id : canManage
 }

@@ -1304,6 +1304,10 @@ msgstr "O ciornă a fost scrisă"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "Conținutul unui fișier nu se potrivește cu tipul său. Verifică fișierul și încearcă din nou."
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "Un filtru verifică fiecare e-mail care ajunge aici și îl marchează cu stea, îl arhivează, îl mută în coșul de gunoi, îi pune etichete sau îl dă unui membru. Filtrele rulează în ordinea acestei liste."
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "O listă cuprinde oamenii care au acceptat să primească vești de la t
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "Un macro este un răspuns plus acțiuni: etichete, persoană atribuită, stare, prioritate sau amânare. Scrie / și scurtătura în câmpul de răspuns; acțiunile se aplică la trimiterea răspunsului."
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "Sosește un e-mail"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "Un filtru de e-mail mă anunță"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "Aprobat"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "Arhivează"
 
@@ -3077,6 +3090,10 @@ msgstr "Asistenți, {drafts} ciorne așteaptă"
 msgid "Async"
 msgstr "Asincron"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "Cel puțin 3 caractere"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "Cel mult {max} adrese"
@@ -3246,6 +3263,10 @@ msgstr "Înapoi la configurare"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Înapoi la listă"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "Înapoi la e-mail"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "Condiție"
 msgid "Conditions"
 msgstr "Condiții"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "Condiții: {n}"
 
@@ -5037,6 +5058,10 @@ msgstr "Creează ciornă"
 msgid "Create field"
 msgstr "Creează câmpul"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "Creează filtrul"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "Performanță redusă"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "Șterge intrarea"
 msgid "Delete the field {name}?"
 msgstr "Ștergeți câmpul {name}?"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "Ștergi filtrul {name}?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "Ștergi eticheta {name}?"
@@ -5453,7 +5482,7 @@ msgstr "Șterge clientul OAuth pe care l-ai creat pentru Yuva"
 msgid "Delete the policy {name}?"
 msgstr "Ștergeți politica {name}?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "Ștergi regula {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "Fiecare cu toate mesajele și notele sale"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "Editează detaliile ({editKey})"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "Editează câmpul"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "Editează filtrul"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "Gol în primele rânduri"
 msgid "Enabled"
 msgstr "Activată"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "Activată: {name}"
 
@@ -6522,7 +6555,7 @@ msgstr "Fiecare semnal, semnal ratat și stare trimisă din ultimele 30 de zile,
 msgid "Every check of the last 30 days, newest first."
 msgstr "Fiecare verificare din ultimele 30 de zile, cele mai noi primele."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "orice conversație"
 
@@ -6550,6 +6583,10 @@ msgstr "Fiecare căsuță a spațiului de lucru, inclusiv cele pe care le adaugi
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "Orice limbă. Adaugă o limbă ca să păstrezi doar contactele care o folosesc; tr păstrează și tr-TR."
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "fiecare e-mail"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "Filtrează după echipă"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "Filtrează după tip, site, trimitere și SLA"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "Filtrează mesajele ca ultimul e-mail"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "Filtrează mesajele ca acesta"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "Filtre"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "Predat lui {name}"
 msgid "has an attachment"
 msgstr "are un atașament"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "Are un atașament"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Are o conversație deschisă"
@@ -7889,7 +7943,7 @@ msgstr "Identificat"
 msgid "Identity secret"
 msgstr "Secret de identitate"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "Inactivă de {idle} min"
 
@@ -8532,7 +8586,7 @@ msgstr "Înregistrarea ei de consimțământ este ștearsă odată cu ea. Pentru
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "Istoricul ei se șterge. Incidentele care o menționau nu o mai menționează."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "Jurnalul ei se șterge odată cu ea. Ce a modificat deja rămâne. Nu se poate anula."
 
@@ -9260,7 +9314,7 @@ msgstr "Blocat"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "Blocat: cititorii nu mai pot scrie aici. Tu încă poți."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "Jurnal"
 
@@ -9346,6 +9400,7 @@ msgstr "A făcut autentificarea unică obligatorie"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "Căsuțe poștale"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "Maildir într-un zip"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "Listă de corespondență (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "Cele mai multe voturi"
 msgid "Move {0} to the Trash?"
 msgstr "Muți {0} în coș?"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "Mută {name}. Trageți sau apăsați Alt cu săgețile."
@@ -10041,7 +10100,7 @@ msgstr "Mută {name}. Trageți sau apăsați Alt cu săgețile."
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "Mută conversații în coș, restaurează-le și citește coșul"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "Mută la etapa anterioară sau următoare"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "Mută în coș"
 
@@ -10163,7 +10223,7 @@ msgstr "Mută în coșul de gunoi (#)"
 msgid "Move to Yuva"
 msgstr "Mută la Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "Mutat în Mesaje primite"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Mutată în coș"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "Mută e-mailul în arhivă."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "Mută e-mailul în coșul de gunoi. Rulează după celelalte acțiuni."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "Intrare nouă"
 msgid "New field"
 msgstr "Câmp nou"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "Filtru nou"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "Idee nouă"
@@ -10569,8 +10642,8 @@ msgstr "Politică nouă"
 msgid "New reply in <0>{title}</0>"
 msgstr "Răspuns nou în <0>{title}</0>"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "Regulă nouă"
 
@@ -10695,6 +10768,7 @@ msgstr "Backup de noapte"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "Nu"
@@ -10985,6 +11059,10 @@ msgstr "Încă nu există câmpuri."
 msgid "No file is accepted."
 msgstr "Niciun fișier nu este acceptat."
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "Încă nu există filtre."
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "Încă nu există timpi de răspuns în acest interval."
 msgid "No results"
 msgstr "Niciun rezultat"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "Nicio regulă încă."
 
@@ -11797,6 +11875,10 @@ msgstr "Notificările sunt blocate pentru acest site. Permite-le în setările d
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "Notificările nu au fost permise."
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "Anunță un membru"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "Vizite recente"
 msgid "Recently active"
 msgstr "Activi recent"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "Destinatar (Cc)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "Destinatar (Către)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "adresa destinatarului"
@@ -15695,6 +15785,7 @@ msgstr "Trimite la un endpoint de webhook"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "Expeditor"
@@ -16873,6 +16964,7 @@ msgstr "Etapă"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "Marchează cu stea"
 
@@ -16884,6 +16976,10 @@ msgstr "Marchează cu stea (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "Marchează un e-mail cu stea ca să rămână aici."
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "Stea pentru"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "Cu stea"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "marcat de tine cu stea"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "Marchează e-mailul cu stea pentru tine."
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "Această proprietate are deja un obiectiv cu acest nume."
 msgid "This property already has a segment with this name."
 msgstr "Această proprietate are deja un segment cu acest nume."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Acest răspuns nu va fi trimis până când un proprietar sau un administrator nu salvează atât această regulă, cât și răspunsul salvat {title}, sau până când boții au voie să trimită în setările cheilor API."
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "Acest răspuns nu va fi trimis până când un proprietar sau un administrator nu salvează răspunsul salvat {title}, sau până când boții au voie să trimită în setările cheilor API."
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "Acest răspuns nu va fi trimis până când un proprietar sau un administrator nu salvează această regulă, sau până când boții au voie să trimită în setările cheilor API."
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "Când {first} scrie din nou"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "Când un filtru al unei căsuțe de e-mail te desemnează pentru un e-mail sosit."
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "Când un mesaj programat rămâne ciornă pentru că a fost refuzat."
 
@@ -20920,6 +21024,7 @@ msgstr "Scrie mesajul tău…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "Da"

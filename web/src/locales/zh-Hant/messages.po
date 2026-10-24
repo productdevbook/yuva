@@ -1304,6 +1304,10 @@ msgstr "草稿被撰寫時"
 msgid "A file's content does not match its type. Check the file and try again."
 msgstr "檔案內容與其類型不符。請檢查檔案後重試。"
 
+#: src/features/mail/MailFiltersPage.tsx
+msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
+msgstr "篩選器會檢查送達這裡的每封郵件,為其加上星號、封存、移到垃圾桶、加上標籤或交給某位成員。篩選器依此清單的順序執行。"
+
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
 #: src/features/settings/audit/sentence.ts
@@ -1369,6 +1373,14 @@ msgstr "清單由同意收到你訊息的人組成。每位訂閱者都有可匯
 #: src/features/settings/macros/MacrosPage.tsx
 msgid "A macro is a reply plus actions: labels, assignee, status, priority or snooze. Type / and its shortcut in the composer; the actions apply when the reply is sent."
 msgstr "巨集是一則回覆加上若干動作：標籤、負責人、狀態、優先順序或延後。在回覆框輸入 / 和它的捷徑名稱；傳送回覆時會執行這些動作。"
+
+#: src/features/settings/automation/text.ts
+msgid "A mail arrives"
+msgstr "收到郵件時"
+
+#: src/features/settings/notifications/events.ts
+msgid "A mail filter notifies me"
+msgstr "郵件篩選器通知我"
 
 #: src/features/mail/SearchOperators.tsx
 msgid "a mail folder"
@@ -2870,6 +2882,7 @@ msgstr "已批准"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Archive"
 msgstr "歸檔"
 
@@ -3077,6 +3090,10 @@ msgstr "助手,{drafts} 份草稿等待中"
 msgid "Async"
 msgstr "非同步"
 
+#: src/features/settings/automation/ConditionRow.tsx
+msgid "At least 3 characters"
+msgstr "至少 3 個字元"
+
 #: src/components/common/AddressChips.tsx
 msgid "At most {max} addresses"
 msgstr "最多 {max} 個地址"
@@ -3246,6 +3263,10 @@ msgstr "返回設定"
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "返回列表"
+
+#: src/features/mail/MailFiltersPage.tsx
+msgid "Back to the mail"
+msgstr "返回郵件"
 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/Wizard.tsx
@@ -4411,7 +4432,7 @@ msgstr "條件"
 msgid "Conditions"
 msgstr "條件"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Conditions: {n}"
 msgstr "條件:{n}"
 
@@ -5037,6 +5058,10 @@ msgstr "建立草稿"
 msgid "Create field"
 msgstr "建立欄位"
 
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Create filter"
+msgstr "建立篩選器"
+
 #: src/features/feedback/IssuesCard.tsx
 #: src/features/issues/IdeaIssues.tsx
 #: src/features/issues/IssueDialog.tsx
@@ -5321,7 +5346,7 @@ msgstr "效能降低"
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -5437,6 +5462,10 @@ msgstr "刪除項目"
 msgid "Delete the field {name}?"
 msgstr "刪除欄位 {name}？"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "Delete the filter {name}?"
+msgstr "刪除篩選器「{name}」?"
+
 #: src/features/settings/labels/LabelsPage.tsx
 msgid "Delete the label {name}?"
 msgstr "刪除標籤 {name}?"
@@ -5453,7 +5482,7 @@ msgstr "刪除你為 Yuva 建立的 OAuth 用戶端"
 msgid "Delete the policy {name}?"
 msgstr "刪除政策 {name}？"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Delete the rule {name}?"
 msgstr "刪除規則 {name}?"
 
@@ -6222,7 +6251,7 @@ msgstr "每個都包含其所有訊息和備註"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/canned/CannedRepliesPage.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/labels/LabelsPage.tsx
@@ -6270,6 +6299,10 @@ msgstr "編輯詳細資料（{editKey}）"
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Edit field"
 msgstr "編輯欄位"
+
+#: src/features/settings/automation/RuleDialog.tsx
+msgid "Edit filter"
+msgstr "編輯篩選器"
 
 #: src/components/common/text.ts
 msgid "Edit help center collections and article drafts"
@@ -6376,7 +6409,7 @@ msgstr "前幾行為空"
 msgid "Enabled"
 msgstr "已啟用"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Enabled: {name}"
 msgstr "已開啟:{name}"
 
@@ -6522,7 +6555,7 @@ msgstr "最近 30 天的每個心跳訊號、漏掉的訊號和推送狀態，�
 msgid "Every check of the last 30 days, newest first."
 msgstr "最近 30 天的每次檢查,最新的在前。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "every conversation"
 msgstr "每個對話"
 
@@ -6550,6 +6583,10 @@ msgstr "工作區的所有收件匣,包括以後新增的。"
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Every language. Add a language to keep only contacts who use it; tr also keeps tr-TR."
 msgstr "所有語言。新增一種語言則只保留使用該語言的聯絡人;tr 也會保留 tr-TR。"
+
+#: src/features/settings/automation/RuleList.tsx
+msgid "every mail"
+msgstr "每封郵件"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Every open conversation has someone."
@@ -6910,6 +6947,19 @@ msgstr "依團隊篩選"
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter by type, site, broadcast and SLA"
 msgstr "依類型、網站、群發和 SLA 篩選"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Filter messages like the latest mail"
+msgstr "篩選與最新郵件相似的郵件"
+
+#: src/features/mail/MailThread.tsx
+msgid "Filter messages like this"
+msgstr "篩選與此相似的郵件"
+
+#: src/features/mail/MailFiltersPage.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Filters"
+msgstr "篩選器"
 
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
@@ -7542,6 +7592,10 @@ msgstr "已交給 {name}"
 msgid "has an attachment"
 msgstr "有附件"
 
+#: src/features/settings/automation/text.ts
+msgid "Has an attachment"
+msgstr "有附件"
+
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "有未關閉的對話"
@@ -7889,7 +7943,7 @@ msgstr "已確認"
 msgid "Identity secret"
 msgstr "身份金鑰"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Idle for {idle} min"
 msgstr "閒置 {idle} 分鐘"
 
@@ -8532,7 +8586,7 @@ msgstr "其同意記錄會一併刪除。由於對方已退訂,該地址會被�
 msgid "Its history is deleted. Incidents that named it no longer do."
 msgstr "其歷史記錄將被刪除。曾提到它的事件不再提到它。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Its log goes with it. What it already changed stays. This cannot be undone."
 msgstr "它的記錄會一併刪除。它已經改動的內容會保留。此操作無法復原。"
 
@@ -9260,7 +9314,7 @@ msgstr "已鎖定"
 msgid "Locked: readers can no longer write here. You still can."
 msgstr "已鎖定:讀者無法再在這裡發言。你仍然可以。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "Log"
 msgstr "記錄"
 
@@ -9346,6 +9400,7 @@ msgstr "已將單一登入設為必要"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
 msgid "Mail"
@@ -9461,6 +9516,10 @@ msgstr "信箱"
 #: src/features/migrations/text.ts
 msgid "Maildir in a zip"
 msgstr "zip 中的 Maildir"
+
+#: src/features/settings/automation/text.ts
+msgid "Mailing list (List-Id)"
+msgstr "郵寄清單 (List-Id)"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -10032,7 +10091,7 @@ msgstr "票數最多"
 msgid "Move {0} to the Trash?"
 msgstr "將 {0} 項移到垃圾箱？"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Move {name}. Drag, or press Alt with the arrow keys."
 msgstr "移動 {name}。拖曳，或按 Alt 加方向鍵。"
@@ -10041,7 +10100,7 @@ msgstr "移動 {name}。拖曳，或按 Alt 加方向鍵。"
 msgid "Move conversations to the Trash, restore them and read the Trash"
 msgstr "將對話移到垃圾箱、恢復對話並讀取垃圾箱"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10150,6 +10209,7 @@ msgstr "移到上一個或下一個階段"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Move to the Trash"
 msgstr "移到垃圾箱"
 
@@ -10163,7 +10223,7 @@ msgstr "移到垃圾箱 (#)"
 msgid "Move to Yuva"
 msgstr "遷移到 Yuva"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 #: src/features/settings/fields/FieldsPage.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -10191,6 +10251,14 @@ msgstr "已移回收件匣"
 #: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "已移到垃圾箱"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Archive."
+msgstr "將郵件移到封存。"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Moves the mail to the Trash. Runs after the other actions."
+msgstr "將郵件移到垃圾桶。在其他動作之後執行。"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Moving from Gmail, Google Workspace, Yandex, iCloud, Zoho, Yahoo, Fastmail, GMX or any IMAP server? Yuva copies the mailbox's history into an inbox, quietly and newest first, while your team keeps working. Then you forward the mailbox here and nothing is lost in between."
@@ -10478,6 +10546,11 @@ msgstr "新項目"
 msgid "New field"
 msgstr "新增欄位"
 
+#: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
+msgid "New filter"
+msgstr "新增篩選器"
+
 #: src/features/docs/discussions/QueuePane.tsx
 msgid "New idea"
 msgstr "新想法"
@@ -10569,8 +10642,8 @@ msgstr "新增政策"
 msgid "New reply in <0>{title}</0>"
 msgstr "<0>{title}</0> 中有新回覆"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "New rule"
 msgstr "新增規則"
 
@@ -10695,6 +10768,7 @@ msgstr "夜間備份"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "No"
 msgstr "否"
@@ -10985,6 +11059,10 @@ msgstr "還沒有欄位。"
 msgid "No file is accepted."
 msgstr "不接受任何檔案。"
 
+#: src/features/settings/automation/RuleList.tsx
+msgid "No filters yet."
+msgstr "尚無篩選器。"
+
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/ComponentsTab.tsx
 msgid "No group"
@@ -11173,7 +11251,7 @@ msgstr "此時間範圍內還沒有回應時間。"
 msgid "No results"
 msgstr "沒有結果"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "No rules yet."
 msgstr "還沒有規則。"
 
@@ -11797,6 +11875,10 @@ msgstr "此站點的通知已被遮蔽。請在瀏覽器的站點設定中允許
 #: src/features/settings/notifications/PushSection.tsx
 msgid "Notifications were not allowed."
 msgstr "未允許通知。"
+
+#: src/features/settings/automation/text.ts
+msgid "Notify a member"
+msgstr "通知成員"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Notify differently for one inbox. Anything left on “As above” follows the settings above."
@@ -13981,6 +14063,14 @@ msgstr "最近存取"
 msgid "Recently active"
 msgstr "最近活躍"
 
+#: src/features/settings/automation/text.ts
+msgid "Recipient (Cc)"
+msgstr "收件者 (副本)"
+
+#: src/features/settings/automation/text.ts
+msgid "Recipient (To)"
+msgstr "收件者 (收件者)"
+
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "收件者地址"
@@ -15695,6 +15785,7 @@ msgstr "傳送到 Webhook 端點"
 
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
 msgid "Sender"
 msgstr "發件人"
@@ -16873,6 +16964,7 @@ msgstr "階段"
 
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailThread.tsx
+#: src/features/settings/automation/text.ts
 msgid "Star"
 msgstr "加星號"
 
@@ -16884,6 +16976,10 @@ msgstr "加星號 (S)"
 #: src/features/mail/MailList.tsx
 msgid "Star a mail to keep it here."
 msgstr "為郵件加星號即可保留在這裡。"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Star for"
+msgstr "星號對象"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Star or unstar"
@@ -16909,6 +17005,10 @@ msgstr "已加星號"
 #: src/features/mail/SearchOperators.tsx
 msgid "starred by you"
 msgstr "你已加星號"
+
+#: src/features/settings/automation/ActionRow.tsx
+msgid "Stars the mail for you."
+msgstr "為你為郵件加上星號。"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -18962,16 +19062,16 @@ msgstr "此屬性已有同名目標。"
 msgid "This property already has a segment with this name."
 msgstr "此屬性已有同名區隔。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves both this rule and the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "在擁有者或管理員同時儲存此規則和快速回覆 {title},或在 API 金鑰設定中允許機器人傳送之前,這則回覆不會送出。"
 
-#: src/features/settings/automation/AutomationPage.tsx
 #: src/features/settings/automation/RuleDialog.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves the canned reply {title}, or bots may send is turned on in the API key settings."
 msgstr "在擁有者或管理員儲存快速回覆 {title},或在 API 金鑰設定中允許機器人傳送之前,這則回覆不會送出。"
 
-#: src/features/settings/automation/AutomationPage.tsx
+#: src/features/settings/automation/RuleList.tsx
 msgid "This reply will not be sent until an owner or admin saves this rule, or bots may send is turned on in the API key settings."
 msgstr "在擁有者或管理員儲存此規則,或在 API 金鑰設定中允許機器人傳送之前,這則回覆不會送出。"
 
@@ -20529,6 +20629,10 @@ msgid "When {first} writes again"
 msgstr "當 {first} 再次發言時"
 
 #: src/features/settings/notifications/events.ts
+msgid "When a filter of a mail inbox names you for a mail that arrived."
+msgstr "當信箱的篩選器針對收到的郵件指定你時。"
+
+#: src/features/settings/notifications/events.ts
 msgid "When a message you scheduled stays a draft because it was refused."
 msgstr "當已排程的訊息因被拒絕而保留為草稿時。"
 
@@ -20920,6 +21024,7 @@ msgstr "寫下你的郵件…"
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/automation/text.ts
 #: src/features/setup/previews.tsx
 msgid "Yes"
 msgstr "是"

@@ -7,11 +7,15 @@ import { useSession } from "@/lib/session"
 import { useMemberMap } from "@/lib/workspace"
 import { useWorkspaceSettings } from "@/features/settings/connected-apps/queries"
 
-export function useAutomationRules() {
+export function useAutomationRules(inboxId?: string, enabled = true) {
   const { workspaceId: ws } = useSession()
   return useQuery({
-    queryKey: keys.automationRules(ws),
-    queryFn: () => unwrap(api.GET("/v1/automation-rules")).then((r) => r.items),
+    queryKey: keys.automationRules(ws, inboxId),
+    queryFn: () =>
+      unwrap(api.GET("/v1/automation-rules", { params: { query: inboxId ? { inbox_id: inboxId } : {} } })).then(
+        (r) => r.items
+      ),
+    enabled,
     staleTime: 30_000,
   })
 }
