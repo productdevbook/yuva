@@ -181,7 +181,7 @@ func TestMasterKeyRotation(t *testing.T) {
 		"analytics_salts.salt", "analytics_shares.token_hash", "api_keys.secret_hash", "chat_visitors.visitor_hash",
 		"contact_sessions.token_hash", "email_channels.dkim_public_key", "email_channels.verify_code_hash",
 		"email_confirmations.token_hash", "email_images.sha256", "email_optouts.email_hash", "help_import_items.content_hash",
-		"idempotency_keys.body", "idempotency_keys.body_sha256", "login_codes.code_hash", "oauth_codes.code_hash",
+		"idempotency_keys.body", "idempotency_keys.body_sha256", "login_codes.code_hash", "member_addresses.code_hash", "oauth_codes.code_hash",
 		"oauth_tokens.token_hash", "passkeys.credential_id", "people.webauthn_handle", "rate_limits.key", "rate_slots.key",
 		"reader_tokens.token_hash", "saml_assertions.id_hash", "sessions.token_hash", "slack_link_codes.code_hash",
 		"sso_logins.state_hash", "sso_settings.saml_certificates", "status_monitors.token_hash", "webauthn_ceremonies.id_hash",

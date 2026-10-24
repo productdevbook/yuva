@@ -25,7 +25,7 @@ var (
 	composeRecipientsBudget = fmt.Sprintf("new mail goes to at most %d recipients an hour per member or key", limitComposeRecipients.n)
 )
 
-var composeFormFields = []string{"inbox_id", "channel_id", "to", "cc", "bcc", "subject", "body", "html", "signature", "draft", "client_id"}
+var composeFormFields = []string{"inbox_id", "channel_id", "to", "cc", "bcc", "subject", "body", "html", "signature", "draft", "client_id", "from_address"}
 
 // composeChannel is the e-mail channel a new mail of the inbox goes out through: the one named, or
 // the inbox's first with an SMTP account, an exact address before a catch-all.
@@ -268,6 +268,7 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 			in.body = *b.Body
 		}
 		in.to, in.cc, in.bcc = copiesOf(&b.To), copiesOf(b.Cc), copiesOf(b.Bcc)
+		in.from = (*string)(b.FromAddress)
 		inboxID, channelID = b.InboxId, b.ChannelId
 	case req.MultipartBody != nil:
 		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID, composeFormFields, s.serverLimits()); err != nil {
@@ -318,10 +319,15 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 	if err != nil {
 		return nil, err
 	}
-	if len(in.files) > 0 {
+	if len(in.files) > 0 || (in.from != nil && !in.draft) {
 		ch, err := composeChannel(ctx, s.st.Queries, p.workspaceID, inboxID, channelID)
 		if err != nil {
 			return nil, err
+		}
+		if in.from != nil {
+			if _, err := s.fromMemberAddress(ctx, s.st.Queries, p, ch, *in.from); err != nil {
+				return nil, err
+			}
 		}
 		limits, err := s.channelLimits(ctx, s.st.Queries, p.workspaceID, &ch.ChannelID)
 		if err != nil {
@@ -405,6 +411,9 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		var plan *emailPlan
 		if !in.draft {
 			if plan, err = s.composedPlan(ctx, q, c, ch, subject, to, cc, bcc); err != nil {
+				return err
+			}
+			if err := s.applyFromAddress(ctx, q, p, plan, in.from); err != nil {
 				return err
 			}
 		}

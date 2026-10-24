@@ -1144,6 +1144,9 @@ const (
 	AuditIssueIntegrationSecretRotated       AuditAction = "issue_integration.secret_rotated"
 	AuditIssueIntegrationUpdated             AuditAction = "issue_integration.updated"
 	AuditListConsentExported                 AuditAction = "list.consent_exported"
+	AuditMemberAddressAdded                  AuditAction = "member_address.added"
+	AuditMemberAddressRemoved                AuditAction = "member_address.removed"
+	AuditMemberAddressVerified               AuditAction = "member_address.verified"
 	AuditMemberInboxAccessGranted            AuditAction = "member.inbox_access_granted"
 	AuditMemberInboxAccessRevoked            AuditAction = "member.inbox_access_revoked"
 	AuditMemberJoined                        AuditAction = "member.joined"
@@ -1247,6 +1250,12 @@ func (e AuditAction) Valid() bool {
 	case AuditIssueIntegrationUpdated:
 		return true
 	case AuditListConsentExported:
+		return true
+	case AuditMemberAddressAdded:
+		return true
+	case AuditMemberAddressRemoved:
+		return true
+	case AuditMemberAddressVerified:
 		return true
 	case AuditMemberInboxAccessGranted:
 		return true
@@ -4695,6 +4704,24 @@ func (e MailingListKind) Valid() bool {
 	case MailingListKindList:
 		return true
 	case MailingListKindStatus:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemberAddressVerification.
+const (
+	MemberAddressVerificationApproval MemberAddressVerification = "approval"
+	MemberAddressVerificationCode     MemberAddressVerification = "code"
+)
+
+// Valid indicates whether the value is a known member of the MemberAddressVerification enum.
+func (e MemberAddressVerification) Valid() bool {
+	switch e {
+	case MemberAddressVerificationApproval:
+		return true
+	case MemberAddressVerificationCode:
 		return true
 	default:
 		return false
@@ -10081,6 +10108,9 @@ type Attributes map[string]interface{}
 //   - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 //     `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 //   - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+//   - `member_address.added`, `member_address.verified`, `member_address.removed`: `address`;
+//     the target is the member whose own address it is; `member_address.verified` adds
+//     `by: approval` when an owner or admin approved it.
 //   - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
 //     `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
 //     `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
@@ -10206,6 +10236,9 @@ type AuditEntry struct {
 	// - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 	//   `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 	// - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+	// - `member_address.added`, `member_address.verified`, `member_address.removed`: `address`;
+	//   the target is the member whose own address it is; `member_address.verified` adds
+	//   `by: approval` when an owner or admin approved it.
 	// - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
 	//   `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
 	//   `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
@@ -13030,6 +13063,11 @@ type ComposeMail struct {
 	// Draft Stores the message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
+	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
+	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+	// `createMessage`.
+	FromAddress *Email `json:"from_address,omitempty"`
+
 	// Html Sanitized before it is stored.
 	Html    *string   `json:"html,omitempty"`
 	InboxId uuid.UUID `json:"inbox_id"`
@@ -13054,10 +13092,13 @@ type ComposeMailMultipart struct {
 	ClientId  *string               `json:"client_id,omitempty"`
 	Draft     *bool                 `json:"draft,omitempty"`
 	Files     *[]openapi_types.File `json:"files,omitempty"`
-	Html      *string               `json:"html,omitempty"`
-	InboxId   uuid.UUID             `json:"inbox_id"`
-	Signature *bool                 `json:"signature,omitempty"`
-	Subject   string                `json:"subject"`
+
+	// FromAddress Examples: owner@example.com
+	FromAddress *Email    `json:"from_address,omitempty"`
+	Html        *string   `json:"html,omitempty"`
+	InboxId     uuid.UUID `json:"inbox_id"`
+	Signature   *bool     `json:"signature,omitempty"`
+	Subject     string    `json:"subject"`
 
 	// To Repeat the field once per address.
 	To []Email `json:"to"`
@@ -18633,6 +18674,62 @@ type Member struct {
 	Title string `json:"title"`
 }
 
+// MemberAddress defines model for MemberAddress.
+type MemberAddress struct {
+	// Address Examples: owner@example.com
+	Address Email `json:"address"`
+
+	// CodeExpiresAt Unverified addresses only, while their code is valid.
+	CodeExpiresAt *time.Time `json:"code_expires_at,omitempty"`
+
+	// CodeSentAt Unverified addresses only, while their code is valid.
+	CodeSentAt *time.Time `json:"code_sent_at,omitempty"`
+	CreatedAt  time.Time  `json:"created_at"`
+	Id         uuid.UUID  `json:"id"`
+
+	// UsableChannelIds The e-mail channels, of inboxes the member can see, whose mail may go `From` this
+	// address (`from_address` on `createMessage`, `sendMessage` and `composeMail`): the
+	// address is verified, its domain is the domain of the channel's sending address
+	// (`from_address`, else its address), the channel has an SMTP account, and the channel's
+	// latest deliverability check (`GET /v1/channels/{id}/deliverability`) for that domain is
+	// `received` with a passing DKIM signature aligned with it and DMARC `pass`, started at most
+	// 30 days ago and after the channel's address, sending address or SMTP account last
+	// changed. Empty for an unverified address.
+	UsableChannelIds []uuid.UUID `json:"usable_channel_ids"`
+
+	// Verification How the address is verified. `code`: the member enters the code mailed to it.
+	// `approval`: a channel of the workspace catches all mail to the address's domain, so a mailed
+	// code would land in a shared inbox; no code is sent and an owner or admin approves the address
+	// with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`.
+	Verification MemberAddressVerification `json:"verification"`
+	Verified     bool                      `json:"verified"`
+	VerifiedAt   *time.Time                `json:"verified_at,omitempty"`
+}
+
+// MemberAddressCreate defines model for MemberAddressCreate.
+type MemberAddressCreate struct {
+	// Address A plain address without a display name, its local part a dot-atom: no quoted local
+	// part, spaces, commas or second `@`.
+	Address string `json:"address"`
+}
+
+// MemberAddressList defines model for MemberAddressList.
+type MemberAddressList struct {
+	Items []MemberAddress `json:"items"`
+}
+
+// MemberAddressVerification How the address is verified. `code`: the member enters the code mailed to it.
+// `approval`: a channel of the workspace catches all mail to the address's domain, so a mailed
+// code would land in a shared inbox; no code is sent and an owner or admin approves the address
+// with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`.
+type MemberAddressVerification string
+
+// MemberAddressVerify defines model for MemberAddressVerify.
+type MemberAddressVerify struct {
+	// Code The 6-digit code from the mail.
+	Code string `json:"code"`
+}
+
 // MemberList defines model for MemberList.
 type MemberList struct {
 	Items []Member `json:"items"`
@@ -18903,6 +19000,11 @@ type MessageCreate struct {
 	// Draft Stores an outgoing message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
+	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
+	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+	// `createMessage`.
+	FromAddress *Email `json:"from_address,omitempty"`
+
 	// Html Sanitized before it is stored.
 	Html *string           `json:"html,omitempty"`
 	Kind MessageCreateKind `json:"kind"`
@@ -18940,14 +19042,17 @@ type MessageCreateMultipart struct {
 	Body *string  `json:"body,omitempty"`
 
 	// Cc Repeat the field once per address; one empty `cc` field copies no one.
-	Cc        *[]string                  `json:"cc,omitempty"`
-	ClientId  *string                    `json:"client_id,omitempty"`
-	Direction *Direction                 `json:"direction,omitempty"`
-	Draft     *bool                      `json:"draft,omitempty"`
-	Files     *[]openapi_types.File      `json:"files,omitempty"`
-	Html      *string                    `json:"html,omitempty"`
-	Kind      MessageCreateMultipartKind `json:"kind"`
-	MacroId   *uuid.UUID                 `json:"macro_id,omitempty"`
+	Cc        *[]string             `json:"cc,omitempty"`
+	ClientId  *string               `json:"client_id,omitempty"`
+	Direction *Direction            `json:"direction,omitempty"`
+	Draft     *bool                 `json:"draft,omitempty"`
+	Files     *[]openapi_types.File `json:"files,omitempty"`
+
+	// FromAddress Examples: owner@example.com
+	FromAddress *Email                     `json:"from_address,omitempty"`
+	Html        *string                    `json:"html,omitempty"`
+	Kind        MessageCreateMultipartKind `json:"kind"`
+	MacroId     *uuid.UUID                 `json:"macro_id,omitempty"`
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
@@ -19183,6 +19288,11 @@ type MessageSend struct {
 	// Cc E-mailed replies only: the addresses to copy, in place of the conversation's
 	// participants; `[]` copies no one. See `createMessage`.
 	Cc *[]Email `json:"cc,omitempty"`
+
+	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
+	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+	// `createMessage`.
+	FromAddress *Email `json:"from_address,omitempty"`
 }
 
 // MessageUpdate Only the fields sent change.
@@ -24695,6 +24805,9 @@ type ListId = uuid.UUID
 // MacroId defines model for MacroId.
 type MacroId = uuid.UUID
 
+// MemberAddressId defines model for MemberAddressId.
+type MemberAddressId = uuid.UUID
+
 // MemberId defines model for MemberId.
 type MemberId = uuid.UUID
 
@@ -27534,6 +27647,30 @@ type RenderMarkdownParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListMyAddressesParams defines parameters for ListMyAddresses.
+type ListMyAddressesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// AddMyAddressParams defines parameters for AddMyAddress.
+type AddMyAddressParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteMyAddressParams defines parameters for DeleteMyAddress.
+type DeleteMyAddressParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// VerifyMyAddressParams defines parameters for VerifyMyAddress.
+type VerifyMyAddressParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListMentionsParams defines parameters for ListMentions.
 type ListMentionsParams struct {
 	// Cursor The `next_cursor` of the previous page.
@@ -27650,6 +27787,18 @@ type GetMemberParams struct {
 
 // UpdateMemberParams defines parameters for UpdateMember.
 type UpdateMemberParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListMemberAddressesParams defines parameters for ListMemberAddresses.
+type ListMemberAddressesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ApproveMemberAddressParams defines parameters for ApproveMemberAddress.
+type ApproveMemberAddressParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -29752,6 +29901,12 @@ type DeleteMeJSONRequestBody = AccountDeletion
 
 // UpdateMeJSONRequestBody defines body for UpdateMe for application/json ContentType.
 type UpdateMeJSONRequestBody = MeUpdate
+
+// AddMyAddressJSONRequestBody defines body for AddMyAddress for application/json ContentType.
+type AddMyAddressJSONRequestBody = MemberAddressCreate
+
+// VerifyMyAddressJSONRequestBody defines body for VerifyMyAddress for application/json ContentType.
+type VerifyMyAddressJSONRequestBody = MemberAddressVerify
 
 // UpdateNotificationSettingsJSONRequestBody defines body for UpdateNotificationSettings for application/json ContentType.
 type UpdateNotificationSettingsJSONRequestBody = NotificationSettingsUpdate
@@ -38440,6 +38595,8 @@ type ClientInterface interface {
 	// are those of a reply. At send time an address that bounced or complained meanwhile is
 	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 	// address; the message is marked `failed` only when every `to` address bounced.
+	// `from_address` sends it from one of the calling member's own addresses usable for the channel,
+	// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 	//
 	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -38514,6 +38671,8 @@ type ClientInterface interface {
 	// are those of a reply. At send time an address that bounced or complained meanwhile is
 	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 	// address; the message is marked `failed` only when every `to` address bounced.
+	// `from_address` sends it from one of the calling member's own addresses usable for the channel,
+	// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 	//
 	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -38916,6 +39075,21 @@ type ClientInterface interface {
 	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
 	// webhooks or on `/client/v1`.
 	//
+	// In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+	// the name `<member name> (<channel name>)` (the channel name alone when the member has no
+	// name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+	// send with the channel's name. `from_address` sends it instead from one of the calling
+	// member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+	// address, `Reply-To` the channel's address, so answers come back to the conversation. The
+	// address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+	// otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+	// sending address, or no passing deliverability check). It is checked again when the mail is
+	// sent: when the address was removed or the check no longer passes, the message fails
+	// (`delivery.state` `failed`) instead of going out from another address. API keys and
+	// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+	// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+	// replies that are not e-mailed.
+	//
 	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
 	// started with `composeMail` has its other `to` and its `cc` recipients as participants.
@@ -38994,6 +39168,21 @@ type ClientInterface interface {
 	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
 	// webhooks or on `/client/v1`.
+	//
+	// In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+	// the name `<member name> (<channel name>)` (the channel name alone when the member has no
+	// name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+	// send with the channel's name. `from_address` sends it instead from one of the calling
+	// member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+	// address, `Reply-To` the channel's address, so answers come back to the conversation. The
+	// address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+	// otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+	// sending address, or no passing deliverability check). It is checked again when the mail is
+	// sent: when the address was removed or the check no longer passes, the message fails
+	// (`delivery.state` `failed`) instead of going out from another address. API keys and
+	// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+	// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+	// replies that are not e-mailed.
 	//
 	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -41800,6 +41989,101 @@ type ClientInterface interface {
 	// Corresponds with PATCH /v1/me (the `UpdateMe` operationId).
 	UpdateMe(ctx context.Context, body UpdateMeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListMyAddresses Your own e-mail addresses
+	//
+	// The addresses the calling member added to send mail from, verified or waiting for their
+	// code, oldest first. A verified address lists in `usable_channel_ids` the e-mail channels of
+	// inboxes the member can see that may send from it. Member sessions only.
+	//
+	// Corresponds with GET /v1/me/addresses (the `ListMyAddresses` operationId).
+	ListMyAddresses(ctx context.Context, params *ListMyAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddMyAddressWithBody Add an address of your own, or mail its code again
+	//
+	// Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+	// tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+	// catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+	// in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+	// address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+	// workspace nor the member. Posting an address the member added and has not verified yet
+	// mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+	// hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+	// most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+	// `member_address.added`.
+	//
+	// `409 address_taken` when the address is a channel address or sending address of this
+	// workspace, an address a channel on this server receives mail at, the server's own sender or
+	// a forwarding address, or another member of the workspace verified it; another member's
+	// unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+	// verified it already. `400 validation_failed` for anything that is not a plain address
+	// without a display name whose local part is a dot-atom. Member sessions only.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/me/addresses (the `AddMyAddress` operationId).
+	AddMyAddressWithBody(ctx context.Context, params *AddMyAddressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddMyAddress Add an address of your own, or mail its code again
+	//
+	// Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+	// tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+	// catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+	// in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+	// address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+	// workspace nor the member. Posting an address the member added and has not verified yet
+	// mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+	// hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+	// most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+	// `member_address.added`.
+	//
+	// `409 address_taken` when the address is a channel address or sending address of this
+	// workspace, an address a channel on this server receives mail at, the server's own sender or
+	// a forwarding address, or another member of the workspace verified it; another member's
+	// unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+	// verified it already. `400 validation_failed` for anything that is not a plain address
+	// without a display name whose local part is a dot-atom. Member sessions only.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/me/addresses (the `AddMyAddress` operationId).
+	AddMyAddress(ctx context.Context, params *AddMyAddressParams, body AddMyAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteMyAddress Remove one of your addresses
+	//
+	// Removes the address (`member_address.removed`). Mail queued from it fails instead of going
+	// out from another address. Another member's address is `404`. Member sessions only.
+	//
+	// Corresponds with DELETE /v1/me/addresses/{memberAddressId} (the `DeleteMyAddress` operationId).
+	DeleteMyAddress(ctx context.Context, memberAddressId MemberAddressId, params *DeleteMyAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// VerifyMyAddressWithBody Verify one of your addresses
+	//
+	// Checks the code mailed to the address. A wrong, used or expired code answers
+	// `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+	// requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+	// workspace, a channel on this server receives mail at it, or another member verified it
+	// meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+	// Another member's address is `404`. Member sessions only.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/me/addresses/{memberAddressId}/verify (the `VerifyMyAddress` operationId).
+	VerifyMyAddressWithBody(ctx context.Context, memberAddressId MemberAddressId, params *VerifyMyAddressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// VerifyMyAddress Verify one of your addresses
+	//
+	// Checks the code mailed to the address. A wrong, used or expired code answers
+	// `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+	// requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+	// workspace, a channel on this server receives mail at it, or another member verified it
+	// meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+	// Another member's address is `404`. Member sessions only.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/me/addresses/{memberAddressId}/verify (the `VerifyMyAddress` operationId).
+	VerifyMyAddress(ctx context.Context, memberAddressId MemberAddressId, params *VerifyMyAddressParams, body VerifyMyAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListMentions Notes that mention you
 	//
 	// Notes in the workspace whose `mentions` name the calling member, written by someone else,
@@ -42167,6 +42451,26 @@ type ClientInterface interface {
 	// Corresponds with PATCH /v1/members/{memberId} (the `UpdateMember` operationId).
 	UpdateMember(ctx context.Context, memberId MemberId, params *UpdateMemberParams, body UpdateMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListMemberAddresses A member's own e-mail addresses
+	//
+	// The addresses the member added to send mail from, as `GET /v1/me/addresses` lists them for
+	// the member, so an owner or admin can approve those with `verification: approval`. Owners and
+	// admins only, with a member session.
+	//
+	// Corresponds with GET /v1/members/{memberId}/addresses (the `ListMemberAddresses` operationId).
+	ListMemberAddresses(ctx context.Context, memberId MemberId, params *ListMemberAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ApproveMemberAddress Approve a member's address
+	//
+	// Verifies an address waiting for approval (`verification: approval`), recorded as
+	// `member_address.verified` with `by: approval`. An approved address answers as it is.
+	// `409 approval_not_needed` for an address verified by code; `409 address_taken` as for
+	// `POST /v1/me/addresses/{memberAddressId}/verify`. Owners and admins only, with a member
+	// session.
+	//
+	// Corresponds with POST /v1/members/{memberId}/addresses/{memberAddressId}/approve (the `ApproveMemberAddress` operationId).
+	ApproveMemberAddress(ctx context.Context, memberId MemberId, memberAddressId MemberAddressId, params *ApproveMemberAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteMessage Discard a draft
 	//
 	// Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
@@ -42267,7 +42571,9 @@ type ClientInterface interface {
 	// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
 	// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+	// `createMessage`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -42291,7 +42597,9 @@ type ClientInterface interface {
 	// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
 	// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+	// `createMessage`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -51887,6 +52195,8 @@ func (c *Client) GetConversationCounts(ctx context.Context, params *GetConversat
 // are those of a reply. At send time an address that bounced or complained meanwhile is
 // dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 // address; the message is marked `failed` only when every `to` address bounced.
+// `from_address` sends it from one of the calling member's own addresses usable for the channel,
+// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 //
 // The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 // inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -51971,6 +52281,8 @@ func (c *Client) ComposeMailWithBody(ctx context.Context, params *ComposeMailPar
 // are those of a reply. At send time an address that bounced or complained meanwhile is
 // dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 // address; the message is marked `failed` only when every `to` address bounced.
+// `from_address` sends it from one of the calling member's own addresses usable for the channel,
+// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 //
 // The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 // inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -52523,6 +52835,21 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // message's `email` to members and keys only in answers to `/v1` requests, never in events,
 // webhooks or on `/client/v1`.
 //
+// In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+// the name `<member name> (<channel name>)` (the channel name alone when the member has no
+// name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+// send with the channel's name. `from_address` sends it instead from one of the calling
+// member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+// address, `Reply-To` the channel's address, so answers come back to the conversation. The
+// address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+// otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+// sending address, or no passing deliverability check). It is checked again when the mail is
+// sent: when the address was removed or the check no longer passes, the message fails
+// (`delivery.state` `failed`) instead of going out from another address. API keys and
+// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+// replies that are not e-mailed.
+//
 // "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 // copies every `active` participant, and a `cc` list chooses who is copied. A conversation
 // started with `composeMail` has its other `to` and its `cc` recipients as participants.
@@ -52611,6 +52938,21 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 // message's `email` to members and keys only in answers to `/v1` requests, never in events,
 // webhooks or on `/client/v1`.
+//
+// In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+// the name `<member name> (<channel name>)` (the channel name alone when the member has no
+// name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+// send with the channel's name. `from_address` sends it instead from one of the calling
+// member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+// address, `Reply-To` the channel's address, so answers come back to the conversation. The
+// address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+// otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+// sending address, or no passing deliverability check). It is checked again when the mail is
+// sent: when the address was removed or the check no longer passes, the message fails
+// (`delivery.state` `failed`) instead of going out from another address. API keys and
+// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+// replies that are not e-mailed.
 //
 // "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 // copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -57417,6 +57759,161 @@ func (c *Client) UpdateMe(ctx context.Context, body UpdateMeJSONRequestBody, req
 	return c.Client.Do(req)
 }
 
+// ListMyAddresses Your own e-mail addresses
+//
+// The addresses the calling member added to send mail from, verified or waiting for their
+// code, oldest first. A verified address lists in `usable_channel_ids` the e-mail channels of
+// inboxes the member can see that may send from it. Member sessions only.
+//
+// Corresponds with GET /v1/me/addresses (the `ListMyAddresses` operationId).
+func (c *Client) ListMyAddresses(ctx context.Context, params *ListMyAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMyAddressesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AddMyAddressWithBody Add an address of your own, or mail its code again
+//
+// Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+// tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+// catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+// in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+// address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+// workspace nor the member. Posting an address the member added and has not verified yet
+// mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+// hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+// most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+// `member_address.added`.
+//
+// `409 address_taken` when the address is a channel address or sending address of this
+// workspace, an address a channel on this server receives mail at, the server's own sender or
+// a forwarding address, or another member of the workspace verified it; another member's
+// unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+// verified it already. `400 validation_failed` for anything that is not a plain address
+// without a display name whose local part is a dot-atom. Member sessions only.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/me/addresses (the `AddMyAddress` operationId).
+func (c *Client) AddMyAddressWithBody(ctx context.Context, params *AddMyAddressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddMyAddressRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AddMyAddress Add an address of your own, or mail its code again
+//
+// Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+// tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+// catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+// in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+// address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+// workspace nor the member. Posting an address the member added and has not verified yet
+// mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+// hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+// most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+// `member_address.added`.
+//
+// `409 address_taken` when the address is a channel address or sending address of this
+// workspace, an address a channel on this server receives mail at, the server's own sender or
+// a forwarding address, or another member of the workspace verified it; another member's
+// unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+// verified it already. `400 validation_failed` for anything that is not a plain address
+// without a display name whose local part is a dot-atom. Member sessions only.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/me/addresses (the `AddMyAddress` operationId).
+func (c *Client) AddMyAddress(ctx context.Context, params *AddMyAddressParams, body AddMyAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddMyAddressRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteMyAddress Remove one of your addresses
+//
+// Removes the address (`member_address.removed`). Mail queued from it fails instead of going
+// out from another address. Another member's address is `404`. Member sessions only.
+//
+// Corresponds with DELETE /v1/me/addresses/{memberAddressId} (the `DeleteMyAddress` operationId).
+func (c *Client) DeleteMyAddress(ctx context.Context, memberAddressId MemberAddressId, params *DeleteMyAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteMyAddressRequest(c.Server, memberAddressId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// VerifyMyAddressWithBody Verify one of your addresses
+//
+// Checks the code mailed to the address. A wrong, used or expired code answers
+// `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+// requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+// workspace, a channel on this server receives mail at it, or another member verified it
+// meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+// Another member's address is `404`. Member sessions only.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/me/addresses/{memberAddressId}/verify (the `VerifyMyAddress` operationId).
+func (c *Client) VerifyMyAddressWithBody(ctx context.Context, memberAddressId MemberAddressId, params *VerifyMyAddressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifyMyAddressRequestWithBody(c.Server, memberAddressId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// VerifyMyAddress Verify one of your addresses
+//
+// Checks the code mailed to the address. A wrong, used or expired code answers
+// `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+// requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+// workspace, a channel on this server receives mail at it, or another member verified it
+// meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+// Another member's address is `404`. Member sessions only.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/me/addresses/{memberAddressId}/verify (the `VerifyMyAddress` operationId).
+func (c *Client) VerifyMyAddress(ctx context.Context, memberAddressId MemberAddressId, params *VerifyMyAddressParams, body VerifyMyAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifyMyAddressRequest(c.Server, memberAddressId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListMentions Notes that mention you
 //
 // Notes in the workspace whose `mentions` name the calling member, written by someone else,
@@ -58144,6 +58641,46 @@ func (c *Client) UpdateMember(ctx context.Context, memberId MemberId, params *Up
 	return c.Client.Do(req)
 }
 
+// ListMemberAddresses A member's own e-mail addresses
+//
+// The addresses the member added to send mail from, as `GET /v1/me/addresses` lists them for
+// the member, so an owner or admin can approve those with `verification: approval`. Owners and
+// admins only, with a member session.
+//
+// Corresponds with GET /v1/members/{memberId}/addresses (the `ListMemberAddresses` operationId).
+func (c *Client) ListMemberAddresses(ctx context.Context, memberId MemberId, params *ListMemberAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMemberAddressesRequest(c.Server, memberId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ApproveMemberAddress Approve a member's address
+//
+// Verifies an address waiting for approval (`verification: approval`), recorded as
+// `member_address.verified` with `by: approval`. An approved address answers as it is.
+// `409 approval_not_needed` for an address verified by code; `409 address_taken` as for
+// `POST /v1/me/addresses/{memberAddressId}/verify`. Owners and admins only, with a member
+// session.
+//
+// Corresponds with POST /v1/members/{memberId}/addresses/{memberAddressId}/approve (the `ApproveMemberAddress` operationId).
+func (c *Client) ApproveMemberAddress(ctx context.Context, memberId MemberId, memberAddressId MemberAddressId, params *ApproveMemberAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewApproveMemberAddressRequest(c.Server, memberId, memberAddressId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // DeleteMessage Discard a draft
 //
 // Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
@@ -58304,7 +58841,9 @@ func (c *Client) RedactMessage(ctx context.Context, messageId MessageId, params 
 // erased with its contact answers `409 no_recipient`. Its recipients count against the 300
 // recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+// `createMessage`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -58338,7 +58877,9 @@ func (c *Client) SendMessageWithBody(ctx context.Context, messageId MessageId, p
 // erased with its contact answers `409 no_recipient`. Its recipients count against the 300
 // recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+// `createMessage`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -85721,6 +86262,214 @@ func NewUpdateMeRequestWithBody(server string, contentType string, body io.Reade
 	return req, nil
 }
 
+// NewListMyAddressesRequest constructs an http.Request for the ListMyAddresses method
+func NewListMyAddressesRequest(server string, params *ListMyAddressesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/addresses")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewAddMyAddressRequest calls the generic AddMyAddress builder with application/json body
+func NewAddMyAddressRequest(server string, params *AddMyAddressParams, body AddMyAddressJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddMyAddressRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewAddMyAddressRequestWithBody constructs an http.Request for the AddMyAddress method, with any body, and a specified content type
+func NewAddMyAddressRequestWithBody(server string, params *AddMyAddressParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/addresses")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteMyAddressRequest constructs an http.Request for the DeleteMyAddress method
+func NewDeleteMyAddressRequest(server string, memberAddressId MemberAddressId, params *DeleteMyAddressParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "memberAddressId", memberAddressId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/addresses/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewVerifyMyAddressRequest calls the generic VerifyMyAddress builder with application/json body
+func NewVerifyMyAddressRequest(server string, memberAddressId MemberAddressId, params *VerifyMyAddressParams, body VerifyMyAddressJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewVerifyMyAddressRequestWithBody(server, memberAddressId, params, "application/json", bodyReader)
+}
+
+// NewVerifyMyAddressRequestWithBody constructs an http.Request for the VerifyMyAddress method, with any body, and a specified content type
+func NewVerifyMyAddressRequestWithBody(server string, memberAddressId MemberAddressId, params *VerifyMyAddressParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "memberAddressId", memberAddressId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/me/addresses/%s/verify", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListMentionsRequest constructs an http.Request for the ListMentions method
 func NewListMentionsRequest(server string, params *ListMentionsParams) (*http.Request, error) {
 	var err error
@@ -86970,6 +87719,111 @@ func NewUpdateMemberRequestWithBody(server string, memberId MemberId, params *Up
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListMemberAddressesRequest constructs an http.Request for the ListMemberAddresses method
+func NewListMemberAddressesRequest(server string, memberId MemberId, params *ListMemberAddressesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "memberId", memberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/members/%s/addresses", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewApproveMemberAddressRequest constructs an http.Request for the ApproveMemberAddress method
+func NewApproveMemberAddressRequest(server string, memberId MemberId, memberAddressId MemberAddressId, params *ApproveMemberAddressParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "memberId", memberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "memberAddressId", memberAddressId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/members/%s/addresses/%s/approve", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	if params != nil {
 
@@ -100001,6 +100855,8 @@ type ClientWithResponsesInterface interface {
 	// are those of a reply. At send time an address that bounced or complained meanwhile is
 	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 	// address; the message is marked `failed` only when every `to` address bounced.
+	// `from_address` sends it from one of the calling member's own addresses usable for the channel,
+	// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 	//
 	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -100075,6 +100931,8 @@ type ClientWithResponsesInterface interface {
 	// are those of a reply. At send time an address that bounced or complained meanwhile is
 	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 	// address; the message is marked `failed` only when every `to` address bounced.
+	// `from_address` sends it from one of the calling member's own addresses usable for the channel,
+	// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 	//
 	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -100489,6 +101347,21 @@ type ClientWithResponsesInterface interface {
 	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
 	// webhooks or on `/client/v1`.
 	//
+	// In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+	// the name `<member name> (<channel name>)` (the channel name alone when the member has no
+	// name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+	// send with the channel's name. `from_address` sends it instead from one of the calling
+	// member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+	// address, `Reply-To` the channel's address, so answers come back to the conversation. The
+	// address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+	// otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+	// sending address, or no passing deliverability check). It is checked again when the mail is
+	// sent: when the address was removed or the check no longer passes, the message fails
+	// (`delivery.state` `failed`) instead of going out from another address. API keys and
+	// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+	// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+	// replies that are not e-mailed.
+	//
 	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
 	// started with `composeMail` has its other `to` and its `cc` recipients as participants.
@@ -100567,6 +101440,21 @@ type ClientWithResponsesInterface interface {
 	// `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 	// message's `email` to members and keys only in answers to `/v1` requests, never in events,
 	// webhooks or on `/client/v1`.
+	//
+	// In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+	// the name `<member name> (<channel name>)` (the channel name alone when the member has no
+	// name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+	// send with the channel's name. `from_address` sends it instead from one of the calling
+	// member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+	// address, `Reply-To` the channel's address, so answers come back to the conversation. The
+	// address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+	// otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+	// sending address, or no passing deliverability check). It is checked again when the mail is
+	// sent: when the address was removed or the check no longer passes, the message fails
+	// (`delivery.state` `failed`) instead of going out from another address. API keys and
+	// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+	// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+	// replies that are not e-mailed.
 	//
 	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -103565,6 +104453,105 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with PATCH /v1/me (the `UpdateMe` operationId).
 	UpdateMeWithResponse(ctx context.Context, body UpdateMeJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMeResponse, error)
 
+	// ListMyAddressesWithResponse Your own e-mail addresses
+	//
+	// The addresses the calling member added to send mail from, verified or waiting for their
+	// code, oldest first. A verified address lists in `usable_channel_ids` the e-mail channels of
+	// inboxes the member can see that may send from it. Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/me/addresses (the `ListMyAddresses` operationId).
+	ListMyAddressesWithResponse(ctx context.Context, params *ListMyAddressesParams, reqEditors ...RequestEditorFn) (*ListMyAddressesResponse, error)
+
+	// AddMyAddressWithBodyWithResponse Add an address of your own, or mail its code again
+	//
+	// Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+	// tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+	// catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+	// in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+	// address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+	// workspace nor the member. Posting an address the member added and has not verified yet
+	// mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+	// hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+	// most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+	// `member_address.added`.
+	//
+	// `409 address_taken` when the address is a channel address or sending address of this
+	// workspace, an address a channel on this server receives mail at, the server's own sender or
+	// a forwarding address, or another member of the workspace verified it; another member's
+	// unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+	// verified it already. `400 validation_failed` for anything that is not a plain address
+	// without a display name whose local part is a dot-atom. Member sessions only.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/me/addresses (the `AddMyAddress` operationId).
+	AddMyAddressWithBodyWithResponse(ctx context.Context, params *AddMyAddressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddMyAddressResponse, error)
+
+	// AddMyAddressWithResponse Add an address of your own, or mail its code again
+	//
+	// Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+	// tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+	// catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+	// in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+	// address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+	// workspace nor the member. Posting an address the member added and has not verified yet
+	// mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+	// hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+	// most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+	// `member_address.added`.
+	//
+	// `409 address_taken` when the address is a channel address or sending address of this
+	// workspace, an address a channel on this server receives mail at, the server's own sender or
+	// a forwarding address, or another member of the workspace verified it; another member's
+	// unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+	// verified it already. `400 validation_failed` for anything that is not a plain address
+	// without a display name whose local part is a dot-atom. Member sessions only.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/me/addresses (the `AddMyAddress` operationId).
+	AddMyAddressWithResponse(ctx context.Context, params *AddMyAddressParams, body AddMyAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddMyAddressResponse, error)
+
+	// DeleteMyAddressWithResponse Remove one of your addresses
+	//
+	// Removes the address (`member_address.removed`). Mail queued from it fails instead of going
+	// out from another address. Another member's address is `404`. Member sessions only.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/me/addresses/{memberAddressId} (the `DeleteMyAddress` operationId).
+	DeleteMyAddressWithResponse(ctx context.Context, memberAddressId MemberAddressId, params *DeleteMyAddressParams, reqEditors ...RequestEditorFn) (*DeleteMyAddressResponse, error)
+
+	// VerifyMyAddressWithBodyWithResponse Verify one of your addresses
+	//
+	// Checks the code mailed to the address. A wrong, used or expired code answers
+	// `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+	// requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+	// workspace, a channel on this server receives mail at it, or another member verified it
+	// meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+	// Another member's address is `404`. Member sessions only.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/me/addresses/{memberAddressId}/verify (the `VerifyMyAddress` operationId).
+	VerifyMyAddressWithBodyWithResponse(ctx context.Context, memberAddressId MemberAddressId, params *VerifyMyAddressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyMyAddressResponse, error)
+
+	// VerifyMyAddressWithResponse Verify one of your addresses
+	//
+	// Checks the code mailed to the address. A wrong, used or expired code answers
+	// `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+	// requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+	// workspace, a channel on this server receives mail at it, or another member verified it
+	// meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+	// Another member's address is `404`. Member sessions only.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/me/addresses/{memberAddressId}/verify (the `VerifyMyAddress` operationId).
+	VerifyMyAddressWithResponse(ctx context.Context, memberAddressId MemberAddressId, params *VerifyMyAddressParams, body VerifyMyAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyMyAddressResponse, error)
+
 	// ListMentionsWithResponse Notes that mention you
 	//
 	// Notes in the workspace whose `mentions` name the calling member, written by someone else,
@@ -103972,6 +104959,30 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with PATCH /v1/members/{memberId} (the `UpdateMember` operationId).
 	UpdateMemberWithResponse(ctx context.Context, memberId MemberId, params *UpdateMemberParams, body UpdateMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMemberResponse, error)
 
+	// ListMemberAddressesWithResponse A member's own e-mail addresses
+	//
+	// The addresses the member added to send mail from, as `GET /v1/me/addresses` lists them for
+	// the member, so an owner or admin can approve those with `verification: approval`. Owners and
+	// admins only, with a member session.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/members/{memberId}/addresses (the `ListMemberAddresses` operationId).
+	ListMemberAddressesWithResponse(ctx context.Context, memberId MemberId, params *ListMemberAddressesParams, reqEditors ...RequestEditorFn) (*ListMemberAddressesResponse, error)
+
+	// ApproveMemberAddressWithResponse Approve a member's address
+	//
+	// Verifies an address waiting for approval (`verification: approval`), recorded as
+	// `member_address.verified` with `by: approval`. An approved address answers as it is.
+	// `409 approval_not_needed` for an address verified by code; `409 address_taken` as for
+	// `POST /v1/me/addresses/{memberAddressId}/verify`. Owners and admins only, with a member
+	// session.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/members/{memberId}/addresses/{memberAddressId}/approve (the `ApproveMemberAddress` operationId).
+	ApproveMemberAddressWithResponse(ctx context.Context, memberId MemberId, memberAddressId MemberAddressId, params *ApproveMemberAddressParams, reqEditors ...RequestEditorFn) (*ApproveMemberAddressResponse, error)
+
 	// DeleteMessageWithResponse Discard a draft
 	//
 	// Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
@@ -104080,7 +105091,9 @@ type ClientWithResponsesInterface interface {
 	// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
 	// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+	// `createMessage`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -104104,7 +105117,9 @@ type ClientWithResponsesInterface interface {
 	// erased with its contact answers `409 no_recipient`. Its recipients count against the 300
 	// recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-	// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+	// `createMessage`.
 	//
 	// Members always may. An API key needs `drafts:send` and `messages:write`, and the
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -131348,6 +132363,268 @@ func (r UpdateMeResponse) ContentType() string {
 	return ""
 }
 
+type ListMyAddressesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MemberAddressList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListMyAddressesResponse) GetJSON200() *MemberAddressList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListMyAddressesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListMyAddressesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetBody returns the raw response body bytes
+func (r ListMyAddressesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListMyAddressesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListMyAddressesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListMyAddressesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AddMyAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON202 the response for an HTTP 202 `application/json` response
+	JSON202 *MemberAddress
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+}
+
+// GetJSON202 returns the response for an HTTP 202 `application/json` response
+func (r AddMyAddressResponse) GetJSON202() *MemberAddress {
+	return r.JSON202
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r AddMyAddressResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r AddMyAddressResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r AddMyAddressResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r AddMyAddressResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r AddMyAddressResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetBody returns the raw response body bytes
+func (r AddMyAddressResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r AddMyAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddMyAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AddMyAddressResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteMyAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteMyAddressResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteMyAddressResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r DeleteMyAddressResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteMyAddressResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteMyAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteMyAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteMyAddressResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type VerifyMyAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MemberAddress
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r VerifyMyAddressResponse) GetJSON200() *MemberAddress {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r VerifyMyAddressResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r VerifyMyAddressResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r VerifyMyAddressResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r VerifyMyAddressResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r VerifyMyAddressResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r VerifyMyAddressResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r VerifyMyAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r VerifyMyAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r VerifyMyAddressResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListMentionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -133043,6 +134320,137 @@ func (r UpdateMemberResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UpdateMemberResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListMemberAddressesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MemberAddressList
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListMemberAddressesResponse) GetJSON200() *MemberAddressList {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListMemberAddressesResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListMemberAddressesResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListMemberAddressesResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListMemberAddressesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListMemberAddressesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListMemberAddressesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListMemberAddressesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ApproveMemberAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MemberAddress
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ApproveMemberAddressResponse) GetJSON200() *MemberAddress {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ApproveMemberAddressResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ApproveMemberAddressResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ApproveMemberAddressResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r ApproveMemberAddressResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r ApproveMemberAddressResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ApproveMemberAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ApproveMemberAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ApproveMemberAddressResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -148136,6 +149544,8 @@ func (c *ClientWithResponses) GetConversationCountsWithResponse(ctx context.Cont
 // are those of a reply. At send time an address that bounced or complained meanwhile is
 // dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 // address; the message is marked `failed` only when every `to` address bounced.
+// `from_address` sends it from one of the calling member's own addresses usable for the channel,
+// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 //
 // The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 // inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -148216,6 +149626,8 @@ func (c *ClientWithResponses) ComposeMailWithBodyWithResponse(ctx context.Contex
 // are those of a reply. At send time an address that bounced or complained meanwhile is
 // dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 // address; the message is marked `failed` only when every `to` address bounced.
+// `from_address` sends it from one of the calling member's own addresses usable for the channel,
+// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 //
 // The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 // inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -148720,6 +150132,21 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // message's `email` to members and keys only in answers to `/v1` requests, never in events,
 // webhooks or on `/client/v1`.
 //
+// In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+// the name `<member name> (<channel name>)` (the channel name alone when the member has no
+// name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+// send with the channel's name. `from_address` sends it instead from one of the calling
+// member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+// address, `Reply-To` the channel's address, so answers come back to the conversation. The
+// address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+// otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+// sending address, or no passing deliverability check). It is checked again when the mail is
+// sent: when the address was removed or the check no longer passes, the message fails
+// (`delivery.state` `failed`) instead of going out from another address. API keys and
+// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+// replies that are not e-mailed.
+//
 // "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 // copies every `active` participant, and a `cc` list chooses who is copied. A conversation
 // started with `composeMail` has its other `to` and its `cc` recipients as participants.
@@ -148804,6 +150231,21 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // `POST /v1/messages/{id}/send`) and replies that are not e-mailed. `bcc` is returned on the
 // message's `email` to members and keys only in answers to `/v1` requests, never in events,
 // webhooks or on `/client/v1`.
+//
+// In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+// the name `<member name> (<channel name>)` (the channel name alone when the member has no
+// name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+// send with the channel's name. `from_address` sends it instead from one of the calling
+// member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+// address, `Reply-To` the channel's address, so answers come back to the conversation. The
+// address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+// otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+// sending address, or no passing deliverability check). It is checked again when the mail is
+// sent: when the address was removed or the check no longer passes, the message fails
+// (`delivery.state` `failed`) instead of going out from another address. API keys and
+// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+// replies that are not e-mailed.
 //
 // "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 // copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -153002,6 +154444,141 @@ func (c *ClientWithResponses) UpdateMeWithResponse(ctx context.Context, body Upd
 	return ParseUpdateMeResponse(rsp)
 }
 
+// ListMyAddressesWithResponse Your own e-mail addresses
+//
+// The addresses the calling member added to send mail from, verified or waiting for their
+// code, oldest first. A verified address lists in `usable_channel_ids` the e-mail channels of
+// inboxes the member can see that may send from it. Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/me/addresses (the `ListMyAddresses` operationId).
+func (c *ClientWithResponses) ListMyAddressesWithResponse(ctx context.Context, params *ListMyAddressesParams, reqEditors ...RequestEditorFn) (*ListMyAddressesResponse, error) {
+	rsp, err := c.ListMyAddresses(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListMyAddressesResponse(rsp)
+}
+
+// AddMyAddressWithBodyWithResponse Add an address of your own, or mail its code again
+//
+// Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+// tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+// catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+// in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+// address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+// workspace nor the member. Posting an address the member added and has not verified yet
+// mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+// hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+// most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+// `member_address.added`.
+//
+// `409 address_taken` when the address is a channel address or sending address of this
+// workspace, an address a channel on this server receives mail at, the server's own sender or
+// a forwarding address, or another member of the workspace verified it; another member's
+// unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+// verified it already. `400 validation_failed` for anything that is not a plain address
+// without a display name whose local part is a dot-atom. Member sessions only.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/me/addresses (the `AddMyAddress` operationId).
+func (c *ClientWithResponses) AddMyAddressWithBodyWithResponse(ctx context.Context, params *AddMyAddressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddMyAddressResponse, error) {
+	rsp, err := c.AddMyAddressWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddMyAddressResponse(rsp)
+}
+
+// AddMyAddressWithResponse Add an address of your own, or mail its code again
+//
+// Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+// tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+// catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+// in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+// address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+// workspace nor the member. Posting an address the member added and has not verified yet
+// mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+// hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+// most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+// `member_address.added`.
+//
+// `409 address_taken` when the address is a channel address or sending address of this
+// workspace, an address a channel on this server receives mail at, the server's own sender or
+// a forwarding address, or another member of the workspace verified it; another member's
+// unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+// verified it already. `400 validation_failed` for anything that is not a plain address
+// without a display name whose local part is a dot-atom. Member sessions only.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/me/addresses (the `AddMyAddress` operationId).
+func (c *ClientWithResponses) AddMyAddressWithResponse(ctx context.Context, params *AddMyAddressParams, body AddMyAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddMyAddressResponse, error) {
+	rsp, err := c.AddMyAddress(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddMyAddressResponse(rsp)
+}
+
+// DeleteMyAddressWithResponse Remove one of your addresses
+//
+// Removes the address (`member_address.removed`). Mail queued from it fails instead of going
+// out from another address. Another member's address is `404`. Member sessions only.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/me/addresses/{memberAddressId} (the `DeleteMyAddress` operationId).
+func (c *ClientWithResponses) DeleteMyAddressWithResponse(ctx context.Context, memberAddressId MemberAddressId, params *DeleteMyAddressParams, reqEditors ...RequestEditorFn) (*DeleteMyAddressResponse, error) {
+	rsp, err := c.DeleteMyAddress(ctx, memberAddressId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteMyAddressResponse(rsp)
+}
+
+// VerifyMyAddressWithBodyWithResponse Verify one of your addresses
+//
+// Checks the code mailed to the address. A wrong, used or expired code answers
+// `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+// requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+// workspace, a channel on this server receives mail at it, or another member verified it
+// meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+// Another member's address is `404`. Member sessions only.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/me/addresses/{memberAddressId}/verify (the `VerifyMyAddress` operationId).
+func (c *ClientWithResponses) VerifyMyAddressWithBodyWithResponse(ctx context.Context, memberAddressId MemberAddressId, params *VerifyMyAddressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyMyAddressResponse, error) {
+	rsp, err := c.VerifyMyAddressWithBody(ctx, memberAddressId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifyMyAddressResponse(rsp)
+}
+
+// VerifyMyAddressWithResponse Verify one of your addresses
+//
+// Checks the code mailed to the address. A wrong, used or expired code answers
+// `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+// requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+// workspace, a channel on this server receives mail at it, or another member verified it
+// meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+// Another member's address is `404`. Member sessions only.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/me/addresses/{memberAddressId}/verify (the `VerifyMyAddress` operationId).
+func (c *ClientWithResponses) VerifyMyAddressWithResponse(ctx context.Context, memberAddressId MemberAddressId, params *VerifyMyAddressParams, body VerifyMyAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyMyAddressResponse, error) {
+	rsp, err := c.VerifyMyAddress(ctx, memberAddressId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifyMyAddressResponse(rsp)
+}
+
 // ListMentionsWithResponse Notes that mention you
 //
 // Notes in the workspace whose `mentions` name the calling member, written by someone else,
@@ -153625,6 +155202,42 @@ func (c *ClientWithResponses) UpdateMemberWithResponse(ctx context.Context, memb
 	return ParseUpdateMemberResponse(rsp)
 }
 
+// ListMemberAddressesWithResponse A member's own e-mail addresses
+//
+// The addresses the member added to send mail from, as `GET /v1/me/addresses` lists them for
+// the member, so an owner or admin can approve those with `verification: approval`. Owners and
+// admins only, with a member session.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/members/{memberId}/addresses (the `ListMemberAddresses` operationId).
+func (c *ClientWithResponses) ListMemberAddressesWithResponse(ctx context.Context, memberId MemberId, params *ListMemberAddressesParams, reqEditors ...RequestEditorFn) (*ListMemberAddressesResponse, error) {
+	rsp, err := c.ListMemberAddresses(ctx, memberId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListMemberAddressesResponse(rsp)
+}
+
+// ApproveMemberAddressWithResponse Approve a member's address
+//
+// Verifies an address waiting for approval (`verification: approval`), recorded as
+// `member_address.verified` with `by: approval`. An approved address answers as it is.
+// `409 approval_not_needed` for an address verified by code; `409 address_taken` as for
+// `POST /v1/me/addresses/{memberAddressId}/verify`. Owners and admins only, with a member
+// session.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/members/{memberId}/addresses/{memberAddressId}/approve (the `ApproveMemberAddress` operationId).
+func (c *ClientWithResponses) ApproveMemberAddressWithResponse(ctx context.Context, memberId MemberId, memberAddressId MemberAddressId, params *ApproveMemberAddressParams, reqEditors ...RequestEditorFn) (*ApproveMemberAddressResponse, error) {
+	rsp, err := c.ApproveMemberAddress(ctx, memberId, memberAddressId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseApproveMemberAddressResponse(rsp)
+}
+
 // DeleteMessageWithResponse Discard a draft
 //
 // Deletes a draft with its attachments; emits `draft.deleted`. Anything that is not a draft
@@ -153769,7 +155382,9 @@ func (c *ClientWithResponses) RedactMessageWithResponse(ctx context.Context, mes
 // erased with its contact answers `409 no_recipient`. Its recipients count against the 300
 // recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+// `createMessage`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -153799,7 +155414,9 @@ func (c *ClientWithResponses) SendMessageWithBodyWithResponse(ctx context.Contex
 // erased with its contact answers `409 no_recipient`. Its recipients count against the 300
 // recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-// under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+// `createMessage`.
 //
 // Members always may. An API key needs `drafts:send` and `messages:write`, and the
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -176989,6 +178606,211 @@ func ParseUpdateMeResponse(rsp *http.Response) (*UpdateMeResponse, error) {
 	return response, nil
 }
 
+// ParseListMyAddressesResponse parses an HTTP response from a ListMyAddressesWithResponse call
+func ParseListMyAddressesResponse(rsp *http.Response) (*ListMyAddressesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListMyAddressesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MemberAddressList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddMyAddressResponse parses an HTTP response from a AddMyAddressWithResponse call
+func ParseAddMyAddressResponse(rsp *http.Response) (*AddMyAddressResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddMyAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest MemberAddress
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteMyAddressResponse parses an HTTP response from a DeleteMyAddressWithResponse call
+func ParseDeleteMyAddressResponse(rsp *http.Response) (*DeleteMyAddressResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteMyAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseVerifyMyAddressResponse parses an HTTP response from a VerifyMyAddressWithResponse call
+func ParseVerifyMyAddressResponse(rsp *http.Response) (*VerifyMyAddressResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &VerifyMyAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MemberAddress
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListMentionsResponse parses an HTTP response from a ListMentionsWithResponse call
 func ParseListMentionsResponse(rsp *http.Response) (*ListMentionsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -178254,6 +180076,107 @@ func ParseUpdateMemberResponse(rsp *http.Response) (*UpdateMemberResponse, error
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListMemberAddressesResponse parses an HTTP response from a ListMemberAddressesWithResponse call
+func ParseListMemberAddressesResponse(rsp *http.Response) (*ListMemberAddressesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListMemberAddressesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MemberAddressList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseApproveMemberAddressResponse parses an HTTP response from a ApproveMemberAddressWithResponse call
+func ParseApproveMemberAddressResponse(rsp *http.Response) (*ApproveMemberAddressResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ApproveMemberAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MemberAddress
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Problem

@@ -1,0 +1,5 @@
+{{template "heading" "Ihr Adresscode"}}
+<p style="margin:0 0 16px 0;">Jemand richtet {{.Address}} zum Senden von E-Mails aus Yuva ein. Der Code, der bestätigt, dass diese Adresse Ihnen gehört, lautet:</p>
+{{template "code" .Code}}
+<p style="margin:0 0 12px 0;">Er ist {{.Minutes}} Minuten gültig.</p>
+<p class="y-muted" style="margin:0;font-size:13px;line-height:20px;color:#71717a;">Wenn Sie das nicht erwartet haben, können Sie diese E-Mail ignorieren: Ohne den Code ändert sich nichts.</p>

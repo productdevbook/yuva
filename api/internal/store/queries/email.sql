@@ -1,10 +1,16 @@
 -- name: CreateEmailChannel :one
 INSERT INTO email_channels (workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port,
                             smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text,
-                            auto_reply_interval_hours)
+                            auto_reply_interval_hours, sending_changed_at)
 VALUES (@workspace_id, @channel_id, @address, @display_name, @from_address, @smtp_host, @smtp_port,
-        @smtp_username, @smtp_password, @smtp_tls, @auto_reply_enabled, @auto_reply_text, @auto_reply_interval_hours)
+        @smtp_username, @smtp_password, @smtp_tls, @auto_reply_enabled, @auto_reply_text, @auto_reply_interval_hours,
+        @now::timestamptz)
 ON CONFLICT (workspace_id, channel_id) DO UPDATE SET
+    sending_changed_at = CASE WHEN (email_channels.address, email_channels.from_address, email_channels.smtp_host, email_channels.smtp_port,
+            email_channels.smtp_username, email_channels.smtp_password, email_channels.smtp_tls)
+        IS NOT DISTINCT FROM (excluded.address, excluded.from_address, excluded.smtp_host, excluded.smtp_port,
+            excluded.smtp_username, excluded.smtp_password, excluded.smtp_tls)
+        THEN email_channels.sending_changed_at ELSE excluded.sending_changed_at END,
     address = excluded.address, display_name = excluded.display_name, from_address = excluded.from_address,
     smtp_host = excluded.smtp_host, smtp_port = excluded.smtp_port, smtp_username = excluded.smtp_username,
     smtp_password = excluded.smtp_password, smtp_tls = excluded.smtp_tls,

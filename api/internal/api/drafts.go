@@ -161,13 +161,26 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 		return nil, errBotSendingDisabled
 	}
 	var cc, bcc copyList
+	var from *string
 	if req.Body != nil {
 		cc, bcc = copiesOf(req.Body.Cc), copiesOf(req.Body.Bcc)
+		from = (*string)(req.Body.FromAddress)
+	}
+	if from != nil && (p.isKey() || p.deliversAsBot()) {
+		return nil, errFromNotMember
 	}
 	if m, err := s.st.GetMessage(ctx, store.GetMessageParams{WorkspaceID: p.workspaceID, ID: req.MessageId}); err == nil && m.Kind == string(oas.MessageKindForward) {
+		if from != nil {
+			return nil, errValidation("a forward goes from the channel's address and takes no from_address")
+		}
 		return s.sendForwardDraft(ctx, p, req)
 	} else if err == nil && m.Draft {
 		if d, err := s.st.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: m.ID}); err == nil {
+			if from != nil {
+				if err := s.checkDraftFrom(ctx, p, m.ConversationID, *from); err != nil {
+					return nil, err
+				}
+			}
 			to, ccList, bccList := composedDraftLists(d, cc, bcc)
 			if err := s.takeComposeRecipients(ctx, p, len(to)+len(ccList)+len(bccList)); err != nil {
 				return nil, err
@@ -204,6 +217,14 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 			}
 		} else if cc.set || bcc.set {
 			return errCopiesNotEmailed
+		}
+		if plan == nil && from != nil {
+			return errFromNotEmailed
+		}
+		if plan != nil {
+			if err := s.applyFromAddress(ctx, q, p, plan, from); err != nil {
+				return err
+			}
 		}
 		now := s.now()
 		arg := store.SendDraftParams{WorkspaceID: p.workspaceID, ID: req.MessageId, Now: now, SentVia: p.viaClient()}
@@ -322,4 +343,23 @@ func (s *Server) ListDrafts(ctx context.Context, req oas.ListDraftsRequestObject
 		items[i] = oas.DraftItem{Draft: messageBody(messageRow(r), atts[r.ID]), Conversation: convs[r.ConversationID]}
 	}
 	return oas.ListDrafts200JSONResponse{Items: items, NextCursor: next, Total: total}, nil
+}
+
+func (s *Server) checkDraftFrom(ctx context.Context, p principal, conv uuid.UUID, from string) error {
+	c, err := s.st.GetConversation(ctx, store.GetConversationParams{WorkspaceID: p.workspaceID, ID: conv})
+	if err != nil {
+		return err
+	}
+	if c.ChannelID == nil {
+		return errComposeNoChannel
+	}
+	ch, err := s.st.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: p.workspaceID, ChannelID: *c.ChannelID})
+	if store.IsNotFound(err) {
+		return errComposeNoChannel
+	}
+	if err != nil {
+		return err
+	}
+	_, err = s.fromMemberAddress(ctx, s.st.Queries, p, ch, from)
+	return err
 }

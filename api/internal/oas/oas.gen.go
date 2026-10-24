@@ -1146,6 +1146,9 @@ const (
 	AuditIssueIntegrationSecretRotated       AuditAction = "issue_integration.secret_rotated"
 	AuditIssueIntegrationUpdated             AuditAction = "issue_integration.updated"
 	AuditListConsentExported                 AuditAction = "list.consent_exported"
+	AuditMemberAddressAdded                  AuditAction = "member_address.added"
+	AuditMemberAddressRemoved                AuditAction = "member_address.removed"
+	AuditMemberAddressVerified               AuditAction = "member_address.verified"
 	AuditMemberInboxAccessGranted            AuditAction = "member.inbox_access_granted"
 	AuditMemberInboxAccessRevoked            AuditAction = "member.inbox_access_revoked"
 	AuditMemberJoined                        AuditAction = "member.joined"
@@ -1249,6 +1252,12 @@ func (e AuditAction) Valid() bool {
 	case AuditIssueIntegrationUpdated:
 		return true
 	case AuditListConsentExported:
+		return true
+	case AuditMemberAddressAdded:
+		return true
+	case AuditMemberAddressRemoved:
+		return true
+	case AuditMemberAddressVerified:
 		return true
 	case AuditMemberInboxAccessGranted:
 		return true
@@ -4697,6 +4706,24 @@ func (e MailingListKind) Valid() bool {
 	case MailingListKindList:
 		return true
 	case MailingListKindStatus:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemberAddressVerification.
+const (
+	MemberAddressVerificationApproval MemberAddressVerification = "approval"
+	MemberAddressVerificationCode     MemberAddressVerification = "code"
+)
+
+// Valid indicates whether the value is a known member of the MemberAddressVerification enum.
+func (e MemberAddressVerification) Valid() bool {
+	switch e {
+	case MemberAddressVerificationApproval:
+		return true
+	case MemberAddressVerificationCode:
 		return true
 	default:
 		return false
@@ -10035,6 +10062,9 @@ type Attributes map[string]interface{}
 //   - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 //     `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 //   - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+//   - `member_address.added`, `member_address.verified`, `member_address.removed`: `address`;
+//     the target is the member whose own address it is; `member_address.verified` adds
+//     `by: approval` when an owner or admin approved it.
 //   - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
 //     `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
 //     `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
@@ -10160,6 +10190,9 @@ type AuditEntry struct {
 	// - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
 	//   `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
 	// - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+	// - `member_address.added`, `member_address.verified`, `member_address.removed`: `address`;
+	//   the target is the member whose own address it is; `member_address.verified` adds
+	//   `by: approval` when an owner or admin approved it.
 	// - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
 	//   `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
 	//   `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
@@ -12984,6 +13017,11 @@ type ComposeMail struct {
 	// Draft Stores the message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
+	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
+	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+	// `createMessage`.
+	FromAddress *Email `json:"from_address,omitempty"`
+
 	// Html Sanitized before it is stored.
 	Html    *string   `json:"html,omitempty"`
 	InboxId uuid.UUID `json:"inbox_id"`
@@ -13008,10 +13046,13 @@ type ComposeMailMultipart struct {
 	ClientId  *string               `json:"client_id,omitempty"`
 	Draft     *bool                 `json:"draft,omitempty"`
 	Files     *[]openapi_types.File `json:"files,omitempty"`
-	Html      *string               `json:"html,omitempty"`
-	InboxId   uuid.UUID             `json:"inbox_id"`
-	Signature *bool                 `json:"signature,omitempty"`
-	Subject   string                `json:"subject"`
+
+	// FromAddress Examples: owner@example.com
+	FromAddress *Email    `json:"from_address,omitempty"`
+	Html        *string   `json:"html,omitempty"`
+	InboxId     uuid.UUID `json:"inbox_id"`
+	Signature   *bool     `json:"signature,omitempty"`
+	Subject     string    `json:"subject"`
 
 	// To Repeat the field once per address.
 	To []Email `json:"to"`
@@ -18587,6 +18628,62 @@ type Member struct {
 	Title string `json:"title"`
 }
 
+// MemberAddress defines model for MemberAddress.
+type MemberAddress struct {
+	// Address Examples: owner@example.com
+	Address Email `json:"address"`
+
+	// CodeExpiresAt Unverified addresses only, while their code is valid.
+	CodeExpiresAt *time.Time `json:"code_expires_at,omitempty"`
+
+	// CodeSentAt Unverified addresses only, while their code is valid.
+	CodeSentAt *time.Time `json:"code_sent_at,omitempty"`
+	CreatedAt  time.Time  `json:"created_at"`
+	Id         uuid.UUID  `json:"id"`
+
+	// UsableChannelIds The e-mail channels, of inboxes the member can see, whose mail may go `From` this
+	// address (`from_address` on `createMessage`, `sendMessage` and `composeMail`): the
+	// address is verified, its domain is the domain of the channel's sending address
+	// (`from_address`, else its address), the channel has an SMTP account, and the channel's
+	// latest deliverability check (`GET /v1/channels/{id}/deliverability`) for that domain is
+	// `received` with a passing DKIM signature aligned with it and DMARC `pass`, started at most
+	// 30 days ago and after the channel's address, sending address or SMTP account last
+	// changed. Empty for an unverified address.
+	UsableChannelIds []uuid.UUID `json:"usable_channel_ids"`
+
+	// Verification How the address is verified. `code`: the member enters the code mailed to it.
+	// `approval`: a channel of the workspace catches all mail to the address's domain, so a mailed
+	// code would land in a shared inbox; no code is sent and an owner or admin approves the address
+	// with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`.
+	Verification MemberAddressVerification `json:"verification"`
+	Verified     bool                      `json:"verified"`
+	VerifiedAt   *time.Time                `json:"verified_at,omitempty"`
+}
+
+// MemberAddressCreate defines model for MemberAddressCreate.
+type MemberAddressCreate struct {
+	// Address A plain address without a display name, its local part a dot-atom: no quoted local
+	// part, spaces, commas or second `@`.
+	Address string `json:"address"`
+}
+
+// MemberAddressList defines model for MemberAddressList.
+type MemberAddressList struct {
+	Items []MemberAddress `json:"items"`
+}
+
+// MemberAddressVerification How the address is verified. `code`: the member enters the code mailed to it.
+// `approval`: a channel of the workspace catches all mail to the address's domain, so a mailed
+// code would land in a shared inbox; no code is sent and an owner or admin approves the address
+// with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`.
+type MemberAddressVerification string
+
+// MemberAddressVerify defines model for MemberAddressVerify.
+type MemberAddressVerify struct {
+	// Code The 6-digit code from the mail.
+	Code string `json:"code"`
+}
+
 // MemberList defines model for MemberList.
 type MemberList struct {
 	Items []Member `json:"items"`
@@ -18857,6 +18954,11 @@ type MessageCreate struct {
 	// Draft Stores an outgoing message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
+	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
+	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+	// `createMessage`.
+	FromAddress *Email `json:"from_address,omitempty"`
+
 	// Html Sanitized before it is stored.
 	Html *string           `json:"html,omitempty"`
 	Kind MessageCreateKind `json:"kind"`
@@ -18894,14 +18996,17 @@ type MessageCreateMultipart struct {
 	Body *string  `json:"body,omitempty"`
 
 	// Cc Repeat the field once per address; one empty `cc` field copies no one.
-	Cc        *[]string                  `json:"cc,omitempty"`
-	ClientId  *string                    `json:"client_id,omitempty"`
-	Direction *Direction                 `json:"direction,omitempty"`
-	Draft     *bool                      `json:"draft,omitempty"`
-	Files     *[]openapi_types.File      `json:"files,omitempty"`
-	Html      *string                    `json:"html,omitempty"`
-	Kind      MessageCreateMultipartKind `json:"kind"`
-	MacroId   *uuid.UUID                 `json:"macro_id,omitempty"`
+	Cc        *[]string             `json:"cc,omitempty"`
+	ClientId  *string               `json:"client_id,omitempty"`
+	Direction *Direction            `json:"direction,omitempty"`
+	Draft     *bool                 `json:"draft,omitempty"`
+	Files     *[]openapi_types.File `json:"files,omitempty"`
+
+	// FromAddress Examples: owner@example.com
+	FromAddress *Email                     `json:"from_address,omitempty"`
+	Html        *string                    `json:"html,omitempty"`
+	Kind        MessageCreateMultipartKind `json:"kind"`
+	MacroId     *uuid.UUID                 `json:"macro_id,omitempty"`
 
 	// Mentions Notes only; repeat the field once per member id.
 	Mentions *[]uuid.UUID `json:"mentions,omitempty"`
@@ -19137,6 +19242,11 @@ type MessageSend struct {
 	// Cc E-mailed replies only: the addresses to copy, in place of the conversation's
 	// participants; `[]` copies no one. See `createMessage`.
 	Cc *[]Email `json:"cc,omitempty"`
+
+	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
+	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+	// `createMessage`.
+	FromAddress *Email `json:"from_address,omitempty"`
 }
 
 // MessageUpdate Only the fields sent change.
@@ -24649,6 +24759,9 @@ type ListId = uuid.UUID
 // MacroId defines model for MacroId.
 type MacroId = uuid.UUID
 
+// MemberAddressId defines model for MemberAddressId.
+type MemberAddressId = uuid.UUID
+
 // MemberId defines model for MemberId.
 type MemberId = uuid.UUID
 
@@ -27434,6 +27547,30 @@ type RenderMarkdownParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// ListMyAddressesParams defines parameters for ListMyAddresses.
+type ListMyAddressesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// AddMyAddressParams defines parameters for AddMyAddress.
+type AddMyAddressParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// DeleteMyAddressParams defines parameters for DeleteMyAddress.
+type DeleteMyAddressParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// VerifyMyAddressParams defines parameters for VerifyMyAddress.
+type VerifyMyAddressParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListMentionsParams defines parameters for ListMentions.
 type ListMentionsParams struct {
 	// Cursor The `next_cursor` of the previous page.
@@ -27550,6 +27687,18 @@ type GetMemberParams struct {
 
 // UpdateMemberParams defines parameters for UpdateMember.
 type UpdateMemberParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListMemberAddressesParams defines parameters for ListMemberAddresses.
+type ListMemberAddressesParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ApproveMemberAddressParams defines parameters for ApproveMemberAddress.
+type ApproveMemberAddressParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -29637,6 +29786,12 @@ type DeleteMeJSONRequestBody = AccountDeletion
 
 // UpdateMeJSONRequestBody defines body for UpdateMe for application/json ContentType.
 type UpdateMeJSONRequestBody = MeUpdate
+
+// AddMyAddressJSONRequestBody defines body for AddMyAddress for application/json ContentType.
+type AddMyAddressJSONRequestBody = MemberAddressCreate
+
+// VerifyMyAddressJSONRequestBody defines body for VerifyMyAddress for application/json ContentType.
+type VerifyMyAddressJSONRequestBody = MemberAddressVerify
 
 // UpdateNotificationSettingsJSONRequestBody defines body for UpdateNotificationSettings for application/json ContentType.
 type UpdateNotificationSettingsJSONRequestBody = NotificationSettingsUpdate
@@ -35091,6 +35246,18 @@ type ServerInterface interface {
 	// UpdateMe Update the signed-in person
 	// (PATCH /v1/me)
 	UpdateMe(w http.ResponseWriter, r *http.Request)
+	// ListMyAddresses Your own e-mail addresses
+	// (GET /v1/me/addresses)
+	ListMyAddresses(w http.ResponseWriter, r *http.Request, params ListMyAddressesParams)
+	// AddMyAddress Add an address of your own, or mail its code again
+	// (POST /v1/me/addresses)
+	AddMyAddress(w http.ResponseWriter, r *http.Request, params AddMyAddressParams)
+	// DeleteMyAddress Remove one of your addresses
+	// (DELETE /v1/me/addresses/{memberAddressId})
+	DeleteMyAddress(w http.ResponseWriter, r *http.Request, memberAddressId MemberAddressId, params DeleteMyAddressParams)
+	// VerifyMyAddress Verify one of your addresses
+	// (POST /v1/me/addresses/{memberAddressId}/verify)
+	VerifyMyAddress(w http.ResponseWriter, r *http.Request, memberAddressId MemberAddressId, params VerifyMyAddressParams)
 	// ListMentions Notes that mention you
 	// (GET /v1/me/mentions)
 	ListMentions(w http.ResponseWriter, r *http.Request, params ListMentionsParams)
@@ -35175,6 +35342,12 @@ type ServerInterface interface {
 	// UpdateMember Change a member's role or title
 	// (PATCH /v1/members/{memberId})
 	UpdateMember(w http.ResponseWriter, r *http.Request, memberId MemberId, params UpdateMemberParams)
+	// ListMemberAddresses A member's own e-mail addresses
+	// (GET /v1/members/{memberId}/addresses)
+	ListMemberAddresses(w http.ResponseWriter, r *http.Request, memberId MemberId, params ListMemberAddressesParams)
+	// ApproveMemberAddress Approve a member's address
+	// (POST /v1/members/{memberId}/addresses/{memberAddressId}/approve)
+	ApproveMemberAddress(w http.ResponseWriter, r *http.Request, memberId MemberId, memberAddressId MemberAddressId, params ApproveMemberAddressParams)
 	// DeleteMessage Discard a draft
 	// (DELETE /v1/messages/{messageId})
 	DeleteMessage(w http.ResponseWriter, r *http.Request, messageId MessageId, params DeleteMessageParams)
@@ -55940,6 +56113,188 @@ func (siw *ServerInterfaceWrapper) UpdateMe(w http.ResponseWriter, r *http.Reque
 	handler.ServeHTTP(w, r)
 }
 
+// ListMyAddresses operation middleware
+func (siw *ServerInterfaceWrapper) ListMyAddresses(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMyAddressesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMyAddresses(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AddMyAddress operation middleware
+func (siw *ServerInterfaceWrapper) AddMyAddress(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AddMyAddressParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AddMyAddress(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteMyAddress operation middleware
+func (siw *ServerInterfaceWrapper) DeleteMyAddress(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "memberAddressId" -------------
+	var memberAddressId MemberAddressId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "memberAddressId", r.PathValue("memberAddressId"), &memberAddressId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "memberAddressId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteMyAddressParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteMyAddress(w, r, memberAddressId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// VerifyMyAddress operation middleware
+func (siw *ServerInterfaceWrapper) VerifyMyAddress(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "memberAddressId" -------------
+	var memberAddressId MemberAddressId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "memberAddressId", r.PathValue("memberAddressId"), &memberAddressId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "memberAddressId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params VerifyMyAddressParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.VerifyMyAddress(w, r, memberAddressId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListMentions operation middleware
 func (siw *ServerInterfaceWrapper) ListMentions(w http.ResponseWriter, r *http.Request) {
 
@@ -56981,6 +57336,115 @@ func (siw *ServerInterfaceWrapper) UpdateMember(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UpdateMember(w, r, memberId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListMemberAddresses operation middleware
+func (siw *ServerInterfaceWrapper) ListMemberAddresses(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "memberId" -------------
+	var memberId MemberId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "memberId", r.PathValue("memberId"), &memberId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "memberId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMemberAddressesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMemberAddresses(w, r, memberId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ApproveMemberAddress operation middleware
+func (siw *ServerInterfaceWrapper) ApproveMemberAddress(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "memberId" -------------
+	var memberId MemberId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "memberId", r.PathValue("memberId"), &memberId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "memberId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "memberAddressId" -------------
+	var memberAddressId MemberAddressId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "memberAddressId", r.PathValue("memberAddressId"), &memberAddressId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "memberAddressId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ApproveMemberAddressParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ApproveMemberAddress(w, r, memberId, memberAddressId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -65206,6 +65670,10 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/signatures", wrapper.ListMySignatures)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/signatures/{inboxId}", wrapper.DeleteMySignature)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/v1/me/signatures/{inboxId}", wrapper.SetMySignature)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/addresses", wrapper.ListMyAddresses)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/addresses", wrapper.AddMyAddress)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/me/addresses/{memberAddressId}", wrapper.DeleteMyAddress)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/addresses/{memberAddressId}/verify", wrapper.VerifyMyAddress)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/me/mentions", wrapper.ListMentions)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/mentions/seen", wrapper.MarkMentionsSeen)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/me/mentions/{noteId}/seen", wrapper.MarkMentionSeen)
@@ -65236,6 +65704,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/members/{memberId}", wrapper.RemoveMember)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/members/{memberId}", wrapper.GetMember)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/members/{memberId}", wrapper.UpdateMember)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/members/{memberId}/addresses", wrapper.ListMemberAddresses)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/members/{memberId}/addresses/{memberAddressId}/approve", wrapper.ApproveMemberAddress)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/invites", wrapper.ListInvites)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/invites", wrapper.CreateInvite)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/invites/{inviteId}", wrapper.DeleteInvite)
@@ -98194,6 +98664,310 @@ func (response UpdateMe403ApplicationProblemPlusJSONResponse) VisitUpdateMeRespo
 	return err
 }
 
+type ListMyAddressesRequestObject struct {
+	Params ListMyAddressesParams
+}
+
+type ListMyAddressesResponseObject interface {
+	VisitListMyAddressesResponse(w http.ResponseWriter) error
+}
+
+type ListMyAddresses200JSONResponse MemberAddressList
+
+func (response ListMyAddresses200JSONResponse) VisitListMyAddressesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMyAddresses401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListMyAddresses401ApplicationProblemPlusJSONResponse) VisitListMyAddressesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMyAddresses403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListMyAddresses403ApplicationProblemPlusJSONResponse) VisitListMyAddressesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddMyAddressRequestObject struct {
+	Params AddMyAddressParams
+	Body   *AddMyAddressJSONRequestBody
+}
+
+type AddMyAddressResponseObject interface {
+	VisitAddMyAddressResponse(w http.ResponseWriter) error
+}
+
+type AddMyAddress202JSONResponse MemberAddress
+
+func (response AddMyAddress202JSONResponse) VisitAddMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(202)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddMyAddress400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response AddMyAddress400ApplicationProblemPlusJSONResponse) VisitAddMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddMyAddress401ApplicationProblemPlusJSONResponse Problem
+
+func (response AddMyAddress401ApplicationProblemPlusJSONResponse) VisitAddMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddMyAddress403ApplicationProblemPlusJSONResponse Problem
+
+func (response AddMyAddress403ApplicationProblemPlusJSONResponse) VisitAddMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddMyAddress409ApplicationProblemPlusJSONResponse Problem
+
+func (response AddMyAddress409ApplicationProblemPlusJSONResponse) VisitAddMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AddMyAddress429ApplicationProblemPlusJSONResponse Problem
+
+func (response AddMyAddress429ApplicationProblemPlusJSONResponse) VisitAddMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMyAddressRequestObject struct {
+	MemberAddressId MemberAddressId `json:"memberAddressId"`
+	Params          DeleteMyAddressParams
+}
+
+type DeleteMyAddressResponseObject interface {
+	VisitDeleteMyAddressResponse(w http.ResponseWriter) error
+}
+
+type DeleteMyAddress204Response struct {
+}
+
+func (response DeleteMyAddress204Response) VisitDeleteMyAddressResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteMyAddress401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteMyAddress401ApplicationProblemPlusJSONResponse) VisitDeleteMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMyAddress403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMyAddress403ApplicationProblemPlusJSONResponse) VisitDeleteMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteMyAddress404ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteMyAddress404ApplicationProblemPlusJSONResponse) VisitDeleteMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyMyAddressRequestObject struct {
+	MemberAddressId MemberAddressId `json:"memberAddressId"`
+	Params          VerifyMyAddressParams
+	Body            *VerifyMyAddressJSONRequestBody
+}
+
+type VerifyMyAddressResponseObject interface {
+	VisitVerifyMyAddressResponse(w http.ResponseWriter) error
+}
+
+type VerifyMyAddress200JSONResponse MemberAddress
+
+func (response VerifyMyAddress200JSONResponse) VisitVerifyMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyMyAddress400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response VerifyMyAddress400ApplicationProblemPlusJSONResponse) VisitVerifyMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyMyAddress401ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifyMyAddress401ApplicationProblemPlusJSONResponse) VisitVerifyMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyMyAddress403ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifyMyAddress403ApplicationProblemPlusJSONResponse) VisitVerifyMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyMyAddress404ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifyMyAddress404ApplicationProblemPlusJSONResponse) VisitVerifyMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VerifyMyAddress409ApplicationProblemPlusJSONResponse Problem
+
+func (response VerifyMyAddress409ApplicationProblemPlusJSONResponse) VisitVerifyMyAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListMentionsRequestObject struct {
 	Params ListMentionsParams
 }
@@ -100018,6 +100792,155 @@ func (response UpdateMember404ApplicationProblemPlusJSONResponse) VisitUpdateMem
 type UpdateMember409ApplicationProblemPlusJSONResponse Problem
 
 func (response UpdateMember409ApplicationProblemPlusJSONResponse) VisitUpdateMemberResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMemberAddressesRequestObject struct {
+	MemberId MemberId `json:"memberId"`
+	Params   ListMemberAddressesParams
+}
+
+type ListMemberAddressesResponseObject interface {
+	VisitListMemberAddressesResponse(w http.ResponseWriter) error
+}
+
+type ListMemberAddresses200JSONResponse MemberAddressList
+
+func (response ListMemberAddresses200JSONResponse) VisitListMemberAddressesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMemberAddresses401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListMemberAddresses401ApplicationProblemPlusJSONResponse) VisitListMemberAddressesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMemberAddresses403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListMemberAddresses403ApplicationProblemPlusJSONResponse) VisitListMemberAddressesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListMemberAddresses404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListMemberAddresses404ApplicationProblemPlusJSONResponse) VisitListMemberAddressesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveMemberAddressRequestObject struct {
+	MemberId        MemberId        `json:"memberId"`
+	MemberAddressId MemberAddressId `json:"memberAddressId"`
+	Params          ApproveMemberAddressParams
+}
+
+type ApproveMemberAddressResponseObject interface {
+	VisitApproveMemberAddressResponse(w http.ResponseWriter) error
+}
+
+type ApproveMemberAddress200JSONResponse MemberAddress
+
+func (response ApproveMemberAddress200JSONResponse) VisitApproveMemberAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveMemberAddress401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ApproveMemberAddress401ApplicationProblemPlusJSONResponse) VisitApproveMemberAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveMemberAddress403ApplicationProblemPlusJSONResponse Problem
+
+func (response ApproveMemberAddress403ApplicationProblemPlusJSONResponse) VisitApproveMemberAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveMemberAddress404ApplicationProblemPlusJSONResponse Problem
+
+func (response ApproveMemberAddress404ApplicationProblemPlusJSONResponse) VisitApproveMemberAddressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveMemberAddress409ApplicationProblemPlusJSONResponse Problem
+
+func (response ApproveMemberAddress409ApplicationProblemPlusJSONResponse) VisitApproveMemberAddressResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -111567,6 +112490,18 @@ type StrictServerInterface interface {
 	// UpdateMe Update the signed-in person
 	// (PATCH /v1/me)
 	UpdateMe(ctx context.Context, request UpdateMeRequestObject) (UpdateMeResponseObject, error)
+	// ListMyAddresses Your own e-mail addresses
+	// (GET /v1/me/addresses)
+	ListMyAddresses(ctx context.Context, request ListMyAddressesRequestObject) (ListMyAddressesResponseObject, error)
+	// AddMyAddress Add an address of your own, or mail its code again
+	// (POST /v1/me/addresses)
+	AddMyAddress(ctx context.Context, request AddMyAddressRequestObject) (AddMyAddressResponseObject, error)
+	// DeleteMyAddress Remove one of your addresses
+	// (DELETE /v1/me/addresses/{memberAddressId})
+	DeleteMyAddress(ctx context.Context, request DeleteMyAddressRequestObject) (DeleteMyAddressResponseObject, error)
+	// VerifyMyAddress Verify one of your addresses
+	// (POST /v1/me/addresses/{memberAddressId}/verify)
+	VerifyMyAddress(ctx context.Context, request VerifyMyAddressRequestObject) (VerifyMyAddressResponseObject, error)
 	// ListMentions Notes that mention you
 	// (GET /v1/me/mentions)
 	ListMentions(ctx context.Context, request ListMentionsRequestObject) (ListMentionsResponseObject, error)
@@ -111651,6 +112586,12 @@ type StrictServerInterface interface {
 	// UpdateMember Change a member's role or title
 	// (PATCH /v1/members/{memberId})
 	UpdateMember(ctx context.Context, request UpdateMemberRequestObject) (UpdateMemberResponseObject, error)
+	// ListMemberAddresses A member's own e-mail addresses
+	// (GET /v1/members/{memberId}/addresses)
+	ListMemberAddresses(ctx context.Context, request ListMemberAddressesRequestObject) (ListMemberAddressesResponseObject, error)
+	// ApproveMemberAddress Approve a member's address
+	// (POST /v1/members/{memberId}/addresses/{memberAddressId}/approve)
+	ApproveMemberAddress(ctx context.Context, request ApproveMemberAddressRequestObject) (ApproveMemberAddressResponseObject, error)
 	// DeleteMessage Discard a draft
 	// (DELETE /v1/messages/{messageId})
 	DeleteMessage(ctx context.Context, request DeleteMessageRequestObject) (DeleteMessageResponseObject, error)
@@ -122622,6 +123563,126 @@ func (sh *strictHandler) UpdateMe(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ListMyAddresses operation middleware
+func (sh *strictHandler) ListMyAddresses(w http.ResponseWriter, r *http.Request, params ListMyAddressesParams) {
+	var request ListMyAddressesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListMyAddresses(ctx, request.(ListMyAddressesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListMyAddresses")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListMyAddressesResponseObject); ok {
+		if err := validResponse.VisitListMyAddressesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AddMyAddress operation middleware
+func (sh *strictHandler) AddMyAddress(w http.ResponseWriter, r *http.Request, params AddMyAddressParams) {
+	var request AddMyAddressRequestObject
+
+	request.Params = params
+
+	var body AddMyAddressJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AddMyAddress(ctx, request.(AddMyAddressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AddMyAddress")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AddMyAddressResponseObject); ok {
+		if err := validResponse.VisitAddMyAddressResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteMyAddress operation middleware
+func (sh *strictHandler) DeleteMyAddress(w http.ResponseWriter, r *http.Request, memberAddressId MemberAddressId, params DeleteMyAddressParams) {
+	var request DeleteMyAddressRequestObject
+
+	request.MemberAddressId = memberAddressId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteMyAddress(ctx, request.(DeleteMyAddressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteMyAddress")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteMyAddressResponseObject); ok {
+		if err := validResponse.VisitDeleteMyAddressResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// VerifyMyAddress operation middleware
+func (sh *strictHandler) VerifyMyAddress(w http.ResponseWriter, r *http.Request, memberAddressId MemberAddressId, params VerifyMyAddressParams) {
+	var request VerifyMyAddressRequestObject
+
+	request.MemberAddressId = memberAddressId
+	request.Params = params
+
+	var body VerifyMyAddressJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.VerifyMyAddress(ctx, request.(VerifyMyAddressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "VerifyMyAddress")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(VerifyMyAddressResponseObject); ok {
+		if err := validResponse.VisitVerifyMyAddressResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // ListMentions operation middleware
 func (sh *strictHandler) ListMentions(w http.ResponseWriter, r *http.Request, params ListMentionsParams) {
 	var request ListMentionsRequestObject
@@ -123396,6 +124457,61 @@ func (sh *strictHandler) UpdateMember(w http.ResponseWriter, r *http.Request, me
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(UpdateMemberResponseObject); ok {
 		if err := validResponse.VisitUpdateMemberResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListMemberAddresses operation middleware
+func (sh *strictHandler) ListMemberAddresses(w http.ResponseWriter, r *http.Request, memberId MemberId, params ListMemberAddressesParams) {
+	var request ListMemberAddressesRequestObject
+
+	request.MemberId = memberId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListMemberAddresses(ctx, request.(ListMemberAddressesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListMemberAddresses")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListMemberAddressesResponseObject); ok {
+		if err := validResponse.VisitListMemberAddressesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ApproveMemberAddress operation middleware
+func (sh *strictHandler) ApproveMemberAddress(w http.ResponseWriter, r *http.Request, memberId MemberId, memberAddressId MemberAddressId, params ApproveMemberAddressParams) {
+	var request ApproveMemberAddressRequestObject
+
+	request.MemberId = memberId
+	request.MemberAddressId = memberAddressId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ApproveMemberAddress(ctx, request.(ApproveMemberAddressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ApproveMemberAddress")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ApproveMemberAddressResponseObject); ok {
+		if err := validResponse.VisitApproveMemberAddressResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

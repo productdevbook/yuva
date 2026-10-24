@@ -97,6 +97,12 @@ var operationAccess = map[string]access{
 	"ListMySignatures":           accessMember,
 	"SetMySignature":             accessMember,
 	"DeleteMySignature":          accessMember,
+	"ListMyAddresses":            accessMember,
+	"ListMemberAddresses":        accessMember,
+	"ApproveMemberAddress":       accessMember,
+	"AddMyAddress":               accessMember,
+	"VerifyMyAddress":            accessMember,
+	"DeleteMyAddress":            accessMember,
 
 	"CreateClientSession":      accessPublic,
 	"GetClientChannel":         accessPublic,

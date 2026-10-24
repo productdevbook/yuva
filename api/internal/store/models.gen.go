@@ -1138,6 +1138,7 @@ type EmailChannel struct {
 	VerifyMessageID         *string
 	VerifyRelayMessageID    *string
 	VerifySentAt            *time.Time
+	SendingChangedAt        *time.Time
 }
 
 type EmailConfirmation struct {
@@ -1688,6 +1689,20 @@ type Member struct {
 	Title                  string
 }
 
+type MemberAddress struct {
+	WorkspaceID   uuid.UUID
+	ID            uuid.UUID
+	MemberID      uuid.UUID
+	Address       string
+	Verification  string
+	VerifiedAt    *time.Time
+	CodeHash      []byte
+	CodeExpiresAt *time.Time
+	CodeAttempts  int32
+	CodeSentAt    *time.Time
+	CreatedAt     time.Time
+}
+
 type MemberInboxAccess struct {
 	WorkspaceID uuid.UUID
 	InboxID     uuid.UUID
@@ -1786,6 +1801,7 @@ type MessageEmail struct {
 	RelayMessageID        *string
 	BccAddresses          []string
 	Shared                bool
+	MemberAddressID       *uuid.UUID
 }
 
 type Migration struct {

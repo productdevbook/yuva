@@ -42,18 +42,19 @@ var (
 )
 
 type emailPlan struct {
-	channel    store.EmailChannel
-	channelID  uuid.UUID
-	from       email.Address
-	to         string
-	toAll      []string
-	cc         []string
-	bcc        []string
-	subject    string
-	headerID   string
-	inReplyTo  *string
-	references []string
-	auto       bool
+	channel         store.EmailChannel
+	channelID       uuid.UUID
+	from            email.Address
+	to              string
+	toAll           []string
+	cc              []string
+	bcc             []string
+	subject         string
+	headerID        string
+	inReplyTo       *string
+	references      []string
+	auto            bool
+	memberAddressID *uuid.UUID
 }
 
 func (p *emailPlan) recipients() []string {
@@ -178,6 +179,13 @@ func (s *Server) recordOutboundEmail(ctx context.Context, q *store.Queries, plan
 		CreatedAt: msg.CreatedAt,
 	}); err != nil {
 		return err
+	}
+	if plan.memberAddressID != nil {
+		if err := q.SetMessageEmailMemberAddress(ctx, store.SetMessageEmailMemberAddressParams{
+			WorkspaceID: msg.WorkspaceID, MessageID: msg.ID, MemberAddressID: plan.memberAddressID,
+		}); err != nil {
+			return err
+		}
 	}
 	if len(plan.bcc) == 0 {
 		return nil
@@ -520,9 +528,17 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	if isCatchAll(replyTo) {
 		replyTo = me.FromAddress
 	}
-	fromName := channelName
-	if msg.AuthorType == string(oas.AuthorTypeBot) && msg.BotName != "" {
-		fromName = msg.BotName
+	envelope := me.FromAddress
+	var fromName string
+	if me.MemberAddressID != nil {
+		if fromName, envelope, err = s.memberSender(ctx, workspaceID, ch, conv, msg, me); err != nil {
+			return "", err
+		}
+		if isCatchAll(ch.Address) {
+			replyTo = envelope
+		}
+	} else if fromName, err = s.replyFromName(ctx, workspaceID, conv, msg, channelName); err != nil {
+		return "", err
 	}
 	out := email.Outgoing{
 		From:          email.Address{Name: fromName, Email: me.FromAddress},
@@ -581,9 +597,77 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	defer cancel()
 	sendCtx, span := telemetry.Start(sendCtx, "mail.send", telemetry.WorkspaceKey.String(workspaceID.String()), telemetry.InboxKey.String(conv.InboxID.String()),
 		attribute.Int("yuva.recipients", len(rcpts)), attribute.Int("yuva.message_bytes", len(raw)))
-	relayID, err := email.SendRelayed(sendCtx, s.sender, cfg, me.FromAddress, rcpts, raw)
+	relayID, err := email.SendRelayed(sendCtx, s.sender, cfg, envelope, rcpts, raw)
 	telemetry.End(span, err)
 	return relayID, err
+}
+
+func sendingMember(msg messageRow) *uuid.UUID {
+	if msg.SentByApiKeyID != nil {
+		return nil
+	}
+	if msg.SentByMemberID != nil {
+		return msg.SentByMemberID
+	}
+	if msg.AuthorType == string(oas.AuthorTypeMember) {
+		return msg.AuthorMemberID
+	}
+	return nil
+}
+
+func (s *Server) replyFromName(ctx context.Context, ws uuid.UUID, conv store.Conversation, msg messageRow, channelName string) (string, error) {
+	fromName := channelName
+	if msg.AuthorType == string(oas.AuthorTypeBot) && msg.BotName != "" {
+		fromName = msg.BotName
+	}
+	member := sendingMember(msg)
+	if member == nil {
+		return fromName, nil
+	}
+	inbox, err := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: ws, ID: conv.InboxID})
+	if err != nil {
+		return "", err
+	}
+	if inbox.Purpose != string(oas.InboxPurposeMail) {
+		return fromName, nil
+	}
+	return memberChannelName(ctx, s.st.Queries, ws, *member, channelName)
+}
+
+func memberChannelName(ctx context.Context, q *store.Queries, ws, member uuid.UUID, channelName string) (string, error) {
+	name, err := memberName(ctx, q, ws, member)
+	if err != nil || name == "" {
+		return channelName, err
+	}
+	return name + " (" + channelName + ")", nil
+}
+
+// The envelope stays the channel's sending address so bounces come back to the channel; a mail
+// whose address may no longer send fails for good rather than going out from another address.
+func (s *Server) memberSender(ctx context.Context, ws uuid.UUID, ch store.EmailChannel, conv store.Conversation, msg messageRow, me store.MessageEmail) (string, string, error) {
+	a, err := s.st.GetMemberAddressByID(ctx, store.GetMemberAddressByIDParams{WorkspaceID: ws, ID: *me.MemberAddressID})
+	if store.IsNotFound(err) {
+		return "", "", &email.PermanentError{Err: errors.New("the sending address " + me.FromAddress + " was removed")}
+	}
+	if err != nil {
+		return "", "", err
+	}
+	if member := sendingMember(msg); a.VerifiedAt == nil || a.Address != me.FromAddress || member == nil || *member != a.MemberID {
+		return "", "", &email.PermanentError{Err: errors.New("the sending address " + me.FromAddress + " is no longer the sender's verified address")}
+	}
+	why, err := s.memberAddressUnusable(ctx, s.st.Queries, ch, a.Address)
+	if err != nil {
+		return "", "", err
+	}
+	if why != "" {
+		return "", "", &email.PermanentError{Err: errors.New("the sending address " + a.Address + " may no longer send through this channel: " + why)}
+	}
+	envelope, err := sendingAddress(ch, conv)
+	if err != nil {
+		return "", "", &email.PermanentError{Err: err}
+	}
+	name, err := memberName(ctx, s.st.Queries, ws, a.MemberID)
+	return name, envelope, err
 }
 
 func (s *Server) channelSMTP(workspaceID uuid.UUID, ch store.EmailChannel) (email.SMTPConfig, error) {

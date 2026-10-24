@@ -175,7 +175,7 @@ func (q *Queries) GetSESTenant(ctx context.Context, arg GetSESTenantParams) (Ses
 }
 
 const listInboxEmailChannelsForSES = `-- name: ListInboxEmailChannelsForSES :many
-SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, e.verified_at, e.verified_by, e.verify_problem, e.verify_checked_at, e.verify_code_hash, e.verify_code_expires_at, e.verify_attempts, e.verify_message_id, e.verify_relay_message_id, e.verify_sent_at FROM email_channels e
+SELECT e.workspace_id, e.channel_id, e.address, e.display_name, e.from_address, e.smtp_host, e.smtp_port, e.smtp_username, e.smtp_password, e.smtp_tls, e.auto_reply_enabled, e.auto_reply_text, e.auto_reply_interval_hours, e.broadcast_smtp_host, e.broadcast_smtp_port, e.broadcast_smtp_username, e.broadcast_smtp_password, e.broadcast_smtp_tls, e.broadcast_rate, e.dkim_selector, e.dkim_private_key, e.dkim_enabled, e.dkim_public_key, e.forward_token, e.ses_tenant, e.ses_configuration_set, e.smtp_aws_account, e.broadcast_smtp_aws_account, e.ses_state, e.ses_detail, e.ses_checked_at, e.verified_at, e.verified_by, e.verify_problem, e.verify_checked_at, e.verify_code_hash, e.verify_code_expires_at, e.verify_attempts, e.verify_message_id, e.verify_relay_message_id, e.verify_sent_at, e.sending_changed_at FROM email_channels e
 JOIN channels c ON c.workspace_id = e.workspace_id AND c.id = e.channel_id
 WHERE e.workspace_id = $1 AND c.inbox_id = $2
 ORDER BY e.channel_id
@@ -237,6 +237,7 @@ func (q *Queries) ListInboxEmailChannelsForSES(ctx context.Context, arg ListInbo
 			&i.VerifyMessageID,
 			&i.VerifyRelayMessageID,
 			&i.VerifySentAt,
+			&i.SendingChangedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -483,7 +484,7 @@ UPDATE email_channels SET
     broadcast_smtp_aws_account = CASE WHEN $2::bool THEN NULL ELSE broadcast_smtp_aws_account END,
     ses_state = $3, ses_detail = $4, ses_checked_at = NULL
 WHERE workspace_id = $5 AND channel_id = $6
-RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, sending_changed_at
 `
 
 type ResetEmailChannelSESParams struct {
@@ -547,6 +548,7 @@ func (q *Queries) ResetEmailChannelSES(ctx context.Context, arg ResetEmailChanne
 		&i.VerifyMessageID,
 		&i.VerifyRelayMessageID,
 		&i.VerifySentAt,
+		&i.SendingChangedAt,
 	)
 	return i, err
 }
@@ -588,7 +590,7 @@ func (q *Queries) SetEmailChannelSESAccounts(ctx context.Context, arg SetEmailCh
 const setEmailChannelSESInput = `-- name: SetEmailChannelSESInput :one
 UPDATE email_channels SET ses_tenant = $1, ses_configuration_set = $2
 WHERE workspace_id = $3 AND channel_id = $4
-RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at
+RETURNING workspace_id, channel_id, address, display_name, from_address, smtp_host, smtp_port, smtp_username, smtp_password, smtp_tls, auto_reply_enabled, auto_reply_text, auto_reply_interval_hours, broadcast_smtp_host, broadcast_smtp_port, broadcast_smtp_username, broadcast_smtp_password, broadcast_smtp_tls, broadcast_rate, dkim_selector, dkim_private_key, dkim_enabled, dkim_public_key, forward_token, ses_tenant, ses_configuration_set, smtp_aws_account, broadcast_smtp_aws_account, ses_state, ses_detail, ses_checked_at, verified_at, verified_by, verify_problem, verify_checked_at, verify_code_hash, verify_code_expires_at, verify_attempts, verify_message_id, verify_relay_message_id, verify_sent_at, sending_changed_at
 `
 
 type SetEmailChannelSESInputParams struct {
@@ -648,6 +650,7 @@ func (q *Queries) SetEmailChannelSESInput(ctx context.Context, arg SetEmailChann
 		&i.VerifyMessageID,
 		&i.VerifyRelayMessageID,
 		&i.VerifySentAt,
+		&i.SendingChangedAt,
 	)
 	return i, err
 }

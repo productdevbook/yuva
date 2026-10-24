@@ -68,7 +68,7 @@ func emailChannelBody(e store.EmailChannel) *oas.EmailChannel {
 
 func (s *Server) emailChannelParams(workspaceID, channelID uuid.UUID, in *oas.EmailChannelInput, cur *store.EmailChannel) (store.CreateEmailChannelParams, error) {
 	out := store.CreateEmailChannelParams{
-		WorkspaceID: workspaceID, ChannelID: channelID, SmtpPort: 587, SmtpTls: smtpTLSStartTLS,
+		WorkspaceID: workspaceID, ChannelID: channelID, SmtpPort: 587, SmtpTls: smtpTLSStartTLS, Now: s.now(),
 		AutoReplyIntervalHours: defaultAutoReplyHours,
 	}
 	var err error

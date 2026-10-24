@@ -445,12 +445,22 @@ func (s *Server) sendForward(ctx context.Context, workspaceID uuid.UUID, msg mes
 			fromName = msg.SentByBotName
 		}
 	case sender != nil:
-		names, err := s.st.ListMemberNames(ctx, store.ListMemberNamesParams{WorkspaceID: workspaceID, Ids: []uuid.UUID{*sender}})
+		inbox, err := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: workspaceID, ID: conv.InboxID})
 		if err != nil {
 			return "", err
 		}
-		if len(names) == 1 && strings.TrimSpace(names[0].Name) != "" {
-			fromName = names[0].Name
+		if inbox.Purpose == string(oas.InboxPurposeMail) {
+			if fromName, err = memberChannelName(ctx, s.st.Queries, workspaceID, *sender, channelName); err != nil {
+				return "", err
+			}
+			break
+		}
+		name, err := memberName(ctx, s.st.Queries, workspaceID, *sender)
+		if err != nil {
+			return "", err
+		}
+		if name != "" {
+			fromName = name
 		}
 	case msg.AuthorType == string(oas.AuthorTypeBot) && msg.BotName != "":
 		fromName = msg.BotName

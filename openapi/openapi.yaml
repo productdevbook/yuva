@@ -1401,6 +1401,133 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+  /v1/me/addresses:
+    get:
+      operationId: listMyAddresses
+      summary: Your own e-mail addresses
+      description: |
+        The addresses the calling member added to send mail from, verified or waiting for their
+        code, oldest first. A verified address lists in `usable_channel_ids` the e-mail channels of
+        inboxes the member can see that may send from it. Member sessions only.
+      tags: [me]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      responses:
+        "200":
+          description: The addresses.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberAddressList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+    post:
+      operationId: addMyAddress
+      summary: Add an address of your own, or mail its code again
+      description: |
+        Mails a 6-digit code from the server's own sender to `address`, valid for 10 minutes and 5
+        tries; enter it with `POST /v1/me/addresses/{id}/verify`. When a channel of the workspace
+        catches all mail to the address's domain (`*@domain`), no code is mailed, since it would land
+        in a shared inbox: the answer has `verification: approval` and an owner or admin approves the
+        address with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`. The mail names neither the
+        workspace nor the member. Posting an address the member added and has not verified yet
+        mails a new code, which replaces the old one. At most one code a minute per address, 10 an
+        hour per member and 5 a day to one address across the server (`429 rate_limited`), and at
+        most 10 addresses per member (`409 limit_reached`). A new address is recorded as
+        `member_address.added`.
+
+        `409 address_taken` when the address is a channel address or sending address of this
+        workspace, an address a channel on this server receives mail at, the server's own sender or
+        a forwarding address, or another member of the workspace verified it; another member's
+        unverified claim blocks nobody and is replaced. `409 address_verified` when the member
+        verified it already. `400 validation_failed` for anything that is not a plain address
+        without a display name whose local part is a dot-atom. Member sessions only.
+      tags: [me]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberAddressCreate"
+      responses:
+        "202":
+          description: The address, with `code_sent_at` when a code was mailed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberAddress"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "429":
+          $ref: "#/components/responses/Problem"
+  /v1/me/addresses/{memberAddressId}:
+    delete:
+      operationId: deleteMyAddress
+      summary: Remove one of your addresses
+      description: |
+        Removes the address (`member_address.removed`). Mail queued from it fails instead of going
+        out from another address. Another member's address is `404`. Member sessions only.
+      tags: [me]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MemberAddressId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/me/addresses/{memberAddressId}/verify:
+    post:
+      operationId: verifyMyAddress
+      summary: Verify one of your addresses
+      description: |
+        Checks the code mailed to the address. A wrong, used or expired code answers
+        `400 verification_code_invalid`; after 5 wrong tries the code is spent and a new one must be
+        requested. An address waiting for approval has no code and answers the same. `409 address_taken` when the address became a channel or sending address of the
+        workspace, a channel on this server receives mail at it, or another member verified it
+        meanwhile. Recorded as `member_address.verified`. A verified address answers as it is.
+        Another member's address is `404`. Member sessions only.
+      tags: [me]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MemberAddressId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberAddressVerify"
+      responses:
+        "200":
+          description: The verified address.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberAddress"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
   /v1/me/mentions:
     get:
       operationId: listMentions
@@ -2330,6 +2457,65 @@ paths:
       responses:
         "204":
           description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /v1/members/{memberId}/addresses:
+    get:
+      operationId: listMemberAddresses
+      summary: A member's own e-mail addresses
+      description: |
+        The addresses the member added to send mail from, as `GET /v1/me/addresses` lists them for
+        the member, so an owner or admin can approve those with `verification: approval`. Owners and
+        admins only, with a member session.
+      tags: [workspace]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MemberId"
+      responses:
+        "200":
+          description: The addresses.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberAddressList"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/members/{memberId}/addresses/{memberAddressId}/approve:
+    post:
+      operationId: approveMemberAddress
+      summary: Approve a member's address
+      description: |
+        Verifies an address waiting for approval (`verification: approval`), recorded as
+        `member_address.verified` with `by: approval`. An approved address answers as it is.
+        `409 approval_not_needed` for an address verified by code; `409 address_taken` as for
+        `POST /v1/me/addresses/{memberAddressId}/verify`. Owners and admins only, with a member
+        session.
+      tags: [workspace]
+      security:
+        - session: []
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/MemberId"
+        - $ref: "#/components/parameters/MemberAddressId"
+      responses:
+        "200":
+          description: The approved address.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberAddress"
         "401":
           $ref: "#/components/responses/Problem"
         "403":
@@ -4643,6 +4829,8 @@ paths:
         are those of a reply. At send time an address that bounced or complained meanwhile is
         dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
         address; the message is marked `failed` only when every `to` address bounced.
+        `from_address` sends it from one of the calling member's own addresses usable for the channel,
+        under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
 
         The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
         inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -5400,6 +5588,21 @@ paths:
         message's `email` to members and keys only in answers to `/v1` requests, never in events,
         webhooks or on `/client/v1`.
 
+        In a `mail` inbox a member's e-mailed reply goes `From` the channel's sending address with
+        the name `<member name> (<channel name>)` (the channel name alone when the member has no
+        name); messages of API keys and rules keep the channel's name, and `support` inboxes always
+        send with the channel's name. `from_address` sends it instead from one of the calling
+        member's own verified addresses (`GET /v1/me/addresses`): `From` the member's name and that
+        address, `Reply-To` the channel's address, so answers come back to the conversation. The
+        address must be usable for the conversation's channel (`MemberAddress.usable_channel_ids`);
+        otherwise `409 from_not_allowed` says why (not verified, another domain than the channel's
+        sending address, or no passing deliverability check). It is checked again when the mail is
+        sent: when the address was removed or the check no longer passes, the message fails
+        (`delivery.state` `failed`) instead of going out from another address. API keys and
+        connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
+        `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
+        replies that are not e-mailed.
+
         "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
         copies every `active` participant, and a `cc` list chooses who is copied. A conversation
         started with `composeMail` has its other `to` and its `cc` recipients as participants.
@@ -6116,7 +6319,9 @@ paths:
         erased with its contact answers `409 no_recipient`. Its recipients count against the 300
         recipients an hour of new mail (`429 rate_limited`). The other `to` and the `cc` become
         contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
-        under the rules and limits of `forwardConversation` and takes neither `cc` nor `bcc`.
+        under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
+        `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
+        `createMessage`.
 
         Members always may. An API key needs `drafts:send` and `messages:write`, and the
         workspace's `bots_may_send` (`403 bot_sending_disabled`).
@@ -20346,6 +20551,13 @@ components:
       schema:
         type: string
         format: uuid
+    MemberAddressId:
+      name: memberAddressId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     PasskeyId:
       name: passkeyId
       in: path
@@ -21240,6 +21452,9 @@ components:
         - `workspace.slack_connected`: `team_id`, `team_name`; `workspace.slack_disconnected`:
           `team_id`, and `reason` `uninstalled` (by `system`) when Slack reported the app removed.
         - `member.slack_linked`: `slack_user_id`; `member.slack_unlinked`: `slack_user_id`.
+        - `member_address.added`, `member_address.verified`, `member_address.removed`: `address`;
+          the target is the member whose own address it is; `member_address.verified` adds
+          `by: approval` when an owner or admin approved it.
         - `sso.provider_created`, `sso.provider_updated`: `protocol`, and for OpenID Connect
           `issuer_host` and for an update `fields` among `issuer`, `client_id`, `client_secret`,
           `scopes`, `groups_claim` and `allowed_groups` (never the secret); for SAML `entity_id`,
@@ -21352,7 +21567,10 @@ components:
         - automation_rule.created
         - automation_rule.updated
         - automation_rule.deleted
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted]
+        - member_address.added
+        - member_address.verified
+        - member_address.removed
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
@@ -22819,6 +23037,84 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MemberSignature"
+    MemberAddress:
+      type: object
+      required: [id, address, verification, verified, usable_channel_ids, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        address:
+          $ref: "#/components/schemas/Email"
+        verification:
+          $ref: "#/components/schemas/MemberAddressVerification"
+        verified:
+          type: boolean
+        verified_at:
+          type: string
+          format: date-time
+        code_sent_at:
+          type: string
+          format: date-time
+          description: Unverified addresses only, while their code is valid.
+        code_expires_at:
+          type: string
+          format: date-time
+          description: Unverified addresses only, while their code is valid.
+        usable_channel_ids:
+          type: array
+          description: |
+            The e-mail channels, of inboxes the member can see, whose mail may go `From` this
+            address (`from_address` on `createMessage`, `sendMessage` and `composeMail`): the
+            address is verified, its domain is the domain of the channel's sending address
+            (`from_address`, else its address), the channel has an SMTP account, and the channel's
+            latest deliverability check (`GET /v1/channels/{id}/deliverability`) for that domain is
+            `received` with a passing DKIM signature aligned with it and DMARC `pass`, started at most
+            30 days ago and after the channel's address, sending address or SMTP account last
+            changed. Empty for an unverified address.
+          items:
+            type: string
+            format: uuid
+        created_at:
+          type: string
+          format: date-time
+    MemberAddressVerification:
+      type: string
+      enum: [code, approval]
+      description: |
+        How the address is verified. `code`: the member enters the code mailed to it.
+        `approval`: a channel of the workspace catches all mail to the address's domain, so a mailed
+        code would land in a shared inbox; no code is sent and an owner or admin approves the address
+        with `POST /v1/members/{memberId}/addresses/{memberAddressId}/approve`.
+    MemberAddressList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/MemberAddress"
+    MemberAddressCreate:
+      type: object
+      required: [address]
+      properties:
+        address:
+          type: string
+          minLength: 3
+          maxLength: 320
+          description: |
+            A plain address without a display name, its local part a dot-atom: no quoted local
+            part, spaces, commas or second `@`.
+    MemberAddressVerify:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 20
+          description: The 6-digit code from the mail.
     MemberSignatureUpdate:
       type: object
       required: [body]
@@ -26082,6 +26378,13 @@ components:
           description: E-mailed replies only, hidden recipients. See `createMessage`.
           items:
             $ref: "#/components/schemas/Email"
+        from_address:
+          allOf:
+            - $ref: "#/components/schemas/Email"
+          description: |
+            Member sessions only: send the e-mail `From` one of the member's verified addresses
+            usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+            `createMessage`.
     ConversationForward:
       type: object
       required: [to]
@@ -26149,6 +26452,13 @@ components:
           description: E-mailed replies only, hidden recipients. See `createMessage`.
           items:
             $ref: "#/components/schemas/Email"
+        from_address:
+          allOf:
+            - $ref: "#/components/schemas/Email"
+          description: |
+            Member sessions only: send the e-mail `From` one of the member's verified addresses
+            usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+            `createMessage`.
     ComposeMail:
       type: object
       required: [inbox_id, to, subject]
@@ -26204,6 +26514,13 @@ components:
           minLength: 1
           maxLength: 200
           description: Makes the request idempotent within the inbox.
+        from_address:
+          allOf:
+            - $ref: "#/components/schemas/Email"
+          description: |
+            Member sessions only: send the e-mail `From` one of the member's verified addresses
+            usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
+            `createMessage`.
     ComposeMailMultipart:
       type: object
       required: [inbox_id, to, subject]
@@ -26251,6 +26568,8 @@ components:
           type: string
           minLength: 1
           maxLength: 200
+        from_address:
+          $ref: "#/components/schemas/Email"
         files:
           type: array
           maxItems: 10
@@ -26323,6 +26642,8 @@ components:
           description: Repeat the field once per address.
           items:
             $ref: "#/components/schemas/Email"
+        from_address:
+          $ref: "#/components/schemas/Email"
         files:
           type: array
           maxItems: 10

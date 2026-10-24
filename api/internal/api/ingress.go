@@ -325,6 +325,9 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 		return IngestResult{}, errIngestTooLarge
 	}
 	ch, recipient, forwarded, err := s.findEmailChannel(ctx, envelopeTo)
+	if err == errIngestUnknown {
+		return s.ingestToMemberAddress(ctx, recipient, envelopeFrom, fromTrusted, raw)
+	}
 	if err != nil {
 		return IngestResult{}, err
 	}
@@ -364,6 +367,74 @@ func (s *Server) IngestEmail(ctx context.Context, envelopeTo, envelopeFrom strin
 		}
 	}
 	return s.ingestToChannel(ctx, ch, recipient, envelopeFrom, fromTrusted, raw, m, ingestOptions{trustedReceiver: true})
+}
+
+// Every refusal and drop on this path answers like an unknown address, so nobody learns which
+// addresses are members'.
+func (s *Server) ingestToMemberAddress(ctx context.Context, recipient, envelopeFrom string, fromTrusted bool, raw []byte) (IngestResult, error) {
+	owners, err := s.st.FindVerifiedMemberAddresses(ctx, recipient)
+	if err != nil {
+		return IngestResult{}, err
+	}
+	if len(owners) == 0 {
+		return IngestResult{}, errIngestUnknown
+	}
+	m, err := email.Parse(raw)
+	if err != nil {
+		return IngestResult{}, errIngestUnknown
+	}
+	var tokens []string
+	for _, id := range slices.Concat(m.InReplyTo, m.References) {
+		if t, _, ok := email.TokenFromID(id); ok {
+			tokens = append(tokens, t)
+		}
+	}
+	if len(tokens) == 0 {
+		return IngestResult{}, errIngestUnknown
+	}
+	for _, o := range owners {
+		c, err := s.st.FindConversationByEmailTokenAnyInbox(ctx, store.FindConversationByEmailTokenAnyInboxParams{WorkspaceID: o.WorkspaceID, Tokens: tokens})
+		if store.IsNotFound(err) {
+			continue
+		}
+		if err != nil {
+			return IngestResult{}, err
+		}
+		row, err := s.st.GetIngestChannel(ctx, store.GetIngestChannelParams{WorkspaceID: o.WorkspaceID, ChannelID: *c.ChannelID})
+		if store.IsNotFound(err) {
+			continue
+		}
+		if err != nil {
+			return IngestResult{}, err
+		}
+		ch := store.FindEmailChannelByAddressRow(row)
+		if from, authResults := email.HeaderSender(raw); from != "" {
+			if err := s.checkKnownSenderCap(ctx, ch.WorkspaceID, from, email.TrustedDMARC(authResults, s.ingress.AuthservID) == email.DMARCPass); err != nil {
+				return IngestResult{}, asUnknownRecipient(err)
+			}
+		}
+		to := ch.Address
+		if c.EmailAddress != nil {
+			to = *c.EmailAddress
+		}
+		res, err := s.ingestToChannel(ctx, ch, to, envelopeFrom, fromTrusted, raw, m, ingestOptions{trustedReceiver: true})
+		if err != nil {
+			return res, asUnknownRecipient(err)
+		}
+		if res.Status == IngestDropped {
+			return IngestResult{}, errIngestUnknown
+		}
+		return res, nil
+	}
+	return IngestResult{}, errIngestUnknown
+}
+
+func asUnknownRecipient(err error) error {
+	var ie *IngestError
+	if errors.As(err, &ie) && ie.Status != http.StatusServiceUnavailable {
+		return errIngestUnknown
+	}
+	return err
 }
 
 // ingestOptions: noGreeting leaves out the channel's auto-reply, for new mail catch-up sync found

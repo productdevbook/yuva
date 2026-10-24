@@ -71,9 +71,10 @@ type messageInput struct {
 	to        copyList
 	cc        copyList
 	bcc       copyList
+	from      *string
 }
 
-var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "signature", "mentions", "article_ids", "macro_id", "then", "cc", "bcc"}
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "signature", "mentions", "article_ids", "macro_id", "then", "cc", "bcc", "from_address"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -142,6 +143,14 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 	}
 	if in.hasCopies() && in.draft {
 		return errValidation("cc and bcc are set when the draft is sent")
+	}
+	if in.from != nil {
+		if p.isKey() || p.deliversAsBot() {
+			return errFromNotMember
+		}
+		if in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out) || in.draft {
+			return errFromNotEmailed
+		}
 	}
 	if len(in.cc.addrs) > maxCopies || len(in.bcc.addrs) > maxCopies {
 		return errValidation("cc and bcc can name at most 50 addresses each")
@@ -321,6 +330,10 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 			in.articles = append(in.articles, id)
 		case "subject":
 			in.subject = &v
+		case "from_address":
+			if v = strings.TrimSpace(v); v != "" {
+				in.from = &v
+			}
 		case "to", "cc", "bcc":
 			list := &in.cc
 			switch part.FormName() {
@@ -539,6 +552,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		}
 		in.macroID, in.then = b.MacroId, b.Then
 		in.cc, in.bcc = copiesOf(b.Cc), copiesOf(b.Bcc)
+		in.from = (*string)(b.FromAddress)
 	case req.MultipartBody != nil:
 		limits, err := s.channelLimits(ctx, s.st.Queries, p.workspaceID, conv.ChannelID)
 		if err != nil {
@@ -632,10 +646,16 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 				if err := s.setCopies(ctx, q, c, plan, in.cc, in.bcc); err != nil {
 					return err
 				}
+				if err := s.applyFromAddress(ctx, q, p, plan, in.from); err != nil {
+					return err
+				}
 			}
 		}
 		if plan == nil && in.hasCopies() {
 			return errCopiesNotEmailed
+		}
+		if plan == nil && in.from != nil {
+			return errFromNotEmailed
 		}
 		for _, id := range in.mentions {
 			ok, err := memberHasInbox(ctx, q, p.workspaceID, c.InboxID, id)

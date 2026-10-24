@@ -1,0 +1,5 @@
+{{template "heading" "Your address code"}}
+<p style="margin:0 0 16px 0;">Someone is setting {{.Address}} up to send mail from Yuva. The code that proves this address is yours is:</p>
+{{template "code" .Code}}
+<p style="margin:0 0 12px 0;">It expires in {{.Minutes}} minutes.</p>
+<p class="y-muted" style="margin:0;font-size:13px;line-height:20px;color:#71717a;">If you did not expect this, you can ignore this e-mail: without the code nothing changes.</p>

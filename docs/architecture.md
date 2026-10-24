@@ -1353,6 +1353,45 @@ the kept lists, every address checked again, and `409 no_recipient` when no `to`
 (unique in `composed_mails`, since messages have no index for it across conversations). Per member or
 key: at most 60 composed mails a minute, and at most 300 recipients an hour of sent new mail, counted
 when the mail or its draft is sent (`429`).
+Sending as the member (Y-167): in a `mail` inbox a member's mail (reply, sent draft, new mail, forward) goes
+`From` the channel's sending address with the name `<member name> (<channel display name or name>)`,
+the channel name alone without a member name; bot, rule and key mail and `support` inboxes keep the
+channel's name (a member's forward from a `support` inbox keeps the member's name alone). A member
+may also send from an own address: `member_addresses` (workspace, id, member, lower-cased address
+unique in the workspace, verification `code` or `approval`, verified time, code hash, expiry,
+attempts, sent time; deleted with the member) is managed with `/v1/me/addresses` by member sessions
+only. Only a plain address is taken: no display name, a dot-atom local part (no quoted local parts,
+spaces, commas or a second `@`), not `*@`. Adding one mails a 6-digit code through the server mailer (`member_address_code`, valid 10 minutes and 5 tries,
+only its HMAC stored); a new POST for the same unverified address mails a new code, at most one a
+minute per address, 10 an hour per member and 5 a day to one address across the server (shared with
+channel codes), counted on the DB limiter before the transaction; at most 10 addresses per member. An
+address that is a channel or sending address of the workspace, a proven channel address anywhere on
+the server, `YUVA_SMTP_FROM`, on the forwarding domain, or verified by another member is
+`409 address_taken`, checked when it is added and again when it is verified (under the address's
+advisory lock); another member's pending claim is replaced, since pending claims block nobody. When a
+channel of the workspace catches all mail of the address's domain (`*@domain`), the code would land in
+an inbox every member may read, so no code is mailed: the address is `verification: approval` and an
+owner or admin lists it with `GET /v1/members/{id}/addresses` and approves it with
+`POST /v1/members/{id}/addresses/{addressId}/approve` (no rate limit is taken). Audit:
+`member_address.added`, `.verified` (with `by: approval` for an approval), `.removed` (target the
+member). A verified address is usable for an e-mail channel when its domain is the channel's sending
+domain and the channel's latest deliverability check of that domain is `received` with an aligned
+DKIM pass and DMARC `pass`, was started at most 30 days ago and after the channel's
+`sending_changed_at` (set when its address, sending address or SMTP account changes)
+(`usable_channel_ids`, each channel's check read once per request). A blank `from_address` form field
+counts as absent, and `from_address` is checked before the recipient quota of a new mail is taken. `from_address` on `createMessage` (and its form), `sendMessage` and
+`composeMail` picks one for the mail (`409 from_not_allowed` naming the reason; keys and connected
+apps `400`; drafts take it when sent; MCP has none). The message's e-mail row keeps it as
+`from_address` with `member_address_id`; the mail goes `From` the member's name and address,
+`Reply-To` the channel's address, the envelope sender stays the channel's sending address so bounces
+reach the channel, the Message-ID carries the conversation token on the same domain, and the signature
+is unchanged. The send job checks again that the address still exists, is the sender's and verified,
+and is usable, and otherwise fails the message for good. Replies come back through `Reply-To`; mail
+addressed to a verified member address is taken only when no channel takes the recipient and it names
+a conversation token of that workspace in `In-Reply-To` or `References`: it is ingested through the
+conversation's e-mail channel under every rule above (loop, spam, DMARC, participants, sender cap) and
+lands in that conversation's inbox. Every other outcome on that path (no token, a blocked or capped
+sender, unreadable or dropped mail) answers exactly like an unknown recipient.
 Forwarding (`POST /v1/conversations/{id}/forward`): a member sends one message or the
 conversation (its latest 100 messages to and from the contact; never notes, drafts, events or other
 forwards) to 1–10 outside addresses with a note on top. It is stored as a message of the members-only
@@ -4687,6 +4726,10 @@ they belong to no channel. (#136, migration 00095)
   - A forwarding address names only its token: ingress finds the channel by
     `email_channels.forward_token` (unique across the server), like an address. A migration probe is
     recognised by its HMAC before the channel's workspace matters.
+  - A member's own address (#167) names no workspace either: when no channel takes a recipient,
+    ingress looks the verified `member_addresses` rows up by address across workspaces
+    (`FindVerifiedMemberAddresses`); everything after that lookup is scoped by the workspace it
+    returned.
   - The migration watchdog lists migrations whose lease expired across workspaces
     (`migrations_lease_idx`), and the hourly upload sweep lists ended migrations that still have
     uploaded parts (`ListEndedMigrationUploads`); everything after those lookups is scoped by the
