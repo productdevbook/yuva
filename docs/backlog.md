@@ -846,3 +846,42 @@ Each finding below is its own GitHub issue with the full acceptance; all are fix
   - The Accept items of M34 to M37 on a server built from `main`, mail to simulator addresses and
     Mailpit only, in a throwaway workspace deleted afterwards.
   - Screenshots (WebP) of the Mail section, the composer and a delegated mailbox.
+
+## M39 — Bulk actions
+
+### Y-198 · Delete conversations for good, many at once
+
+- **Area** api, web · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** Y-178 · **Chapters** architecture › Privacy and data
+- **Acceptance**
+  - In the Trash, owners and admins select conversations and "Delete forever", or "Empty trash" for
+    everything in it; both ask for confirmation with the count. API: up to 100 trashed conversations
+    per request, each deleted as the 30-day purge does, failures listed per id as in
+    `POST /v1/conversations/bulk`; emptying the whole trash runs as a job and answers `202` with the count.
+  - In the Spam view, many conversations are marked "Not spam" or moved to the Trash at once
+    (`spam` in the bulk update).
+  - Only owners, admins and keys or tokens with `conversations:delete`; each deletion is in the audit
+    log with the count, never the content; files go through the retried `storage_delete` job.
+
+### Y-199 · Delete contacts from the panel, one and many
+
+- **Area** api, web · **Owner** yuva-api, then yuva-panel · **Priority** P1 · **Depends on** – · **Chapters** architecture › Privacy and data
+- **Acceptance**
+  - The contact page has "Delete contact" for owners and admins; the confirmation says how many
+    conversations go with it (`DELETE /v1/contacts/{id}` already deletes them).
+  - The contact list selects many contacts and deletes them: up to 100 per request, each as the single
+    delete, failures listed per id, the count confirmed (`confirm_count`) so a changed selection is
+    refused.
+  - Audit log entries per contact without personal data; MCP has no bulk delete.
+
+### Y-200 · Select many in content lists
+
+- **Area** api, web · **Owner** yuva-api, then yuva-panel · **Priority** P2 · **Depends on** – · **Chapters** architecture › Panel
+- **Acceptance**
+  - One bulk pattern for resources without one: `POST /v1/<resource>/bulk` with up to 100 ids and one
+    action, each item changed in its own transaction with the same events, audit and webhooks as the
+    single change, failures listed per id.
+  - The panel selects many (checkbox, shift-click, select all on the page) with the same bar as the
+    conversation list in: help center articles (delete, publish, unpublish, move to a collection),
+    What's new entries (delete, publish), mailing list subscribers (unsubscribe, delete), e-mail images
+    and designs (delete), broadcast drafts (delete) and discussions (hide, mark spam, delete).
+  - Undo where the single action has it; en, tr, de and the other catalogs; screenshots (WebP).

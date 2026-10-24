@@ -683,6 +683,17 @@ Status: planned; items Y-175 to Y-176 in `backlog.md`. After 0.1.0.
 
 Accept: each run reports pass with evidence; each failure becomes its own backlog item.
 
+## M39 — Bulk actions
+
+Status: planned; items Y-198 to Y-200 in `backlog.md`. Independent of team mail; runs alongside it.
+
+- Deleting conversations for good and emptying the Trash, deleting contacts from the panel, and
+  selecting many in the content lists.
+
+Accept: an owner empties a Trash of 250 conversations and deletes 30 selected contacts with one
+confirmation each, and the audit log has both; 20 help center articles are unpublished at once and
+the undo puts them back.
+
 ## Later
 
 - M10, native apps for members (#18, #19): not scheduled; not part of 0.1.0.
