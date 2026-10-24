@@ -21,7 +21,7 @@ import {
 } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
-import { useInboxes, useLabels } from "@/lib/workspace"
+import { isSupport, useInboxes, useLabels } from "@/lib/workspace"
 
 const MAX_MINUTES = 525600
 const CHANNELS: ChannelKind[] = ["chat", "email", "app", "api"]
@@ -98,7 +98,7 @@ function Form({ policy, onClose }: { policy: SlaPolicy | null; onClose: () => vo
   const enums = useEnumText()
   const qc = useQueryClient()
   const { workspaceId: ws } = useSession()
-  const inboxes = useInboxes().data ?? []
+  const inboxes = (useInboxes().data ?? []).filter(isSupport)
   const labels = useLabels().data ?? []
   const [name, setName] = useState(policy?.name ?? "")
   const [enabled, setEnabled] = useState(policy?.enabled ?? true)

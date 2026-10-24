@@ -19,6 +19,8 @@ msgstr "У полі «{name}» значення не підходить"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«Чи була ця сторінка корисною?», відгуки й обговорення у вашій документації"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(без теми)"
@@ -113,6 +115,7 @@ msgstr "{0} позначено як спам · відповідь не потр
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "Переміщено до кошика: {0}"
 
@@ -130,6 +133,7 @@ msgstr "{0} відповідей · {1} закрито"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "Відновлено: {0}"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {Немає чернеток від ботів} assistant {Немає чернеток від асистентів} member {Немає чернеток від учасників} other {Немає чернеток від цього автора}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, надіслав(ла) {by}"
 
@@ -503,6 +508,10 @@ msgstr "виконано: {met}, порушено: {breached}"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {Чекає # хвилину} few {Чекає # хвилини} many {Чекає # хвилин} other {Чекає # хвилини}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "Не вдалося змінити: {missed}"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} знову відповідає як зазвичай"
@@ -555,6 +564,10 @@ msgstr "{n, plural, one {# сайт або застосунок} few {# сайт
 msgid "{n} a day"
 msgstr "{n} на день"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "В архіві: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "Спроб: {n}"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} за 30 днів"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} позначено як прочитані"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} позначено як непрочитані"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "Повернуто до Вхідних: {n}"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "Відкладено: {n}, повернуться {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "Позначено зірочкою: {n}"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "Зірочку знято: {n}"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "Вимкнене правило ніколи не спрацьовує. 
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "Спільна скринька на кшталт hello@ чи billing@, поза поданнями й статистикою підтримки."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Вхід має повернутися протягом 10 хвилин і працює один раз. Відкрийте міграцію та увійдіть знову."
@@ -1509,6 +1544,10 @@ msgstr "У команді може бути не більше 500 учасник
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "Командна поштова скринька тримає пошту спільної адреси, як-от hello@ чи billing@, окремо від підтримки клієнтів."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "Додати зображення"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "Усі імпорти"
 msgid "All inboxes"
 msgstr "Усі скриньки"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Уся пошта"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "Схвалено"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "Архівувати"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "Архів"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "Архів"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "В архів (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "Краще архівуйте список, щоб зберегти записи."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "В архів або назад до Вхідних"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "В архіві"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "Назад до налаштування"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Назад до списку"
 
@@ -3153,6 +3212,7 @@ msgstr "Лише погані"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Прихована копія"
 
@@ -3481,6 +3541,7 @@ msgstr "Назва кампанії"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "Причину знайдено"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Копія"
 
@@ -3918,6 +3980,7 @@ msgstr "Виберіть робочий простір"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Виберіть зі списку або переміщуйтеся клавішами ↑ ↓ і відкривайте Enter."
 
@@ -3972,6 +4035,7 @@ msgstr "Скинути відповідь"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "Очистити пошук"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "Скасувати вибір"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Скасувати вибір (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "Код"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "Згорнути"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "Клієнти й далі пишуть на знайому їм адр�
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "Клієнти бачать цю назву в чаті, у ваших застосунках і в листах."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "Клієнти пишуть у чат, застосунок або на пошту; оцінки, призначення та SLA працюють тут."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Денний ліміт"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "Завантажити JSON"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Завантажити початковий лист (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "Текст чернетки"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Чернетка:"
 
@@ -6437,6 +6512,10 @@ msgstr "Скрізь"
 msgid "Example Ltd."
 msgstr "ТОВ «Приклад»"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "Розгорнути або згорнути всі листи"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "Виправити"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Виправте адресу або налаштування SMTP каналу, потім надішліть відповідь знову."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "Дав(ла) команді {team} доступ до {inbox}"
 msgid "General"
 msgstr "Загальні"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "Загальні"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "Створіть пароль із назвою «Yuva» і вставте нижче."
@@ -7309,6 +7394,10 @@ msgstr "Передано: {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Є відкрита розмова"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "Є вкладення"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "Як вони дали згоду або ваш власний запи�
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "Як вони відписалися:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "Як ця скринька виглядає в панелі"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7925,6 +8018,11 @@ msgstr "У Zoho Mail відкрийте «Налаштування › Пошт�
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
+msgid "Inbox"
+msgstr "Вхідні"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Inbox"
 msgstr "Вхідні"
 
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "Завантажити ще"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Завантажити старіші повідомлення"
 
@@ -9082,6 +9181,18 @@ msgstr "Зробив(ла) єдиний вхід необов’язковим"
 msgid "Made single sign-on required"
 msgstr "Зробив(ла) єдиний вхід обов’язковим"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "Пошта"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "Дії з поштою"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "Пошта надходить сюди; додайте обліковий запис для відповідей, коли будете готові"
@@ -9158,9 +9269,17 @@ msgstr "Пошта на цю адресу повернулася або на н�
 msgid "Mail to your support address, answered from it"
 msgstr "Пошта на вашу адресу підтримки, відповіді з неї"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "Пошта, непрочитаних: {mailUnread}"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Адреса скриньки"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "Поштова скринька: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "Позначити як рішення"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "Позначити як прочитане"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "Позначити як прочитане чи непрочитане (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "Позначити як спам"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "Позначити як непрочитане"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "Позначити як непрочитане (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "Найбільше голосів"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Перемістити до кошика: {0}?"
 
@@ -9762,6 +9893,10 @@ msgstr "Перемістити вибрані розмови до кошика"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Перемістити цю розмову до кошика?"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "Перемістити цей лист до кошика?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "Перенести на етап"
 msgid "Move to inbox"
 msgstr "Перемістити у вхідні"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "Перемістити до Вхідних"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "Перемістити до Вхідних (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "Перенести на попередній або наступний етап"
@@ -9824,8 +9969,15 @@ msgstr "Перенести на попередній або наступний �
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "Перемістити до кошика"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "Перемістити до кошика (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "Перенесено з {from}"
 msgid "Moved to {to}"
 msgstr "Переміщено до {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "Повернуто до Вхідних"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Переміщено до кошика"
 
@@ -9925,6 +10082,10 @@ msgstr "Ім'я"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "Ім'я (необов'язково)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "Назва та вигляд"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "Більше немає в скриньці"
 msgid "No macros yet"
 msgstr "Макросів ще немає"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "Жоден лист не відповідає пошуку."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "Для {domain} не знайдено поштового сервера. Виберіть свого провайдера нижче або «Інший сервер IMAP» і введіть сервер на наступному кроці."
@@ -10899,6 +11064,10 @@ msgstr "Немає команди"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "Жодна команда не охоплює всі вибрані скриньки."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "Командної пошти ще немає"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "Нотатка (необов’язково)"
 msgid "Note about this contact"
 msgstr "Нотатка про цей контакт"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "Нотатка для команди"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Нотатка для колеги"
@@ -11300,6 +11473,10 @@ msgstr "Тут нічого немає."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "Поки нічого не додано. Файл читається, у кожного домену запитується, чи приймає він пошту, і знаходяться дублікати й адреси, які, можливо, не повинні отримувати пошту."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "В архіві ще нічого немає."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Вам нічого не призначено."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "Нічого не заплановано."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "Нічого не відкладено."
 
@@ -11735,6 +11913,10 @@ msgstr "Лише пошта з {date}"
 msgid "Only me"
 msgstr "Лише я"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "Змінити це можуть лише власники та адміністратори."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Це можуть змінювати лише власники."
@@ -12060,6 +12242,10 @@ msgstr "Відкрийте центр адміністрування Microsoft E
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "Відкрити наступну або попередню розмову"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "Відкрити наступний або попередній лист"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "Виберіть обговорення, щоб прочитати й в
 msgid "Pick a field"
 msgstr "Виберіть поле"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "Виберіть лист"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "Виберіть учасника"
@@ -12766,6 +12956,10 @@ msgstr "Виберіть розмови"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Виберіть кожну область доступу самі."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "Виберіть листи"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "Опублікована"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "Публікується одразу й надсилається підписникам."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "Призначення"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "Видалити повідомлення або нотатку, на я
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "Зняти зірочку"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "Зняти зірочку (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Відповісти"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "Відповісти ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "Відповісти (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "Обліковий запис для відповідей"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "Відповісти всім"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "Відповісти всім (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "Відповісти <0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "Відповідь на розсилку"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "Відповісти всім"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "Відповісти прив’язаним"
@@ -14147,6 +14370,10 @@ msgstr "Натомість відповісти в обговоренні"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Відповісти на вибране повідомлення"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "Відповісти відправникові"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "Час відповіді"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "Відновити"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "Відновити (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "Розмову відновлено з кошика"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "Відновлено з кошика"
 
@@ -14849,6 +15082,10 @@ msgstr "Пошук у цій розмові"
 msgid "Search incidents"
 msgstr "Шукати інциденти"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "Пошук у пошті"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "Пошук за ім’ям, e-mail або ID…"
@@ -14922,19 +15159,33 @@ msgstr "Вибір"
 msgid "Select conversations"
 msgstr "Вибрати розмови"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "Вибрати листи"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "Вибрати листи (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Вибрати розмову під курсором"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "Вибрати лист під курсором"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "Вибрати попередній або наступний блок"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Вибрано: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Вибір"
 
@@ -15025,6 +15276,10 @@ msgstr "Надсилати автовідповідь"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "Надсилайте події аналітики зі своїх серверів"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "Надіслати й в архів"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "Надсилання зупинено й не може тривати, �
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "Надсилання зупиниться протягом кількох секунд і не зможе початися знову. Уже надіслані листи залишаються надісланими."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "Надсилання, потім архівація…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "Надсилання, потім закриття…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Надсилання…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "Надіслано"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "Надіслані"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "З цієї адреси надіслано повідомлень: {count}"
@@ -15305,6 +15570,10 @@ msgstr "Надіслані"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "Надіслано: {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "Надіслано: {first}, лист в архіві"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "Хост SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Відкласти"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "Відкласти (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,8 +16391,14 @@ msgstr "Відкласти на {time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Snoozed"
 msgstr "Відкладено"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Snoozed"
+msgstr "Відкладені"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -16257,6 +16538,41 @@ msgstr "Розбити за"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Етап"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "Позначити зірочкою"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "Позначити зірочкою (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "Позначте лист зірочкою, щоб він був тут."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "Поставити або зняти зірочку"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "Поставити або зняти зірочку (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "Зірочку знято"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "Позначено зірочкою"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "Із зірочкою"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "Неділя"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "Підтримка"
 
@@ -16567,6 +16885,10 @@ msgstr "Бот підтримки"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "Посилання на підтримку"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "Підтримка: розмови з клієнтами, з чатом, оцінками, призначенням і SLA."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "Команду змінено"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "ID команди"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "Командна пошта"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "Командна пошта приймає лише поштові канали. Автопризначення буде вимкнено."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "Командна пошта: спільна скринька поза поданнями підтримки, статистикою та SLA."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "Кошик порожній."
 
@@ -18063,6 +18399,15 @@ msgstr "Цей пристрій"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "Цього обговорення більше немає, або ви його не бачите."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "Це не відповідає призначенню скриньки: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "Це не відповідає призначенню скриньки."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "У цій скриньці немає поштового каналу. �
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "У цій скриньці поки немає списку розсилки. Розсилка йде лише тим, хто підписався на список."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "Ця скринька для"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "Цей список в архіві. Він не приймає нови
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Цей список закритий, тож форми його не пропонують. Зробіть його публічним у налаштуваннях, щоб використовувати форму."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "Цей лист недоступний"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (порт 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "Щоб асистенти могли надсилати самостій
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Кому: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "Кому: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "Кошик"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "Кошик"
 
@@ -18783,6 +19148,10 @@ msgstr "Невідомий пристрій"
 msgid "unknown reason"
 msgstr "невідома причина"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "Невідомий відправник"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "Не опублікована"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "Непрочитані"
 
@@ -19650,6 +20020,10 @@ msgstr "Що сталося"
 msgid "What is new in October"
 msgstr "Що нового в жовтні"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "Для чого ця скринька?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "Для чого цей ключ?"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "Коли вимкнено, ключі API можуть лише писати чернетки, а перевіряє й надсилає їх учасник."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "Коли він має повернутися?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "Коли їм повернутися?"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "Цю сторінку можна залишити; імпорт трив
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "Цю сторінку можна залишити: розмова чекатиме на вас у списку розмов."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "Його можна відновити з кошика протягом 30 днів, потім він видаляється назавжди разом із повідомленнями та файлами."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Їх можна відновити з кошика протягом 30 днів, потім вони видаляються назавжди разом із повідомленнями та файлами."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Тоді ви зможете писати, голосувати й стежити за обговореннями там. Команда {host} бачить ваше ім'я та адресу електронної пошти, коли ви пишете; інші читачі бачать лише ім'я."
@@ -20222,6 +20609,10 @@ msgstr "Ви створили стільки робочих просторів, 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "У вас поки немає ключів доступу."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "Ви ще не надіслали жодного листа."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "Вхідні порожні."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

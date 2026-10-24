@@ -20,7 +20,7 @@ export function LabelsPage() {
   const qc = useQueryClient()
   const { workspaceId: ws, canManage } = useSession()
   const labels = useLabels()
-  const counts = useCounts(["conversation"])
+  const counts = useCounts(["conversation"], null)
   const open = new Map((counts.data?.labels ?? []).map((c) => [c.id, c.count]))
   const [editing, setEditing] = useState<Label | "new" | null>(null)
   const [confirm, confirmDialog] = useConfirm()

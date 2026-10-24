@@ -14675,6 +14675,12 @@ export interface components {
         /** @description A conversation with what a list row shows. */
         ConversationListItem: components["schemas"]["Conversation"] & {
             contact: components["schemas"]["ConversationContact"];
+            /**
+             * @description A sent message, forward or note has an attachment that is not an inline part of an
+             *     e-mail. Notes count for members only, not for API keys; drafts never count. Turns
+             *     `false` when redaction removes the last one.
+             */
+            has_attachments: boolean;
             last_message?: components["schemas"]["MessagePreview"];
             /**
              * @description A message or note from someone other than the calling member is newer than the

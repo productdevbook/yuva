@@ -127,6 +127,7 @@ export function Layout() {
       isChats(pathname, canManage) ||
       pathname === "/feedback" ||
       pathname.startsWith("/feedback/") ||
+      section === "mail" ||
       section === "board" ||
       section === "docs" ||
       section === "status"
@@ -134,6 +135,17 @@ export function Layout() {
       <Desktop frame={frame}>
         <Outlet />
       </Desktop>
+    )
+  }
+  if (section === "mail") {
+    const thread = pathname.split("/").length > 4
+    return (
+      <Phone>
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <Outlet />
+        </div>
+        {!thread && <TabBar />}
+      </Phone>
     )
   }
   if (

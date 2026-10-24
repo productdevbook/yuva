@@ -79,6 +79,7 @@ import { BroadcastLine } from "@/features/conversation/BroadcastLine"
 import { RelatedLine } from "@/features/conversation/RelatedLine"
 import { look } from "@/features/inbox/PageFrame"
 import { useListActions, usePinnedIds } from "@/features/inbox/memberState"
+import { MailThread } from "@/features/mail/MailThread"
 import { useConversations } from "@/features/inbox/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useIsPhone, useMediaQuery } from "@/hooks/use-media-query"
@@ -127,6 +128,7 @@ function BackButton({ onBack }: { onBack?: () => void }) {
 
 export function ChatView(props: Props) {
   const errorText = useErrorText()
+  const navigate = useNavigate()
   const { canManage } = useSession()
   const conversation = useConversation(props.id)
   const c = conversation.data
@@ -169,6 +171,10 @@ export function ChatView(props: Props) {
       </div>
     )
   }
+  if (c.inbox_purpose === "mail")
+    return (
+      <MailThread id={c.id} onBack={props.onBack} onLeave={props.onBack ?? (() => navigate(inboxRoot(canManage)))} />
+    )
   return <Loaded {...props} c={c} contact={contact.data} channel={known ?? fetched} />
 }
 

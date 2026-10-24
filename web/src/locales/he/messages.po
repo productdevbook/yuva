@@ -19,6 +19,8 @@ msgstr "לערך של «{name}» אין התאמה לשדה"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„האם הדף הזה עזר?”, משוב ודיונים בתיעוד שלך"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(ללא נושא)"
@@ -113,6 +115,7 @@ msgstr "{0} סומנו כספאם · אין צורך בתשובה"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} הועברו לפח"
 
@@ -130,6 +133,7 @@ msgstr "{0} תשובות · {1} סגורות"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} שוחזרו"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {אין טיוטות מבוטים} assistant {אין טיוטות מעוזרים} member {אין טיוטות מחברי צוות} other {אין טיוטות מהכותב הזה}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, נשלח על ידי {by}"
 
@@ -503,6 +508,10 @@ msgstr "{met} קוימו, {breached} הופרו"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {ממתין דקה #} two {ממתין # דקות} other {ממתין # דקות}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "לא ניתן היה לשנות {missed}"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} חזר להגיב כרגיל"
@@ -555,6 +564,10 @@ msgstr "{n, plural, one {אתר או אפליקציה #} two {# אתרים וא�
 msgid "{n} a day"
 msgstr "{n} ביום"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "{n} הועברו לארכיון"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} ניסיונות"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} ב-30 יום"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} סומנו כנקראו"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} סומנו כלא נקראו"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "{n} הוחזרו לתיבת הדואר הנכנס"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "{n} נדחו, יחזרו {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "{n} סומנו בכוכב"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "הכוכב הוסר מ-{n}"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "כלל כבוי אינו רץ לעולם. הכללים רצים לפי �
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "תיבה משותפת כמו hello@ או billing@, מחוץ לתצוגות ולסטטיסטיקות של התמיכה."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "כניסה חייבת לחזור תוך 10 דקות ופועלת פעם אחת. פתח את ההעברה והיכנס שוב."
@@ -1509,6 +1544,10 @@ msgstr "בצוות יכולים להיות עד 500 חברים ו-100 תיבות
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "תיבת דואר של הצוות שומרת את הדואר של כתובת משותפת, כמו hello@ או billing@, בנפרד משירות הלקוחות."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "הוספת תמונה"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "כל הייבואים"
 msgid "All inboxes"
 msgstr "כל תיבות הדואר"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "כל הדואר"
@@ -2766,6 +2807,13 @@ msgid "Approved"
 msgstr "אושר"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive"
+msgstr "ארכיון"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Archive"
 msgstr "ארכיון"
 
@@ -2774,13 +2822,23 @@ msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "ארכיון"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "העברה לארכיון (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "ארכבו את הרשימה במקום זאת כדי לשמור את הרישומים."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "העברה לארכיון, או חזרה לדואר הנכנס"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "בארכיון"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "חזרה להגדרה"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "חזרה לרשימה"
 
@@ -3153,6 +3212,7 @@ msgstr "רעים בלבד"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "עותק מוסתר"
 
@@ -3481,6 +3541,7 @@ msgstr "שם הקמפיין"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "הסיבה נמצאה"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "עותק"
 
@@ -3918,6 +3980,7 @@ msgstr "בחר סביבת עבודה"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "בחר אחד מהרשימה, או נווט עם ↑ ↓ ופתח אותו עם Enter."
 
@@ -3972,6 +4035,7 @@ msgstr "ניקוי התשובה"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "ניקוי החיפוש"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "נקו את הבחירה"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "נקו את הבחירה (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "קוד"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "כיווץ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "הלקוחות ממשיכים לכתוב לכתובת שהם מכירי�
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "הלקוחות רואים את השם הזה בצ׳אט, באפליקציות שלך ובאימיילים."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "לקוחות כותבים בצ׳אט, באפליקציה או במייל; דירוגים, שיוך ו-SLA פועלים כאן."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "מגבלה יומית"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "הורדת JSON"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "הורדת האימייל המקורי (eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "טקסט הטיוטה"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "טיוטה:"
 
@@ -6437,6 +6512,10 @@ msgstr "בכל מקום"
 msgid "Example Ltd."
 msgstr "Example בע״מ"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "הרחבה או כיווץ של כל ההודעות"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "תיקון"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "תקן את הכתובת או את הגדרות ה-SMTP של הערוץ, ואז שלח את התשובה שוב."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "העניק/ה לצוות {team} גישה אל {inbox}"
 msgid "General"
 msgstr "כללי"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "כללי"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "צור סיסמה בשם „Yuva” והדבק למטה."
@@ -7309,6 +7394,10 @@ msgstr "הועברה אל {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "יש לו שיחה פתוחה"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "יש קבצים מצורפים"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "איך הם הסכימו, או הרשומה שלך (אופציונלי)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "איך הם עזבו:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "איך התיבה הזו מופיעה בפאנל"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7927,6 +8020,11 @@ msgstr "ב-Zoho Mail, פתח Settings › Mail accounts › IMAP access והפע
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "תיבת דואר"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Inbox"
+msgstr "דואר נכנס"
 
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Inbox access"
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "טעינת עוד"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "טעינת הודעות ישנות יותר"
 
@@ -9082,6 +9181,18 @@ msgstr "הפך/ה את ההתחברות היחידה לאופציונלית"
 msgid "Made single sign-on required"
 msgstr "הפך/ה את ההתחברות היחידה לחובה"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "דואר"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "פעולות דואר"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "הדואר מגיע לכאן; הוסף חשבון תשובות כשתהיה מוכן"
@@ -9158,9 +9269,17 @@ msgstr "דואר לכתובת הזאת הוחזר או דווח כספאם, ול
 msgid "Mail to your support address, answered from it"
 msgstr "דואר לכתובת התמיכה שלך, נענה ממנה"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "דואר, {mailUnread} שלא נקראו"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "כתובת תיבת הדואר"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "תיבת דואר: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "סימון כתשובה"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "סימון כנקרא"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "סימון כנקרא או כלא נקרא (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "סימון כספאם"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "סימון כלא נקרא"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "סימון כלא נקרא (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "הכי הרבה הצבעות"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "להעביר {0} לפח?"
 
@@ -9762,6 +9893,10 @@ msgstr "העברת השיחות שנבחרו לפח"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "להעביר את השיחה הזו לפח?"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "להעביר את המייל הזה לפח?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "העברה לשלב"
 msgid "Move to inbox"
 msgstr "העברה לתיבת הדואר"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "העברה לדואר הנכנס"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "העברה לדואר הנכנס (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "העברה לשלב הקודם או הבא"
@@ -9824,8 +9969,15 @@ msgstr "העברה לשלב הקודם או הבא"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "העברה לפח"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "העברה לפח (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "הועבר מ-{from}"
 msgid "Moved to {to}"
 msgstr "הועברה אל {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "הוחזר לדואר הנכנס"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "הועברה לפח"
 
@@ -9925,6 +10082,10 @@ msgstr "שם"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "שם (אופציונלי)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "שם ומראה"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "כבר לא בתיבת הדואר"
 msgid "No macros yet"
 msgstr "עדיין אין מאקרו"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "אין מיילים שתואמים לחיפוש."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "לא נמצא שרת דואר עבור {domain}. בחר את הספק שלך למטה, או „Other IMAP server” והזן את השרת בשלב הבא."
@@ -10899,6 +11064,10 @@ msgstr "ללא צוות"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "אין צוות שמכסה את כל תיבות הדואר שנבחרו."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "עדיין אין דואר צוות"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "הערה (אופציונלי)"
 msgid "Note about this contact"
 msgstr "הערה על איש הקשר הזה"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "הערה לצוות"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "הערה לחבר הצוות"
@@ -11300,6 +11473,10 @@ msgstr "אין כאן כלום."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "עדיין שום דבר לא נוסף. הקובץ נקרא, כל דומיין נשאל אם הוא מקבל דואר, וכפילויות וכתובות שאולי לא יקבלו דואר מאותרות."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "עדיין לא הועבר דבר לארכיון."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "שום דבר לא משויך אליך."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "שום דבר לא מתוזמן."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "שום דבר לא נדחה."
 
@@ -11735,6 +11913,10 @@ msgstr "רק דואר מאז {date}"
 msgid "Only me"
 msgstr "רק אני"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "רק בעלים ומנהלים יכולים לשנות זאת."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "רק בעלים יכולים לשנות זאת."
@@ -12060,6 +12242,10 @@ msgstr "פתח את Microsoft Entra admin center או את פורטל Azure, ע�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "פתיחת השיחה הבאה או הקודמת"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "פתיחת המייל הבא או הקודם"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "בחרו דיון כדי לקרוא ולענות."
 msgid "Pick a field"
 msgstr "בחרו שדה"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "בחרו מייל"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "בחרו חבר"
@@ -12766,6 +12956,10 @@ msgstr "בחרו שיחות"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "בחר כל היקף בעצמך."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "בחרו מיילים"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "מפורסם"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "מתפרסם מיד ונשלח לעוקבים."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "ייעוד"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "הסר את ההודעה או ההערה שלחצת עליה"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "הסרת הכוכב"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "הסרת הכוכב (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "תשובה"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "תשובה ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "מענה (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "חשבון תשובות"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "השב לכולם"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "השב לכולם (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "מענה ל-<0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "מענה לשליחה המונית"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "מענה לכולם"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "ענו למקושרות"
@@ -14147,6 +14370,10 @@ msgstr "תגובה לדיון במקום זאת"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "תגובה לפוסט שנבחר"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "מענה לשולח"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "זמני תגובה"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "שחזור"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "שחזור (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "שיחה שוחזרה מהפח"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "שוחזרה מהפח"
 
@@ -14849,6 +15082,10 @@ msgstr "חיפוש בשיחה הזאת"
 msgid "Search incidents"
 msgstr "חיפוש אירועים"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "חיפוש בדואר"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "חיפוש שם, אימייל או מזהה…"
@@ -14922,19 +15159,33 @@ msgstr "בחירה"
 msgid "Select conversations"
 msgstr "בחרו שיחות"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "בחירת מיילים"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "בחירת מיילים (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "בחרו את השיחה שמתחת לסמן"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "בחירת המייל שמתחת לסמן"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "בחירת הבלוק הקודם או הבא"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "נבחרו: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "בחירה"
 
@@ -15025,6 +15276,10 @@ msgstr "שליחת תשובה אוטומטית"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "שלח אירועי אנליטיקה מהשרתים שלך"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "שליחה והעברה לארכיון"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "השליחה נעצרה ואינה יכולה להמשיך, למשל כ�
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "השליחה נעצרת תוך כמה שניות ואינה יכולה להתחיל שוב. דואר שכבר יצא נשאר כנשלח."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "שולח ואז מעביר לארכיון…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "שולח, ואז סוגר…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "שולח…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "נשלח"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "נשלחו"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "נשלחו {count} הודעות מהכתובת הזאת"
@@ -15305,6 +15570,10 @@ msgstr "דואר שנשלח"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "נשלח אל {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "נשלח אל {first} והועבר לארכיון"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "מארח SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "נודניק"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "דחייה (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,8 +16391,14 @@ msgstr "דחייה ל-{time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Snoozed"
 msgstr "בנודניק"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Snoozed"
+msgstr "נדחו"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -16257,6 +16538,41 @@ msgstr "פיצול לפי"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "שלב"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "סימון בכוכב"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "סימון בכוכב (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "סמנו מייל בכוכב כדי לשמור אותו כאן."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "הוספה או הסרה של כוכב"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "הוספה או הסרה של כוכב (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "הכוכב הוסר"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "סומן בכוכב"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "מסומנים בכוכב"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "יום ראשון"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "תמיכה"
 
@@ -16567,6 +16885,10 @@ msgstr "בוט תמיכה"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "קישור לתמיכה"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "תמיכה: שיחות עם לקוחות, עם צ׳אט, דירוגים, שיוך ו-SLA."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "הצוות שונה"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "מזהה צוות"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "דואר צוות"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "דואר צוות מקבל רק ערוצי מייל. השיוך האוטומטי יכובה."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "דואר צוות: תיבה משותפת, מחוץ לתצוגות התמיכה, לסטטיסטיקות ול-SLA."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "הפח ריק."
 
@@ -18063,6 +18399,15 @@ msgstr "המכשיר הזה"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "הדיון הזה כבר לא קיים או שאינך יכול לראות אותו."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "זה לא מתאים לייעוד התיבה: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "זה לא מתאים לייעוד התיבה."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "לתיבת הדואר הזאת אין ערוץ אימייל. הוסף א
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "לתיבת הדואר הזאת עדיין אין רשימת תפוצה. שליחה המונית הולכת רק למי שנרשם לרשימה."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "התיבה הזו מיועדת ל"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "הרשימה הזו בארכיון. היא לא מקבלת מנויים 
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "הרשימה הזאת פרטית, ולכן טפסים לא מציעים אותה. הפוך אותה לציבורית בהגדרות כדי להשתמש בטופס."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "המייל הזה אינו זמין"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (פורט 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "כדי לאפשר לעוזרים לשלוח בעצמם, הפעל את <0
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "אל: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "אל: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "פח"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "פח"
 
@@ -18783,6 +19148,10 @@ msgstr "מכשיר לא ידוע"
 msgid "unknown reason"
 msgstr "סיבה לא ידועה"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "שולח לא ידוע"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "לא מפורסם"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "לא נקראו"
 
@@ -19650,6 +20020,10 @@ msgstr "מה קרה"
 msgid "What is new in October"
 msgstr "מה חדש באוקטובר"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "למה התיבה הזו משמשת?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "בשביל מה המפתח הזה?"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "כשכבוי, מפתחות API יכולים רק לכתוב טיוטות, וחבר צוות סוקר ושולח אותן."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "מתי זה צריך לחזור?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "מתי הם צריכים לחזור?"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "אפשר לעזוב את הדף הזה; הייבוא נמשך."
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "אפשר לעזוב את הדף הזה: השיחה תחכה לך ברשימת השיחות שלך."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "אפשר לשחזר אותו מהפח במשך 30 יום, ואז הוא נמחק לצמיתות עם ההודעות והקבצים שלו."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "אפשר לשחזר אותם מהפח במשך 30 יום, ואז הם נמחקים לצמיתות עם ההודעות והקבצים שלהם."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "אחר כך תוכל לכתוב, להצביע ולעקוב אחר דיונים שם. הצוות שמאחורי {host} רואה את השם והאימייל שלך כשאתה כותב; קוראים אחרים רואים רק את השם שלך."
@@ -20222,6 +20609,10 @@ msgstr "יצרת כמה שיותר סביבות עבודה שהשרת הזה מ�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "עדיין אין לך מפתחות גישה."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "עדיין לא שלחת אף מייל."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "תיבת הדואר הנכנס ריקה."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

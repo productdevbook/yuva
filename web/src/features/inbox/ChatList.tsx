@@ -397,7 +397,10 @@ function CleanupBanner({ inboxId }: { inboxId: string }) {
   const { t } = useLingui()
   const errorText = useErrorText()
   const counts = useCounts(["conversation"]).data
-  const spam = useConversations({ status: ["open"], spam: true, kind: ["conversation"] }, !!counts?.spam)
+  const spam = useConversations(
+    { status: ["open"], spam: true, kind: ["conversation"], purpose: "support" },
+    !!counts?.spam
+  )
   const bulk = useBulkUpdateConversations()
   const items = (spam.data?.pages.flatMap((p) => p.items) ?? []).filter((c) => !inboxId || c.inbox_id === inboxId)
   if (!counts?.spam || items.length === 0) return null
@@ -772,6 +775,7 @@ export function ChatList({
         fields: view.base.fields || own.fields ? { ...view.base.fields, ...own.fields } : undefined,
         sort: sort === "sla_due" ? "sla_due" : undefined,
         q: q || undefined,
+        purpose: q ? view.base.purpose : (view.base.purpose ?? "support"),
       }
     : {
         kind: ["conversation"],
@@ -782,6 +786,7 @@ export function ChatList({
         team_id: teamId || undefined,
         sort: sort === "sla_due" ? "sla_due" : undefined,
         q: q || undefined,
+        purpose: q ? undefined : "support",
       }
   const list = useConversations(filters)
   const pinnedList = useConversations({ ...filters, pinned: true })
@@ -1302,12 +1307,13 @@ export function ChatList({
   const counts = useCounts(["conversation"]).data
   const unassignedHere = useLoadedCount({
     kind: ["conversation"],
+    purpose: "support",
     inbox_id: inboxId || undefined,
     status: ["open"],
     assignee: "unassigned",
   })
   const waitingHere = useLoadedCount(
-    { kind: ["conversation"], inbox_id: inboxId || undefined, status: ["open"] },
+    { kind: ["conversation"], purpose: "support", inbox_id: inboxId || undefined, status: ["open"] },
     isWaiting
   )
 

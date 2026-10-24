@@ -19,6 +19,8 @@ msgstr "قيمة «{name}» لا تناسب الحقل"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«هل كانت هذه الصفحة مفيدة؟» والملاحظات والنقاشات في وثائقك"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(بلا موضوع)"
@@ -113,6 +115,7 @@ msgstr "{0} موسومة كرسائل غير مرغوبة · لا حاجة إل�
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "تم نقل {0} إلى المهملات"
 
@@ -130,6 +133,7 @@ msgstr "{0} ردود · {1} مغلقة"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "تمت استعادة {0}"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {لا مسودات من الروبوتات} assistant {لا مسودات من المساعدين} member {لا مسودات من الأعضاء} other {لا مسودات من هذا الكاتب}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}، أرسلها {by}"
 
@@ -503,6 +508,10 @@ msgstr "تحقق {met}، وانتُهك {breached}"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, zero {في الانتظار منذ # دقيقة} one {في الانتظار منذ دقيقة} two {في الانتظار منذ دقيقتين} few {في الانتظار منذ # دقائق} many {في الانتظار منذ # دقيقة} other {في الانتظار منذ # دقيقة}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "تعذّر تغيير {missed}"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} يستجيب بشكل طبيعي مرة أخرى"
@@ -555,6 +564,10 @@ msgstr "{n, plural, zero {# موقع أو تطبيق} one {موقع أو تطب�
 msgid "{n} a day"
 msgstr "{n} في اليوم"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "تمت أرشفة {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} محاولات"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} في 30 يومًا"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "تم تمييز {n} كمقروءة"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "تم تمييز {n} كغير مقروءة"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "أُعيد {n} إلى صندوق الوارد"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "تم تأجيل {n}، يعود {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "تم تمييز {n} بنجمة"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "أُزيلت النجمة من {n}"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "القاعدة المعطّلة لا تعمل أبدًا. تعمل ال�
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "صندوق بريد مشترك مثل hello@ أو billing@، خارج عروض الدعم وإحصاءاته."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "يجب أن يعود تسجيل الدخول خلال 10 دقائق ويعمل مرة واحدة. افتح النقل وسجّل الدخول مجددًا."
@@ -1509,6 +1544,10 @@ msgstr "يضم الفريق 500 عضو و100 صندوق وارد كحد أقصى
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "صندوق بريد الفريق يحفظ بريد عنوان مشترك، مثل hello@ أو billing@، بعيدًا عن دعم العملاء."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "إضافة صورة"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "كل عمليات الاستيراد"
 msgid "All inboxes"
 msgstr "كل صناديق الوارد"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "كل البريد"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "تمت الموافقة"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "أرشفة"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "الأرشيف"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "الأرشيف"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "أرشفة (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "أرشف القائمة بدلاً من ذلك للاحتفاظ بالسجلات."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "أرشفة، أو الإعادة إلى صندوق الوارد"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "مؤرشف"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "العودة إلى الإعداد"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "العودة إلى القائمة"
 
@@ -3153,6 +3212,7 @@ msgstr "السيئة فقط"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "نسخة مخفية"
 
@@ -3481,6 +3541,7 @@ msgstr "اسم الحملة"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "تم العثور على السبب"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "نسخة"
 
@@ -3918,6 +3980,7 @@ msgstr "اختر مساحة عمل"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "اختر واحدًا من القائمة، أو تنقّل بالسهمين ↑ ↓ وافتحه بـ Enter."
 
@@ -3972,6 +4035,7 @@ msgstr "مسح الإجابة"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "مسح البحث"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "مسح التحديد"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "مسح التحديد (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "الرمز"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "طي"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "يواصل العملاء الكتابة إلى العنوان الذي 
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "يرى العملاء هذا الاسم في الدردشة وتطبيقاتك ورسائل البريد."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "يكتب العملاء عبر الدردشة أو التطبيق أو البريد؛ التقييمات والإسناد وSLA تعمل هنا."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "الحد اليومي"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "تنزيل JSON"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "تنزيل البريد الإلكتروني الأصلي (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "نص المسودة"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "مسودة:"
 
@@ -6437,6 +6512,10 @@ msgstr "في كل مكان"
 msgid "Example Ltd."
 msgstr "شركة Example المحدودة"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "توسيع كل الرسائل أو طيّها"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "إصلاحه"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "أصلح العنوان أو إعدادات SMTP للقناة، ثم أرسل الرد مجددًا."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "منح الفريق {team} الوصول إلى {inbox}"
 msgid "General"
 msgstr "عام"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "عام"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "أنشئ كلمة مرور باسم «Yuva» والصقها أدناه."
@@ -7309,6 +7394,10 @@ msgstr "سُلّمت إلى {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "لديه محادثة مفتوحة"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "يحتوي على مرفقات"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "كيف وافقوا، أو سجلك الخاص (اختياري)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "كيف غادروا:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "كيف يظهر هذا الصندوق في اللوحة"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7925,6 +8018,11 @@ msgstr "في Zoho Mail، افتح Settings › Mail accounts › IMAP access و�
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
+msgid "Inbox"
+msgstr "صندوق الوارد"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Inbox"
 msgstr "صندوق الوارد"
 
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "تحميل المزيد"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "تحميل الرسائل الأقدم"
 
@@ -9082,6 +9181,18 @@ msgstr "جعل تسجيل الدخول الموحّد اختياريًا"
 msgid "Made single sign-on required"
 msgstr "جعل تسجيل الدخول الموحّد إلزاميًا"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "البريد"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "إجراءات البريد"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "يصل البريد إلى هنا؛ أضف حساب رد عندما تكون مستعدًا"
@@ -9158,9 +9269,17 @@ msgstr "ارتد البريد المرسل إلى هذا العنوان أو أ�
 msgid "Mail to your support address, answered from it"
 msgstr "بريد إلى عنوان دعمك، يُردّ عليه منه"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "البريد، {mailUnread} غير مقروء"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "عنوان صندوق البريد"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "صندوق البريد: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "تمييز كإجابة"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "تمييز كمقروء"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "تمييز كمقروء أو غير مقروء (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "تمييز كرسالة غير مرغوبة"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "تمييز كغير مقروء"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "تمييز كغير مقروء (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "الأكثر تصويتًا"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "هل تريد نقل {0} إلى المهملات؟"
 
@@ -9762,6 +9893,10 @@ msgstr "نقل المحادثات المحددة إلى المهملات"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "هل تريد نقل هذه المحادثة إلى المهملات؟"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "نقل هذه الرسالة إلى المهملات؟"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "النقل إلى مرحلة"
 msgid "Move to inbox"
 msgstr "نقل إلى صندوق الوارد"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "نقل إلى صندوق الوارد"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "نقل إلى صندوق الوارد (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "النقل إلى المرحلة السابقة أو التالية"
@@ -9824,8 +9969,15 @@ msgstr "النقل إلى المرحلة السابقة أو التالية"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "نقل إلى المهملات"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "نقل إلى المهملات (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "نُقل من {from}"
 msgid "Moved to {to}"
 msgstr "تم النقل إلى {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "أُعيد إلى صندوق الوارد"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "تم النقل إلى المهملات"
 
@@ -9925,6 +10082,10 @@ msgstr "الاسم"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "الاسم (اختياري)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "الاسم والمظهر"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "لم يعد في صندوق البريد"
 msgid "No macros yet"
 msgstr "لا توجد ماكرو بعد"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "لا توجد رسائل تطابق بحثك."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "لم يُعثر على خادم بريد لـ {domain}. اختر مزوّدك أدناه، أو «Other IMAP server» وأدخل الخادم في الخطوة التالية."
@@ -10899,6 +11064,10 @@ msgstr "بلا فريق"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "لا يغطي أي فريق كل صناديق الوارد المحددة."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "لا يوجد بريد للفريق بعد"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "ملاحظة (اختياري)"
 msgid "Note about this contact"
 msgstr "ملاحظة عن جهة الاتصال هذه"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "ملاحظة للفريق"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "ملاحظة للزميل"
@@ -11300,6 +11473,10 @@ msgstr "لا شيء هنا."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "لا يُضاف شيء بعد. يُقرأ الملف، ويُسأل كل نطاق هل يستقبل بريدًا، وتُكتشف المكررات والعناوين التي قد لا تتلقى بريدًا."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "لم تتم أرشفة أي شيء بعد."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "لا شيء مسند إليك."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "لا شيء مجدول."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "لا شيء مؤجَّل."
 
@@ -11735,6 +11913,10 @@ msgstr "البريد منذ {date} فقط"
 msgid "Only me"
 msgstr "أنا فقط"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "لا يمكن تغييره إلا للمالكين والمشرفين."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "يمكن للمالكين فقط تغيير هذا."
@@ -12060,6 +12242,10 @@ msgstr "افتح Microsoft Entra admin center أو بوابة Azure، وانتق
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "فتح المحادثة التالية أو السابقة"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "فتح الرسالة التالية أو السابقة"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "اختر نقاشًا لقراءته والرد عليه."
 msgid "Pick a field"
 msgstr "اختر حقلًا"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "اختر رسالة"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "اختر عضوًا"
@@ -12766,6 +12956,10 @@ msgstr "اختر محادثات"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "اختر كل نطاق بنفسك."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "اختر رسائل"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "منشورة"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "تُنشر فورًا وتُرسل إلى المتابعين."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "الغرض"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "إزالة الرسالة أو الملاحظة التي نقرت علي
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "إزالة النجمة"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "إزالة النجمة (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "رد"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "رد ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "رد (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "حساب الرد"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "الرد على الكل"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "الرد على الكل (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "الرد على <0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "رد على رسالة جماعية"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "الرد على الجميع"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "رد على المرتبطة"
@@ -14147,6 +14370,10 @@ msgstr "الرد على النقاش بدلًا من ذلك"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "الرد على المنشور المحدد"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "الرد على المرسل"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "أزمنة الرد"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "استعادة"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "استعادة (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "تمت استعادة محادثة من المهملات"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "تمت الاستعادة من المهملات"
 
@@ -14849,6 +15082,10 @@ msgstr "البحث في هذه المحادثة"
 msgid "Search incidents"
 msgstr "ابحث في الحوادث"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "البحث في البريد"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "ابحث عن اسم أو بريد إلكتروني أو معرّف…"
@@ -14922,19 +15159,33 @@ msgstr "اختيار"
 msgid "Select conversations"
 msgstr "حدّد محادثات"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "تحديد رسائل"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "تحديد رسائل (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "حدّد المحادثة تحت المؤشر"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "تحديد الرسالة تحت المؤشر"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "تحديد الكتلة السابقة أو التالية"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "المحدد: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "التحديد"
 
@@ -15025,6 +15276,10 @@ msgstr "إرسال رد تلقائي"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "أرسل أحداث التحليلات من خوادمك"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "إرسال وأرشفة"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "توقف الإرسال ولا يمكن أن يستمر، مثلًا ل�
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "يتوقف الإرسال خلال ثوانٍ ولا يمكن أن يبدأ مجددًا. يبقى البريد الذي خرج مرسلًا."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "جارٍ الإرسال ثم الأرشفة…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "جارٍ الإرسال ثم الإغلاق…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "جارٍ الإرسال…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "أُرسل"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "المرسل"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "أُرسلت {count} رسالة من هذا العنوان"
@@ -15305,6 +15570,10 @@ msgstr "البريد المرسل"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "أُرسل إلى {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "أُرسلت إلى {first} وأُرشفت"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "مضيف SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "غفوة"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "تأجيل (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,8 +16391,14 @@ msgstr "تأجيل {time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Snoozed"
 msgstr "في غفوة"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Snoozed"
+msgstr "المؤجلة"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -16257,6 +16538,41 @@ msgstr "تقسيم حسب"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "المرحلة"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "تمييز بنجمة"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "تمييز بنجمة (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "ميّز رسالة بنجمة لتبقى هنا."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "إضافة النجمة أو إزالتها"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "إضافة النجمة أو إزالتها (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "أُزيلت النجمة"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "تم التمييز بنجمة"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "المميزة بنجمة"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "الأحد"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "الدعم"
 
@@ -16567,6 +16885,10 @@ msgstr "روبوت الدعم"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "رابط الدعم"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "الدعم: محادثات مع العملاء، مع الدردشة والتقييمات والإسناد وSLA."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "تغيّر الفريق"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "معرّف الفريق"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "بريد الفريق"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "بريد الفريق يقبل قنوات البريد فقط. سيتم إيقاف الإسناد التلقائي."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "بريد الفريق: صندوق مشترك خارج عروض الدعم والإحصاءات وSLA."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "المهملات فارغة."
 
@@ -18063,6 +18399,15 @@ msgstr "هذا الجهاز"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "لم يعد هذا النقاش موجودًا أو لا يمكنك رؤيته."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "هذا لا يناسب غرض الصندوق: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "هذا لا يناسب غرض الصندوق."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "ليس لدى صندوق الوارد هذا قناة بريد إلكت�
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "ليس لدى صندوق الوارد هذا قائمة بريدية بعد. تذهب الرسالة الجماعية فقط إلى من اشتركوا في قائمة."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "هذا الصندوق مخصص لـ"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "هذه القائمة مؤرشفة. لا تقبل مشتركين جدد�
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "هذه القائمة خاصة، لذا لا تعرضها النماذج. اجعلها عامة في الإعدادات لاستخدام نموذج."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "هذه الرسالة غير متاحة"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (المنفذ 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "للسماح للمساعدين بالإرسال بأنفسهم، فعّ
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "إلى: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "إلى: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "المهملات"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "المهملات"
 
@@ -18783,6 +19148,10 @@ msgstr "جهاز غير معروف"
 msgid "unknown reason"
 msgstr "سبب غير معروف"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "مرسل غير معروف"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "غير منشورة"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "غير مقروءة"
 
@@ -19650,6 +20020,10 @@ msgstr "ما حدث"
 msgid "What is new in October"
 msgstr "الجديد في أكتوبر"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "ما الغرض من هذا الصندوق؟"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "لماذا هذا المفتاح؟"
@@ -19781,7 +20155,12 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "عند الإيقاف، لا تكتب مفاتيح API إلا المسودات، ويراجعها عضو ويرسلها."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
+msgstr "متى يجب أن تعود؟"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
 msgstr "متى يجب أن تعود؟"
 
 #: src/features/settings/notifications/events.ts
@@ -20179,6 +20558,14 @@ msgstr "يمكنك مغادرة هذه الصفحة؛ يستمر الاستير�
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "يمكنك مغادرة هذه الصفحة: ستنتظرك المحادثة في قائمة محادثاتك."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "يمكنك استعادتها من المهملات خلال 30 يومًا، ثم تُحذف نهائيًا مع رسائلها وملفاتها."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "يمكنك استعادتها من المهملات خلال 30 يومًا، ثم تُحذف جميعها نهائيًا مع رسائلها وملفاتها."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "يمكنك بعد ذلك الكتابة والتصويت ومتابعة النقاشات هناك. يرى الفريق وراء {host} اسمك وعنوان بريدك الإلكتروني عندما تكتب؛ ويرى القرّاء الآخرون اسمك فقط."
@@ -20222,6 +20609,10 @@ msgstr "أنشأت أقصى عدد من مساحات العمل يسمح به ه
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "ليس لديك مفاتيح مرور بعد."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "لم ترسل أي رسالة بعد."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "صندوق الوارد فارغ."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

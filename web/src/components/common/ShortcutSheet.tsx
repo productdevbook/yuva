@@ -30,6 +30,7 @@ export const SHORTCUTS = {
   home: "g h",
   contacts: "g c",
   conversations: "g i",
+  mail: "g e",
   team: "g t",
   reports: "g r",
   assistants: "g a",
@@ -59,6 +60,22 @@ export const SHORTCUTS = {
   trash: "#",
   restore: "Z",
   saveView: "V",
+} as const
+
+export const MAIL_KEYS = {
+  reply: "r",
+  replyAll: "a",
+  note: "n",
+  attach: "f",
+  archive: "e",
+  trash: "#",
+  restore: "Z",
+  star: "s",
+  unread: "u",
+  snooze: "b",
+  quoted: "q",
+  expand: "o",
+  select: "x",
 } as const
 
 export const DISCUSSION_KEYS = {
@@ -320,6 +337,26 @@ export function ShortcutSheet({
       ],
     },
     {
+      title: t`Mail`,
+      items: [
+        [k(MAIL_KEYS.reply), t`Reply to the sender`],
+        [k(MAIL_KEYS.replyAll), t`Reply to everyone`],
+        [k(MAIL_KEYS.note), t`Write a note for the team`],
+        [k(MAIL_KEYS.attach), t`Attach files`],
+        [k(MAIL_KEYS.archive), t`Archive, or move back to the Inbox`],
+        [k(MAIL_KEYS.trash), t`Move to the Trash`],
+        [k(MAIL_KEYS.restore), t`Restore from the Trash`],
+        [k(MAIL_KEYS.star), t`Star or unstar`],
+        [k(MAIL_KEYS.snooze), t`Snooze`],
+        [k(MAIL_KEYS.unread), t`Mark as unread and go back to the list`],
+        [k(MAIL_KEYS.quoted), t`Show or hide quoted text`],
+        [k(MAIL_KEYS.expand), t`Expand or collapse every message`],
+        [[k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Open the next or previous mail`],
+        [k(MAIL_KEYS.select), t`Select the mail under the cursor`],
+        [["Esc"], t`Clear the selection`],
+      ],
+    },
+    {
       title: t`Discussion`,
       items: [
         [["↑", "↓"], t`Move through the posts`],
@@ -568,6 +605,7 @@ export function ShortcutSheet({
       items: [
         ...(home ? [[k(SHORTCUTS.home), t`Home`] as [string[], string]] : []),
         [k(SHORTCUTS.conversations), t`Conversations`],
+        [k(SHORTCUTS.mail), t`Mail`],
         [k(SHORTCUTS.mentions), t`Mentions`],
         [k(SHORTCUTS.feedback), t`Feedback`],
         [k(SHORTCUTS.contacts), t`Contacts`],

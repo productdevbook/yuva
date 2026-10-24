@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input"
 import { ColorPicker, PRODUCT_COLORS } from "@/features/settings/inboxes/colors"
 import { Field } from "@/features/settings/ui"
 import { useInboxDraft } from "@/features/setup/draft"
+import { PurposeChoice } from "@/components/common/PurposeChoice"
+import type { InboxPurpose } from "@/lib/api"
 import { cn } from "@/lib/utils"
 
 export function AddProductDialog({ onClose }: { onClose: () => void }) {
@@ -24,6 +26,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState("")
   const [color, setColor] = useState(PRODUCT_COLORS[5])
   const [mode, setMode] = useState<"live" | "async">("live")
+  const [purpose, setPurpose] = useState<InboxPurpose>("support")
   const modes: { value: "live" | "async"; title: React.ReactNode; hint: React.ReactNode }[] = [
     {
       value: "live",
@@ -44,8 +47,8 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
           onSubmit={(e) => {
             e.preventDefault()
             if (!name.trim()) return
-            patch({ name: name.trim(), color, mode })
-            navigate("/setup/new/pick", { state: { back: "/settings" } })
+            patch({ name: name.trim(), color, mode, purpose })
+            navigate(purpose === "mail" ? "/setup/new/add/email" : "/setup/new/pick", { state: { back: "/settings" } })
           }}
         >
           <DialogHeader>
@@ -70,26 +73,29 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
           <Field label={<Trans>Colour</Trans>}>
             <ColorPicker value={color} onChange={setColor} />
           </Field>
-          <Field label={<Trans>How do you answer?</Trans>}>
-            <div className="flex flex-col gap-2" role="radiogroup">
-              {modes.map((m) => (
-                <button
-                  key={m.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={mode === m.value}
-                  onClick={() => setMode(m.value)}
-                  className={cn(
-                    "flex flex-col rounded-xl border px-3.5 py-2.5 text-start outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                    mode === m.value ? "border-foreground bg-surface" : "hover:border-faint"
-                  )}
-                >
-                  <span className="font-medium">{m.title}</span>
-                  <span className="text-caption text-faint">{m.hint}</span>
-                </button>
-              ))}
-            </div>
-          </Field>
+          <PurposeChoice value={purpose} onChange={setPurpose} />
+          {purpose === "support" && (
+            <Field label={<Trans>How do you answer?</Trans>}>
+              <div className="flex flex-col gap-2" role="radiogroup">
+                {modes.map((m) => (
+                  <button
+                    key={m.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={mode === m.value}
+                    onClick={() => setMode(m.value)}
+                    className={cn(
+                      "flex flex-col rounded-xl border px-3.5 py-2.5 text-start outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                      mode === m.value ? "border-foreground bg-surface" : "hover:border-faint"
+                    )}
+                  >
+                    <span className="font-medium">{m.title}</span>
+                    <span className="text-caption text-faint">{m.hint}</span>
+                  </button>
+                ))}
+              </div>
+            </Field>
+          )}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               <Trans>Cancel</Trans>

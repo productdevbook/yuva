@@ -12,13 +12,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { cn } from "@/lib/utils"
-import { useInboxes } from "@/lib/workspace"
+import { isSupport, useInboxes } from "@/lib/workspace"
 
 const ALL = "all"
 
 export function ProductSwitcher({ className }: { className?: string }) {
   const { t } = useLingui()
-  const inboxes = useInboxes().data ?? []
+  const inboxes = (useInboxes().data ?? []).filter(isSupport)
   const [value, set] = useInboxFilter()
   if (inboxes.length < 2) return null
   const current = inboxes.find((i) => i.id === value)

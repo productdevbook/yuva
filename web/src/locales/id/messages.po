@@ -19,6 +19,8 @@ msgstr "Nilai “{name}” tidak cocok dengan kolom"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "“Apakah halaman ini membantu?”, masukan dan diskusi di dokumentasi Anda"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(tanpa subjek)"
@@ -113,6 +115,7 @@ msgstr "{0} ditandai sebagai spam · tidak perlu dibalas"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} dipindahkan ke Sampah"
 
@@ -130,6 +133,7 @@ msgstr "{0} balasan · {1} ditutup"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} dipulihkan"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {Tidak ada draf dari bot} assistant {Tidak ada draf dari asisten} member {Tidak ada draf dari anggota} other {Tidak ada draf dari penulis ini}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, dikirim oleh {by}"
 
@@ -503,6 +508,10 @@ msgstr "{met} terpenuhi, {breached} dilanggar"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, other {Menunggu # menit}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "{missed} tidak dapat diubah"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} kembali merespons seperti biasa"
@@ -555,6 +564,10 @@ msgstr "{n, plural, other {# situs web atau aplikasi}}"
 msgid "{n} a day"
 msgstr "{n} per hari"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "{n} diarsipkan"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} percobaan"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} dalam 30 hari"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} ditandai sudah dibaca"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} ditandai belum dibaca"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "{n} dikembalikan ke Kotak Masuk"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "{n} ditunda, kembali {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "{n} diberi bintang"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "Bintang dihapus dari {n}"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "Aturan yang dimatikan tidak pernah berjalan. Aturan berjalan sesuai urut
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "Kotak surat bersama seperti hello@ atau billing@, di luar tampilan dan statistik dukungan."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Proses masuk harus kembali dalam 10 menit dan hanya berlaku sekali. Buka migrasi dan masuk lagi."
@@ -1509,6 +1544,10 @@ msgstr "Satu tim dapat memiliki paling banyak 500 anggota dan 100 kotak masuk."
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "Kotak masuk email tim menyimpan email dari alamat bersama, seperti hello@ atau billing@, terpisah dari dukungan pelanggan."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "Tambahkan gambar"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "Semua impor"
 msgid "All inboxes"
 msgstr "Semua kotak masuk"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Semua email"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "Disetujui"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "Arsipkan"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "Arsip"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "Arsip"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "Arsipkan (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "Arsipkan daftar sebagai gantinya agar catatan tetap tersimpan."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "Arsipkan, atau kembalikan ke Kotak Masuk"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "Diarsipkan"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "Kembali ke penyiapan"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Kembali ke daftar"
 
@@ -3153,6 +3212,7 @@ msgstr "Hanya buruk"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
 
@@ -3481,6 +3541,7 @@ msgstr "Nama kampanye"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "Penyebab ditemukan"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
 
@@ -3918,6 +3980,7 @@ msgstr "Pilih ruang kerja"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Pilih dari daftar, atau bergerak dengan ↑ ↓ dan buka dengan Enter."
 
@@ -3972,6 +4035,7 @@ msgstr "Hapus jawaban"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "Hapus pencarian"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "Hapus pilihan"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Hapus pilihan (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "Kode"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "Ciutkan"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "Pelanggan tetap menulis ke alamat yang mereka kenal."
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "Pelanggan melihat nama ini di obrolan, di aplikasi Anda, dan di email."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "Pelanggan menulis lewat chat, aplikasi, atau email; penilaian, penugasan, dan SLA berjalan di sini."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Batas harian"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "Unduh JSON"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Unduh email asli (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "Teks draf"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Draf:"
 
@@ -6437,6 +6512,10 @@ msgstr "Di mana saja"
 msgid "Example Ltd."
 msgstr "PT Contoh"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "Bentangkan atau ciutkan semua pesan"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "Perbaiki"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Perbaiki alamat atau pengaturan SMTP saluran, lalu kirim balasan lagi."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "Memberi tim {team} akses ke {inbox}"
 msgid "General"
 msgstr "Umum"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "Umum"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "Buat kata sandi bernama “Yuva” dan tempel di bawah."
@@ -7309,6 +7394,10 @@ msgstr "Diserahkan ke {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Punya percakapan terbuka"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "Ada lampiran"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "Bagaimana mereka setuju, atau catatan Anda sendiri (opsional)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "Cara mereka berhenti:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "Tampilan kotak masuk ini di panel"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7927,6 +8020,11 @@ msgstr "Di Zoho Mail, buka Pengaturan › Akun email › Akses IMAP dan aktifkan
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Kotak masuk"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Inbox"
+msgstr "Kotak Masuk"
 
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Inbox access"
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "Muat lebih banyak"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Muat pesan lebih lama"
 
@@ -9082,6 +9181,18 @@ msgstr "Menjadikan single sign-on opsional"
 msgid "Made single sign-on required"
 msgstr "Mewajibkan single sign-on"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "Email"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "Tindakan email"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "Email masuk ke sini; tambahkan akun balasan saat Anda siap"
@@ -9158,9 +9269,17 @@ msgstr "Email ke alamat ini terpental atau dilaporkan sebagai spam, sehingga tid
 msgid "Mail to your support address, answered from it"
 msgstr "Email ke alamat dukungan Anda, dijawab dari alamat itu"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "Email, {mailUnread} belum dibaca"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Alamat kotak surat"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "Kotak surat: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "Tandai sebagai jawaban"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "Tandai sudah dibaca"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "Tandai sudah atau belum dibaca (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "Tandai sebagai spam"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "Tandai belum dibaca"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "Tandai belum dibaca (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "Suara terbanyak"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Pindahkan {0} ke Sampah?"
 
@@ -9762,6 +9893,10 @@ msgstr "Pindahkan percakapan yang dipilih ke Sampah"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Pindahkan percakapan ini ke Sampah?"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "Pindahkan email ini ke Sampah?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "Pindahkan ke tahap"
 msgid "Move to inbox"
 msgstr "Pindahkan ke kotak masuk"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "Pindahkan ke Kotak Masuk"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "Pindahkan ke Kotak Masuk (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "Pindahkan ke tahap sebelumnya atau berikutnya"
@@ -9824,8 +9969,15 @@ msgstr "Pindahkan ke tahap sebelumnya atau berikutnya"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "Pindahkan ke Sampah"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "Pindahkan ke Sampah (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "Dipindahkan dari {from}"
 msgid "Moved to {to}"
 msgstr "Dipindahkan ke {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "Dikembalikan ke Kotak Masuk"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Dipindahkan ke Sampah"
 
@@ -9925,6 +10082,10 @@ msgstr "Nama"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "Nama (opsional)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "Nama dan tampilan"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "Sudah tidak ada di kotak surat"
 msgid "No macros yet"
 msgstr "Belum ada makro"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "Tidak ada email yang cocok dengan pencarian."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "Server email tidak ditemukan untuk {domain}. Pilih penyedia Anda di bawah, atau “Server IMAP lain” dan masukkan servernya di langkah berikutnya."
@@ -10899,6 +11064,10 @@ msgstr "Tanpa tim"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "Tidak ada tim yang mencakup semua kotak masuk terpilih."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "Belum ada email tim"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "Catatan (opsional)"
 msgid "Note about this contact"
 msgstr "Catatan tentang kontak ini"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "Catatan untuk tim"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Catatan untuk rekan tim"
@@ -11300,6 +11473,10 @@ msgstr "Tidak ada apa-apa di sini."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "Belum ada yang ditambahkan. File dibaca, setiap domain ditanya apakah menerima email, dan duplikat serta alamat yang mungkin tidak boleh menerima email ditemukan."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "Belum ada yang diarsipkan."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Tidak ada yang ditugaskan kepada Anda."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "Tidak ada yang dijadwalkan."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "Tidak ada yang ditunda."
 
@@ -11735,6 +11913,10 @@ msgstr "Hanya email sejak {date}"
 msgid "Only me"
 msgstr "Hanya saya"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "Hanya pemilik dan admin yang dapat mengubahnya."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Hanya pemilik yang dapat mengubah ini."
@@ -12060,6 +12242,10 @@ msgstr "Buka pusat admin Microsoft Entra atau portal Azure, buka App registratio
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "Buka percakapan berikutnya atau sebelumnya"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "Buka email berikutnya atau sebelumnya"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "Pilih diskusi untuk dibaca dan dijawab."
 msgid "Pick a field"
 msgstr "Pilih kolom"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "Pilih email"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "Pilih anggota"
@@ -12766,6 +12956,10 @@ msgstr "Pilih percakapan"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Pilih sendiri setiap cakupan."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "Pilih beberapa email"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "Diterbitkan"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "Langsung dipublikasikan dan dikirim ke pengikut."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "Tujuan"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "Hapus pesan atau catatan yang Anda klik"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "Hapus bintang"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "Hapus bintang (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Balas"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "Balas ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "Balas (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "Akun balasan"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "Balas semua"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "Balas semua (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "Balas <0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "Balasan untuk siaran massal"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "Balas ke semua orang"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "Balas yang terhubung"
@@ -14147,6 +14370,10 @@ msgstr "Balas diskusi saja"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Balas kiriman yang dipilih"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "Balas ke pengirim"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "Waktu respons"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "Pulihkan"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "Pulihkan (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "Percakapan dipulihkan dari Sampah"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "Dipulihkan dari Sampah"
 
@@ -14849,6 +15082,10 @@ msgstr "Cari di percakapan ini"
 msgid "Search incidents"
 msgstr "Cari insiden"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "Cari email"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "Cari nama, email, atau id…"
@@ -14922,19 +15159,33 @@ msgstr "Pilihan"
 msgid "Select conversations"
 msgstr "Pilih percakapan"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "Pilih email"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "Pilih email (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Pilih percakapan di bawah kursor"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "Pilih email di bawah kursor"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "Pilih blok sebelumnya atau berikutnya"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Terpilih: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Pilihan"
 
@@ -15025,6 +15276,10 @@ msgstr "Kirim balasan otomatis"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "Kirim peristiwa analitik dari server Anda"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "Kirim dan arsipkan"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "Pengiriman berhenti dan tidak dapat dilanjutkan, misalnya karena saluran
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "Pengiriman berhenti dalam beberapa detik dan tidak dapat dimulai lagi. Email yang sudah keluar tetap terkirim."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "Mengirim, lalu mengarsipkan…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "Mengirim, lalu menutup…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Mengirim…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "Terkirim"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "Terkirim"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "{count} pesan terkirim dari alamat ini"
@@ -15305,6 +15570,10 @@ msgstr "Email terkirim"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "Dikirim ke {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "Terkirim ke {first} dan diarsipkan"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "Host SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Tunda"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "Tunda (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,6 +16391,12 @@ msgstr "Tunda selama {time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Snoozed"
+msgstr "Ditunda"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Snoozed"
 msgstr "Ditunda"
 
@@ -16257,6 +16538,41 @@ msgstr "Pisahkan menurut"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Tahap"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "Beri bintang"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "Beri bintang (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "Beri bintang pada email agar tetap di sini."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "Beri atau hapus bintang"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "Beri atau hapus bintang (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "Bintang dihapus"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "Diberi bintang"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "Berbintang"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "Minggu"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "Dukungan"
 
@@ -16567,6 +16885,10 @@ msgstr "Bot dukungan"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "Tautan dukungan"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "Dukungan: percakapan dengan pelanggan, dengan chat, penilaian, penugasan, dan SLA."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "Tim diubah"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "ID tim"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "Email tim"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "Email tim hanya menerima saluran email. Penugasan otomatis dimatikan."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "Email tim: kotak surat bersama, di luar tampilan dukungan, statistik, dan SLA."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "Sampah kosong."
 
@@ -18063,6 +18399,15 @@ msgstr "Perangkat ini"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "Diskusi ini sudah tidak ada atau Anda tidak dapat melihatnya."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "Ini tidak sesuai dengan tujuan kotak masuk: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "Ini tidak sesuai dengan tujuan kotak masuk."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "Kotak masuk ini tidak punya saluran email. Tambahkan satu dengan akun SM
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Kotak masuk ini belum punya milis. Siaran massal hanya dikirim ke orang yang berlangganan milis."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "Kotak masuk ini untuk"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "Daftar ini diarsipkan. Daftar ini tidak menerima pelanggan baru dan siar
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Milis ini privat, jadi formulir tidak menawarkannya. Jadikan publik di pengaturan untuk memakai formulir."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "Email ini tidak tersedia"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (port 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "Agar asisten dapat mengirim sendiri, aktifkan <0>Bot boleh mengirim</0>.
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Kepada: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "Kepada: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "Sampah"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "Sampah"
 
@@ -18783,6 +19148,10 @@ msgstr "Perangkat tidak dikenal"
 msgid "unknown reason"
 msgstr "alasan tidak diketahui"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "Pengirim tidak dikenal"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "Belum diterbitkan"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "Belum dibaca"
 
@@ -19650,6 +20020,10 @@ msgstr "Apa yang terjadi"
 msgid "What is new in October"
 msgstr "Yang baru di Oktober"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "Untuk apa kotak masuk ini?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "Untuk apa kunci ini?"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "Saat nonaktif, kunci API hanya dapat menulis draf, dan anggota yang meninjau dan mengirimnya."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "Kapan harus kembali?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "Kapan mereka harus kembali?"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "Anda dapat meninggalkan halaman ini; impor berlanjut."
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "Anda dapat meninggalkan halaman ini: percakapan akan menunggu Anda di daftar percakapan."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "Anda dapat memulihkannya dari Sampah selama 30 hari, setelah itu dihapus permanen beserta pesan dan filenya."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Anda dapat memulihkannya dari Sampah selama 30 hari, setelah itu semuanya dihapus permanen beserta pesan dan filenya."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Anda lalu dapat menulis, memberi suara, dan mengikuti diskusi di sana. Tim di balik {host} melihat nama dan alamat email Anda saat Anda menulis; pembaca lain hanya melihat nama Anda."
@@ -20222,6 +20609,10 @@ msgstr "Anda telah membuat ruang kerja sebanyak yang diizinkan server ini. Hapus
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Anda belum punya passkey."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "Anda belum mengirim email apa pun."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "Kotak Masuk Anda kosong."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

@@ -19,6 +19,8 @@ msgstr "Hodnota pole „{name}“ neodpovídá"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„Byla tato stránka užitečná?“, zpětná vazba a diskuse ve vaší dokumentaci"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(bez předmětu)"
@@ -113,6 +115,7 @@ msgstr "{0} označených jako spam · odpověď není potřeba"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} přesunuto do koše"
 
@@ -130,6 +133,7 @@ msgstr "{0} odpovědí · {1} uzavřených"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} obnoveno"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {Žádné koncepty od botů} assistant {Žádné koncepty od asistentů} member {Žádné koncepty od členů} other {Žádné koncepty od tohoto autora}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, odeslal(a) {by}"
 
@@ -503,6 +508,10 @@ msgstr "{met} splněno, {breached} porušeno"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {Čeká # minutu} few {Čeká # minuty} many {Čeká # minuty} other {Čeká # minut}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "Nepodařilo se změnit: {missed}"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} opět odpovídá normálně"
@@ -555,6 +564,10 @@ msgstr "{n, plural, one {# web nebo aplikace} few {# weby nebo aplikace} many {#
 msgid "{n} a day"
 msgstr "{n} denně"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "Archivováno: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "Pokusů: {n}"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} za 30 dní"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} označeno jako přečtené"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} označeno jako nepřečtené"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "Přesunuto do Doručené pošty: {n}"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "Odloženo: {n}, vrátí se {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "Označeno hvězdičkou: {n}"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "Hvězdička odebrána: {n}"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "Vypnuté pravidlo se nikdy nespustí. Pravidla se spouštějí v pořad�
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "Sdílená schránka jako hello@ nebo billing@, mimo pohledy a statistiky podpory."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Přihlášení se musí vrátit do 10 minut a funguje jednou. Otevřete migraci a přihlaste se znovu."
@@ -1509,6 +1544,10 @@ msgstr "Tým může mít nejvýše 500 členů a 100 schránek."
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "Týmová poštovní schránka drží poštu sdílené adresy, například hello@ nebo billing@, odděleně od zákaznické podpory."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "Přidat obrázek"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "Všechny importy"
 msgid "All inboxes"
 msgstr "Všechny schránky"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Veškerá pošta"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "Schváleno"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "Archivovat"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "Archiv"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "Archiv"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "Archivovat (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "Seznam raději archivujte, záznamy tak zůstanou."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "Archivovat, nebo vrátit do Doručené pošty"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "Archivováno"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "Zpět k nastavení"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Zpět na seznam"
 
@@ -3153,6 +3212,7 @@ msgstr "Jen špatné"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Skrytá kopie"
 
@@ -3481,6 +3541,7 @@ msgstr "Název kampaně"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "Příčina nalezena"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Kopie"
 
@@ -3918,6 +3980,7 @@ msgstr "Vyberte pracovní prostor"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Vyberte ze seznamu, nebo se pohybujte šipkami ↑ ↓ a otevřete Enterem."
 
@@ -3972,6 +4035,7 @@ msgstr "Vymazat odpověď"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "Vymazat hledání"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "Zrušit výběr"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Zrušit výběr (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "Kód"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "Sbalit"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "Zákazníci dál píší na adresu, kterou znají."
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "Zákazníci vidí toto jméno v chatu, ve vašich aplikacích a v e-mailech."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "Zákazníci píší přes chat, aplikaci nebo e-mail; hodnocení, přidělování a SLA fungují zde."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Denní limit"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "Stáhnout JSON"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Stáhnout původní e-mail (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "Text konceptu"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Koncept:"
 
@@ -6437,6 +6512,10 @@ msgstr "Všude"
 msgid "Example Ltd."
 msgstr "Příklad s.r.o."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "Rozbalit nebo sbalit všechny zprávy"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "Opravit"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Opravte adresu nebo nastavení SMTP kanálu a pak odpověď odešlete znovu."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "Dal(a) týmu {team} přístup k {inbox}"
 msgid "General"
 msgstr "Obecné"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "Obecné"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "Vygenerujte heslo s názvem „Yuva“ a vložte ho níže."
@@ -7309,6 +7394,10 @@ msgstr "Předáno uživateli {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Má otevřenou konverzaci"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "Obsahuje přílohy"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "Jak souhlasili, nebo váš vlastní záznam (volitelné)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "Jak odešli:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "Jak se tato schránka zobrazuje v panelu"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7927,6 +8020,11 @@ msgstr "V Zoho Mail otevřete Settings › Mail accounts › IMAP access a zapn�
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Schránka"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Inbox"
+msgstr "Doručená pošta"
 
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Inbox access"
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "Načíst další"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Načíst starší zprávy"
 
@@ -9082,6 +9181,18 @@ msgstr "Nastavil(a) jednotné přihlašování jako volitelné"
 msgid "Made single sign-on required"
 msgstr "Nastavil(a) jednotné přihlašování jako povinné"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "Pošta"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "Akce pošty"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "Pošta přichází sem; účet pro odpovědi přidejte, až budete připraveni"
@@ -9158,9 +9269,17 @@ msgstr "Pošta na tuto adresu se nedoručila nebo byla nahlášena jako spam, ta
 msgid "Mail to your support address, answered from it"
 msgstr "Pošta na vaši adresu podpory, odpovídáno z ní"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "Pošta, nepřečteno: {mailUnread}"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Adresa schránky"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "Schránka: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "Označit jako odpověď"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "Označit jako přečtené"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "Označit jako přečtené nebo nepřečtené (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "Označit jako spam"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "Označit jako nepřečtené"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "Označit jako nepřečtené (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "Nejvíce hlasů"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Přesunout {0} do koše?"
 
@@ -9762,6 +9893,10 @@ msgstr "Přesunout vybrané konverzace do koše"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Přesunout tuto konverzaci do koše?"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "Přesunout tento e-mail do koše?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "Přesunout do fáze"
 msgid "Move to inbox"
 msgstr "Přesunout do schránky"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "Přesunout do Doručené pošty"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "Přesunout do Doručené pošty (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "Přesunout do předchozí nebo další fáze"
@@ -9824,8 +9969,15 @@ msgstr "Přesunout do předchozí nebo další fáze"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "Přesunout do koše"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "Přesunout do koše (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "Přesunuto z {from}"
 msgid "Moved to {to}"
 msgstr "Přesunuto do {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "Přesunuto do Doručené pošty"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Přesunuto do koše"
 
@@ -9925,6 +10082,10 @@ msgstr "Název"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "Jméno (volitelné)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "Název a vzhled"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "Už není ve schránce"
 msgid "No macros yet"
 msgstr "Zatím žádná makra"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "Hledání neodpovídá žádný e-mail."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "Pro {domain} nebyl nalezen žádný poštovní server. Vyberte níže svého poskytovatele, nebo „Jiný server IMAP“ a server zadejte v dalším kroku."
@@ -10899,6 +11064,10 @@ msgstr "Žádný tým"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "Žádný tým nepokrývá všechny vybrané schránky."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "Zatím žádná týmová pošta"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "Poznámka (volitelná)"
 msgid "Note about this contact"
 msgstr "Poznámka k tomuto kontaktu"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "Poznámka pro tým"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Poznámka pro kolegu"
@@ -11300,6 +11473,10 @@ msgstr "Nic tu není."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "Zatím se nic nepřidává. Soubor se přečte, každé doméně se položí otázka, zda přijímá poštu, a najdou se duplicity a adresy, které nemusí dostávat poštu."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "Zatím není nic archivováno."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Nic vám není přiřazeno."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "Nic není naplánováno."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "Nic není odloženo."
 
@@ -11735,6 +11913,10 @@ msgstr "Jen pošta od {date}"
 msgid "Only me"
 msgstr "Jen já"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "Změnit to mohou jen vlastníci a správci."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Jen vlastníci to mohou změnit."
@@ -12060,6 +12242,10 @@ msgstr "Otevřete Microsoft Entra admin center nebo portál Azure, přejděte na
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "Otevřít další nebo předchozí konverzaci"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "Otevřít další nebo předchozí e-mail"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "Vyberte diskusi, kterou si chcete přečíst a odpovědět na ni."
 msgid "Pick a field"
 msgstr "Vyberte pole"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "Vyberte e-mail"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "Vyberte člena"
@@ -12766,6 +12956,10 @@ msgstr "Vyberte konverzace"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Každý rozsah vyberte sami."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "Vyberte e-maily"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "Zveřejněná"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "Zveřejněno hned a odesláno sledujícím."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "Účel"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "Odebrat zprávu nebo poznámku, na kterou jste klikli"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "Odebrat hvězdičku"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "Odebrat hvězdičku (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Odpovědět"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "Odpovědět ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "Odpovědět (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "Účet pro odpovědi"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "Odpovědět všem"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "Odpovědět všem (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "Odpovědět uživateli <0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "Odpovědět na hromadnou zprávu"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "Odpovědět všem"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "Odpovědět propojeným"
@@ -14147,6 +14370,10 @@ msgstr "Odpovědět raději v diskusi"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Odpovědět na vybraný příspěvek"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "Odpovědět odesílateli"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "Doby odezvy"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "Obnovit"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "Obnovit (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "Konverzace byla obnovena z koše"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "Obnoveno z koše"
 
@@ -14849,6 +15082,10 @@ msgstr "Hledat v této konverzaci"
 msgid "Search incidents"
 msgstr "Hledat incidenty"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "Hledat v poště"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "Hledat jméno, e-mail nebo ID…"
@@ -14922,19 +15159,33 @@ msgstr "Výběr"
 msgid "Select conversations"
 msgstr "Vybrat konverzace"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "Vybrat e-maily"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "Vybrat e-maily (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Vybrat konverzaci pod kurzorem"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "Vybrat e-mail pod kurzorem"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "Vybrat předchozí nebo další blok"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Vybráno: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Výběr"
 
@@ -15025,6 +15276,10 @@ msgstr "Odeslat automatickou odpověď"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "Posílejte analytické události ze svých serverů"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "Odeslat a archivovat"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "Odesílání se zastavilo a nemůže pokračovat, například proto, že
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "Odesílání se zastaví během několika sekund a nelze ho znovu spustit. Pošta, která už odešla, zůstává odeslána."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "Odesílání, pak archivace…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "Odesílá se, pak se zavírá…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Odesílá se…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "Odesláno"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "Odeslané"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Odesláno zpráv z této adresy: {count}"
@@ -15305,6 +15570,10 @@ msgstr "Odeslaná pošta"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "Odesláno uživateli {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "Odesláno pro {first} a archivováno"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "Hostitel SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Odložit"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "Odložit (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,8 +16391,14 @@ msgstr "Odložit na {time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Snoozed"
 msgstr "Odloženo"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Snoozed"
+msgstr "Odložené"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -16257,6 +16538,41 @@ msgstr "Rozdělit podle"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Fáze"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "Označit hvězdičkou"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "Označit hvězdičkou (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "Označte e-mail hvězdičkou, aby zůstal tady."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "Přidat nebo odebrat hvězdičku"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "Přidat nebo odebrat hvězdičku (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "Hvězdička odebrána"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "Označeno hvězdičkou"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "S hvězdičkou"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "Neděle"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "Podpora"
 
@@ -16567,6 +16885,10 @@ msgstr "Bot podpory"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "Odkaz na podporu"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "Podpora: konverzace se zákazníky, s chatem, hodnocením, přidělováním a SLA."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "Tým změněn"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "ID týmu"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "Týmová pošta"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "Týmová pošta přijímá jen e-mailové kanály. Automatické přidělování se vypne."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "Týmová pošta: sdílená schránka mimo pohledy podpory, statistiky a SLA."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "Koš je prázdný."
 
@@ -18063,6 +18399,15 @@ msgstr "Toto zařízení"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "Tato diskuse už neexistuje, nebo ji nevidíte."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "To neodpovídá účelu schránky: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "To neodpovídá účelu schránky."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "Tato schránka nemá e-mailový kanál. Přidejte ho s účtem SMTP, aby
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Tato schránka zatím nemá e-mailovou skupinu. Hromadná zpráva jde jen lidem, kteří se přihlásili k odběru skupiny."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "Tato schránka slouží pro"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "Tento seznam je archivovaný. Nepřijímá nové odběratele a rozeslán
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Tato skupina je soukromá, takže ji formuláře nenabízejí. Pro použití formuláře ji v nastavení zveřejněte."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "Tento e-mail není dostupný"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (port 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "Aby asistenti mohli odesílat sami, zapněte <0>Boti smějí odesílat</
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Komu: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "Komu: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "Koš"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "Koš"
 
@@ -18783,6 +19148,10 @@ msgstr "Neznámé zařízení"
 msgid "unknown reason"
 msgstr "neznámý důvod"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "Neznámý odesílatel"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "Nezveřejněná"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "Nepřečtené"
 
@@ -19650,6 +20020,10 @@ msgstr "Co se stalo"
 msgid "What is new in October"
 msgstr "Co je nového v říjnu"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "K čemu slouží tato schránka?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "K čemu tento klíč je?"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "Když je vypnuto, klíče API mohou jen psát koncepty a člen je kontroluje a odesílá."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "Kdy se má vrátit?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "Kdy se mají vrátit?"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "Tuto stránku můžete opustit; import pokračuje."
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "Tuto stránku můžete opustit: konverzace na vás počká v seznamu konverzací."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "Můžete ho obnovit z koše po dobu 30 dnů, pak bude trvale smazán i se zprávami a soubory."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Můžete je obnovit z koše po dobu 30 dnů, pak budou trvale smazány i se zprávami a soubory."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Pak tam můžete psát, hlasovat a sledovat diskuse. Tým za {host} vidí při psaní vaše jméno a e-mailovou adresu; ostatní čtenáři vidí jen vaše jméno."
@@ -20222,6 +20609,10 @@ msgstr "Vytvořili jste tolik pracovních prostorů, kolik tento server povoluje
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Zatím nemáte žádné přístupové klíče."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "Zatím jste neodeslali žádný e-mail."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "Vaše doručená pošta je prázdná."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

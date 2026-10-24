@@ -55,12 +55,15 @@ export function AppShell() {
         pathname.startsWith("/broadcasts/") &&
         document.querySelector<HTMLInputElement>("[data-testid=subscribers-search]")
       if (subscribers) return subscribers.focus()
+      const mail = pathname.startsWith("/mail") && document.querySelector<HTMLInputElement>("[data-testid=mail-search]")
+      if (mail) return mail.focus()
       if (!chats && !pathname.startsWith("/feedback")) navigate(inboxRoot(canManage))
       focusListSearch()
     },
     [SHORTCUTS.home]: () => canManage && go("home"),
     [SHORTCUTS.contacts]: () => go("contacts"),
     [SHORTCUTS.conversations]: () => go("conversations"),
+    [SHORTCUTS.mail]: () => go("mail"),
     [SHORTCUTS.team]: () => go("team"),
     [SHORTCUTS.reports]: () => go("reports"),
     [SHORTCUTS.docs]: () => go("docs"),

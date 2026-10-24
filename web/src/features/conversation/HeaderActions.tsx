@@ -31,7 +31,7 @@ import { useAssignableMembers, useInboxes, useTeams } from "@/lib/workspace"
 
 export type HeaderMenu = "snooze" | "hand" | "team" | "progress" | "sla" | null
 
-function useSnoozeTimes() {
+export function useSnoozeTimes() {
   const { t, i18n } = useLingui()
   const time = new Intl.DateTimeFormat(i18n.locale, { hour: "2-digit", minute: "2-digit" })
   const [now] = useState(() => new Date())

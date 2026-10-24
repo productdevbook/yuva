@@ -153,7 +153,7 @@ function InboxPage({ id }: { id: string | null }) {
   const inboxId = sidebarInbox || chipInbox
   const product = useInboxes().data?.find((i) => i.id === sidebarInbox)?.name
   const counts = useCounts(["conversation"]).data
-  const scope = { kind: ["conversation" as const], inbox_id: inboxId || undefined }
+  const scope = { kind: ["conversation" as const], purpose: "support" as const, inbox_id: inboxId || undefined }
   const waiting = useLoadedCount({ ...scope, status: ["open"] }, isWaiting)
   const unassigned = useLoadedCount({ ...scope, status: ["open"], assignee: "unassigned" })
   const labels = useChipLabels()

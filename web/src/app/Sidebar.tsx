@@ -281,7 +281,7 @@ export function useNavGroups(): NavGroup[] {
     children: children.settings,
   })
   const groups: { title?: string; keys: Section[] }[] = [
-    { keys: ["home", "conversations", "mentions", "assistants"] },
+    { keys: ["home", "conversations", "mail", "mentions", "assistants"] },
     { title: t`Customers`, keys: ["contacts", "feedback", "knowledge"] },
     {
       title: t({ message: "Publish", context: "sidebar group" }),

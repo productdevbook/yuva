@@ -34,13 +34,14 @@ import {
   type BusinessHours,
   type Inbox,
   type InboxFeedbackCategory,
+  type InboxPurpose,
   type InboxSender,
   type InboxUpdate,
   type Weekday,
 } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
-import { timeZones } from "@/lib/utils"
+import { cn, timeZones } from "@/lib/utils"
 import { useInboxMembers, useMembers, useTeams } from "@/lib/workspace"
 import { InboxMark } from "@/components/common"
 
@@ -63,6 +64,7 @@ function senderComplete(s: InboxSender) {
 type SenderKey = keyof InboxSender
 type Draft = {
   name: string
+  purpose: InboxPurpose
   locale: string
   color: string
   greeting: string
@@ -96,6 +98,7 @@ function draftOf(inbox: Inbox): Draft {
   const sender = inbox.sender ?? {}
   return {
     name: inbox.name,
+    purpose: inbox.purpose,
     locale: inbox.default_locale,
     color: inbox.branding.color ?? "#d4431c",
     greeting: inbox.branding.greeting ?? "",
@@ -137,6 +140,7 @@ function changes(inbox: Inbox, d: Draft): InboxUpdate {
   const base = draftOf(inbox)
   const body: InboxUpdate = {}
   if (d.name.trim() !== base.name) body.name = d.name.trim()
+  if (d.purpose !== base.purpose) body.purpose = d.purpose
   if (d.locale !== base.locale) body.default_locale = d.locale
   if (d.mode !== base.mode) body.mode = d.mode
   if (d.promise !== base.promise) body.expected_reply_minutes = d.promise
@@ -154,7 +158,8 @@ function changes(inbox: Inbox, d: Draft): InboxUpdate {
   for (const k of Object.keys(d.sender) as SenderKey[])
     if (d.sender[k].trim() !== base.sender[k]) sender[k] = d.sender[k].trim() || null
   if (Object.keys(sender).length) body.sender = sender
-  if (d.assignMode !== base.assignMode) body.assignment_mode = d.assignMode
+  if (d.purpose === "mail" && base.purpose !== "mail" && base.assignMode !== "off") body.assignment_mode = "off"
+  else if (d.assignMode !== base.assignMode && d.purpose !== "mail") body.assignment_mode = d.assignMode
   if (d.assignCap !== base.assignCap && capValid(d.assignCap))
     body.assignment_cap = d.assignCap === "" ? null : Number(d.assignCap)
   if (d.signature !== base.signature) body.signature = d.signature
@@ -224,12 +229,20 @@ function ChatTab({ d, set, inbox, locked }: Form) {
   const promises =
     d.promise && !PROMISES.includes(d.promise) ? [...PROMISES, d.promise].sort((a, b) => a - b) : PROMISES
   const bad = problems(d)
+  const mail = d.purpose === "mail"
   return (
-    <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-      <div className="flex flex-col gap-4">
+    <div className={cn("grid items-start gap-4", !mail && "lg:grid-cols-[minmax(0,1fr)_320px]")}>
+      <div className={cn("flex flex-col gap-4", mail && "max-w-[860px]")}>
+        <PurposeBlock d={d} set={set} locked={locked} />
         <Block
-          title={<Trans>What the customer sees</Trans>}
-          description={<Trans>Name, colour and the first thing the chat says</Trans>}
+          title={mail ? <Trans>Name and look</Trans> : <Trans>What the customer sees</Trans>}
+          description={
+            mail ? (
+              <Trans>How this inbox appears in the panel</Trans>
+            ) : (
+              <Trans>Name, colour and the first thing the chat says</Trans>
+            )
+          }
         >
           <BlockRow label={<Trans>Name</Trans>} htmlFor="inbox-name">
             <Input
@@ -254,96 +267,146 @@ function ChatTab({ d, set, inbox, locked }: Form) {
           <BlockRow label={<Trans>Colour</Trans>}>
             <ColorPicker value={d.color} disabled={locked} onChange={(color) => set({ color })} />
           </BlockRow>
-          <BlockRow
-            label={<Trans>Greeting</Trans>}
-            htmlFor="inbox-greeting"
-            hint={<Trans>The first thing the chat says</Trans>}
-          >
-            <Textarea
-              id="inbox-greeting"
-              rows={3}
-              maxLength={500}
-              value={d.greeting}
-              disabled={locked}
-              placeholder={t`Hi! Ask us anything.`}
-              onChange={(e) => set({ greeting: e.target.value })}
-              className="rounded-[10px] bg-background"
-            />
-          </BlockRow>
+          {!mail && (
+            <BlockRow
+              label={<Trans>Greeting</Trans>}
+              htmlFor="inbox-greeting"
+              hint={<Trans>The first thing the chat says</Trans>}
+            >
+              <Textarea
+                id="inbox-greeting"
+                rows={3}
+                maxLength={500}
+                value={d.greeting}
+                disabled={locked}
+                placeholder={t`Hi! Ask us anything.`}
+                onChange={(e) => set({ greeting: e.target.value })}
+                className="rounded-[10px] bg-background"
+              />
+            </BlockRow>
+          )}
         </Block>
-        <Block
-          title={<Trans>Replies and ratings</Trans>}
-          description={<Trans>What the chat promises, and what it asks after closing</Trans>}
-        >
-          <BlockRow
-            label={<Trans>Online status</Trans>}
-            hint={
-              d.mode === "live" ? (
-                <Trans>The chat shows who is available and typing</Trans>
-              ) : (
-                <Trans>The chat shows when you usually reply</Trans>
-              )
-            }
+        {!mail && (
+          <Block
+            title={<Trans>Replies and ratings</Trans>}
+            description={<Trans>What the chat promises, and what it asks after closing</Trans>}
           >
-            <ChipGroup<Inbox["mode"]>
-              label={t`Online status`}
-              value={d.mode}
-              disabled={locked}
-              onChange={(mode) => set({ mode })}
-              options={[
-                ["live", t`Show who is online`],
-                ["async", t`Show the reply time`],
-              ]}
-            />
-          </BlockRow>
-          <BlockRow label={<Trans>Reply time</Trans>} hint={<Trans>Shown in the chat window</Trans>}>
-            <ChipGroup
-              label={t`Reply time`}
-              value={d.promise ? String(d.promise) : "none"}
-              disabled={locked}
-              onChange={(v) => set({ promise: v === "none" ? null : Number(v) })}
-              options={[["none", t`Not shown`] as const, ...promises.map((m) => [String(m), promiseText(m)] as const)]}
-            />
-          </BlockRow>
-          <BlockRow
-            label={<Trans>Ask for a rating after closing</Trans>}
-            hint={
-              <Trans>
-                The customer taps thumbs up or down when a conversation is closed. E-mail contacts get a short e-mail
-                with two links; chat and app contacts are asked in the widget or app.
-              </Trans>
-            }
-          >
-            <Switch
-              checked={d.rating}
-              disabled={locked}
-              onCheckedChange={(rating) => set({ rating })}
-              aria-label={t`Ask for a rating after closing`}
-              data-testid="ask-for-rating"
-            />
-          </BlockRow>
-        </Block>
-        <FeedbackCategoriesBlock
-          list={d.categories}
-          saved={inbox.feedback_categories}
-          locale={d.locale}
-          langs={LANGS}
-          locked={locked}
-          onChange={(categories) => set({ categories })}
-        />
+            <BlockRow
+              label={<Trans>Online status</Trans>}
+              hint={
+                d.mode === "live" ? (
+                  <Trans>The chat shows who is available and typing</Trans>
+                ) : (
+                  <Trans>The chat shows when you usually reply</Trans>
+                )
+              }
+            >
+              <ChipGroup<Inbox["mode"]>
+                label={t`Online status`}
+                value={d.mode}
+                disabled={locked}
+                onChange={(mode) => set({ mode })}
+                options={[
+                  ["live", t`Show who is online`],
+                  ["async", t`Show the reply time`],
+                ]}
+              />
+            </BlockRow>
+            <BlockRow label={<Trans>Reply time</Trans>} hint={<Trans>Shown in the chat window</Trans>}>
+              <ChipGroup
+                label={t`Reply time`}
+                value={d.promise ? String(d.promise) : "none"}
+                disabled={locked}
+                onChange={(v) => set({ promise: v === "none" ? null : Number(v) })}
+                options={[
+                  ["none", t`Not shown`] as const,
+                  ...promises.map((m) => [String(m), promiseText(m)] as const),
+                ]}
+              />
+            </BlockRow>
+            <BlockRow
+              label={<Trans>Ask for a rating after closing</Trans>}
+              hint={
+                <Trans>
+                  The customer taps thumbs up or down when a conversation is closed. E-mail contacts get a short e-mail
+                  with two links; chat and app contacts are asked in the widget or app.
+                </Trans>
+              }
+            >
+              <Switch
+                checked={d.rating}
+                disabled={locked}
+                onCheckedChange={(rating) => set({ rating })}
+                aria-label={t`Ask for a rating after closing`}
+                data-testid="ask-for-rating"
+              />
+            </BlockRow>
+          </Block>
+        )}
+        {!mail && (
+          <FeedbackCategoriesBlock
+            list={d.categories}
+            saved={inbox.feedback_categories}
+            locale={d.locale}
+            langs={LANGS}
+            locked={locked}
+            onChange={(categories) => set({ categories })}
+          />
+        )}
       </div>
-      <div className="flex flex-col gap-2 lg:sticky lg:top-28">
-        <div className="mx-1 flex flex-col">
-          <span className="font-semibold">
-            <Trans>Preview</Trans>
-          </span>
-          <span className="text-caption text-faint">
-            <Trans>How the chat opens</Trans>
-          </span>
+      {!mail && (
+        <div className="flex flex-col gap-2 lg:sticky lg:top-28">
+          <div className="mx-1 flex flex-col">
+            <span className="font-semibold">
+              <Trans>Preview</Trans>
+            </span>
+            <span className="text-caption text-faint">
+              <Trans>How the chat opens</Trans>
+            </span>
+          </div>
+          <ChatPreview d={d} inbox={inbox} />
         </div>
-        <ChatPreview d={d} inbox={inbox} />
-      </div>
+      )}
     </div>
+  )
+}
+
+function PurposeBlock({ d, set, locked }: Pick<Form, "d" | "set" | "locked">) {
+  const { t } = useLingui()
+  return (
+    <Block
+      title={<Trans>Purpose</Trans>}
+      description={
+        d.purpose === "mail" ? (
+          <Trans>Team mail: a shared mailbox, kept out of support views, stats and SLA.</Trans>
+        ) : (
+          <Trans>Support: conversations with customers, with chat, ratings, assignment and SLA.</Trans>
+        )
+      }
+      testId="inbox-purpose"
+    >
+      <BlockRow
+        label={<Trans>This inbox is for</Trans>}
+        hint={
+          locked ? (
+            <Trans>Only owners and admins can change it.</Trans>
+          ) : (
+            <Trans>Team mail takes e-mail channels only. Automatic assignment is turned off.</Trans>
+          )
+        }
+      >
+        <ChipGroup<InboxPurpose>
+          label={t`Purpose`}
+          value={d.purpose}
+          disabled={locked}
+          onChange={(purpose) => set({ purpose })}
+          options={[
+            ["support", t`Support`],
+            ["mail", t`Team mail`],
+          ]}
+        />
+      </BlockRow>
+    </Block>
   )
 }
 
@@ -502,18 +565,20 @@ function HoursTab({ d, set, locked, inbox }: Form) {
           </datalist>
         </BlockRow>
       </Block>
-      <Block title={<Trans>Automatic assignment</Trans>}>
-        <div className="px-[18px] py-4">
-          <AssignmentFields
-            scope="inbox"
-            mode={d.assignMode}
-            cap={d.assignCap}
-            disabled={locked}
-            onMode={(assignMode) => set({ assignMode })}
-            onCap={(assignCap) => set({ assignCap })}
-          />
-        </div>
-      </Block>
+      {d.purpose !== "mail" && (
+        <Block title={<Trans>Automatic assignment</Trans>}>
+          <div className="px-[18px] py-4">
+            <AssignmentFields
+              scope="inbox"
+              mode={d.assignMode}
+              cap={d.assignCap}
+              disabled={locked}
+              onMode={(assignMode) => set({ assignMode })}
+              onCap={(assignCap) => set({ assignCap })}
+            />
+          </div>
+        </Block>
+      )}
       <WhoCanReply inbox={inbox} />
     </div>
   )
@@ -800,7 +865,12 @@ function Editor({ inbox }: { inbox: Inbox }) {
   const form: Form = { d, set: (p) => setD((x) => ({ ...x, ...p })), inbox, locked: !canManage }
   const domain = channelDomain(channels.data)
   const tabs = [
-    { key: "chat", to: to("chat"), label: t`Chat`, testId: "product-tab-chat" },
+    {
+      key: "chat",
+      to: to("chat"),
+      label: d.purpose === "mail" ? t({ message: "General", context: "inbox settings tab" }) : t`Chat`,
+      testId: "product-tab-chat",
+    },
     { key: "hours", to: to("hours"), label: t`Hours & team`, testId: "product-tab-hours" },
     { key: "mail", to: to("mail"), label: t`E-mail`, testId: "product-tab-mail" },
     ...(canManage
@@ -821,7 +891,7 @@ function Editor({ inbox }: { inbox: Inbox }) {
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
             <span>
               {domain && <>{domain} · </>}
-              {text.mode[inbox.mode]} · {inbox.timezone}
+              {inbox.purpose === "mail" ? t`Team mail` : text.mode[inbox.mode]} · {inbox.timezone}
             </span>
             {(channels.data ?? []).map((ch) => (
               <Link

@@ -1,7 +1,14 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { patchConversation } from "@/features/conversation/queries"
-import { api, unwrap, type ConversationBulkUpdate, type ConversationKind, type ConversationListItem } from "@/lib/api"
+import {
+  api,
+  unwrap,
+  type ConversationBulkUpdate,
+  type ConversationKind,
+  type ConversationListItem,
+  type InboxPurpose,
+} from "@/lib/api"
 import { keys, type ConversationFilters, type DraftFilters } from "@/lib/keys"
 import { applyEvent } from "@/lib/live"
 import { isLive } from "@/lib/realtime"
@@ -32,11 +39,12 @@ export function useLoadedCount(filters: ConversationFilters, keep?: (c: Conversa
   return keep ? items.filter(keep).length : items.length
 }
 
-export function useCounts(kind?: ConversationKind[]) {
+export function useCounts(kind?: ConversationKind[], purpose: InboxPurpose | null = "support") {
   const { workspaceId: ws } = useSession()
   return useQuery({
-    queryKey: [...keys.counts(ws), kind ?? "all"],
-    queryFn: () => unwrap(api.GET("/v1/conversations/counts", { params: { query: { kind } } })),
+    queryKey: [...keys.counts(ws), kind ?? "all", purpose ?? "any"],
+    queryFn: () =>
+      unwrap(api.GET("/v1/conversations/counts", { params: { query: { kind, purpose: purpose ?? undefined } } })),
   })
 }
 

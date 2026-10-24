@@ -26,6 +26,7 @@ export function isChats(pathname: string, manager: boolean) {
 export type Section =
   | "home"
   | "conversations"
+  | "mail"
   | "mentions"
   | "feedback"
   | "assistants"
@@ -42,6 +43,7 @@ export type Section =
   | "settings"
 
 const routed = [
+  "mail",
   "mentions",
   "feedback",
   "contacts",

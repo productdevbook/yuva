@@ -1,7 +1,7 @@
 import { useCallback, useSyncExternalStore } from "react"
 
 import { useSession } from "@/lib/session"
-import { useInboxes } from "@/lib/workspace"
+import { isSupport, useInboxes } from "@/lib/workspace"
 
 function filterKey(ws: string) {
   return `inbox-filter:${ws}`
@@ -27,7 +27,7 @@ export function useInboxFilter() {
     },
     () => readFilter(ws)
   )
-  const value = stored && inboxes && !inboxes.some((i) => i.id === stored) ? "" : stored
+  const value = stored && inboxes && !inboxes.some((i) => i.id === stored && isSupport(i)) ? "" : stored
   const set = useCallback(
     (id: string) => {
       try {

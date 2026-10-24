@@ -10,6 +10,7 @@ import {
   HouseIcon,
   KanbanIcon,
   LifeBuoyIcon,
+  MailIcon,
   MegaphoneIcon,
   MessageSquareHeartIcon,
   MessagesSquareIcon,
@@ -25,6 +26,8 @@ import { useSidebar } from "@/components/ui/sidebar"
 import { useAnalyticsVisible } from "@/features/analytics/properties"
 import { useConversations, useCounts, useDrafts, useMentions } from "@/features/inbox/queries"
 import { setRailView, useRailView } from "@/features/inbox/railView"
+import { useMailInboxes } from "@/features/mail/folders"
+import { useMailUnread } from "@/features/mail/queries"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
@@ -38,7 +41,7 @@ type Entry = {
 }
 
 export function useUnreadCount() {
-  const list = useConversations({ kind: ["conversation"] })
+  const list = useConversations({ kind: ["conversation"], purpose: "support" })
   return (list.data?.pages.flatMap((p) => p.items) ?? []).filter((c) => c.unread).length
 }
 
@@ -49,6 +52,8 @@ export function useEntries(): Entry[] {
   const unseen = Number(useMentions().data?.pages[0]?.unseen ?? 0)
   const drafts = Number(useDrafts({}).data?.pages[0]?.total ?? 0)
   const analytics = useAnalyticsVisible()
+  const mail = useMailInboxes().length > 0
+  const mailUnread = useMailUnread()
   const { canManage } = useSession()
   const entries: Entry[] = [
     ...(canManage ? [{ key: "home" as const, label: t`Home`, icon: HouseIcon, shortcut: SHORTCUTS.home }] : []),
@@ -60,6 +65,18 @@ export function useEntries(): Entry[] {
       badge: unread,
       badgeLabel: t`Conversations, ${unread} unread`,
     },
+    ...(mail
+      ? [
+          {
+            key: "mail" as const,
+            label: t`Mail`,
+            icon: MailIcon,
+            shortcut: SHORTCUTS.mail,
+            badge: mailUnread,
+            badgeLabel: t`Mail, ${mailUnread} unread`,
+          },
+        ]
+      : []),
     {
       key: "mentions",
       label: t`Mentions`,

@@ -30,6 +30,8 @@ export function ChannelStep({ inboxId }: { inboxId: string }) {
   const leave = useLeaveSetup()
   const [focus, setFocus] = useState<SetupKind>("chat")
   const name = isNew ? draft.name : (inbox?.name ?? "")
+  const mail = (isNew ? draft.purpose : inbox?.purpose) === "mail"
+  const kinds = mail ? SETUP_KINDS.filter((k) => k === "email") : SETUP_KINDS
   if (isNew && !name.trim()) return <Navigate to="/setup/new" replace state={state} />
   const caption = {
     chat: <Trans>Visitors write from any page of your site; you answer here, live.</Trans>,
@@ -53,7 +55,7 @@ export function ChannelStep({ inboxId }: { inboxId: string }) {
         <Trans>Start with one. You can add the others later in the inbox settings.</Trans>
       </StepHeader>
       <ChoiceCards
-        items={SETUP_KINDS.map((k) => ({
+        items={kinds.map((k) => ({
           value: k,
           icon: k === "docs" ? <BookOpenTextIcon /> : <ChannelIcon kind={k} />,
           title: text[k].title,

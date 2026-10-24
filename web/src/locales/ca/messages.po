@@ -19,6 +19,8 @@ msgstr "«{name}» té un valor que no encaixa"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«T'ha estat útil aquesta pàgina?», comentaris i debats a la teva documentació"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(sense assumpte)"
@@ -113,6 +115,7 @@ msgstr "{0} marcades com a brossa · no cal respondre"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} mogudes a la paperera"
 
@@ -130,6 +133,7 @@ msgstr "{0} respostes · {1} tancades"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} restaurades"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {Cap esborrany de bots} assistant {Cap esborrany d’assistents} member {Cap esborrany de membres} other {Cap esborrany d’aquest autor}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, enviat per {by}"
 
@@ -503,6 +508,10 @@ msgstr "{met} complerts, {breached} incomplerts"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {Esperant # minut} other {Esperant # minuts}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "No s'han pogut canviar {missed}"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} torna a respondre amb normalitat"
@@ -555,6 +564,10 @@ msgstr "{n, plural, one {# lloc web o aplicació} other {# llocs web i aplicacio
 msgid "{n} a day"
 msgstr "{n} al dia"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "{n} arxivats"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} intents"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} en 30 dies"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} marcades com a llegides"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} marcades com a no llegides"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "{n} tornats a la safata d'entrada"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "{n} posposats, tornen {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "{n} destacats"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "{n} sense destacar"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "Una regla desactivada no s'executa mai. Les regles s'executen en l'ordre
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "Una bústia compartida com hello@ o billing@, fora de les vistes i estadístiques de suport."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Un inici de sessió ha de tornar en 10 minuts i funciona una sola vegada. Obre la migració i inicia la sessió de nou."
@@ -1509,6 +1544,10 @@ msgstr "Un equip pot tenir com a màxim 500 membres i 100 safates."
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "Una bústia de correu d'equip manté el correu d'una adreça compartida, com hello@ o billing@, separat de l'atenció al client."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "Afegeix una imatge"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "Totes les importacions"
 msgid "All inboxes"
 msgstr "Totes les safates"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Tot el correu"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "Aprovat"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "Arxiva"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "Arxiu"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "Arxiu"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "Arxiva (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "Arxiva la llista en lloc d'això per conservar els registres."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "Arxiva o torna a la safata d'entrada"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "Arxivat"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "Torna a la configuració"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Torna a la llista"
 
@@ -3153,6 +3212,7 @@ msgstr "Només dolentes"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Cco"
 
@@ -3481,6 +3541,7 @@ msgstr "Nom de la campanya"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "Causa trobada"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
 
@@ -3918,6 +3980,7 @@ msgstr "Tria un espai de treball"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Tria'n una de la llista o mou-te amb ↑ ↓ i obre-la amb Intro."
 
@@ -3972,6 +4035,7 @@ msgstr "Esborra la resposta"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "Esborra la cerca"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "Esborra la selecció"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Esborra la selecció (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "Codi"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "Redueix"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "Els clients continuen escrivint a l'adreça que coneixen."
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "Els clients veuen aquest nom al xat, a les teves aplicacions i als correus."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "Els clients escriuen per xat, app o correu; valoracions, assignació i SLA funcionen aquí."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Límit diari"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "Descarrega el JSON"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Descarrega el correu original (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "Text de l'esborrany"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Esborrany:"
 
@@ -6437,6 +6512,10 @@ msgstr "Arreu"
 msgid "Example Ltd."
 msgstr "Example Ltd."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "Amplia o redueix tots els missatges"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "Arregla-ho"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Arregla l'adreça o la configuració SMTP del canal i torna a enviar la resposta."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "Ha donat a l'equip {team} accés a {inbox}"
 msgid "General"
 msgstr "General"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "General"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "Genera una contrasenya anomenada «Yuva» i enganxa-la a sota."
@@ -7309,6 +7394,10 @@ msgstr "Passada a {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Té una conversa oberta"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "Té fitxers adjunts"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "Com han acceptat, o el teu propi registre (opcional)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "Com han marxat:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "Com apareix aquesta safata al tauler"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7927,6 +8020,11 @@ msgstr "A Zoho Mail, obre Settings › Mail accounts › IMAP access i activa IM
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Safata"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Inbox"
+msgstr "Safata d'entrada"
 
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Inbox access"
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "Carrega'n més"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Carrega missatges més antics"
 
@@ -9082,6 +9181,18 @@ msgstr "Ha fet opcional l'inici de sessió únic"
 msgid "Made single sign-on required"
 msgstr "Ha fet obligatori l'inici de sessió únic"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "Correu"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "Accions del correu"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "El correu arriba aquí; afegeix un compte de respostes quan estiguis a punt"
@@ -9158,9 +9269,17 @@ msgstr "El correu a aquesta adreça ha rebotat o s'ha denunciat com a brossa, de
 msgid "Mail to your support address, answered from it"
 msgstr "Correu a la teva adreça de suport, respost des d'ella"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "Correu, {mailUnread} sense llegir"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Adreça de la bústia"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "Bústia: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "Marca com a resposta"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "Marca com a llegit"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "Marca com a llegit o no llegit (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "Marca com a brossa"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "Marca com a no llegit"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "Marca com a no llegit (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "Més vots"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Vols moure {0} a la paperera?"
 
@@ -9762,6 +9893,10 @@ msgstr "Moure les converses seleccionades a la paperera"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Vols moure aquesta conversa a la paperera?"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "Vols moure aquest correu a la paperera?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "Mou a una etapa"
 msgid "Move to inbox"
 msgstr "Mou a la safata d'entrada"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "Mou a la safata d'entrada"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "Mou a la safata d'entrada (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "Mou a l’etapa anterior o següent"
@@ -9824,8 +9969,15 @@ msgstr "Mou a l’etapa anterior o següent"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "Moure a la paperera"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "Mou a la paperera (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "Mogut de {from}"
 msgid "Moved to {to}"
 msgstr "Moguda a {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "Tornat a la safata d'entrada"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Moguda a la paperera"
 
@@ -9925,6 +10082,10 @@ msgstr "Nom"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "Nom (opcional)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "Nom i aspecte"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "Ja no és a la bústia"
 msgid "No macros yet"
 msgstr "Encara no hi ha macros"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "Cap correu coincideix amb la cerca."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "No s'ha trobat cap servidor de correu per a {domain}. Tria el teu proveïdor a sota, o «Un altre servidor IMAP» i introdueix el servidor al pas següent."
@@ -10899,6 +11064,10 @@ msgstr "Sense equip"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "Cap equip cobreix totes les safates seleccionades."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "Encara no hi ha correu d'equip"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "Nota (opcional)"
 msgid "Note about this contact"
 msgstr "Nota sobre aquest contacte"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "Nota per a l'equip"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Nota per al company"
@@ -11300,6 +11473,10 @@ msgstr "Aquí no hi ha res."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "Encara no s'afegeix res. Es llegeix el fitxer, es pregunta a cada domini si accepta correu i es troben els duplicats i les adreces que no poden rebre correu."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "Encara no hi ha res arxivat."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "No tens res assignat."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "No hi ha res programat."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "Res no està ajornat."
 
@@ -11735,6 +11913,10 @@ msgstr "Només el correu des del {date}"
 msgid "Only me"
 msgstr "Només jo"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "Només els propietaris i administradors ho poden canviar."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Només els propietaris ho poden canviar."
@@ -12060,6 +12242,10 @@ msgstr "Obre el centre d'administració de Microsoft Entra o el portal d'Azure, 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "Obre la conversa següent o l'anterior"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "Obre el correu següent o anterior"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "Tria un debat per llegir-lo i respondre."
 msgid "Pick a field"
 msgstr "Tria un camp"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "Tria un correu"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "Tria un membre"
@@ -12766,6 +12956,10 @@ msgstr "Tria converses"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Tria cada abast tu mateix."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "Tria correus"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "Publicada"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "Publicada a l'instant i enviada als seguidors."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "Finalitat"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "Elimina el missatge o la nota on has fet clic"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "Treu el destacat"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "Treu el destacat (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Respon"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "Respon ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "Respon (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "Compte de respostes"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "Respon a tothom"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "Respon a tothom (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "Respon a <0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "Respon a un enviament massiu"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "Respon a tothom"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "Respon a les vinculades"
@@ -14147,6 +14370,10 @@ msgstr "Respon més aviat al debat"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Respon a la publicació seleccionada"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "Respon al remitent"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "Temps de resposta"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "Restaura"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "Restaura (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "Una conversa s’ha restaurat des de la paperera"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "Restaurada des de la paperera"
 
@@ -14849,6 +15082,10 @@ msgstr "Cerca en aquesta conversa"
 msgid "Search incidents"
 msgstr "Cerca incidents"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "Cerca al correu"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "Cerca nom, correu o identificador…"
@@ -14922,19 +15159,33 @@ msgstr "Selecció"
 msgid "Select conversations"
 msgstr "Selecciona converses"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "Selecciona correus"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "Selecciona correus (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Selecciona la conversa sota el cursor"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "Selecciona el correu sota el cursor"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "Selecciona el bloc anterior o el següent"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Seleccionades: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Selecció"
 
@@ -15025,6 +15276,10 @@ msgstr "Envia una resposta automàtica"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "Envia esdeveniments d'analítica des dels teus servidors"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "Envia i arxiva"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "L'enviament s'ha aturat i no pot continuar, per exemple perquè s'ha eli
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "L'enviament s'atura en pocs segons i no es pot tornar a començar. El correu que ja ha sortit es queda com a enviat."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "S'està enviant i després s'arxivarà…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "Enviant i després tancant…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Enviant…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "Enviat"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "Enviats"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "S'han enviat {count} missatges des d'aquesta adreça"
@@ -15305,6 +15570,10 @@ msgstr "Correu enviat"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "Enviat a {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "Enviat a {first} i arxivat"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "Host SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Ajorna"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "Posposa (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,8 +16391,14 @@ msgstr "Posposa durant {time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Snoozed"
 msgstr "Ajornada"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Snoozed"
+msgstr "Posposats"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -16257,6 +16538,41 @@ msgstr "Divideix per"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Etapa"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "Destaca"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "Destaca (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "Destaca un correu per guardar-lo aquí."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "Destaca o treu el destacat"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "Destaca o treu el destacat (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "Destacat tret"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "Destacat"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "Destacats"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "Diumenge"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "Suport"
 
@@ -16567,6 +16885,10 @@ msgstr "Bot de suport"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "Enllaç de suport"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "Suport: converses amb clients, amb xat, valoracions, assignació i SLA."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "Equip canviat"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "ID de l'equip"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "Correu d'equip"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "El correu d'equip només admet canals de correu. L'assignació automàtica es desactiva."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "Correu d'equip: una bústia compartida, fora de les vistes de suport, les estadístiques i els SLA."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "La paperera és buida."
 
@@ -18063,6 +18399,15 @@ msgstr "Aquest dispositiu"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "Aquest debat ja no existeix o no el pots veure."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "Això no encaixa amb la finalitat de la safata: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "Això no encaixa amb la finalitat de la safata."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "Aquesta safata no té cap canal de correu. Afegeix-ne un amb un compte S
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Aquesta safata encara no té cap llista de correu. Un enviament massiu només va a les persones subscrites a una llista."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "Aquesta safata és per a"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "Aquesta llista està arxivada. No accepta nous subscriptors i els enviam
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Aquesta llista és privada, de manera que els formularis no l'ofereixen. Fes-la pública a la configuració per fer servir un formulari."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "Aquest correu no està disponible"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (port 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "Perquè els assistents enviïn per si mateixos, activa <0>Els bots poden
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Per a: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "Per a: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "Paperera"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "Paperera"
 
@@ -18783,6 +19148,10 @@ msgstr "Dispositiu desconegut"
 msgid "unknown reason"
 msgstr "motiu desconegut"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "Remitent desconegut"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "Sense publicar"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "No llegit"
 
@@ -19650,6 +20020,10 @@ msgstr "Què ha passat"
 msgid "What is new in October"
 msgstr "Novetats d'octubre"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "Per a què serveix aquesta safata?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "Per a què és aquesta clau?"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "Quan està desactivat, les claus d'API només poden escriure esborranys, i un membre els revisa i els envia."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "Quan hauria de tornar?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "Quan han de tornar?"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "Pots sortir d'aquesta pàgina; la importació continua."
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "Pots sortir d'aquesta pàgina: la conversa t'esperarà a la teva llista de converses."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "El pots restaurar des de la paperera durant 30 dies; després s'elimina per sempre amb els missatges i fitxers."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Els pots restaurar des de la paperera durant 30 dies; després s'eliminen per sempre amb els missatges i fitxers."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Llavors hi pots escriure, votar i seguir debats. L'equip de {host} veu el teu nom i adreça electrònica quan escrius; els altres lectors només veuen el teu nom."
@@ -20222,6 +20609,10 @@ msgstr "Has creat tants espais de treball com permet aquest servidor. Elimina'n 
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Encara no tens cap clau d'accés."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "Encara no has enviat cap correu."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "La safata d'entrada és buida."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

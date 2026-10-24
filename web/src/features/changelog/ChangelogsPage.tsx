@@ -20,7 +20,7 @@ import { Pill } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { Changelog, Inbox } from "@/lib/api"
 import { useSession } from "@/lib/session"
-import { useInboxes } from "@/lib/workspace"
+import { isSupport, useInboxes } from "@/lib/workspace"
 
 function ChangelogCard({ changelog, inbox }: { changelog: Changelog; inbox: Inbox }) {
   const navigate = useNavigate()
@@ -120,7 +120,7 @@ export function ChangelogsPage() {
   const inboxQuery = useInboxes()
   const changelogs = useChangelogs()
   const [creating, setCreating] = useState<Inbox | null>(null)
-  const inboxes = (inboxQuery.data ?? []).filter((i) => !inboxId || i.id === inboxId)
+  const inboxes = (inboxQuery.data ?? []).filter((i) => isSupport(i) && (!inboxId || i.id === inboxId))
   const missing = canManage ? inboxes.find((i) => !changelogOfInbox(changelogs.data, i.id)) : undefined
   const createKey = keyLabel(CHANGELOG_KEYS.create).join("")
   useHotkeys(missing ? { [CHANGELOG_KEYS.create]: () => setCreating(missing) } : {}, !creating)

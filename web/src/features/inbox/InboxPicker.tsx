@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { look } from "@/features/inbox/PageFrame"
 import { cn } from "@/lib/utils"
-import { useInboxes } from "@/lib/workspace"
+import { isSupport, useInboxes } from "@/lib/workspace"
 
 const ALL = "all"
 
@@ -27,7 +27,7 @@ export function InboxPicker({
   onChange?: (id: string) => void
 }) {
   const { t } = useLingui()
-  const inboxes = useInboxes().data ?? []
+  const inboxes = (useInboxes().data ?? []).filter(isSupport)
   const [stored, setStored] = useInboxFilter()
   const value = controlled ?? stored
   const set = onChange ?? setStored
@@ -72,7 +72,7 @@ export function InboxChip({
   onChange: (id: string) => void
 }) {
   const { t } = useLingui()
-  const inboxes = useInboxes().data ?? []
+  const inboxes = (useInboxes().data ?? []).filter(isSupport)
   if (inboxes.length < 2) return null
   const current = inboxes.find((i) => i.id === value)
   const label = (

@@ -5,7 +5,7 @@ import { useWizardDraft } from "@/hooks/use-wizard-draft"
 import type { SetupKind } from "@/features/setup/setup"
 import { browserLanguage, browserTimeZone } from "@/features/setup/setup"
 import { slugify } from "@/features/settings/inboxes/slugify"
-import { api, ApiError, unwrap, type Inbox } from "@/lib/api"
+import { api, ApiError, unwrap, type Inbox, type InboxPurpose } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { timeZones } from "@/lib/utils"
@@ -16,6 +16,7 @@ export type InboxDraft = {
   zone: string
   color?: string
   mode?: "live" | "async"
+  purpose?: InboxPurpose
   inboxId?: string
   kind?: SetupKind
 }
@@ -71,6 +72,7 @@ export function useEnsureInbox() {
       slug,
       mode: d.mode ?? ("async" as const),
       ask_for_rating: false,
+      ...(d.purpose === "mail" ? { purpose: "mail" as const } : {}),
       ...(d.color ? { branding: { color: d.color } } : {}),
       default_locale: d.locale,
       timezone: zones.includes(d.zone) ? d.zone : browserTimeZone(),

@@ -69,6 +69,8 @@ function matches(c: Conversation & { pinned_at?: string }, f: ConversationFilter
   if (f.category && c.feedback?.category !== f.category) return false
   if (f.page && (c.page?.page_url ?? c.feedback?.page_url) !== f.page) return false
   if (f.inbox_id && c.inbox_id !== f.inbox_id) return false
+  if (f.purpose && c.inbox_purpose !== f.purpose) return false
+  if (f.starred && !c.starred) return false
   if (f.broadcast_id && c.broadcast_id !== f.broadcast_id) return false
   if (f.contact_id && c.contact_id !== f.contact_id) return false
   if (f.label_id && !c.labels.includes(f.label_id)) return false
@@ -193,9 +195,11 @@ function refreshLists(qc: QueryClient, ws: string) {
   )
 }
 
-function setConversation(qc: QueryClient, ctx: LiveContext, c: Conversation) {
-  const current = qc.getQueryData<Conversation>(keys.conversation(ctx.ws, c.id))
-  if (current && current.updated_at > c.updated_at) return
+function setConversation(qc: QueryClient, ctx: LiveContext, event: Conversation) {
+  const current = qc.getQueryData<Conversation>(keys.conversation(ctx.ws, event.id))
+  if (current && current.updated_at > event.updated_at) return
+  const known = current?.starred ?? findItem(qc, ctx.ws, event.id)?.starred
+  const c = event.starred === undefined && known !== undefined ? { ...event, starred: known } : event
   qc.setQueryData(keys.conversation(ctx.ws, c.id), c)
   updateLists(qc, ctx, c)
   refreshCounts(qc, ctx.ws)
@@ -263,6 +267,7 @@ function addMessage(qc: QueryClient, ctx: LiveContext, m: Message) {
       created_at: m.created_at,
     }
   }
+  if (!m.draft && m.attachments.some((a) => !a.inline)) patch.has_attachments = true
   if ((m.sent_by ?? m.author).member_id !== ctx.memberId) patch.unread = true
   if (m.kind === "message" && m.direction === "out") refreshCounts(qc, ctx.ws)
   if (c) qc.setQueryData(keys.conversation(ctx.ws, c.id), next)
@@ -309,6 +314,15 @@ function redactPreview(qc: QueryClient, ws: string, m: Message) {
 
 export function applyRead(qc: QueryClient, ws: string, read: ConversationRead) {
   patchItem(qc, ws, read.conversation_id, { unread: read.unread })
+}
+
+export function applyStar(qc: QueryClient, ws: string, id: string, starred: boolean) {
+  qc.setQueryData<Conversation>(keys.conversation(ws, id), (old) => (old ? { ...old, starred } : old))
+  patchItem(qc, ws, id, { starred })
+  for (const [key] of listCaches(qc, ws)) {
+    if (((key as QueryKey)[3] as ConversationFilters).starred) void qc.invalidateQueries({ queryKey: key, exact: true })
+  }
+  refreshCounts(qc, ws)
 }
 
 export function applyPin(qc: QueryClient, ws: string, pin: ConversationPin) {
@@ -701,6 +715,12 @@ export function applyEvent(qc: QueryClient, ctx: LiveContext, event: LiveEvent) 
     }
     case "inbox.updated": {
       const inbox = event.data
+      const before = qc.getQueryData<Inbox[]>(keys.inboxes(ctx.ws))?.find((x) => x.id === inbox.id)
+      if (before && before.purpose !== inbox.purpose) {
+        void qc.invalidateQueries({ queryKey: keys.conversationLists(ctx.ws) })
+        void qc.invalidateQueries({ queryKey: ["ws", ctx.ws, "conversation"] })
+        refreshCounts(qc, ctx.ws)
+      }
       const keep = (old?: Inbox): Inbox => ({ ...inbox, ses_tenant: inbox.ses_tenant ?? old?.ses_tenant })
       qc.setQueryData<Inbox[]>(keys.inboxes(ctx.ws), (old) =>
         old?.map((x) => (x.id === inbox.id ? keep(x) : x)).sort(byName)

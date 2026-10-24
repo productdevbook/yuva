@@ -19,6 +19,8 @@ msgstr "「{name}」の値がフィールドに合っていません"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "「このページは役に立ちましたか?」、ドキュメントへのフィードバックとディスカッション"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(件名なし)"
@@ -113,6 +115,7 @@ msgstr "{0} 件をスパムとして記録 · 返信不要"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} 件をゴミ箱に移動しました"
 
@@ -130,6 +133,7 @@ msgstr "{0} 件の返信 · {1} 件が完了"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} 件を復元しました"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {ボットのドラフトはありません} assistant {アシスタントのドラフトはありません} member {メンバーのドラフトはありません} other {この作成者のドラフトはありません}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}、送信者: {by}"
 
@@ -503,6 +508,10 @@ msgstr "達成 {met} 件、違反 {breached} 件"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, other {# 分待ち}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "{missed} 件を変更できませんでした"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} が再び正常に応答しています"
@@ -555,6 +564,10 @@ msgstr "{n, plural, other {# 件のウェブサイトまたはアプリ}}"
 msgid "{n} a day"
 msgstr "1 日 {n} 件"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "{n} 件をアーカイブしました"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} 回の試行"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "30 日間で {n} 件"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} 件を既読にしました"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} 件を未読にしました"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "{n} 件を受信トレイに戻しました"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "{n} 件をスヌーズしました。{when}に戻ります"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "{n} 件にスターを付けました"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "{n} 件のスターを外しました"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "オフのルールは実行されません。ルールはリストの順
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "hello@ や billing@ のような共有メールボックス。サポートのビューや統計には含まれません。"
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "サインインは 10 分以内に戻る必要があり、1 回のみ有効です。移行を開いて、もう一度サインインしてください。"
@@ -1509,6 +1544,10 @@ msgstr "1つのチームには、メンバー500人、受信トレイ100件ま�
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "チームメールの受信トレイは、hello@ や billing@ のような共有アドレスのメールを、カスタマーサポートとは分けて扱います。"
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "画像を追加"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "すべてのインポート"
 msgid "All inboxes"
 msgstr "すべての受信トレイ"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "すべてのメール"
@@ -2766,6 +2807,13 @@ msgid "Approved"
 msgstr "承認済み"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive"
+msgstr "アーカイブ"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Archive"
 msgstr "アーカイブ"
 
@@ -2774,13 +2822,23 @@ msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "アーカイブ"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "アーカイブ (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "記録を残すには、代わりにリストをアーカイブしてください。"
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "アーカイブ、または受信トレイに戻す"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "アーカイブ済み"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "設定に戻る"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "リストに戻る"
 
@@ -3153,6 +3212,7 @@ msgstr "低評価のみ"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
 
@@ -3481,6 +3541,7 @@ msgstr "キャンペーン名"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "原因を特定"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
 
@@ -3918,6 +3980,7 @@ msgstr "ワークスペースを選択"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "リストから選ぶか、↑ ↓ で移動して Enter で開きます。"
 
@@ -3972,6 +4035,7 @@ msgstr "回答を解除"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "検索をクリア"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "選択を解除"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "選択を解除 (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "コード"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "折りたたむ"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "お客様はこれまでどおり、知っているアドレスに書き
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "この名前は、チャット、アプリ、メールでお客様に表示されます。"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "顧客はチャット、アプリ、メールで連絡します。評価、割り当て、SLA がここで使えます。"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "1 日の上限"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "JSON をダウンロード"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "元のメール(.eml)をダウンロード"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "ドラフトの本文"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "ドラフト:"
 
@@ -6437,6 +6512,10 @@ msgstr "すべての場所"
 msgid "Example Ltd."
 msgstr "Example Ltd."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "すべてのメッセージを展開または折りたたむ"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "修正"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "アドレスまたはチャネルの SMTP 設定を修正してから、もう一度返信を送信してください。"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "チーム「{team}」に {inbox} へのアクセスを付与"
 msgid "General"
 msgstr "全般"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "一般"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "「Yuva」という名前のパスワードを生成して、下に貼り付けてください。"
@@ -7309,6 +7394,10 @@ msgstr "{name} に引き継ぎました"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "未完了の会話あり"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "添付ファイルあり"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "同意の経緯、または独自の記録(任意)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "退会の経緯:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "パネルでのこの受信トレイの表示"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7925,6 +8018,11 @@ msgstr "Zoho Mail で、設定 › メールアカウント › IMAP アクセ�
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
+msgid "Inbox"
+msgstr "受信トレイ"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Inbox"
 msgstr "受信トレイ"
 
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "さらに読み込む"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "古いメッセージを読み込む"
 
@@ -9082,6 +9181,18 @@ msgstr "シングルサインオンを任意にしました"
 msgid "Made single sign-on required"
 msgstr "シングルサインオンを必須にしました"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "メール"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "メールの操作"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "メールはここに届きます。準備ができたら返信用アカウントを追加してください"
@@ -9158,9 +9269,17 @@ msgstr "このアドレス宛のメールはバウンスまたはスパム報告
 msgid "Mail to your support address, answered from it"
 msgstr "サポート用アドレス宛のメールを、そのアドレスから返信する"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "メール、未読 {mailUnread} 件"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "メールボックスのアドレス"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "メールボックス: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "回答にする"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "既読にする"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "既読または未読にする (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "スパムにする"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "未読にする"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "未読にする (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "投票が多い順"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "{0} 件をゴミ箱に移動しますか？"
 
@@ -9762,6 +9893,10 @@ msgstr "選択した会話をゴミ箱に移動"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "この会話をゴミ箱に移動しますか？"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "このメールをゴミ箱に移動しますか?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "ステージに移動"
 msgid "Move to inbox"
 msgstr "受信トレイに移動"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "受信トレイに移動"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "受信トレイに移動 (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "前または次のステージに移動"
@@ -9824,8 +9969,15 @@ msgstr "前または次のステージに移動"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "ゴミ箱に移動"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "ゴミ箱に移動 (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "{from} から移動"
 msgid "Moved to {to}"
 msgstr "{to} に移動しました"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "受信トレイに戻しました"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "ゴミ箱に移動しました"
 
@@ -9925,6 +10082,10 @@ msgstr "名前"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "名前(任意)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "名前と見た目"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "メールボックスにはもうありません"
 msgid "No macros yet"
 msgstr "マクロはまだありません"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "検索に一致するメールはありません。"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "{domain} のメールサーバーが見つかりませんでした。下でプロバイダーを選ぶか、「その他の IMAP サーバー」を選んで次の手順でサーバーを入力してください。"
@@ -10899,6 +11064,10 @@ msgstr "チームなし"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "選択した受信トレイすべてを対象にするチームはありません。"
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "チームメールはまだありません"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "メモ（任意）"
 msgid "Note about this contact"
 msgstr "この連絡先についてのメモ"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "チームへのメモ"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "チームメンバー宛てのメモ"
@@ -11300,6 +11473,10 @@ msgstr "何もありません。"
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "まだ何も追加されていません。ファイルを読み込み、各ドメインがメールを受け付けるか確認し、重複とメールを受け取れない可能性のあるアドレスを検出します。"
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "アーカイブはまだ空です。"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "割り当てられたものはありません。"
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "予定されているものはありません。"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "スヌーズ中のものはありません。"
 
@@ -11735,6 +11913,10 @@ msgstr "{date} 以降のメールのみ"
 msgid "Only me"
 msgstr "自分のみ"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "変更できるのはオーナーと管理者だけです。"
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "オーナーのみ変更できます。"
@@ -12060,6 +12242,10 @@ msgstr "Microsoft Entra 管理センターまたは Azure portal を開き、ア
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "次または前の会話を開く"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "次または前のメールを開く"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "読んで回答するディスカッションを選んでください。
 msgid "Pick a field"
 msgstr "フィールドを選択"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "メールを選んでください"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "メンバーを選択"
@@ -12766,6 +12956,10 @@ msgstr "会話を選択"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "スコープを 1 つずつ自分で選びます。"
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "メールを選んでください"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "公開中"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "すぐに公開され、フォロワーに送信されます。"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "用途"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "クリックしたメッセージまたはノートを削除"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "スターを外す"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "スターを外す (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "返信"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "返信({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "返信 (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "返信用アカウント"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "全員に返信"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "全員に返信 (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "<0>{name}</0> に返信"
 msgid "Reply to a broadcast"
 msgstr "一斉配信への返信"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "全員に返信"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "リンク済みに返信"
@@ -14147,6 +14370,10 @@ msgstr "代わりにディスカッションに返信"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "選択した投稿に返信"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "送信者に返信"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "応答時間"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "復元"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "復元 (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "会話がゴミ箱から復元されました"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "ゴミ箱から復元しました"
 
@@ -14849,6 +15082,10 @@ msgstr "この会話内を検索"
 msgid "Search incidents"
 msgstr "インシデントを検索"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "メールを検索"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "名前、メールアドレス、ID を検索…"
@@ -14922,19 +15159,33 @@ msgstr "選択"
 msgid "Select conversations"
 msgstr "会話を選択"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "メールを選択"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "メールを選択 (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "カーソル位置の会話を選択"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "カーソル位置のメールを選択"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "前または次のブロックを選択"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "選択中: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "選択"
 
@@ -15025,6 +15276,10 @@ msgstr "自動返信を送る"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "サーバーからアナリティクスイベントを送信"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "送信してアーカイブ"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "送信が停止し、続行できません(例: チャネルが削除さ
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "送信は数秒以内に停止し、再開できません。すでに送信されたメールは送信済みのままです。"
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "送信してからアーカイブします…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "送信して完了中…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "送信中…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "送信済み"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "送信済み"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "このアドレスから {count} 件のメッセージを送信しました"
@@ -15305,6 +15570,10 @@ msgstr "送信済みメール"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "{first} に送信"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "{first} に送信してアーカイブしました"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "SMTP ホスト"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "スヌーズ"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "スヌーズ (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,6 +16391,12 @@ msgstr "{time} スヌーズ"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Snoozed"
+msgstr "スヌーズ中"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Snoozed"
 msgstr "スヌーズ中"
 
@@ -16257,6 +16538,41 @@ msgstr "分割"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "ステージ"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "スターを付ける"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "スターを付ける (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "メールにスターを付けるとここに残ります。"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "スターを付ける/外す"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "スターを付ける/外す (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "スターを外しました"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "スターを付けました"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "スター付き"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "日曜日"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "サポート"
 
@@ -16567,6 +16885,10 @@ msgstr "サポートボット"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "サポートのリンク"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "サポート: 顧客との会話。チャット、評価、割り当て、SLA を使えます。"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "チームを変更しました"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "チーム ID"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "チームメール"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "チームメールはメールチャネルのみ受け付けます。自動割り当てはオフになります。"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "チームメール: 共有メールボックス。サポートのビュー、統計、SLA には含まれません。"
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "ゴミ箱は空です。"
 
@@ -18063,6 +18399,15 @@ msgstr "このデバイス"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "このディスカッションは存在しなくなったか、表示する権限がありません。"
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "この受信トレイの用途に合いません: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "この受信トレイの用途に合いません。"
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "この受信トレイにはメールチャネルがありません。一
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "この受信トレイにはメーリングリストがまだありません。一斉配信は、リストに登録した人にのみ送信されます。"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "この受信トレイの用途"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "このリストはアーカイブされています。新しい購読者
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "このリストは非公開のため、フォームには表示されません。フォームを使うには、設定で公開にしてください。"
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "このメールは利用できません"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS(ポート 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "アシスタントが自分で送信できるようにするには、<0>
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "宛先: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "宛先: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "ゴミ箱"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "ゴミ箱"
 
@@ -18783,6 +19148,10 @@ msgstr "不明なデバイス"
 msgid "unknown reason"
 msgstr "不明な理由"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "不明な送信者"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "非公開"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "未読"
 
@@ -19650,6 +20020,10 @@ msgstr "起きたこと"
 msgid "What is new in October"
 msgstr "10 月の新着情報"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "この受信トレイは何に使いますか?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "このキーは何に使いますか?"
@@ -19781,7 +20155,12 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "オフの場合、API キーはドラフトの作成のみ可能で、メンバーが確認して送信します。"
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
+msgstr "いつ戻しますか?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
 msgstr "いつ戻しますか?"
 
 #: src/features/settings/notifications/events.ts
@@ -20179,6 +20558,14 @@ msgstr "このページを離れてもかまいません。インポートは続
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "このページを離れてもかまいません。会話は会話リストで待っています。"
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "30 日間はゴミ箱から復元できます。その後、メッセージやファイルとともに完全に削除されます。"
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "30 日間はゴミ箱から復元できます。その後、メッセージやファイルとともに完全に削除されます。"
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "そこで書き込み、投票し、ディスカッションをフォローできます。書き込むと、{host} のチームにはあなたの名前とメールアドレスが表示されます。他の閲覧者には名前のみ表示されます。"
@@ -20222,6 +20609,10 @@ msgstr "このサーバーで許可されている数のワークスペースを
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "パスキーはまだありません。"
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "まだメールを送信していません。"
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "受信トレイは空です。"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

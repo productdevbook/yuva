@@ -19,6 +19,8 @@ msgstr "Kentän “{name}” arvo ei sovi"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "”Oliko tästä sivusta apua?”, palaute ja keskustelut dokumentaatiossasi"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(ei aihetta)"
@@ -113,6 +115,7 @@ msgstr "{0} merkitty roskapostiksi · vastausta ei tarvita"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} siirretty roskakoriin"
 
@@ -130,6 +133,7 @@ msgstr "{0} vastausta · {1} suljettu"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} palautettu"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {Ei botien luonnoksia} assistant {Ei avustajien luonnoksia} member {Ei jäsenten luonnoksia} other {Ei tämän tekijän luonnoksia}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, lähettäjä {by}"
 
@@ -503,6 +508,10 @@ msgstr "{met} täytetty, {breached} rikottu"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {Odottanut # minuutin} other {Odottanut # minuuttia}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "{missed} ei voitu muuttaa"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} vastaa taas normaalisti"
@@ -555,6 +564,10 @@ msgstr "{n, plural, one {# sivusto tai sovellus} other {# sivustoa ja sovellusta
 msgid "{n} a day"
 msgstr "{n} päivässä"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "{n} arkistoitu"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} yritystä"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} 30 päivässä"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} merkitty luetuiksi"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} merkitty lukemattomiksi"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "{n} siirretty Saapuneisiin"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "{n} torkutettu, palaa {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "{n} tähditetty"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "Tähti poistettu: {n}"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "Pois päältä oleva sääntö ei koskaan suoriteta. Säännöt suoritet
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "Jaettu postilaatikko, kuten hello@ tai billing@, tukinäkymien ja tilastojen ulkopuolella."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Kirjautumisen on palattava 10 minuutissa ja se toimii kerran. Avaa siirto ja kirjaudu uudelleen."
@@ -1509,6 +1544,10 @@ msgstr "Tiimissä voi olla enintään 500 jäsentä ja 100 postilaatikkoa."
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "Tiimin postilaatikko pitää jaetun osoitteen, kuten hello@ tai billing@, postin erillään asiakastuesta."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "Lisää kuva"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "Kaikki tuonnit"
 msgid "All inboxes"
 msgstr "Kaikki postilaatikot"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Kaikki posti"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "Hyväksytty"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "Arkistoi"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "Arkisto"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "Arkisto"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "Arkistoi (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "Arkistoi lista sen sijaan, niin tiedot säilyvät."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "Arkistoi tai palauta Saapuneisiin"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "Arkistoitu"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "Takaisin asetuksiin"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Takaisin listaan"
 
@@ -3153,6 +3212,7 @@ msgstr "Vain huonot"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Piilokopio"
 
@@ -3481,6 +3541,7 @@ msgstr "Kampanjan nimi"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "Syy löytyi"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Kopio"
 
@@ -3918,6 +3980,7 @@ msgstr "Valitse työtila"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Valitse luettelosta tai liiku painikkeilla ↑ ↓ ja avaa Enterillä."
 
@@ -3972,6 +4035,7 @@ msgstr "Tyhjennä vastaus"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "Tyhjennä haku"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "Tyhjennä valinta"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Tyhjennä valinta (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "Koodi"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "Pienennä"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "Asiakkaat kirjoittavat edelleen osoitteeseen, jonka he tuntevat."
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "Asiakkaat näkevät tämän nimen chatissa, sovelluksissasi ja sähköposteissa."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "Asiakkaat kirjoittavat chatissa, sovelluksessa tai sähköpostilla; arviot, jako ja SLA toimivat täällä."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Päiväraja"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "Lataa JSON"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Lataa alkuperäinen sähköposti (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "Luonnoksen teksti"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Luonnos:"
 
@@ -6437,6 +6512,10 @@ msgstr "Kaikkialla"
 msgid "Example Ltd."
 msgstr "Esimerkki Oy"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "Laajenna tai pienennä kaikki viestit"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "Korjaa se"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Korjaa osoite tai kanavan SMTP-asetukset ja lähetä vastaus sitten uudelleen."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "Antoi tiimille {team} pääsyn kohteeseen {inbox}"
 msgid "General"
 msgstr "Yleiset"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "Yleiset"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "Luo salasana nimeltä ”Yuva” ja liitä se alle."
@@ -7309,6 +7394,10 @@ msgstr "Luovutettu henkilölle {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "On avoin keskustelu"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "Sisältää liitteitä"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "Miten he suostuivat, tai oma kirjauksesi (valinnainen)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "Miten he lähtivät:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "Miltä tämä laatikko näyttää paneelissa"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7927,6 +8020,11 @@ msgstr "Avaa Zoho Mailissa Settings › Mail accounts › IMAP access ja ota IMA
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Postilaatikko"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Inbox"
+msgstr "Saapuneet"
 
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Inbox access"
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "Lataa lisää"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Lataa vanhempia viestejä"
 
@@ -9082,6 +9181,18 @@ msgstr "Teki kertakirjautumisesta valinnaisen"
 msgid "Made single sign-on required"
 msgstr "Teki kertakirjautumisesta pakollisen"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "Posti"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "Postin toiminnot"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "Posti saapuu tänne; lisää vastaustili, kun olet valmis"
@@ -9158,9 +9269,17 @@ msgstr "Tähän osoitteeseen lähetetty posti palautui tai se ilmoitettiin roska
 msgid "Mail to your support address, answered from it"
 msgstr "Tukiosoitteeseesi tuleva posti, vastataan siitä"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "Posti, {mailUnread} lukematonta"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Postilaatikon osoite"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "Postilaatikko: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "Merkitse vastaukseksi"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "Merkitse luetuksi"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "Merkitse luetuksi tai lukemattomaksi (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "Merkitse roskapostiksi"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "Merkitse lukemattomaksi"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "Merkitse lukemattomaksi (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "Eniten ääniä"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Siirretäänkö {0} roskakoriin?"
 
@@ -9762,6 +9893,10 @@ msgstr "Siirrä valitut keskustelut roskakoriin"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Siirretäänkö tämä keskustelu roskakoriin?"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "Siirretäänkö tämä viesti roskakoriin?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "Siirrä vaiheeseen"
 msgid "Move to inbox"
 msgstr "Siirrä postilaatikkoon"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "Siirrä Saapuneisiin"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "Siirrä Saapuneisiin (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "Siirrä edelliseen tai seuraavaan vaiheeseen"
@@ -9824,8 +9969,15 @@ msgstr "Siirrä edelliseen tai seuraavaan vaiheeseen"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "Siirrä roskakoriin"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "Siirrä roskakoriin (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "Siirretty kohteesta {from}"
 msgid "Moved to {to}"
 msgstr "Siirretty: {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "Siirretty Saapuneisiin"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Siirretty roskakoriin"
 
@@ -9925,6 +10082,10 @@ msgstr "Nimi"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "Nimi (valinnainen)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "Nimi ja ulkoasu"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "Ei enää postilaatikossa"
 msgid "No macros yet"
 msgstr "Ei vielä makroja"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "Mikään viesti ei vastaa hakuasi."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "Verkkotunnukselle {domain} ei löytynyt postipalvelinta. Valitse palveluntarjoajasi alta tai ”Muu IMAP-palvelin” ja anna palvelin seuraavassa vaiheessa."
@@ -10899,6 +11064,10 @@ msgstr "Ei tiimiä"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "Mikään tiimi ei kata kaikkia valittuja postilaatikoita."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "Ei vielä tiimin postia"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "Muistiinpano (valinnainen)"
 msgid "Note about this contact"
 msgstr "Muistiinpano tästä kontaktista"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "Muistiinpano tiimille"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Muistiinpano tiimiläiselle"
@@ -11300,6 +11473,10 @@ msgstr "Täällä ei ole mitään."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "Mitään ei vielä lisätä. Tiedosto luetaan, jokaiselta verkkotunnukselta kysytään, ottaako se postia vastaan, ja kaksoiskappaleet ja osoitteet, jotka eivät ehkä saa postia, löydetään."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "Mitään ei ole vielä arkistoitu."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Sinulle ei ole osoitettu mitään."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "Mitään ei ole ajastettu."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "Mitään ei ole torkulla."
 
@@ -11735,6 +11913,10 @@ msgstr "Vain posti {date} alkaen"
 msgid "Only me"
 msgstr "Vain minä"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "Vain omistajat ja ylläpitäjät voivat muuttaa sen."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Vain omistajat voivat muuttaa tätä."
@@ -12060,6 +12242,10 @@ msgstr "Avaa Microsoft Entra admin center tai Azure-portaali, siirry kohtaan App
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "Avaa seuraava tai edellinen keskustelu"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "Avaa seuraava tai edellinen viesti"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "Valitse keskustelu, jonka haluat lukea ja johon haluat vastata."
 msgid "Pick a field"
 msgstr "Valitse kenttä"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "Valitse viesti"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "Valitse jäsen"
@@ -12766,6 +12956,10 @@ msgstr "Valitse keskusteluja"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Valitse jokainen scope itse."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "Valitse viestit"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "Julkaistu"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "Julkaistaan heti ja lähetetään seuraajille."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "Käyttötarkoitus"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "Poista viesti tai muistiinpano, jota napsautit"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "Poista tähti"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "Poista tähti (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Vastaa"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "Vastaa ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "Vastaa (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "Vastaustili"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "Vastaa kaikille"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "Vastaa kaikille (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "Vastaa henkilölle <0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "Vastaa joukkolähetykseen"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "Vastaa kaikille"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "Vastaa liitettyihin"
@@ -14147,6 +14370,10 @@ msgstr "Vastaa mieluummin keskusteluun"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Vastaa valittuun viestiin"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "Vastaa lähettäjälle"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "Vastausajat"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "Palauta"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "Palauta (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "Keskustelu palautettiin roskakorista"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "Palautettu roskakorista"
 
@@ -14849,6 +15082,10 @@ msgstr "Hae tästä keskustelusta"
 msgid "Search incidents"
 msgstr "Hae häiriöitä"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "Hae postista"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "Hae nimellä, sähköpostilla tai tunnuksella…"
@@ -14922,19 +15159,33 @@ msgstr "Valinta"
 msgid "Select conversations"
 msgstr "Valitse keskusteluja"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "Valitse viestejä"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "Valitse viestejä (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Valitse osoittimen kohdalla oleva keskustelu"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "Valitse kohdistimen kohdalla oleva viesti"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "Valitse edellinen tai seuraava lohko"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Valittu: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Valinta"
 
@@ -15025,6 +15276,10 @@ msgstr "Lähetä automaattivastaus"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "Lähetä analytiikkatapahtumia palvelimiltasi"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "Lähetä ja arkistoi"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "Lähetys pysähtyi eikä voi jatkua, esimerkiksi koska sen kanava poiste
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "Lähetys pysähtyy muutamassa sekunnissa eikä voi alkaa uudelleen. Jo lähtenyt posti pysyy lähetettynä."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "Lähetetään ja arkistoidaan sitten…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "Lähetetään, sitten suljetaan …"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Lähetetään …"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "Lähetetty"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "Lähetetyt"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Lähetti {count} viestiä tästä osoitteesta"
@@ -15305,6 +15570,10 @@ msgstr "Lähetetty posti"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "Lähetetty henkilölle {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "Lähetetty vastaanottajalle {first} ja arkistoitu"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "SMTP-isäntä"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Torkuta"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "Torkuta (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,8 +16391,14 @@ msgstr "Torkuta {time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Snoozed"
 msgstr "Torkutettu"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Snoozed"
+msgstr "Torkutetut"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -16257,6 +16538,41 @@ msgstr "Jaa"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Vaihe"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "Lisää tähti"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "Lisää tähti (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "Tähditä viesti pitääksesi sen täällä."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "Lisää tai poista tähti"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "Lisää tai poista tähti (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "Tähti poistettu"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "Tähditetty"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "Tähditetyt"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "Sunnuntai"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "Tuki"
 
@@ -16567,6 +16885,10 @@ msgstr "Tukibotti"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "Tukilinkki"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "Tuki: keskustelut asiakkaiden kanssa, chatin, arvioiden, jaon ja SLA:n kanssa."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "Tiimi vaihdettu"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "Tiimin tunnus"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "Tiimin posti"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "Tiimin posti hyväksyy vain sähköpostikanavat. Automaattinen jako kytketään pois."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "Tiimin posti: jaettu postilaatikko tukinäkymien, tilastojen ja SLA:n ulkopuolella."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "Roskakori on tyhjä."
 
@@ -18063,6 +18399,15 @@ msgstr "Tämä laite"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "Tätä keskustelua ei enää ole tai et näe sitä."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "Tämä ei sovi laatikon käyttötarkoitukseen: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "Tämä ei sovi laatikon käyttötarkoitukseen."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "Tällä postilaatikolla ei ole sähköpostikanavaa. Lisää sellainen SM
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Tällä postilaatikolla ei vielä ole postituslistaa. Joukkolähetys menee vain ihmisille, jotka ovat tilanneet listan."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "Tämä laatikko on"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "Tämä lista on arkistoitu. Se ei ota uusia tilaajia, eivätkä lähetyk
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Tämä lista on yksityinen, joten lomakkeet eivät tarjoa sitä. Tee siitä julkinen asetuksissa käyttääksesi lomaketta."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "Tämä viesti ei ole saatavilla"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (portti 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "Jotta avustajat voivat lähettää itse, ota käyttöön <0>Botit saavat
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Vastaanottaja: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "Vastaanottaja: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "Roskakori"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "Roskakori"
 
@@ -18783,6 +19148,10 @@ msgstr "Tuntematon laite"
 msgid "unknown reason"
 msgstr "tuntematon syy"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "Tuntematon lähettäjä"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "Julkaisematon"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "Lukematon"
 
@@ -19650,6 +20020,10 @@ msgstr "Mitä tapahtui"
 msgid "What is new in October"
 msgstr "Mitä uutta lokakuussa"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "Mihin tätä laatikkoa käytetään?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "Mihin tämä avain on?"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "Kun pois, API-avaimet voivat vain kirjoittaa luonnoksia, ja jäsen tarkistaa ja lähettää ne."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "Milloin sen pitäisi palata?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "Milloin niiden pitäisi palata?"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "Voit poistua tältä sivulta; tuonti jatkuu."
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "Voit poistua tältä sivulta: keskustelu odottaa sinua keskusteluluettelossasi."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "Voit palauttaa sen roskakorista 30 päivän ajan, sen jälkeen se poistetaan pysyvästi viesteineen ja tiedostoineen."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Voit palauttaa ne roskakorista 30 päivän ajan, sen jälkeen ne poistetaan pysyvästi viesteineen ja tiedostoineen."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Voit sitten kirjoittaa, äänestää ja seurata keskusteluja siellä. Sivuston {host} takana oleva tiimi näkee nimesi ja sähköpostiosoitteesi, kun kirjoitat; muut lukijat näkevät vain nimesi."
@@ -20222,6 +20609,10 @@ msgstr "Olet luonut niin monta työtilaa kuin tämä palvelin sallii. Poista yks
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Sinulla ei vielä ole pääsyavaimia."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "Et ole vielä lähettänyt yhtään viestiä."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "Saapuneet-kansiosi on tyhjä."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

@@ -183,6 +183,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
   const first = firstName(contactName)
   const chat = useIsChat(c)
   const live = useIsLive(c)
+  const mail = c.inbox_purpose === "mail"
 
   const apply = (data: Conversation) => applyEvent(qc, ctx, { type: "conversation.updated", data })
   const patch = (body: ConversationUpdate) => patchConversation(c.id, body).then(apply)
@@ -241,8 +242,12 @@ export function useConversationActions(c: Conversation, contactName: string) {
   return {
     chat,
     live,
-    close: () => finish({ status: "closed" }, c.kind === "feedback" ? t`Feedback resolved` : t`Conversation closed`),
-    reopen: () => finish({ status: "open" }, t`Conversation reopened`),
+    close: () =>
+      finish(
+        { status: "closed" },
+        mail ? t`Archived` : c.kind === "feedback" ? t`Feedback resolved` : t`Conversation closed`
+      ),
+    reopen: () => finish({ status: "open" }, mail ? t`Moved to the Inbox` : t`Conversation reopened`),
     snooze: (at: Date, when: string) =>
       finish({ status: "snoozed", snooze_until: at.toISOString() }, t`${first} comes back ${when}`),
     untilReply: () => finish({ status: "pending" }, t`${first} comes back after writing again`),
@@ -296,7 +301,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         return undefined
       }
       const key = `${c.id}:${newId()}`
-      const status = close ? "closed" : "pending"
+      const status = close ? "closed" : mail ? c.status : "pending"
       const clientId = newId()
       const entry: PendingReply = {
         key,
@@ -332,7 +337,9 @@ export function useConversationActions(c: Conversation, contactName: string) {
         close
           ? c.kind === "feedback"
             ? t`Sent to ${first} and resolved`
-            : t`Sent to ${first} and closed`
+            : mail
+              ? t`Sent to ${first} and archived`
+              : t`Sent to ${first} and closed`
           : t`Sent to ${first}`,
         () => {
           if (cancel(key)) {

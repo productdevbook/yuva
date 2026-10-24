@@ -427,6 +427,10 @@ export function useErrorText() {
     if (err.code === "email_verified") return t`This address is already proven.`
     if (err.code === "sso_session_scope" && err.detail) return err.detail
     if (err.code === "email_address_taken") return t`Another channel already receives mail at this address.`
+    if (err.code === "purpose_mismatch")
+      return err.detail
+        ? t`This does not fit the inbox's purpose: ${err.detail}`
+        : t`This does not fit the inbox's purpose.`
     if (err.code === "tracker_auth_failed")
       return t`The tracker refused the token. Check that it is valid and has access to issues.`
     if (err.code === "issue_not_found") return t`The tracker has no such issue, or the token cannot see it.`

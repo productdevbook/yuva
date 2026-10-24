@@ -1,7 +1,7 @@
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 
-import { api, unwrap, type Channel, type CustomFieldObject } from "@/lib/api"
+import { api, unwrap, type Channel, type CustomFieldObject, type Inbox } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import type { LiveContext } from "@/lib/live"
 import { useSession } from "@/lib/session"
@@ -24,6 +24,10 @@ export function useMembers() {
 export function useMemberMap() {
   const members = useMembers().data
   return new Map((members ?? []).map((m) => [m.id, m]))
+}
+
+export function isSupport(inbox: Inbox) {
+  return inbox.purpose !== "mail"
 }
 
 export function useInboxes() {

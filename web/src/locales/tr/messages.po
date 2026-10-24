@@ -19,6 +19,8 @@ msgstr "“{name}” alanındaki değer alana uymuyor"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "Dokümanlarınızda “Bu sayfa yararlı oldu mu?”, geri bildirim ve tartışmalar"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(konu yok)"
@@ -113,6 +115,7 @@ msgstr "{0} spam olarak işaretli · yanıt gerektirmiyor"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} Çöp kutusuna taşındı"
 
@@ -130,6 +133,7 @@ msgstr "{0} yanıt · {1} biten"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} geri alındı"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {Botlardan taslak yok} assistant {Asistanlardan taslak yok} member {Üyelerden taslak yok} other {Bu yazardan taslak yok}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, gönderen: {by}"
 
@@ -503,6 +508,10 @@ msgstr "{met} karşılandı, {breached} aşıldı"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {# dakikadır bekliyor} other {# dakikadır bekliyor}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "{missed} e-posta değiştirilemedi"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} yeniden normal yanıt veriyor"
@@ -555,6 +564,10 @@ msgstr "{n, plural, one {# web sitesi ya da uygulama} other {# web sitesi ve uyg
 msgid "{n} a day"
 msgstr "günde {n}"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "{n} e-posta arşivlendi"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} deneme"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "30 günde {n}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} konuşma okundu olarak işaretlendi"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} konuşma okunmadı olarak işaretlendi"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "{n} e-posta Gelen kutusuna taşındı"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "{n} e-posta ertelendi, {when} geri gelecek"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "{n} e-postaya yıldız eklendi"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "{n} e-postanın yıldızı kaldırıldı"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "Kapalı bir kural hiç çalışmaz. Kurallar listedeki sırayla çalış
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "Bir gizli anahtar tanımlı. Değiştirmek için yenisini yapıştırın."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "hello@ ya da billing@ gibi ortak bir posta kutusu; destek görünümlerinin ve istatistiklerin dışında kalır."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Oturum açma işlemi 10 dakika içinde geri dönmeli ve yalnızca bir kez kullanılabilir. Taşımayı açıp yeniden oturum açın."
@@ -1509,6 +1544,10 @@ msgstr "Bir ekipte en fazla 500 üye ve 100 gelen kutusu olabilir."
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "ENG gibi bir ekip anahtarı."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "Ekip postası gelen kutusu, hello@ ya da billing@ gibi ortak bir adresin postasını müşteri desteğinden ayrı tutar."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "Görsel ekle"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "Tüm içe aktarmalar"
 msgid "All inboxes"
 msgstr "Tüm gelen kutuları"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Tüm postalar"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "Onaylandı"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "Arşivle"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "Arşiv"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "Arşiv"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "Arşivle (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "Kayıtları saklamak için bunun yerine listeyi arşivleyin."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "Arşivle ya da Gelen kutusuna geri taşı"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "Arşivlendi"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "Kuruluma dön"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Listeye dön"
 
@@ -3153,6 +3212,7 @@ msgstr "Yalnızca kötü"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Bcc"
 
@@ -3481,6 +3541,7 @@ msgstr "Kampanya adı"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "Neden bulundu"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Cc"
 
@@ -3918,6 +3980,7 @@ msgstr "Bir çalışma alanı seçin"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Listeden birini seçin ya da ↑ ↓ ile gezinip Enter ile açın."
 
@@ -3972,6 +4035,7 @@ msgstr "Kabulü kaldır"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "Aramayı temizle"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "Seçimi temizle"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Seçimi temizle (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "Kod"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Slack'ten gelen kod"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "Daralt"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "Müşteriler bildikleri adrese yazmaya devam eder."
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "Müşteriler bu adı sohbette, uygulamalarınızda ve e-postalarda görür."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "Müşteriler sohbet, uygulama ya da e-postayla yazar; puanlama, atama ve SLA burada çalışır."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Günlük sınır"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "JSON indir"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Özgün e-postayı indir (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "Taslak metni"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Taslak:"
 
@@ -6437,6 +6512,10 @@ msgstr "Her yerde"
 msgid "Example Ltd."
 msgstr "Örnek Ltd. Şti."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "Tüm iletileri genişlet ya da daralt"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "Düzelt"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Adresi ya da kanalın SMTP ayarlarını düzeltin, sonra yanıtı yeniden gönderin."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "{team} ekibine {inbox} erişimi verdi"
 msgid "General"
 msgstr "Genel"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "Genel"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "Adı “Yuva” olan bir şifre oluşturup aşağıya yapıştırın."
@@ -7309,6 +7394,10 @@ msgstr "Verildi: {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Açık konuşması olan"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "Ek dosya var"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "Nasıl izin verdikleri ya da kendi kaydınız (isteğe bağlı)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "Nasıl ayrıldı:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "Bu gelen kutusunun panelde nasıl göründüğü"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7925,6 +8018,11 @@ msgstr "Zoho Mail'de Ayarlar › Posta hesapları › IMAP erişimi'ni açın ve
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
+msgid "Inbox"
+msgstr "Gelen kutusu"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Inbox"
 msgstr "Gelen kutusu"
 
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "Daha fazla yükle"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Eski mesajları yükle"
 
@@ -9082,6 +9181,18 @@ msgstr "Tek oturum açmayı isteğe bağlı yaptı"
 msgid "Made single sign-on required"
 msgstr "Tek oturum açmayı zorunlu yaptı"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "Posta"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "Posta işlemleri"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "Posta buraya gelir; hazır olunca bir yanıt hesabı ekleyin"
@@ -9158,9 +9269,17 @@ msgstr "Bu adrese giden e-posta geri döndü ya da istenmeyen olarak bildirildi,
 msgid "Mail to your support address, answered from it"
 msgstr "Destek adresinize gelen postalar, aynı adresten yanıtlanır"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "Posta, {mailUnread} okunmamış"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Posta kutusu adresi"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "Posta kutusu: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "Yanıt olarak işaretle"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "Okundu olarak işaretle"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "Okundu ya da okunmadı olarak işaretle (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "Spam olarak işaretle"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "Okunmadı olarak işaretle"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "Okunmadı olarak işaretle (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "En çok oy"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "{0} konuşma Çöp kutusuna taşınsın mı?"
 
@@ -9762,6 +9893,10 @@ msgstr "Seçili konuşmaları Çöp kutusuna taşı"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Bu konuşma Çöp kutusuna taşınsın mı?"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "Bu e-posta çöp kutusuna taşınsın mı?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "Bir aşamaya taşı"
 msgid "Move to inbox"
 msgstr "Gelen kutusuna taşı"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "Gelen kutusuna taşı"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "Gelen kutusuna taşı (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "Önceki veya sonraki aşamaya taşı"
@@ -9824,8 +9969,15 @@ msgstr "Önceki veya sonraki aşamaya taşı"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "Çöp kutusuna taşı"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "Çöp kutusuna taşı (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "{from} gelen kutusundan taşındı"
 msgid "Moved to {to}"
 msgstr "{to} içine taşındı"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "Gelen kutusuna taşındı"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Çöp kutusuna taşındı"
 
@@ -9925,6 +10082,10 @@ msgstr "Ad"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "Ad (isteğe bağlı)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "Ad ve görünüm"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "Artık posta kutusunda değil"
 msgid "No macros yet"
 msgstr "Henüz makro yok"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "Aramanızla eşleşen e-posta yok."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "{domain} için bir e-posta sunucusu bulunamadı. Aşağıdan sağlayıcınızı seçin ya da “Diğer IMAP sunucusu”nu seçip sunucuyu sonraki adımda girin."
@@ -10899,6 +11064,10 @@ msgstr "Ekip yok"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "Seçilen gelen kutularının hepsini kapsayan bir ekip yok."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "Henüz ekip postası yok"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "Not (isteğe bağlı)"
 msgid "Note about this contact"
 msgstr "Kişi hakkında not"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "Ekip için not"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Ekip arkadaşı için not"
@@ -11300,6 +11473,10 @@ msgstr "Burada bir şey yok."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "Henüz hiçbir şey eklenmiyor. Dosya okunuyor, her alan adının e-posta alıp almadığına bakılıyor, tekrarlar ve e-posta gönderilemeyecek adresler bulunuyor."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "Henüz arşivlenmiş bir şey yok."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Size atanmış bir şey yok."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "Planlanmış bir şey yok."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "Ertelenmiş bir şey yok."
 
@@ -11735,6 +11913,10 @@ msgstr "Yalnızca {date} sonrasındaki e-postalar"
 msgid "Only me"
 msgstr "Yalnızca ben"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "Bunu yalnızca sahipler ve yöneticiler değiştirebilir."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Bunu yalnızca sahipler değiştirebilir."
@@ -12060,6 +12242,10 @@ msgstr "Microsoft Entra yönetim merkezini ya da Azure portalını açın, App r
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "Sonraki ya da önceki konuşmayı aç"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "Sonraki ya da önceki e-postayı aç"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "Okumak ve yanıtlamak için bir tartışma seçin."
 msgid "Pick a field"
 msgstr "Bir alan seçin"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "Bir e-posta seçin"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "Bir üye seçin"
@@ -12766,6 +12956,10 @@ msgstr "Konuşma seçin"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Her yetkiyi kendiniz seçin."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "E-posta seçin"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "Yayında"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "Hemen yayımlanır ve takipçilere gönderilir."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "Amaç"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "Tıkladığınız iletiyi veya notu kaldır"
 msgid "Remove the provider?"
 msgstr "Sağlayıcı kaldırılsın mı?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "Yıldızı kaldır"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "Yıldızı kaldır (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Slack ileti dizilerinde yazdığınız yanıtlar artık Yuva'ya ulaşmaz
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Yanıt"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "Yanıtla ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "Yanıtla (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "Yanıt hesabı"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "Tümünü yanıtla"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "Tümünü yanıtla (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "<0>{name}</0> bültenine yanıt"
 msgid "Reply to a broadcast"
 msgstr "Bir bültene yanıt"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "Herkese yanıt ver"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "Bağlılara yanıt ver"
@@ -14147,6 +14370,10 @@ msgstr "Bunun yerine tartışmayı yanıtla"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Seçili gönderiyi yanıtla"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "Gönderene yanıt ver"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "Yanıt süreleri"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "Geri al"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "Geri al (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "Bir konuşma Çöp kutusundan geri alındı"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "Çöp kutusundan geri alındı"
 
@@ -14849,6 +15082,10 @@ msgstr "Bu konuşmada ara"
 msgid "Search incidents"
 msgstr "Olaylarda ara"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "Postada ara"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "Ad, e-posta veya kimlik ara…"
@@ -14922,19 +15159,33 @@ msgstr "Seçim"
 msgid "Select conversations"
 msgstr "Konuşmaları seç"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "E-postaları seç"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "E-postaları seç (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "İmlecin üzerindeki konuşmayı seç"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "İmlecin altındaki e-postayı seç"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "Önceki ya da sonraki bloğu seç"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Seçilen: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Seçim"
 
@@ -15025,6 +15276,10 @@ msgstr "Otomatik yanıt gönder"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "Sunucularınızdan analitik olay gönderme"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "Gönder ve arşivle"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "Gönderim durdu ve devam edemiyor; örneğin kanalı kaldırıldığı i
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "Gönderim birkaç saniye içinde durur ve yeniden başlatılamaz. Gönderilmiş e-postalar gönderilmiş olarak kalır."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "Gönderiliyor, ardından arşivlenecek…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "Gönderiliyor, ardından bitirilecek…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Gönderiliyor…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "Gönderildi"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "Gönderilenler"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Bu adresten {count} mesaj gönderilmiş"
@@ -15305,6 +15570,10 @@ msgstr "Gönderilenler"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "Gönderildi: {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "{first} kişisine gönderildi ve arşivlendi"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "SMTP sunucusu"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Ertele"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "Ertele (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,8 +16391,14 @@ msgstr "{time} ertele"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Snoozed"
 msgstr "Ertelendi"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Snoozed"
+msgstr "Ertelenenler"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -16257,6 +16538,41 @@ msgstr "Dilimle"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Aşama"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "Yıldız ekle"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "Yıldız ekle (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "Burada tutmak için bir e-postaya yıldız ekleyin."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "Yıldız ekle ya da kaldır"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "Yıldız ekle ya da kaldır (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "Yıldız kaldırıldı"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "Yıldız eklendi"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "Yıldızlı"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "Pazar"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "Destek"
 
@@ -16567,6 +16885,10 @@ msgstr "Destek botu"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "Destek bağlantısı"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "Destek: müşterilerle konuşmalar; sohbet, puanlama, atama ve SLA ile."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "Ekip değişti"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "Ekip kimliği"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "Ekip postası"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "Ekip postası yalnızca e-posta kanallarını alır. Otomatik atama kapatılır."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "Ekip postası: ortak bir posta kutusu; destek görünümlerinin, istatistiklerin ve SLA'nın dışında kalır."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "Takip aracı token'ı reddetti. Geçerli olduğunu ve issue'lara erişimi olduğunu kontrol edin."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "Çöp kutusu boş."
 
@@ -18063,6 +18399,15 @@ msgstr "Bu cihaz"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "Bu tartışma artık yok ya da onu göremiyorsunuz."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "Bu, gelen kutusunun amacına uymuyor: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "Bu, gelen kutusunun amacına uymuyor."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "Bu alan adı zaten listede."
@@ -18115,6 +18460,10 @@ msgstr "Bu gelen kutusunun e-posta kanalı yok. Bülten göndermek için SMTP he
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Bu gelen kutusunun henüz e-posta listesi yok. Bülten yalnızca bir listeye abone olan kişilere gider."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "Bu gelen kutusu şunun için"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "Bu liste arşivlendi. Yeni abone almaz ve yayınlar onu seçemez."
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Bu liste özel olduğu için formlar onu sunmaz. Form kullanmak için ayarlardan herkese açık yapın."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "Bu e-posta kullanılamıyor"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (port 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "Asistanların kendi başına göndermesi için <0>Botlar gönderebilir</
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Kime: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "Alıcı: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Takip aracı"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "Çöp kutusu"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "Çöp kutusu"
 
@@ -18783,6 +19148,10 @@ msgstr "Bilinmeyen cihaz"
 msgid "unknown reason"
 msgstr "bilinmeyen neden"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "Bilinmeyen gönderen"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "Yayında değil"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "Okunmamış"
 
@@ -19650,6 +20020,10 @@ msgstr "Neler oldu"
 msgid "What is new in October"
 msgstr "Ekim'de neler yeni"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "Bu gelen kutusu ne için?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "Bu anahtar ne için?"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "Kapalıyken API anahtarları yalnızca taslak yazabilir; bir üye taslağı gözden geçirip gönderir."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "Ne zaman geri gelsin?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "Ne zaman geri gelsinler?"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "Bu sayfadan çıkabilirsiniz; içe aktarma sürer."
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "Bu sayfadan ayrılabilirsiniz: konuşma, konuşma listenizde sizi bekleyecek."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "30 gün boyunca çöp kutusundan geri alabilirsiniz; ardından iletileri ve dosyalarıyla birlikte kalıcı olarak silinir."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "30 gün boyunca çöp kutusundan geri alabilirsiniz; ardından iletileri ve dosyalarıyla birlikte kalıcı olarak silinirler."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Ardından oradaki tartışmalara yazabilir, oy verebilir ve onları takip edebilirsiniz. Yazdığınızda {host} ekibi adınızı ve e-posta adresinizi görür; diğer okuyucular yalnızca adınızı görür."
@@ -20222,6 +20609,10 @@ msgstr "Bu sunucunun izin verdiği sayıda çalışma alanı oluşturdunuz. Art�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Henüz geçiş anahtarınız yok."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "Henüz hiç e-posta göndermediniz."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Kimlik sağlayıcınız"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Kimlik sağlayıcınız e-posta adresinizi doğrulamamış, bu yüzden Yuva ona güvenemez. Yöneticinizden orada doğrulatmasını isteyin."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "Gelen kutunuz boş."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

@@ -34,7 +34,7 @@ export function AddChannelDialog({
   const [inboxId, setInboxId] = useState(
     initial && inboxes.some((i) => i.id === initial) ? initial : (inboxes[0]?.id ?? "")
   )
-  const [kind, setKind] = useState<Kind>("chat")
+  const [picked, setKind] = useState<Kind>("chat")
   const [apiOpen, setApiOpen] = useState(false)
   const kinds: { value: Kind; label: string; icon: ChannelKind }[] = [
     { value: "chat", label: t`Website chat`, icon: "chat" },
@@ -58,6 +58,9 @@ export function AddChannelDialog({
       icon: "api",
     },
   ]
+  const mail = inboxes.find((i) => i.id === inboxId)?.purpose === "mail"
+  const kind: Kind = mail ? "email" : picked
+  const shown = mail ? kinds.filter((k) => k.value === "email") : kinds
   if (apiOpen)
     return (
       <ApiChannelDialog
@@ -91,7 +94,7 @@ export function AddChannelDialog({
           />
         </Field>
         <div className="flex flex-col gap-2" role="radiogroup" aria-label={t`Channel`}>
-          {kinds.map((k) => (
+          {shown.map((k) => (
             <button
               key={k.value}
               type="button"

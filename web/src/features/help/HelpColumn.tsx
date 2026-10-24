@@ -20,7 +20,7 @@ import { useResetState } from "@/hooks/use-reset-state"
 import type { HelpCenter, Inbox } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useInboxes } from "@/lib/workspace"
+import { isSupport, useInboxes } from "@/lib/workspace"
 
 function CenterRow({ c, current, cursor }: { c: HelpCenter; current: boolean; cursor: boolean }) {
   const published = c.counts.published_articles
@@ -59,7 +59,7 @@ export default function HelpColumn() {
   const { canManage } = useSession()
   const [inboxId] = useInboxFilter()
   const inboxQuery = useInboxes()
-  const inboxes = inboxQuery.data ?? []
+  const inboxes = (inboxQuery.data ?? []).filter(isSupport)
   const centers = useHelpCenters()
   const items = centers.data ?? []
   const shown = inboxId ? inboxes.filter((i) => i.id === inboxId) : inboxes

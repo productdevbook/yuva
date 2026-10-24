@@ -48,6 +48,7 @@ export type ReplyHandle = {
   insert: (choice: ReplyChoice) => void
   recipients: () => void
   signature: () => void
+  replyAll: (all: boolean) => void
 }
 
 const MAX_FILES = 10
@@ -284,6 +285,11 @@ export const ReplyBox = forwardRef<
     },
     signature: () => {
       if (signed) setNoSignature((x) => !x)
+    },
+    replyAll: (all) => {
+      setCcEdit(all ? undefined : [])
+      setCcOpen(all && defaultCc.length > 0)
+      focus("message")
     },
   }))
   const hasContent = body.trim() !== "" || files.length > 0 || articles.length > 0
@@ -706,7 +712,13 @@ export const ReplyBox = forwardRef<
               disabled={!hasContent || blocked}
               data-testid="composer-send-close"
             >
-              {c.kind === "feedback" ? <Trans>Reply and resolve</Trans> : <Trans>Send and close</Trans>}
+              {c.kind === "feedback" ? (
+                <Trans>Reply and resolve</Trans>
+              ) : c.inbox_purpose === "mail" ? (
+                <Trans>Send and archive</Trans>
+              ) : (
+                <Trans>Send and close</Trans>
+              )}
             </Button>
           </>
         )}

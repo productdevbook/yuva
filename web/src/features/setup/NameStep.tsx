@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { languageName } from "@/features/contact/ContactDetails"
 import { LANGS } from "@/features/settings/inboxes/InboxPage"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
+import { PurposeChoice } from "@/components/common/PurposeChoice"
 import { useInboxDraft, useLeaveSetup } from "@/features/setup/draft"
 import { ChatMock, DEFAULT_COLOR, PreviewCaption } from "@/features/setup/previews"
 import { type SetupKind, type SetupState } from "@/features/setup/setup"
@@ -22,9 +23,10 @@ export function NameStep({ kind }: { kind?: SetupKind }) {
   const [draft, patch] = useInboxDraft()
   const leave = useLeaveSetup()
   const { name, locale, zone } = draft
+  const mail = draft.purpose === "mail"
   const zones = useMemo(() => timeZones(), [])
   const langs = LANGS.includes(locale) ? LANGS : [locale, ...LANGS]
-  const next = kind ? `/setup/new/add/${kind}` : "/setup/new/pick"
+  const next = mail ? "/setup/new/add/email" : kind ? `/setup/new/add/${kind}` : "/setup/new/pick"
   return (
     <SetupLayout
       step={1}
@@ -63,6 +65,7 @@ export function NameStep({ kind }: { kind?: SetupKind }) {
             data-testid="setup-name"
           />
         </Field>
+        <PurposeChoice value={draft.purpose ?? "support"} onChange={(purpose) => patch({ purpose })} />
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label={<Trans>Language</Trans>} htmlFor="setup-locale" hint={<Trans>For automatic messages</Trans>}>
             <ChoiceSelect

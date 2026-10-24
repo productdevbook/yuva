@@ -25,7 +25,7 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import type { Discussion, IdeaStage, Inbox, RoadmapBoard } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useInboxes } from "@/lib/workspace"
+import { isSupport, useInboxes } from "@/lib/workspace"
 
 type Tab = "board" | "settings"
 
@@ -79,7 +79,7 @@ export function RoadmapPage() {
   const [moving, setMoving] = useState<{ idea: Discussion; to: IdeaStage } | null>(null)
 
   const scoped = (boards.data ?? []).filter((b) => !inboxId || b.inbox_id === inboxId)
-  const shown = inboxId ? inboxes.filter((i) => i.id === inboxId) : inboxes
+  const shown = (inboxId ? inboxes.filter((i) => i.id === inboxId) : inboxes).filter(isSupport)
   const missing = canManage && boards.data ? shown.filter((i) => !boardOfInbox(boards.data, i.id)) : []
   const firstMissing = missing[0]
   const missingName = firstMissing?.name ?? ""

@@ -19,6 +19,8 @@ msgstr "Το «{name}» έχει τιμή που δεν ταιριάζει"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "«Σας φάνηκε χρήσιμη αυτή η σελίδα;», σχόλια και συζητήσεις στην τεκμηρίωσή σας"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(χωρίς θέμα)"
@@ -113,6 +115,7 @@ msgstr "{0} σημάνθηκαν ως ανεπιθύμητα · δεν χρει�
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} μεταφέρθηκαν στον Κάδο"
 
@@ -130,6 +133,7 @@ msgstr "{0} απαντήσεις · {1} κλειστές"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} επαναφέρθηκαν"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {Κανένα πρόχειρο από bots} assistant {Κανένα πρόχειρο από βοηθούς} member {Κανένα πρόχειρο από μέλη} other {Κανένα πρόχειρο από αυτόν τον συντάκτη}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, στάλθηκε από {by}"
 
@@ -503,6 +508,10 @@ msgstr "{met} τηρήθηκαν, {breached} παραβιάστηκαν"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {Αναμονή # λεπτό} other {Αναμονή # λεπτά}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "Δεν ήταν δυνατή η αλλαγή: {missed}"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "Το {monitorName} ανταποκρίνεται ξανά κανονικά"
@@ -555,6 +564,10 @@ msgstr "{n, plural, one {# ιστότοπος ή εφαρμογή} other {# ισ
 msgid "{n} a day"
 msgstr "{n} την ημέρα"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "Αρχειοθετήθηκαν: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "Προσπάθειες: {n}"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} σε 30 ημέρες"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} σημάνθηκαν ως αναγνωσμένες"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} σημάνθηκαν ως μη αναγνωσμένες"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "Επέστρεψαν στα Εισερχόμενα: {n}"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "Σε αναβολή: {n}, επιστρέφουν {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "Με αστέρι: {n}"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "Αφαιρέθηκε το αστέρι: {n}"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "Ένας κανόνας που είναι ανενεργός δεν εκ
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "Ένα κοινόχρηστο γραμματοκιβώτιο όπως hello@ ή billing@, εκτός προβολών και στατιστικών υποστήριξης."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "Μια σύνδεση πρέπει να επιστρέψει εντός 10 λεπτών και λειτουργεί μία φορά. Ανοίξτε τη μεταφορά και συνδεθείτε ξανά."
@@ -1509,6 +1544,10 @@ msgstr "Μια ομάδα έχει έως 500 μέλη και 100 εισερχό
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "Ένα ομαδικό γραμματοκιβώτιο κρατά την αλληλογραφία μιας κοινής διεύθυνσης, όπως hello@ ή billing@, χωριστά από την εξυπηρέτηση πελατών."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "Προσθήκη εικόνας"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "Όλες οι εισαγωγές"
 msgid "All inboxes"
 msgstr "Όλα τα εισερχόμενα"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Όλη η αλληλογραφία"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "Εγκρίθηκε"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "Αρχειοθέτηση"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "Αρχείο"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "Αρχείο"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "Αρχειοθέτηση (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "Αρχειοθετήστε τη λίστα αντί γι' αυτό, για να κρατήσετε τις καταγραφές."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "Αρχειοθέτηση ή επιστροφή στα Εισερχόμενα"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "Αρχειοθετημένο"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "Πίσω στη ρύθμιση"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Πίσω στη λίστα"
 
@@ -3153,6 +3212,7 @@ msgstr "Μόνο κακές"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Κρυφή κοιν."
 
@@ -3481,6 +3541,7 @@ msgstr "Όνομα καμπάνιας"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "Βρέθηκε η αιτία"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Κοιν."
 
@@ -3918,6 +3980,7 @@ msgstr "Επιλέξτε χώρο εργασίας"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Επιλέξτε από τη λίστα ή μετακινηθείτε με ↑ ↓ και ανοίξτε με Enter."
 
@@ -3972,6 +4035,7 @@ msgstr "Διαγραφή της απάντησης"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "Εκκαθάριση της αναζήτησης"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "Εκκαθάριση επιλογής"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Εκκαθάριση επιλογής (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "Κωδικός"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "Σύμπτυξη"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "Οι πελάτες συνεχίζουν να γράφουν στη δι
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "Οι πελάτες βλέπουν αυτό το όνομα στη συνομιλία, στις εφαρμογές σας και στα e-mail."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "Οι πελάτες γράφουν μέσω chat, εφαρμογής ή e-mail· αξιολογήσεις, ανάθεση και SLA λειτουργούν εδώ."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Ημερήσιο όριο"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "Λήψη JSON"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Λήψη του αρχικού e-mail (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "Κείμενο πρόχειρου"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Πρόχειρο:"
 
@@ -6437,6 +6512,10 @@ msgstr "Παντού"
 msgid "Example Ltd."
 msgstr "Παράδειγμα Ε.Π.Ε."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "Ανάπτυξη ή σύμπτυξη όλων των μηνυμάτων"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "Διόρθωση"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Διορθώστε τη διεύθυνση ή τις ρυθμίσεις SMTP του καναλιού και στείλτε ξανά την απάντηση."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "Έδωσε στην ομάδα {team} πρόσβαση στο {inbox}"
 msgid "General"
 msgstr "Γενικά"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "Γενικά"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "Δημιουργήστε έναν κωδικό με όνομα «Yuva» και επικολλήστε τον παρακάτω."
@@ -7309,6 +7394,10 @@ msgstr "Παραδόθηκε στον/στην {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Έχει ανοιχτή συνομιλία"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "Έχει συνημμένα"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "Πώς συναίνεσαν, ή δική σας καταγραφή (πρ
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "Πώς αποχώρησαν:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "Πώς εμφανίζεται αυτό το κιβώτιο στον πίνακα"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7925,6 +8018,11 @@ msgstr "Στο Zoho Mail, ανοίξτε Ρυθμίσεις › Λογαριασ
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
+msgid "Inbox"
+msgstr "Εισερχόμενα"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Inbox"
 msgstr "Εισερχόμενα"
 
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "Φόρτωση περισσότερων"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Φόρτωση παλαιότερων μηνυμάτων"
 
@@ -9082,6 +9181,18 @@ msgstr "Έκανε την ενιαία σύνδεση προαιρετική"
 msgid "Made single sign-on required"
 msgstr "Έκανε την ενιαία σύνδεση υποχρεωτική"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "Αλληλογραφία"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "Ενέργειες αλληλογραφίας"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "Η αλληλογραφία φτάνει εδώ· προσθέστε λογαριασμό απαντήσεων όταν είστε έτοιμοι"
@@ -9158,9 +9269,17 @@ msgstr "Η αλληλογραφία προς αυτή τη διεύθυνση ε
 msgid "Mail to your support address, answered from it"
 msgstr "Αλληλογραφία στη διεύθυνση υποστήριξής σας, με απάντηση από αυτήν"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "Αλληλογραφία, {mailUnread} αδιάβαστα"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Διεύθυνση γραμματοκιβωτίου"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "Γραμματοκιβώτιο: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "Σήμανση ως απάντηση"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "Σήμανση ως αναγνωσμένο"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "Σήμανση ως αναγνωσμένο ή αδιάβαστο (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "Σήμανση ως spam"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "Σήμανση ως μη αναγνωσμένο"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "Σήμανση ως αδιάβαστο (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "Περισσότερες ψήφοι"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "Να μεταφερθούν στον Κάδο: {0};"
 
@@ -9762,6 +9893,10 @@ msgstr "Μεταφορά των επιλεγμένων συνομιλιών στ
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "Να μεταφερθεί αυτή η συνομιλία στον Κάδο;"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "Μετακίνηση αυτού του e-mail στον κάδο;"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "Μετακίνηση σε στάδιο"
 msgid "Move to inbox"
 msgstr "Μετακίνηση στα εισερχόμενα"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "Μετακίνηση στα Εισερχόμενα"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "Μετακίνηση στα Εισερχόμενα (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "Μετακίνηση στο προηγούμενο ή στο επόμενο στάδιο"
@@ -9824,8 +9969,15 @@ msgstr "Μετακίνηση στο προηγούμενο ή στο επόμε�
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "Μεταφορά στον Κάδο"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "Μετακίνηση στον κάδο (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "Μεταφέρθηκε από το {from}"
 msgid "Moved to {to}"
 msgstr "Μετακινήθηκε στο {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "Επέστρεψε στα Εισερχόμενα"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "Μεταφέρθηκε στον Κάδο"
 
@@ -9925,6 +10082,10 @@ msgstr "Όνομα"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "Όνομα (προαιρετικά)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "Όνομα και εμφάνιση"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "Δεν υπάρχει πια στο γραμματοκιβώτιο"
 msgid "No macros yet"
 msgstr "Δεν υπάρχουν μακροεντολές ακόμη"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "Κανένα e-mail δεν ταιριάζει με την αναζήτηση."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "Δεν βρέθηκε διακομιστής αλληλογραφίας για το {domain}. Επιλέξτε τον πάροχό σας παρακάτω ή «Άλλος διακομιστής IMAP» και εισαγάγετε τον διακομιστή στο επόμενο βήμα."
@@ -10899,6 +11064,10 @@ msgstr "Χωρίς ομάδα"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "Καμία ομάδα δεν καλύπτει όλα τα επιλεγμένα εισερχόμενα."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "Δεν υπάρχει ακόμη ομαδική αλληλογραφία"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "Σημείωση (προαιρετική)"
 msgid "Note about this contact"
 msgstr "Σημείωση για αυτή την επαφή"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "Σημείωση για την ομάδα"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Σημείωση για τον συνάδελφο"
@@ -11300,6 +11473,10 @@ msgstr "Δεν υπάρχει τίποτα εδώ."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "Τίποτα δεν έχει προστεθεί ακόμη. Το αρχείο διαβάζεται, ρωτιέται κάθε τομέας αν δέχεται αλληλογραφία και βρίσκονται διπλότυπα και διευθύνσεις που ίσως δεν πρέπει να λαμβάνουν αλληλογραφία."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "Δεν έχει αρχειοθετηθεί τίποτα ακόμη."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Δεν σας έχει ανατεθεί τίποτα."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "Τίποτα δεν είναι προγραμματισμένο."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "Δεν έχει αναβληθεί τίποτα."
 
@@ -11735,6 +11913,10 @@ msgstr "Μόνο αλληλογραφία από {date}"
 msgid "Only me"
 msgstr "Μόνο εγώ"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "Μόνο οι κάτοχοι και οι διαχειριστές μπορούν να το αλλάξουν."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Μόνο οι ιδιοκτήτες μπορούν να το αλλάξουν."
@@ -12060,6 +12242,10 @@ msgstr "Ανοίξτε το κέντρο διαχείρισης Microsoft Entra 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "Άνοιγμα της επόμενης ή προηγούμενης συνομιλίας"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "Άνοιγμα του επόμενου ή προηγούμενου e-mail"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "Επιλέξτε μια συζήτηση για να τη διαβάσε
 msgid "Pick a field"
 msgstr "Επιλέξτε ένα πεδίο"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "Επιλέξτε ένα e-mail"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "Επιλέξτε ένα μέλος"
@@ -12766,6 +12956,10 @@ msgstr "Επιλέξτε συνομιλίες"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Επιλέξτε μόνοι σας κάθε εύρος πρόσβασης."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "Επιλέξτε e-mail"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "Δημοσιευμένη"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "Δημοσιεύεται αμέσως και στέλνεται στους ακόλουθους."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "Σκοπός"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "Αφαίρεση του μηνύματος ή της σημείωσης 
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "Αφαίρεση αστεριού"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "Αφαίρεση αστεριού (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Απάντηση"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "Απάντηση ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "Απάντηση (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "Λογαριασμός απαντήσεων"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "Απάντηση σε όλους"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "Απάντηση σε όλους (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "Απάντηση στον/στην <0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "Απάντηση σε μαζική αποστολή"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "Απάντηση σε όλους"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "Απάντηση στις συνδεδεμένες"
@@ -14147,6 +14370,10 @@ msgstr "Απάντηση στη συζήτηση αντί γι' αυτό"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Απάντηση στην επιλεγμένη ανάρτηση"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "Απάντηση στον αποστολέα"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "Χρόνοι απόκρισης"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "Επαναφορά"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "Επαναφορά (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "Μια συνομιλία επαναφέρθηκε από τον Κάδο"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "Επαναφέρθηκε από τον Κάδο"
 
@@ -14849,6 +15082,10 @@ msgstr "Αναζήτηση σε αυτή τη συνομιλία"
 msgid "Search incidents"
 msgstr "Αναζήτηση περιστατικών"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "Αναζήτηση στην αλληλογραφία"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "Αναζήτηση ονόματος, email ή αναγνωριστικού…"
@@ -14922,19 +15159,33 @@ msgstr "Επιλογή"
 msgid "Select conversations"
 msgstr "Επιλογή συνομιλιών"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "Επιλογή e-mail"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "Επιλογή e-mail (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "Επιλογή της συνομιλίας κάτω από τον δρομέα"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "Επιλογή του e-mail κάτω από τον δρομέα"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "Επιλογή του προηγούμενου ή επόμενου μπλοκ"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Επιλεγμένες: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Επιλογή"
 
@@ -15025,6 +15276,10 @@ msgstr "Αποστολή αυτόματης απάντησης"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "Στείλτε συμβάντα αναλυτικών στοιχείων από τους διακομιστές σας"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "Αποστολή και αρχειοθέτηση"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "Η αποστολή σταμάτησε και δεν μπορεί να �
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "Η αποστολή σταματά σε λίγα δευτερόλεπτα και δεν μπορεί να ξεκινήσει ξανά. Τα e-mail που έχουν ήδη φύγει παραμένουν σταλμένα."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "Αποστολή και μετά αρχειοθέτηση…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "Αποστολή και μετά κλείσιμο…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Αποστολή…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "Στάλθηκε"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "Απεσταλμένα"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "Στάλθηκαν {count} μηνύματα από αυτή τη διεύθυνση"
@@ -15305,6 +15570,10 @@ msgstr "Απεσταλμένα"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "Στάλθηκε στον/στην {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "Στάλθηκε σε {first} και αρχειοθετήθηκε"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "Διακομιστής SMTP"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Αναβολή"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "Αναβολή (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,6 +16391,12 @@ msgstr "Αναβολή για {time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+msgid "Snoozed"
+msgstr "Σε αναβολή"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Snoozed"
 msgstr "Σε αναβολή"
 
@@ -16257,6 +16538,41 @@ msgstr "Διαχωρισμός ανά"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Στάδιο"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "Αστέρι"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "Αστέρι (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "Βάλτε αστέρι σε ένα e-mail για να μείνει εδώ."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "Προσθήκη ή αφαίρεση αστεριού"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "Προσθήκη ή αφαίρεση αστεριού (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "Το αστέρι αφαιρέθηκε"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "Με αστέρι"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "Με αστέρι"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "Κυριακή"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "Υποστήριξη"
 
@@ -16567,6 +16885,10 @@ msgstr "Bot υποστήριξης"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "Σύνδεσμος υποστήριξης"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "Υποστήριξη: συνομιλίες με πελάτες, με chat, αξιολογήσεις, ανάθεση και SLA."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "Η ομάδα άλλαξε"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "Αναγνωριστικό ομάδας"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "Ομαδική αλληλογραφία"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "Η ομαδική αλληλογραφία δέχεται μόνο κανάλια e-mail. Η αυτόματη ανάθεση απενεργοποιείται."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "Ομαδική αλληλογραφία: κοινόχρηστο γραμματοκιβώτιο εκτός προβολών υποστήριξης, στατιστικών και SLA."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "Ο Κάδος είναι άδειος."
 
@@ -18063,6 +18399,15 @@ msgstr "Αυτή η συσκευή"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "Αυτή η συζήτηση δεν υπάρχει πια ή δεν μπορείτε να τη δείτε."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "Αυτό δεν ταιριάζει με τον σκοπό του κιβωτίου: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "Αυτό δεν ταιριάζει με τον σκοπό του κιβωτίου."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "Αυτά τα εισερχόμενα δεν έχουν κανάλι e-ma
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Αυτά τα εισερχόμενα δεν έχουν ακόμη λίστα αλληλογραφίας. Μια μαζική αποστολή πηγαίνει μόνο σε άτομα που εγγράφηκαν σε λίστα."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "Αυτό το κιβώτιο είναι για"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "Αυτή η λίστα είναι αρχειοθετημένη. Δεν �
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Αυτή η λίστα είναι ιδιωτική, οπότε οι φόρμες δεν την προσφέρουν. Κάντε την δημόσια στις ρυθμίσεις για να χρησιμοποιήσετε φόρμα."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "Αυτό το e-mail δεν είναι διαθέσιμο"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (θύρα 465)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "Για να στέλνουν οι βοηθοί μόνοι τους, εν
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Προς: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "Προς: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "Κάδος"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "Κάδος"
 
@@ -18783,6 +19148,10 @@ msgstr "Άγνωστη συσκευή"
 msgid "unknown reason"
 msgstr "άγνωστος λόγος"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "Άγνωστος αποστολέας"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "Αδημοσίευτη"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "Αδιάβαστα"
 
@@ -19650,6 +20020,10 @@ msgstr "Τι συνέβη"
 msgid "What is new in October"
 msgstr "Τι νέο τον Οκτώβριο"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "Για τι είναι αυτό το κιβώτιο;"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "Για τι είναι αυτό το κλειδί;"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "Όταν είναι ανενεργό, τα κλειδιά API μπορούν μόνο να γράφουν πρόχειρα και ένα μέλος τα ελέγχει και τα στέλνει."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "Πότε να επιστρέψει;"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "Πότε να επιστρέψουν;"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "Μπορείτε να φύγετε από αυτή τη σελίδα· �
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "Μπορείτε να φύγετε από αυτή τη σελίδα: η συνομιλία θα σας περιμένει στη λίστα συνομιλιών σας."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "Μπορείτε να το επαναφέρετε από τον κάδο για 30 ημέρες, μετά διαγράφεται οριστικά μαζί με τα μηνύματα και τα αρχεία του."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "Μπορείτε να τα επαναφέρετε από τον κάδο για 30 ημέρες, μετά διαγράφονται οριστικά μαζί με τα μηνύματα και τα αρχεία τους."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Μπορείτε τότε να γράφετε, να ψηφίζετε και να παρακολουθείτε συζητήσεις εκεί. Η ομάδα πίσω από το {host} βλέπει το όνομα και τη διεύθυνση e-mail σας όταν γράφετε· οι άλλοι αναγνώστες βλέπουν μόνο το όνομά σας."
@@ -20222,6 +20609,10 @@ msgstr "Έχετε δημιουργήσει όσους χώρους εργασί
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Δεν έχετε ακόμη passkeys."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "Δεν έχετε στείλει ακόμη κανένα e-mail."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "Τα Εισερχόμενά σας είναι άδεια."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

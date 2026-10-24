@@ -19,6 +19,8 @@ msgstr "A(z) „{name}” mező értéke nem megfelelő"
 msgid "“Was this page helpful?”, feedback and discussions on your docs"
 msgstr "„Hasznos volt ez az oldal?”, visszajelzések és viták a dokumentációdban"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
 msgstr "(nincs tárgy)"
@@ -113,6 +115,7 @@ msgstr "{0} spamnek jelölve · nem kell válaszolni"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} moved to the Trash"
 msgstr "{0} a Kukába helyezve"
 
@@ -130,6 +133,7 @@ msgstr "{0} válasz · {1} lezárva"
 
 #. placeholder {0}: done.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{0} restored"
 msgstr "{0} visszaállítva"
 
@@ -246,6 +250,7 @@ msgid "{author, select, bot {No drafts by bots} assistant {No drafts by assistan
 msgstr "{author, select, bot {Nincs botoktól származó piszkozat} assistant {Nincs asszisztensektől származó piszkozat} member {Nincs tagoktól származó piszkozat} other {Nincs ettől a szerzőtől származó piszkozat}}"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "{author}, sent by {by}"
 msgstr "{author}, küldte: {by}"
 
@@ -503,6 +508,10 @@ msgstr "{met} teljesült, {breached} sérült"
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {# perce vár} other {# perce vár}}"
 
+#: src/features/mail/MailList.tsx
+msgid "{missed} could not be changed"
+msgstr "Nem sikerült módosítani: {missed}"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "{monitorName} answers normally again"
 msgstr "{monitorName} újra normálisan válaszol"
@@ -555,6 +564,10 @@ msgstr "{n, plural, one {# webhely vagy alkalmazás} other {# webhely és alkalm
 msgid "{n} a day"
 msgstr "{n} naponta"
 
+#: src/features/mail/MailList.tsx
+msgid "{n} archived"
+msgstr "Archiválva: {n}"
+
 #: src/features/settings/webhooks/parts.tsx
 msgid "{n} attempts"
 msgstr "{n} kísérlet"
@@ -568,12 +581,30 @@ msgid "{n} in 30 days"
 msgstr "{n} 30 nap alatt"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as read"
 msgstr "{n} olvasottnak jelölve"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "{n} marked as unread"
 msgstr "{n} olvasatlannak jelölve"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} moved to the Inbox"
+msgstr "Visszakerült a Beérkezettek közé: {n}"
+
+#: src/features/mail/MailList.tsx
+msgid "{n} snoozed, back {when}"
+msgstr "Elhalasztva: {n}, visszatér {when}"
+
+#: src/features/mail/queries.ts
+msgid "{n} starred"
+msgstr "Csillagozva: {n}"
+
+#: src/features/mail/queries.ts
+msgid "{n} unstarred"
+msgstr "Csillag levéve: {n}"
 
 #: src/app/UserMenu.tsx
 msgid "{name} · {statusText}"
@@ -1466,6 +1497,10 @@ msgstr "A kikapcsolt szabály soha nem fut le. A szabályok a lista sorrendjébe
 msgid "A secret is set. Paste a new one to replace it."
 msgstr "A secret is set. Paste a new one to replace it."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "A shared mailbox like hello@ or billing@, kept out of support views and stats."
+msgstr "Közös postafiók, például hello@ vagy billing@, a támogatási nézeteken és statisztikákon kívül."
+
 #: src/features/migrations/MigrationsPage.tsx
 msgid "A sign-in must come back within 10 minutes and works once. Open the migration and sign in again."
 msgstr "A bejelentkezésnek 10 percen belül vissza kell érkeznie, és egyszer működik. Nyisd meg az átvitelt, és jelentkezz be újra."
@@ -1509,6 +1544,10 @@ msgstr "Egy csapatnak legfeljebb 500 tagja és 100 postafiókja lehet."
 #: src/features/issues/IssueDialog.tsx
 msgid "A team key such as ENG."
 msgstr "A team key such as ENG."
+
+#: src/features/mail/MailPage.tsx
+msgid "A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support."
+msgstr "A csapat levelezési postafiókja egy közös cím, például hello@ vagy billing@ leveleit tartja, az ügyfélszolgálattól elkülönítve."
 
 #: src/components/common/text.ts
 msgid "A team was changed"
@@ -1774,6 +1813,7 @@ msgstr "Kép hozzáadása"
 
 #: src/app/Palette.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
 #: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
@@ -2088,6 +2128,7 @@ msgstr "Minden import"
 msgid "All inboxes"
 msgstr "Minden postafiók"
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Minden levél"
@@ -2766,21 +2807,38 @@ msgid "Approved"
 msgstr "Jóváhagyva"
 
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Archive"
 msgstr "Archiválás"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Archive"
+msgstr "Archívum"
 
 #: src/features/migrations/text.ts
 msgctxt "mail folder kind"
 msgid "Archive"
 msgstr "Archívum"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Archive (E)"
+msgstr "Archiválás (E)"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Archive the list instead to keep the records."
 msgstr "A rekordok megőrzéséhez inkább archiváld a listát."
 
 #: src/components/common/ShortcutSheet.tsx
+msgid "Archive, or move back to the Inbox"
+msgstr "Archiválás, vagy vissza a Beérkezettek közé"
+
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/conversation/actions.ts
 msgid "Archived"
 msgstr "Archivált"
 
@@ -3123,6 +3181,7 @@ msgid "Back to setup"
 msgstr "Vissza a beállításhoz"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Back to the list"
 msgstr "Vissza a listához"
 
@@ -3153,6 +3212,7 @@ msgstr "Csak a rosszak"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Bcc"
 msgstr "Titkos másolat"
 
@@ -3481,6 +3541,7 @@ msgstr "Kampány neve"
 #: src/features/fields/RequiredFieldsHost.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/issues/IssueDialog.tsx
+#: src/features/mail/MailList.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/AddProductDialog.tsx
@@ -3591,6 +3652,7 @@ msgstr "Megvan az ok"
 
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Cc"
 msgstr "Másolat"
 
@@ -3918,6 +3980,7 @@ msgstr "Válassz munkaterületet"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
+#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Válassz a listából, vagy mozogj a ↑ ↓ billentyűkkel, és nyisd meg Enterrel."
 
@@ -3972,6 +4035,7 @@ msgstr "Válasz törlése"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the search"
 msgstr "Keresés törlése"
 
@@ -3980,6 +4044,7 @@ msgid "Clear the selection"
 msgstr "Kijelölés törlése"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
 msgstr "Kijelölés törlése (Esc)"
 
@@ -4134,6 +4199,10 @@ msgstr "Kód"
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Code from Slack"
 msgstr "Code from Slack"
+
+#: src/features/mail/MailThread.tsx
+msgid "Collapse"
+msgstr "Összecsukás"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collapse or expand the sidebar"
@@ -5035,6 +5104,10 @@ msgstr "Az ügyfelek továbbra is arra a címre írnak, amelyet ismernek."
 msgid "Customers see this name in the chat, in your apps and on e-mails."
 msgstr "Az ügyfelek ezt a nevet látják a csevegésben, az alkalmazásaidban és az e-mailekben."
 
+#: src/components/common/PurposeChoice.tsx
+msgid "Customers write by chat, app or e-mail; ratings, assignment and SLA work here."
+msgstr "Az ügyfelek chaten, appban vagy e-mailben írnak; értékelés, kiosztás és SLA itt működik."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Napi korlát"
@@ -5767,6 +5840,7 @@ msgid "Download JSON"
 msgstr "JSON letöltése"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Download the original e-mail (.eml)"
 msgstr "Eredeti e-mail letöltése (.eml)"
 
@@ -5812,6 +5886,7 @@ msgid "Draft text"
 msgstr "Piszkozat szövege"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Draft:"
 msgstr "Piszkozat:"
 
@@ -6437,6 +6512,10 @@ msgstr "Mindenhol"
 msgid "Example Ltd."
 msgstr "Példa Kft."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Expand or collapse every message"
+msgstr "Minden üzenet kibontása vagy összecsukása"
+
 #: src/app/Sidebar.tsx
 #: src/app/TopBar.tsx
 msgid "Expand the sidebar"
@@ -6808,6 +6887,7 @@ msgstr "Javítás"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Javítsd a címet vagy a csatorna SMTP-beállításait, majd küldd el újra a választ."
 
+#: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "Folders"
@@ -7134,6 +7214,11 @@ msgstr "Hozzáférést adott a(z) {team} csapatnak ide: {inbox}"
 msgid "General"
 msgstr "Általános"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgctxt "inbox settings tab"
+msgid "General"
+msgstr "Általános"
+
 #: src/features/migrations/text.ts
 msgid "Generate a password named “Yuva” and paste it below."
 msgstr "Generálj egy „Yuva” nevű jelszót, és illeszd be alább."
@@ -7309,6 +7394,10 @@ msgstr "Átadva: {name}"
 #: src/features/contact/ContactsColumn.tsx
 msgid "Has an open conversation"
 msgstr "Van nyitott beszélgetése"
+
+#: src/features/mail/MailList.tsx
+msgid "Has attachments"
+msgstr "Van melléklete"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Header name"
@@ -7589,6 +7678,10 @@ msgstr "Hogyan egyeztek bele, vagy a saját feljegyzésed (nem kötelező)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "How they left:"
 msgstr "Hogyan léptek ki:"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "How this inbox appears in the panel"
+msgstr "Hogyan jelenik meg ez a postafiók a panelen"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
@@ -7927,6 +8020,11 @@ msgstr "A Zoho Mailben nyisd meg a Settings › Mail accounts › IMAP access r�
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Inbox"
 msgstr "Postafiók"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Inbox"
+msgstr "Beérkezett"
 
 #: src/features/settings/teams/TeamDialog.tsx
 msgid "Inbox access"
@@ -8965,6 +9063,7 @@ msgid "Load more"
 msgstr "Továbbiak betöltése"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "Régebbi üzenetek betöltése"
 
@@ -9082,6 +9181,18 @@ msgstr "Opcionálissá tette az egyszeri bejelentkezést"
 msgid "Made single sign-on required"
 msgstr "Kötelezővé tette az egyszeri bejelentkezést"
 
+#: src/app/Palette.tsx
+#: src/app/Rail.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailPage.tsx
+msgid "Mail"
+msgstr "Levelek"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mail actions"
+msgstr "Levélműveletek"
+
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Mail arrives here; add a reply account when you are ready"
 msgstr "A levelek ide érkeznek; adj hozzá válaszfiókot, ha készen állsz"
@@ -9158,9 +9269,17 @@ msgstr "Az erre a címre küldött levél visszapattant vagy spamnek jelentetté
 msgid "Mail to your support address, answered from it"
 msgstr "A támogatási címedre érkező levelek, arról megválaszolva"
 
+#: src/app/Rail.tsx
+msgid "Mail, {mailUnread} unread"
+msgstr "Levelek, {mailUnread} olvasatlan"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Postafiók címe"
+
+#: src/features/mail/MailPage.tsx
+msgid "Mailbox: {name}"
+msgstr "Postafiók: {name}"
 
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9278,8 +9397,13 @@ msgstr "Megjelölés válaszként"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Mark as read"
 msgstr "Olvasottnak jelölés"
+
+#: src/features/mail/MailList.tsx
+msgid "Mark as read or unread (U)"
+msgstr "Megjelölés olvasottként vagy olvasatlanként (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/docs/discussions/parts.tsx
@@ -9288,8 +9412,14 @@ msgstr "Spamnek jelölés"
 
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Mark as unread"
 msgstr "Olvasatlannak jelölés"
+
+#: src/features/mail/MailThread.tsx
+msgid "Mark as unread (U)"
+msgstr "Megjelölés olvasatlanként (U)"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark as unread and go back to the list"
@@ -9719,6 +9849,7 @@ msgstr "Legtöbb szavazat"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Move {0} to the Trash?"
 msgstr "A Kukába helyezed: {0}?"
 
@@ -9762,6 +9893,10 @@ msgstr "A kijelölt beszélgetések Kukába helyezése"
 #: src/features/conversation/ChatView.tsx
 msgid "Move this conversation to the Trash?"
 msgstr "A Kukába helyezed ezt a beszélgetést?"
+
+#: src/features/mail/MailThread.tsx
+msgid "Move this mail to the Trash?"
+msgstr "Áthelyezed ezt a levelet a kukába?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the articles or collections"
@@ -9815,6 +9950,16 @@ msgstr "Áthelyezés szakaszba"
 msgid "Move to inbox"
 msgstr "Áthelyezés a postafiókba"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox"
+msgstr "Áthelyezés a Beérkezettek közé"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Inbox (E)"
+msgstr "Áthelyezés a Beérkezettek közé (E)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to the previous or next stage"
 msgstr "Áthelyezés az előző vagy a következő szakaszba"
@@ -9824,8 +9969,15 @@ msgstr "Áthelyezés az előző vagy a következő szakaszba"
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/ConversationMenu.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Move to the Trash"
 msgstr "Kukába helyezés"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Move to the Trash (#)"
+msgstr "Áthelyezés a kukába (#)"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -9852,7 +10004,12 @@ msgstr "Áthelyezve innen: {from}"
 msgid "Moved to {to}"
 msgstr "Áthelyezve ide: {to}"
 
+#: src/features/conversation/actions.ts
+msgid "Moved to the Inbox"
+msgstr "Visszakerült a Beérkezettek közé"
+
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Moved to the Trash"
 msgstr "A Kukába helyezve"
 
@@ -9925,6 +10082,10 @@ msgstr "Név"
 #: src/features/broadcasts/AddSubscriberDialog.tsx
 msgid "Name (optional)"
 msgstr "Név (nem kötelező)"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Name and look"
+msgstr "Név és megjelenés"
 
 #: src/features/migrations/text.ts
 msgid "Name it “Yuva” and enter the redirect URL below as its redirection URL."
@@ -10715,6 +10876,10 @@ msgstr "Már nincs a postafiókban"
 msgid "No macros yet"
 msgstr "Még nincs makró"
 
+#: src/features/mail/MailList.tsx
+msgid "No mail matches your search."
+msgstr "Egy levél sem felel meg a keresésnek."
+
 #: src/features/migrations/SourceStep.tsx
 msgid "No mail server was found for {domain}. Pick your provider below, or “Other IMAP server” and enter the server on the next step."
 msgstr "A(z) {domain} domainhez nem található levelezőszerver. Válaszd ki alább a szolgáltatódat, vagy a „Másik IMAP-szerver” lehetőséget, és add meg a szervert a következő lépésben."
@@ -10899,6 +11064,10 @@ msgstr "Nincs csapat"
 #: src/features/inbox/ChatList.tsx
 msgid "No team covers all the selected inboxes."
 msgstr "Egyetlen csapat sem fedi le az összes kijelölt postafiókot."
+
+#: src/features/mail/MailPage.tsx
+msgid "No team mail yet"
+msgstr "Még nincs csapatlevél"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "No teammate can see this inbox"
@@ -11232,6 +11401,10 @@ msgstr "Jegyzet (nem kötelező)"
 msgid "Note about this contact"
 msgstr "Megjegyzés erről a kontaktról"
 
+#: src/features/mail/MailThread.tsx
+msgid "Note for the team"
+msgstr "Megjegyzés a csapatnak"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Note for the teammate"
 msgstr "Megjegyzés a kollégának"
@@ -11300,6 +11473,10 @@ msgstr "Itt nincs semmi."
 msgid "Nothing is added yet. The file is read, each domain is asked whether it takes mail, and duplicates and addresses that may not get mail are found."
 msgstr "Még semmi sem kerül hozzáadásra. A fájl beolvasásra kerül, minden domaintől megkérdezzük, fogad-e levelet, és megtaláljuk a duplikátumokat és a levelet esetleg nem fogadó címeket."
 
+#: src/features/mail/MailList.tsx
+msgid "Nothing is archived yet."
+msgstr "Még nincs semmi archiválva."
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nothing is assigned to you."
 msgstr "Semmi sincs hozzád rendelve."
@@ -11341,6 +11518,7 @@ msgid "Nothing is scheduled."
 msgstr "Nincs semmi ütemezve."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
 msgstr "Semmi sincs elhalasztva."
 
@@ -11735,6 +11913,10 @@ msgstr "Csak a(z) {date} óta érkezett levelek"
 msgid "Only me"
 msgstr "Csak én"
 
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Only owners and admins can change it."
+msgstr "Csak a tulajdonosok és adminok módosíthatják."
+
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Only owners can change this."
 msgstr "Csak a tulajdonosok módosíthatják ezt."
@@ -12060,6 +12242,10 @@ msgstr "Nyisd meg a Microsoft Entra admin centert vagy az Azure-portált, lépj 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the next or previous conversation"
 msgstr "Következő vagy előző beszélgetés megnyitása"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the next or previous mail"
+msgstr "Következő vagy előző levél megnyitása"
 
 #: src/features/status/SubscribersTab.tsx
 msgid "Open the page settings"
@@ -12676,6 +12862,10 @@ msgstr "Válassz egy vitát, hogy elolvasd és válaszolj rá."
 msgid "Pick a field"
 msgstr "Válasszon mezőt"
 
+#: src/features/mail/MailPage.tsx
+msgid "Pick a mail"
+msgstr "Válassz egy levelet"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a member"
 msgstr "Válasszon tagot"
@@ -12766,6 +12956,10 @@ msgstr "Válassz beszélgetéseket"
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Pick each scope yourself."
 msgstr "Válaszd ki magad az egyes hatóköröket."
+
+#: src/features/mail/MailList.tsx
+msgid "Pick mails"
+msgstr "Válassz leveleket"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -13262,6 +13456,11 @@ msgstr "Közzétéve"
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Published at once and sent to the followers."
 msgstr "Azonnal közzétéve és elküldve a követőknek."
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Purpose"
+msgstr "Cél"
 
 #: src/features/settings/notifications/EventsSection.tsx
 msgid "Push"
@@ -13813,6 +14012,16 @@ msgstr "A rákattintott üzenet vagy jegyzet eltávolítása"
 msgid "Remove the provider?"
 msgstr "Remove the provider?"
 
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star"
+msgstr "Csillag levétele"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Remove the star (S)"
+msgstr "Csillag levétele (S)"
+
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Remove the team"
@@ -14054,6 +14263,7 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "Válasz"
 
@@ -14062,12 +14272,21 @@ msgid "Reply ({mod}↵)"
 msgstr "Válasz ({mod}↵)"
 
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Reply (R)"
 msgstr "Válasz (R)"
 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "Reply account"
 msgstr "Válaszfiók"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all"
+msgstr "Válasz mindenkinek"
+
+#: src/features/mail/MailThread.tsx
+msgid "Reply all (A)"
+msgstr "Válasz mindenkinek (A)"
 
 #: src/features/settings/sla/SlaPage.tsx
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
@@ -14119,6 +14338,10 @@ msgstr "Válasz neki: <0>{name}</0>"
 msgid "Reply to a broadcast"
 msgstr "Válasz egy tömeges levélre"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to everyone"
+msgstr "Válasz mindenkinek"
+
 #: src/components/common/Linked.tsx
 msgid "Reply to linked"
 msgstr "Válasz a kapcsoltaknak"
@@ -14147,6 +14370,10 @@ msgstr "Inkább a vitában válaszolj"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Reply to the selected post"
 msgstr "Válasz a kijelölt bejegyzésre"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Reply to the sender"
+msgstr "Válasz a feladónak"
 
 #: src/features/settings/automation/text.ts
 msgid "Reply with a canned reply"
@@ -14290,8 +14517,13 @@ msgstr "Válaszidők"
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/conversation/Trash.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Restore"
 msgstr "Visszaállítás"
+
+#: src/features/mail/MailList.tsx
+msgid "Restore (Z)"
+msgstr "Visszaállítás (Z)"
 
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -14307,6 +14539,7 @@ msgid "Restored a conversation from the Trash"
 msgstr "Egy beszélgetés vissza lett állítva a Kukából"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Restored from the Trash"
 msgstr "Visszaállítva a Kukából"
 
@@ -14849,6 +15082,10 @@ msgstr "Keresés ebben a beszélgetésben"
 msgid "Search incidents"
 msgstr "Incidensek keresése"
 
+#: src/features/mail/MailList.tsx
+msgid "Search mail"
+msgstr "Keresés a levelekben"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Search name, e-mail or id…"
 msgstr "Név, e-mail vagy azonosító keresése…"
@@ -14922,19 +15159,33 @@ msgstr "Választás"
 msgid "Select conversations"
 msgstr "Beszélgetések kijelölése"
 
+#: src/features/mail/MailList.tsx
+msgid "Select mails"
+msgstr "Levelek kijelölése"
+
+#: src/features/mail/MailList.tsx
+msgid "Select mails (X)"
+msgstr "Levelek kijelölése (X)"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the conversation under the cursor"
 msgstr "A kurzor alatti beszélgetés kijelölése"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Select the mail under the cursor"
+msgstr "A kurzor alatti levél kijelölése"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Select the previous or next block"
 msgstr "Előző vagy következő blokk kijelölése"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Kijelölve: {picked}"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Selection"
 msgstr "Kijelölés"
 
@@ -15025,6 +15276,10 @@ msgstr "Automatikus válasz küldése"
 #: src/components/common/text.ts
 msgid "Send analytics events from your servers"
 msgstr "Küldj analitikai eseményeket a szervereidről"
+
+#: src/features/conversation/composer/ReplyBox.tsx
+msgid "Send and archive"
+msgstr "Küldés és archiválás"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
@@ -15206,12 +15461,17 @@ msgstr "A küldés leállt, és nem folytatható, például mert a csatornáját
 msgid "Sending stops within a few seconds and cannot start again. Mail that already went out stays sent."
 msgstr "A küldés néhány másodpercen belül leáll, és nem indítható újra. A már kiment levelek elküldöttek maradnak."
 
+#: src/features/mail/MailThread.tsx
+msgid "Sending, then archiving…"
+msgstr "Küldés, majd archiválás…"
+
 #: src/features/conversation/messages/Thread.tsx
 msgid "Sending, then closing…"
 msgstr "Küldés, majd bezárás…"
 
 #: src/components/common/Linked.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Küldés…"
 
@@ -15274,6 +15534,11 @@ msgctxt "delivery state"
 msgid "Sent"
 msgstr "Elküldve"
 
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Sent"
+msgstr "Elküldött"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "{count} üzenetet küldött erről a címről"
@@ -15305,6 +15570,10 @@ msgstr "Elküldött levél"
 #: src/features/conversation/actions.ts
 msgid "Sent to {first}"
 msgstr "Elküldve neki: {first}"
+
+#: src/features/conversation/actions.ts
+msgid "Sent to {first} and archived"
+msgstr "Elküldve neki: {first}, és archiválva"
 
 #: src/features/conversation/actions.ts
 msgid "Sent to {first} and closed"
@@ -16098,9 +16367,15 @@ msgstr "SMTP-hoszt"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/settings/automation/text.ts
 msgid "Snooze"
 msgstr "Elhalasztás"
+
+#: src/features/mail/MailThread.tsx
+msgid "Snooze (B)"
+msgstr "Halasztás (B)"
 
 #: src/features/conversation/HeaderActions.tsx
 msgid "Snooze (S)"
@@ -16116,8 +16391,14 @@ msgstr "Szundi: {time}"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "Snoozed"
 msgstr "Elhalasztva"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Snoozed"
+msgstr "Elhalasztott"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "Snoozed until {until}"
@@ -16257,6 +16538,41 @@ msgstr "Bontás"
 #: src/features/status/IncidentDetail.tsx
 msgid "Stage"
 msgstr "Szakasz"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star"
+msgstr "Csillagozás"
+
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
+msgid "Star (S)"
+msgstr "Csillagozás (S)"
+
+#: src/features/mail/MailList.tsx
+msgid "Star a mail to keep it here."
+msgstr "Csillagozz meg egy levelet, hogy itt maradjon."
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Star or unstar"
+msgstr "Csillagozás vagy csillag levétele"
+
+#: src/features/mail/MailList.tsx
+msgid "Star or unstar (S)"
+msgstr "Csillagozás vagy csillag levétele (S)"
+
+#: src/features/mail/queries.ts
+msgid "Star removed"
+msgstr "Csillag levéve"
+
+#: src/features/mail/queries.ts
+msgid "Starred"
+msgstr "Csillagozva"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
+msgid "Starred"
+msgstr "Csillagozott"
 
 #: src/features/migrations/MigrationsPage.tsx
 msgid "Start"
@@ -16549,6 +16865,8 @@ msgid "Sunday"
 msgstr "Vasárnap"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
 msgid "Support"
 msgstr "Támogatás"
 
@@ -16567,6 +16885,10 @@ msgstr "Támogatási bot"
 #: src/features/status/SettingsTab.tsx
 msgid "Support link"
 msgstr "Támogatási hivatkozás"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Support: conversations with customers, with chat, ratings, assignment and SLA."
+msgstr "Támogatás: beszélgetések ügyfelekkel, chattel, értékeléssel, kiosztással és SLA-val."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "support@example.com"
@@ -16681,6 +17003,19 @@ msgstr "Csapat módosítva"
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Team ID"
 msgstr "Csapatazonosító"
+
+#: src/components/common/PurposeChoice.tsx
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail"
+msgstr "Csapatlevelezés"
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail takes e-mail channels only. Automatic assignment is turned off."
+msgstr "A csapatlevelezés csak e-mail-csatornákat fogad. Az automatikus kiosztás kikapcsol."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "Team mail: a shared mailbox, kept out of support views, stats and SLA."
+msgstr "Csapatlevelezés: közös postafiók a támogatási nézeteken, statisztikákon és SLA-n kívül."
 
 #: src/features/migrations/MapStep.tsx
 msgid "Team member for {sender}"
@@ -17776,6 +18111,7 @@ msgid "The tracker refused the token. Check that it is valid and has access to i
 msgstr "The tracker refused the token. Check that it is valid and has access to issues."
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
 msgid "The Trash is empty."
 msgstr "A Kuka üres."
 
@@ -18063,6 +18399,15 @@ msgstr "Ez az eszköz"
 msgid "This discussion no longer exists or you cannot see it."
 msgstr "Ez a vita már nem létezik, vagy nem látod."
 
+#. placeholder {0}: err.detail
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose: {0}"
+msgstr "Ez nem illik a postafiók céljához: {0}"
+
+#: src/components/common/text.ts
+msgid "This does not fit the inbox's purpose."
+msgstr "Ez nem illik a postafiók céljához."
+
 #: src/components/common/text.ts
 msgid "This domain is already in the list."
 msgstr "This domain is already in the list."
@@ -18115,6 +18460,10 @@ msgstr "Ennek a postafióknak nincs e-mail-csatornája. Adj hozzá egyet SMTP-fi
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Ennek a postafióknak még nincs levelezési listája. A tömeges levél csak azoknak megy, akik feliratkoztak egy listára."
+
+#: src/features/settings/inboxes/InboxPage.tsx
+msgid "This inbox is for"
+msgstr "Ez a postafiók a következőre szolgál:"
 
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
@@ -18199,6 +18548,10 @@ msgstr "Ez a lista archivált. Nem fogad új feliratkozót, és a kiküldések n
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Ez a lista privát, ezért az űrlapok nem kínálják fel. Űrlap használatához tedd nyilvánossá a beállításokban."
+
+#: src/features/mail/MailThread.tsx
+msgid "This mail is not available"
+msgstr "Ez a levél nem érhető el"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "This mailbox connects only with “Sign in with Microsoft”, which this Yuva server does not offer. Ask its operator to set it up."
@@ -18450,6 +18803,7 @@ msgstr "TLS (465-ös port)"
 #: src/features/conversation/composer/Recipients.tsx
 #: src/features/conversation/ForwardDialog.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -18463,6 +18817,10 @@ msgstr "Hogy az asszisztensek maguk is küldhessenek, kapcsold be a <0>Botok kü
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Címzett: {emailTo}"
+
+#: src/features/mail/MailList.tsx
+msgid "To: {who}"
+msgstr "Címzett: {who}"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
@@ -18526,7 +18884,14 @@ msgid "Tracker"
 msgstr "Tracker"
 
 #: src/features/inbox/ChatList.tsx
+#: src/features/mail/MailList.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/migrations/parts.tsx
+msgid "Trash"
+msgstr "Kuka"
+
+#: src/features/mail/folders.ts
+msgctxt "mail folder"
 msgid "Trash"
 msgstr "Kuka"
 
@@ -18783,6 +19148,10 @@ msgstr "Ismeretlen eszköz"
 msgid "unknown reason"
 msgstr "ismeretlen ok"
 
+#: src/features/mail/MailList.tsx
+msgid "Unknown sender"
+msgstr "Ismeretlen feladó"
+
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Unlink"
@@ -18874,6 +19243,7 @@ msgstr "Nincs közzétéve"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailList.tsx
 msgid "Unread"
 msgstr "Olvasatlan"
 
@@ -19650,6 +20020,10 @@ msgstr "Mi történt"
 msgid "What is new in October"
 msgstr "Mi újság októberben"
 
+#: src/components/common/PurposeChoice.tsx
+msgid "What is this inbox for?"
+msgstr "Mire szolgál ez a postafiók?"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What is this key for?"
 msgstr "Mire való ez a kulcs?"
@@ -19781,8 +20155,13 @@ msgid "When off, API keys can only write drafts, and a member reviews and sends 
 msgstr "Kikapcsolva az API-kulcsok csak piszkozatokat írhatnak, a tag pedig átnézi és elküldi őket."
 
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/mail/MailThread.tsx
 msgid "When should it come back?"
 msgstr "Mikor térjen vissza?"
+
+#: src/features/mail/MailList.tsx
+msgid "When should they come back?"
+msgstr "Mikor térjenek vissza?"
 
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
@@ -20179,6 +20558,14 @@ msgstr "Elhagyhatod ezt az oldalt; az import folytatódik."
 msgid "You can leave this page: the conversation will wait for you in your conversation list."
 msgstr "Elhagyhatod ezt az oldalt: a beszélgetés a beszélgetéslistádon vár rád."
 
+#: src/features/mail/MailThread.tsx
+msgid "You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
+msgstr "30 napig visszaállíthatod a kukából, utána végleg törlődik az üzeneteivel és fájljaival együtt."
+
+#: src/features/mail/MailList.tsx
+msgid "You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
+msgstr "30 napig visszaállíthatod őket a kukából, utána végleg törlődnek az üzeneteikkel és fájljaikkal együtt."
+
 #: src/features/account/ConnectPage.tsx
 msgid "You can then write, vote and follow discussions there. The team behind {host} sees your name and e-mail address when you write; other readers see only your name."
 msgstr "Ezután ott írhatsz, szavazhatsz és követhetsz vitákat. A(z) {host} mögötti csapat látja a neved és az e-mail-címed, amikor írsz; más olvasók csak a neved látják."
@@ -20222,6 +20609,10 @@ msgstr "Annyi munkaterületet hoztál létre, amennyit ez a szerver enged. Tör�
 #: src/features/settings/profile/Passkeys.tsx
 msgid "You have no passkeys yet."
 msgstr "Még nincs hozzáférési kulcsod."
+
+#: src/features/mail/MailList.tsx
+msgid "You have not sent any mail yet."
+msgstr "Még nem küldtél levelet."
 
 #: src/features/account/AccountPage.tsx
 msgid "You have not written in any discussion yet."
@@ -20338,6 +20729,10 @@ msgstr "Your identity provider"
 #: src/features/auth/ssoError.ts
 msgid "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
 msgstr "Your identity provider has not verified your e-mail address, so Yuva cannot trust it. Ask your administrator to verify it there."
+
+#: src/features/mail/MailList.tsx
+msgid "Your inbox is empty."
+msgstr "A Beérkezett mappád üres."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Your job calls Yuva on a schedule. A missing call fails the monitor."

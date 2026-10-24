@@ -33,6 +33,7 @@ import { useIsPhone } from "@/hooks/use-media-query"
 import type { Inbox, StatusIncident, StatusPage } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
+import { isSupport } from "@/lib/workspace"
 
 const TABS = ["overview", "components", "subscribers", "settings"] as const
 type Tab = (typeof TABS)[number]
@@ -359,7 +360,7 @@ export function StatusHome() {
   const { canManage } = useSession()
   const { items, pages, inboxes, inboxOf } = useStatusScope()
   const withPage = new Set(items.map((p) => p.inbox_id))
-  const missing = canManage ? inboxes.filter((i) => !withPage.has(i.id)) : []
+  const missing = canManage ? inboxes.filter((i) => isSupport(i) && !withPage.has(i.id)) : []
   const [creating, setCreating] = useState<string | null>(null)
   const [preview, setPreview] = useState(false)
   const [confirm, confirmDialog] = useConfirm()

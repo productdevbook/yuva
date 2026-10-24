@@ -24,7 +24,7 @@ import { useConversation } from "@/features/conversation/queries"
 import { useConversations } from "@/features/inbox/queries"
 import { useAnalyticsVisible } from "@/features/analytics/properties"
 import { useSession } from "@/lib/session"
-import { useChannelMap, useInboxes } from "@/lib/workspace"
+import { isSupport, useChannelMap, useInboxes } from "@/lib/workspace"
 import { setTheme } from "@/lib/theme"
 
 type Item = { group: string; label: string; hint?: string; keys?: string[]; run: () => void }
@@ -40,7 +40,7 @@ function useItems(open: boolean): Item[] {
   const inboxList = useInboxes().data
   const channels = useChannelMap()
   const [inboxId, setFilter] = useInboxFilter()
-  const recent = useConversations({ status: ["open"], inbox_id: inboxId || undefined }, open)
+  const recent = useConversations({ status: ["open"], purpose: "support", inbox_id: inboxId || undefined }, open)
   const conversationId = /^\/(?:conversations|feedback)\/([^/]+)/.exec(pathname)?.[1]
   const current = useConversation(open ? conversationId : undefined).data
   const replies = useReplyChoices()
@@ -110,9 +110,10 @@ function useItems(open: boolean): Item[] {
         }
       }
     }
-    if (inboxes.length > 1) {
+    if (inboxes.filter(isSupport).length > 1) {
       list.push({ group: t`Inbox`, label: t`All inboxes`, run: () => setFilter("") })
-      for (const i of inboxes) list.push({ group: t`Inbox`, label: t`Only ${i.name}`, run: () => setFilter(i.id) })
+      for (const i of inboxes.filter(isSupport))
+        list.push({ group: t`Inbox`, label: t`Only ${i.name}`, run: () => setFilter(i.id) })
     }
     const go = (label: string, to: string, keys?: string[]) =>
       list.push({ group: t`Go to`, label, keys, run: () => navigate(to) })
@@ -126,6 +127,7 @@ function useItems(open: boolean): Item[] {
       },
     })
     if (canManage) go(t`Home`, "/", keyLabel(SHORTCUTS.home))
+    if (inboxList?.some((i) => i.purpose === "mail")) go(t`Mail`, "/mail", keyLabel(SHORTCUTS.mail))
     go(t`Feedback`, "/feedback", keyLabel(SHORTCUTS.feedback))
     go(t`Contacts`, "/contacts", keyLabel(SHORTCUTS.contacts))
     go(t`Docs`, "/docs", keyLabel(SHORTCUTS.docs))

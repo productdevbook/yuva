@@ -335,7 +335,7 @@ function MemberDetail({ member: m, load, products }: Detail) {
   const { membership, canManage, workspaceId: ws } = useSession()
   const [inboxId] = useInboxFilter()
   const stats = useStats(inboxId).data
-  const open = useConversations({ assignee: m.id, status: ["open"] })
+  const open = useConversations({ assignee: m.id, status: ["open"], purpose: "support" })
   const [asking, setAsking] = useState(false)
   const isOwner = membership.role === "owner"
   const you = m.id === membership.member_id
@@ -505,7 +505,7 @@ export function TeamPage({ tab = "members" }: { tab?: "members" | "invites" }) {
   const [inviting, setInviting] = useState(false)
   const invites = useInvites(canManage)
   const queue = useConversations(
-    { status: ["open"], assignee: "unassigned", inbox_id: inboxId || undefined },
+    { status: ["open"], assignee: "unassigned", purpose: "support", inbox_id: inboxId || undefined },
     !!inboxId
   )
   const granted = useQueries({
