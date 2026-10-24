@@ -32,7 +32,7 @@ Requires minSdk 26. Add `maven("https://jitpack.io")` to your repositories and t
 the version (a new tag takes JitPack a few minutes to build):
 
 ```kotlin
-implementation("com.github.productdevbook:yuva:v0.1.0")
+implementation("com.github.productdevbook:yuva:v0.2.0")
 ```
 
 ```kotlin

@@ -99,7 +99,7 @@ On Kubernetes, install the Helm chart `oci://ghcr.io/productdevbook/charts/yuva`
 | Web: `<yuva-chat>`, headless client | `npm install useyuva` | [Web widget](docs/widget.md), [Headless](docs/headless.md) |
 | React and shadcn/ui | `npx shadcn@latest add https://useyuva.com/r/yuva-discussions.json` | [shadcn registry](sdk/shadcn/README.md) |
 | iOS and macOS | Swift package `https://github.com/productdevbook/yuva.git`, product `YuvaKit` | [Mobile SDKs](docs/mobile.md) |
-| Android | `implementation("com.github.productdevbook:yuva:v0.1.0")` | [Mobile SDKs](docs/mobile.md) |
+| Android | `implementation("com.github.productdevbook:yuva:v0.2.0")` | [Mobile SDKs](docs/mobile.md) |
 | Go | `go get github.com/productdevbook/yuva/sdk/go` | [Go SDK](sdk/go/README.md) |
 | AI assistants | `/mcp` on your server, or `yuva.mcpb` from a release | [MCP](docs/mcp.md) |
 

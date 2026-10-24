@@ -112,7 +112,7 @@ Servers. Auf einem separaten Mail-Host verwenden Sie S3 als Speicher, damit beid
 schreiben. Kopieren Sie das Binary aus dem Image:
 
 ```sh
-docker create --name yuva-bin ghcr.io/productdevbook/yuva:0.1.0
+docker create --name yuva-bin ghcr.io/productdevbook/yuva:0.2.0
 docker cp yuva-bin:/yuva /usr/local/bin/yuva && docker rm yuva-bin
 ```
 
