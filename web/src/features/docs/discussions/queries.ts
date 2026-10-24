@@ -1,7 +1,14 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { store } from "@/features/docs/queries"
-import { api, unwrap, type Discussion, type DiscussionDetail, type DiscussionTeamSort } from "@/lib/api"
+import {
+  api,
+  unwrap,
+  type Discussion,
+  type DiscussionBulkChange,
+  type DiscussionDetail,
+  type DiscussionTeamSort,
+} from "@/lib/api"
 import { keys, type DiscussionFilters, type QueueFilters } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 
@@ -119,6 +126,14 @@ export function useReply(id: string) {
   return useMutation({
     mutationFn: (body: { body: string; parent_post_id?: string }) =>
       unwrap(api.POST("/v1/discussions/{discussionId}/posts", { params: { path: { discussionId: id } }, body })),
+    onSuccess: () => refresh(),
+  })
+}
+
+export function useBulkDiscussions() {
+  const refresh = useRefresh()
+  return useMutation({
+    mutationFn: (body: DiscussionBulkChange) => unwrap(api.POST("/v1/discussions/bulk", { body })),
     onSuccess: () => refresh(),
   })
 }

@@ -320,6 +320,7 @@ msgstr "Súgóközpont létrehozása"
 msgid "Create help center ({newKey})"
 msgstr "Súgóközpont létrehozása ({newKey})"
 
+#: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Delete"
@@ -348,6 +349,10 @@ msgstr "Súgóközpont törlése"
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete the {name} translation?"
 msgstr "Törli a(z) {name} fordítást?"
+
+#: src/features/help/Bulk.tsx
+msgid "Delete the selected articles ({n})?"
+msgstr "Törlöd a kijelölt cikkeket ({n})?"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete this article?"
@@ -420,6 +425,7 @@ msgid "Every search found something."
 msgstr "Minden keresés talált valamit."
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 msgid "Every translation, its revisions and its counters are deleted."
 msgstr "Minden fordítás, a változataik és a számlálóik törlődnek."
 
@@ -611,6 +617,10 @@ msgstr "{name} áthelyezése. Húzza, vagy nyomja le az Alt billentyűt a nyilak
 msgid "Move down"
 msgstr "Mozgatás lefelé"
 
+#: src/features/help/Bulk.tsx
+msgid "Move to collection"
+msgstr "Áthelyezés gyűjteménybe"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move up"
 msgstr "Mozgatás felfelé"
@@ -661,6 +671,7 @@ msgstr "Még nincs cikk. Írja meg az első választ, amit az ügyfelei újra é
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/Bulk.tsx
 msgid "No collection"
 msgstr "Nincs gyűjtemény"
 
@@ -824,6 +835,7 @@ msgid "Public address"
 msgstr "Nyilvános cím"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Publish"
 msgstr "Közzététel"
@@ -1080,6 +1092,10 @@ msgstr "Az oldal nem működik tovább a látogatóknak. A piszkozat megmarad, �
 msgid "The pages offer this chat under “Still need help?”."
 msgstr "Az oldalak ezt a csevegést a „Még mindig segítség kell?” alatt kínálják."
 
+#: src/features/help/Bulk.tsx
+msgid "The pages stop working for visitors. The drafts stay, and you can publish them again."
+msgstr "Az oldalak megszűnnek működni a látogatóknak. A piszkozatok megmaradnak, és újra közzéteheted őket."
+
 #: src/features/help/ImportCard.tsx
 msgid "The read-only sign-in of this migration is reused. No new permission is asked."
 msgstr "The read-only sign-in of this migration is reused. No new permission is asked."
@@ -1134,6 +1150,7 @@ msgid "Type a word to search for."
 msgstr "Írjon be egy keresendő szót."
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish"
 msgstr "Közzététel visszavonása"
@@ -1141,6 +1158,10 @@ msgstr "Közzététel visszavonása"
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Közzététel visszavonása ({publishKey})"
+
+#: src/features/help/Bulk.tsx
+msgid "Unpublish the selected translations?"
+msgstr "Visszavonod a kijelölt fordítások közzétételét?"
 
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish this help center?"

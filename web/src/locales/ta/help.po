@@ -320,6 +320,7 @@ msgstr "உதவி மையத்தை உருவாக்கு"
 msgid "Create help center ({newKey})"
 msgstr "உதவி மையத்தை உருவாக்கு ({newKey})"
 
+#: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Delete"
@@ -348,6 +349,10 @@ msgstr "உதவி மையத்தை நீக்கு"
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete the {name} translation?"
 msgstr "{name} மொழிபெயர்ப்பை நீக்கவா?"
+
+#: src/features/help/Bulk.tsx
+msgid "Delete the selected articles ({n})?"
+msgstr "தேர்ந்தெடுத்த கட்டுரைகளை ({n}) நீக்கவா?"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete this article?"
@@ -420,6 +425,7 @@ msgid "Every search found something."
 msgstr "ஒவ்வொரு தேடலிலும் ஏதோ கிடைத்தது."
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 msgid "Every translation, its revisions and its counters are deleted."
 msgstr "அனைத்து மொழிபெயர்ப்புகள், அவற்றின் திருத்தங்கள், எண்ணிகள் நீக்கப்படும்."
 
@@ -611,6 +617,10 @@ msgstr "{name} ஐ நகர்த்து. இழுக்கவும், அ
 msgid "Move down"
 msgstr "கீழே நகர்த்து"
 
+#: src/features/help/Bulk.tsx
+msgid "Move to collection"
+msgstr "தொகுப்புக்கு நகர்த்து"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move up"
 msgstr "மேலே நகர்த்து"
@@ -661,6 +671,7 @@ msgstr "இன்னும் கட்டுரைகள் இல்லை. �
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/Bulk.tsx
 msgid "No collection"
 msgstr "தொகுப்பு இல்லை"
 
@@ -824,6 +835,7 @@ msgid "Public address"
 msgstr "பொது முகவரி"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Publish"
 msgstr "வெளியிடு"
@@ -1080,6 +1092,10 @@ msgstr "பக்கம் பார்வையாளர்களுக்க�
 msgid "The pages offer this chat under “Still need help?”."
 msgstr "பக்கங்கள் இந்த அரட்டையை “இன்னும் உதவி வேண்டுமா?” என்பதன் கீழ் வழங்கும்."
 
+#: src/features/help/Bulk.tsx
+msgid "The pages stop working for visitors. The drafts stay, and you can publish them again."
+msgstr "பக்கங்கள் பார்வையாளர்களுக்குச் செயல்படுவதை நிறுத்தும். வரைவுகள் இருக்கும், அவற்றை மீண்டும் வெளியிடலாம்."
+
 #: src/features/help/ImportCard.tsx
 msgid "The read-only sign-in of this migration is reused. No new permission is asked."
 msgstr "The read-only sign-in of this migration is reused. No new permission is asked."
@@ -1134,6 +1150,7 @@ msgid "Type a word to search for."
 msgstr "தேட ஒரு சொல்லை உள்ளிடுங்கள்."
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish"
 msgstr "வெளியீட்டை நீக்கு"
@@ -1141,6 +1158,10 @@ msgstr "வெளியீட்டை நீக்கு"
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "வெளியீட்டை நீக்கு ({publishKey})"
+
+#: src/features/help/Bulk.tsx
+msgid "Unpublish the selected translations?"
+msgstr "தேர்ந்தெடுத்த மொழிபெயர்ப்புகளின் வெளியீட்டைத் திரும்பப் பெறவா?"
 
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish this help center?"

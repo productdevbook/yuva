@@ -8,6 +8,7 @@ import {
   type ChangelogBroadcast,
   type ChangelogCreate,
   type ChangelogEntry,
+  type ChangelogEntryBulkChange,
   type ChangelogEntryCreate,
   type ChangelogEntryTranslation,
   type ChangelogEntryUpdate,
@@ -127,6 +128,15 @@ export function useCreateEntry(changelogId: string) {
     mutationFn: (body: ChangelogEntryCreate) =>
       unwrap(api.POST("/v1/changelogs/{changelogId}/entries", { params: { path: { changelogId } }, body })),
     onSuccess: refresh,
+  })
+}
+
+export function useBulkEntries(changelogId: string) {
+  const refresh = useRefresh()
+  return useMutation({
+    mutationFn: (body: ChangelogEntryBulkChange) =>
+      unwrap(api.POST("/v1/changelogs/{changelogId}/entries/bulk", { params: { path: { changelogId } }, body })),
+    onSuccess: () => refresh(),
   })
 }
 

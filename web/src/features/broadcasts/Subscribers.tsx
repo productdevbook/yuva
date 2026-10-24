@@ -4,12 +4,14 @@ import { useState } from "react"
 
 import { ErrorLine, Segmented } from "@/components/common"
 import { formatDate, formatDateTime, SUBSCRIPTION_STATES, useEnumText } from "@/components/common/text"
+import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { Button } from "@/components/ui/button"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
 import { Item } from "@/components/ui/item"
 import { STATUS_KEYS } from "@/components/common/ShortcutSheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AddStatusSubscriberDialog } from "@/features/status/AddSubscriberDialog"
+import { SubscriberBulkBar } from "@/features/broadcasts/SubscriberBulk"
 import { AddSubscriberDialog } from "@/features/broadcasts/AddSubscriberDialog"
 import { useSubscriptions } from "@/features/broadcasts/queries"
 import { StateTag, SubscriberSheet } from "@/features/broadcasts/SubscriberSheet"
@@ -17,17 +19,29 @@ import { Card, EmptyRow, Rows, Section } from "@/features/settings/ui"
 import { useStatusComponents } from "@/features/status/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useDebounced } from "@/hooks/use-debounced"
+import { useSelection } from "@/hooks/use-selection"
 import type { MailingList, Subscription, SubscriptionState } from "@/lib/api"
 import { useSession } from "@/lib/session"
 
-function SubscriberRow({ s, names, onOpen }: { s: Subscription; names?: Map<string, string>; onOpen: () => void }) {
+function SubscriberRow({
+  s,
+  names,
+  onOpen,
+  check,
+}: {
+  s: Subscription
+  names?: Map<string, string>
+  onOpen: () => void
+  check?: { checked: boolean; onToggle: (range: boolean) => void }
+}) {
   const { i18n } = useLingui()
   const text = useEnumText()
   return (
-    <li>
+    <li className="flex items-center">
+      {check && <RowCheck className="ms-4" checked={check.checked} name={s.email} onToggle={check.onToggle} />}
       <Item
         render={<button type="button" />}
-        className="flex-nowrap gap-3 rounded-none px-4 py-2.5 [button]:hover:bg-muted"
+        className="min-w-0 flex-1 flex-nowrap gap-3 rounded-none px-4 py-2.5 [button]:hover:bg-muted"
         onClick={onOpen}
         data-testid="subscriber-row"
       >
@@ -82,6 +96,11 @@ export function Subscribers({ list }: { list: MailingList }) {
   const subs = useSubscriptions(list.id, state, q)
   const items = subs.data?.pages.flatMap((p) => p.items) ?? []
   const filtered = !!state || !!q
+  const selection = useSelection(
+    items.map((s) => s.id),
+    `${list.id}|${state}|${q}`
+  )
+  const selectable = canManage && !list.archived_at
   useHotkeys({ [STATUS_KEYS.addSubscriber]: () => setAdding(true) }, canManage && !list.archived_at && !adding && !open)
   return (
     <Section
@@ -113,6 +132,9 @@ export function Subscribers({ list }: { list: MailingList }) {
             ]}
           />
         </div>
+        {selectable && items.length > 0 && !selection.selecting && (
+          <SelectToggle selection={selection} className="order-last" />
+        )}
         <InputGroup className="h-9 min-w-48 flex-1 rounded-[10px] bg-card">
           <InputGroupAddon>
             <SearchIcon />
@@ -139,6 +161,7 @@ export function Subscribers({ list }: { list: MailingList }) {
           )}
         </InputGroup>
       </div>
+      {selectable && <SubscriberBulkBar listId={list.id} items={items} selection={selection} />}
       <Card flush>
         {subs.isPending ? (
           <div className="flex flex-col gap-2 p-4">
@@ -158,7 +181,17 @@ export function Subscribers({ list }: { list: MailingList }) {
         ) : (
           <Rows data-testid="subscribers">
             {items.map((s) => (
-              <SubscriberRow key={s.id} s={s} names={names} onOpen={() => setOpen(s.id)} />
+              <SubscriberRow
+                key={s.id}
+                s={s}
+                names={names}
+                onOpen={() => setOpen(s.id)}
+                check={
+                  selectable && selection.selecting
+                    ? { checked: selection.has(s.id), onToggle: (range) => selection.toggle(s.id, range) }
+                    : undefined
+                }
+              />
             ))}
           </Rows>
         )}

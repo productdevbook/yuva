@@ -4499,6 +4499,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/discussions/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Moderate several threads at once
+         * @description Each action works on the thread's opening post: `hide` and `unhide` as
+         *     `updateDiscussionPost` with `state: hidden` and `state: published` (`unhide` is the undo of
+         *     `hide`), `spam` as `markDiscussionPostSpam` (a
+         *     member's thread listed with `validation_failed`), `delete` as `deleteDiscussionPost`, so only a
+         *     thread the calling member wrote (`forbidden` otherwise).
+         *
+         *     Each item is changed in its own transaction by the same code as the single endpoint, with the
+         *     same events and webhooks; a refused item is listed in `failed` with the status and code the
+         *     single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+         *     once. An id the caller cannot see or of another workspace is listed with
+         *     `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+         *
+         *     `hide`, `unhide` and `spam` need an owner or admin (`403 forbidden` for the whole request). Member
+         *     sessions only.
+         */
+        post: operations["bulkChangeDiscussions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/discussions/{discussionId}": {
         parameters: {
             query?: never;
@@ -5155,6 +5188,36 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/lists/{listId}/subscriptions/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change several subscriptions at once
+         * @description `unsubscribe` as `updateSubscription` with `state: unsubscribed` (recorded as consent, so it has
+         *     no undo); `delete` as `deleteSubscription`.
+         *
+         *     Each item is changed in its own transaction by the same code as the single endpoint, with the
+         *     same events and webhooks; a refused item is listed in `failed` with the status and code the
+         *     single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+         *     once. An id the caller cannot see, of another workspace or of another list is listed with
+         *     `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+         *
+         *     A list of a personal mailbox answers `404` to everyone but its owner. Owners, admins and API
+         *     keys. Scope: `lists:write`.
+         */
+        post: operations["bulkChangeSubscriptions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/lists/{listId}/subscriptions/{subscriptionId}": {
         parameters: {
             query?: never;
@@ -5510,6 +5573,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/email-designs/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change several e-mail designs at once
+         * @description `delete` archives each design as `archiveEmailDesign`.
+         *
+         *     Each item is changed in its own transaction by the same code as the single endpoint, with the
+         *     same events and webhooks; a refused item is listed in `failed` with the status and code the
+         *     single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+         *     once. An id the caller cannot see or of another workspace is listed with
+         *     `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+         *
+         *     A design of a personal mailbox is listed with `not_found` for everyone but its owner.
+         *     Owners, admins and API keys. Scope: `broadcasts:write`.
+         */
+        post: operations["bulkChangeEmailDesigns"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/email-designs/{designId}": {
         parameters: {
             query?: never;
@@ -5679,6 +5771,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/email-images/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change several e-mail images at once
+         * @description `delete` as `deleteEmailImage` without `force`: an image in use is listed with `image_in_use`
+         *     and what uses it in `used_by`, one that went out in a sent broadcast with `image_sent`.
+         *
+         *     Each item is changed in its own transaction by the same code as the single endpoint, with the
+         *     same events and webhooks; a refused item is listed in `failed` with the status and code the
+         *     single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+         *     once. An id the caller cannot see or of another workspace is listed with
+         *     `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+         *
+         *     Owners, admins and API keys. Scope: `broadcasts:write`.
+         */
+        post: operations["bulkChangeEmailImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/email-images/{imageId}": {
         parameters: {
             query?: never;
@@ -5738,6 +5859,36 @@ export interface paths {
          *     broadcast write answers `403 broadcasts_disabled`.
          */
         post: operations["createBroadcast"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/broadcasts/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change several broadcasts at once
+         * @description `delete` as `deleteBroadcast`: a scheduled, preparing, sending or paused broadcast is listed
+         *     with `broadcast_active`.
+         *
+         *     Each item is changed in its own transaction by the same code as the single endpoint, with the
+         *     same events and webhooks; a refused item is listed in `failed` with the status and code the
+         *     single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+         *     once. An id the caller cannot see or of another workspace is listed with
+         *     `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+         *
+         *     A broadcast of a personal mailbox is listed with `not_found` for everyone but its owner.
+         *     Owners, admins and API keys. Scope: `broadcasts:write`.
+         */
+        post: operations["bulkChangeBroadcasts"];
         delete?: never;
         options?: never;
         head?: never;
@@ -9130,6 +9281,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/changelogs/{changelogId}/entries/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change several entries at once
+         * @description `delete` as `deleteChangelogEntry` (a published or scheduled entry needs who may publish, per
+         *     entry); `publish` publishes each whole entry as `publishChangelogEntry` without `locale`, an entry
+         *     without a translation in the default locale listed with `no_default_translation`. An entry
+         *     that is already published is listed in `succeeded` and left as it is: nothing is frozen again
+         *     and no `changelog.entry.published` goes out.
+         *
+         *     Each item is changed in its own transaction by the same code as the single endpoint, with the
+         *     same events and webhooks; a refused item is listed in `failed` with the status and code the
+         *     single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+         *     once. An id the caller cannot see, of another workspace or of another changelog is listed with
+         *     `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+         *
+         *     Scope: `changelog:write`; `publish` needs `changelog:publish` and who may publish instead,
+         *     checked once (`403`).
+         */
+        post: operations["bulkChangeChangelogEntries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/changelogs/{changelogId}/entries/{entryId}": {
         parameters: {
             query?: never;
@@ -9564,6 +9748,41 @@ export interface paths {
          *     Agents with access to the center's inbox, owners, admins and API keys. Scope: `help:write`.
          */
         post: operations["createHelpArticle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/help-centers/{centerId}/articles/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change several articles at once
+         * @description `delete` as `deleteHelpArticle`; `publish` and `unpublish` the translation in `locale` (the
+         *     center's default locale when absent) as `publishHelpArticleTranslation` and
+         *     `unpublishHelpArticleTranslation`, an article without that translation listed with
+         *     `not_found`; `move` into `collection_id` (`null` takes the articles out of their collection) as
+         *     `updateHelpArticle`. Undo `publish` with `unpublish` and the reverse, and `move` by moving each
+         *     article back. An unknown `collection_id` answers `400`.
+         *
+         *     Each item is changed in its own transaction by the same code as the single endpoint, with the
+         *     same events and webhooks; a refused item is listed in `failed` with the status and code the
+         *     single endpoint would have answered, and the others go on. Up to 100 `ids`; duplicates count
+         *     once. An id the caller cannot see, of another workspace or of another center is listed with
+         *     `not_found`. An unknown `action` or missing parameters answer `400` and change nothing.
+         *
+         *     Who may, as for each single action, checked once for the whole request (`403`); deleting a
+         *     published article needs who may publish, per article. Scope: `help:write`; `publish` and
+         *     `unpublish` need `help:publish` instead.
+         */
+        post: operations["bulkChangeHelpArticles"];
         delete?: never;
         options?: never;
         head?: never;
@@ -15323,6 +15542,70 @@ export interface components {
             /** @description The conversations after the change, in request order (with `trashed_at` when trashed). */
             updated: components["schemas"]["Conversation"][];
             failed: components["schemas"]["ConversationBulkFailure"][];
+        };
+        /** @description Up to 100 ids; duplicates count once. */
+        BulkIds: string[];
+        BulkFailure: {
+            /** Format: uuid */
+            id: string;
+            /**
+             * Format: int32
+             * @description The HTTP status the single change would have answered.
+             */
+            status: number;
+            code: string;
+            detail?: string;
+            /** @description The request field the refusal is about, when it is about one. */
+            field?: string;
+            /** @description `image_in_use`: what uses the image, as the single delete names it. */
+            used_by?: components["schemas"]["EmailImageUsage"];
+        };
+        BulkResult: {
+            /** @description The ids that changed, in request order. */
+            succeeded: string[];
+            failed: components["schemas"]["BulkFailure"][];
+        };
+        HelpArticleBulkChange: {
+            ids: components["schemas"]["BulkIds"];
+            /** @enum {string} */
+            action: "delete" | "publish" | "unpublish" | "move";
+            /** @description `publish` and `unpublish`: the translation; the center's default locale when absent. */
+            locale?: components["schemas"]["LanguageTag"];
+            /**
+             * Format: uuid
+             * @description `move` only, and required there: the collection, `null` for none.
+             */
+            collection_id?: string | null;
+        };
+        ChangelogEntryBulkChange: {
+            ids: components["schemas"]["BulkIds"];
+            /** @enum {string} */
+            action: "delete" | "publish";
+        };
+        SubscriptionBulkChange: {
+            ids: components["schemas"]["BulkIds"];
+            /** @enum {string} */
+            action: "unsubscribe" | "delete";
+        };
+        EmailDesignBulkChange: {
+            ids: components["schemas"]["BulkIds"];
+            /** @enum {string} */
+            action: "delete";
+        };
+        EmailImageBulkChange: {
+            ids: components["schemas"]["BulkIds"];
+            /** @enum {string} */
+            action: "delete";
+        };
+        BroadcastBulkChange: {
+            ids: components["schemas"]["BulkIds"];
+            /** @enum {string} */
+            action: "delete";
+        };
+        DiscussionBulkChange: {
+            ids: components["schemas"]["BulkIds"];
+            /** @enum {string} */
+            action: "hide" | "unhide" | "spam" | "delete";
         };
         ConversationMove: {
             /** Format: uuid */
@@ -33788,6 +34071,38 @@ export interface operations {
             422: components["responses"]["Problem"];
         };
     };
+    bulkChangeDiscussions: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DiscussionBulkChange"];
+            };
+        };
+        responses: {
+            /** @description Which items changed and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
     getDiscussion: {
         parameters: {
             query?: never;
@@ -34897,6 +35212,41 @@ export interface operations {
             429: components["responses"]["Problem"];
         };
     };
+    bulkChangeSubscriptions: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                listId: components["parameters"]["ListId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriptionBulkChange"];
+            };
+        };
+        responses: {
+            /** @description Which items changed and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getSubscription: {
         parameters: {
             query?: never;
@@ -35445,6 +35795,38 @@ export interface operations {
             429: components["responses"]["Problem"];
         };
     };
+    bulkChangeEmailDesigns: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailDesignBulkChange"];
+            };
+        };
+        responses: {
+            /** @description Which items changed and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
     getEmailDesign: {
         parameters: {
             query?: never;
@@ -35743,6 +36125,38 @@ export interface operations {
             429: components["responses"]["Problem"];
         };
     };
+    bulkChangeEmailImages: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailImageBulkChange"];
+            };
+        };
+        responses: {
+            /** @description Which items changed and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+        };
+    };
     deleteEmailImage: {
         parameters: {
             query?: {
@@ -35847,6 +36261,38 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    bulkChangeBroadcasts: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BroadcastBulkChange"];
+            };
+        };
+        responses: {
+            /** @description Which items changed and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
         };
     };
     getBroadcast: {
@@ -40821,6 +41267,41 @@ export interface operations {
             422: components["responses"]["Problem"];
         };
     };
+    bulkChangeChangelogEntries: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                changelogId: components["parameters"]["ChangelogId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangelogEntryBulkChange"];
+            };
+        };
+        responses: {
+            /** @description Which items changed and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
     getChangelogEntry: {
         parameters: {
             query?: never;
@@ -41593,6 +42074,41 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             422: components["responses"]["Problem"];
+        };
+    };
+    bulkChangeHelpArticles: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Makes a retried request return the first response; see "Idempotency". */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                centerId: components["parameters"]["HelpCenterId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HelpArticleBulkChange"];
+            };
+        };
+        responses: {
+            /** @description Which items changed and which were refused. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
     getHelpArticle: {

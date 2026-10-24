@@ -275,6 +275,10 @@ msgstr "{bad} huonoa"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} muutettu"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · odottaa {at} alkaen"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# oikeus} other {# oikeutta}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Se lähtee # vastaanottajalle.} other {Se lähtee # vastaanottajalle.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} ei voitu muuttaa"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Päivää etukäteen pienennä MX-tietueiden TTL, jotta muutos leviää 
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "päivä muodossa YYYY-MM-DD, aikavyöhykkeessäsi"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Poistettua viestiä ei voi palauttaa."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Kampanjan nimi"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Tyhjennä haku"
 msgid "Clear the selection"
 msgstr "Tyhjennä valinta"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Heikentynyt suorituskyky"
 msgid "Delegates"
 msgstr "Edustajat"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Poistetaanko sääntö {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Poista valittu lohko"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Poistetaanko valitut keskustelut ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Poistetaanko valitut luonnokset ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Poistetaanko valitut tilaukset ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Verkkotunnusta ei ole vahvistettu"
 msgid "done"
 msgstr "tehty"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Tiimin piilottama"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Postilaatikossa"
 msgid "In this browser tab"
 msgstr "Tässä selainvälilehdessä"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Käyttäjinä: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Avaa Yandex ID:ssä Security › App passwords ja luo salasana Mailille nimellä ”Yuva”."
@@ -8553,6 +8588,10 @@ msgstr "Se menee tiedostoon <0>~/.codex/config.toml</0>, jota Codex CLI ja IDE-l
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Se lisätään sinulle nykyiseen projektiin. Lisää <0>--scope user</0> jokaiselle projektille tai <1>--scope project</1> jakaaksesi sen tiedostossa <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Sitä ei enää ole, tai et voi nähdä sitä"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Merkitse luetuksi tai lukemattomaksi (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Merkitse roskapostiksi"
@@ -9740,6 +9780,10 @@ msgstr "Merkitse lukemattomaksi ja palaa listaan"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Merkitse roskapostiksi tai poista merkintä"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Merkitäänkö valitut keskustelut roskapostiksi ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Nähty {seen}"
 msgid "Seen by the monitor"
 msgstr "Valvonnan näkemä"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Valinta"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Valitse {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Valitse kaikki"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Valitse kohdistimen kohdalla oleva viesti"
 msgid "Select the previous or next block"
 msgstr "Valitse edellinen tai seuraava lohko"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Valittu: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Lähde"
 msgid "Sources"
 msgstr "Lähteet"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Vanha postilaatikko lakkaa vastaanottamasta postia kyseiselle verkkotunn
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Toisella postilaatikolla ei ole sähköpostikanavaa, joten tätä sähköpostikeskustelua ei voi siirtää sinne. Lisää siihen ensin sähköpostikanava."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Muut muutettiin."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Muut suljettiin. Avaa yksi, täytä puuttuva ja sulje se."
@@ -18866,6 +18926,10 @@ msgstr "Zip käyttää pakkausmenetelmää, jota Yuva ei voi lukea. Tee se uudel
 msgid "The zone of the day bars."
 msgstr "Päiväpalkkien aikavyöhyke."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Heidän suostumustietonsa poistetaan myös, joten et enää voi osoittaa, miten he suostuivat. Jos et halua lähettää heille enää postia, peruuta heidän tilauksensa."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Heidän suostumustietonsa, pyyntöön siitä, mitä sinulla on heistä:"
@@ -18873,6 +18937,10 @@ msgstr "Heidän suostumustietonsa, pyyntöön siitä, mitä sinulla on heistä:"
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Heidän keskustelunsa säilyvät; he menettävät pääsyn heti."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Heidän raporttinsa ja vastaanottajaluettelonsa poistetaan. Vastauksista alkaneet keskustelut säilyvät."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Nämä säännöt koskevat tilauslomaketta. Voit muuttaa niitä milloin 
 msgid "They already agreed"
 msgstr "He ovat jo suostuneet"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Ne piilotetaan yhdessä kirjoittajiensa kaikkien muiden hyväksyntää odottavien viestien kanssa, ja näiden kirjoittajien myöhemmät viestit odottavat aina tiimin jäsentä."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Ne katoavat tiimiltäsi ja asiakkailta. Voit palauttaa ne roskakorista 30 päivän ajan, minkä jälkeen ne poistetaan pysyvästi viesteineen ja tiedostoineen."
@@ -18922,6 +18994,7 @@ msgstr "He saavat viestin, jossa on linkki, ja ovat tilaajia vasta napsautettuaa
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "He saavat viestin, jossa on linkki, ja saavat ilmoituksia vasta kun napsauttavat sitä."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "He eivät saa enää viestejä tältä listalta, ja kirjataan, että tiimi peruutti heidän tilauksensa. Vain he itse voivat tilata uudelleen vahvistamalla viestin."
@@ -19972,6 +20045,7 @@ msgstr "Vain lukemattomat"
 msgid "Unsaved changes"
 msgstr "Tallentamattomat muutokset"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Peru tilaus"
@@ -19984,6 +20058,10 @@ msgstr "Perutaanko tilaus: {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Poistumislinkki"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Perutaanko valittujen tilaajien tilaus ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Olet työtilan ainoa omistaja. Tee joku muu siellä omistajaksi tai pois
 msgid "You can close this window and go back to {host}."
 msgstr "Voit sulkea tämän ikkunan ja palata sivustolle {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Voit poistaa vain itse aloittamasi keskustelut"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Voit katkaista yhteyden milloin tahansa Asetuksissa, kohdassa Yhdistetyt sovellukset."
@@ -21417,6 +21499,10 @@ msgstr "Sinulla on tallentamattomia muutoksia kohteessa {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Poistut kaikista työtiloista ja menetät kirjautumisesi, avainkoodisi ja ilmoituksesi. Kirjoittamasi viestit jäävät keskusteluihin poistetun jäsenen kirjoittamina. Henkilökohtaiset postilaatikkosi jäävät lukemattomina työtilaan, kunnes omistaja tai ylläpitäjä luovuttaa tai poistaa ne. Tätä ei voi perua."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Et saa tehdä tätä"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

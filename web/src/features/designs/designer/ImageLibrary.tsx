@@ -4,6 +4,7 @@ import { useRef, useState } from "react"
 import { Link } from "react-router"
 
 import { Notice } from "@/components/common"
+import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { formatBytes, useErrorText } from "@/components/common/text"
 import {
   AlertDialog,
@@ -17,7 +18,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ImageBulkBar } from "@/features/designs/Bulk"
 import { designLink, useDeleteImage, useImages, useUploadImage } from "@/features/designs/queries"
+import { useSelection } from "@/hooks/use-selection"
 import { ApiError, type EmailImage, type EmailImageProblem } from "@/lib/api"
 import { cn } from "@/lib/utils"
 
@@ -66,6 +69,10 @@ export function ImageLibrary({
   const [over, setOver] = useState(false)
   const [deleting, setDeleting] = useState<Deleting | null>(null)
   const items = images.data?.pages.flatMap((p) => p.items) ?? []
+  const selection = useSelection(
+    items.map((i) => i.id),
+    open
+  )
 
   const send = async (files: File[]) => {
     setError(null)
@@ -158,6 +165,12 @@ export function ImageLibrary({
             {upload.isPending ? <LoaderIcon className="size-5 animate-spin" /> : <ImageUpIcon className="size-5" />}
             {upload.isPending ? <Trans>Uploading…</Trans> : <Trans>Upload images, or drop them here</Trans>}
           </button>
+          <ImageBulkBar items={items} selection={selection} />
+          {!selection.selecting && items.length > 0 && (
+            <div className="flex justify-end">
+              <SelectToggle selection={selection} />
+            </div>
+          )}
           {error && (
             <Notice tone="danger" icon={TriangleAlertIcon} role="alert" data-testid="image-error">
               <p>{error}</p>
@@ -183,12 +196,12 @@ export function ImageLibrary({
                     <li key={img.id} className="group relative">
                       <button
                         type="button"
-                        onClick={() => onPick(img)}
+                        onClick={(e) => (selection.selecting ? selection.toggle(img.id, e.shiftKey) : onPick(img))}
                         className={cn(
                           "flex w-full flex-col overflow-hidden rounded-xl border bg-card text-start outline-none transition-colors hover:border-faint focus-visible:ring-2 focus-visible:ring-ring",
                           current === img.id && "border-brand ring-2 ring-brand/30"
                         )}
-                        aria-pressed={current === img.id}
+                        aria-pressed={selection.selecting ? selection.has(img.id) : current === img.id}
                         data-testid="image-tile"
                       >
                         <span className="grid aspect-square place-items-center bg-[repeating-conic-gradient(var(--muted)_0_25%,transparent_0_50%)] bg-[length:16px_16px]">
@@ -201,21 +214,31 @@ export function ImageLibrary({
                           </span>
                         </span>
                       </button>
-                      {current === img.id && (
+                      {selection.selecting && (
+                        <RowCheck
+                          className="absolute top-2 start-2"
+                          checked={selection.has(img.id)}
+                          name={name}
+                          onToggle={(range) => selection.toggle(img.id, range)}
+                        />
+                      )}
+                      {current === img.id && !selection.selecting && (
                         <span className="absolute top-2 start-2 grid size-6 place-items-center rounded-full bg-brand text-white">
                           <CheckIcon className="size-3.5" />
                         </span>
                       )}
-                      <Button
-                        variant="secondary"
-                        size="icon-xs"
-                        aria-label={t`Delete ${name}`}
-                        className="absolute top-2 end-2 opacity-0 shadow-sm group-hover:opacity-100 focus-visible:opacity-100"
-                        onClick={() => setDeleting({ image: img })}
-                        data-testid="image-delete"
-                      >
-                        <Trash2Icon />
-                      </Button>
+                      {!selection.selecting && (
+                        <Button
+                          variant="secondary"
+                          size="icon-xs"
+                          aria-label={t`Delete ${name}`}
+                          className="absolute top-2 end-2 opacity-0 shadow-sm group-hover:opacity-100 focus-visible:opacity-100"
+                          onClick={() => setDeleting({ image: img })}
+                          data-testid="image-delete"
+                        >
+                          <Trash2Icon />
+                        </Button>
+                      )}
                     </li>
                   )
                 })}

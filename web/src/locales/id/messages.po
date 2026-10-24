@@ -275,6 +275,10 @@ msgstr "{bad} buruk"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} diubah"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · menunggu sejak {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, other {# izin}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {Akan dikirim ke # penerima.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} tidak dapat diubah"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Sehari sebelumnya, turunkan TTL rekaman MX agar perubahan cepat menyebar
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "satu hari sebagai YYYY-MM-DD, di zona waktu Anda"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Kiriman yang dihapus tidak dapat dikembalikan."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Nama kampanye"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Hapus pencarian"
 msgid "Clear the selection"
 msgstr "Hapus pilihan"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Performa menurun"
 msgid "Delegates"
 msgstr "Delegasi"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Hapus aturan {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Hapus blok yang dipilih"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Hapus diskusi yang dipilih ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Hapus draf yang dipilih ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Hapus langganan yang dipilih ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Domain belum terverifikasi"
 msgid "done"
 msgstr "selesai"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Disembunyikan oleh tim"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Di kotak masuk"
 msgid "In this browser tab"
 msgstr "Di tab browser ini"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Digunakan oleh {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Di Yandex ID, buka Keamanan › Kata sandi aplikasi dan buat kata sandi untuk Mail, bernama “Yuva”."
@@ -8553,6 +8588,10 @@ msgstr "Masuk ke <0>~/.codex/config.toml</0>, yang dipakai bersama oleh Codex CL
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Ditambahkan untuk Anda di proyek saat ini. Tambahkan <0>--scope user</0> untuk setiap proyek, atau <1>--scope project</1> untuk membagikannya di <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Sudah tidak ada, atau Anda tidak dapat melihatnya"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Tandai sudah atau belum dibaca (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Tandai sebagai spam"
@@ -9740,6 +9780,10 @@ msgstr "Tandai belum dibaca dan kembali ke daftar"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Tandai atau batalkan tanda spam"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Tandai diskusi yang dipilih sebagai spam ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Dilihat {seen}"
 msgid "Seen by the monitor"
 msgstr "Dilihat oleh monitor"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Pilihan"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Pilih {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Pilih semua"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Pilih email di bawah kursor"
 msgid "Select the previous or next block"
 msgstr "Pilih blok sebelumnya atau berikutnya"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Terpilih: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Sumber"
 msgid "Sources"
 msgstr "Sumber"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Kotak surat lama berhenti menerima email untuk domain itu."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Kotak masuk lain tidak punya saluran email, sehingga percakapan email ini tidak dapat dipindahkan ke sana. Tambahkan saluran email dulu."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Sisanya telah diubah."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Sisanya sudah ditutup. Buka satu, isi yang diperlukan, lalu tutup."
@@ -18866,6 +18926,10 @@ msgstr "Zip memakai metode kompresi yang tidak dapat dibaca Yuva. Buat lagi seba
 msgid "The zone of the day bars."
 msgstr "Zona waktu batang harian."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Catatan persetujuan mereka ikut dihapus, sehingga Anda tidak dapat lagi menunjukkan bagaimana mereka setuju. Untuk berhenti mengirim surat kepada mereka, berhentikan langganan mereka."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Catatan persetujuan mereka, untuk permintaan tentang apa yang Anda simpan tentang mereka:"
@@ -18873,6 +18937,10 @@ msgstr "Catatan persetujuan mereka, untuk permintaan tentang apa yang Anda simpa
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Percakapan mereka tetap ada; mereka kehilangan akses seketika."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Laporan dan daftar penerimanya dihapus. Percakapan yang dibuka oleh balasan tetap ada."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Aturan ini berlaku untuk formulir berlangganan. Anda dapat mengubahnya k
 msgid "They already agreed"
 msgstr "Mereka sudah setuju"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Kiriman disembunyikan bersama semua kiriman lain dari penulisnya yang masih menunggu persetujuan, dan kiriman penulis tersebut berikutnya akan selalu menunggu anggota tim."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Percakapan ini menghilang bagi tim Anda dan pelanggan. Anda bisa memulihkannya dari Sampah selama 30 hari, lalu dihapus permanen beserta pesan dan filenya."
@@ -18922,6 +18994,7 @@ msgstr "Mereka mendapat email dengan tautan dan berlangganan hanya setelah menge
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Mereka menerima email berisi tautan dan baru menerima pemberitahuan setelah mengekliknya."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Mereka tidak lagi menerima email dari milis ini, dan dicatat bahwa tim yang menghentikan langganan mereka. Hanya mereka yang dapat berlangganan lagi, dengan mengonfirmasi email."
@@ -19972,6 +20045,7 @@ msgstr "Hanya yang belum dibaca"
 msgid "Unsaved changes"
 msgstr "Perubahan belum disimpan"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Berhenti berlangganan"
@@ -19984,6 +20058,10 @@ msgstr "Hentikan langganan {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Tautan berhenti berlangganan"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Berhentikan langganan pelanggan yang dipilih ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Anda satu-satunya pemilik sebuah ruang kerja. Jadikan orang lain pemilik
 msgid "You can close this window and go back to {host}."
 msgstr "Anda dapat menutup jendela ini dan kembali ke {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Anda hanya dapat menghapus diskusi yang Anda mulai"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Anda dapat memutuskannya kapan saja di Pengaturan, di Aplikasi terhubung."
@@ -21417,6 +21499,10 @@ msgstr "Anda punya perubahan yang belum disimpan di {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Anda keluar dari semua ruang kerja dan kehilangan login, passkey, dan notifikasi. Pesan yang Anda tulis tetap di percakapannya, ditampilkan sebagai dari anggota yang dihapus. Kotak surat pribadi Anda tetap di ruang kerja, belum dibaca, sampai pemilik atau admin menyerahkan atau menghapusnya. Ini tidak dapat dibatalkan."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Anda tidak diizinkan melakukan ini"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

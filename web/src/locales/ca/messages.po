@@ -275,6 +275,10 @@ msgstr "{bad} dolents"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} canviats"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · esperant des de {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# permís} other {# permisos}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Va a # destinatari.} other {Va a # destinataris.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} no s’han pogut canviar"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Un dia abans, abaixa el TTL dels registres MX perquè el canvi es propag
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "un dia com YYYY-MM-DD, a la teva zona horària"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Una publicació suprimida no es pot recuperar."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Nom de la campanya"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Esborra la cerca"
 msgid "Clear the selection"
 msgstr "Esborra la selecció"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Rendiment degradat"
 msgid "Delegates"
 msgstr "Delegats"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Vols suprimir la regla {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Elimina el bloc seleccionat"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Voleu suprimir les discussions seleccionades ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Voleu suprimir els esborranys seleccionats ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Voleu suprimir les subscripcions seleccionades ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Domini no verificat"
 msgid "done"
 msgstr "fet"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Amagat per l'equip"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "A la safata"
 msgid "In this browser tab"
 msgstr "En aquesta pestanya del navegador"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "La fan servir: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "A Yandex ID, obre Security › App passwords i crea una contrasenya per a Mail anomenada «Yuva»."
@@ -8553,6 +8588,10 @@ msgstr "Va a <0>~/.codex/config.toml</0>, que comparteixen la CLI de Codex i l'e
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "S'afegeix per a tu al projecte actual. Afegeix <0>--scope user</0> per a tots els projectes, o <1>--scope project</1> per compartir-lo a <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Ja no existeix o no la podeu veure"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Marca com a llegit o no llegit (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Marca com a brossa"
@@ -9740,6 +9780,10 @@ msgstr "Marca com a no llegit i torna a la llista"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Marca o desmarca com a brossa"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Voleu marcar com a brossa les discussions seleccionades ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Vist {seen}"
 msgid "Seen by the monitor"
 msgstr "Vist pel monitor"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Selecció"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Selecciona {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Selecciona-ho tot"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Selecciona el correu sota el cursor"
 msgid "Select the previous or next block"
 msgstr "Selecciona el bloc anterior o el següent"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Seleccionades: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Origen"
 msgid "Sources"
 msgstr "Fonts"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "L'antiga bústia deixa de rebre correu d'aquest domini."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "L'altra safata no té cap canal de correu, de manera que aquesta conversa de correu no s'hi pot moure. Afegeix-hi primer un canal de correu."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "La resta s’ha canviat."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Les altres s’han tancat. Obre’n una, omple el que necessita i tanca-la."
@@ -18866,6 +18926,10 @@ msgstr "El zip fa servir un mètode de compressió que Yuva no pot llegir. Torna
 msgid "The zone of the day bars."
 msgstr "El fus horari de les barres de dies."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Els seus registres de consentiment se suprimeixen amb elles, de manera que ja no podreu demostrar com van acceptar. Per deixar d’enviar-los correu, cancel·leu-ne la subscripció."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Els seus registres de consentiment, per a una sol·licitud sobre què en tens:"
@@ -18873,6 +18937,10 @@ msgstr "Els seus registres de consentiment, per a una sol·licitud sobre què en
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Les seves converses es queden; perden l'accés a l'instant."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Se’n suprimeixen els informes i les llistes de destinataris. Les converses obertes per respostes es conserven."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Aquestes regles s'apliquen al formulari de subscripció. Les pots canvia
 msgid "They already agreed"
 msgstr "Ja han acceptat"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "S’oculten juntament amb la resta de publicacions dels seus autors que encara esperen aprovació, i les publicacions posteriors d’aquests autors sempre esperaran un membre."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Desapareixen per al teu equip i per als clients. Pots restaurar-les des de la paperera durant 30 dies; després s’eliminen definitivament amb els seus missatges i fitxers."
@@ -18922,6 +18994,7 @@ msgstr "Reben un correu amb un enllaç i queden subscrits només després de fer
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Reben un correu amb un enllaç i només reben avisos després de fer-hi clic."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "No reben més correu d'aquesta llista i es registra que l'equip els ha donat de baixa. Només ells es poden tornar a subscriure, confirmant un correu."
@@ -19972,6 +20045,7 @@ msgstr "Només no llegits"
 msgid "Unsaved changes"
 msgstr "Canvis sense desar"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Dona de baixa"
@@ -19984,6 +20058,10 @@ msgstr "Dones de baixa {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Enllaç de baixa"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Voleu cancel·lar la subscripció dels subscriptors seleccionats ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Ets l'únic propietari d'un espai de treball. Fes propietari algú altre
 msgid "You can close this window and go back to {host}."
 msgstr "Pots tancar aquesta finestra i tornar a {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Només podeu suprimir les discussions que heu iniciat"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "El pots desconnectar en qualsevol moment a Configuració, a Aplicacions connectades."
@@ -21417,6 +21499,10 @@ msgstr "Tens canvis sense desar a {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Surts de tots els espais de treball i perds els inicis de sessió, les claus d'accés i les notificacions. Els missatges que vas escriure es queden a les converses, mostrats com d'un membre eliminat. Les teves bústies personals es queden a l'espai de treball, sense llegir, fins que un propietari o administrador les traspassi o les elimini. No es pot desfer."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "No ho podeu fer"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

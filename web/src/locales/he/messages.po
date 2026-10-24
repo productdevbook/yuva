@@ -275,6 +275,10 @@ msgstr "{bad} רע"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} שונו"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · ממתין מאז {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {הרשאה #} two {# הרשאות} other {# הרש�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {נשלח לנמען #.} two {נשלח ל-# נמענים.} other {נשלח ל-# נמענים.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "לא ניתן היה לשנות {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "יום מראש, הנמך את ה-TTL של רשומות ה-MX, כדי ש
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "יום בפורמט שנה-חודש-יום, באזור הזמן שלך"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "לא ניתן לשחזר פוסט שנמחק."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "שם הקמפיין"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "ניקוי החיפוש"
 msgid "Clear the selection"
 msgstr "נקו את הבחירה"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "ביצועים מופחתים"
 msgid "Delegates"
 msgstr "נציגים"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "למחוק את הכלל {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "מחיקת הבלוק שנבחר"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "למחוק את הדיונים שנבחרו ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "למחוק את הטיוטות שנבחרו ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "למחוק את המנויים שנבחרו ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "הדומיין לא מאומת"
 msgid "done"
 msgstr "בוצע"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "הוסתר על ידי הצוות"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "בתיבת הדואר"
 msgid "In this browser tab"
 msgstr "בלשונית הדפדפן הזאת"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "בשימוש של {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "ב-Yandex ID, פתח Security › App passwords וצור סיסמה ל-Mail בשם „Yuva”."
@@ -8553,6 +8588,10 @@ msgstr "הוא נכנס ל-<0>~/.codex/config.toml</0>, שנמצא בשימוש 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "הוא מתווסף בשבילך בפרויקט הנוכחי. הוסף <0>--scope user</0> לכל הפרויקטים, או <1>--scope project</1> כדי לשתף אותו ב-<2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "הוא כבר לא קיים, או שאין לך הרשאה לראות אותו"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "סימון כנקרא או כלא נקרא (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "סימון כספאם"
@@ -9740,6 +9780,10 @@ msgstr "סימון כלא נקרא וחזרה לרשימה"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "סימון כספאם או ביטול הסימון"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "לסמן את הדיונים שנבחרו ({n}) כספאם?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "נראה {seen}"
 msgid "Seen by the monitor"
 msgstr "נראה על ידי המוניטור"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "בחירה"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "בחירת {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "בחירת הכול"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "בחירת המייל שמתחת לסמן"
 msgid "Select the previous or next block"
 msgstr "בחירת הבלוק הקודם או הבא"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "נבחרו: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "מקור"
 msgid "Sources"
 msgstr "מקורות"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "תיבת הדואר הישנה מפסיקה לקבל דואר של הד�
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "לתיבת הדואר האחרת אין ערוץ אימייל, ולכן אי אפשר להעביר אליה את שיחת האימייל הזאת. הוסף לה קודם ערוץ אימייל."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "השאר שונו."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "האחרות נסגרו. פתחו אחת, מלאו את מה שחסר וסגרו אותה."
@@ -18866,6 +18926,10 @@ msgstr "ה-zip משתמש בשיטת דחיסה ש-Yuva לא יכולה לקרו
 msgid "The zone of the day bars."
 msgstr "אזור הזמן של עמודות הימים."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "גם רישומי ההסכמה שלהם נמחקים, ולכן לא תוכלו עוד להראות איך הסכימו. כדי להפסיק לשלוח להם דוא״ל, בטלו במקום זאת את המנוי שלהם."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "רשומות ההסכמה שלהם, לבקשה על מה שיש לך עליהם:"
@@ -18873,6 +18937,10 @@ msgstr "רשומות ההסכמה שלהם, לבקשה על מה שיש לך ע�
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "השיחות שלהם נשארות; הם מאבדים גישה מיד."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "הדוחות ורשימות הנמענים שלהם נמחקים. שיחות שנפתחו בעקבות תגובות נשארות."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "הכללים האלה חלים על טופס ההרשמה. אפשר לש
 msgid "They already agreed"
 msgstr "הם כבר הסכימו"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "הם יוסתרו יחד עם כל שאר הפוסטים של הכותבים שממתינים לאישור, והפוסטים הבאים של הכותבים האלה ימתינו תמיד לחבר צוות."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "הן ייעלמו מהצוות שלכם ומהלקוחות. אפשר לשחזר אותן מהפח במשך 30 יום, ואז הן נמחקות לצמיתות יחד עם ההודעות והקבצים שלהן."
@@ -18922,6 +18994,7 @@ msgstr "הם מקבלים אימייל עם קישור ונרשמים רק אח�
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "הם מקבלים הודעת דוא״ל עם קישור, ומתחילים לקבל הודעות רק לאחר שילחצו עליו."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "הם לא יקבלו עוד דואר מהרשימה הזאת, ונרשם שהצוות הסיר אותם. רק הם יכולים להירשם שוב, באישור אימייל."
@@ -19972,6 +20045,7 @@ msgstr "רק שלא נקראו"
 msgid "Unsaved changes"
 msgstr "שינויים שלא נשמרו"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "הסרה מהרשימה"
@@ -19984,6 +20058,10 @@ msgstr "להסיר את {0} מהרשימה?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "קישור להסרה מהרשימה"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "לבטל את המנוי של המנויים שנבחרו ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "אתה הבעלים היחיד של סביבת עבודה. הפוך מי
 msgid "You can close this window and go back to {host}."
 msgstr "אפשר לסגור את החלון הזה ולחזור אל {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "אפשר למחוק רק דיונים שהתחלתם בעצמכם"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "אפשר לנתק אותו בכל עת בהגדרות, תחת אפליקציות מחוברות."
@@ -21417,6 +21499,10 @@ msgstr "יש לכם שינויים שלא נשמרו ב-{what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "אתם עוזבים את כל סביבות העבודה ומאבדים כניסות, מפתחות גישה והתראות. הודעות שכתבתם נשארות בשיחות, כאילו מחבר שנמחק. התיבות האישיות שלכם נשארות בסביבת העבודה, ללא קריאה, עד שבעלים או מנהל יעבירו אותן למישהו או ימחקו אותן. אי אפשר לבטל."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "אין לך הרשאה לעשות זאת"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

@@ -275,6 +275,10 @@ msgstr "κακά: {bad}"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "Άλλαξαν: {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · σε αναμονή από {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# δικαίωμα} other {# δικαιώματα}}
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Θα σταλεί σε # παραλήπτη.} other {Θα σταλεί σε # παραλήπτες.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "Δεν ήταν δυνατή η αλλαγή: {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Μία ημέρα νωρίτερα, μειώστε το TTL των εγ�
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "μια ημέρα ως YYYY-MM-DD, στη ζώνη ώρας σας"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Μια διαγραμμένη δημοσίευση δεν μπορεί να ανακτηθεί."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Όνομα καμπάνιας"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Εκκαθάριση της αναζήτησης"
 msgid "Clear the selection"
 msgstr "Εκκαθάριση επιλογής"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Μειωμένη απόδοση"
 msgid "Delegates"
 msgstr "Εντεταλμένοι"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Διαγραφή του κανόνα {name};"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Διαγραφή του επιλεγμένου μπλοκ"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Διαγραφή των επιλεγμένων συζητήσεων ({n});"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Διαγραφή των επιλεγμένων πρόχειρων ({n});"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Διαγραφή των επιλεγμένων συνδρομών ({n});"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Ο τομέας δεν έχει επαληθευτεί"
 msgid "done"
 msgstr "έγινε"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Κρύφτηκε από την ομάδα"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Στα εισερχόμενα"
 msgid "In this browser tab"
 msgstr "Σε αυτή την καρτέλα του προγράμματος περιήγησης"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Χρησιμοποιείται από: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Στο Yandex ID, ανοίξτε Ασφάλεια › Κωδικοί εφαρμογών και δημιουργήστε κωδικό για το Mail με όνομα «Yuva»."
@@ -8553,6 +8588,10 @@ msgstr "Μπαίνει στο <0>~/.codex/config.toml</0>, που μοιράζο
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Προστίθεται για εσάς στο τρέχον έργο. Προσθέστε <0>--scope user</0> για κάθε έργο ή <1>--scope project</1> για να το μοιραστείτε στο <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Δεν υπάρχει πια ή δεν μπορείτε να το δείτε"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Σήμανση ως αναγνωσμένο ή αδιάβαστο (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Σήμανση ως spam"
@@ -9740,6 +9780,10 @@ msgstr "Σήμανση ως μη αναγνωσμένο και επιστροφ�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Σήμανση ή αφαίρεση σήμανσης spam"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Σήμανση των επιλεγμένων συζητήσεων ως ανεπιθύμητων ({n});"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Εμφανίστηκε {seen}"
 msgid "Seen by the monitor"
 msgstr "Εμφανίστηκε στην παρακολούθηση"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Επιλογή"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Επιλογή: {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Επιλογή όλων"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Επιλογή του e-mail κάτω από τον δρομέα"
 msgid "Select the previous or next block"
 msgstr "Επιλογή του προηγούμενου ή επόμενου μπλοκ"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Επιλεγμένες: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Πηγή"
 msgid "Sources"
 msgstr "Πηγές"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Το παλιό γραμματοκιβώτιο σταματά να λα�
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Τα άλλα εισερχόμενα δεν έχουν κανάλι e-mail, οπότε αυτή η συνομιλία e-mail δεν μπορεί να μετακινηθεί εκεί. Προσθέστε πρώτα ένα κανάλι e-mail."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Οι υπόλοιπες άλλαξαν."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Οι υπόλοιπες έκλεισαν. Ανοίξτε μία, συμπληρώστε ό,τι χρειάζεται και κλείστε την."
@@ -18866,6 +18926,10 @@ msgstr "Το zip χρησιμοποιεί μέθοδο συμπίεσης που
 msgid "The zone of the day bars."
 msgstr "Η ζώνη ώρας των ράβδων ημέρας."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Διαγράφονται και τα αρχεία συγκατάθεσής τους, οπότε δεν θα μπορείτε πλέον να δείξετε πώς συναίνεσαν. Για να μη λαμβάνουν άλλο αλληλογραφία, καταργήστε τη συνδρομή τους."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Οι καταγραφές συναίνεσής τους, για αίτημα σχετικά με το τι κρατάτε γι' αυτούς:"
@@ -18873,6 +18937,10 @@ msgstr "Οι καταγραφές συναίνεσής τους, για αίτη
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Οι συνομιλίες τους παραμένουν· χάνουν την πρόσβαση αμέσως."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Διαγράφονται οι αναφορές και οι λίστες παραληπτών τους. Οι συνομιλίες που άνοιξαν απαντήσεις παραμένουν."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Αυτοί οι κανόνες ισχύουν για τη φόρμα σ�
 msgid "They already agreed"
 msgstr "Έχουν ήδη συναινέσει"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Κρύβονται μαζί με όλες τις άλλες δημοσιεύσεις των συντακτών τους που περιμένουν έγκριση, και οι μεταγενέστερες δημοσιεύσεις τους θα περιμένουν πάντα ένα μέλος."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Εξαφανίζονται για την ομάδα σας και για τους πελάτες. Μπορείτε να τις επαναφέρετε από τον Κάδο για 30 ημέρες· μετά διαγράφονται οριστικά μαζί με τα μηνύματα και τα αρχεία τους."
@@ -18922,6 +18994,7 @@ msgstr "Λαμβάνουν e-mail με σύνδεσμο και εγγράφον�
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Λαμβάνουν ένα e-mail με σύνδεσμο και παίρνουν ειδοποιήσεις μόνο αφού πατήσουν σε αυτόν."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Δεν λαμβάνουν πια e-mail από αυτή τη λίστα και καταγράφεται ότι τους διέγραψε η ομάδα. Μόνο οι ίδιοι μπορούν να εγγραφούν ξανά, επιβεβαιώνοντας ένα e-mail."
@@ -19972,6 +20045,7 @@ msgstr "Μόνο αδιάβαστα"
 msgid "Unsaved changes"
 msgstr "Μη αποθηκευμένες αλλαγές"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Διαγραφή συνδρομής"
@@ -19984,6 +20058,10 @@ msgstr "Διαγραφή συνδρομής του/της {0};"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Σύνδεσμος διαγραφής συνδρομής"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Κατάργηση συνδρομής των επιλεγμένων συνδρομητών ({n});"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Είστε ο μοναδικός ιδιοκτήτης ενός χώρο�
 msgid "You can close this window and go back to {host}."
 msgstr "Μπορείτε να κλείσετε αυτό το παράθυρο και να επιστρέψετε στο {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Μπορείτε να διαγράψετε μόνο συζητήσεις που ξεκινήσατε εσείς"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Μπορείτε να το αποσυνδέσετε οποιαδήποτε στιγμή στις Ρυθμίσεις, στις Συνδεδεμένες εφαρμογές."
@@ -21417,6 +21499,10 @@ msgstr "Έχετε μη αποθηκευμένες αλλαγές στο {what}.
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Αποχωρείτε από όλους τους χώρους εργασίας και χάνετε συνδέσεις, κλειδιά πρόσβασης και ειδοποιήσεις. Τα μηνύματα που γράψατε μένουν στις συνομιλίες τους, εμφανίζονται ως από διαγραμμένο μέλος. Τα προσωπικά σας γραμματοκιβώτια μένουν στον χώρο εργασίας, αδιάβαστα, μέχρι ένας ιδιοκτήτης ή διαχειριστής να τα μεταβιβάσει ή να τα διαγράψει. Δεν γίνεται αναίρεση."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Δεν επιτρέπεται να το κάνετε αυτό"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

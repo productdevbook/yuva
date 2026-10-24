@@ -6,6 +6,7 @@ import {
   ApiError,
   unwrap,
   type HelpArticle,
+  type HelpArticleBulkChange,
   type HelpArticleCreate,
   type HelpArticleTranslation,
   type HelpArticleUpdate,
@@ -169,6 +170,15 @@ export function useCreateArticle(centerId: string) {
     mutationFn: (body: HelpArticleCreate) =>
       unwrap(api.POST("/v1/help-centers/{centerId}/articles", { params: { path: { centerId } }, body })),
     onSuccess: refresh,
+  })
+}
+
+export function useBulkArticles(centerId: string) {
+  const refresh = useRefresh()
+  return useMutation({
+    mutationFn: (body: HelpArticleBulkChange) =>
+      unwrap(api.POST("/v1/help-centers/{centerId}/articles/bulk", { params: { path: { centerId } }, body })),
+    onSuccess: () => refresh(),
   })
 }
 

@@ -5,6 +5,7 @@ import {
   ApiError,
   unwrap,
   type Broadcast,
+  type BroadcastBulkChange,
   type BroadcastDeliveryState,
   type BroadcastProblem,
   type BroadcastState,
@@ -82,6 +83,18 @@ export function useDeleteBroadcast() {
       unwrap(api.DELETE("/v1/broadcasts/{broadcastId}", { params: { path: { broadcastId: id } } })),
     onSuccess: (_, id) => {
       qc.removeQueries({ queryKey: keys.broadcast(ws, id) })
+      void qc.invalidateQueries({ queryKey: [...keys.broadcasts(ws), "pages"] })
+    },
+  })
+}
+
+export function useBulkBroadcasts() {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return useMutation({
+    mutationFn: (body: BroadcastBulkChange) => unwrap(api.POST("/v1/broadcasts/bulk", { body })),
+    onSuccess: (result) => {
+      for (const id of result.succeeded) qc.removeQueries({ queryKey: keys.broadcast(ws, id) })
       void qc.invalidateQueries({ queryKey: [...keys.broadcasts(ws), "pages"] })
     },
   })

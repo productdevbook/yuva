@@ -275,6 +275,10 @@ msgstr "{bad} không tốt"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "Đã thay đổi {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · chờ từ {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, other {# quyền}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {Gửi đến # người nhận.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "Không thể thay đổi {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Trước một ngày, hãy giảm TTL của các bản ghi MX để thay
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "một ngày dạng YYYY-MM-DD, theo múi giờ của bạn"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Bài đã xóa không thể khôi phục."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Tên chiến dịch"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Xóa tìm kiếm"
 msgid "Clear the selection"
 msgstr "Bỏ chọn tất cả"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Hiệu năng giảm"
 msgid "Delegates"
 msgstr "Người được ủy quyền"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Xóa quy tắc {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Xóa khối đã chọn"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Xóa các cuộc thảo luận đã chọn ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Xóa các bản nháp đã chọn ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Xóa các đăng ký đã chọn ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Tên miền chưa được xác minh"
 msgid "done"
 msgstr "xong"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Bị nhóm ẩn"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Trong hộp thư"
 msgid "In this browser tab"
 msgstr "Trong tab trình duyệt này"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Đang được dùng bởi {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Trong Yandex ID, mở Security › App passwords và tạo một mật khẩu cho Mail, đặt tên “Yuva”."
@@ -8553,6 +8588,10 @@ msgstr "Nó được ghi vào <0>~/.codex/config.toml</0>, tệp mà Codex CLI v
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Nó được thêm cho bạn trong dự án hiện tại. Thêm <0>--scope user</0> cho mọi dự án, hoặc <1>--scope project</1> để chia sẻ trong <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Mục này không còn nữa, hoặc bạn không xem được"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Đánh dấu đã đọc hoặc chưa đọc (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Đánh dấu là thư rác"
@@ -9740,6 +9780,10 @@ msgstr "Đánh dấu là chưa đọc và quay lại danh sách"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Đánh dấu hoặc bỏ đánh dấu là thư rác"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Đánh dấu các cuộc thảo luận đã chọn là spam ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Thấy {seen}"
 msgid "Seen by the monitor"
 msgstr "Được trình giám sát thấy"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Lựa chọn"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Chọn {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Chọn tất cả"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Chọn thư dưới con trỏ"
 msgid "Select the previous or next block"
 msgstr "Chọn khối trước hoặc sau"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Đã chọn: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Nguồn"
 msgid "Sources"
 msgstr "Nguồn"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Hộp thư cũ ngừng nhận thư cho tên miền đó."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Hộp thư kia không có kênh email, nên cuộc trò chuyện email này không thể chuyển đến đó. Hãy thêm kênh email cho nó trước."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Những mục còn lại đã được thay đổi."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Các cuộc còn lại đã được đóng. Hãy mở một cuộc, điền những gì còn thiếu rồi đóng."
@@ -18866,6 +18926,10 @@ msgstr "Tệp zip dùng phương pháp nén mà Yuva không đọc được. Hã
 msgid "The zone of the day bars."
 msgstr "Múi giờ của các cột theo ngày."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Bản ghi đồng ý của họ cũng bị xóa, nên bạn không thể chứng minh họ đã đồng ý thế nào nữa. Để ngừng gửi thư cho họ, hãy hủy đăng ký của họ."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Bản ghi đồng ý của họ, để trả lời yêu cầu về những gì bạn đang giữ về họ:"
@@ -18873,6 +18937,10 @@ msgstr "Bản ghi đồng ý của họ, để trả lời yêu cầu về nhữ
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Cuộc trò chuyện của họ vẫn còn; họ mất quyền truy cập ngay."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Báo cáo và danh sách người nhận của chúng bị xóa. Các cuộc trò chuyện do phản hồi mở ra vẫn được giữ."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Các quy tắc này áp dụng cho biểu mẫu đăng ký. Bạn có th
 msgid "They already agreed"
 msgstr "Họ đã đồng ý rồi"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Chúng bị ẩn cùng mọi bài khác của tác giả đang chờ duyệt, và các bài sau của những tác giả này luôn chờ một thành viên."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Các cuộc trò chuyện sẽ biến mất với nhóm của bạn và với khách hàng. Bạn có thể khôi phục từ Thùng rác trong 30 ngày, sau đó chúng bị xóa vĩnh viễn cùng tin nhắn và tệp."
@@ -18922,6 +18994,7 @@ msgstr "Họ nhận một thư có liên kết và chỉ được đăng ký sau
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Họ sẽ nhận được thư kèm liên kết và chỉ nhận thông báo sau khi nhấp vào liên kết đó."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Họ không nhận thêm thư từ danh sách này, và việc nhóm đã hủy đăng ký cho họ được ghi lại. Chỉ chính họ mới đăng ký lại được, bằng cách xác nhận một thư."
@@ -19972,6 +20045,7 @@ msgstr "Chỉ chưa đọc"
 msgid "Unsaved changes"
 msgstr "Thay đổi chưa lưu"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Hủy đăng ký"
@@ -19984,6 +20058,10 @@ msgstr "Hủy đăng ký {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Liên kết hủy đăng ký"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Hủy đăng ký của các người đăng ký đã chọn ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Bạn là chủ sở hữu duy nhất của một không gian làm việ
 msgid "You can close this window and go back to {host}."
 msgstr "Bạn có thể đóng cửa sổ này và quay lại {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Bạn chỉ có thể xóa các cuộc thảo luận do bạn bắt đầu"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Bạn có thể ngắt kết nối bất cứ lúc nào trong Cài đặt, mục Ứng dụng đã kết nối."
@@ -21417,6 +21499,10 @@ msgstr "Bạn có thay đổi chưa lưu ở {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Bạn rời mọi không gian làm việc và mất đăng nhập, khóa truy cập và thông báo. Tin nhắn bạn viết vẫn ở trong cuộc trò chuyện, hiển thị như của thành viên đã xóa. Hộp thư cá nhân của bạn ở lại không gian làm việc, chưa đọc, cho đến khi chủ sở hữu hoặc quản trị viên chuyển giao hoặc xóa. Không thể hoàn tác."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Bạn không được phép làm việc này"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

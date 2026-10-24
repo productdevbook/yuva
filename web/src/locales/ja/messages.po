@@ -275,6 +275,10 @@ msgstr "不良 {bad} 件"
 msgid "{by}, {date}"
 msgstr "{by}、{date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} 件を変更しました"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · {at} から待機中"
@@ -325,6 +329,10 @@ msgstr "{count, plural, other {#件のスコープ}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {# 件の宛先に送信されます。}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} 件は変更できませんでした"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "1 日前に MX レコードの TTL を短くしておくと、変更が�
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD 形式の日付(お使いのタイムゾーン)"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "削除した投稿は元に戻せません。"
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "キャンペーン名"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "検索をクリア"
 msgid "Clear the selection"
 msgstr "選択を解除"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "パフォーマンス低下"
 msgid "Delegates"
 msgstr "代理人"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "ルール {name} を削除しますか?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "選択したブロックを削除"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "選択したディスカッション ({n}) を削除しますか?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "選択した下書き ({n}) を削除しますか?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "選択した購読 ({n}) を削除しますか?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "ドメイン未確認"
 msgid "done"
 msgstr "完了"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "チームが非表示にしました"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "受信トレイ内"
 msgid "In this browser tab"
 msgstr "このブラウザータブ内"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "使用中: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Yandex ID で、セキュリティ › アプリパスワード を開き、メール用に「Yuva」という名前のパスワードを作成します。"
@@ -8553,6 +8588,10 @@ msgstr "<0>~/.codex/config.toml</0> に書き込まれ、Codex CLI と IDE 拡�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "現在のプロジェクトに追加されます。すべてのプロジェクトには <0>--scope user</0>、<2>.mcp.json</2> で共有するには <1>--scope project</1> を追加してください。"
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "すでに存在しないか、表示する権限がありません"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "既読または未読にする (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "スパムにする"
@@ -9740,6 +9780,10 @@ msgstr "未読にして一覧に戻る"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "スパムにする/解除する"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "選択したディスカッション ({n}) をスパムにしますか?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "{seen} に確認"
 msgid "Seen by the monitor"
 msgstr "モニターが確認"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "選択"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "{name} を選択"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "すべて選択"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "カーソル位置のメールを選択"
 msgid "Select the previous or next block"
 msgstr "前または次のブロックを選択"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "選択中: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "ソース"
 msgid "Sources"
 msgstr "流入元"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "旧メールボックスは、そのドメインのメールを受信し
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "もう一方の受信トレイにはメールチャネルがないため、このメール会話は移動できません。先にメールチャネルを追加してください。"
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "ほかの項目は変更されました。"
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "残りは閉じました。1件を開いて必要な項目を入力し、閉じてください。"
@@ -18866,6 +18926,10 @@ msgstr "zip が Yuva の読めない圧縮方式を使っています。通常�
 msgid "The zone of the day bars."
 msgstr "日別バーのタイムゾーン。"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "同意の記録も一緒に削除されるため、どのように同意したかを示せなくなります。メールを送らないようにするには、代わりに購読を解除してください。"
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "その人の同意記録(保有情報についての請求に対応するため):"
@@ -18873,6 +18937,10 @@ msgstr "その人の同意記録(保有情報についての請求に対応す�
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "会話は残りますが、アクセスはすぐに失われます。"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "レポートと受信者リストが削除されます。返信から始まった会話は残ります。"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "これらのルールは購読フォームに適用されます。リス
 msgid "They already agreed"
 msgstr "すでに同意済み"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "投稿者の承認待ちのほかの投稿とともに非表示になり、その投稿者の以降の投稿は常にメンバーの承認待ちになります。"
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "チームと顧客から見えなくなります。30 日間はゴミ箱から復元でき、その後はメッセージとファイルごと完全に削除されます。"
@@ -18922,6 +18994,7 @@ msgstr "リンク付きのメールが届き、クリックして初めて登録
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "リンク付きのメールが届き、リンクをクリックした後で初めて通知を受け取れます。"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "このリストのメールは届かなくなり、チームが配信停止にしたことが記録されます。本人だけが、メールを確認して再登録できます。"
@@ -19972,6 +20045,7 @@ msgstr "未読のみ"
 msgid "Unsaved changes"
 msgstr "未保存の変更"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "配信停止"
@@ -19984,6 +20058,10 @@ msgstr "{0} を配信停止にしますか?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "配信停止リンク"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "選択した購読者 ({n}) の購読を解除しますか?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "あなたはワークスペースの唯一のオーナーです。アカ
 msgid "You can close this window and go back to {host}."
 msgstr "このウィンドウを閉じて {host} に戻れます。"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "削除できるのは自分が始めたディスカッションだけです"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "設定の接続済みアプリから、いつでも接続を解除できます。"
@@ -21417,6 +21499,10 @@ msgstr "{what} に未保存の変更があります。"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "すべてのワークスペースから退出し、サインイン、パスキー、通知を失います。あなたが書いたメッセージは会話に残り、削除されたメンバーからのものとして表示されます。個人用メールボックスは、オーナーまたは管理者が引き継ぐか削除するまで、未読のままワークスペースに残ります。元に戻せません。"
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "この操作は許可されていません"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

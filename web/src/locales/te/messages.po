@@ -275,6 +275,10 @@ msgstr "{bad} చెడ్డవి"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} మార్చబడ్డాయి"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · {at} నుండి వేచి ఉంది"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# అనుమతి} other {# అనుమతు�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {ఇది # గ్రహీతకు వెళ్తుంది.} other {ఇది # గ్రహీతలకు వెళ్తుంది.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} మార్చలేకపోయాం"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "ఒక రోజు ముందు, MX రికార్డ్‌ల T
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD రూపంలో ఒక రోజు, మీ సమయ మండలంలో"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "తొలగించిన పోస్ట్‌ను తిరిగి తీసుకురాలేరు."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "ప్రచారం పేరు"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "శోధనను క్లియర్ చేయండి"
 msgid "Clear the selection"
 msgstr "ఎంపికను తీసివేయండి"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "తగ్గిన పనితీరు"
 msgid "Delegates"
 msgstr "ప్రతినిధులు"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "నియమం {name} ను తొలగించాలా?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "ఎంచుకున్న బ్లాక్‌ను తొలగించండి"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "ఎంచుకున్న చర్చలను ({n}) తొలగించాలా?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "ఎంచుకున్న చిత్తుప్రతులను ({n}) తొలగించాలా?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "ఎంచుకున్న చందాలను ({n}) తొలగించాలా?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "డొమైన్ ధృవీకరించబడలేదు"
 msgid "done"
 msgstr "పూర్తయింది"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "బృందం దాచింది"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "ఇన్‌బాక్స్‌లో"
 msgid "In this browser tab"
 msgstr "ఈ బ్రౌజర్ ట్యాబ్‌లో"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "దీన్ని వాడుతున్నవి: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Yandex ID లో Security › App passwords తెరిచి, Mail కోసం “Yuva” అనే పేరుతో పాస్‌వర్డ్ సృష్టించండి."
@@ -8553,6 +8588,10 @@ msgstr "ఇది <0>~/.codex/config.toml</0> లోకి వెళ్తుం
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "ఇది ప్రస్తుత ప్రాజెక్ట్‌లో మీ కోసం జోడించబడుతుంది. ప్రతి ప్రాజెక్ట్ కోసం <0>--scope user</0>, లేదా <2>.mcp.json</2> లో పంచుకోవడానికి <1>--scope project</1> జోడించండి."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "అది ఇక లేదు, లేదా మీరు దాన్ని చూడలేరు"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "చదివినది లేదా చదవనిదిగా గుర్తించు (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "స్పామ్‌గా గుర్తించండి"
@@ -9740,6 +9780,10 @@ msgstr "చదవనిదిగా గుర్తించి లిస్ట�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "స్పామ్‌గా గుర్తించండి లేదా గుర్తును తొలగించండి"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "ఎంచుకున్న చర్చలను ({n}) స్పామ్‌గా గుర్తించాలా?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "{seen} చూసింది"
 msgid "Seen by the monitor"
 msgstr "మానిటర్ చూసింది"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "ఎంపిక"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "{name} ఎంచుకోండి"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "అన్నీ ఎంచుకోండి"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "కర్సర్ కింద ఉన్న మెయిల్ ఎం�
 msgid "Select the previous or next block"
 msgstr "మునుపటి లేదా తదుపరి బ్లాక్‌ను ఎంచుకోండి"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "ఎంచుకున్నవి: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "మూలం"
 msgid "Sources"
 msgstr "మూలాలు"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "పాత మెయిల్‌బాక్స్ ఆ డొమైన్
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "మరో ఇన్‌బాక్స్‌కు ఇమెయిల్ ఛానెల్ లేదు, కాబట్టి ఈ ఇమెయిల్ సంభాషణ అక్కడికి వెళ్లలేదు. ముందుగా దానికి ఇమెయిల్ ఛానెల్‌ను జోడించండి."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "మిగిలినవి మార్చబడ్డాయి."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "మిగిలినవి మూసివేయబడ్డాయి. ఒకదాన్ని తెరిచి, కావలసినది పూరించి, ఆపై మూసివేయండి."
@@ -18866,6 +18926,10 @@ msgstr "జిప్ Yuva చదవలేని కంప్రెషన్ ప�
 msgid "The zone of the day bars."
 msgstr "రోజు బార్‌ల టైమ్ జోన్."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "వారి సమ్మతి రికార్డులు కూడా తొలగించబడతాయి, కాబట్టి వారు ఎలా అంగీకరించారో మీరు ఇక చూపలేరు. వారికి మెయిల్ పంపడం ఆపడానికి బదులుగా వారి చందాను రద్దు చేయండి."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "వారి సమ్మతి రికార్డ్‌లు, వారి గురించి మీ వద్ద ఏముందనే అభ్యర్థన కోసం:"
@@ -18873,6 +18937,10 @@ msgstr "వారి సమ్మతి రికార్డ్‌లు, వ�
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "వారి సంభాషణలు ఉంటాయి; వారు వెంటనే యాక్సెస్ కోల్పోతారు."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "వాటి నివేదికలు, గ్రహీతల జాబితాలు తొలగించబడతాయి. సమాధానాలతో తెరిచిన సంభాషణలు ఉంటాయి."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "ఈ నియమాలు సబ్‌స్క్రైబ్ ఫార
 msgid "They already agreed"
 msgstr "వారు ఇప్పటికే అంగీకరించారు"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "ఆమోదం కోసం వేచి ఉన్న వాటి రచయితల ఇతర అన్ని పోస్ట్‌లతో పాటు అవి దాచబడతాయి, ఈ రచయితల తర్వాతి పోస్ట్‌లు ఎల్లప్పుడూ సభ్యుని కోసం వేచి ఉంటాయి."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "ఇవి మీ బృందానికి, కస్టమర్లకు కనిపించవు. 30 రోజుల వరకు ట్రాష్ నుండి పునరుద్ధరించవచ్చు, ఆ తర్వాత సందేశాలు, ఫైళ్లతో సహా శాశ్వతంగా తొలగించబడతాయి."
@@ -18922,6 +18994,7 @@ msgstr "వారికి లింక్‌తో మెయిల్ వస్
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "వారికి లింక్‌తో మెయిల్ వస్తుంది; దాన్ని క్లిక్ చేసిన తర్వాత మాత్రమే నోటీసులు అందుతాయి."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "వారికి ఈ లిస్ట్ నుండి ఇకపై మెయిల్ రాదు, మరియు బృందం వారిని అన్‌సబ్‌స్క్రైబ్ చేసినట్లు నమోదవుతుంది. వారు మాత్రమే, మెయిల్‌ను నిర్ధారించి, మళ్లీ సబ్‌స్క్రైబ్ చేయగలరు."
@@ -19972,6 +20045,7 @@ msgstr "చదవనివి మాత్రమే"
 msgid "Unsaved changes"
 msgstr "సేవ్ చేయని మార్పులు"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "అన్‌సబ్‌స్క్రైబ్ చేయండి"
@@ -19984,6 +20058,10 @@ msgstr "{0} ను అన్‌సబ్‌స్క్రైబ్ చేయా
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "అన్‌సబ్‌స్క్రైబ్ లింక్"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "ఎంచుకున్న చందాదారుల ({n}) చందాను రద్దు చేయాలా?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "మీరు ఒక వర్క్‌స్పేస్‌కు ఏక
 msgid "You can close this window and go back to {host}."
 msgstr "మీరు ఈ విండోను మూసివేసి {host} కు తిరిగి వెళ్లవచ్చు."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "మీరు ప్రారంభించిన చర్చలను మాత్రమే తొలగించగలరు"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "మీరు దీన్ని ఎప్పుడైనా Settings లో, Connected apps కింద డిస్‌కనెక్ట్ చేయవచ్చు."
@@ -21417,6 +21499,10 @@ msgstr "{what}లో మీకు సేవ్ చేయని మార్ప�
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "మీరు అన్ని వర్క్‌స్పేస్‌లను వదిలి, సైన్-ఇన్‌లు, పాస్‌కీలు, నోటిఫికేషన్లను కోల్పోతారు. మీరు రాసిన సందేశాలు సంభాషణల్లోనే ఉంటాయి, తొలగించిన సభ్యుని నుండి వచ్చినట్లు కనిపిస్తాయి. మీ వ్యక్తిగత మెయిల్‌బాక్స్‌లు యజమాని లేదా అడ్మిన్ వాటిని అప్పగించే లేదా తొలగించే వరకు చదవకుండా వర్క్‌స్పేస్‌లో ఉంటాయి. దీన్ని రద్దు చేయలేరు."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "దీన్ని చేయడానికి మీకు అనుమతి లేదు"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

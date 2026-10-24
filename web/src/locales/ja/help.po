@@ -320,6 +320,7 @@ msgstr "ヘルプセンターを作成"
 msgid "Create help center ({newKey})"
 msgstr "ヘルプセンターを作成 ({newKey})"
 
+#: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Delete"
@@ -348,6 +349,10 @@ msgstr "ヘルプセンターを削除"
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete the {name} translation?"
 msgstr "{name} の翻訳を削除しますか?"
+
+#: src/features/help/Bulk.tsx
+msgid "Delete the selected articles ({n})?"
+msgstr "選択した記事 ({n}) を削除しますか?"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete this article?"
@@ -420,6 +425,7 @@ msgid "Every search found something."
 msgstr "すべての検索で結果が見つかりました。"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 msgid "Every translation, its revisions and its counters are deleted."
 msgstr "すべての翻訳、そのリビジョンとカウンターが削除されます。"
 
@@ -611,6 +617,10 @@ msgstr "{name} を移動します。ドラッグするか、Alt とカーソル�
 msgid "Move down"
 msgstr "下へ移動"
 
+#: src/features/help/Bulk.tsx
+msgid "Move to collection"
+msgstr "コレクションに移動"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move up"
 msgstr "上へ移動"
@@ -661,6 +671,7 @@ msgstr "まだ記事がありません。顧客が何度も尋ねる最初の回
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/Bulk.tsx
 msgid "No collection"
 msgstr "コレクションなし"
 
@@ -824,6 +835,7 @@ msgid "Public address"
 msgstr "公開アドレス"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Publish"
 msgstr "公開"
@@ -1080,6 +1092,10 @@ msgstr "ページは訪問者には使えなくなります。下書きは残り
 msgid "The pages offer this chat under “Still need help?”."
 msgstr "ページでは「まだお困りですか?」の下にこのチャットが表示されます。"
 
+#: src/features/help/Bulk.tsx
+msgid "The pages stop working for visitors. The drafts stay, and you can publish them again."
+msgstr "ページは訪問者に表示されなくなります。下書きは残り、もう一度公開できます。"
+
 #: src/features/help/ImportCard.tsx
 msgid "The read-only sign-in of this migration is reused. No new permission is asked."
 msgstr "The read-only sign-in of this migration is reused. No new permission is asked."
@@ -1134,6 +1150,7 @@ msgid "Type a word to search for."
 msgstr "検索する言葉を入力してください。"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish"
 msgstr "非公開にする"
@@ -1141,6 +1158,10 @@ msgstr "非公開にする"
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "非公開にする ({publishKey})"
+
+#: src/features/help/Bulk.tsx
+msgid "Unpublish the selected translations?"
+msgstr "選択した翻訳の公開を取り消しますか?"
 
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish this help center?"

@@ -3,6 +3,7 @@ import { FileTextIcon, LoaderIcon, PlusIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
+import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -22,10 +23,12 @@ import {
   useHelpCollections,
   useHelpReport,
 } from "@/features/help/queries"
+import { ArticleBulkBar } from "@/features/help/Bulk"
 import { articleTitle, collectionName, ErrorLine, useLocaleName, useStateText } from "@/features/help/text"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
 import { useDebounced } from "@/hooks/use-debounced"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useSelection } from "@/hooks/use-selection"
 import { formatDateTime, formatShort } from "@/components/common/text"
 import { look } from "@/features/inbox/PageFrame"
 import { ProductTag } from "@/features/inbox/ProductTag"
@@ -396,6 +399,10 @@ export function ArticlesTab({
   const articles = useHelpArticles(center.id, filters)
   const items = articles.data?.pages.flatMap((p) => p.items) ?? []
   const prefer = [i18n.locale, center.default_locale]
+  const selection = useSelection(
+    items.map((a) => a.id),
+    JSON.stringify(filters)
+  )
 
   useHotkeys({
     j: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
@@ -435,6 +442,12 @@ export function ArticlesTab({
           }}
         />
         <div className="flex min-w-0 flex-col gap-4">
+          <ArticleBulkBar center={center} items={items} cols={cols} selection={selection} />
+          {!selection.selecting && items.length > 0 && (
+            <div className="flex justify-end">
+              <SelectToggle selection={selection} />
+            </div>
+          )}
           <div className={look.card}>
             <div className={cn(grid, "h-[38px]", look.th)} aria-hidden>
               <span>
@@ -492,17 +505,26 @@ export function ArticlesTab({
                       className={cn(grid, "border-t py-2.5", i === cursor && "bg-surface")}
                       data-testid="help-article-row"
                     >
-                      <div className="flex min-w-0 flex-col gap-0.5">
-                        <Link
-                          to={articleLink(center.id, a.id, center.default_locale)}
-                          className="block truncate font-medium outline-none hover:underline focus-visible:underline"
-                        >
-                          {articleTitle(a, ...prefer)}
-                        </Link>
-                        <span className="flex min-w-0 items-center gap-1.5">
-                          <ProductTag id={center.inbox_id} always />
-                          <Locales a={a} center={center} />
-                        </span>
+                      <div className="flex min-w-0 items-center gap-3">
+                        {selection.selecting && (
+                          <RowCheck
+                            checked={selection.has(a.id)}
+                            name={articleTitle(a, ...prefer)}
+                            onToggle={(range) => selection.toggle(a.id, range)}
+                          />
+                        )}
+                        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                          <Link
+                            to={articleLink(center.id, a.id, center.default_locale)}
+                            className="block truncate font-medium outline-none hover:underline focus-visible:underline"
+                          >
+                            {articleTitle(a, ...prefer)}
+                          </Link>
+                          <span className="flex min-w-0 items-center gap-1.5">
+                            <ProductTag id={center.inbox_id} always />
+                            <Locales a={a} center={center} />
+                          </span>
+                        </div>
                       </div>
                       <span className="truncate phone:hidden">
                         {collectionOf(a) ?? <span className="text-faint">–</span>}

@@ -275,6 +275,10 @@ msgstr "{bad} dåliga"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} ändrade"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · väntar sedan {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# behörighet} other {# behörigheter}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Skickas till # mottagare.} other {Skickas till # mottagare.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} kunde inte ändras"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Sänk TTL för MX-posterna en dag i förväg så att ändringen sprids s
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "en dag som YYYY-MM-DD, i din tidszon"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Ett raderat inlägg kan inte återställas."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Kampanjnamn"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Rensa sökningen"
 msgid "Clear the selection"
 msgstr "Rensa markeringen"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Försämrad prestanda"
 msgid "Delegates"
 msgstr "Ombud"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Ta bort regeln {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Radera det markerade blocket"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Radera de valda diskussionerna ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Radera de valda utkasten ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Radera de valda prenumerationerna ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Domänen är inte verifierad"
 msgid "done"
 msgstr "klart"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Dold av teamet"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "I brevlådan"
 msgid "In this browser tab"
 msgstr "I den här webbläsarfliken"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Används av {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "I Yandex ID, öppna Säkerhet › Applösenord och skapa ett lösenord för Mail med namnet ”Yuva”."
@@ -8553,6 +8588,10 @@ msgstr "Den hamnar i <0>~/.codex/config.toml</0>, som Codex CLI och IDE-tillägg
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Den läggs till åt dig i det aktuella projektet. Lägg till <0>--scope user</0> för varje projekt, eller <1>--scope project</1> för att dela den i <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Den finns inte längre, eller så får du inte se den"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Markera som läst eller oläst (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Markera som skräppost"
@@ -9740,6 +9780,10 @@ msgstr "Markera som oläst och gå tillbaka till listan"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Markera eller avmarkera som skräppost"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Markera de valda diskussionerna som skräppost ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Sedd {seen}"
 msgid "Seen by the monitor"
 msgstr "Sedd av monitorn"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Val"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Välj {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Markera alla"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Markera mejlet under markören"
 msgid "Select the previous or next block"
 msgstr "Markera föregående eller nästa block"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Markerade: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Källa"
 msgid "Sources"
 msgstr "Källor"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Den gamla brevlådan slutar ta emot e-post för den domänen."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Den andra brevlådan har ingen e-postkanal, så den här e-postkonversationen kan inte flyttas dit. Lägg först till en e-postkanal i den."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "De andra ändrades."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "De andra stängdes. Öppna en, fyll i det som saknas och stäng den."
@@ -18866,6 +18926,10 @@ msgstr "Zippen använder en komprimeringsmetod som Yuva inte kan läsa. Gör om 
 msgid "The zone of the day bars."
 msgstr "Tidszonen för dagstaplarna."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Deras samtyckesloggar raderas också, så du kan inte längre visa hur de godkände. Vill du sluta skicka e-post till dem, avregistrera dem i stället."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Deras samtyckesbevis, för en begäran om vad du har om dem:"
@@ -18873,6 +18937,10 @@ msgstr "Deras samtyckesbevis, för en begäran om vad du har om dem:"
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Deras konversationer finns kvar; de förlorar åtkomsten direkt."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Deras rapporter och mottagarlistor raderas. Konversationer som startats av svar finns kvar."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "De här reglerna gäller prenumerationsformuläret. Du kan ändra dem n�
 msgid "They already agreed"
 msgstr "De har redan gått med på det"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "De döljs tillsammans med alla andra inlägg från deras författare som väntar på godkännande, och författarnas senare inlägg väntar alltid på en teammedlem."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "De försvinner för ditt team och för kunderna. Du kan återställa dem från papperskorgen i 30 dagar, därefter raderas de permanent med alla meddelanden och filer."
@@ -18922,6 +18994,7 @@ msgstr "De får ett mejl med en länk och prenumererar först efter att ha klick
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "De får ett e-postmeddelande med en länk och får notiser först efter att de har klickat på den."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "De får inte längre e-post från den här listan, och det noteras att teamet avregistrerade dem. Bara de själva kan prenumerera igen, genom att bekräfta ett mejl."
@@ -19972,6 +20045,7 @@ msgstr "Bara olästa"
 msgid "Unsaved changes"
 msgstr "Osparade ändringar"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Avregistrera"
@@ -19984,6 +20058,10 @@ msgstr "Avregistrera {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Avregistreringslänk"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Avregistrera de valda prenumeranterna ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Du är ensam ägare av en arbetsyta. Gör någon annan till ägare där,
 msgid "You can close this window and go back to {host}."
 msgstr "Du kan stänga det här fönstret och gå tillbaka till {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Du kan bara radera diskussioner som du själv har startat"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Du kan koppla från den när som helst i Inställningar, under Anslutna appar."
@@ -21417,6 +21499,10 @@ msgstr "Du har osparade ändringar i {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Du lämnar alla arbetsytor och förlorar inloggningar, nyckelkoder och aviseringar. Meddelanden du skrev blir kvar i sina konversationer, visade som från en raderad medlem. Dina personliga brevlådor blir kvar hos arbetsytan, olästa, tills en ägare eller administratör lämnar över eller raderar dem. Det går inte att ångra."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Det får du inte göra"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

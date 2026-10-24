@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
 import { InboxMark } from "@/components/common"
+import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { CHANGELOG_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDate, formatShort } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { EntryBulkBar } from "@/features/changelog/Bulk"
 import { entryLink, useCreateEntry, useEntries, useEntry } from "@/features/changelog/queries"
 import {
   entryTitle,
@@ -32,6 +34,7 @@ import { useLocaleName } from "@/features/help/text"
 import { Chip, FrameButton, Pill, ProductTag } from "@/features/status/PageFrame"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useSelection } from "@/hooks/use-selection"
 import type { Changelog, ChangelogEntrySummary, ChangelogLabel, Inbox } from "@/lib/api"
 import type { ChangelogEntryFilters } from "@/lib/keys"
 import { cn } from "@/lib/utils"
@@ -221,6 +224,7 @@ export function EntryRow({
   current,
   onPick,
   locales,
+  check,
 }: {
   e: ChangelogEntrySummary
   changelog: Changelog
@@ -228,6 +232,7 @@ export function EntryRow({
   current: boolean
   onPick: () => void
   locales?: boolean
+  check?: { checked: boolean; onToggle: (range: boolean) => void }
 }) {
   const { i18n } = useLingui()
   const stateText = useEntryStateText()
@@ -243,6 +248,7 @@ export function EntryRow({
       onClick={onPick}
       data-testid="entry-row"
     >
+      {check && <RowCheck checked={check.checked} name={title} onToggle={check.onToggle} />}
       <DateBlock iso={e.published_at ?? e.publish_at ?? e.created_at} />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="flex min-w-0 items-center gap-2">
@@ -366,6 +372,10 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
   const entries = useEntries(changelog.id, filters)
   const items = entries.data?.pages.flatMap((p) => p.items) ?? []
   const shown = items[cursor] ?? items.find((e) => e.id === picked) ?? items[0]
+  const selection = useSelection(
+    items.map((e) => e.id),
+    `${state}|${label}`
+  )
 
   useHotkeys({
     [CHANGELOG_KEYS.newEntry]: () => setCreating(true),
@@ -414,11 +424,13 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
             className="w-40"
           />
           <span className="flex-1" />
+          {items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
           <FrameButton onClick={() => setCreating(true)} data-testid="new-entry">
             <PlusIcon />
             <Trans>New entry</Trans>
           </FrameButton>
         </div>
+        <EntryBulkBar changelog={changelog} items={items} selection={selection} />
         {entries.isPending ? (
           <div className="flex flex-col gap-2 p-6">
             <Skeleton className="h-14 w-full rounded-xl" />
@@ -448,6 +460,11 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
                 e={e}
                 changelog={changelog}
                 locales
+                check={
+                  selection.selecting
+                    ? { checked: selection.has(e.id), onToggle: (range) => selection.toggle(e.id, range) }
+                    : undefined
+                }
                 current={i === cursor || (cursor < 0 && e.id === shown?.id)}
                 onPick={() => {
                   setPicked(e.id)

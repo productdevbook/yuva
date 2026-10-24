@@ -275,6 +275,10 @@ msgstr "{bad} špatných"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "Změněno: {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · čeká od {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# oprávnění} few {# oprávnění} many {# opráv
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Odejde # příjemci.} few {Odejde # příjemcům.} many {Odejde # příjemce.} other {Odejde # příjemcům.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "Nepodařilo se změnit: {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Den předem snižte TTL záznamů MX, aby se změna rychle rozšířila.
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "den jako YYYY-MM-DD, ve vašem časovém pásmu"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Smazaný příspěvek nelze obnovit."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Název kampaně"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Vymazat hledání"
 msgid "Clear the selection"
 msgstr "Zrušit výběr"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Snížený výkon"
 msgid "Delegates"
 msgstr "Zástupci"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Smazat pravidlo {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Smazat vybraný blok"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Smazat vybrané diskuse ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Smazat vybrané koncepty ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Smazat vybraná předplatná ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Doména neověřena"
 msgid "done"
 msgstr "hotovo"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Skryto týmem"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Ve schránce"
 msgid "In this browser tab"
 msgstr "V této kartě prohlížeče"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Používají ji: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "V Yandex ID otevřete Security › App passwords a vytvořte heslo pro Mail s názvem „Yuva“."
@@ -8553,6 +8588,10 @@ msgstr "Jde do <0>~/.codex/config.toml</0>, který sdílejí Codex CLI a rozší
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Přidá se vám v aktuálním projektu. Přidejte <0>--scope user</0> pro každý projekt, nebo <1>--scope project</1> pro sdílení v <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Už neexistuje, nebo na něj nemáte oprávnění"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Označit jako přečtené nebo nepřečtené (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Označit jako spam"
@@ -9740,6 +9780,10 @@ msgstr "Označit jako nepřečtené a vrátit se na seznam"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Označit nebo odznačit jako spam"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Označit vybrané diskuse jako spam ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Spatřen {seen}"
 msgid "Seen by the monitor"
 msgstr "Spatřeno monitorem"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Výběr"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Vybrat: {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Vybrat vše"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Vybrat e-mail pod kurzorem"
 msgid "Select the previous or next block"
 msgstr "Vybrat předchozí nebo další blok"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Vybráno: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Zdroj"
 msgid "Sources"
 msgstr "Zdroje"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Stará schránka přestane pro tuto doménu přijímat poštu."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Druhá schránka nemá e-mailový kanál, takže tuto e-mailovou konverzaci nelze přesunout tam. Nejprve do ní přidejte e-mailový kanál."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Ostatní byly změněny."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Ostatní byly zavřeny. Otevřete jednu, doplňte, co potřebuje, a zavřete ji."
@@ -18866,6 +18926,10 @@ msgstr "Archiv zip používá metodu komprese, kterou Yuva neumí přečíst. Vy
 msgid "The zone of the day bars."
 msgstr "Časové pásmo denních sloupců."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Smažou se i záznamy o jejich souhlasu, takže už nebudete moci doložit, jak souhlas udělili. Chcete-li jim přestat posílat poštu, raději je odhlaste."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Jejich záznamy o souhlasu, pro žádost o to, co o nich máte:"
@@ -18873,6 +18937,10 @@ msgstr "Jejich záznamy o souhlasu, pro žádost o to, co o nich máte:"
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Jejich konverzace zůstanou; přístup ztratí okamžitě."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Smažou se jejich zprávy a seznamy příjemců. Konverzace zahájené odpověďmi zůstanou."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Tato pravidla platí pro přihlašovací formulář. Můžete je kdykoli
 msgid "They already agreed"
 msgstr "Už souhlasili"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Skryjí se spolu se všemi dalšími příspěvky jejich autorů, které čekají na schválení, a pozdější příspěvky těchto autorů budou vždy čekat na člena týmu."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Zmizí pro váš tým i pro zákazníky. Po dobu 30 dnů je můžete obnovit z koše, poté budou trvale smazány i se zprávami a soubory."
@@ -18922,6 +18994,7 @@ msgstr "Dostanou zprávu s odkazem a odběrateli se stanou až po kliknutí na n
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Dostanou e-mail s odkazem a oznámení jim chodí, až když na něj kliknou."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Z této skupiny už nedostanou žádnou poštu a zaznamená se, že je odhlásil tým. Znovu se k odběru může přihlásit jen sama osoba potvrzením zprávy."
@@ -19972,6 +20045,7 @@ msgstr "Jen nepřečtené"
 msgid "Unsaved changes"
 msgstr "Neuložené změny"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Odhlásit"
@@ -19984,6 +20058,10 @@ msgstr "Odhlásit {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Odkaz na odhlášení"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Odhlásit vybrané odběratele ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Jste jediný vlastník pracovního prostoru. Než smažete svůj účet,
 msgid "You can close this window and go back to {host}."
 msgstr "Toto okno můžete zavřít a vrátit se na {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Smazat můžete jen diskuse, které jste sami založili"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Kdykoli ho můžete odpojit v Nastavení, v části Připojené aplikace."
@@ -21417,6 +21499,10 @@ msgstr "Máte neuložené změny v {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Opustíte všechny pracovní prostory a ztratíte přihlášení, přístupové klíče a oznámení. Zprávy, které jste napsali, zůstanou v konverzacích jako od smazaného člena. Vaše osobní schránky zůstanou v pracovním prostoru nepřečtené, dokud je vlastník nebo správce nepředá či nesmaže. Nelze to vrátit zpět."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "To nemůžete udělat"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

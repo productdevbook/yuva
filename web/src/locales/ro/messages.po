@@ -275,6 +275,10 @@ msgstr "{bad} proaste"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "Modificate: {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · așteaptă din {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# permisiune} few {# permisiuni} other {# de permis
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Merge la # destinatar.} few {Merge la # destinatari.} other {Merge la # de destinatari.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "Nu s-au putut modifica: {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Cu o zi înainte, scade TTL-ul înregistrărilor MX, ca schimbarea să s
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "o zi ca YYYY-MM-DD, în fusul tău orar"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "O postare ștearsă nu poate fi recuperată."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Nume campanie"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Șterge căutarea"
 msgid "Clear the selection"
 msgstr "Șterge selecția"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Performanță redusă"
 msgid "Delegates"
 msgstr "Delegați"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Ștergi regula {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Șterge blocul selectat"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Ștergi discuțiile selectate ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Ștergi ciornele selectate ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Ștergi abonările selectate ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Domeniu neverificat"
 msgid "done"
 msgstr "făcut"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Ascuns de echipă"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "În căsuță"
 msgid "In this browser tab"
 msgstr "În această filă de browser"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Este folosită de {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "În Yandex ID, deschide Security › App passwords și creează o parolă pentru Mail numită „Yuva”."
@@ -8553,6 +8588,10 @@ msgstr "Intră în <0>~/.codex/config.toml</0>, pe care îl împart Codex CLI ș
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Este adăugat pentru tine în proiectul curent. Adaugă <0>--scope user</0> pentru fiecare proiect sau <1>--scope project</1> ca să îl partajezi în <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Nu mai există sau nu o poți vedea"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Marchează ca citit sau necitit (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Marchează ca spam"
@@ -9740,6 +9780,10 @@ msgstr "Marchează ca necitit și revino la listă"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Marchează sau demarchează ca spam"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Marchezi ca spam discuțiile selectate ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Văzut {seen}"
 msgid "Seen by the monitor"
 msgstr "Văzut de monitor"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Selecție"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Selectează {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Selectează tot"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Selectează e-mailul de sub cursor"
 msgid "Select the previous or next block"
 msgstr "Selectează blocul anterior sau următor"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Selectate: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Sursă"
 msgid "Sources"
 msgstr "Surse"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Vechea căsuță încetează să primească e-mail pentru acel domeniu."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Cealaltă căsuță nu are un canal de e-mail, deci această conversație prin e-mail nu poate fi mutată acolo. Adaugă mai întâi un canal de e-mail."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Celelalte au fost modificate."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Celelalte au fost închise. Deschideți una, completați ce îi lipsește și închideți-o."
@@ -18866,6 +18926,10 @@ msgstr "Zipul folosește o metodă de comprimare pe care Yuva nu o poate citi. F
 msgid "The zone of the day bars."
 msgstr "Fusul orar al barelor de zile."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Se șterg și dovezile consimțământului lor, așa că nu vei mai putea arăta cum au fost de acord. Ca să nu le mai scrii, dezabonează-i în schimb."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Înregistrările lor de consimțământ, pentru o cerere despre ce deții despre ei:"
@@ -18873,6 +18937,10 @@ msgstr "Înregistrările lor de consimțământ, pentru o cerere despre ce deți
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Conversațiile lor rămân; pierd accesul imediat."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Se șterg rapoartele și listele lor de destinatari. Conversațiile deschise de răspunsuri rămân."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Aceste reguli se aplică formularului de abonare. Le poți schimba oric�
 msgid "They already agreed"
 msgstr "Au fost deja de acord"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Sunt ascunse împreună cu toate celelalte postări ale autorilor lor care așteaptă aprobare, iar postările ulterioare ale acestor autori vor aștepta mereu un membru."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Dispar pentru echipa ta și pentru clienți. Le poți restaura din coș timp de 30 de zile, apoi sunt șterse definitiv împreună cu mesajele și fișierele lor."
@@ -18922,6 +18994,7 @@ msgstr "Primesc un e-mail cu un link și sunt abonați doar după ce dau clic pe
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Primesc un e-mail cu un link și primesc notificări doar după ce dau clic pe el."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Nu mai primesc e-mail de pe această listă și se înregistrează că echipa i-a dezabonat. Doar ei se pot abona din nou, confirmând un e-mail."
@@ -19972,6 +20045,7 @@ msgstr "Doar necitite"
 msgid "Unsaved changes"
 msgstr "Modificări nesalvate"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Dezabonează"
@@ -19984,6 +20058,10 @@ msgstr "Dezabonezi {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Link de dezabonare"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Dezabonezi abonații selectați ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Ești singurul proprietar al unui spațiu de lucru. Fă pe altcineva pro
 msgid "You can close this window and go back to {host}."
 msgstr "Poți închide această fereastră și te poți întoarce la {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Poți șterge doar discuțiile pe care le-ai început"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Îl poți deconecta oricând în Setări, la Aplicații conectate."
@@ -21417,6 +21499,10 @@ msgstr "Ai modificări nesalvate la {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Părăsiți toate spațiile de lucru și pierdeți autentificările, cheile de acces și notificările. Mesajele scrise de dumneavoastră rămân în conversații, afișate ca de la un membru șters. Căsuțele personale rămân necitite în spațiul de lucru până când un proprietar sau administrator le predă sau le șterge. Nu se poate anula."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Nu ai voie să faci asta"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

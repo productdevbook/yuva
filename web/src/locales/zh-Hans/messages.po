@@ -275,6 +275,10 @@ msgstr "差 {bad}"
 msgid "{by}, {date}"
 msgstr "{by},{date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "已更改 {changed} 项"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · 自 {at} 起等待"
@@ -325,6 +329,10 @@ msgstr "{count, plural, other {# 项权限}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {将发送给 # 位收件人。}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} 项无法更改"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "提前一天降低 MX 记录的 TTL,这样变更能很快生效。"
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD 格式的日期,按你的时区"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "已删除的帖子无法恢复。"
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "活动名称"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "清除搜索"
 msgid "Clear the selection"
 msgstr "清除选择"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "性能下降"
 msgid "Delegates"
 msgstr "代理人"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "删除规则 {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "删除所选区块"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "删除所选讨论({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "删除所选草稿({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "删除所选订阅({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "域名未验证"
 msgid "done"
 msgstr "完成"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "被团队隐藏"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "在收件箱中"
 msgid "In this browser tab"
 msgstr "在此浏览器标签页中"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "使用者:{names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "在 Yandex ID 中,打开“安全 › 应用密码”,为邮件创建一个名为“Yuva”的密码。"
@@ -8553,6 +8588,10 @@ msgstr "它会写入 <0>~/.codex/config.toml</0>,Codex CLI 和 IDE 扩展共用�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "它会添加到当前项目。添加 <0>--scope user</0> 可用于所有项目,或添加 <1>--scope project</1> 以便在 <2>.mcp.json</2> 中共享。"
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "它已不存在,或你无权查看"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "标为已读或未读 (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "标为垃圾邮件"
@@ -9740,6 +9780,10 @@ msgstr "标为未读并返回列表"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "标记或取消标记为垃圾邮件"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "将所选讨论({n})标记为垃圾内容?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "{seen}见到"
 msgid "Seen by the monitor"
 msgstr "被监控看到"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "选择"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "选择 {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "全选"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "选择光标所在的邮件"
 msgid "Select the previous or next block"
 msgstr "选择上一个或下一个区块"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "已选择：{picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "来源"
 msgid "Sources"
 msgstr "来源"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "旧邮箱不再接收该域名的邮件。"
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "另一个收件箱没有邮件渠道,因此此邮件对话无法移到那里。请先为它添加邮件渠道。"
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "其余项目已更改。"
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "其余的已关闭。请打开其中一个，填好所需内容后再关闭。"
@@ -18866,6 +18926,10 @@ msgstr "该 zip 使用了 Yuva 无法读取的压缩方式。请重新制作为�
 msgid "The zone of the day bars."
 msgstr "日柱状图使用的时区。"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "他们的同意记录也会一并删除,你将无法再证明他们是如何同意的。若只是不想再给他们发邮件,请改为取消订阅。"
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "他们的同意记录,用于回应关于你持有其哪些数据的请求:"
@@ -18873,6 +18937,10 @@ msgstr "他们的同意记录,用于回应关于你持有其哪些数据的请�
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "他们的对话会保留;他们会立即失去访问权限。"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "它们的报告和收件人列表会被删除。由回复产生的对话会保留。"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "这些规则适用于订阅表单。你可以随时在列表设置中更
 msgid "They already agreed"
 msgstr "他们已经同意"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "它们会与其作者其他待审核的帖子一起被隐藏,这些作者之后的帖子也将始终等待成员审核。"
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "它们会对你的团队和客户消失。30 天内可从垃圾箱恢复，之后会连同消息和文件一起被永久删除。"
@@ -18922,6 +18994,7 @@ msgstr "他们会收到一封带链接的邮件,点击后才会订阅。"
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "他们会收到一封带链接的邮件,点击链接后才会收到通知。"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "他们不会再收到此列表的邮件,并且会记录为团队将其退订。只有本人可以通过确认邮件重新订阅。"
@@ -19972,6 +20045,7 @@ msgstr "仅未读"
 msgid "Unsaved changes"
 msgstr "未保存的更改"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "退订"
@@ -19984,6 +20058,10 @@ msgstr "退订 {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "退订链接"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "取消所选订阅者({n})的订阅?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "你是某个工作区的唯一所有者。在删除账号之前,请先�
 msgid "You can close this window and go back to {host}."
 msgstr "你可以关闭此窗口并回到 {host}。"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "你只能删除自己发起的讨论"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "你可以随时在“设置”的“已连接的应用”中断开连接。"
@@ -21417,6 +21499,10 @@ msgstr "{what} 有未保存的更改。"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "你将离开所有工作区,并失去登录方式、通行密钥和通知。你写的消息会留在会话中,显示为已删除成员所写。你的个人邮箱会以未读状态留在工作区,直到所有者或管理员将其移交或删除。此操作无法撤销。"
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "你无权执行此操作"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

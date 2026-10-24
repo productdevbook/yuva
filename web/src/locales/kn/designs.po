@@ -119,9 +119,14 @@ msgstr "ಪ್ರಕಟಣೆ"
 msgid "Apply"
 msgstr "ಅನ್ವಯಿಸಿ"
 
+#: src/features/designs/Bulk.tsx
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Archive"
 msgstr "ಆರ್ಕೈವ್"
+
+#: src/features/designs/Bulk.tsx
+msgid "Archive the selected designs ({n})?"
+msgstr "ಆಯ್ಕೆ ಮಾಡಿದ ವಿನ್ಯಾಸಗಳನ್ನು ({n}) ಆರ್ಕೈವ್ ಮಾಡಬೇಕೆ?"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Archive this design?"
@@ -309,6 +314,7 @@ msgstr "ಡೀಫಾಲ್ಟ್"
 msgid "Default spacing"
 msgstr "ಡೀಫಾಲ್ಟ್ ಅಂತರ"
 
+#: src/features/designs/Bulk.tsx
 #: src/features/designs/designer/Canvas.tsx
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "Delete"
@@ -325,6 +331,10 @@ msgstr "ಹೇಗಿದ್ದರೂ ಅಳಿಸಿ"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Delete block"
 msgstr "ಬ್ಲಾಕ್ ಅಳಿಸಿ"
+
+#: src/features/designs/Bulk.tsx
+msgid "Delete the selected images ({n})?"
+msgstr "ಆಯ್ಕೆ ಮಾಡಿದ ಚಿತ್ರಗಳನ್ನು ({n}) ಅಳಿಸಬೇಕೆ?"
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "Delete this image?"
@@ -1203,6 +1213,10 @@ msgstr "ಅಗಲಗಳು ಕೂಡಿ {sum} ಆಗುತ್ತವೆ, 100 ಅ�
 msgid "The workspace’s images take all the room this server allows. Delete images you no longer use."
 msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನ ಚಿತ್ರಗಳು ಈ ಸರ್ವರ್ ಅನುಮತಿಸುವ ಎಲ್ಲಾ ಜಾಗವನ್ನು ತೆಗೆದುಕೊಂಡಿವೆ. ನೀವು ಇನ್ನು ಬಳಸದ ಚಿತ್ರಗಳನ್ನು ಅಳಿಸಿ."
 
+#: src/features/designs/Bulk.tsx
+msgid "Their addresses stop working at once."
+msgstr "ಅವುಗಳ ವಿಳಾಸಗಳು ತಕ್ಷಣ ಕೆಲಸ ಮಾಡುವುದನ್ನು ನಿಲ್ಲಿಸುತ್ತವೆ."
+
 #: src/features/designs/text.ts
 msgid "There are too many items here."
 msgstr "ಇಲ್ಲಿ ತುಂಬಾ ಐಟಂಗಳಿವೆ."
@@ -1215,6 +1229,10 @@ msgstr "{field} ಎಂಬ ಮರ್ಜ್ ಫೀಲ್ಡ್ ಇಲ್ಲ."
 #: src/features/designs/designer/Inspector.tsx
 msgid "These lines go above the footer every mail gets: the inbox’s legal name and postal address, why the person gets the mail, and the unsubscribe and preference links. Set the sender’s details in the inbox settings."
 msgstr "ಈ ಸಾಲುಗಳು ಪ್ರತಿ ಮೇಲ್‌ಗೂ ಸಿಗುವ ಅಡಿಟಿಪ್ಪಣಿಯ ಮೇಲೆ ಹೋಗುತ್ತವೆ: ಇನ್‌ಬಾಕ್ಸ್‌ನ ಕಾನೂನುಬದ್ಧ ಹೆಸರು ಮತ್ತು ಅಂಚೆ ವಿಳಾಸ, ವ್ಯಕ್ತಿಗೆ ಮೇಲ್ ಏಕೆ ಸಿಗುತ್ತದೆ, ಮತ್ತು ಚಂದಾದಾರಿಕೆ ರದ್ದತಿ ಹಾಗೂ ಆದ್ಯತೆ ಲಿಂಕ್‌ಗಳು. ಇನ್‌ಬಾಕ್ಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಕಳುಹಿಸುವವರ ವಿವರಗಳನ್ನು ಹೊಂದಿಸಿ."
+
+#: src/features/designs/Bulk.tsx
+msgid "They leave the list of designs. Their versions are kept. Drafts that use them still send, and you can restore them from the archive."
+msgstr "ಅವು ವಿನ್ಯಾಸಗಳ ಪಟ್ಟಿಯಿಂದ ಹೊರಹೋಗುತ್ತವೆ. ಅವುಗಳ ಆವೃತ್ತಿಗಳು ಉಳಿಯುತ್ತವೆ. ಅವುಗಳನ್ನು ಬಳಸುವ ಕರಡುಗಳು ಇನ್ನೂ ಕಳುಹಿಸಲ್ಪಡುತ್ತವೆ, ಮತ್ತು ನೀವು ಆರ್ಕೈವ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಬಹುದು."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Thickness"

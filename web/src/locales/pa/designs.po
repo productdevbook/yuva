@@ -119,9 +119,14 @@ msgstr "ਘੋਸ਼ਣਾ"
 msgid "Apply"
 msgstr "ਲਾਗੂ ਕਰੋ"
 
+#: src/features/designs/Bulk.tsx
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Archive"
 msgstr "ਆਰਕਾਈਵ ਕਰੋ"
+
+#: src/features/designs/Bulk.tsx
+msgid "Archive the selected designs ({n})?"
+msgstr "ਚੁਣੇ ਹੋਏ ਡਿਜ਼ਾਈਨ ({n}) ਆਰਕਾਈਵ ਕਰਨੇ ਹਨ?"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Archive this design?"
@@ -309,6 +314,7 @@ msgstr "ਡਿਫਾਲਟ"
 msgid "Default spacing"
 msgstr "ਡਿਫਾਲਟ ਵਿੱਥ"
 
+#: src/features/designs/Bulk.tsx
 #: src/features/designs/designer/Canvas.tsx
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "Delete"
@@ -325,6 +331,10 @@ msgstr "ਫਿਰ ਵੀ ਮਿਟਾਓ"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Delete block"
 msgstr "ਬਲਾਕ ਮਿਟਾਓ"
+
+#: src/features/designs/Bulk.tsx
+msgid "Delete the selected images ({n})?"
+msgstr "ਚੁਣੀਆਂ ਹੋਈਆਂ ਤਸਵੀਰਾਂ ({n}) ਮਿਟਾਉਣੀਆਂ ਹਨ?"
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "Delete this image?"
@@ -1203,6 +1213,10 @@ msgstr "ਚੌੜਾਈਆਂ ਦਾ ਜੋੜ {sum} ਹੈ, 100 ਨਹੀਂ।
 msgid "The workspace’s images take all the room this server allows. Delete images you no longer use."
 msgstr "ਵਰਕਸਪੇਸ ਦੇ ਚਿੱਤਰ ਓਨੀ ਸਾਰੀ ਥਾਂ ਲੈ ਲੈਂਦੇ ਹਨ ਜਿੰਨੀ ਇਹ ਸਰਵਰ ਇਜਾਜ਼ਤ ਦਿੰਦਾ ਹੈ। ਜੋ ਚਿੱਤਰ ਹੁਣ ਨਹੀਂ ਵਰਤਦੇ ਉਹ ਮਿਟਾਓ।"
 
+#: src/features/designs/Bulk.tsx
+msgid "Their addresses stop working at once."
+msgstr "ਉਨ੍ਹਾਂ ਦੇ ਪਤੇ ਤੁਰੰਤ ਕੰਮ ਕਰਨਾ ਬੰਦ ਕਰ ਦਿੰਦੇ ਹਨ।"
+
 #: src/features/designs/text.ts
 msgid "There are too many items here."
 msgstr "ਇੱਥੇ ਬਹੁਤ ਸਾਰੀਆਂ ਆਈਟਮਾਂ ਹਨ।"
@@ -1215,6 +1229,10 @@ msgstr "{field} ਨਾਮ ਦਾ ਕੋਈ ਮਰਜ ਫੀਲਡ ਨਹੀਂ �
 #: src/features/designs/designer/Inspector.tsx
 msgid "These lines go above the footer every mail gets: the inbox’s legal name and postal address, why the person gets the mail, and the unsubscribe and preference links. Set the sender’s details in the inbox settings."
 msgstr "ਇਹ ਲਾਈਨਾਂ ਹਰ ਮੇਲ ਨੂੰ ਮਿਲਣ ਵਾਲੇ ਫੁੱਟਰ ਦੇ ਉੱਪਰ ਜਾਂਦੀਆਂ ਹਨ: ਇਨਬਾਕਸ ਦਾ ਕਾਨੂੰਨੀ ਨਾਮ ਅਤੇ ਡਾਕ ਦਾ ਪਤਾ, ਵਿਅਕਤੀ ਨੂੰ ਮੇਲ ਕਿਉਂ ਮਿਲੀ, ਅਤੇ ਅਨਸਬਸਕ੍ਰਾਈਬ ਤੇ ਪਸੰਦ ਲਿੰਕ। ਭੇਜਣ ਵਾਲੇ ਦੇ ਵੇਰਵੇ ਇਨਬਾਕਸ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸੈੱਟ ਕਰੋ।"
+
+#: src/features/designs/Bulk.tsx
+msgid "They leave the list of designs. Their versions are kept. Drafts that use them still send, and you can restore them from the archive."
+msgstr "ਇਹ ਡਿਜ਼ਾਈਨਾਂ ਦੀ ਸੂਚੀ ਵਿੱਚੋਂ ਨਿਕਲ ਜਾਂਦੇ ਹਨ। ਇਨ੍ਹਾਂ ਦੇ ਸੰਸਕਰਣ ਸੰਭਾਲੇ ਰਹਿੰਦੇ ਹਨ। ਇਨ੍ਹਾਂ ਨੂੰ ਵਰਤਣ ਵਾਲੇ ਡਰਾਫਟ ਫਿਰ ਵੀ ਭੇਜੇ ਜਾਂਦੇ ਹਨ, ਅਤੇ ਤੁਸੀਂ ਇਨ੍ਹਾਂ ਨੂੰ ਆਰਕਾਈਵ ਤੋਂ ਬਹਾਲ ਕਰ ਸਕਦੇ ਹੋ।"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Thickness"

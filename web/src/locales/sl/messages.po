@@ -275,6 +275,10 @@ msgstr "{bad} slabih"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "Spremenjeno: {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · čaka od {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# dovoljenje} two {# dovoljenji} few {# dovoljenja}
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Poslano bo # prejemniku.} two {Poslano bo # prejemnikoma.} few {Poslano bo # prejemnikom.} other {Poslano bo # prejemnikom.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "Ni bilo mogoče spremeniti: {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Dan prej znižajte TTL zapisov MX, da se sprememba hitro razširi."
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "dan kot YYYY-MM-DD, v vašem časovnem pasu"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Izbrisane objave ni mogoče obnoviti."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Ime kampanje"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Počisti iskanje"
 msgid "Clear the selection"
 msgstr "Počisti izbiro"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Zmanjšana zmogljivost"
 msgid "Delegates"
 msgstr "Pooblaščenci"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Izbrišem pravilo {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Izbriši izbrani blok"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Izbrisati izbrane razprave ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Izbrisati izbrane osnutke ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Izbrisati izbrane naročnine ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Domena ni preverjena"
 msgid "done"
 msgstr "opravljeno"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Skrila ekipa"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "V nabiralniku"
 msgid "In this browser tab"
 msgstr "V tem zavihku brskalnika"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Uporabljajo ga: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "V Yandex ID odprite Security › App passwords in ustvarite geslo za Mail z imenom »Yuva«."
@@ -8553,6 +8588,10 @@ msgstr "Gre v <0>~/.codex/config.toml</0>, ki si ga delita Codex CLI in razširi
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Dodano je za vas v trenutnem projektu. Dodajte <0>--scope user</0> za vsak projekt ali <1>--scope project</1> za skupno rabo v <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Ne obstaja več ali nimate dostopa do njega"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Označi kot prebrano ali neprebrano (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Označi kot vsiljeno pošto"
@@ -9740,6 +9780,10 @@ msgstr "Označi kot neprebrano in se vrni na seznam"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Označi ali odznači kot vsiljeno pošto"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Označiti izbrane razprave kot vsiljeno pošto ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Viden {seen}"
 msgid "Seen by the monitor"
 msgstr "Videl monitor"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Izbira"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Izberi: {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Izberi vse"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Izberi sporočilo pod kazalcem"
 msgid "Select the previous or next block"
 msgstr "Izberi prejšnji ali naslednji blok"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Izbrano: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Vir"
 msgid "Sources"
 msgstr "Viri"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Stari nabiralnik preneha prejemati pošto za to domeno."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Drugi nabiralnik nima e-poštnega kanala, zato tega e-poštnega pogovora ni mogoče premakniti tja. Najprej mu dodajte e-poštni kanal."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Ostali so bili spremenjeni."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Ostali so zaprti. Odprite enega, izpolnite, kar potrebuje, in ga zaprite."
@@ -18866,6 +18926,10 @@ msgstr "Zip uporablja metodo stiskanja, ki je Yuva ne zna prebrati. Znova ga ust
 msgid "The zone of the day bars."
 msgstr "Časovni pas dnevnih stolpcev."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Izbrišejo se tudi zapisi o njihovem soglasju, zato ne boste mogli več dokazati, kako so privolili. Če jim želite prenehati pošiljati pošto, jih raje odjavite."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Njihovi zapisi o soglasju, za zahtevo o tem, kaj imate o njih:"
@@ -18873,6 +18937,10 @@ msgstr "Njihovi zapisi o soglasju, za zahtevo o tem, kaj imate o njih:"
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Njihovi pogovori ostanejo; dostop izgubijo takoj."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Izbrišejo se njihova poročila in seznami prejemnikov. Pogovori, začeti z odgovori, ostanejo."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Ta pravila veljajo za obrazec za naročanje. Spremenite jih lahko kadar 
 msgid "They already agreed"
 msgstr "Že so privolili"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Skrite bodo skupaj z vsemi drugimi objavami njihovih avtorjev, ki čakajo na odobritev, poznejše objave teh avtorjev pa bodo vedno čakale na člana."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Izginejo za vašo ekipo in za stranke. 30 dni jih lahko obnovite iz koša, nato bodo trajno izbrisani z vsemi sporočili in datotekami."
@@ -18922,6 +18994,7 @@ msgstr "Dobijo sporočilo s povezavo in so naročniki šele, ko kliknejo nanjo."
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Prejmejo e-pošto s povezavo in obvestila začnejo prejemati šele, ko kliknejo nanjo."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "S tega seznama ne dobijo več pošte in zabeleženo je, da jih je odjavila ekipa. Znova se lahko naročijo samo oni sami, s potrditvijo sporočila."
@@ -19972,6 +20045,7 @@ msgstr "Samo neprebrano"
 msgid "Unsaved changes"
 msgstr "Neshranjene spremembe"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Odjavi"
@@ -19984,6 +20058,10 @@ msgstr "Odjaviti {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Povezava za odjavo"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Odjaviti izbrane naročnike ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Ste edini lastnik delovnega prostora. Preden izbrišete svoj račun, tam
 msgid "You can close this window and go back to {host}."
 msgstr "To okno lahko zaprete in se vrnete na {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Izbrišete lahko samo razprave, ki ste jih začeli sami"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Kadar koli ga lahko odklopite v Nastavitvah, pod Povezane aplikacije."
@@ -21417,6 +21499,10 @@ msgstr "Imate neshranjene spremembe v {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Zapustite vsa delovna območja in izgubite prijave, ključe za dostop in obvestila. Sporočila, ki ste jih napisali, ostanejo v pogovorih, prikazana kot od izbrisanega člana. Vaši osebni predali ostanejo na delovnem območju neprebrani, dokler jih lastnik ali skrbnik ne preda ali izbriše. Tega ni mogoče razveljaviti."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Tega ne smete storiti"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

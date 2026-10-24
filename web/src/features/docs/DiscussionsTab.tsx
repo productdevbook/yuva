@@ -65,14 +65,22 @@ export function DiscussionsTab({ discussionId }: { discussionId?: string }) {
       </div>
     ) : (
       <div className="min-h-0 flex-1 overflow-y-auto">
-        <ThreadList filters={filters} showPage bare keyboard empty={empty} />
+        <ThreadList filters={filters} showPage bare keyboard selectable empty={empty} />
       </div>
     )
   }
   return (
     <div className="flex min-h-0 flex-1">
       <div className="min-h-0 w-[420px] shrink-0 overflow-y-auto border-e">
-        <ThreadList filters={filters} showPage bare keyboard={!discussionId} currentId={discussionId} empty={empty} />
+        <ThreadList
+          filters={filters}
+          showPage
+          bare
+          keyboard={!discussionId}
+          currentId={discussionId}
+          selectable
+          empty={empty}
+        />
       </div>
       <div className="min-w-0 flex-1 overflow-y-auto">
         {discussionId ? (

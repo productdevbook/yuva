@@ -320,6 +320,7 @@ msgstr "ਮਦਦ ਕੇਂਦਰ ਬਣਾਓ"
 msgid "Create help center ({newKey})"
 msgstr "ਮਦਦ ਕੇਂਦਰ ਬਣਾਓ ({newKey})"
 
+#: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Delete"
@@ -348,6 +349,10 @@ msgstr "ਮਦਦ ਕੇਂਦਰ ਮਿਟਾਓ"
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete the {name} translation?"
 msgstr "{name} ਅਨੁਵਾਦ ਮਿਟਾਉਣਾ ਹੈ?"
+
+#: src/features/help/Bulk.tsx
+msgid "Delete the selected articles ({n})?"
+msgstr "ਚੁਣੇ ਹੋਏ ਲੇਖ ({n}) ਮਿਟਾਉਣੇ ਹਨ?"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete this article?"
@@ -420,6 +425,7 @@ msgid "Every search found something."
 msgstr "ਹਰ ਖੋਜ ਵਿੱਚ ਕੁਝ ਮਿਲਿਆ।"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 msgid "Every translation, its revisions and its counters are deleted."
 msgstr "ਸਾਰੇ ਅਨੁਵਾਦ, ਉਨ੍ਹਾਂ ਦੀਆਂ ਸੋਧਾਂ ਅਤੇ ਕਾਊਂਟਰ ਮਿਟਾਏ ਜਾਂਦੇ ਹਨ।"
 
@@ -611,6 +617,10 @@ msgstr "{name} ਨੂੰ ਹਿਲਾਓ। ਖਿੱਚੋ, ਜਾਂ ਤੀਰ
 msgid "Move down"
 msgstr "ਹੇਠਾਂ ਹਿਲਾਓ"
 
+#: src/features/help/Bulk.tsx
+msgid "Move to collection"
+msgstr "ਸੰਗ੍ਰਹਿ ਵਿੱਚ ਲੈ ਜਾਓ"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move up"
 msgstr "ਉੱਪਰ ਹਿਲਾਓ"
@@ -661,6 +671,7 @@ msgstr "ਅਜੇ ਕੋਈ ਲੇਖ ਨਹੀਂ। ਉਹ ਪਹਿਲਾ ਜ
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/Bulk.tsx
 msgid "No collection"
 msgstr "ਕੋਈ ਸੰਗ੍ਰਹਿ ਨਹੀਂ"
 
@@ -824,6 +835,7 @@ msgid "Public address"
 msgstr "ਜਨਤਕ ਪਤਾ"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Publish"
 msgstr "ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ"
@@ -1080,6 +1092,10 @@ msgstr "ਪੰਨਾ ਮਹਿਮਾਨਾਂ ਲਈ ਕੰਮ ਕਰਨਾ ਬ�
 msgid "The pages offer this chat under “Still need help?”."
 msgstr "ਪੰਨੇ ਇਹ ਚੈਟ “ਅਜੇ ਵੀ ਮਦਦ ਚਾਹੀਦੀ ਹੈ?” ਹੇਠਾਂ ਦਿੰਦੇ ਹਨ।"
 
+#: src/features/help/Bulk.tsx
+msgid "The pages stop working for visitors. The drafts stay, and you can publish them again."
+msgstr "ਪੰਨੇ ਮਹਿਮਾਨਾਂ ਲਈ ਕੰਮ ਕਰਨਾ ਬੰਦ ਕਰ ਦਿੰਦੇ ਹਨ। ਡਰਾਫਟ ਰਹਿੰਦੇ ਹਨ ਅਤੇ ਤੁਸੀਂ ਉਨ੍ਹਾਂ ਨੂੰ ਦੁਬਾਰਾ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰ ਸਕਦੇ ਹੋ।"
+
 #: src/features/help/ImportCard.tsx
 msgid "The read-only sign-in of this migration is reused. No new permission is asked."
 msgstr "The read-only sign-in of this migration is reused. No new permission is asked."
@@ -1134,6 +1150,7 @@ msgid "Type a word to search for."
 msgstr "ਖੋਜਣ ਲਈ ਇੱਕ ਸ਼ਬਦ ਟਾਈਪ ਕਰੋ।"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish"
 msgstr "ਪ੍ਰਕਾਸ਼ਨ ਰੱਦ ਕਰੋ"
@@ -1141,6 +1158,10 @@ msgstr "ਪ੍ਰਕਾਸ਼ਨ ਰੱਦ ਕਰੋ"
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "ਪ੍ਰਕਾਸ਼ਨ ਰੱਦ ਕਰੋ ({publishKey})"
+
+#: src/features/help/Bulk.tsx
+msgid "Unpublish the selected translations?"
+msgstr "ਚੁਣੇ ਹੋਏ ਅਨੁਵਾਦਾਂ ਦਾ ਪ੍ਰਕਾਸ਼ਨ ਵਾਪਸ ਲੈਣਾ ਹੈ?"
 
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish this help center?"

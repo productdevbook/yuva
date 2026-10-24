@@ -10,12 +10,14 @@ import { PaneEmpty } from "@/components/common/Column"
 import { MailFrame } from "@/components/common/MailFrame"
 import { DESIGN_KEYS } from "@/components/common/ShortcutSheet"
 import { formatShort } from "@/components/common/text"
+import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { keyHint } from "@/features/broadcasts/BroadcastParts"
+import { DesignBulkBar } from "@/features/designs/Bulk"
 import { NewDesignDialog, type NewDesign } from "@/features/designs/NewDesignDialog"
 import {
   designLink,
@@ -32,6 +34,7 @@ import { look } from "@/features/inbox/PageFrame"
 import { FrameButton, FrameTabs, framePad, PageFrame } from "@/features/status/PageFrame"
 import { useDebounced } from "@/hooks/use-debounced"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useSelection, type Selection } from "@/hooks/use-selection"
 import { useRowFocus } from "@/hooks/use-row-focus"
 import type { EmailDesignSummary, EmailTemplate, EmailTemplateLocale } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -94,7 +97,7 @@ function TemplateCard({ tpl, locale, onUse }: { tpl: EmailTemplate; locale: Emai
 const THUMB_WIDTH = 600
 const THUMB_SCALE = 184 / 600
 
-function DesignCard({ d }: { d: EmailDesignSummary }) {
+function DesignCard({ d, selection }: { d: EmailDesignSummary; selection: Selection }) {
   const { t, i18n } = useLingui()
   const inbox = (useInboxes().data ?? []).find((i) => i.id === d.inbox_id)
   const design = useDesign(d.id)
@@ -105,7 +108,15 @@ function DesignCard({ d }: { d: EmailDesignSummary }) {
   const name = d.name
   const archived = !!d.archived_at
   return (
-    <li className="flex flex-col gap-2">
+    <li className="relative flex flex-col gap-2">
+      {selection.selecting && !archived && (
+        <RowCheck
+          className="absolute top-2.5 start-2.5 z-10"
+          checked={selection.has(d.id)}
+          name={name}
+          onToggle={(range) => selection.toggle(d.id, range)}
+        />
+      )}
       <Link
         to={designLink(d.id)}
         className={cn(
@@ -182,6 +193,10 @@ function Mine({ onNew }: { onNew: () => void }) {
   const items = lists
     .flatMap((l) => l.data?.pages.flatMap((p) => p.items) ?? [])
     .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
+  const selection = useSelection(
+    items.filter((d) => !d.archived_at).map((d) => d.id),
+    `${inboxId}|${query}|${archived}`
+  )
   const pending = lists.some((l) => l.isPending)
   const error = lists.find((l) => l.error)?.error
   const more = lists.filter((l) => l.hasNextPage)
@@ -208,14 +223,18 @@ function Mine({ onNew }: { onNew: () => void }) {
             data-testid="designs-search"
           />
         </div>
-        <Label
-          className="ms-auto gap-3 font-normal text-muted-foreground"
-          title={keyHint(t`Show archived designs`, DESIGN_KEYS.archived)}
-        >
-          <Trans>Show archived designs</Trans>
-          <Switch checked={archived} onCheckedChange={setArchived} data-testid="designs-archived" />
-        </Label>
+        <div className="ms-auto flex items-center gap-3">
+          {items.some((d) => !d.archived_at) && !selection.selecting && <SelectToggle selection={selection} />}
+          <Label
+            className="gap-3 font-normal text-muted-foreground"
+            title={keyHint(t`Show archived designs`, DESIGN_KEYS.archived)}
+          >
+            <Trans>Show archived designs</Trans>
+            <Switch checked={archived} onCheckedChange={setArchived} data-testid="designs-archived" />
+          </Label>
+        </div>
       </div>
+      <DesignBulkBar items={items} selection={selection} />
       <ErrorLine error={error} />
       {pending ? (
         <div className={grid}>
@@ -253,7 +272,7 @@ function Mine({ onNew }: { onNew: () => void }) {
       ) : (
         <ul ref={list} className={grid} aria-label={t`Designs`} data-testid="design-grid">
           {items.map((d) => (
-            <DesignCard key={d.id} d={d} />
+            <DesignCard key={d.id} d={d} selection={selection} />
           ))}
         </ul>
       )}

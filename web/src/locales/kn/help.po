@@ -320,6 +320,7 @@ msgstr "ಸಹಾಯ ಕೇಂದ್ರ ರಚಿಸಿ"
 msgid "Create help center ({newKey})"
 msgstr "ಸಹಾಯ ಕೇಂದ್ರ ರಚಿಸಿ ({newKey})"
 
+#: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Delete"
@@ -348,6 +349,10 @@ msgstr "ಸಹಾಯ ಕೇಂದ್ರ ಅಳಿಸಿ"
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete the {name} translation?"
 msgstr "{name} ಅನುವಾದ ಅಳಿಸಬೇಕೇ?"
+
+#: src/features/help/Bulk.tsx
+msgid "Delete the selected articles ({n})?"
+msgstr "ಆಯ್ಕೆ ಮಾಡಿದ ಲೇಖನಗಳನ್ನು ({n}) ಅಳಿಸಬೇಕೆ?"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete this article?"
@@ -420,6 +425,7 @@ msgid "Every search found something."
 msgstr "ಪ್ರತಿ ಹುಡುಕಾಟದಲ್ಲಿ ಏನೋ ಸಿಕ್ಕಿತು."
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 msgid "Every translation, its revisions and its counters are deleted."
 msgstr "ಎಲ್ಲಾ ಅನುವಾದಗಳು, ಅವುಗಳ ಪರಿಷ್ಕರಣೆಗಳು ಮತ್ತು ಕೌಂಟರ್‌ಗಳು ಅಳಿಸಲ್ಪಡುತ್ತವೆ."
 
@@ -611,6 +617,10 @@ msgstr "{name} ಸರಿಸಿ. ಎಳೆಯಿರಿ, ಅಥವಾ ಬಾಣ �
 msgid "Move down"
 msgstr "ಕೆಳಗೆ ಸರಿಸಿ"
 
+#: src/features/help/Bulk.tsx
+msgid "Move to collection"
+msgstr "ಸಂಗ್ರಹಕ್ಕೆ ಸರಿಸಿ"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move up"
 msgstr "ಮೇಲೆ ಸರಿಸಿ"
@@ -661,6 +671,7 @@ msgstr "ಇನ್ನೂ ಲೇಖನಗಳಿಲ್ಲ. ನಿಮ್ಮ ಗ್�
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/Bulk.tsx
 msgid "No collection"
 msgstr "ಸಂಗ್ರಹವಿಲ್ಲ"
 
@@ -824,6 +835,7 @@ msgid "Public address"
 msgstr "ಸಾರ್ವಜನಿಕ ವಿಳಾಸ"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Publish"
 msgstr "ಪ್ರಕಟಿಸಿ"
@@ -1080,6 +1092,10 @@ msgstr "ಪುಟವು ಸಂದರ್ಶಕರಿಗೆ ಕೆಲಸ ಮಾಡ
 msgid "The pages offer this chat under “Still need help?”."
 msgstr "ಪುಟಗಳು ಈ ಚಾಟ್ ಅನ್ನು “ಇನ್ನೂ ಸಹಾಯ ಬೇಕೇ?” ಅಡಿಯಲ್ಲಿ ನೀಡುತ್ತವೆ."
 
+#: src/features/help/Bulk.tsx
+msgid "The pages stop working for visitors. The drafts stay, and you can publish them again."
+msgstr "ಪುಟಗಳು ಸಂದರ್ಶಕರಿಗೆ ಕೆಲಸ ಮಾಡುವುದನ್ನು ನಿಲ್ಲಿಸುತ್ತವೆ. ಕರಡುಗಳು ಉಳಿಯುತ್ತವೆ ಮತ್ತು ನೀವು ಅವುಗಳನ್ನು ಮತ್ತೆ ಪ್ರಕಟಿಸಬಹುದು."
+
 #: src/features/help/ImportCard.tsx
 msgid "The read-only sign-in of this migration is reused. No new permission is asked."
 msgstr "The read-only sign-in of this migration is reused. No new permission is asked."
@@ -1134,6 +1150,7 @@ msgid "Type a word to search for."
 msgstr "ಹುಡುಕಲು ಒಂದು ಪದವನ್ನು ಟೈಪ್ ಮಾಡಿ."
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish"
 msgstr "ಪ್ರಕಟಣೆ ರದ್ದುಮಾಡಿ"
@@ -1141,6 +1158,10 @@ msgstr "ಪ್ರಕಟಣೆ ರದ್ದುಮಾಡಿ"
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "ಪ್ರಕಟಣೆ ರದ್ದುಮಾಡಿ ({publishKey})"
+
+#: src/features/help/Bulk.tsx
+msgid "Unpublish the selected translations?"
+msgstr "ಆಯ್ಕೆ ಮಾಡಿದ ಅನುವಾದಗಳ ಪ್ರಕಟಣೆಯನ್ನು ಹಿಂಪಡೆಯಬೇಕೆ?"
 
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish this help center?"

@@ -275,6 +275,10 @@ msgstr "{bad} മോശം"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} മാറ്റി"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · {at} മുതൽ കാത്തിരിക്കുന്നു"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# അനുമതി} other {# അനുമതി�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {ഇത് # സ്വീകർത്താവിന് പോകും.} other {ഇത് # സ്വീകർത്താക്കൾക്ക് പോകും.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} മാറ്റാൻ കഴിഞ്ഞില്ല"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "ഒരു ദിവസം മുമ്പ്, മാറ്റം വേ�
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD രൂപത്തിൽ ഒരു ദിവസം, നിങ്ങളുടെ സമയ മേഖലയിൽ"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "ഇല്ലാതാക്കിയ പോസ്റ്റ് തിരികെ കൊണ്ടുവരാൻ കഴിയില്ല."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "ക്യാമ്പെയ്ൻ പേര്"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "തിരയൽ മായ്ക്കുക"
 msgid "Clear the selection"
 msgstr "തിരഞ്ഞെടുപ്പ് മായ്ക്കുക"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "പ്രകടനം കുറഞ്ഞു"
 msgid "Delegates"
 msgstr "പ്രതിനിധികൾ"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "നിയമം {name} ഇല്ലാതാക്കണോ?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "തിരഞ്ഞെടുത്ത ബ്ലോക്ക് ഇല്ലാതാക്കുക"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "തിരഞ്ഞെടുത്ത ചർച്ചകൾ ({n}) ഇല്ലാതാക്കണോ?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "തിരഞ്ഞെടുത്ത ഡ്രാഫ്റ്റുകൾ ({n}) ഇല്ലാതാക്കണോ?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "തിരഞ്ഞെടുത്ത സബ്സ്ക്രിപ്ഷനുകൾ ({n}) ഇല്ലാതാക്കണോ?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "ഡൊമെയ്ൻ സ്ഥിരീകരിച്ചിട്ട�
 msgid "done"
 msgstr "പൂർത്തിയായി"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "ടീം മറച്ചത്"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "ഇൻബോക്സിൽ"
 msgid "In this browser tab"
 msgstr "ഈ ബ്രൗസർ ടാബിൽ"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "ഇത് ഉപയോഗിക്കുന്നത്: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Yandex ID-യിൽ Security › App passwords തുറന്ന് Mail-നായി “Yuva” എന്ന പേരിൽ ഒരു പാസ്‌വേഡ് ഉണ്ടാക്കുക."
@@ -8553,6 +8588,10 @@ msgstr "ഇത് <0>~/.codex/config.toml</0>-ലേക്ക് പോകുന
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "ഇത് നിലവിലെ പ്രോജക്റ്റിൽ നിങ്ങൾക്കായി ചേർത്തിരിക്കുന്നു. എല്ലാ പ്രോജക്റ്റിനും <0>--scope user</0>, അല്ലെങ്കിൽ <2>.mcp.json</2>-ൽ പങ്കിടാൻ <1>--scope project</1> ചേർക്കുക."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "അത് ഇപ്പോൾ ഇല്ല, അല്ലെങ്കിൽ നിങ്ങൾക്ക് അത് കാണാൻ കഴിയില്ല"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "വായിച്ചതായോ വായിക്കാത്തതായോ അടയാളപ്പെടുത്തുക (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "സ്പാം ആയി അടയാളപ്പെടുത്തുക"
@@ -9740,6 +9780,10 @@ msgstr "വായിച്ചിട്ടില്ലെന്ന് അടയ�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "സ്പാം ആയി അടയാളപ്പെടുത്തുക അല്ലെങ്കിൽ അടയാളം നീക്കുക"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "തിരഞ്ഞെടുത്ത ചർച്ചകൾ ({n}) സ്പാം ആയി അടയാളപ്പെടുത്തണോ?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "{seen} കണ്ടു"
 msgid "Seen by the monitor"
 msgstr "മോണിറ്റർ കണ്ടു"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "തിരഞ്ഞെടുപ്പ്"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "{name} തിരഞ്ഞെടുക്കുക"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "എല്ലാം തിരഞ്ഞെടുക്കുക"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "കഴ്സറിന് താഴെയുള്ള മെയിൽ ത
 msgid "Select the previous or next block"
 msgstr "മുമ്പത്തെയോ അടുത്തതോ ആയ ബ്ലോക്ക് തിരഞ്ഞെടുക്കുക"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "തിരഞ്ഞെടുത്തത്: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "ഉറവിടം"
 msgid "Sources"
 msgstr "ഉറവിടങ്ങൾ"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "പഴയ മെയിൽബോക്സ് ആ ഡൊമെയ്‌ന
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "മറ്റേ ഇൻബോക്സിന് ഇമെയിൽ ചാനൽ ഇല്ല, അതിനാൽ ഈ ഇമെയിൽ സംഭാഷണം അവിടേക്ക് മാറ്റാൻ കഴിയില്ല. ആദ്യം അതിൽ ഒരു ഇമെയിൽ ചാനൽ ചേർക്കുക."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "ബാക്കിയുള്ളവ മാറ്റി."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "ബാക്കിയുള്ളവ അടച്ചു. ഒന്ന് തുറന്ന് ആവശ്യമുള്ളത് പൂരിപ്പിച്ച ശേഷം അടയ്ക്കുക."
@@ -18866,6 +18926,10 @@ msgstr "zip Yuva-യ്ക്ക് വായിക്കാൻ കഴിയാ�
 msgid "The zone of the day bars."
 msgstr "ദിവസ ബാറുകളുടെ സമയമേഖല."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "അവരുടെ സമ്മത രേഖകളും ഇല്ലാതാകും, അതിനാൽ അവർ എങ്ങനെ സമ്മതിച്ചു എന്ന് ഇനി കാണിക്കാൻ കഴിയില്ല. അവർക്ക് മെയിൽ അയയ്ക്കുന്നത് നിർത്താൻ പകരം അവരുടെ സബ്സ്ക്രിപ്ഷൻ റദ്ദാക്കുക."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "അവരെക്കുറിച്ച് നിങ്ങളുടെ പക്കൽ എന്താണുള്ളതെന്ന അഭ്യർത്ഥനയ്ക്കായി, അവരുടെ സമ്മത രേഖകൾ:"
@@ -18873,6 +18937,10 @@ msgstr "അവരെക്കുറിച്ച് നിങ്ങളുടെ �
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "അവരുടെ സംഭാഷണങ്ങൾ നിലനിൽക്കും; അവർക്ക് ഉടൻ ആക്‌സസ് നഷ്ടപ്പെടും."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "അവയുടെ റിപ്പോർട്ടുകളും സ്വീകർത്താക്കളുടെ പട്ടികകളും ഇല്ലാതാകും. മറുപടികളിലൂടെ തുറന്ന സംഭാഷണങ്ങൾ നിലനിൽക്കും."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "ഈ നിയമങ്ങൾ സബ്സ്ക്രൈബ് ഫോമ
 msgid "They already agreed"
 msgstr "അവർ ഇതിനകം സമ്മതിച്ചു"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "എഴുത്തുകാരുടെ അംഗീകാരത്തിനായി കാത്തിരിക്കുന്ന മറ്റ് എല്ലാ പോസ്റ്റുകൾക്കുമൊപ്പം അവ മറയ്ക്കപ്പെടും, ഈ എഴുത്തുകാരുടെ പിന്നീടുള്ള പോസ്റ്റുകൾ എപ്പോഴും ഒരു അംഗത്തിനായി കാത്തിരിക്കും."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "ഇവ നിങ്ങളുടെ ടീമിനും ഉപഭോക്താക്കൾക്കും കാണാനാകില്ല. 30 ദിവസം വരെ ട്രാഷിൽ നിന്ന് പുനഃസ്ഥാപിക്കാം, അതിനുശേഷം സന്ദേശങ്ങളും ഫയലുകളും സഹിതം ശാശ്വതമായി ഇല്ലാതാക്കും."
@@ -18922,6 +18994,7 @@ msgstr "അവർക്ക് ഒരു ലിങ്കുള്ള മെയി
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "അവർക്ക് ഒരു ലിങ്കുള്ള മെയിൽ ലഭിക്കും; അതിൽ ക്ലിക്ക് ചെയ്തതിനുശേഷം മാത്രമേ അറിയിപ്പുകൾ ലഭിക്കൂ."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "അവർക്ക് ഈ ലിസ്റ്റിൽ നിന്ന് ഇനി മെയിൽ ലഭിക്കില്ല, ടീം അവരെ അൺസബ്സ്ക്രൈബ് ചെയ്തുവെന്ന് രേഖപ്പെടുത്തും. ഒരു മെയിൽ സ്ഥിരീകരിച്ച് അവർക്ക് മാത്രമേ വീണ്ടും സബ്സ്ക്രൈബ് ചെയ്യാൻ കഴിയൂ."
@@ -19972,6 +20045,7 @@ msgstr "വായിക്കാത്തവ മാത്രം"
 msgid "Unsaved changes"
 msgstr "സേവ് ചെയ്യാത്ത മാറ്റങ്ങൾ"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "അൺസബ്സ്ക്രൈബ് ചെയ്യുക"
@@ -19984,6 +20058,10 @@ msgstr "{0} അൺസബ്സ്ക്രൈബ് ചെയ്യണോ?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "അൺസബ്സ്ക്രൈബ് ലിങ്ക്"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "തിരഞ്ഞെടുത്ത സബ്സ്ക്രൈബർമാരുടെ ({n}) സബ്സ്ക്രിപ്ഷൻ റദ്ദാക്കണോ?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "നിങ്ങൾ ഒരു വർക്ക്സ്പേസിന്�
 msgid "You can close this window and go back to {host}."
 msgstr "നിങ്ങൾക്ക് ഈ വിൻഡോ അടച്ച് {host}-ലേക്ക് മടങ്ങാം."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "നിങ്ങൾ തുടങ്ങിയ ചർച്ചകൾ മാത്രമേ ഇല്ലാതാക്കാൻ കഴിയൂ"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "നിങ്ങൾക്ക് എപ്പോൾ വേണമെങ്കിലും ക്രമീകരണങ്ങളിൽ, കണക്റ്റ് ചെയ്ത ആപ്പുകൾക്ക് കീഴിൽ ഇത് വിച്ഛേദിക്കാം."
@@ -21417,6 +21499,10 @@ msgstr "{what}-ൽ നിങ്ങൾക്ക് സേവ് ചെയ്യ�
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "നിങ്ങൾ എല്ലാ വർക്ക്‌സ്‌പേസുകളും വിടുകയും സൈൻ-ഇനുകൾ, പാസ്‌കീകൾ, അറിയിപ്പുകൾ എന്നിവ നഷ്ടപ്പെടുകയും ചെയ്യുന്നു. നിങ്ങൾ എഴുതിയ സന്ദേശങ്ങൾ സംഭാഷണങ്ങളിൽ തുടരും, ഇല്ലാതാക്കിയ അംഗത്തിൽ നിന്നുള്ളതായി കാണിക്കും. നിങ്ങളുടെ വ്യക്തിഗത മെയിൽബോക്സുകൾ ഒരു ഉടമയോ അഡ്മിനോ അവ കൈമാറുകയോ ഇല്ലാതാക്കുകയോ ചെയ്യുന്നതുവരെ വായിക്കാതെ വർക്ക്‌സ്‌പേസിൽ തുടരും. ഇത് പഴയപടിയാക്കാനാവില്ല."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "ഇത് ചെയ്യാൻ നിങ്ങൾക്ക് അനുമതിയില്ല"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

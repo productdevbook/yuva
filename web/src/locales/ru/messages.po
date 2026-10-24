@@ -275,6 +275,10 @@ msgstr "плохо: {bad}"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "Изменено: {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · ждёт с {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# разрешение} few {# разрешения
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Уйдёт # получателю.} few {Уйдёт # получателям.} many {Уйдёт # получателям.} other {Уйдёт # получателя.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "Не удалось изменить: {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "За день до этого уменьшите TTL записей MX, 
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "день в формате YYYY-MM-DD, в вашем часовом поясе"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Удалённую публикацию нельзя восстановить."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Название кампании"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Очистить поиск"
 msgid "Clear the selection"
 msgstr "Снять выделение"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Сниженная производительность"
 msgid "Delegates"
 msgstr "Делегаты"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Удалить правило {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Удалить выбранный блок"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Удалить выбранные обсуждения ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Удалить выбранные черновики ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Удалить выбранные подписки ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Домен не подтверждён"
 msgid "done"
 msgstr "готово"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Скрыто командой"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Во входящих"
 msgid "In this browser tab"
 msgstr "В этой вкладке браузера"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Используется в: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "В Яндекс ID откройте «Безопасность › Пароли приложений» и создайте пароль для Почты с названием «Yuva»."
@@ -8553,6 +8588,10 @@ msgstr "Это попадает в <0>~/.codex/config.toml</0>, который �
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Он добавляется для вас в текущий проект. Добавьте <0>--scope user</0> для каждого проекта или <1>--scope project</1>, чтобы поделиться им в <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Его больше нет, или у вас нет доступа"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Отметить как прочитанное или непрочитанное (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Отметить как спам"
@@ -9740,6 +9780,10 @@ msgstr "Отметить как непрочитанное и вернуться
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Отметить или снять отметку спама"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Отметить выбранные обсуждения как спам ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Был(а) {seen}"
 msgid "Seen by the monitor"
 msgstr "Замечен монитором"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Выбор"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Выбрать: {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Выбрать все"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Выбрать письмо под курсором"
 msgid "Select the previous or next block"
 msgstr "Выбрать предыдущий или следующий блок"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Выбрано: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Источник"
 msgid "Sources"
 msgstr "Источники"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Старый ящик перестаёт получать почту д�
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "У другого ящика нет почтового канала, поэтому этот диалог по e-mail нельзя туда переместить. Сначала добавьте ему почтовый канал."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Остальные изменены."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Остальные закрыты. Откройте одну, заполните нужное и закройте её."
@@ -18866,6 +18926,10 @@ msgstr "Zip использует метод сжатия, который Yuva н
 msgid "The zone of the day bars."
 msgstr "Часовой пояс столбцов по дням."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Записи об их согласии тоже удаляются, и вы больше не сможете показать, как они согласились. Чтобы не писать им, лучше отпишите их."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Их записи о согласии для запроса о том, что у вас хранится о них:"
@@ -18873,6 +18937,10 @@ msgstr "Их записи о согласии для запроса о том, �
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Их диалоги остаются; доступ они теряют сразу."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Их отчёты и списки получателей удаляются. Диалоги, начатые ответами, остаются."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Эти правила действуют для формы подпис�
 msgid "They already agreed"
 msgstr "Они уже дали согласие"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Они скрываются вместе со всеми остальными публикациями их авторов, ожидающими одобрения, а последующие публикации этих авторов всегда будут ждать сотрудника."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Они исчезнут для вашей команды и для клиентов. В течение 30 дней их можно восстановить из корзины, затем они будут удалены навсегда вместе с сообщениями и файлами."
@@ -18922,6 +18994,7 @@ msgstr "Они получают письмо со ссылкой и подпис
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Они получают письмо со ссылкой и начинают получать уведомления только после перехода по ней."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Они больше не получают писем из этого списка, и записывается, что их отписала команда. Подписаться снова может только сам человек, подтвердив письмо."
@@ -19972,6 +20045,7 @@ msgstr "Только непрочитанные"
 msgid "Unsaved changes"
 msgstr "Несохранённые изменения"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Отписать"
@@ -19984,6 +20058,10 @@ msgstr "Отписать {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Ссылка для отписки"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Отписать выбранных подписчиков ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Вы единственный владелец рабочего прос
 msgid "You can close this window and go back to {host}."
 msgstr "Это окно можно закрыть и вернуться на {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Вы можете удалять только обсуждения, начатые вами"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Отключить его можно в любой момент в «Настройках», в «Подключённых приложениях»."
@@ -21417,6 +21499,10 @@ msgstr "У вас есть несохранённые изменения в {wha
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Вы покидаете все рабочие пространства и теряете входы, ключи доступа и уведомления. Ваши сообщения остаются в разговорах как от удалённого участника. Ваши личные ящики остаются в рабочем пространстве непрочитанными, пока владелец или администратор не передаст или не удалит их. Это нельзя отменить."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "У вас нет права на это действие"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

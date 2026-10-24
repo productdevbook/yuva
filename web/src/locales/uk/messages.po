@@ -275,6 +275,10 @@ msgstr "погано: {bad}"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "Змінено: {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · чекає з {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# дозвіл} few {# дозволи} many {# до
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Піде # отримувачу.} few {Піде # отримувачам.} many {Піде # отримувачам.} other {Піде # отримувача.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "Не вдалося змінити: {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "За день до цього зменшіть TTL записів MX, щ
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "день у форматі YYYY-MM-DD, у вашому часовому поясі"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Видалену публікацію не можна відновити."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Назва кампанії"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Очистити пошук"
 msgid "Clear the selection"
 msgstr "Скасувати вибір"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Знижена продуктивність"
 msgid "Delegates"
 msgstr "Делеговані"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Видалити правило {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Видалити вибраний блок"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Видалити вибрані обговорення ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Видалити вибрані чернетки ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Видалити вибрані підписки ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Домен не підтверджено"
 msgid "done"
 msgstr "готово"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Приховано командою"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "У вхідних"
 msgid "In this browser tab"
 msgstr "У цій вкладці браузера"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Використовується в: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "В Яндекс ID відкрийте «Безпека › Паролі застосунків» і створіть пароль для Пошти з назвою «Yuva»."
@@ -8553,6 +8588,10 @@ msgstr "Це потрапляє в <0>~/.codex/config.toml</0>, який спі�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Він додається для вас у поточний проєкт. Додайте <0>--scope user</0> для кожного проєкту або <1>--scope project</1>, щоб поділитися ним у <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Його більше немає, або у вас немає доступу"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Позначити як прочитане чи непрочитане (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Позначити як спам"
@@ -9740,6 +9780,10 @@ msgstr "Позначити як непрочитане й повернутися
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Позначити або зняти позначку спаму"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Позначити вибрані обговорення як спам ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Був(ла) {seen}"
 msgid "Seen by the monitor"
 msgstr "Помічений монітором"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Вибір"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Вибрати: {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Вибрати все"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Вибрати лист під курсором"
 msgid "Select the previous or next block"
 msgstr "Вибрати попередній або наступний блок"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Вибрано: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Джерело"
 msgid "Sources"
 msgstr "Джерела"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Стара скринька перестає отримувати пош
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "У іншої скриньки немає поштового каналу, тож цю розмову за e-mail не можна туди перемістити. Спершу додайте їй поштовий канал."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Решту змінено."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Решту закрито. Відкрийте одну, заповніть потрібне й закрийте її."
@@ -18866,6 +18926,10 @@ msgstr "Zip використовує метод стиснення, який Yuv
 msgid "The zone of the day bars."
 msgstr "Часовий пояс стовпців за днями."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Записи про їхню згоду теж видаляються, тож ви більше не зможете показати, як вони погодилися. Щоб не писати їм, краще відпишіть їх."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Їхні записи про згоду для запиту про те, що у вас зберігається про них:"
@@ -18873,6 +18937,10 @@ msgstr "Їхні записи про згоду для запиту про те,
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Їхні розмови залишаються; доступ вони втрачають одразу."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Їхні звіти та списки одержувачів видаляються. Розмови, розпочаті відповідями, залишаються."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Ці правила діють для форми підписки. Їх 
 msgid "They already agreed"
 msgstr "Вони вже дали згоду"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Їх буде приховано разом з усіма іншими публікаціями їхніх авторів, що очікують схвалення, а наступні публікації цих авторів завжди чекатимуть на співробітника."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Вони зникнуть для вашої команди та для клієнтів. Протягом 30 днів їх можна відновити з кошика, потім їх буде остаточно видалено разом із повідомленнями та файлами."
@@ -18922,6 +18994,7 @@ msgstr "Вони отримують лист із посиланням і під
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Вони отримують лист із посиланням і починають отримувати сповіщення лише після переходу за ним."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Вони більше не отримують листів із цього списку, і записується, що їх відписала команда. Підписатися знову може лише сама людина, підтвердивши лист."
@@ -19972,6 +20045,7 @@ msgstr "Лише непрочитані"
 msgid "Unsaved changes"
 msgstr "Незбережені зміни"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Відписати"
@@ -19984,6 +20058,10 @@ msgstr "Відписати {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Посилання для відписки"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Відписати вибраних підписників ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Ви єдиний власник робочого простору. Пр
 msgid "You can close this window and go back to {host}."
 msgstr "Це вікно можна закрити й повернутися на {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Ви можете видаляти лише обговорення, які розпочали самі"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Відключити його можна будь-коли в «Налаштуваннях», у «Підключених застосунках»."
@@ -21417,6 +21499,10 @@ msgstr "У вас є незбережені зміни в {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Ви залишаєте всі робочі простори й втрачаєте входи, ключі доступу та сповіщення. Ваші повідомлення залишаються в розмовах як від видаленого учасника. Ваші особисті скриньки залишаються в робочому просторі непрочитаними, доки власник або адміністратор не передасть чи не видалить їх. Це неможливо скасувати."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "У вас немає права на цю дію"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

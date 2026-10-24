@@ -275,6 +275,10 @@ msgstr "{bad} negative"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} modificati"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · in attesa da {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# permesso} other {# permessi}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Va a # destinatario.} other {Va a # destinatari.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} non si sono potuti modificare"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Un giorno prima, abbassa il TTL dei record MX, così la modifica si prop
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "un giorno come YYYY-MM-DD, nel tuo fuso orario"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Un post eliminato non si può recuperare."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Nome della campagna"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Cancella la ricerca"
 msgid "Clear the selection"
 msgstr "Cancella la selezione"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Prestazioni ridotte"
 msgid "Delegates"
 msgstr "Delegati"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Eliminare la regola {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Elimina il blocco selezionato"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Eliminare le discussioni selezionate ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Eliminare le bozze selezionate ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Eliminare le iscrizioni selezionate ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Dominio non verificato"
 msgid "done"
 msgstr "fatto"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Nascosto dal team"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Nella casella"
 msgid "In this browser tab"
 msgstr "In questa scheda del browser"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Usata da {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "In Yandex ID, apri Sicurezza › Password per le app e crea una password per Mail chiamata «Yuva»."
@@ -8553,6 +8588,10 @@ msgstr "Va in <0>~/.codex/config.toml</0>, condiviso dalla CLI di Codex e dall�
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Viene aggiunto per te nel progetto corrente. Aggiungi <0>--scope user</0> per ogni progetto, o <1>--scope project</1> per condividerlo in <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Non esiste più oppure non puoi vederlo"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Segna come letto o da leggere (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Segna come spam"
@@ -9740,6 +9780,10 @@ msgstr "Segna come da leggere e torna alla lista"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Segna o togli come spam"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Segnalare come spam le discussioni selezionate ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Visto {seen}"
 msgid "Seen by the monitor"
 msgstr "Visto dal monitor"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Selezione"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Seleziona {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Seleziona tutto"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Seleziona l’e-mail sotto il cursore"
 msgid "Select the previous or next block"
 msgstr "Seleziona il blocco precedente o successivo"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Selezionate: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Sorgente"
 msgid "Sources"
 msgstr "Sorgenti"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "La vecchia casella smette di ricevere posta per quel dominio."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "L’altra casella non ha un canale e-mail, quindi questa conversazione e-mail non può spostarsi lì. Aggiungile prima un canale e-mail."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Gli altri sono stati modificati."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Le altre sono state chiuse. Apri una per compilare ciò che serve, poi chiudila."
@@ -18866,6 +18926,10 @@ msgstr "Lo zip usa un metodo di compressione che Yuva non sa leggere. Rifallo co
 msgid "The zone of the day bars."
 msgstr "Il fuso orario delle barre dei giorni."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Anche le loro prove di consenso vengono eliminate, quindi non potrai più dimostrare come hanno acconsentito. Per non scrivere più a queste persone, annulla invece la loro iscrizione."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Le loro prove di consenso, per una richiesta su cosa conservi su di loro:"
@@ -18873,6 +18937,10 @@ msgstr "Le loro prove di consenso, per una richiesta su cosa conservi su di loro
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Le loro conversazioni restano; perdono l’accesso subito."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "I loro rapporti e gli elenchi dei destinatari vengono eliminati. Le conversazioni aperte dalle risposte restano."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Queste regole valgono per il modulo di iscrizione. Puoi cambiarle in qua
 msgid "They already agreed"
 msgstr "Hanno già accettato"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Vengono nascosti insieme a tutti gli altri post dei loro autori ancora in attesa di approvazione, e i post successivi di quegli autori attenderanno sempre un membro."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Scompaiono per il tuo team e per i clienti. Puoi ripristinarle dal cestino per 30 giorni, poi vengono eliminate definitivamente con i loro messaggi e file."
@@ -18922,6 +18994,7 @@ msgstr "Ricevono un’e-mail con un link e sono iscritti solo dopo aver cliccato
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Ricevono un'e-mail con un link e riceveranno gli avvisi solo dopo aver cliccato."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Non ricevono più e-mail da questa lista, e viene registrato che il team li ha cancellati. Solo loro possono iscriversi di nuovo, confermando un’e-mail."
@@ -19972,6 +20045,7 @@ msgstr "Solo da leggere"
 msgid "Unsaved changes"
 msgstr "Modifiche non salvate"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Annulla iscrizione"
@@ -19984,6 +20058,10 @@ msgstr "Annullare l’iscrizione di {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Link di cancellazione"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Annullare l’iscrizione degli iscritti selezionati ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Sei l’unico proprietario di uno spazio di lavoro. Rendi proprietario q
 msgid "You can close this window and go back to {host}."
 msgstr "Puoi chiudere questa finestra e tornare a {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Puoi eliminare solo le discussioni che hai avviato"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Puoi scollegarla in qualsiasi momento in Impostazioni, sotto App collegate."
@@ -21417,6 +21499,10 @@ msgstr "Hai modifiche non salvate a {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Lasci tutti gli spazi di lavoro e perdi accessi, passkey e notifiche. I messaggi che hai scritto restano nelle conversazioni, mostrati come di un membro eliminato. Le tue caselle personali restano nello spazio di lavoro, non lette, finché un proprietario o amministratore le passa a qualcuno o le elimina. Non si può annullare."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Non puoi farlo"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

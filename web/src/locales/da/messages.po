@@ -275,6 +275,10 @@ msgstr "{bad} dårlige"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} ændret"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · venter siden {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# tilladelse} other {# tilladelser}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {Sendes til # modtager.} other {Sendes til # modtagere.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} kunne ikke ændres"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Sænk TTL på MX-posterne en dag i forvejen, så ændringen spredes hurt
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "en dag som YYYY-MM-DD, i din tidszone"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Et slettet opslag kan ikke genoprettes."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Kampagnenavn"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Ryd søgningen"
 msgid "Clear the selection"
 msgstr "Ryd markeringen"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Forringet ydeevne"
 msgid "Delegates"
 msgstr "Stedfortrædere"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Slet reglen {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Slet den valgte blok"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Slet de valgte diskussioner ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Slet de valgte kladder ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Slet de valgte abonnementer ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Domænet er ikke bekræftet"
 msgid "done"
 msgstr "udført"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Skjult af teamet"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "I postkassen"
 msgid "In this browser tab"
 msgstr "I denne browserfane"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Bruges af {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "I Yandex ID, åbn Sikkerhed › App-adgangskoder, og opret en adgangskode til Mail med navnet “Yuva”."
@@ -8553,6 +8588,10 @@ msgstr "Den kommer i <0>~/.codex/config.toml</0>, som Codex CLI og IDE-udvidelse
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Den tilføjes for dig i det aktuelle projekt. Tilføj <0>--scope user</0> for hvert projekt eller <1>--scope project</1> for at dele den i <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Den findes ikke længere, eller du kan ikke se den"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Markér som læst eller ulæst (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Markér som spam"
@@ -9740,6 +9780,10 @@ msgstr "Markér som ulæst, og gå tilbage til listen"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Markér eller fjern markering som spam"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Markér de valgte diskussioner som spam ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Set {seen}"
 msgid "Seen by the monitor"
 msgstr "Set af monitoren"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Valg"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Vælg {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Vælg alle"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Vælg mailen under markøren"
 msgid "Select the previous or next block"
 msgstr "Vælg den forrige eller næste blok"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Valgt: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Kilde"
 msgid "Sources"
 msgstr "Kilder"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Den gamle postkasse holder op med at modtage mail for det domæne."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Den anden postkasse har ingen e-mailkanal, så denne e-mailsamtale kan ikke flyttes dertil. Føj først en e-mailkanal til den."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "De øvrige blev ændret."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "De andre blev lukket. Åbn en, udfyld det, den mangler, og luk den."
@@ -18866,6 +18926,10 @@ msgstr "Zip-filen bruger en komprimeringsmetode, Yuva ikke kan læse. Lav den ig
 msgid "The zone of the day bars."
 msgstr "Tidszonen for dagssøjlerne."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Deres samtykkeoptegnelser slettes også, så du ikke længere kan vise, hvordan de har sagt ja. Vil du ikke sende dem mere post, så afmeld dem i stedet."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Deres samtykkebeviser, til en anmodning om, hvad du har om dem:"
@@ -18873,6 +18937,10 @@ msgstr "Deres samtykkebeviser, til en anmodning om, hvad du har om dem:"
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Deres samtaler bliver; de mister adgang med det samme."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Deres rapporter og modtagerlister slettes. Samtaler åbnet af svar bliver."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Disse regler gælder for tilmeldingsformularen. Du kan til enhver tid æ
 msgid "They already agreed"
 msgstr "De har allerede sagt ja"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "De skjules sammen med alle andre opslag fra deres forfattere, der stadig venter på godkendelse, og forfatternes senere opslag venter altid på et teammedlem."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "De forsvinder for dit team og for kunderne. Du kan gendanne dem fra papirkurven i 30 dage, derefter slettes de permanent sammen med alle beskeder og filer."
@@ -18922,6 +18994,7 @@ msgstr "De får en mail med et link og er først tilmeldt, når de klikker på d
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "De får en mail med et link og modtager først underretninger, når de har klikket på det."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "De får ikke længere mail fra denne liste, og det noteres, at teamet afmeldte dem. Kun de selv kan tilmelde sig igen ved at bekræfte en mail."
@@ -19972,6 +20045,7 @@ msgstr "Kun ulæste"
 msgid "Unsaved changes"
 msgstr "Ugemte ændringer"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Afmeld"
@@ -19984,6 +20058,10 @@ msgstr "Afmeld {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Afmeldingslink"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Afmeld de valgte abonnenter ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Du er den eneste ejer af et arbejdsområde. Gør en anden til ejer der, 
 msgid "You can close this window and go back to {host}."
 msgstr "Du kan lukke dette vindue og gå tilbage til {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Du kan kun slette diskussioner, du selv har startet"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Du kan afbryde forbindelsen når som helst i Indstillinger, under Forbundne apps."
@@ -21417,6 +21499,10 @@ msgstr "Du har ugemte ændringer i {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Du forlader alle arbejdsområder og mister logins, adgangsnøgler og notifikationer. Beskeder, du skrev, bliver i deres samtaler, vist som fra et slettet medlem. Dine personlige postkasser bliver i arbejdsområdet, ulæste, indtil en ejer eller administrator giver dem videre eller sletter dem. Det kan ikke fortrydes."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Det må du ikke"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

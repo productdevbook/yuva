@@ -275,6 +275,10 @@ msgstr "{bad} ไม่ดี"
 msgid "{by}, {date}"
 msgstr "{by} {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "เปลี่ยนแล้ว {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · รอตั้งแต่ {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, other {# สิทธิ์}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {จะส่งถึงผู้รับ # คน}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "เปลี่ยนไม่ได้ {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "ล่วงหน้าหนึ่งวัน ลด TTL ของร
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "วันในรูปแบบ YYYY-MM-DD ตามเขตเวลาของคุณ"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "โพสต์ที่ลบแล้วจะกู้คืนไม่ได้"
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "ชื่อแคมเปญ"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "ล้างการค้นหา"
 msgid "Clear the selection"
 msgstr "ล้างการเลือก"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "ประสิทธิภาพลดลง"
 msgid "Delegates"
 msgstr "ผู้รับมอบสิทธิ์"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "ลบกฎ {name} หรือไม่"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "ลบบล็อกที่เลือก"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "ลบการสนทนาที่เลือก ({n}) ไหม"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "ลบฉบับร่างที่เลือก ({n}) ไหม"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "ลบการสมัครรับที่เลือก ({n}) ไหม"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "ยังไม่ได้ยืนยันโดเมน"
 msgid "done"
 msgstr "เสร็จแล้ว"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "ซ่อนโดยทีม"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "ในกล่องข้อความ"
 msgid "In this browser tab"
 msgstr "ในแท็บเบราว์เซอร์นี้"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "ถูกใช้โดย {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "ใน Yandex ID เปิด Security › App passwords แล้วสร้างรหัสผ่านสำหรับ Mail ตั้งชื่อ “Yuva”"
@@ -8553,6 +8588,10 @@ msgstr "จะอยู่ใน <0>~/.codex/config.toml</0> ซึ่ง Codex 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "เพิ่มให้คุณในโปรเจกต์ปัจจุบัน เพิ่ม <0>--scope user</0> สำหรับทุกโปรเจกต์ หรือ <1>--scope project</1> เพื่อแชร์ใน <2>.mcp.json</2>"
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "ไม่มีแล้ว หรือคุณไม่มีสิทธิ์ดู"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "ทำเครื่องหมายว่าอ่านแล้วหรือยังไม่อ่าน (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "ทำเครื่องหมายเป็นสแปม"
@@ -9740,6 +9780,10 @@ msgstr "ทำเครื่องหมายว่ายังไม่อ่
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "ทำเครื่องหมายหรือยกเลิกเครื่องหมายสแปม"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "ทำเครื่องหมายการสนทนาที่เลือก ({n}) เป็นสแปมไหม"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "พบ {seen}"
 msgid "Seen by the monitor"
 msgstr "มอนิเตอร์พบ"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "ตัวเลือก"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "เลือก {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "เลือกทั้งหมด"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "เลือกอีเมลที่อยู่ใต้เคอร
 msgid "Select the previous or next block"
 msgstr "เลือกบล็อกก่อนหน้าหรือถัดไป"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "เลือกแล้ว: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "ต้นทาง"
 msgid "Sources"
 msgstr "แหล่งที่มา"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "กล่องจดหมายเดิมหยุดรับอี
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "กล่องข้อความอีกกล่องไม่มีช่องทางอีเมล การสนทนาทางอีเมลนี้จึงย้ายไปที่นั่นไม่ได้ เพิ่มช่องทางอีเมลให้กล่องนั้นก่อน"
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "รายการอื่นเปลี่ยนแล้ว"
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "รายการที่เหลือถูกปิดแล้ว เปิดหนึ่งรายการ กรอกสิ่งที่ต้องใช้ แล้วปิด"
@@ -18866,6 +18926,10 @@ msgstr "ไฟล์ zip ใช้วิธีบีบอัดที่ Yuva �
 msgid "The zone of the day bars."
 msgstr "เขตเวลาของแท่งรายวัน"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "บันทึกความยินยอมของพวกเขาจะถูกลบไปด้วย คุณจึงแสดงไม่ได้อีกว่าพวกเขายินยอมอย่างไร หากต้องการเลิกส่งเมลถึงพวกเขา ให้ยกเลิกการสมัครรับแทน"
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "บันทึกความยินยอมของพวกเขา สำหรับคำขอเกี่ยวกับสิ่งที่คุณเก็บไว้เกี่ยวกับพวกเขา:"
@@ -18873,6 +18937,10 @@ msgstr "บันทึกความยินยอมของพวกเข
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "การสนทนาของพวกเขายังอยู่ พวกเขาสูญเสียสิทธิ์เข้าถึงทันที"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "รายงานและรายชื่อผู้รับของพวกมันจะถูกลบ การสนทนาที่เปิดจากการตอบกลับจะยังอยู่"
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "กฎเหล่านี้ใช้กับแบบฟอร์ม
 msgid "They already agreed"
 msgstr "พวกเขายินยอมแล้ว"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "โพสต์จะถูกซ่อนพร้อมโพสต์อื่นของผู้เขียนที่ยังรอการอนุมัติ และโพสต์ถัดไปของผู้เขียนเหล่านี้จะรอสมาชิกทีมเสมอ"
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "จะหายไปจากทีมและลูกค้า คุณกู้คืนจากถังขยะได้ภายใน 30 วัน หลังจากนั้นจะถูกลบถาวรพร้อมข้อความและไฟล์"
@@ -18922,6 +18994,7 @@ msgstr "พวกเขาได้รับอีเมลที่มีลิ
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "พวกเขาจะได้รับอีเมลพร้อมลิงก์ และจะได้รับการแจ้งเตือนหลังจากคลิกลิงก์เท่านั้น"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "พวกเขาไม่ได้รับอีเมลจากรายชื่อนี้อีก และมีการบันทึกว่าทีมยกเลิกการสมัครรับให้ เฉพาะพวกเขาเองที่สมัครรับอีกครั้งได้ โดยยืนยันอีเมล"
@@ -19972,6 +20045,7 @@ msgstr "เฉพาะที่ยังไม่อ่าน"
 msgid "Unsaved changes"
 msgstr "การเปลี่ยนแปลงที่ยังไม่บันทึก"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "ยกเลิกการสมัครรับ"
@@ -19984,6 +20058,10 @@ msgstr "ยกเลิกการสมัครรับ {0} ไหม"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "ลิงก์ยกเลิกการสมัครรับ"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "ยกเลิกการสมัครรับของผู้สมัครรับที่เลือก ({n}) ไหม"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "คุณเป็นเจ้าของคนเดียวของ
 msgid "You can close this window and go back to {host}."
 msgstr "คุณปิดหน้าต่างนี้แล้วกลับไปที่ {host} ได้"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "คุณลบได้เฉพาะการสนทนาที่คุณเริ่มเอง"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "คุณยกเลิกการเชื่อมต่อได้ทุกเมื่อในการตั้งค่า ภายใต้แอปที่เชื่อมต่อ"
@@ -21417,6 +21499,10 @@ msgstr "คุณมีการเปลี่ยนแปลงที่ยั
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "คุณจะออกจากพื้นที่ทำงานทั้งหมดและสูญเสียการลงชื่อเข้าใช้ พาสคีย์ และการแจ้งเตือน ข้อความที่คุณเขียนจะอยู่ในการสนทนาเดิม แสดงเป็นของสมาชิกที่ถูกลบ กล่องจดหมายส่วนตัวของคุณจะอยู่ในพื้นที่ทำงานโดยไม่มีใครอ่าน จนกว่าเจ้าของหรือผู้ดูแลจะส่งต่อหรือลบ ย้อนกลับไม่ได้"
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "คุณไม่มีสิทธิ์ทำสิ่งนี้"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

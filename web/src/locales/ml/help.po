@@ -320,6 +320,7 @@ msgstr "സഹായ കേന്ദ്രം സൃഷ്ടിക്കുക"
 msgid "Create help center ({newKey})"
 msgstr "സഹായ കേന്ദ്രം സൃഷ്ടിക്കുക ({newKey})"
 
+#: src/features/help/Bulk.tsx
 #: src/features/help/CollectionsTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Delete"
@@ -348,6 +349,10 @@ msgstr "സഹായ കേന്ദ്രം ഇല്ലാതാക്കു�
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete the {name} translation?"
 msgstr "{name} വിവർത്തനം ഇല്ലാതാക്കണോ?"
+
+#: src/features/help/Bulk.tsx
+msgid "Delete the selected articles ({n})?"
+msgstr "തിരഞ്ഞെടുത്ത ലേഖനങ്ങൾ ({n}) ഇല്ലാതാക്കണോ?"
 
 #: src/features/help/ArticleEditor.tsx
 msgid "Delete this article?"
@@ -420,6 +425,7 @@ msgid "Every search found something."
 msgstr "ഓരോ തിരയലിലും എന്തെങ്കിലും കിട്ടി."
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 msgid "Every translation, its revisions and its counters are deleted."
 msgstr "എല്ലാ വിവർത്തനങ്ങളും അവയുടെ പരിഷ്കരണങ്ങളും കൗണ്ടറുകളും ഇല്ലാതാകും."
 
@@ -611,6 +617,10 @@ msgstr "{name} നീക്കുക. വലിക്കുക, അല്ലെ�
 msgid "Move down"
 msgstr "താഴേക്ക് നീക്കുക"
 
+#: src/features/help/Bulk.tsx
+msgid "Move to collection"
+msgstr "ശേഖരത്തിലേക്ക് മാറ്റുക"
+
 #: src/features/help/CollectionsTab.tsx
 msgid "Move up"
 msgstr "മുകളിലേക്ക് നീക്കുക"
@@ -661,6 +671,7 @@ msgstr "ഇതുവരെ ലേഖനങ്ങളില്ല. നിങ്ങ
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/Bulk.tsx
 msgid "No collection"
 msgstr "ശേഖരമില്ല"
 
@@ -824,6 +835,7 @@ msgid "Public address"
 msgstr "പൊതു വിലാസം"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Publish"
 msgstr "പ്രസിദ്ധീകരിക്കുക"
@@ -1080,6 +1092,10 @@ msgstr "പേജ് സന്ദർശകർക്ക് പ്രവർത്�
 msgid "The pages offer this chat under “Still need help?”."
 msgstr "പേജുകൾ ഈ ചാറ്റ് “ഇപ്പോഴും സഹായം വേണോ?” എന്നതിന് താഴെ നൽകുന്നു."
 
+#: src/features/help/Bulk.tsx
+msgid "The pages stop working for visitors. The drafts stay, and you can publish them again."
+msgstr "പേജുകൾ സന്ദർശകർക്കായി പ്രവർത്തിക്കുന്നത് നിർത്തും. ഡ്രാഫ്റ്റുകൾ നിലനിൽക്കും, നിങ്ങൾക്ക് വീണ്ടും പ്രസിദ്ധീകരിക്കാം."
+
 #: src/features/help/ImportCard.tsx
 msgid "The read-only sign-in of this migration is reused. No new permission is asked."
 msgstr "The read-only sign-in of this migration is reused. No new permission is asked."
@@ -1134,6 +1150,7 @@ msgid "Type a word to search for."
 msgstr "തിരയാൻ ഒരു വാക്ക് ടൈപ്പ് ചെയ്യുക."
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish"
 msgstr "പ്രസിദ്ധീകരണം റദ്ദാക്കുക"
@@ -1141,6 +1158,10 @@ msgstr "പ്രസിദ്ധീകരണം റദ്ദാക്കുക"
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "പ്രസിദ്ധീകരണം റദ്ദാക്കുക ({publishKey})"
+
+#: src/features/help/Bulk.tsx
+msgid "Unpublish the selected translations?"
+msgstr "തിരഞ്ഞെടുത്ത വിവർത്തനങ്ങളുടെ പ്രസിദ്ധീകരണം പിൻവലിക്കണോ?"
 
 #: src/features/help/CenterBar.tsx
 msgid "Unpublish this help center?"

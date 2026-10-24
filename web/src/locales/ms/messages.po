@@ -275,6 +275,10 @@ msgstr "{bad} buruk"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} diubah"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · menunggu sejak {at}"
@@ -325,6 +329,10 @@ msgstr "{count, plural, other {# kebenaran}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, other {Ia dihantar kepada # penerima.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} tidak dapat diubah"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Sehari lebih awal, rendahkan TTL rekod MX, supaya perubahan tersebar den
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "satu hari sebagai YYYY-MM-DD, dalam zon masa anda"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Hantaran yang dipadam tidak boleh dipulihkan."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Nama kempen"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Kosongkan carian"
 msgid "Clear the selection"
 msgstr "Kosongkan pilihan"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Prestasi merosot"
 msgid "Delegates"
 msgstr "Wakil"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Padam peraturan {name}?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Padam blok yang dipilih"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Padam perbincangan yang dipilih ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Padam draf yang dipilih ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Padam langganan yang dipilih ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Domain belum disahkan"
 msgid "done"
 msgstr "selesai"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Disembunyikan oleh pasukan"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Dalam peti masuk"
 msgid "In this browser tab"
 msgstr "Dalam tab pelayar ini"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Digunakan oleh {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Dalam Yandex ID, buka Security › App passwords dan cipta kata laluan untuk Mail, bernama “Yuva”."
@@ -8553,6 +8588,10 @@ msgstr "Ia masuk ke <0>~/.codex/config.toml</0>, yang dikongsi oleh Codex CLI da
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Ia ditambah untuk anda dalam projek semasa. Tambah <0>--scope user</0> untuk setiap projek, atau <1>--scope project</1> untuk berkongsi dalam <2>.mcp.json</2>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Ia sudah tiada, atau anda tidak boleh melihatnya"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Tanda sebagai sudah atau belum dibaca (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Tanda sebagai spam"
@@ -9740,6 +9780,10 @@ msgstr "Tanda sebagai belum dibaca dan kembali ke senarai"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Tanda atau nyahtanda sebagai spam"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Tandakan perbincangan yang dipilih sebagai spam ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Dilihat {seen}"
 msgid "Seen by the monitor"
 msgstr "Dilihat oleh monitor"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Pilihan"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "Pilih {name}"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Pilih semua"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "Pilih mel di bawah kursor"
 msgid "Select the previous or next block"
 msgstr "Pilih blok sebelumnya atau seterusnya"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Dipilih: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Sumber"
 msgid "Sources"
 msgstr "Sumber"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Peti mel lama berhenti menerima mel untuk domain itu."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Peti masuk lain tiada saluran e-mel, jadi perbualan e-mel ini tidak boleh dipindahkan ke sana. Tambah saluran e-mel padanya dahulu."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Yang lain telah diubah."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Yang lain telah ditutup. Buka satu, isi apa yang perlu, kemudian tutupkannya."
@@ -18866,6 +18926,10 @@ msgstr "Zip menggunakan kaedah pemampatan yang Yuva tidak boleh baca. Buat semul
 msgid "The zone of the day bars."
 msgstr "Zon waktu bar harian."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Rekod persetujuan mereka turut dipadam, jadi anda tidak lagi dapat menunjukkan bagaimana mereka bersetuju. Untuk berhenti menghantar mel kepada mereka, nyahlanggan mereka."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Rekod persetujuan mereka, untuk permintaan tentang apa yang anda simpan tentang mereka:"
@@ -18873,6 +18937,10 @@ msgstr "Rekod persetujuan mereka, untuk permintaan tentang apa yang anda simpan 
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Perbualan mereka kekal; mereka kehilangan akses serta-merta."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Laporan dan senarai penerima mereka dipadam. Perbualan yang dibuka oleh balasan kekal."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Peraturan ini terpakai pada borang langganan. Anda boleh mengubahnya pad
 msgid "They already agreed"
 msgstr "Mereka sudah bersetuju"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Ia disembunyikan bersama semua hantaran lain oleh penulisnya yang masih menunggu kelulusan, dan hantaran seterusnya oleh penulis itu sentiasa menunggu seorang ahli."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Perbualan ini hilang untuk pasukan anda dan pelanggan. Anda boleh memulihkannya daripada Sampah selama 30 hari, kemudian ia dipadam secara kekal bersama mesej dan failnya."
@@ -18922,6 +18994,7 @@ msgstr "Mereka mendapat mel dengan pautan dan melanggan hanya selepas mengklikny
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Mereka menerima mel dengan pautan dan hanya menerima notis selepas mengklik pautan itu."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Mereka tidak lagi mendapat mel daripada senarai ini, dan direkodkan bahawa pasukan menyahlanggan mereka. Hanya mereka boleh melanggan semula, dengan mengesahkan mel."
@@ -19972,6 +20045,7 @@ msgstr "Belum dibaca sahaja"
 msgid "Unsaved changes"
 msgstr "Perubahan belum disimpan"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Nyahlanggan"
@@ -19984,6 +20058,10 @@ msgstr "Nyahlanggan {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Pautan nyahlangganan"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Nyahlanggan pelanggan yang dipilih ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Anda satu-satunya pemilik sebuah ruang kerja. Jadikan orang lain pemilik
 msgid "You can close this window and go back to {host}."
 msgstr "Anda boleh menutup tetingkap ini dan kembali ke {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Anda hanya boleh memadam perbincangan yang anda mulakan"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Anda boleh memutuskannya pada bila-bila masa dalam Tetapan, di bawah Apl disambungkan."
@@ -21417,6 +21499,10 @@ msgstr "Anda mempunyai perubahan yang belum disimpan pada {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Anda keluar dari semua ruang kerja dan kehilangan log masuk, kunci laluan dan pemberitahuan. Mesej yang anda tulis kekal dalam perbualannya, dipaparkan sebagai daripada ahli yang dipadam. Peti mel peribadi anda kekal dalam ruang kerja, belum dibaca, sehingga pemilik atau pentadbir menyerahkan atau memadamnya. Ini tidak boleh dibuat asal."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Anda tidak dibenarkan melakukan ini"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

@@ -275,6 +275,10 @@ msgstr "{bad} वाईट"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} बदलले"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · {at} पासून प्रतीक्षेत"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# परवानगी} other {# परवान�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {हे # प्राप्तकर्त्याकडे जाते.} other {हे # प्राप्तकर्त्यांकडे जाते.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} बदलता आले नाहीत"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "एक दिवस आधी MX रेकॉर्डचा TTL कम�
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD स्वरूपात एक दिवस, तुमच्या वेळ क्षेत्रात"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "हटवलेली पोस्ट परत मिळवता येत नाही."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "कॅम्पेनचे नाव"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "शोध साफ करा"
 msgid "Clear the selection"
 msgstr "निवड साफ करा"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "कमी झालेली कामगिरी"
 msgid "Delegates"
 msgstr "प्रतिनिधी"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "नियम {name} हटवायचा?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "निवडलेला ब्लॉक हटवा"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "निवडलेल्या चर्चा ({n}) हटवायच्या?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "निवडलेले मसुदे ({n}) हटवायचे?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "निवडलेल्या सदस्यत्वे ({n}) हटवायची?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "डोमेन सत्यापित नाही"
 msgid "done"
 msgstr "झाले"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "टीमने लपवले"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "इनबॉक्समध्ये"
 msgid "In this browser tab"
 msgstr "या ब्राउझर टॅबमध्ये"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "याचा वापर करतात: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Yandex ID मध्ये Security › App passwords उघडा आणि Mail साठी “Yuva” नावाचा पासवर्ड तयार करा."
@@ -8553,6 +8588,10 @@ msgstr "हे <0>~/.codex/config.toml</0> मध्ये जाते, जे 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "हे सध्याच्या प्रोजेक्टमध्ये तुमच्यासाठी जोडले जाते. प्रत्येक प्रोजेक्टसाठी <0>--scope user</0> जोडा, किंवा <2>.mcp.json</2> मध्ये शेअर करण्यासाठी <1>--scope project</1>."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "ते आता अस्तित्वात नाही, किंवा तुम्ही ते पाहू शकत नाही"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "वाचलेले किंवा न वाचलेले म्हणून खूण करा (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "स्पॅम म्हणून चिन्हांकित करा"
@@ -9740,6 +9780,10 @@ msgstr "न वाचलेले म्हणून चिन्हांकि
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "स्पॅम म्हणून चिन्हांकित करा किंवा चिन्ह काढा"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "निवडलेल्या चर्चा ({n}) स्पॅम म्हणून चिन्हांकित करायच्या?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "{seen} पाहिले"
 msgid "Seen by the monitor"
 msgstr "मॉनिटरने पाहिले"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "निवड"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "{name} निवडा"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "सर्व निवडा"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "कर्सरखालील मेल निवडा"
 msgid "Select the previous or next block"
 msgstr "मागचा किंवा पुढचा ब्लॉक निवडा"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "निवडलेली: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "स्रोत"
 msgid "Sources"
 msgstr "स्रोत"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "जुना मेलबॉक्स त्या डोमेनचा
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "दुसऱ्या इनबॉक्सकडे ई-मेल चॅनेल नाही, म्हणून हे ई-मेल संभाषण तिथे जाऊ शकत नाही. आधी त्याला ई-मेल चॅनेल जोडा."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "बाकीचे बदलले गेले."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "बाकीची बंद झाली. एक उघडा, हवे ते भरा आणि मग बंद करा."
@@ -18866,6 +18926,10 @@ msgstr "zip अशी कॉम्प्रेशन पद्धत वाप�
 msgid "The zone of the day bars."
 msgstr "दिवसाच्या पट्ट्यांचा टाइम झोन."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "त्यांच्या संमतीच्या नोंदीही हटवल्या जातात, त्यामुळे त्यांनी कशी संमती दिली हे तुम्हाला पुन्हा दाखवता येणार नाही. त्यांना मेल पाठवणे थांबवण्यासाठी त्याऐवजी त्यांचे सदस्यत्व रद्द करा."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "त्यांचे संमती रेकॉर्ड, तुमच्याकडे त्यांच्याबद्दल काय आहे या विनंतीसाठी:"
@@ -18873,6 +18937,10 @@ msgstr "त्यांचे संमती रेकॉर्ड, तुम�
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "त्यांची संभाषणे राहतात; त्यांचा ॲक्सेस लगेच संपतो."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "त्यांचे अहवाल आणि प्राप्तकर्त्यांच्या याद्या हटवल्या जातात. उत्तरांतून उघडलेली संभाषणे राहतात."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "हे नियम सबस्क्राइब फॉर्मला
 msgid "They already agreed"
 msgstr "ते आधीच सहमत झाले आहेत"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "लेखकांच्या मंजुरीची वाट पाहणाऱ्या इतर सर्व पोस्टसह त्या लपवल्या जातात, आणि या लेखकांच्या पुढील पोस्ट नेहमी सदस्याची वाट पाहतील."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "ती तुमच्या टीमला आणि ग्राहकांना दिसेनाशी होतात. तुम्ही ३० दिवस ती ट्रॅशमधून पुनर्संचयित करू शकता, त्यानंतर संदेश आणि फाइल्ससह कायमची हटवली जातात."
@@ -18922,6 +18994,7 @@ msgstr "त्यांना लिंक असलेला मेल मि�
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "त्यांना लिंक असलेला मेल मिळतो आणि ती क्लिक केल्यानंतरच त्यांना सूचना मिळतात."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "त्यांना या लिस्टवरून आणखी मेल मिळत नाही, आणि टीमने त्यांना अनसबस्क्राइब केले असे नोंदवले जाते. फक्त तेच पुन्हा सबस्क्राइब करू शकतात, मेलची पुष्टी करून."
@@ -19972,6 +20045,7 @@ msgstr "फक्त न वाचलेले"
 msgid "Unsaved changes"
 msgstr "सेव्ह न केलेले बदल"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "अनसबस्क्राइब करा"
@@ -19984,6 +20058,10 @@ msgstr "{0} ला अनसबस्क्राइब करायचे?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "अनसबस्क्राइब लिंक"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "निवडलेल्या सदस्यांचे ({n}) सदस्यत्व रद्द करायचे?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "तुम्ही एका वर्कस्पेसचे एकम
 msgid "You can close this window and go back to {host}."
 msgstr "तुम्ही ही विंडो बंद करून {host} वर परत जाऊ शकता."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "तुम्ही फक्त स्वतः सुरू केलेल्या चर्चा हटवू शकता"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "तुम्ही हे कधीही Settings मध्ये, कनेक्टेड ॲप्स अंतर्गत, डिस्कनेक्ट करू शकता."
@@ -21417,6 +21499,10 @@ msgstr "{what} मध्ये तुमचे सेव्ह न केले�
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "तुम्ही सर्व वर्कस्पेस सोडता आणि साइन-इन, पासकी व सूचना गमावता. तुम्ही लिहिलेले संदेश संभाषणांत राहतात, हटवलेल्या सदस्याकडून आल्यासारखे दिसतात. तुमचे वैयक्तिक मेलबॉक्स मालक किंवा प्रशासक ते सोपवेपर्यंत किंवा हटवेपर्यंत न वाचता वर्कस्पेसमध्ये राहतात. हे पूर्ववत करता येत नाही."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "तुम्हाला हे करण्याची परवानगी नाही"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

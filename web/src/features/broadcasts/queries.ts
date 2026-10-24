@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { store } from "@/features/docs/queries"
-import { api, unwrap, type MailingList, type SubscriptionState } from "@/lib/api"
+import { api, unwrap, type MailingList, type SubscriptionBulkChange, type SubscriptionState } from "@/lib/api"
 import { keys, type GrowthDays } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 
@@ -86,6 +86,15 @@ export function useSubscriptions(listId: string, state: SubscriptionState | "", 
       ),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.next_cursor,
+  })
+}
+
+export function useBulkSubscriptions(listId: string) {
+  const refresh = useRefreshList(listId)
+  return useMutation({
+    mutationFn: (body: SubscriptionBulkChange) =>
+      unwrap(api.POST("/v1/lists/{listId}/subscriptions/bulk", { params: { path: { listId } }, body })),
+    onSuccess: () => refresh(),
   })
 }
 

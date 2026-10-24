@@ -275,6 +275,10 @@ msgstr "{bad} rossz"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "Módosítva: {changed}"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · {at} óta vár"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# jogosultság} other {# jogosultság}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {# címzettnek megy.} other {# címzettnek megy.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "Nem sikerült módosítani: {count}"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Egy nappal előtte csökkentsd az MX-rekordok TTL-jét, hogy a változá
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "egy nap YYYY-MM-DD formában, az Ön időzónájában"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "A törölt hozzászólás nem állítható vissza."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Kampány neve"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Keresés törlése"
 msgid "Clear the selection"
 msgstr "Kijelölés törlése"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Csökkent teljesítmény"
 msgid "Delegates"
 msgstr "Meghatalmazottak"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "Törli a(z) {name} szabályt?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "A kijelölt blokk törlése"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Törlöd a kijelölt beszélgetéseket ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Törlöd a kijelölt piszkozatokat ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Törlöd a kijelölt feliratkozásokat ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "A domain nincs ellenőrizve"
 msgid "done"
 msgstr "kész"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "A csapat elrejtette"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "A postafiókban"
 msgid "In this browser tab"
 msgstr "Ebben a böngészőlapon"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Használja: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "A Yandex ID-ben nyisd meg a Security › App passwords részt, és hozz létre egy jelszót a Mailhez „Yuva” névvel."
@@ -8553,6 +8588,10 @@ msgstr "A <0>~/.codex/config.toml</0> fájlba kerül, amelyen a Codex CLI és az
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Hozzáadódik neked az aktuális projektben. Add hozzá a <0>--scope user</0> kapcsolót minden projekthez, vagy a <1>--scope project</1> kapcsolót a <2>.mcp.json</2> fájlban való megosztáshoz."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Már nincs meg, vagy nem láthatod"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Megjelölés olvasottként vagy olvasatlanként (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Spamnek jelölés"
@@ -9740,6 +9780,10 @@ msgstr "Olvasatlannak jelölés és vissza a listához"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Spamnek jelölés vagy visszavonás"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Spamnek jelölöd a kijelölt beszélgetéseket ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Látva: {seen}"
 msgid "Seen by the monitor"
 msgstr "A figyelő látta"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Választás"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "{name} kijelölése"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Összes kijelölése"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "A kurzor alatti levél kijelölése"
 msgid "Select the previous or next block"
 msgstr "Előző vagy következő blokk kijelölése"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Kijelölve: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Forrás"
 msgid "Sources"
 msgstr "Források"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "A régi postafiók többé nem fogad levelet ehhez a domainhez."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "A másik postafióknak nincs e-mail-csatornája, így ez az e-mail-beszélgetés nem helyezhető át oda. Előbb adj hozzá e-mail-csatornát."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "A többi módosult."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "A többi lezárult. Nyisson meg egyet, töltse ki, ami hiányzik, majd zárja le."
@@ -18866,6 +18926,10 @@ msgstr "A zip olyan tömörítési módszert használ, amelyet a Yuva nem tud ol
 msgid "The zone of the day bars."
 msgstr "A napi oszlopok időzónája."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "A hozzájárulásuk nyilvántartása is törlődik, így később nem tudod megmutatni, hogyan járultak hozzá. Ha nem akarsz nekik több levelet küldeni, inkább told le őket a feliratkozásról."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "A hozzájárulási rekordjaik, egy arra vonatkozó kérésre, hogy mit tárolsz róluk:"
@@ -18873,6 +18937,10 @@ msgstr "A hozzájárulási rekordjaik, egy arra vonatkozó kérésre, hogy mit t
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "A beszélgetéseik megmaradnak; a hozzáférésüket azonnal elveszítik."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "A jelentéseik és a címzettlistáik törlődnek. A válaszokkal indult beszélgetések megmaradnak."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Ezek a szabályok a feliratkozási űrlapra vonatkoznak. A lista beáll�
 msgid "They already agreed"
 msgstr "Már beleegyeztek"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Elrejtésre kerülnek a szerzőik összes többi, jóváhagyásra váró hozzászólásával együtt, és ezeknek a szerzőknek a későbbi hozzászólásai mindig csapattagra várnak."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Eltűnnek a csapatod és az ügyfelek elől. 30 napig visszaállíthatod őket a Kukából, utána az üzeneteikkel és fájljaikkal együtt véglegesen törlődnek."
@@ -18922,6 +18994,7 @@ msgstr "Levelet kapnak egy linkkel, és csak a rákattintás után lesznek felir
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Kapnak egy levelet egy hivatkozással, és csak a rákattintás után kapnak értesítéseket."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Többé nem kapnak levelet erről a listáról, és rögzítésre kerül, hogy a csapat leiratkoztatta őket. Csak ők maguk iratkozhatnak fel újra, egy levél megerősítésével."
@@ -19972,6 +20045,7 @@ msgstr "Csak olvasatlan"
 msgid "Unsaved changes"
 msgstr "Nem mentett módosítások"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Leiratkoztatás"
@@ -19984,6 +20058,10 @@ msgstr "Leiratkoztatod: {0}?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Leiratkozási link"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Leiratkoztatod a kijelölt feliratkozókat ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Te vagy egy munkaterület egyetlen tulajdonosa. Tegyél ott valaki mást
 msgid "You can close this window and go back to {host}."
 msgstr "Bezárhatod ezt az ablakot, és visszatérhetsz ide: {host}."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Csak az általad indított beszélgetéseket törölheted"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Bármikor leválaszthatod a Beállításokban, a Csatlakoztatott alkalmazások alatt."
@@ -21417,6 +21499,10 @@ msgstr "Nem mentett módosításaid vannak itt: {what}."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Kilép minden munkaterületről, és elveszíti a bejelentkezéseit, hozzáférési kulcsait és értesítéseit. Az Ön által írt üzenetek a beszélgetésekben maradnak, törölt tagtól származóként megjelenítve. A személyes postafiókjai olvasatlanul a munkaterületen maradnak, amíg egy tulajdonos vagy adminisztrátor át nem adja vagy nem törli őket. Ez nem vonható vissza."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Ezt nem teheted meg"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

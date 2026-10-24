@@ -5,6 +5,7 @@ import { Link, useNavigate, useSearchParams } from "react-router"
 import { ErrorLine } from "@/components/common"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDateTime, formatRelative, formatShort, useEnumText } from "@/components/common/text"
+import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -14,6 +15,7 @@ import {
   useBroadcastAction,
   useBroadcasts,
 } from "@/features/broadcasts/broadcastQueries"
+import { BroadcastBulkBar } from "@/features/broadcasts/BroadcastBulk"
 import { BroadcastSteps, broadcastWhen } from "@/features/broadcasts/BroadcastList"
 import {
   keyHint,
@@ -33,6 +35,7 @@ import { FrameButton, FrameTabs, framePad, PageFrame, ProductTag } from "@/featu
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useNow } from "@/hooks/use-now"
 import { useRowFocus } from "@/hooks/use-row-focus"
+import { useSelection } from "@/hooks/use-selection"
 import type { Broadcast, MailingList } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
@@ -115,7 +118,17 @@ function NextSend({ b, lists }: { b: Broadcast; lists: Map<string, MailingList> 
   )
 }
 
-function BroadcastRow({ b, lists, top }: { b: Broadcast; lists: Map<string, MailingList>; top: number }) {
+function BroadcastRow({
+  b,
+  lists,
+  top,
+  check,
+}: {
+  b: Broadcast
+  lists: Map<string, MailingList>
+  top: number
+  check?: { checked: boolean; onToggle: (range: boolean) => void } | "none"
+}) {
   const { t, i18n } = useLingui()
   const num = useNumber()
   const percent = usePercent()
@@ -126,12 +139,16 @@ function BroadcastRow({ b, lists, top }: { b: Broadcast; lists: Map<string, Mail
   const listed = b.audience.list_ids.reduce((n, id) => n + (lists.get(id)?.counts.subscribed ?? 0), 0)
   const share = c.sent > 0 ? c.clicked / c.sent : 0
   return (
-    <li>
+    <li className="flex items-center border-t first:border-t-0">
+      {check === "none" && <span className="ms-4 size-5 shrink-0" aria-hidden />}
+      {check && check !== "none" && (
+        <RowCheck className="ms-4" checked={check.checked} name={b.name} onToggle={check.onToggle} />
+      )}
       <Link
         to={broadcastLink(b.id)}
         className={cn(
           cols,
-          "min-h-[58px] border-t px-4 py-2.5 outline-none transition-colors first:border-t-0 hover:bg-surface focus-visible:bg-surface"
+          "min-h-[58px] min-w-0 flex-1 px-4 py-2.5 outline-none transition-colors first:border-t-0 hover:bg-surface focus-visible:bg-surface"
         )}
         data-testid="broadcasts-table-row"
       >
@@ -316,6 +333,10 @@ export function BroadcastsOverview() {
     .sort((a, b) => a.scheduled_at!.localeCompare(b.scheduled_at!))[0]
   const sending = items.find(isActive)
   const rows = items.filter((b) => matches(filter, b))
+  const selection = useSelection(
+    rows.filter((b) => b.state === "draft").map((b) => b.id),
+    `${filter}|${inboxId}`
+  )
   const top = Math.max(0, ...rows.map((b) => (b.counts.sent > 0 ? b.counts.clicked / b.counts.sent : 0)))
   const names: Record<Filter, string> = {
     all: t`All`,
@@ -364,6 +385,7 @@ export function BroadcastsOverview() {
       <div className={framePad}>
         <StatusNotice />
         <ErrorLine error={broadcasts.error} />
+        <BroadcastBulkBar items={items} selection={selection} />
         {broadcasts.isPending ? (
           <Skeleton className="h-48 rounded-xl" />
         ) : items.length === 0 ? (
@@ -375,42 +397,61 @@ export function BroadcastsOverview() {
             {rows.length === 0 ? (
               <Empty filter={filter} scope={scope} canCreate={mayCreate} onNew={() => setCreating(true)} />
             ) : (
-              <div className="overflow-hidden rounded-xl border bg-card" data-testid="broadcasts-table">
-                <div
-                  className={cn(
-                    cols,
-                    "hidden border-b bg-surface px-4 py-3 text-small font-medium text-muted-foreground @2xl:grid"
-                  )}
-                  aria-hidden
-                >
-                  <span>
-                    <Trans>Broadcast</Trans>
-                  </span>
-                  <span className="hidden @4xl:block">
-                    <Trans>List</Trans>
-                  </span>
-                  <span>
-                    <Trans>Status</Trans>
-                  </span>
-                  <span>
-                    <Trans>Recipients</Trans>
-                  </span>
-                  <span>
-                    <Trans>Clicked</Trans>
-                  </span>
-                  <span>
-                    <Trans>Replied</Trans>
-                  </span>
-                  <span>
-                    <Trans>Date</Trans>
-                  </span>
+              <>
+                {canManage && !selection.selecting && rows.some((b) => b.state === "draft") && (
+                  <div className="flex justify-end">
+                    <SelectToggle selection={selection} />
+                  </div>
+                )}
+                <div className="overflow-hidden rounded-xl border bg-card" data-testid="broadcasts-table">
+                  <div
+                    className={cn(
+                      cols,
+                      "hidden border-b bg-surface px-4 py-3 text-small font-medium text-muted-foreground @2xl:grid"
+                    )}
+                    aria-hidden
+                  >
+                    <span>
+                      <Trans>Broadcast</Trans>
+                    </span>
+                    <span className="hidden @4xl:block">
+                      <Trans>List</Trans>
+                    </span>
+                    <span>
+                      <Trans>Status</Trans>
+                    </span>
+                    <span>
+                      <Trans>Recipients</Trans>
+                    </span>
+                    <span>
+                      <Trans>Clicked</Trans>
+                    </span>
+                    <span>
+                      <Trans>Replied</Trans>
+                    </span>
+                    <span>
+                      <Trans>Date</Trans>
+                    </span>
+                  </div>
+                  <ul ref={table}>
+                    {rows.map((b) => (
+                      <BroadcastRow
+                        key={b.id}
+                        b={b}
+                        lists={byId}
+                        top={top}
+                        check={
+                          selection.selecting
+                            ? b.state === "draft"
+                              ? { checked: selection.has(b.id), onToggle: (range) => selection.toggle(b.id, range) }
+                              : "none"
+                            : undefined
+                        }
+                      />
+                    ))}
+                  </ul>
                 </div>
-                <ul ref={table}>
-                  {rows.map((b) => (
-                    <BroadcastRow key={b.id} b={b} lists={byId} top={top} />
-                  ))}
-                </ul>
-              </div>
+              </>
             )}
             {broadcasts.hasNextPage && (
               <Button

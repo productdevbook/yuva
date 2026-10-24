@@ -7,9 +7,11 @@ import {
   ApiError,
   unwrap,
   type EmailDesign,
+  type EmailDesignBulkChange,
   type EmailDesignDocument,
   type EmailDesignIssue,
   type EmailImage,
+  type EmailImageBulkChange,
   type EmailTemplateLocale,
 } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -238,6 +240,24 @@ export function useDeleteImage() {
           params: { path: { imageId: id }, query: { force: force || undefined } },
         })
       ),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: k.images(ws) }),
+  })
+}
+
+export function useBulkDesigns() {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return useMutation({
+    mutationFn: (body: EmailDesignBulkChange) => unwrap(api.POST("/v1/email-designs/bulk", { body })),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: k.all(ws) }),
+  })
+}
+
+export function useBulkImages() {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return useMutation({
+    mutationFn: (body: EmailImageBulkChange) => unwrap(api.POST("/v1/email-images/bulk", { body })),
     onSuccess: () => void qc.invalidateQueries({ queryKey: k.images(ws) }),
   })
 }

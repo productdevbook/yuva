@@ -275,6 +275,10 @@ msgstr "{bad} kötü"
 msgid "{by}, {date}"
 msgstr "{by}, {date}"
 
+#: src/components/common/BulkReport.tsx
+msgid "{changed} changed"
+msgstr "{changed} değişti"
+
 #: src/features/home/HomePage.tsx
 msgid "{channel} · waiting since {at}"
 msgstr "{channel} · {at} tarihinden beri bekliyor"
@@ -325,6 +329,10 @@ msgstr "{count, plural, one {# kapsam} other {# kapsam}}"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
 msgstr "{count, plural, one {# alıcıya gidecek.} other {# alıcıya gidecek.}}"
+
+#: src/components/common/BulkReport.tsx
+msgid "{count} could not be changed"
+msgstr "{count} öğe değiştirilemedi"
 
 #: src/features/fields/BulkFailures.tsx
 msgid "{count} could not be closed"
@@ -1267,6 +1275,10 @@ msgstr "Bir gün önceden MX kayıtlarının TTL değerini düşürün; değişi
 #: src/features/mail/SearchOperators.tsx
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD biçiminde bir gün, saat diliminize göre"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "A deleted post cannot be brought back."
+msgstr "Silinen bir gönderi geri getirilemez."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "A design of another inbox or archived"
@@ -3640,6 +3652,7 @@ msgstr "Kampanya adı"
 
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
+#: src/components/common/Selection.tsx
 #: src/components/common/SendLater.tsx
 #: src/components/common/TypeToConfirmDialog.tsx
 #: src/components/common/Wizard.tsx
@@ -4193,6 +4206,7 @@ msgstr "Aramayı temizle"
 msgid "Clear the selection"
 msgstr "Seçimi temizle"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Clear the selection (Esc)"
@@ -5377,11 +5391,14 @@ msgstr "Düşük performans"
 msgid "Delegates"
 msgstr "Vekiller"
 
+#: src/features/broadcasts/BroadcastBulk.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactNotes.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 #: src/features/migrations/MigrationsPage.tsx
@@ -5534,6 +5551,18 @@ msgstr "{name} kuralı silinsin mi?"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Delete the selected block"
 msgstr "Seçili bloğu sil"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Delete the selected discussions ({n})?"
+msgstr "Seçili tartışmalar silinsin mi ({n})?"
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Delete the selected drafts ({n})?"
+msgstr "Seçili taslaklar silinsin mi ({n})?"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Delete the selected subscriptions ({n})?"
+msgstr "Seçili abonelikler silinsin mi ({n})?"
 
 #: src/features/settings/teams/TeamsPage.tsx
 msgid "Delete the team {name}?"
@@ -5977,6 +6006,7 @@ msgstr "Alan adı doğrulanmadı"
 msgid "done"
 msgstr "yapıldı"
 
+#: src/components/common/BulkReport.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -7797,6 +7827,7 @@ msgid "Hidden by the team"
 msgstr "Ekip tarafından gizlendi"
 
 #: src/features/conversation/History.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 msgid "Hide"
@@ -8275,6 +8306,10 @@ msgstr "Gelen kutusunda"
 msgid "In this browser tab"
 msgstr "Bu tarayıcı sekmesinde"
 
+#: src/components/common/BulkReport.tsx
+msgid "In use by {names}"
+msgstr "Şunlar kullanıyor: {names}"
+
 #: src/features/migrations/text.ts
 msgid "In Yandex ID, open Security › App passwords and create a password for Mail, named “Yuva”."
 msgstr "Yandex ID'de Güvenlik › Uygulama şifreleri'ni açın ve Posta için adı “Yuva” olan bir şifre oluşturun."
@@ -8553,6 +8588,10 @@ msgstr "<0>~/.codex/config.toml</0> dosyasına yazılır; Codex komut satırı v
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "It is added for you in the current project. Add <0>--scope user</0> for every project, or <1>--scope project</1> to share it in <2>.mcp.json</2>."
 msgstr "Yalnızca sizin için, geçerli projeye eklenir. Tüm projeler için <0>--scope user</0>, <2>.mcp.json</2> ile ekiple paylaşmak için <1>--scope project</1> ekleyin."
+
+#: src/components/common/BulkReport.tsx
+msgid "It is gone, or you cannot see it"
+msgstr "Artık yok ya da görme yetkiniz yok"
 
 #: src/features/docs/discussions/parts.tsx
 msgid "It is hidden with every other post of its author still waiting for approval, and their later posts always wait for a member."
@@ -9718,6 +9757,7 @@ msgid "Mark as read or unread (U)"
 msgstr "Okundu ya da okunmadı olarak işaretle (U)"
 
 #: src/features/conversation/ConversationMenu.tsx
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/parts.tsx
 msgid "Mark as spam"
 msgstr "Spam olarak işaretle"
@@ -9740,6 +9780,10 @@ msgstr "Okunmadı olarak işaretle ve listeye dön"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark or unmark as spam"
 msgstr "Spam olarak işaretle ya da işareti kaldır"
+
+#: src/features/docs/discussions/Bulk.tsx
+msgid "Mark the selected discussions as spam ({n})?"
+msgstr "Seçili tartışmalar spam olarak işaretlensin mi ({n})?"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Mark the selected post as spam"
@@ -15703,9 +15747,18 @@ msgstr "Görülme: {seen}"
 msgid "Seen by the monitor"
 msgstr "Monitörün gördüğü"
 
+#: src/components/common/Selection.tsx
 #: src/features/fields/value.ts
 msgid "Select"
 msgstr "Seçim"
+
+#: src/components/common/Selection.tsx
+msgid "Select {name}"
+msgstr "{name} öğesini seç"
+
+#: src/components/common/Selection.tsx
+msgid "Select all"
+msgstr "Tümünü seç"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Select conversations"
@@ -15731,11 +15784,13 @@ msgstr "İmlecin altındaki e-postayı seç"
 msgid "Select the previous or next block"
 msgstr "Önceki ya da sonraki bloğu seç"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "Seçilen: {picked}"
 
+#: src/components/common/Selection.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selection"
@@ -17129,6 +17184,7 @@ msgstr "Kaynak"
 msgid "Sources"
 msgstr "Kaynaklar"
 
+#: src/features/docs/discussions/Bulk.tsx
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/migrations/parts.tsx
@@ -18417,6 +18473,10 @@ msgstr "Eski posta kutusu o alan adına gelen e-postaları artık almaz."
 msgid "The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first."
 msgstr "Diğer gelen kutusunun e-posta kanalı yok, bu yüzden bu e-posta konuşması oraya taşınamaz. Önce ona bir e-posta kanalı ekleyin."
 
+#: src/components/common/BulkReport.tsx
+msgid "The others were changed."
+msgstr "Diğerleri değiştirildi."
+
 #: src/features/fields/BulkFailures.tsx
 msgid "The others were closed. Open one to fill in what it needs, then close it."
 msgstr "Diğerleri kapatıldı. Gerekenleri doldurmak için birini açın, sonra kapatın."
@@ -18866,6 +18926,10 @@ msgstr "Zip, Yuva'nın okuyamadığı bir sıkıştırma yöntemi kullanıyor. S
 msgid "The zone of the day bars."
 msgstr "Gün çubuklarının saat dilimi."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Their consent records are deleted with them, so you can no longer show how they agreed. To stop mailing them, unsubscribe them instead."
+msgstr "Onay kayıtları da silinir; bu yüzden nasıl onay verdiklerini artık gösteremezsiniz. Onlara posta göndermeyi bırakmak için aboneliklerini sonlandırın."
+
 #: src/features/contact/ContactSubscriptions.tsx
 msgid "Their consent records, for a request about what you hold on them:"
 msgstr "Hakkında ne tuttuğunuzu sorarsa, izin kayıtları:"
@@ -18873,6 +18937,10 @@ msgstr "Hakkında ne tuttuğunuzu sorarsa, izin kayıtları:"
 #: src/features/team/TeamPage.tsx
 msgid "Their conversations stay; they lose access at once."
 msgstr "Konuşmaları yerinde kalır; erişimleri hemen kalkar."
+
+#: src/features/broadcasts/BroadcastBulk.tsx
+msgid "Their reports and the lists of recipients are deleted. Conversations opened by replies stay."
+msgstr "Raporları ve alıcı listeleri silinir. Yanıtlarla açılan konuşmalar kalır."
 
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Theme"
@@ -18910,6 +18978,10 @@ msgstr "Bu kurallar abonelik formu için geçerlidir. Liste ayarlarından istedi
 msgid "They already agreed"
 msgstr "Zaten izin verdiler"
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "They are hidden with every other post of their authors still waiting for approval, and the authors’ later posts always wait for a member."
+msgstr "Gönderiler, yazarlarının onay bekleyen diğer tüm gönderileriyle birlikte gizlenir ve yazarların sonraki gönderileri her zaman bir ekip üyesini bekler."
+
 #: src/features/inbox/ChatList.tsx
 msgid "They disappear for your team and for the customers. You can restore them from the Trash for 30 days, then they are deleted for good with their messages and files."
 msgstr "Ekibiniz ve müşteriler için görünmez olurlar. 30 gün boyunca Çöp kutusundan geri alabilirsiniz; ardından mesajları ve dosyalarıyla birlikte kalıcı olarak silinirler."
@@ -18922,6 +18994,7 @@ msgstr "Bağlantılı bir e-posta alırlar ve ancak bağlantıya tıklayınca ab
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Bir bağlantı içeren e-posta alırlar; bildirimleri yalnızca bağlantıya tıkladıktan sonra alırlar."
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
 msgstr "Bu listeden artık e-posta almaz ve aboneliğini ekibin sonlandırdığı kaydedilir. Yeniden abone olmayı yalnızca kendisi, bir e-postayı onaylayarak yapabilir."
@@ -19972,6 +20045,7 @@ msgstr "Yalnızca okunmamış"
 msgid "Unsaved changes"
 msgstr "Kaydedilmemiş değişiklikler"
 
+#: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribe"
 msgstr "Aboneliği sonlandır"
@@ -19984,6 +20058,10 @@ msgstr "{0} adresinin aboneliği sonlandırılsın mı?"
 #: src/components/common/text.ts
 msgid "Unsubscribe link"
 msgstr "Abonelikten çıkma bağlantısı"
+
+#: src/features/broadcasts/SubscriberBulk.tsx
+msgid "Unsubscribe the selected subscribers ({n})?"
+msgstr "Seçili aboneler için abonelik sonlandırılsın mı ({n})?"
 
 #: src/features/broadcasts/Report.tsx
 msgid "unsubscribed"
@@ -21313,6 +21391,10 @@ msgstr "Bir çalışma alanının tek sahibisiniz. Hesabınızı silmeden önce 
 msgid "You can close this window and go back to {host}."
 msgstr "Bu pencereyi kapatıp {host} sitesine dönebilirsiniz."
 
+#: src/features/docs/discussions/Bulk.tsx
+msgid "You can delete only discussions you started"
+msgstr "Yalnızca kendi başlattığınız tartışmaları silebilirsiniz"
+
 #: src/features/oauth/ConsentPage.tsx
 msgid "You can disconnect it at any time in Settings, under Connected apps."
 msgstr "Bağlantıyı istediğiniz zaman Ayarlar'da, Bağlı uygulamalar altında kaldırabilirsiniz."
@@ -21417,6 +21499,10 @@ msgstr "{what} için kaydedilmemiş değişiklikleriniz var."
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You leave every workspace and lose your sign-ins, passkeys and notifications. Messages you wrote stay in their conversations, shown as from a deleted member. Your personal mailboxes stay with the workspace, unread, until an owner or admin hands them to someone or deletes them. This cannot be undone."
 msgstr "Tüm çalışma alanlarından ayrılırsınız; oturum açma yöntemlerinizi, geçiş anahtarlarınızı ve bildirimlerinizi kaybedersiniz. Yazdığınız iletiler konuşmalarında kalır, silinmiş bir üyeden gelmiş gibi görünür. Kişisel posta kutularınız, bir sahip ya da yönetici onları birine devredene veya silene kadar okunmadan çalışma alanında kalır. Bu geri alınamaz."
+
+#: src/components/common/BulkReport.tsx
+msgid "You may not do this"
+msgstr "Bunu yapma yetkiniz yok"
 
 #: src/features/account/AccountPage.tsx
 msgid "You replied"

@@ -4,11 +4,14 @@ import { useNavigate } from "react-router"
 
 import { ErrorLine } from "@/components/common"
 import { DISCUSSION_KEYS } from "@/components/common/ShortcutSheet"
+import { SelectToggle } from "@/components/common/Selection"
+import { DiscussionBulkBar } from "@/features/docs/discussions/Bulk"
 import { ListSkeleton, LoadMore, ThreadRow } from "@/features/docs/discussions/parts"
 import { threadLink, useDiscussions, type ThreadView } from "@/features/docs/discussions/queries"
 import { Card, EmptyRow } from "@/features/settings/ui"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useResetState } from "@/hooks/use-reset-state"
+import { useSelection } from "@/hooks/use-selection"
 import type { Discussion } from "@/lib/api"
 import type { DiscussionFilters } from "@/lib/keys"
 import { cn } from "@/lib/utils"
@@ -22,6 +25,7 @@ export function ThreadList({
   link,
   currentId,
   bare,
+  selectable,
 }: {
   filters: DiscussionFilters
   showPage: boolean
@@ -31,11 +35,16 @@ export function ThreadList({
   link?: (d: Discussion) => string
   currentId?: string
   bare?: boolean
+  selectable?: boolean
 }) {
   const navigate = useNavigate()
   const list = useDiscussions(filters)
   const items = list.data?.pages.flatMap((p) => p.items) ?? []
   const [cursor, setCursor] = useResetState(-1, JSON.stringify(filters))
+  const selection = useSelection(
+    items.map((d) => d.id),
+    JSON.stringify(filters)
+  )
   const ref = useRef<HTMLUListElement>(null)
   const down = () => setCursor((i) => Math.min(items.length - 1, i + 1))
   const up = () => setCursor((i) => Math.max(0, i - 1))
@@ -60,6 +69,16 @@ export function ThreadList({
   const Frame = bare ? "div" : Card
   return (
     <Frame {...(bare ? {} : { flush: true })} data-testid="thread-list">
+      {selectable && (
+        <>
+          <DiscussionBulkBar items={items} selection={selection} />
+          {!selection.selecting && items.length > 0 && (
+            <div className="flex justify-end px-3 pt-2">
+              <SelectToggle selection={selection} />
+            </div>
+          )}
+        </>
+      )}
       {list.isPending ? (
         <ListSkeleton />
       ) : list.error ? (
@@ -77,6 +96,11 @@ export function ThreadList({
               from={from}
               to={hrefOf(d)}
               current={d.id === currentId}
+              check={
+                selectable && selection.selecting
+                  ? { checked: selection.has(d.id), onToggle: (range) => selection.toggle(d.id, range) }
+                  : undefined
+              }
             />
           ))}
         </ul>
