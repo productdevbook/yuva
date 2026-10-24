@@ -66,7 +66,7 @@ const countAutomationRules = `-- name: CountAutomationRules :one
 SELECT count(*) FROM automation_rules r
 WHERE r.workspace_id = $1
   AND CASE WHEN $2::uuid IS NULL
-      THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.owner_member_id IS NOT NULL)
+      THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.personal)
       ELSE r.inbox_id = $2::uuid END
 `
 
@@ -122,7 +122,7 @@ VALUES ($1, $2, $3, $4, $5,
     (SELECT coalesce(max(r.position) + 1, 0) FROM automation_rules r
      WHERE r.workspace_id = $2
        AND CASE WHEN $6::uuid IS NULL
-           THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.owner_member_id IS NOT NULL)
+           THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.personal)
            ELSE r.inbox_id = $6::uuid END),
     $7, $8, $9, $10,
     $11, $12, $13, $14, $14)

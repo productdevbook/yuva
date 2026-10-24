@@ -37,7 +37,7 @@ var personalFilterActions = map[oas.AutomationActionType]bool{
 }
 
 // isPersonal is the one place that tells a personal mailbox; one whose owner is gone stays personal.
-func isPersonal(in store.Inbox) bool { return in.OwnerMemberID != nil }
+func isPersonal(in store.Inbox) bool { return in.Personal }
 
 // managesMailbox: a personal mailbox's filters are its owner's alone, by session or their own grant;
 // delegates read the mailbox but do not manage them, and an orphaned mailbox's are nobody's.

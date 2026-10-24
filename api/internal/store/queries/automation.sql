@@ -19,7 +19,7 @@ SELECT * FROM automation_rules WHERE workspace_id = @workspace_id AND id = @id F
 SELECT count(*) FROM automation_rules r
 WHERE r.workspace_id = @workspace_id
   AND CASE WHEN sqlc.narg(mailbox_id)::uuid IS NULL
-      THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.owner_member_id IS NOT NULL)
+      THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.personal)
       ELSE r.inbox_id = sqlc.narg(mailbox_id)::uuid END;
 
 -- name: CreateAutomationRule :one
@@ -29,7 +29,7 @@ VALUES (@id, @workspace_id, sqlc.narg(inbox_id), @name, @enabled,
     (SELECT coalesce(max(r.position) + 1, 0) FROM automation_rules r
      WHERE r.workspace_id = @workspace_id
        AND CASE WHEN sqlc.narg(mailbox_id)::uuid IS NULL
-           THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.owner_member_id IS NOT NULL)
+           THEN NOT EXISTS (SELECT 1 FROM inboxes i WHERE i.workspace_id = r.workspace_id AND i.id = r.inbox_id AND i.personal)
            ELSE r.inbox_id = sqlc.narg(mailbox_id)::uuid END),
     @trigger, sqlc.narg(idle_minutes), @conditions, @actions,
     @saved_by_kind, sqlc.narg(saved_by_member_id), sqlc.narg(saved_by_api_key_id), @now, @now)
