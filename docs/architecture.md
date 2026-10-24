@@ -4442,8 +4442,15 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   dropped from realtime, `/v1/events` and MCP for everyone else, webhooks and automation rules never
   fire for it, and Slack, webhooks, API keys, member and team grants naming it answer `409
   personal_mailbox`. A contact known only from personal mailboxes the caller does not read is hidden
-  from everyone, owners included. Removing its owner or deleting their account answers `409
-  personal_mailbox` with `inbox_ids` until #172.
+  from everyone, owners included. Migrations stay a manager feature, and one into a personal mailbox
+  is, besides, for its readers only: `404` to others on every migration endpoint and event (its
+  events carry the mailbox id), it cannot be moved to another inbox, its `options.inboxes` name no
+  other inbox, and deleting the mailbox deletes its migrations (their `inbox_id` would otherwise go
+  `NULL` and reach every manager). #169's drafts need no extra check: `draft_visible_to` and
+  `conversation_visible_to` are AND-ed with the inbox filter in every query, and the mailbox's
+  `conversations` count leaves out unsent drafts. Removing its owner or deleting their account answers
+  `409 personal_mailbox` with `inbox_ids` until #172; in a soft-deleted workspace the owner link is
+  cleared instead, and the purge deletes the mailbox.
 - **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
   or hands it to a named member; nobody reads it before that choice.
 - **Sending as a person.** A mail goes from the channel address with the member's name, or from the
