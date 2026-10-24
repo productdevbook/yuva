@@ -39920,7 +39920,8 @@ type ClientInterface interface {
 	// in `count`. Otherwise the request records exactly those conversations, and one job deletes
 	// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
 	// never deletes more than was confirmed: conversations moved to the trash after the request
-	// are not deleted, ones restored before the job reaches them stay, and before each run the
+	// are not deleted, ones restored before the job reaches them stay (also when trashed
+	// again), and before each run the
 	// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 	//
 	// When the job is done, the audit log records one `trash.emptied` by the caller with the
@@ -39943,7 +39944,8 @@ type ClientInterface interface {
 	// in `count`. Otherwise the request records exactly those conversations, and one job deletes
 	// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
 	// never deletes more than was confirmed: conversations moved to the trash after the request
-	// are not deleted, ones restored before the job reaches them stay, and before each run the
+	// are not deleted, ones restored before the job reaches them stay (also when trashed
+	// again), and before each run the
 	// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 	//
 	// When the job is done, the audit log records one `trash.emptied` by the caller with the
@@ -54373,7 +54375,8 @@ func (c *Client) ComposeMail(ctx context.Context, params *ComposeMailParams, bod
 // in `count`. Otherwise the request records exactly those conversations, and one job deletes
 // them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
 // never deletes more than was confirmed: conversations moved to the trash after the request
-// are not deleted, ones restored before the job reaches them stay, and before each run the
+// are not deleted, ones restored before the job reaches them stay (also when trashed
+// again), and before each run the
 // caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 //
 // When the job is done, the audit log records one `trash.emptied` by the caller with the
@@ -54406,7 +54409,8 @@ func (c *Client) EmptyTrashWithBody(ctx context.Context, params *EmptyTrashParam
 // in `count`. Otherwise the request records exactly those conversations, and one job deletes
 // them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
 // never deletes more than was confirmed: conversations moved to the trash after the request
-// are not deleted, ones restored before the job reaches them stay, and before each run the
+// are not deleted, ones restored before the job reaches them stay (also when trashed
+// again), and before each run the
 // caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 //
 // When the job is done, the audit log records one `trash.emptied` by the caller with the
@@ -105132,7 +105136,8 @@ type ClientWithResponsesInterface interface {
 	// in `count`. Otherwise the request records exactly those conversations, and one job deletes
 	// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
 	// never deletes more than was confirmed: conversations moved to the trash after the request
-	// are not deleted, ones restored before the job reaches them stay, and before each run the
+	// are not deleted, ones restored before the job reaches them stay (also when trashed
+	// again), and before each run the
 	// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 	//
 	// When the job is done, the audit log records one `trash.emptied` by the caller with the
@@ -105155,7 +105160,8 @@ type ClientWithResponsesInterface interface {
 	// in `count`. Otherwise the request records exactly those conversations, and one job deletes
 	// them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
 	// never deletes more than was confirmed: conversations moved to the trash after the request
-	// are not deleted, ones restored before the job reaches them stay, and before each run the
+	// are not deleted, ones restored before the job reaches them stay (also when trashed
+	// again), and before each run the
 	// caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 	//
 	// When the job is done, the audit log records one `trash.emptied` by the caller with the
@@ -155832,7 +155838,8 @@ func (c *ClientWithResponses) ComposeMailWithResponse(ctx context.Context, param
 // in `count`. Otherwise the request records exactly those conversations, and one job deletes
 // them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
 // never deletes more than was confirmed: conversations moved to the trash after the request
-// are not deleted, ones restored before the job reaches them stay, and before each run the
+// are not deleted, ones restored before the job reaches them stay (also when trashed
+// again), and before each run the
 // caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 //
 // When the job is done, the audit log records one `trash.emptied` by the caller with the
@@ -155861,7 +155868,8 @@ func (c *ClientWithResponses) EmptyTrashWithBodyWithResponse(ctx context.Context
 // in `count`. Otherwise the request records exactly those conversations, and one job deletes
 // them in batches, each as the 30-day purge does; the answer is `202` with the count. The job
 // never deletes more than was confirmed: conversations moved to the trash after the request
-// are not deleted, ones restored before the job reaches them stay, and before each run the
+// are not deleted, ones restored before the job reaches them stay (also when trashed
+// again), and before each run the
 // caller is checked again, so after a lost role, key, grant or mailbox the rest stays.
 //
 // When the job is done, the audit log records one `trash.emptied` by the caller with the

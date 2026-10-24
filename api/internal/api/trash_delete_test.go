@@ -326,7 +326,7 @@ func TestEmptyTrashDeletesOnlyTheConfirmedSet(t *testing.T) {
 		tm.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+c, nil)
 		return c
 	}
-	a, b, c := trash(), trash(), trash()
+	a, b, c, e := trash(), trash(), trash(), trash()
 	run := func() {
 		t.Helper()
 		jobs := h.jobs("trash_empty", tm.ws)
@@ -354,14 +354,17 @@ func TestEmptyTrashDeletesOnlyTheConfirmedSet(t *testing.T) {
 		return out
 	}
 
-	admin.expect(http.StatusAccepted, "POST", "/v1/conversations/trash/empty", map[string]any{"confirm_count": 3})
+	admin.expect(http.StatusAccepted, "POST", "/v1/conversations/trash/empty", map[string]any{"confirm_count": 4})
 	tm.owner.expect(http.StatusOK, "POST", "/v1/conversations/"+b+"/restore", nil)
+	tm.owner.expect(http.StatusOK, "POST", "/v1/conversations/"+e+"/restore", nil)
+	h.clock.Advance(time.Second)
+	tm.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+e, nil)
 	d := trash()
 	if _, err := h.st.Pool.Exec(context.Background(), "UPDATE trash_empties SET deleted = 5 WHERE workspace_id = $1", tm.ws); err != nil {
 		t.Fatal(err)
 	}
 	run()
-	if h.conversationRows(tm.ws, a, c) != 0 || h.conversationRows(tm.ws, b, d) != 2 {
+	if h.conversationRows(tm.ws, a, c) != 0 || h.conversationRows(tm.ws, b, d, e) != 3 {
 		t.Fatal("deleted other than the confirmed, still trashed set")
 	}
 	if got := emptied(); fmt.Sprint(got) != "[7]" {
@@ -369,13 +372,37 @@ func TestEmptyTrashDeletesOnlyTheConfirmedSet(t *testing.T) {
 	}
 
 	tm.owner.expect(http.StatusOK, "DELETE", "/v1/conversations/"+b, nil)
-	admin.expect(http.StatusAccepted, "POST", "/v1/conversations/trash/empty", map[string]any{"confirm_count": 2})
+	admin.expect(http.StatusAccepted, "POST", "/v1/conversations/trash/empty", map[string]any{"confirm_count": 3})
 	tm.owner.expect(http.StatusOK, "PATCH", "/v1/members/"+tm.agentID, map[string]any{"role": "agent"})
 	run()
-	if h.conversationRows(tm.ws, b, d) != 2 {
+	if h.conversationRows(tm.ws, b, d, e) != 3 {
 		t.Fatal("deleted after the caller lost the right to")
 	}
 	if got := emptied(); len(got) != 2 || got[0]+got[1] != 7 {
 		t.Fatalf("trash.emptied after a demotion: %v", got)
+	}
+
+	sets := func() int {
+		t.Helper()
+		var n int
+		if err := h.st.Pool.QueryRow(context.Background(), "SELECT count(*) FROM trash_empties WHERE workspace_id = $1", tm.ws).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		return n
+	}
+	tm.owner.expect(http.StatusAccepted, "POST", "/v1/conversations/trash/empty", map[string]any{"confirm_count": 3})
+	for _, j := range h.jobs("trash_empty", tm.ws) {
+		h.dropJob(j.id)
+	}
+	h.clock.Advance(6 * 24 * time.Hour)
+	if err := h.srv.CleanTrashEmpties(context.Background()); err != nil || sets() != 1 {
+		t.Fatalf("set of a discarded job cleaned too early: %v", err)
+	}
+	h.clock.Advance(2 * 24 * time.Hour)
+	if err := h.srv.CleanTrashEmpties(context.Background()); err != nil || sets() != 0 {
+		t.Fatalf("set of a discarded job kept: %v", err)
+	}
+	if h.conversationRows(tm.ws, b, d, e) != 3 {
+		t.Fatal("cleaning a set deleted conversations")
 	}
 }

@@ -489,8 +489,8 @@ FROM b;
 INSERT INTO trash_empties (workspace_id, id, created_at) VALUES (@workspace_id, @id, @now);
 
 -- name: FreezeTrashEmpty :execrows
-INSERT INTO trash_empty_items (workspace_id, empty_id, conversation_id)
-SELECT c.workspace_id, @empty_id::uuid, c.id FROM conversations c
+INSERT INTO trash_empty_items (workspace_id, empty_id, conversation_id, trashed_at)
+SELECT c.workspace_id, @empty_id::uuid, c.id, c.trashed_at FROM conversations c
 JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
 WHERE c.workspace_id = @workspace_id AND c.trashed_at IS NOT NULL
   AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
@@ -503,7 +503,7 @@ WHERE c.workspace_id = @workspace_id AND c.trashed_at IS NOT NULL
 SELECT c.id, c.inbox_id, c.contact_id FROM trash_empty_items t
 JOIN conversations c ON c.workspace_id = t.workspace_id AND c.id = t.conversation_id
 JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
-WHERE t.workspace_id = @workspace_id AND t.empty_id = @empty_id AND c.trashed_at IS NOT NULL
+WHERE t.workspace_id = @workspace_id AND t.empty_id = @empty_id AND c.trashed_at = t.trashed_at
   AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
   AND ((i.personal AND i.owner_member_id = sqlc.narg(owner_member_id)::uuid)
     OR (NOT i.personal AND @manager::bool AND (@all_inboxes::bool OR EXISTS (
@@ -520,6 +520,9 @@ RETURNING deleted;
 
 -- name: TrashEmptyExists :one
 SELECT EXISTS (SELECT 1 FROM trash_empties WHERE workspace_id = @workspace_id AND id = @id);
+
+-- name: DeleteStaleTrashEmpties :execrows
+DELETE FROM trash_empties WHERE workspace_id = @workspace_id AND created_at < @before;
 
 -- name: DeleteTrashEmpty :exec
 DELETE FROM trash_empties WHERE workspace_id = @workspace_id AND id = @id;

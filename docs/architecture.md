@@ -4672,17 +4672,19 @@ they belong to no channel. (#136, migration 00095)
   the person confirmed (`GET /v1/conversations/counts` `trash`). A different number than the
   caller's trash holds answers `409 count_changed` with `count`; otherwise it answers `202
   {count}` and, when there is anything, queues the River job `trash_empty` in the same
-  transaction. The set is frozen when it is counted: the same transaction records the ids in
-  `trash_empty_items` under a `trash_empties` row (migration 00140), so the job deletes exactly
+  transaction. The set is frozen when it is counted: the same transaction records the ids with
+  their `trashed_at` in `trash_empty_items` under a `trash_empties` row (migration 00140), so the job deletes exactly
   what was confirmed and never what is trashed afterwards; the job's arguments carry only that
   row's id and who asked. Each run rebuilds the caller as it is now (member role, key, grant,
-  single sign-on) and deletes only frozen conversations that are still trashed and that the
+  single sign-on) and deletes only frozen conversations still trashed at the frozen `trashed_at`
+  (one restored and trashed again stays) and that the
   caller may still delete: restored ones, a lost role, key or mailbox skip, and a mailbox handed
   to the caller afterwards is not in the set. It deletes 200 per transaction for about 30 seconds
   a run and queues its own continuation in the last transaction. Each batch adds its count to
   `trash_empties.deleted` in its own transaction, so `trash.emptied`, written with the last
   batch, counts what was deleted across runs and retries; the last batch deletes the row and the
-  set with it, and a run whose row is gone does nothing.
+  set with it, and a run whose row is gone does nothing. The hourly retention job deletes sets
+  older than 7 days, left by a job that was discarded or cancelled.
 - A trashed conversation is read-only and left out of every list, count, search, stat, Home
   figure, contact summary, docs and analytics support figure, linked replies and roadmap link
   counts, drafts, mentions, rating links, chat continuity mail, the automation run log

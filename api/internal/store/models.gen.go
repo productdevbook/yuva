@@ -2793,6 +2793,7 @@ type TrashEmptyItem struct {
 	WorkspaceID    uuid.UUID
 	EmptyID        uuid.UUID
 	ConversationID uuid.UUID
+	TrashedAt      time.Time
 }
 
 type UsageCounter struct {

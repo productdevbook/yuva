@@ -486,6 +486,23 @@ func (q *Queries) DeleteDraftContact(ctx context.Context, arg DeleteDraftContact
 	return result.RowsAffected(), nil
 }
 
+const deleteStaleTrashEmpties = `-- name: DeleteStaleTrashEmpties :execrows
+DELETE FROM trash_empties WHERE workspace_id = $1 AND created_at < $2
+`
+
+type DeleteStaleTrashEmptiesParams struct {
+	WorkspaceID uuid.UUID
+	Before      time.Time
+}
+
+func (q *Queries) DeleteStaleTrashEmpties(ctx context.Context, arg DeleteStaleTrashEmptiesParams) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteStaleTrashEmpties, arg.WorkspaceID, arg.Before)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const deleteTrashEmpty = `-- name: DeleteTrashEmpty :exec
 DELETE FROM trash_empties WHERE workspace_id = $1 AND id = $2
 `
@@ -501,8 +518,8 @@ func (q *Queries) DeleteTrashEmpty(ctx context.Context, arg DeleteTrashEmptyPara
 }
 
 const freezeTrashEmpty = `-- name: FreezeTrashEmpty :execrows
-INSERT INTO trash_empty_items (workspace_id, empty_id, conversation_id)
-SELECT c.workspace_id, $1::uuid, c.id FROM conversations c
+INSERT INTO trash_empty_items (workspace_id, empty_id, conversation_id, trashed_at)
+SELECT c.workspace_id, $1::uuid, c.id, c.trashed_at FROM conversations c
 JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
 WHERE c.workspace_id = $2 AND c.trashed_at IS NOT NULL
   AND conversation_visible_to(c.draft_of, $3::uuid)
@@ -1538,7 +1555,7 @@ const listTrashEmptyBatch = `-- name: ListTrashEmptyBatch :many
 SELECT c.id, c.inbox_id, c.contact_id FROM trash_empty_items t
 JOIN conversations c ON c.workspace_id = t.workspace_id AND c.id = t.conversation_id
 JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
-WHERE t.workspace_id = $1 AND t.empty_id = $2 AND c.trashed_at IS NOT NULL
+WHERE t.workspace_id = $1 AND t.empty_id = $2 AND c.trashed_at = t.trashed_at
   AND conversation_visible_to(c.draft_of, $3::uuid)
   AND ((i.personal AND i.owner_member_id = $4::uuid)
     OR (NOT i.personal AND $5::bool AND ($6::bool OR EXISTS (

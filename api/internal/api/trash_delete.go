@@ -16,6 +16,8 @@ import (
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
+const trashEmptiesKept = 7 * 24 * time.Hour
+
 var errNotTrashed = problem(http.StatusConflict, "not_trashed", "the conversation is not in the trash; move it there first")
 
 func errCountChanged(n int64) *apiError {
@@ -160,6 +162,22 @@ func (w *trashEmptyWorker) Work(ctx context.Context, job *river.Job[TrashEmptyAr
 
 func trashScope(p principal) (owner *uuid.UUID, manager bool) {
 	return p.memberRef(), requireManagerOrKey(p) == nil
+}
+
+// CleanTrashEmpties drops the frozen sets whose job was discarded or cancelled; a live job finishes
+// long before trashEmptiesKept.
+func (s *Server) CleanTrashEmpties(ctx context.Context) error {
+	ids, err := s.st.ListWorkspaceIDs(ctx)
+	if err != nil {
+		return err
+	}
+	before := s.now().Add(-trashEmptiesKept)
+	for _, ws := range ids {
+		if _, err := s.st.DeleteStaleTrashEmpties(ctx, store.DeleteStaleTrashEmptiesParams{WorkspaceID: ws, Before: before}); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s *Server) EmptyTrash(ctx context.Context, req oas.EmptyTrashRequestObject) (oas.EmptyTrashResponseObject, error) {
