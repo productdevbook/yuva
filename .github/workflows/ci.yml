@@ -51,9 +51,9 @@ jobs:
           }
           part openapi '^openapi/'
           part api '^(api|sdk/go|openapi|templates/email|deploy/dovecot)/'
-          part web "^web/$ts"
+          part web "^web/|^openapi/openapi\.yaml\$$ts"
           part edge "^edge/$ts"
-          part sdk_js "^sdk/js/$ts"
+          part sdk_js "^sdk/js/|^openapi/openapi\.yaml\$$ts"
           part sdk_shadcn "^sdk/shadcn/$ts"
           part examples "^(examples|sdk/js|sdk/shadcn)/$ts"
           part site "^(site|docs|sdk/shadcn|templates/email|api/internal/mail/design/icons)/|^openapi/openapi\.yaml$|^CHANGELOG\.md\$$ts"
@@ -178,6 +178,10 @@ jobs:
       - if: steps.present.outputs.yes == 'true'
         working-directory: web
         run: npm ci && npm run -s format:check && npm run -s lint && npm run -s extract && npx lingui compile --strict && npm run -s build
+      - if: steps.present.outputs.yes == 'true'
+        name: generated schema is committed
+        working-directory: web
+        run: npm run -s generate && git diff --exit-code -- src/lib/schema.gen.ts
 
   edge:
     needs: changes
@@ -206,6 +210,10 @@ jobs:
       - if: steps.present.outputs.yes == 'true'
         working-directory: sdk/js
         run: bun install --frozen-lockfile && bun run check && bun run build
+      - if: steps.present.outputs.yes == 'true'
+        name: generated schema is committed
+        working-directory: sdk/js
+        run: bun run generate && git diff --exit-code -- src/schema.gen.ts
 
   sdk-shadcn:
     needs: changes
