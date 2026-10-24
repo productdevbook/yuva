@@ -4511,7 +4511,8 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   owner (full), `send`, `read` or nothing; `canReadPersonal` lets delegates read, `ownedInbox` keeps
   settings, channels, the member list, delegates, migrations and everything that belongs to the
   inbox (broadcasts, mailing lists with their subscribers and imports, designs, analytics
-  properties: `ownedInbox` and `inboxObjectsVisible`, and the list queries) to the owner, and writes
+  properties: `ownedInbox` and `inboxObjectsVisible`, the list queries, Home's last and upcoming
+  broadcasts and setup parts, and a contact's subscriptions) to the owner, and writes
   (notes, replies, compose, status, assignee, labels, star, snooze, sending a draft) go through
   `requireWrite` (inside `visibleConversation` with `lock`, and at the sites without a lock), which
   answers `403 forbidden` to a `read` delegate. Moving a conversation out of the mailbox is the
@@ -4555,6 +4556,7 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   waits and finds the member gone. Owners, admins and full keys get `inbox.updated` of a personal
   mailbox they do not read, cut to what `GET /v1/inboxes/{id}` shows them (no signature, import, SES
   tenant or access), so a panel sees a mailbox become orphaned; every other event of it stays hidden.
+  An `inbox.updated` whose inbox is already gone when the filter runs is cut the same way.
 - **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
   or hands it to a named member; nobody reads it before that choice.
 - **Sending as a person.** A mail goes from the channel address with the member's name, or from the

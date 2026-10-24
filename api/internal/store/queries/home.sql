@@ -118,6 +118,7 @@ SELECT 'broadcast'::text AS kind, b.id, b.inbox_id, b.scheduled_at::timestamptz 
 FROM broadcasts b
 WHERE @with_broadcasts::bool AND b.workspace_id = @workspace_id AND b.state = 'scheduled' AND b.scheduled_at IS NOT NULL
   AND b.inbox_id IN (SELECT id FROM visible)
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = b.workspace_id AND own.id = b.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM @viewer_id::uuid)
 UNION ALL
 SELECT si.kind, si.id, p.inbox_id,
     CASE WHEN si.kind = 'maintenance' THEN si.scheduled_start ELSE coalesce(si.started_at, si.published_at) END,
@@ -149,6 +150,7 @@ WHERE b.workspace_id = @workspace_id AND b.state = 'sent'
   AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = b.workspace_id AND own.id = b.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM @viewer_id::uuid)
 ORDER BY b.finished_at DESC NULLS LAST, b.id DESC
 LIMIT 1;
 
@@ -182,6 +184,7 @@ WHERE @with_properties::bool AND p.workspace_id = @workspace_id AND p.deleted_at
   AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = p.workspace_id AND own.id = p.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM @viewer_id::uuid)
 UNION ALL
 SELECT 'list', l.id, l.inbox_id, l.name, '', l.created_at, '{}', '{}', false,
     row_number() OVER (ORDER BY l.created_at DESC, l.id DESC), ''
@@ -190,4 +193,5 @@ WHERE @with_lists::bool AND l.workspace_id = @workspace_id AND l.archived_at IS 
   AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = l.workspace_id AND own.id = l.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM @viewer_id::uuid)
 ORDER BY 1, 10;

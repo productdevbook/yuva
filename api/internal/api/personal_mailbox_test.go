@@ -579,8 +579,36 @@ func TestPersonalMailboxObjectsAreTheOwners(t *testing.T) {
 	owner.expect(http.StatusOK, "GET", "/v1/lists/"+list, nil)
 	owner.expect(http.StatusOK, "GET", "/v1/email-designs/"+design, nil)
 	owner.expect(http.StatusOK, "GET", "/v1/analytics/properties/"+property, nil)
+	sub := owner.expect(http.StatusCreated, "POST", "/v1/lists/"+list+"/subscriptions", map[string]any{"email": "success@simulator.amazonses.com", "consent": map[string]any{"confirmed": true}})
+	contactSubs := "/v1/contacts/" + sub.body["contact"].(map[string]any)["id"].(string) + "/subscriptions"
+	sent := owner.expect(http.StatusCreated, "POST", "/v1/broadcasts", map[string]any{"inbox_id": box, "name": "Sent from mine"}).str("id")
+	setBroadcastSent(t, h, sent, time.Now().Add(-time.Hour), map[string]any{"recipients": 1, "sent": 1})
+	scheduled := owner.expect(http.StatusCreated, "POST", "/v1/broadcasts", map[string]any{"inbox_id": box, "name": "Scheduled from mine"}).str("id")
+	if _, err := h.st.Pool.Exec(context.Background(), `UPDATE broadcasts SET state = 'scheduled', scheduled_at = $2, counts = '{"recipients": 1}' WHERE id = $1`, scheduled, time.Now().Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	home := homeOf(owner)
+	if b := homeBlock(home, "broadcasts")["last_sent"].(map[string]any); b["id"] != sent || !strings.Contains(string(home.raw), scheduled) ||
+		!strings.Contains(string(home.raw), property) || checklist(t, home)["newsletter"][1] != float64(1) {
+		t.Fatalf("the owner's home leaves out the mailbox's objects: %s", home.raw)
+	}
+	if !strings.Contains(string(owner.expect(http.StatusOK, "GET", contactSubs, nil).raw), list) {
+		t.Fatal("the owner does not see a subscription to their mailbox's list")
+	}
 
 	for _, c := range []*client{reader, tm.owner} {
+		home := homeOf(c)
+		for _, id := range []string{sent, scheduled, property} {
+			if strings.Contains(string(home.raw), id) {
+				t.Errorf("home shows another member's personal mailbox object %s: %s", id, home.raw)
+			}
+		}
+		if n := checklist(t, home)["newsletter"][1]; n != float64(0) {
+			t.Errorf("home counts another member's personal mailbox list: %v", n)
+		}
+		if strings.Contains(string(c.expect(http.StatusOK, "GET", contactSubs, nil).raw), list) {
+			t.Error("a contact's subscriptions show another member's personal mailbox list")
+		}
 		for _, call := range [][3]any{
 			{"POST", "/v1/lists", map[string]any{"inbox_id": box, "name": "Theirs", "channel_id": channel}},
 			{"GET", "/v1/lists/" + list, nil},

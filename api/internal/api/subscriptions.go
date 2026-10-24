@@ -912,8 +912,19 @@ func (s *Server) ListContactSubscriptions(ctx context.Context, req oas.ListConta
 		return nil, err
 	}
 	byID := map[uuid.UUID]store.MailingList{}
+	owned := map[uuid.UUID]bool{}
 	for _, l := range lists {
-		if inboxes == nil || inboxes[l.InboxID] {
+		if inboxes != nil && !inboxes[l.InboxID] {
+			continue
+		}
+		ok, seen := owned[l.InboxID]
+		if !seen {
+			if ok, err = inboxObjectsVisible(ctx, s.st.Queries, p, l.InboxID); err != nil {
+				return nil, err
+			}
+			owned[l.InboxID] = ok
+		}
+		if ok {
 			byID[l.ID] = l
 		}
 	}

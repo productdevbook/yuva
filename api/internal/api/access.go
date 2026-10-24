@@ -225,6 +225,7 @@ func (h *hiddenInboxes) right(ctx context.Context, q *store.Queries, id uuid.UUI
 	}
 	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: h.p.workspaceID, ID: id})
 	if store.IsNotFound(err) {
+		h.seen[id] = rightNone
 		return rightNone, nil
 	}
 	if err != nil {
