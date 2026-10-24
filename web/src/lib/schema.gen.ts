@@ -2598,6 +2598,22 @@ export interface paths {
          *     (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
          *     Conversations in the trash are listed only with `trashed=true`.
          *
+         *     `q` also takes search operators, written `key:value`, `key:"quoted value"` or negated
+         *     `-key:value`. Keys are case-insensitive, values match case-insensitively, and every operator
+         *     and every other parameter must hold (`-key:value` keeps the conversations where `key:value`
+         *     does not). Only sent messages are searched, never drafts. `from:x` matches a sender's
+         *     address or name, `to:x` and `cc:x` a recipient address (each by containing `x`; `from:me` and
+         *     `to:me` mean the calling member, with their verified addresses), `subject:x` the subject
+         *     (as the free text does), `has:attachment` a message with an attachment, `is:starred` a
+         *     conversation the caller starred, `in:` one of `inbox`, `starred`, `snoozed`, `sent`,
+         *     `archive`, `trash`, `drafts` or `scheduled` (the mail folders; `in:trash` needs the rights of
+         *     `trashed=true`; the folders are those of mail inboxes), and `after:YYYY-MM-DD` and `before:YYYY-MM-DD` a message
+         *     sent at or after 00:00 of that day and before 00:00 of that day in `timezone`; given together they must hold for one message. A term with another key or a
+         *     value that does not fit (`before:soon`, `in:elsewhere`, a `from:`, `to:` or `cc:` value shorter than 3 characters or
+         *     holding a space or comma, a date before year 1 or after year 9999) is searched as text, so `ratio:3:1`
+         *     and URLs still work. `from:me`, `to:me`, `is:starred` and `in:starred`, `sent`, `drafts` and
+         *     `scheduled` need a member session. `q` has at most 200 characters and 20 operators.
+         *
          *     Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
          *
          *     Each item carries the contact (id, name, first e-mail address), a preview of the last
@@ -30993,6 +31009,8 @@ export interface operations {
                  *     comma-separated list. Conversations without an SLA never match.
                  */
                 sla_state?: components["schemas"]["SlaState"][];
+                /** @description IANA time zone whose midnight `after:` and `before:` in `q` use; `UTC` by default. */
+                timezone?: string;
                 /** @description Full-text search (Postgres `simple` configuration, `websearch` syntax). */
                 q?: components["parameters"]["Search"];
                 /** @description The `next_cursor` of the previous page. */
