@@ -310,6 +310,11 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 	plain, sealed := s.sealIdentitySecret(p.workspaceID, id)
 	var in store.Inbox
 	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+		if b.OwnerMemberId != nil {
+			if err := q.LockInboxAccess(ctx, p.workspaceID); err != nil {
+				return err
+			}
+		}
 		var err error
 		in, err = q.CreateInbox(ctx, store.CreateInboxParams{
 			ID: id, WorkspaceID: p.workspaceID, Name: f.name, Slug: f.slug, Purpose: f.purpose, Branding: mustJSON(f.branding),

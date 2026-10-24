@@ -55,6 +55,7 @@ WHERE b.workspace_id = @workspace_id
   AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = @viewer_id))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = b.workspace_id AND own.id = b.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM @viewer_id::uuid)
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (b.created_at, b.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY b.created_at DESC, b.id DESC

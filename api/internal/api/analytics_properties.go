@@ -46,13 +46,10 @@ func (s *Server) analyticsOn() error {
 // propertyVisible: agents and keys limited to inboxes see the properties of their inboxes; a
 // property without an inbox only those who see every inbox.
 func propertyVisible(ctx context.Context, q *store.Queries, p principal, prop store.AnalyticsProperty) (bool, error) {
-	if p.seesAllInboxes() {
-		return true, nil
-	}
 	if prop.InboxID == nil {
-		return false, nil
+		return p.seesAllInboxes(), nil
 	}
-	return canSeeInbox(ctx, q, p, *prop.InboxID)
+	return inboxObjectsVisible(ctx, q, p, *prop.InboxID)
 }
 
 func visibleProperty(ctx context.Context, q *store.Queries, p principal, id uuid.UUID, lock bool) (store.AnalyticsProperty, error) {
@@ -326,7 +323,7 @@ func (s *Server) applyPropertyBody(ctx context.Context, q *store.Queries, p prin
 	if b.InboxId.IsSpecified() {
 		f.inboxID = nil
 		if !b.InboxId.IsNull() {
-			in, err := visibleInbox(ctx, q, p, b.InboxId.MustGet())
+			in, err := ownedInbox(ctx, q, p, b.InboxId.MustGet())
 			if err != nil {
 				return err
 			}
@@ -435,7 +432,7 @@ func (s *Server) CreateAnalyticsProperty(ctx context.Context, req oas.CreateAnal
 	var out store.AnalyticsProperty
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
 		if b.InboxId != nil {
-			in, err := visibleInbox(ctx, q, p, *b.InboxId)
+			in, err := ownedInbox(ctx, q, p, *b.InboxId)
 			if err != nil {
 				return err
 			}

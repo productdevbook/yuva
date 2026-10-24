@@ -15,6 +15,7 @@ import (
 	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/api"
+	"github.com/productdevbook/yuva/api/internal/store"
 )
 
 func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
@@ -503,6 +504,19 @@ func TestPersonalMailboxOnLeave(t *testing.T) {
 	if box, _ := meta.body["mailbox"].(map[string]any); meta.body["owner_member_id"] != nil || box == nil || box["orphaned"] != true || meta.body["purpose"] != "mail" {
 		t.Fatalf("orphaned: %s", meta.raw)
 	}
+	orphanedEvent := false
+	for _, e := range tm.owner.expect(http.StatusOK, "GET", "/v1/events?after=0&limit=500", nil).body["events"].([]any) {
+		ev := e.(map[string]any)
+		if data, _ := ev["data"].(map[string]any); data != nil && data["id"] == kept {
+			if ev["type"] != "inbox.updated" || data["signature"] != "" || data["import"] != nil {
+				t.Fatalf("a manager gets more than the metadata of the personal mailbox: %v", ev)
+			}
+			orphanedEvent = orphanedEvent || data["owner_member_id"] == nil
+		}
+	}
+	if !orphanedEvent {
+		t.Fatal("owners are not told the mailbox became orphaned")
+	}
 	for _, c := range []*client{tm.owner, tm.agent, delegate, key} {
 		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+keptConv, nil)
 		c.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+keptConv+"/messages", nil)
@@ -534,5 +548,138 @@ func TestPersonalMailboxOnLeave(t *testing.T) {
 	tm.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/conversations/"+keptConv, nil)
 	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND action = 'mailbox.handed_over' AND target_id = $2", tm.ws, kept); n != 2 {
 		t.Fatalf("%d hand-overs audited, want 2", n)
+	}
+}
+
+func TestPersonalMailboxObjectsAreTheOwners(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	owner, ownerID := tm.newAgent()
+	reader, readerID := tm.newAgent()
+	sender, senderID := tm.newAgent()
+	for _, id := range []string{ownerID, readerID} {
+		tm.owner.expect(http.StatusOK, "PATCH", "/v1/members/"+id, map[string]any{"role": "admin"})
+	}
+	box, conv := personalMailboxWithMail(t, h, owner, ownerID)
+	other, _ := personalMailboxWithMail(t, h, owner, ownerID)
+	ch := owner.expect(http.StatusOK, "GET", "/v1/inboxes/"+box+"/channels", nil).body["items"].([]any)[0].(map[string]any)
+	channel := ch["id"].(string)
+	owner.expect(http.StatusOK, "PATCH", "/v1/channels/"+channel, map[string]any{"email": map[string]any{
+		"address": ch["email"].(map[string]any)["address"],
+		"smtp":    map[string]any{"host": "smtp.example.com", "port": 2525, "username": "mailer", "password": "smtp-secret", "tls": "starttls"},
+	}})
+	owner.expect(http.StatusOK, "PUT", "/v1/inboxes/"+box+"/delegates/"+readerID, map[string]any{"access": "read"})
+	owner.expect(http.StatusOK, "PUT", "/v1/inboxes/"+box+"/delegates/"+senderID, map[string]any{"access": "send"})
+	reader.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil)
+
+	list := owner.expect(http.StatusCreated, "POST", "/v1/lists", map[string]any{"inbox_id": box, "name": "Mine", "channel_id": channel}).str("id")
+	design := owner.expect(http.StatusCreated, "POST", "/v1/email-designs", map[string]any{"name": "Mine", "inbox_id": box}).str("id")
+	property := owner.expect(http.StatusCreated, "POST", "/v1/analytics/properties", map[string]any{"name": "Mine", "domains": []string{"mine.example.com"}, "inbox_id": box}).str("id")
+	owner.expect(http.StatusOK, "GET", "/v1/lists/"+list, nil)
+	owner.expect(http.StatusOK, "GET", "/v1/email-designs/"+design, nil)
+	owner.expect(http.StatusOK, "GET", "/v1/analytics/properties/"+property, nil)
+
+	for _, c := range []*client{reader, tm.owner} {
+		for _, call := range [][3]any{
+			{"POST", "/v1/lists", map[string]any{"inbox_id": box, "name": "Theirs", "channel_id": channel}},
+			{"GET", "/v1/lists/" + list, nil},
+			{"GET", "/v1/lists?inbox_id=" + box, nil},
+			{"PATCH", "/v1/lists/" + list, map[string]any{"name": "Taken"}},
+			{"DELETE", "/v1/lists/" + list, nil},
+			{"POST", "/v1/lists/" + list + "/subscriptions", map[string]any{"email": "reader@example.org", "consent": map[string]any{"confirmed": true}}},
+			{"POST", "/v1/broadcasts", map[string]any{"inbox_id": box, "name": "Theirs"}},
+			{"GET", "/v1/broadcasts?inbox_id=" + box, nil},
+			{"POST", "/v1/email-designs", map[string]any{"name": "Theirs", "inbox_id": box}},
+			{"GET", "/v1/email-designs/" + design, nil},
+			{"GET", "/v1/email-designs?inbox_id=" + box, nil},
+			{"POST", "/v1/analytics/properties", map[string]any{"name": "Theirs", "domains": []string{"theirs.example.com"}, "inbox_id": box}},
+			{"GET", "/v1/analytics/properties/" + property, nil},
+		} {
+			c.expectProblem(http.StatusNotFound, "not_found", call[0].(string), call[1].(string), call[2])
+		}
+		for path, id := range map[string]string{"/v1/lists?limit=100": list, "/v1/email-designs?limit=100": design, "/v1/analytics/properties": property} {
+			if strings.Contains(string(c.expect(http.StatusOK, "GET", path, nil).raw), id) {
+				t.Errorf("%s lists another member's personal mailbox object from %s", path, id)
+			}
+		}
+	}
+	for path, id := range map[string]string{"/v1/lists?limit=100": list, "/v1/email-designs?limit=100": design, "/v1/analytics/properties": property} {
+		if !strings.Contains(string(owner.expect(http.StatusOK, "GET", path, nil).raw), id) {
+			t.Errorf("%s leaves out the owner's own %s", path, id)
+		}
+	}
+
+	sender.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/"+conv+"/move", map[string]any{"inbox_id": other})
+	reader.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/conversations/"+conv+"/move", map[string]any{"inbox_id": other})
+	if got := owner.expect(http.StatusOK, "POST", "/v1/conversations/"+conv+"/move", map[string]any{"inbox_id": other}); got.str("inbox_id") != other {
+		t.Fatalf("owner's move: %s", got.raw)
+	}
+}
+
+func TestPersonalMailboxHandOverWaitsForARemoval(t *testing.T) {
+	t.Parallel()
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	leaver, leaverID := tm.newAgent()
+	_, heirID := tm.newAgent()
+	box, _ := personalMailboxWithMail(t, h, leaver, leaverID)
+	leaver.expect(http.StatusNoContent, "DELETE", "/v1/me", map[string]any{"email": personEmail(leaver)})
+
+	ctx := context.Background()
+	tx, err := h.st.Pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback(ctx)
+	if err := store.New(tx).LockInboxAccess(ctx, uuid.MustParse(tm.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.Exec(ctx, "DELETE FROM members WHERE workspace_id = $1 AND id = $2", tm.ws, heirID); err != nil {
+		t.Fatal(err)
+	}
+	done := make(chan response, 1)
+	go func() { done <- tm.owner.do("POST", "/v1/inboxes/"+box+"/hand-over", map[string]any{"to_member_id": heirID}) }()
+	select {
+	case r := <-done:
+		t.Fatalf("the hand-over did not wait for the removal: %d %s", r.status, r.raw)
+	case <-time.After(300 * time.Millisecond):
+	}
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if r := <-done; r.status != http.StatusBadRequest || r.str("code") != "validation_failed" {
+		t.Fatalf("hand-over to a member removed meanwhile: %d %s", r.status, r.raw)
+	}
+	if n := h.count("SELECT count(*) FROM inboxes WHERE workspace_id = $1 AND id = $2 AND personal AND owner_member_id IS NULL", tm.ws, box); n != 1 {
+		t.Fatal("the mailbox is no longer orphaned")
+	}
+
+	tx, err = h.st.Pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback(ctx)
+	q := store.New(tx)
+	if err := q.LockInboxAccess(ctx, uuid.MustParse(tm.ws)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := q.SetMailboxOwner(ctx, store.SetMailboxOwnerParams{WorkspaceID: uuid.MustParse(tm.ws), ID: uuid.MustParse(box), OwnerMemberID: uuid.MustParse(tm.agentID), Now: time.Now()}); err != nil {
+		t.Fatal(err)
+	}
+	go func() { done <- tm.owner.do("DELETE", "/v1/members/"+tm.agentID, nil) }()
+	select {
+	case r := <-done:
+		t.Fatalf("the removal did not wait for the hand-over: %d %s", r.status, r.raw)
+	case <-time.After(300 * time.Millisecond):
+	}
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if r := <-done; r.status != http.StatusConflict || r.str("code") != "personal_mailbox" || !strings.Contains(string(r.raw), box) {
+		t.Fatalf("removing a member handed a mailbox meanwhile: %d %s", r.status, r.raw)
+	}
+	if n := h.count("SELECT count(*) FROM inboxes WHERE workspace_id = $1 AND id = $2 AND owner_member_id = $3", tm.ws, box, tm.agentID); n != 1 {
+		t.Fatal("the removal orphaned the mailbox it was just handed")
 	}
 }

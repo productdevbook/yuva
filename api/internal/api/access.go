@@ -29,6 +29,7 @@ var (
 	errCannedReplyGone  = problem(http.StatusNotFound, "not_found", "no such canned reply")
 	errInvalidCursor    = errValidation("cursor is not valid")
 	errReadDelegate     = problem(http.StatusForbidden, "forbidden", "you may read this personal mailbox, not write in it")
+	errMoveFromMailbox  = problem(http.StatusForbidden, "forbidden", "only the mailbox's owner moves its conversations to another inbox")
 )
 
 func (p principal) seesAllInboxes() bool {
@@ -127,6 +128,25 @@ func canSeeInbox(ctx context.Context, q *store.Queries, p principal, inboxID uui
 	return q.ViewerReadsInbox(ctx, store.ViewerReadsInboxParams{WorkspaceID: p.workspaceID, InboxID: inboxID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})
 }
 
+// inboxObjectsVisible is canSeeInbox for what belongs to an inbox (broadcasts, mailing lists,
+// designs, analytics properties): in a personal mailbox those are its owner's alone.
+func inboxObjectsVisible(ctx context.Context, q *store.Queries, p principal, inboxID uuid.UUID) (bool, error) {
+	if p.auto {
+		return true, nil
+	}
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: inboxID})
+	if store.IsNotFound(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	if in.Personal {
+		return ownsMailbox(p, in), nil
+	}
+	return canSeeInbox(ctx, q, p, inboxID)
+}
+
 func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {
 	in, err := visibleInboxMeta(ctx, q, p, id)
 	if err != nil {
@@ -143,7 +163,7 @@ func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UU
 }
 
 // ownedInbox is visibleInbox for what only a personal mailbox's owner does: its settings, channels,
-// delegates and migrations. Its delegates get 404 like everyone else.
+// delegates, migrations, broadcasts, lists, designs and analytics properties. Its delegates get 404 like everyone else.
 func ownedInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {
 	in, err := visibleInbox(ctx, q, p, id)
 	if err == nil && in.Personal && !p.auto && !ownsMailbox(p, in) {

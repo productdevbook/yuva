@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 	"uuid"
@@ -457,6 +458,16 @@ func (s *Server) OperatorDeletePerson(ctx context.Context, email string) (store.
 func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperator bool) error {
 	var workspaces []uuid.UUID
 	err := s.st.InTxRaw(ctx, func(tx pgx.Tx, q *store.Queries) error {
+		joined, err := q.ListPersonWorkspaceIDs(ctx, person.ID)
+		if err != nil {
+			return err
+		}
+		slices.SortFunc(joined, func(a, b uuid.UUID) int { return a.Compare(b) })
+		for _, ws := range joined {
+			if err := q.LockInboxAccess(ctx, ws); err != nil {
+				return err
+			}
+		}
 		if _, err := q.LockPersonWorkspaces(ctx, person.ID); err != nil {
 			return err
 		}
@@ -502,9 +513,6 @@ func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperat
 				return err
 			}
 			if len(mailboxes) > 0 {
-				if err := q.LockInboxAccess(ctx, m.WorkspaceID); err != nil {
-					return err
-				}
 				ev := &eventBatch{}
 				if err := s.orphanMailboxes(ctx, q, ev, by, m.MemberID, mailboxes); err != nil {
 					return err

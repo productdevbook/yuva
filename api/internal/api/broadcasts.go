@@ -315,7 +315,7 @@ func visibleBroadcast(ctx context.Context, q *store.Queries, p principal, id uui
 	if err != nil {
 		return b, err
 	}
-	ok, err := canSeeInbox(ctx, q, p, b.InboxID)
+	ok, err := inboxObjectsVisible(ctx, q, p, b.InboxID)
 	if err != nil {
 		return b, err
 	}
@@ -532,7 +532,7 @@ func (s *Server) ListBroadcasts(ctx context.Context, req oas.ListBroadcastsReque
 		return nil, err
 	}
 	if req.Params.InboxId != nil {
-		if _, err := visibleInbox(ctx, s.st.Queries, p, *req.Params.InboxId); err != nil {
+		if _, err := ownedInbox(ctx, s.st.Queries, p, *req.Params.InboxId); err != nil {
 			return nil, err
 		}
 	}
@@ -568,7 +568,7 @@ func (s *Server) ListBroadcasts(ctx context.Context, req oas.ListBroadcastsReque
 func (s *Server) CreateBroadcast(ctx context.Context, req oas.CreateBroadcastRequestObject) (oas.CreateBroadcastResponseObject, error) {
 	p := principalFrom(ctx)
 	b := req.Body
-	in, err := visibleInbox(ctx, s.st.Queries, p, b.InboxId)
+	in, err := ownedInbox(ctx, s.st.Queries, p, b.InboxId)
 	if err != nil {
 		return nil, err
 	}

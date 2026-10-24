@@ -295,7 +295,7 @@ func visibleDesign(ctx context.Context, q *store.Queries, p principal, id uuid.U
 		return d, err
 	}
 	if d.InboxID != nil {
-		ok, err := canSeeInbox(ctx, q, p, *d.InboxID)
+		ok, err := inboxObjectsVisible(ctx, q, p, *d.InboxID)
 		if err != nil {
 			return d, err
 		}
@@ -315,7 +315,7 @@ func designInbox(ctx context.Context, q *store.Queries, p principal, id *uuid.UU
 		}
 		return nil, nil
 	}
-	in, err := visibleInbox(ctx, q, p, *id)
+	in, err := ownedInbox(ctx, q, p, *id)
 	if err != nil {
 		return nil, err
 	}
@@ -376,7 +376,7 @@ func (s *Server) ListEmailDesigns(ctx context.Context, req oas.ListEmailDesignsR
 		return nil, err
 	}
 	if req.Params.InboxId != nil {
-		if _, err := visibleInbox(ctx, s.st.Queries, p, *req.Params.InboxId); err != nil {
+		if _, err := ownedInbox(ctx, s.st.Queries, p, *req.Params.InboxId); err != nil {
 			return nil, err
 		}
 	}
@@ -731,7 +731,7 @@ func (s *Server) RenderEmailDesign(ctx context.Context, req oas.RenderEmailDesig
 		}
 	}
 	if b.InboxId != nil {
-		in, err := visibleInbox(ctx, q, p, *b.InboxId)
+		in, err := ownedInbox(ctx, q, p, *b.InboxId)
 		if err != nil {
 			return nil, err
 		}

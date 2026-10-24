@@ -1246,6 +1246,7 @@ WHERE b.workspace_id = $1
   AND (($4::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = $5))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = b.workspace_id AND own.id = b.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM $5::uuid)
   AND ($6::timestamptz IS NULL
        OR (b.created_at, b.id) < ($6::timestamptz, $7::uuid))
 ORDER BY b.created_at DESC, b.id DESC

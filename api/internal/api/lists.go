@@ -41,7 +41,7 @@ func visibleList(ctx context.Context, q *store.Queries, p principal, id uuid.UUI
 	if err != nil {
 		return l, err
 	}
-	ok, err := canSeeInbox(ctx, q, p, l.InboxID)
+	ok, err := inboxObjectsVisible(ctx, q, p, l.InboxID)
 	if err != nil {
 		return l, err
 	}
@@ -208,7 +208,7 @@ func (s *Server) ListMailingLists(ctx context.Context, req oas.ListMailingListsR
 		return nil, err
 	}
 	if req.Params.InboxId != nil {
-		if _, err := visibleInbox(ctx, s.st.Queries, p, *req.Params.InboxId); err != nil {
+		if _, err := ownedInbox(ctx, s.st.Queries, p, *req.Params.InboxId); err != nil {
 			return nil, err
 		}
 	}
@@ -242,7 +242,7 @@ func (s *Server) ListMailingLists(ctx context.Context, req oas.ListMailingListsR
 func (s *Server) CreateMailingList(ctx context.Context, req oas.CreateMailingListRequestObject) (oas.CreateMailingListResponseObject, error) {
 	p := principalFrom(ctx)
 	b := req.Body
-	in, err := visibleInbox(ctx, s.st.Queries, p, b.InboxId)
+	in, err := ownedInbox(ctx, s.st.Queries, p, b.InboxId)
 	if err != nil {
 		return nil, err
 	}

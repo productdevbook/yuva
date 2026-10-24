@@ -168,6 +168,11 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 	}
 	var pages []uuid.UUID
 	err := s.inTxWith(ctx, p.workspaceID, func(tx pgx.Tx, q *store.Queries, events *eventBatch) error {
+		// Taken before the workspace row, as access changes do: a hand-over to this member or a new
+		// personal mailbox of theirs either commits first and is listed below, or waits for the removal.
+		if err := q.LockInboxAccess(ctx, p.workspaceID); err != nil {
+			return err
+		}
 		target, err := lockedMember(ctx, q, p, req.MemberId)
 		if err != nil {
 			return err

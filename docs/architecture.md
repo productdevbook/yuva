@@ -4509,10 +4509,13 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   mailbox has an owner), so every content filter, search operator, assignee, mention and notification
   check that follows that view reaches delegates without a change of its own. In Go, `rightIn` gives
   owner (full), `send`, `read` or nothing; `canReadPersonal` lets delegates read, `ownedInbox` keeps
-  settings, channels, the member list, delegates and migrations to the owner, and writes (notes,
-  replies, compose, status, assignee, labels, star, snooze, move, sending a draft) go through
+  settings, channels, the member list, delegates, migrations and everything that belongs to the
+  inbox (broadcasts, mailing lists with their subscribers and imports, designs, analytics
+  properties: `ownedInbox` and `inboxObjectsVisible`, and the list queries) to the owner, and writes
+  (notes, replies, compose, status, assignee, labels, star, snooze, sending a draft) go through
   `requireWrite` (inside `visibleConversation` with `lock`, and at the sites without a lock), which
-  answers `403 forbidden` to a `read` delegate. Drafts stay their author's (#169). A delegate's
+  answers `403 forbidden` to a `read` delegate. Moving a conversation out of the mailbox is the
+  owner's alone: a `send` delegate gets `403 forbidden` too, since they see the conversation. Drafts stay their author's (#169). A delegate's
   outgoing message keeps the delegate as `author` and names the owner in
   `Message.on_behalf_of_member_id`; its mail carries the owner's `From:` (the owner's name with the
   channel address, or one of the owner's verified addresses when `from_address` names one) and
@@ -4545,7 +4548,13 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   owner or admin then hands it over with `POST /v1/inboxes/{id}/hand-over {"to_member_id"}` (member
   session, orphaned personal mailboxes only, else `409 personal_mailbox`; it answers the metadata
   `Inbox`) or deletes it; the soft-deleted workspace path needs no query of its own any more.
-  Down refuses to run while an orphaned mailbox exists.
+  Down refuses to run while an orphaned mailbox exists. Removing a member, deleting an account,
+  handing over and creating a personal mailbox all take `LockInboxAccess` before any workspace row
+  lock (an account deletion takes it for each of the person's workspaces in id order), so a removal
+  either lists a mailbox handed to the member a moment earlier and answers `409`, or the hand-over
+  waits and finds the member gone. Owners, admins and full keys get `inbox.updated` of a personal
+  mailbox they do not read, cut to what `GET /v1/inboxes/{id}` shows them (no signature, import, SES
+  tenant or access), so a panel sees a mailbox become orphaned; every other event of it stays hidden.
 - **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
   or hands it to a named member; nobody reads it before that choice.
 - **Sending as a person.** A mail goes from the channel address with the member's name, or from the

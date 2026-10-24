@@ -618,6 +618,7 @@ WHERE e.workspace_id = $1
   AND (($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = $6))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = l.workspace_id AND own.id = l.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM $6::uuid)
   AND ($7::timestamptz IS NULL
        OR (e.created_at, e.id) > ($7::timestamptz, $8::uuid))
 ORDER BY e.created_at, e.id
@@ -920,6 +921,7 @@ WHERE l.workspace_id = $1
   AND (($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = $6))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = l.workspace_id AND own.id = l.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM $6::uuid)
   AND ($7::timestamptz IS NULL
        OR (l.created_at, l.id) < ($7::timestamptz, $8::uuid))
 ORDER BY l.created_at DESC, l.id DESC

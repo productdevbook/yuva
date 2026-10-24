@@ -270,7 +270,8 @@ type eventFilter struct {
 }
 
 // seenByAll keeps from those who see every inbox the events of personal mailboxes they do not read,
-// and contact events of contacts known only from those.
+// but inbox.updated, which view cuts to the metadata, and contact events of contacts known only
+// from those.
 func (f *eventFilter) seenByAll(ctx context.Context, q *store.Queries, e realtime.Event) (bool, error) {
 	if f.p.auto {
 		return true, nil
@@ -278,7 +279,7 @@ func (f *eventFilter) seenByAll(ctx context.Context, q *store.Queries, e realtim
 	f.hidden.p = f.p
 	if e.InboxID != nil && e.Type != realtime.InboxDeleted {
 		if h, err := f.hidden.hidden(ctx, q, *e.InboxID); err != nil || h {
-			return false, err
+			return err == nil && e.Type == realtime.InboxUpdated, err
 		}
 	}
 	var contact uuid.UUID
@@ -466,12 +467,35 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 	return ok, nil
 }
 
+// inboxMetaView is inbox.updated of a personal mailbox for a manager who does not read it, with what
+// GET /v1/inboxes/{id} leaves out for them.
+func inboxMetaView(e realtime.Event) (realtime.Event, bool) {
+	var in oas.Inbox
+	if json.Unmarshal(e.Data, &in) != nil {
+		return e, false
+	}
+	in.Signature, in.Import, in.SesTenant = "", nil, nil
+	if in.Mailbox != nil {
+		in.Mailbox.Access = nil
+	}
+	b, err := json.Marshal(in)
+	if err != nil {
+		return e, false
+	}
+	e.Data = b
+	return e, true
+}
+
 func (f *eventFilter) view(e realtime.Event) (realtime.Event, bool) {
 	switch e.Type {
 	case eventTeamCreated, eventTeamUpdated, eventTeamDeleted:
 		return f.teamView(e)
 	case eventConversationStar:
 		return starView(e)
+	case realtime.InboxUpdated:
+		if r, seen := f.hidden.seen[derefID(e.InboxID)]; e.InboxID != nil && seen && r == rightNone && f.p.seesAllInboxes() && !f.p.auto {
+			return inboxMetaView(e)
+		}
 	}
 	if e.Type != realtime.ContactUpdated || (f.p.seesAllInboxes() && f.p.auto) {
 		return e, true

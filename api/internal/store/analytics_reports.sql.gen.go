@@ -385,6 +385,7 @@ WHERE s.workspace_id = $1 AND s.property_id = $2
   AND ($3::text = '' OR $3::text = ANY(s.alerts))
   AND ((m.role IN ('owner', 'admin') AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM member_inbox_access im WHERE im.workspace_id = m.workspace_id AND im.inbox_id = p.inbox_id AND im.member_id = m.id))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = p.workspace_id AND own.id = p.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM m.id)
 
 ORDER BY m.id
 `

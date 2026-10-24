@@ -52,14 +52,9 @@ func leaveFieldError(field, detail string) *apiError {
 }
 
 // applyLeaveChoices deletes or hands over the leaving member's personal mailboxes inside the
-// removal's transaction, and returns the status pages whose domains to forget after it.
+// removal's transaction, which holds LockInboxAccess, and returns the status pages whose domains to
+// forget after it.
 func (s *Server) applyLeaveChoices(ctx context.Context, q *store.Queries, events *eventBatch, p principal, leaver uuid.UUID, choices []oas.MailboxOnLeave) ([]uuid.UUID, error) {
-	if len(choices) == 0 {
-		return nil, nil
-	}
-	if err := q.LockInboxAccess(ctx, p.workspaceID); err != nil {
-		return nil, err
-	}
 	var pages []uuid.UUID
 	for _, c := range choices {
 		in, err := q.LockInbox(ctx, store.LockInboxParams{WorkspaceID: p.workspaceID, ID: c.InboxId})

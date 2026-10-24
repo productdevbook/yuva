@@ -140,6 +140,13 @@ func (s *Server) MoveConversation(ctx context.Context, req oas.MoveConversationR
 		if err != nil {
 			return err
 		}
+		src, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: cur.InboxID})
+		if err != nil {
+			return err
+		}
+		if src.Personal && !p.auto && !ownsMailbox(p, src) {
+			return errMoveFromMailbox
+		}
 		target, err := writableInbox(ctx, q, p, req.Body.InboxId)
 		if err != nil {
 			return err
