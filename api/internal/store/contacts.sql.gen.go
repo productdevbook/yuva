@@ -54,6 +54,53 @@ func (q *Queries) AddContactExternalID(ctx context.Context, arg AddContactExtern
 	return err
 }
 
+const contactDeletionPreview = `-- name: ContactDeletionPreview :one
+SELECT (
+    SELECT count(*) FROM conversations c
+    WHERE c.workspace_id = $1 AND c.contact_id = $2
+      AND ($3::bool OR c.trashed_at IS NULL)
+      AND conversation_visible_to(c.draft_of, $4::uuid)
+      AND (($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid))
+)::bigint AS conversation_count, EXISTS (
+    SELECT 1 FROM conversations c
+    JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+    WHERE c.workspace_id = $1 AND c.contact_id = $2 AND i.personal
+      AND NOT EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $6::uuid)
+) AS has_hidden_conversations
+`
+
+type ContactDeletionPreviewParams struct {
+	WorkspaceID    uuid.UUID
+	ContactID      uuid.UUID
+	WithTrash      bool
+	ViewerMemberID *uuid.UUID
+	AllInboxes     bool
+	ViewerID       uuid.UUID
+}
+
+type ContactDeletionPreviewRow struct {
+	ConversationCount      int64
+	HasHiddenConversations bool
+}
+
+func (q *Queries) ContactDeletionPreview(ctx context.Context, arg ContactDeletionPreviewParams) (ContactDeletionPreviewRow, error) {
+	row := q.db.QueryRow(ctx, contactDeletionPreview,
+		arg.WorkspaceID,
+		arg.ContactID,
+		arg.WithTrash,
+		arg.ViewerMemberID,
+		arg.AllInboxes,
+		arg.ViewerID,
+	)
+	var i ContactDeletionPreviewRow
+	err := row.Scan(&i.ConversationCount, &i.HasHiddenConversations)
+	return i, err
+}
+
 const contactExists = `-- name: ContactExists :one
 SELECT EXISTS (SELECT 1 FROM contacts WHERE workspace_id = $1 AND id = $2) AS found
 `

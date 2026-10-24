@@ -9481,7 +9481,7 @@ type AnalyticsRangeProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -11258,7 +11258,7 @@ type BroadcastProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -11669,7 +11669,7 @@ type ChangelogConflictProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -13617,6 +13617,16 @@ type ContactActivity struct {
 	OpenConversations int64      `json:"open_conversations"`
 }
 
+// ContactBulkFailure defines model for ContactBulkFailure.
+type ContactBulkFailure struct {
+	Code   string    `json:"code"`
+	Detail *string   `json:"detail,omitempty"`
+	Id     uuid.UUID `json:"id"`
+
+	// Status The HTTP status the single delete would have answered.
+	Status int32 `json:"status"`
+}
+
 // ContactCreate defines model for ContactCreate.
 type ContactCreate struct {
 	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
@@ -13627,6 +13637,20 @@ type ContactCreate struct {
 	Emails      *[]Email      `json:"emails,omitempty"`
 	ExternalIds *[]ExternalId `json:"external_ids,omitempty"`
 	Name        *string       `json:"name,omitempty"`
+}
+
+// ContactDelete defines model for ContactDelete.
+type ContactDelete struct {
+	// ConfirmCount The number of different contacts the person confirmed.
+	ConfirmCount int32       `json:"confirm_count"`
+	Ids          []uuid.UUID `json:"ids"`
+}
+
+// ContactDeleteResult defines model for ContactDeleteResult.
+type ContactDeleteResult struct {
+	// Deleted How many contacts were deleted.
+	Deleted int32                `json:"deleted"`
+	Failed  []ContactBulkFailure `json:"failed"`
 }
 
 // ContactDeletedEvent A contact was deleted with its conversations.
@@ -13640,6 +13664,16 @@ type ContactDeletedEvent struct {
 
 // ContactDeletedEventType defines model for ContactDeletedEvent.Type.
 type ContactDeletedEventType string
+
+// ContactDeletionPreview defines model for ContactDeletionPreview.
+type ContactDeletionPreview struct {
+	// ConversationCount The contact's conversations the caller can see; they are deleted with the contact.
+	ConversationCount int64 `json:"conversation_count"`
+
+	// HasHiddenConversations `true` when the contact also has conversations in personal mailboxes the caller does not
+	// read; they are deleted too.
+	HasHiddenConversations bool `json:"has_hidden_conversations"`
+}
 
 // ContactInbox defines model for ContactInbox.
 type ContactInbox struct {
@@ -15685,7 +15719,7 @@ type EmailDesignProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count *int64 `json:"count,omitempty"`
 
 	// Design `version_conflict` only: the design as it is now.
@@ -16055,7 +16089,7 @@ type EmailImageProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -17222,7 +17256,7 @@ type HelpConflictProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -20455,7 +20489,7 @@ type MigrationFileProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -21535,7 +21569,7 @@ type Problem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -26717,6 +26751,15 @@ type DeleteContactByExternalIdParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteContactsParams defines parameters for DeleteContacts.
+type DeleteContactsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // LookupContactParams defines parameters for LookupContact.
 type LookupContactParams struct {
 	InboxId    uuid.UUID `form:"inbox_id" json:"inbox_id"`
@@ -26755,6 +26798,12 @@ type ExportContactConsentParams struct {
 
 // ExportContactConsentParamsFormat defines parameters for ExportContactConsent.
 type ExportContactConsentParamsFormat string
+
+// GetContactDeletionPreviewParams defines parameters for GetContactDeletionPreview.
+type GetContactDeletionPreviewParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
 
 // MergeContactParams defines parameters for MergeContact.
 type MergeContactParams struct {
@@ -30463,6 +30512,9 @@ type VerifyEmailChannelJSONRequestBody = EmailVerifyInput
 
 // CreateContactJSONRequestBody defines body for CreateContact for application/json ContentType.
 type CreateContactJSONRequestBody = ContactCreate
+
+// DeleteContactsJSONRequestBody defines body for DeleteContacts for application/json ContentType.
+type DeleteContactsJSONRequestBody = ContactDelete
 
 // UpdateContactJSONRequestBody defines body for UpdateContact for application/json ContentType.
 type UpdateContactJSONRequestBody = ContactUpdate
@@ -35620,6 +35672,9 @@ type ServerInterface interface {
 	// DeleteContactByExternalId Delete a contact by external id
 	// (DELETE /v1/contacts/by-external-id)
 	DeleteContactByExternalId(w http.ResponseWriter, r *http.Request, params DeleteContactByExternalIdParams)
+	// DeleteContacts Delete several contacts
+	// (POST /v1/contacts/delete)
+	DeleteContacts(w http.ResponseWriter, r *http.Request, params DeleteContactsParams)
 	// LookupContact Find a contact by external id
 	// (GET /v1/contacts/lookup)
 	LookupContact(w http.ResponseWriter, r *http.Request, params LookupContactParams)
@@ -35635,6 +35690,9 @@ type ServerInterface interface {
 	// ExportContactConsent Export a contact's consent records
 	// (GET /v1/contacts/{contactId}/consent)
 	ExportContactConsent(w http.ResponseWriter, r *http.Request, contactId ContactId, params ExportContactConsentParams)
+	// GetContactDeletionPreview What deleting a contact takes with it
+	// (GET /v1/contacts/{contactId}/deletion-preview)
+	GetContactDeletionPreview(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactDeletionPreviewParams)
 	// MergeContact Merge another contact into this one
 	// (POST /v1/contacts/{contactId}/merge)
 	MergeContact(w http.ResponseWriter, r *http.Request, contactId ContactId, params MergeContactParams)
@@ -45827,6 +45885,66 @@ func (siw *ServerInterfaceWrapper) DeleteContactByExternalId(w http.ResponseWrit
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteContacts operation middleware
+func (siw *ServerInterfaceWrapper) DeleteContacts(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteContactsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteContacts(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // LookupContact operation middleware
 func (siw *ServerInterfaceWrapper) LookupContact(w http.ResponseWriter, r *http.Request) {
 
@@ -46098,6 +46216,56 @@ func (siw *ServerInterfaceWrapper) ExportContactConsent(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ExportContactConsent(w, r, contactId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetContactDeletionPreview operation middleware
+func (siw *ServerInterfaceWrapper) GetContactDeletionPreview(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "contactId" -------------
+	var contactId ContactId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contactId", r.PathValue("contactId"), &contactId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contactId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetContactDeletionPreviewParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetContactDeletionPreview(w, r, contactId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -67678,9 +67846,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts", wrapper.CreateContact)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/lookup", wrapper.LookupContact)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/contacts/by-external-id", wrapper.DeleteContactByExternalId)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts/delete", wrapper.DeleteContacts)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.DeleteContact)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.GetContact)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/v1/contacts/{contactId}", wrapper.UpdateContact)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/deletion-preview", wrapper.GetContactDeletionPreview)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts/{contactId}/merge", wrapper.MergeContact)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/contacts/{contactId}/notes", wrapper.ListContactNotes)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/contacts/{contactId}/notes", wrapper.CreateContactNote)
@@ -86195,6 +86365,87 @@ func (response DeleteContactByExternalId404ApplicationProblemPlusJSONResponse) V
 	return err
 }
 
+type DeleteContactsRequestObject struct {
+	Params DeleteContactsParams
+	Body   *DeleteContactsJSONRequestBody
+}
+
+type DeleteContactsResponseObject interface {
+	VisitDeleteContactsResponse(w http.ResponseWriter) error
+}
+
+type DeleteContacts200JSONResponse ContactDeleteResult
+
+func (response DeleteContacts200JSONResponse) VisitDeleteContactsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContacts400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response DeleteContacts400ApplicationProblemPlusJSONResponse) VisitDeleteContactsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContacts401ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteContacts401ApplicationProblemPlusJSONResponse) VisitDeleteContactsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContacts403ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteContacts403ApplicationProblemPlusJSONResponse) VisitDeleteContactsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteContacts409ApplicationProblemPlusJSONResponse Problem
+
+func (response DeleteContacts409ApplicationProblemPlusJSONResponse) VisitDeleteContactsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type LookupContactRequestObject struct {
 	Params LookupContactParams
 }
@@ -86603,6 +86854,73 @@ func (response ExportContactConsent403ApplicationProblemPlusJSONResponse) VisitE
 type ExportContactConsent404ApplicationProblemPlusJSONResponse Problem
 
 func (response ExportContactConsent404ApplicationProblemPlusJSONResponse) VisitExportContactConsentResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactDeletionPreviewRequestObject struct {
+	ContactId ContactId `json:"contactId"`
+	Params    GetContactDeletionPreviewParams
+}
+
+type GetContactDeletionPreviewResponseObject interface {
+	VisitGetContactDeletionPreviewResponse(w http.ResponseWriter) error
+}
+
+type GetContactDeletionPreview200JSONResponse ContactDeletionPreview
+
+func (response GetContactDeletionPreview200JSONResponse) VisitGetContactDeletionPreviewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactDeletionPreview401ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response GetContactDeletionPreview401ApplicationProblemPlusJSONResponse) VisitGetContactDeletionPreviewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactDeletionPreview403ApplicationProblemPlusJSONResponse Problem
+
+func (response GetContactDeletionPreview403ApplicationProblemPlusJSONResponse) VisitGetContactDeletionPreviewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetContactDeletionPreview404ApplicationProblemPlusJSONResponse Problem
+
+func (response GetContactDeletionPreview404ApplicationProblemPlusJSONResponse) VisitGetContactDeletionPreviewResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -115174,6 +115492,9 @@ type StrictServerInterface interface {
 	// DeleteContactByExternalId Delete a contact by external id
 	// (DELETE /v1/contacts/by-external-id)
 	DeleteContactByExternalId(ctx context.Context, request DeleteContactByExternalIdRequestObject) (DeleteContactByExternalIdResponseObject, error)
+	// DeleteContacts Delete several contacts
+	// (POST /v1/contacts/delete)
+	DeleteContacts(ctx context.Context, request DeleteContactsRequestObject) (DeleteContactsResponseObject, error)
 	// LookupContact Find a contact by external id
 	// (GET /v1/contacts/lookup)
 	LookupContact(ctx context.Context, request LookupContactRequestObject) (LookupContactResponseObject, error)
@@ -115189,6 +115510,9 @@ type StrictServerInterface interface {
 	// ExportContactConsent Export a contact's consent records
 	// (GET /v1/contacts/{contactId}/consent)
 	ExportContactConsent(ctx context.Context, request ExportContactConsentRequestObject) (ExportContactConsentResponseObject, error)
+	// GetContactDeletionPreview What deleting a contact takes with it
+	// (GET /v1/contacts/{contactId}/deletion-preview)
+	GetContactDeletionPreview(ctx context.Context, request GetContactDeletionPreviewRequestObject) (GetContactDeletionPreviewResponseObject, error)
 	// MergeContact Merge another contact into this one
 	// (POST /v1/contacts/{contactId}/merge)
 	MergeContact(ctx context.Context, request MergeContactRequestObject) (MergeContactResponseObject, error)
@@ -121583,6 +121907,39 @@ func (sh *strictHandler) DeleteContactByExternalId(w http.ResponseWriter, r *htt
 	}
 }
 
+// DeleteContacts operation middleware
+func (sh *strictHandler) DeleteContacts(w http.ResponseWriter, r *http.Request, params DeleteContactsParams) {
+	var request DeleteContactsRequestObject
+
+	request.Params = params
+
+	var body DeleteContactsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteContacts(ctx, request.(DeleteContactsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteContacts")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(DeleteContactsResponseObject); ok {
+		if err := validResponse.VisitDeleteContactsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // LookupContact operation middleware
 func (sh *strictHandler) LookupContact(w http.ResponseWriter, r *http.Request, params LookupContactParams) {
 	var request LookupContactRequestObject
@@ -121717,6 +122074,33 @@ func (sh *strictHandler) ExportContactConsent(w http.ResponseWriter, r *http.Req
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(ExportContactConsentResponseObject); ok {
 		if err := validResponse.VisitExportContactConsentResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetContactDeletionPreview operation middleware
+func (sh *strictHandler) GetContactDeletionPreview(w http.ResponseWriter, r *http.Request, contactId ContactId, params GetContactDeletionPreviewParams) {
+	var request GetContactDeletionPreviewRequestObject
+
+	request.ContactId = contactId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.GetContactDeletionPreview(ctx, request.(GetContactDeletionPreviewRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetContactDeletionPreview")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(GetContactDeletionPreviewResponseObject); ok {
+		if err := validResponse.VisitGetContactDeletionPreviewResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

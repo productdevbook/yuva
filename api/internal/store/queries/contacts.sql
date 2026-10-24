@@ -238,3 +238,21 @@ SELECT coalesce(EXISTS (SELECT 1 FROM conversations cv JOIN inbox_viewers iv
 -- name: MoveContactExternalIDs :exec
 UPDATE contact_external_ids SET contact_id = @to_contact
 WHERE workspace_id = @workspace_id AND contact_id = @from_contact;
+
+-- name: ContactDeletionPreview :one
+SELECT (
+    SELECT count(*) FROM conversations c
+    WHERE c.workspace_id = @workspace_id AND c.contact_id = @contact_id
+      AND (@with_trash::bool OR c.trashed_at IS NULL)
+      AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
+      AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
+)::bigint AS conversation_count, EXISTS (
+    SELECT 1 FROM conversations c
+    JOIN inboxes i ON i.workspace_id = c.workspace_id AND i.id = c.inbox_id
+    WHERE c.workspace_id = @workspace_id AND c.contact_id = @contact_id AND i.personal
+      AND NOT EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid)
+) AS has_hidden_conversations;

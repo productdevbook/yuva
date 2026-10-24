@@ -9527,7 +9527,7 @@ type AnalyticsRangeProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -11304,7 +11304,7 @@ type BroadcastProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -11715,7 +11715,7 @@ type ChangelogConflictProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -13663,6 +13663,16 @@ type ContactActivity struct {
 	OpenConversations int64      `json:"open_conversations"`
 }
 
+// ContactBulkFailure defines model for ContactBulkFailure.
+type ContactBulkFailure struct {
+	Code   string    `json:"code"`
+	Detail *string   `json:"detail,omitempty"`
+	Id     uuid.UUID `json:"id"`
+
+	// Status The HTTP status the single delete would have answered.
+	Status int32 `json:"status"`
+}
+
 // ContactCreate defines model for ContactCreate.
 type ContactCreate struct {
 	// Attributes Free-form data about the contact (plan, app version, ...), at most 16 KiB. A key that is a
@@ -13673,6 +13683,20 @@ type ContactCreate struct {
 	Emails      *[]Email      `json:"emails,omitempty"`
 	ExternalIds *[]ExternalId `json:"external_ids,omitempty"`
 	Name        *string       `json:"name,omitempty"`
+}
+
+// ContactDelete defines model for ContactDelete.
+type ContactDelete struct {
+	// ConfirmCount The number of different contacts the person confirmed.
+	ConfirmCount int32       `json:"confirm_count"`
+	Ids          []uuid.UUID `json:"ids"`
+}
+
+// ContactDeleteResult defines model for ContactDeleteResult.
+type ContactDeleteResult struct {
+	// Deleted How many contacts were deleted.
+	Deleted int32                `json:"deleted"`
+	Failed  []ContactBulkFailure `json:"failed"`
 }
 
 // ContactDeletedEvent A contact was deleted with its conversations.
@@ -13686,6 +13710,16 @@ type ContactDeletedEvent struct {
 
 // ContactDeletedEventType defines model for ContactDeletedEvent.Type.
 type ContactDeletedEventType string
+
+// ContactDeletionPreview defines model for ContactDeletionPreview.
+type ContactDeletionPreview struct {
+	// ConversationCount The contact's conversations the caller can see; they are deleted with the contact.
+	ConversationCount int64 `json:"conversation_count"`
+
+	// HasHiddenConversations `true` when the contact also has conversations in personal mailboxes the caller does not
+	// read; they are deleted too.
+	HasHiddenConversations bool `json:"has_hidden_conversations"`
+}
 
 // ContactInbox defines model for ContactInbox.
 type ContactInbox struct {
@@ -15731,7 +15765,7 @@ type EmailDesignProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count *int64 `json:"count,omitempty"`
 
 	// Design `version_conflict` only: the design as it is now.
@@ -16101,7 +16135,7 @@ type EmailImageProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -17268,7 +17302,7 @@ type HelpConflictProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -20501,7 +20535,7 @@ type MigrationFileProblem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -21581,7 +21615,7 @@ type Problem struct {
 	// Examples: not_found
 	Code string `json:"code"`
 
-	// Count `count_changed` only: the number as it is now.
+	// Count `count_changed` only: the number as it is now (for contacts, the different ids sent).
 	Count  *int64  `json:"count,omitempty"`
 	Detail *string `json:"detail,omitempty"`
 
@@ -26817,6 +26851,15 @@ type DeleteContactByExternalIdParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// DeleteContactsParams defines parameters for DeleteContacts.
+type DeleteContactsParams struct {
+	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // LookupContactParams defines parameters for LookupContact.
 type LookupContactParams struct {
 	InboxId    uuid.UUID `form:"inbox_id" json:"inbox_id"`
@@ -26855,6 +26898,12 @@ type ExportContactConsentParams struct {
 
 // ExportContactConsentParamsFormat defines parameters for ExportContactConsent.
 type ExportContactConsentParamsFormat string
+
+// GetContactDeletionPreviewParams defines parameters for GetContactDeletionPreview.
+type GetContactDeletionPreviewParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
 
 // MergeContactParams defines parameters for MergeContact.
 type MergeContactParams struct {
@@ -30578,6 +30627,9 @@ type VerifyEmailChannelJSONRequestBody = EmailVerifyInput
 
 // CreateContactJSONRequestBody defines body for CreateContact for application/json ContentType.
 type CreateContactJSONRequestBody = ContactCreate
+
+// DeleteContactsJSONRequestBody defines body for DeleteContacts for application/json ContentType.
+type DeleteContactsJSONRequestBody = ContactDelete
 
 // UpdateContactJSONRequestBody defines body for UpdateContact for application/json ContentType.
 type UpdateContactJSONRequestBody = ContactUpdate
@@ -39262,6 +39314,42 @@ type ClientInterface interface {
 	// Corresponds with DELETE /v1/contacts/by-external-id (the `DeleteContactByExternalId` operationId).
 	DeleteContactByExternalId(ctx context.Context, params *DeleteContactByExternalIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteContactsWithBody Delete several contacts
+	//
+	// Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+	// all their conversations, messages and attachments in every inbox, personal mailboxes
+	// included (it is the data subject's deletion), in its own transaction. Repeated ids count
+	// once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+	// the answer is `409 count_changed` with that number in `count`. A contact that does not
+	// exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+	// `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+	// or address. Cannot be undone. Not offered through MCP.
+	//
+	// Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/contacts/delete (the `DeleteContacts` operationId).
+	DeleteContactsWithBody(ctx context.Context, params *DeleteContactsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteContacts Delete several contacts
+	//
+	// Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+	// all their conversations, messages and attachments in every inbox, personal mailboxes
+	// included (it is the data subject's deletion), in its own transaction. Repeated ids count
+	// once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+	// the answer is `409 count_changed` with that number in `count`. A contact that does not
+	// exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+	// `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+	// or address. Cannot be undone. Not offered through MCP.
+	//
+	// Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/contacts/delete (the `DeleteContacts` operationId).
+	DeleteContacts(ctx context.Context, params *DeleteContactsParams, body DeleteContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// LookupContact Find a contact by external id
 	//
 	// The contact a host app knows by `external_id` in the given inbox. An inbox the caller
@@ -39322,6 +39410,19 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /v1/contacts/{contactId}/consent (the `ExportContactConsent` operationId).
 	ExportContactConsent(ctx context.Context, contactId ContactId, params *ExportContactConsentParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetContactDeletionPreview What deleting a contact takes with it
+	//
+	// For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
+	// conversations the caller can see (trashed ones included for those who see the trash), and
+	// whether conversations in personal mailboxes the caller does not read go too. Nothing else
+	// about those is shown.
+	//
+	// Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
+	// `conversations:read`.
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/deletion-preview (the `GetContactDeletionPreview` operationId).
+	GetContactDeletionPreview(ctx context.Context, contactId ContactId, params *GetContactDeletionPreviewParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// MergeContactWithBody Merge another contact into this one
 	//
@@ -53359,6 +53460,62 @@ func (c *Client) DeleteContactByExternalId(ctx context.Context, params *DeleteCo
 	return c.Client.Do(req)
 }
 
+// DeleteContactsWithBody Delete several contacts
+//
+// Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+// all their conversations, messages and attachments in every inbox, personal mailboxes
+// included (it is the data subject's deletion), in its own transaction. Repeated ids count
+// once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+// the answer is `409 count_changed` with that number in `count`. A contact that does not
+// exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+// `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+// or address. Cannot be undone. Not offered through MCP.
+//
+// Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/contacts/delete (the `DeleteContacts` operationId).
+func (c *Client) DeleteContactsWithBody(ctx context.Context, params *DeleteContactsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteContactsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteContacts Delete several contacts
+//
+// Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+// all their conversations, messages and attachments in every inbox, personal mailboxes
+// included (it is the data subject's deletion), in its own transaction. Repeated ids count
+// once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+// the answer is `409 count_changed` with that number in `count`. A contact that does not
+// exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+// `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+// or address. Cannot be undone. Not offered through MCP.
+//
+// Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/contacts/delete (the `DeleteContacts` operationId).
+func (c *Client) DeleteContacts(ctx context.Context, params *DeleteContactsParams, body DeleteContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteContactsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // LookupContact Find a contact by external id
 //
 // The contact a host app knows by `external_id` in the given inbox. An inbox the caller
@@ -53470,6 +53627,29 @@ func (c *Client) UpdateContact(ctx context.Context, contactId ContactId, params 
 // Corresponds with GET /v1/contacts/{contactId}/consent (the `ExportContactConsent` operationId).
 func (c *Client) ExportContactConsent(ctx context.Context, contactId ContactId, params *ExportContactConsentParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewExportContactConsentRequest(c.Server, contactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetContactDeletionPreview What deleting a contact takes with it
+//
+// For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
+// conversations the caller can see (trashed ones included for those who see the trash), and
+// whether conversations in personal mailboxes the caller does not read go too. Nothing else
+// about those is shown.
+//
+// Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
+// `conversations:read`.
+//
+// Corresponds with GET /v1/contacts/{contactId}/deletion-preview (the `GetContactDeletionPreview` operationId).
+func (c *Client) GetContactDeletionPreview(ctx context.Context, contactId ContactId, params *GetContactDeletionPreviewParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetContactDeletionPreviewRequest(c.Server, contactId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -76877,6 +77057,72 @@ func NewDeleteContactByExternalIdRequest(server string, params *DeleteContactByE
 	return req, nil
 }
 
+// NewDeleteContactsRequest calls the generic DeleteContacts builder with application/json body
+func NewDeleteContactsRequest(server string, params *DeleteContactsParams, body DeleteContactsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeleteContactsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewDeleteContactsRequestWithBody constructs an http.Request for the DeleteContacts method, with any body, and a specified content type
+func NewDeleteContactsRequestWithBody(server string, params *DeleteContactsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/delete")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.IdempotencyKey != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Idempotency-Key", *params.IdempotencyKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Idempotency-Key", headerParam0)
+		}
+
+		if params.YuvaWorkspace != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam1)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewLookupContactRequest constructs an http.Request for the LookupContact method
 func NewLookupContactRequest(server string, params *LookupContactParams) (*http.Request, error) {
 	var err error
@@ -77161,6 +77407,55 @@ func NewExportContactConsentRequest(server string, contactId ContactId, params *
 			rawQueryFragments = append(rawQueryFragments, encoded)
 		}
 		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGetContactDeletionPreviewRequest constructs an http.Request for the GetContactDeletionPreview method
+func NewGetContactDeletionPreviewRequest(server string, contactId ContactId, params *GetContactDeletionPreviewParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/contacts/%s/deletion-preview", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -104189,6 +104484,42 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with DELETE /v1/contacts/by-external-id (the `DeleteContactByExternalId` operationId).
 	DeleteContactByExternalIdWithResponse(ctx context.Context, params *DeleteContactByExternalIdParams, reqEditors ...RequestEditorFn) (*DeleteContactByExternalIdResponse, error)
 
+	// DeleteContactsWithBodyWithResponse Delete several contacts
+	//
+	// Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+	// all their conversations, messages and attachments in every inbox, personal mailboxes
+	// included (it is the data subject's deletion), in its own transaction. Repeated ids count
+	// once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+	// the answer is `409 count_changed` with that number in `count`. A contact that does not
+	// exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+	// `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+	// or address. Cannot be undone. Not offered through MCP.
+	//
+	// Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/contacts/delete (the `DeleteContacts` operationId).
+	DeleteContactsWithBodyWithResponse(ctx context.Context, params *DeleteContactsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteContactsResponse, error)
+
+	// DeleteContactsWithResponse Delete several contacts
+	//
+	// Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+	// all their conversations, messages and attachments in every inbox, personal mailboxes
+	// included (it is the data subject's deletion), in its own transaction. Repeated ids count
+	// once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+	// the answer is `409 count_changed` with that number in `count`. A contact that does not
+	// exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+	// `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+	// or address. Cannot be undone. Not offered through MCP.
+	//
+	// Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/contacts/delete (the `DeleteContacts` operationId).
+	DeleteContactsWithResponse(ctx context.Context, params *DeleteContactsParams, body DeleteContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteContactsResponse, error)
+
 	// LookupContactWithResponse Find a contact by external id
 	//
 	// The contact a host app knows by `external_id` in the given inbox. An inbox the caller
@@ -104257,6 +104588,21 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /v1/contacts/{contactId}/consent (the `ExportContactConsent` operationId).
 	ExportContactConsentWithResponse(ctx context.Context, contactId ContactId, params *ExportContactConsentParams, reqEditors ...RequestEditorFn) (*ExportContactConsentResponse, error)
+
+	// GetContactDeletionPreviewWithResponse What deleting a contact takes with it
+	//
+	// For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
+	// conversations the caller can see (trashed ones included for those who see the trash), and
+	// whether conversations in personal mailboxes the caller does not read go too. Nothing else
+	// about those is shown.
+	//
+	// Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
+	// `conversations:read`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/contacts/{contactId}/deletion-preview (the `GetContactDeletionPreview` operationId).
+	GetContactDeletionPreviewWithResponse(ctx context.Context, contactId ContactId, params *GetContactDeletionPreviewParams, reqEditors ...RequestEditorFn) (*GetContactDeletionPreviewResponse, error)
 
 	// MergeContactWithBodyWithResponse Merge another contact into this one
 	//
@@ -124609,6 +124955,75 @@ func (r DeleteContactByExternalIdResponse) ContentType() string {
 	return ""
 }
 
+type DeleteContactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ContactDeleteResult
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteContactsResponse) GetJSON200() *ContactDeleteResult {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r DeleteContactsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r DeleteContactsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r DeleteContactsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r DeleteContactsResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteContactsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteContactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteContactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteContactsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type LookupContactResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -124941,6 +125356,68 @@ func (r ExportContactConsentResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r ExportContactConsentResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetContactDeletionPreviewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ContactDeletionPreview
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetContactDeletionPreviewResponse) GetJSON200() *ContactDeletionPreview {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r GetContactDeletionPreviewResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r GetContactDeletionPreviewResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r GetContactDeletionPreviewResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r GetContactDeletionPreviewResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetContactDeletionPreviewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetContactDeletionPreviewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetContactDeletionPreviewResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -154520,6 +154997,54 @@ func (c *ClientWithResponses) DeleteContactByExternalIdWithResponse(ctx context.
 	return ParseDeleteContactByExternalIdResponse(rsp)
 }
 
+// DeleteContactsWithBodyWithResponse Delete several contacts
+//
+// Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+// all their conversations, messages and attachments in every inbox, personal mailboxes
+// included (it is the data subject's deletion), in its own transaction. Repeated ids count
+// once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+// the answer is `409 count_changed` with that number in `count`. A contact that does not
+// exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+// `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+// or address. Cannot be undone. Not offered through MCP.
+//
+// Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/contacts/delete (the `DeleteContacts` operationId).
+func (c *ClientWithResponses) DeleteContactsWithBodyWithResponse(ctx context.Context, params *DeleteContactsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteContactsResponse, error) {
+	rsp, err := c.DeleteContactsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteContactsResponse(rsp)
+}
+
+// DeleteContactsWithResponse Delete several contacts
+//
+// Deletes up to 100 contacts, each exactly as `DELETE /v1/contacts/{contactId}` does: with
+// all their conversations, messages and attachments in every inbox, personal mailboxes
+// included (it is the data subject's deletion), in its own transaction. Repeated ids count
+// once; `confirm_count` must equal the number of different ids, else nothing is deleted and
+// the answer is `409 count_changed` with that number in `count`. A contact that does not
+// exist (or is of another workspace) is listed in `failed` with `404 not_found`. Emits
+// `contact.deleted` for each; the audit log records `contact.deleted` for each, with no name
+// or address. Cannot be undone. Not offered through MCP.
+//
+// Owners, admins and API keys not limited to inboxes. Scope: `contacts:write`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/contacts/delete (the `DeleteContacts` operationId).
+func (c *ClientWithResponses) DeleteContactsWithResponse(ctx context.Context, params *DeleteContactsParams, body DeleteContactsJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteContactsResponse, error) {
+	rsp, err := c.DeleteContacts(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteContactsResponse(rsp)
+}
+
 // LookupContactWithResponse Find a contact by external id
 //
 // The contact a host app knows by `external_id` in the given inbox. An inbox the caller
@@ -154623,6 +155148,27 @@ func (c *ClientWithResponses) ExportContactConsentWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseExportContactConsentResponse(rsp)
+}
+
+// GetContactDeletionPreviewWithResponse What deleting a contact takes with it
+//
+// For the confirmation before `DELETE /v1/contacts/{contactId}`: how many of the contact's
+// conversations the caller can see (trashed ones included for those who see the trash), and
+// whether conversations in personal mailboxes the caller does not read go too. Nothing else
+// about those is shown.
+//
+// Owners, admins and API keys not limited to inboxes. Scope: `contacts:read` and
+// `conversations:read`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/contacts/{contactId}/deletion-preview (the `GetContactDeletionPreview` operationId).
+func (c *ClientWithResponses) GetContactDeletionPreviewWithResponse(ctx context.Context, contactId ContactId, params *GetContactDeletionPreviewParams, reqEditors ...RequestEditorFn) (*GetContactDeletionPreviewResponse, error) {
+	rsp, err := c.GetContactDeletionPreview(ctx, contactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetContactDeletionPreviewResponse(rsp)
 }
 
 // MergeContactWithBodyWithResponse Merge another contact into this one
@@ -175299,6 +175845,60 @@ func ParseDeleteContactByExternalIdResponse(rsp *http.Response) (*DeleteContactB
 	return response, nil
 }
 
+// ParseDeleteContactsResponse parses an HTTP response from a DeleteContactsWithResponse call
+func ParseDeleteContactsResponse(rsp *http.Response) (*DeleteContactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteContactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ContactDeleteResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseLookupContactResponse parses an HTTP response from a LookupContactWithResponse call
 func ParseLookupContactResponse(rsp *http.Response) (*LookupContactResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -175569,6 +176169,53 @@ func ParseExportContactConsentResponse(rsp *http.Response) (*ExportContactConsen
 			headers.ContentDisposition = &value
 		}
 		response.Headers200 = &headers
+	}
+
+	return response, nil
+}
+
+// ParseGetContactDeletionPreviewResponse parses an HTTP response from a GetContactDeletionPreviewWithResponse call
+func ParseGetContactDeletionPreviewResponse(rsp *http.Response) (*GetContactDeletionPreviewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetContactDeletionPreviewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ContactDeletionPreview
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
 	}
 
 	return response, nil
