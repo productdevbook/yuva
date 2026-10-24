@@ -1,0 +1,196 @@
+package api_test
+
+import (
+	"fmt"
+	"net/http"
+	"slices"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/modelcontextprotocol/go-sdk/mcp"
+)
+
+func TestPersonalMailboxReadOnlyByItsOwner(t *testing.T) {
+	t.Parallel()
+	h := privateHarness(t)
+	tm := newTeam(t, h)
+	mailOwner, mailOwnerID := tm.newAgent()
+	adminEmail := unique("admin") + "@example.com"
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/invites", map[string]any{"email": adminEmail, "role": "admin"})
+	admin := h.client()
+	admin.signIn(adminEmail)
+	key := tm.apiKey(h)
+
+	tm.agent.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/inboxes", map[string]any{"name": "Theirs", "slug": unique("theirs"), "owner_member_id": mailOwnerID})
+	key.expectProblem(http.StatusForbidden, "forbidden", "POST", "/v1/inboxes", map[string]any{"name": "Keyed", "slug": unique("keyed"), "owner_member_id": mailOwnerID})
+	mailOwner.expectProblem(http.StatusConflict, "purpose_mismatch", "POST", "/v1/inboxes", map[string]any{"name": "Mine", "slug": unique("mine"), "purpose": "support", "owner_member_id": mailOwnerID})
+	created := mailOwner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Private mail", "slug": unique("private"), "owner_member_id": mailOwnerID})
+	mailbox := created.body["inbox"].(map[string]any)
+	inbox := mailbox["id"].(string)
+	if mailbox["owner_member_id"] != mailOwnerID || mailbox["purpose"] != "mail" {
+		t.Fatalf("created: %s", created.raw)
+	}
+	if shared := tm.owner.expect(http.StatusOK, "GET", "/v1/inboxes/"+tm.inbox, nil); shared.body["owner_member_id"] != nil || shared.body["mailbox"] != nil {
+		t.Fatalf("shared inbox: %s", shared.raw)
+	}
+
+	address := unique("me") + "@example.com"
+	mailOwner.expect(http.StatusCreated, "POST", "/v1/inboxes/"+inbox+"/channels", map[string]any{
+		"kind": "email", "name": "My mail", "email": map[string]any{
+			"address": address, "smtp": map[string]any{"host": "smtp.example.com", "port": 2525, "username": "mailer", "password": "smtp-secret", "tls": "starttls"},
+		},
+	})
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/inboxes/"+inbox+"/channels", nil)
+
+	rcv := newReceiver(t)
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/webhooks", map[string]any{"url": rcv.srv.URL, "events": []string{"conversation.created", "message.created", "contact.updated"}})
+	tm.owner.expectProblem(http.StatusNotFound, "not_found", "POST", "/v1/webhooks", map[string]any{"url": rcv.srv.URL, "events": []string{"message.created"}, "inbox_id": inbox})
+
+	r := h.ingest(address, []byte(fmt.Sprintf(attachmentMail, address, newMessageID())), nil)
+	if r.status != http.StatusAccepted || r.str("status") != "stored" {
+		t.Fatalf("ingest: %d %v", r.status, r.body)
+	}
+	conv, msg := r.str("conversation_id"), r.str("message_id")
+	got := mailOwner.expect(http.StatusOK, "GET", "/v1/conversations/"+conv, nil)
+	contact := got.str("contact_id")
+	var attachment string
+	for _, m := range messages(mailOwner, conv) {
+		if as, _ := m["attachments"].([]any); len(as) > 0 {
+			attachment = as[0].(map[string]any)["id"].(string)
+		}
+	}
+	if attachment == "" {
+		t.Fatal("no attachment on the ingested mail")
+	}
+	post(mailOwner, conv, map[string]any{"kind": "note", "body": "my own note"})
+	h.runWebhooks(tm.ws)
+	if n := h.count("SELECT count(*) FROM webhook_deliveries WHERE workspace_id = $1 AND (conversation_id = $2 OR contact_id = $3)", tm.ws, conv, contact); n != 0 {
+		t.Fatalf("%d webhook deliveries for the personal mailbox", n)
+	}
+	rcv.take()
+	post(tm.owner, tm.conversation(tm.owner), map[string]any{"kind": "note", "body": "shared note"})
+	h.runWebhooks(tm.ws)
+	if len(rcv.take()) == 0 {
+		t.Fatal("the shared inbox sent no webhook either")
+	}
+
+	replyDraft := mailOwner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "draft reply", "draft": true}).str("id")
+	composed := mailOwner.expect(http.StatusCreated, "POST", "/v1/conversations/mail", map[string]any{
+		"inbox_id": inbox, "to": []string{"success@simulator.amazonses.com"}, "subject": unique("Private draft"), "body": "Draft body", "draft": true,
+	}).body["conversation"].(map[string]any)["id"].(string)
+
+	ownerGrant := h.client()
+	ownerGrant.bearer = h.oauthToken(mailOwner, tm.ws, "Own App", testOrigin, []string{"conversations:read", "conversations:write", "contacts:read", "inboxes:read", "reports:read"})
+	otherGrant := h.client()
+	otherGrant.bearer = h.oauthToken(tm.owner, tm.ws, "Owner App", testOrigin, []string{"conversations:read", "conversations:write", "contacts:read", "inboxes:read", "reports:read"})
+	scopes := []string{"conversations:read", "contacts:read", "inboxes:read"}
+	ownerMCP := h.mcpSession(h.oauthToken(mailOwner, tm.ws, "Own Assistant", testOrigin+"/mcp", scopes))
+	otherMCP := h.mcpSession(h.oauthToken(tm.owner, tm.ws, "Owner Assistant", testOrigin+"/mcp", scopes))
+
+	today := h.clock.Now().UTC().Format(time.DateOnly)
+	ok := func(c *client, method, path string, body any) bool { return c.do(method, path, body).status/100 == 2 }
+	has := func(c *client, path, needle string) bool {
+		res := c.do("GET", path, nil)
+		return res.status == http.StatusOK && strings.Contains(string(res.raw), needle)
+	}
+	surfaces := []struct {
+		name string
+		sees func(c *client) bool
+	}{
+		{"get conversation", func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+conv, nil) }},
+		{"list conversations", func(c *client) bool { return has(c, "/v1/conversations?limit=100", conv) }},
+		{"counts", func(c *client) bool { return has(c, "/v1/conversations/counts", inbox) }},
+		{"messages", func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+conv+"/messages", nil) }},
+		{"attachment", func(c *client) bool { return ok(c, "GET", "/v1/attachments/"+attachment, nil) }},
+		{"raw e-mail", func(c *client) bool { return ok(c, "GET", "/v1/messages/"+msg+"/raw", nil) }},
+		{"search", func(c *client) bool { return has(c, "/v1/conversations?q=export", conv) }},
+		{"contact", func(c *client) bool { return ok(c, "GET", "/v1/contacts/"+contact, nil) }},
+		{"contact list", func(c *client) bool { return has(c, "/v1/contacts?limit=100", contact) }},
+		{"contact's conversations", func(c *client) bool { return has(c, "/v1/conversations?contact_id="+contact, conv) }},
+		{"events", func(c *client) bool { return has(c, "/v1/events?after=0&limit=500", conv) }},
+		{"drafts", func(c *client) bool { return has(c, "/v1/drafts", replyDraft) }},
+		{"composed draft", func(c *client) bool { return ok(c, "GET", "/v1/conversations/"+composed, nil) }},
+		{"composed draft listed", func(c *client) bool { return has(c, "/v1/conversations?limit=100", composed) }},
+		{"report", func(c *client) bool { return ok(c, "GET", "/v1/reports?from="+today+"&to="+today+"&inbox_id="+inbox, nil) }},
+		{"bulk", func(c *client) bool {
+			res := c.do("POST", "/v1/conversations/bulk", map[string]any{"conversation_ids": []string{conv}, "status": "open"})
+			return res.status == http.StatusOK && strings.Contains(fmt.Sprint(res.body["updated"]), conv)
+		}},
+	}
+	viewers := []struct {
+		name   string
+		c      *client
+		reader bool
+	}{
+		{"mailbox owner", mailOwner, true},
+		{"mailbox owner's grant", ownerGrant, true},
+		{"workspace owner", tm.owner, false},
+		{"admin", admin, false},
+		{"another agent", tm.agent, false},
+		{"api key", key, false},
+		{"another member's grant", otherGrant, false},
+	}
+	for _, v := range viewers {
+		for _, s := range surfaces {
+			if got := s.sees(v.c); got != v.reader {
+				t.Errorf("%s, %s: sees %v, want %v", v.name, s.name, got, v.reader)
+			}
+		}
+		if !v.reader {
+			if ok(v.c, "POST", "/v1/conversations/"+conv+"/move", map[string]any{"inbox_id": tm.inbox}) {
+				t.Errorf("%s moved the conversation out of the personal mailbox", v.name)
+			}
+			if has(v.c, "/v1/home", conv) {
+				t.Errorf("%s: Home shows the conversation", v.name)
+			}
+		}
+	}
+	for _, m := range []struct {
+		name   string
+		cs     *mcp.ClientSession
+		reader bool
+	}{{"mailbox owner", ownerMCP, true}, {"another member", otherMCP, false}} {
+		if _, errText := callTool(t, m.cs, "get_conversation", map[string]any{"conversation_id": conv}); (errText == "") != m.reader {
+			t.Errorf("MCP %s get_conversation: %q", m.name, errText)
+		}
+		out, _ := callTool(t, m.cs, "search_conversations", map[string]any{"query": "export"})
+		if strings.Contains(fmt.Sprint(out), conv) != m.reader {
+			t.Errorf("MCP %s search_conversations: %v", m.name, out)
+		}
+	}
+
+	ownerID := tm.ownerMemberID(t)
+	mailOwner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "note", "body": "look", "mentions": []string{ownerID}})
+
+	meta := tm.owner.expect(http.StatusOK, "GET", "/v1/inboxes/"+inbox, nil)
+	box, _ := meta.body["mailbox"].(map[string]any)
+	if meta.body["owner_member_id"] != mailOwnerID || box == nil || box["conversations"] != float64(1) || !slices.Contains(box["addresses"].([]any), any(address)) || meta.str("signature") != "" {
+		t.Fatalf("metadata: %s", meta.raw)
+	}
+	listed := tm.owner.expect(http.StatusOK, "GET", "/v1/inboxes", nil)
+	if !strings.Contains(string(listed.raw), inbox) || strings.Contains(string(tm.agent.expect(http.StatusOK, "GET", "/v1/inboxes", nil).raw), inbox) {
+		t.Fatalf("inbox list: owner %s", listed.raw)
+	}
+	tm.agent.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/inboxes/"+inbox, nil)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+inbox, map[string]any{"name": "Renamed mail"})
+	tm.owner.expectProblem(http.StatusConflict, "personal_mailbox", "PATCH", "/v1/inboxes/"+inbox, map[string]any{"timezone": "Europe/Istanbul"})
+	key.expectProblem(http.StatusNotFound, "not_found", "PATCH", "/v1/inboxes/"+inbox, map[string]any{"name": "Key"})
+	mailOwner.expectProblem(http.StatusConflict, "personal_mailbox", "PATCH", "/v1/inboxes/"+inbox, map[string]any{"purpose": "support"})
+	mailOwner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+inbox, map[string]any{"timezone": "Europe/Istanbul"})
+	tm.owner.expectProblem(http.StatusConflict, "personal_mailbox", "PUT", "/v1/inboxes/"+inbox+"/members/"+tm.agentID, nil)
+	team := tm.newTeamOf("Mailers", []string{tm.agentID}, nil)
+	tm.owner.expectProblem(http.StatusConflict, "personal_mailbox", "PUT", "/v1/teams/"+team+"/inboxes/"+inbox, nil)
+	tm.owner.expectProblem(http.StatusConflict, "personal_mailbox", "POST", "/v1/api-keys", map[string]any{"name": "narrow", "scopes": []string{"conversations:read"}, "inbox_ids": []string{inbox}})
+	removed := tm.owner.expect(http.StatusConflict, "DELETE", "/v1/members/"+mailOwnerID, nil)
+	if removed.str("code") != "personal_mailbox" || !strings.Contains(fmt.Sprint(removed.body["inbox_ids"]), inbox) {
+		t.Fatalf("remove member: %s", removed.raw)
+	}
+	key.expectProblem(http.StatusNotFound, "not_found", "DELETE", "/v1/inboxes/"+inbox, nil)
+	tm.agent.expectProblem(http.StatusNotFound, "not_found", "DELETE", "/v1/inboxes/"+inbox, nil)
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/inboxes/"+inbox, nil)
+	if n := h.count("SELECT count(*) FROM audit_log WHERE workspace_id = $1 AND target_id = $2 AND action IN ('inbox.created', 'inbox.deleted')", tm.ws, inbox); n != 2 {
+		t.Fatalf("%d audit entries for the mailbox, want 2", n)
+	}
+	tm.owner.expect(http.StatusNoContent, "DELETE", "/v1/members/"+mailOwnerID, nil)
+}

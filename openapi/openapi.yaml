@@ -949,7 +949,8 @@ paths:
         follows go, and in each workspace the contact linked to them is deleted when it has no
         conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
         person is the only owner of a workspace: make someone else an owner or delete that
-        workspace first. Needs a member session; the body repeats the person's e-mail address. A
+        workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+        personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
         session made through single sign-on is refused with `403 sso_session_scope`.
       tags: [me]
       security:
@@ -2449,7 +2450,8 @@ paths:
       summary: Remove a member
       description: |
         Owners and admins only, with a member session; only an owner removes an owner. The last
-        owner cannot be removed.
+        owner cannot be removed. A member who owns personal mailboxes answers `409
+        personal_mailbox` with their ids in `inbox_ids` until each is deleted.
       tags: [workspace]
       security:
         - session: []
@@ -2626,7 +2628,8 @@ paths:
         Owners and admins only, with a member session. The secret is returned once and stored
         only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
         `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-        `audit:read` (`403 forbidden`).
+        `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+        personal_mailbox`: keys never reach one.
       tags: [api-keys]
       security:
         - session: []
@@ -2651,6 +2654,8 @@ paths:
         "401":
           $ref: "#/components/responses/Problem"
         "403":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/api-keys/{apiKeyId}:
     patch:
@@ -2711,6 +2716,11 @@ paths:
         Owners, admins and API keys see every inbox; agents see the inboxes they were given access
         to, and API keys limited to inboxes those inboxes.
 
+        A personal mailbox (`owner_member_id` set) is listed to its owner as any inbox they read,
+        and to owners, admins and API keys not limited to inboxes as metadata only: its id, name,
+        purpose, owner and `mailbox` (addresses, conversation count, storage), with an empty
+        `signature` and no `import` or `ses_tenant`. Nobody but its owner reads its content.
+
         Scope: `inboxes:read`.
       tags: [inboxes]
       parameters:
@@ -2733,6 +2743,13 @@ paths:
         Owners, admins and API keys. A new identity secret is generated; it is
         returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
         given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
+
+        With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+        `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+        a member session or their own OAuth token; owners and admins create one for any member.
+        API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+        owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+        the channel, DKIM, deliverability and forwarding-address endpoints).
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -2765,7 +2782,9 @@ paths:
       operationId: getInbox
       summary: Get an inbox
       description: |
-        An inbox the caller cannot see answers `404`.
+        An inbox the caller cannot see answers `404`. A personal mailbox answers its owner in
+        full and owners, admins and API keys not limited to inboxes with its metadata only (see
+        `GET /v1/inboxes`).
 
         Scope: `inboxes:read`.
       tags: [inboxes]
@@ -2791,6 +2810,10 @@ paths:
       description: |
         Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
         inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
+
+        A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+        for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+        and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -2827,6 +2850,10 @@ paths:
         Owners, admins and API keys. Deletes its channels, conversations,
         messages and attachments, and its Amazon SES tenant, when the server manages one.
 
+        A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
+        who delete it without reading it; API keys and other members get `404`. Audited as
+        `inbox.deleted`.
+
         Scope: `inboxes:manage`.
       tags: [inboxes]
       parameters:
@@ -2848,6 +2875,7 @@ paths:
       description: |
         Owners, admins and API keys. Replaces the inbox's identity secret, which
         host backends use to sign identity tokens; tokens signed with the old secret stop working.
+        A personal mailbox: its owner only (`404` for everyone else).
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -2875,6 +2903,7 @@ paths:
       description: |
         Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
         Owners and admins see every inbox without a grant and are not listed unless granted.
+        A personal mailbox lists its owner (`via: direct`); it answers `404` to anyone else.
 
         Scope: `inboxes:read`.
       tags: [inboxes]
@@ -2900,7 +2929,8 @@ paths:
       summary: Give a member access
       description: |
         Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
-        the member's access flips (not when a team already gave it).
+        the member's access flips (not when a team already gave it). A personal mailbox answers
+        `409 personal_mailbox`: only its owner reads it.
 
         Scope: `inboxes:manage`.
       tags: [inboxes]
@@ -2916,6 +2946,8 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
     delete:
       operationId: revokeInboxAccess
@@ -3131,7 +3163,8 @@ paths:
       description: |
         Owners, admins and API keys not limited to inboxes. Every member of the team gains the
         inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
-        sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+        sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`). A
+        personal mailbox answers `409 personal_mailbox`.
 
         Scope: `inboxes:manage`.
       tags: [teams]
@@ -3147,6 +3180,8 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
     delete:
       operationId: revokeTeamInboxAccess
@@ -11478,7 +11513,10 @@ paths:
       description: |
         Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
         whole workspace; with it, only those of that inbox (contact events for contacts with an
-        external id or a conversation there). The signing secret is returned once.
+        external id or a conversation there). The signing secret is returned once. A personal
+        mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+        events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+        cannot read it).
 
         Scope: `webhooks:manage`.
 
@@ -11512,6 +11550,9 @@ paths:
           $ref: "#/components/responses/Problem"
         "404":
           $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+
   /v1/webhooks/{webhookId}:
     get:
       operationId: getWebhook
@@ -18828,7 +18869,8 @@ paths:
         Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
         (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
         nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-        `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+        `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+        mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
       tags: [slack]
       parameters:
         - $ref: "#/components/parameters/WorkspaceHeader"
@@ -21525,7 +21567,7 @@ components:
           `address`, by `operator`, when the server's operator vouched for the address with
           `yuva channel prove`.
         - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
-          `from`, `to`.
+          `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
         - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
           `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
           `inbox_name`.
@@ -21617,6 +21659,7 @@ components:
         - channel.dkim_key_created
         - channel.dkim_key_deleted
         - inbox.identity_secret_rotated
+        - inbox.created
         - inbox.deleted
         - inbox.purpose_changed
         - conversation.trashed
@@ -21666,7 +21709,7 @@ components:
         - member_address.added
         - member_address.verified
         - member_address.removed
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved]
     AuditTargetType:
       type: string
       enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, message, team, sso, sso_domain, issue_integration, automation_rule]
@@ -22919,7 +22962,7 @@ components:
           maxLength: 500
     Inbox:
       type: object
-      required: [id, name, slug, purpose, branding, default_locale, timezone, mode, business_hours, feedback_categories, assignment_mode, ask_for_rating, sender, signature, created_at, updated_at]
+      required: [id, name, slug, purpose, owner_member_id, branding, default_locale, timezone, mode, business_hours, feedback_categories, assignment_mode, ask_for_rating, sender, signature, created_at, updated_at]
       properties:
         id:
           type: string
@@ -22930,6 +22973,16 @@ components:
           $ref: "#/components/schemas/Slug"
         purpose:
           $ref: "#/components/schemas/InboxPurpose"
+        owner_member_id:
+          type: [string, "null"]
+          format: uuid
+          description: |
+            The member whose personal mailbox this is; `null` for a shared inbox. Only that member
+            reads its conversations, messages, attachments, drafts and events: owners, admins,
+            API keys, webhooks, automation rules and other members' OAuth tokens get `404` or
+            nothing, as for an inbox they cannot see. Set on creation only.
+        mailbox:
+          $ref: "#/components/schemas/InboxMailbox"
         branding:
           $ref: "#/components/schemas/InboxBranding"
         default_locale:
@@ -22975,6 +23028,26 @@ components:
         updated_at:
           type: string
           format: date-time
+    InboxMailbox:
+      type: object
+      description: |
+        A personal mailbox's size and addresses, the part of it owners and admins see. Present on
+        personal mailboxes only.
+      required: [addresses, conversations, storage_bytes]
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+          description: The addresses of its e-mail channels.
+        conversations:
+          type: integer
+          format: int64
+          description: Its conversations, trashed ones included.
+        storage_bytes:
+          type: integer
+          format: int64
+          description: The size of its attachments and stored raw e-mails.
     InboxImport:
       type: object
       description: |
@@ -23016,7 +23089,12 @@ components:
           $ref: "#/components/schemas/Slug"
         purpose:
           $ref: "#/components/schemas/InboxPurpose"
-          description: Defaults to `support`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
+          description: Defaults to `support`, or `mail` with `owner_member_id`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
+        owner_member_id:
+          type: string
+          format: uuid
+          description: Makes the inbox this member's personal mailbox (see `POST /v1/inboxes`).
+
         branding:
           $ref: "#/components/schemas/InboxBranding"
         default_locale:
@@ -42910,6 +42988,12 @@ components:
           description: |
             `sso_session_scope` only: the workspace whose single sign-on made the session, the only
             one it acts in. Sign in with a code or a passkey to work in another workspace.
+        inbox_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: "`personal_mailbox` on removing a member: the member's personal mailboxes."
         detail:
           type: string
     SlackConnection:

@@ -615,7 +615,7 @@ WHERE e.workspace_id = $1
   AND ($2::uuid IS NULL OR s.list_id = $2::uuid)
   AND ($3::uuid IS NULL OR s.contact_id = $3::uuid)
   AND ($4::timestamptz IS NULL OR e.created_at >= $4::timestamptz)
-  AND ($5::bool OR EXISTS (
+  AND (($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = $6))
   AND ($7::timestamptz IS NULL
@@ -917,7 +917,7 @@ WHERE l.workspace_id = $1
   AND ($2::uuid IS NULL OR l.inbox_id = $2::uuid)
   AND $3::bool = (l.archived_at IS NOT NULL)
   AND l.kind = $4
-  AND ($5::bool OR EXISTS (
+  AND (($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = $6))
   AND ($7::timestamptz IS NULL
@@ -1542,7 +1542,7 @@ const setInboxSender = `-- name: SetInboxSender :one
 UPDATE inboxes SET sender_legal_name = $1, sender_postal_address = $2,
     sender_registration = $3, sender_contact = $4, updated_at = $5
 WHERE workspace_id = $6 AND id = $7
-RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids
+RETURNING id, workspace_id, name, slug, branding, default_locale, timezone, mode, expected_reply_minutes, business_hours, identity_secret, created_at, updated_at, ask_for_rating, rating_since, sender_legal_name, sender_postal_address, sender_registration, sender_contact, feedback_categories, assignment_mode, assignment_cap, purpose, signature, signature_image_ids, owner_member_id
 `
 
 type SetInboxSenderParams struct {
@@ -1592,6 +1592,7 @@ func (q *Queries) SetInboxSender(ctx context.Context, arg SetInboxSenderParams) 
 		&i.Purpose,
 		&i.Signature,
 		&i.SignatureImageIds,
+		&i.OwnerMemberID,
 	)
 	return i, err
 }

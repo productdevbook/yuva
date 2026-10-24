@@ -173,8 +173,12 @@ func (s *Server) CreateWebhook(ctx context.Context, req oas.CreateWebhookRequest
 		}
 	}
 	if b.InboxId != nil {
-		if _, err := visibleInbox(ctx, s.st.Queries, p, *b.InboxId); err != nil {
+		in, err := visibleInbox(ctx, s.st.Queries, p, *b.InboxId)
+		if err != nil {
 			return nil, err
+		}
+		if in.OwnerMemberID != nil {
+			return nil, errPersonalMailbox("a personal mailbox sends no webhooks")
 		}
 	}
 	id := newID()
@@ -839,6 +843,39 @@ func (s *Server) webhookPayloads(ctx context.Context, q *store.Queries, ev store
 	return nil, nil, nil
 }
 
+// withoutPersonal leaves personal mailboxes out of the inboxes an event concerns, and answers nil
+// when the event belongs to one or concerned only personal mailboxes: those send no webhooks.
+func withoutPersonal(ctx context.Context, q *store.Queries, ev store.Event, inboxes []uuid.UUID) ([]uuid.UUID, error) {
+	ids := slices.Clone(inboxes)
+	if ev.InboxID != nil {
+		ids = append(ids, *ev.InboxID)
+	}
+	if len(ids) == 0 {
+		return []uuid.UUID{}, nil
+	}
+	rows, err := q.ListPersonalInboxes(ctx, store.ListPersonalInboxesParams{WorkspaceID: ev.WorkspaceID, Ids: ids})
+	if err != nil || len(rows) == 0 {
+		return append([]uuid.UUID{}, inboxes...), err
+	}
+	personal := make(map[uuid.UUID]bool, len(rows))
+	for _, r := range rows {
+		personal[r.ID] = true
+	}
+	if ev.InboxID != nil && personal[*ev.InboxID] {
+		return nil, nil
+	}
+	kept := []uuid.UUID{}
+	for _, id := range inboxes {
+		if !personal[id] {
+			kept = append(kept, id)
+		}
+	}
+	if len(inboxes) > 0 && len(kept) == 0 {
+		return nil, nil
+	}
+	return kept, nil
+}
+
 // FanOutWebhooks creates one delivery per enabled endpoint that subscribed to the event's
 // webhooks and covers its inbox, and queues the first attempt of each.
 func (s *Server) FanOutWebhooks(ctx context.Context, a WebhookFanoutArgs) error {
@@ -857,6 +894,9 @@ func (s *Server) FanOutWebhooks(ctx context.Context, a WebhookFanoutArgs) error 
 		}
 		hooks, inboxes, err := s.webhookPayloads(ctx, q, ev, a.Deleted)
 		if err != nil || len(hooks) == 0 {
+			return err
+		}
+		if inboxes, err = withoutPersonal(ctx, q, ev, inboxes); err != nil || inboxes == nil {
 			return err
 		}
 		var jobs []river.InsertManyParams

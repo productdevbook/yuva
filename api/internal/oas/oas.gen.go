@@ -1136,6 +1136,7 @@ const (
 	AuditConversationDeleted                 AuditAction = "conversation.deleted"
 	AuditConversationRestored                AuditAction = "conversation.restored"
 	AuditConversationTrashed                 AuditAction = "conversation.trashed"
+	AuditInboxCreated                        AuditAction = "inbox.created"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
 	AuditInboxPurposeChanged                 AuditAction = "inbox.purpose_changed"
@@ -1232,6 +1233,8 @@ func (e AuditAction) Valid() bool {
 	case AuditConversationRestored:
 		return true
 	case AuditConversationTrashed:
+		return true
+	case AuditInboxCreated:
 		return true
 	case AuditInboxDeleted:
 		return true
@@ -9237,6 +9240,9 @@ type AnalyticsRangeProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -10057,7 +10063,7 @@ type Attributes map[string]interface{}
 //     `address`, by `operator`, when the server's operator vouched for the address with
 //     `yuva channel prove`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
-//     `from`, `to`.
+//     `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 //     `inbox_name`.
@@ -10185,7 +10191,7 @@ type AuditEntry struct {
 	//   `address`, by `operator`, when the server's operator vouched for the address with
 	//   `yuva channel prove`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
-	//   `from`, `to`.
+	//   `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 	//   `inbox_name`.
@@ -10922,6 +10928,9 @@ type BroadcastProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Items `review_failed` only: the blocking review items.
 	Items *[]BroadcastReviewItem `json:"items,omitempty"`
 
@@ -11299,6 +11308,9 @@ type ChangelogConflictProblem struct {
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
+
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -15249,6 +15261,9 @@ type EmailDesignProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -15597,6 +15612,9 @@ type EmailImageProblem struct {
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
+
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -16740,6 +16758,9 @@ type HelpConflictProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -17480,10 +17501,20 @@ type Inbox struct {
 	// and disappearance come as `inbox.updated`; `percent` moves between them without an event.
 	Import *InboxImport `json:"import,omitempty"`
 
+	// Mailbox A personal mailbox's size and addresses, the part of it owners and admins see. Present on
+	// personal mailboxes only.
+	Mailbox *InboxMailbox `json:"mailbox,omitempty"`
+
 	// Mode `live` shows who is available, typing and read receipts; `async` shows the expected reply
 	// time instead.
 	Mode InboxMode `json:"mode"`
 	Name string    `json:"name"`
+
+	// OwnerMemberId The member whose personal mailbox this is; `null` for a shared inbox. Only that member
+	// reads its conversations, messages, attachments, drafts and events: owners, admins,
+	// API keys, webhooks, automation rules and other members' OAuth tokens get `404` or
+	// nothing, as for an inbox they cannot see. Set on creation only.
+	OwnerMemberId nullable.Nullable[uuid.UUID] `json:"owner_member_id"`
 
 	// Purpose `support` (the default, and every inbox made before purposes existed) or `mail`, a team
 	// mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
@@ -17585,7 +17616,10 @@ type InboxCreate struct {
 	Mode *InboxMode `json:"mode,omitempty"`
 	Name string     `json:"name"`
 
-	// Purpose Defaults to `support`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
+	// OwnerMemberId Makes the inbox this member's personal mailbox (see `POST /v1/inboxes`).
+	OwnerMemberId *uuid.UUID `json:"owner_member_id,omitempty"`
+
+	// Purpose Defaults to `support`, or `mail` with `owner_member_id`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
 	Purpose *InboxPurpose `json:"purpose,omitempty"`
 
 	// Slug Examples: acme-app
@@ -17681,6 +17715,19 @@ type InboxImportState string
 // InboxList defines model for InboxList.
 type InboxList struct {
 	Items []Inbox `json:"items"`
+}
+
+// InboxMailbox A personal mailbox's size and addresses, the part of it owners and admins see. Present on
+// personal mailboxes only.
+type InboxMailbox struct {
+	// Addresses The addresses of its e-mail channels.
+	Addresses []string `json:"addresses"`
+
+	// Conversations Its conversations, trashed ones included.
+	Conversations int64 `json:"conversations"`
+
+	// StorageBytes The size of its attachments and stored raw e-mails.
+	StorageBytes int64 `json:"storage_bytes"`
 }
 
 // InboxMember defines model for InboxMember.
@@ -19838,6 +19885,9 @@ type MigrationFileProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -20906,6 +20956,9 @@ type Problem struct {
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
+
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -78832,6 +78885,20 @@ func (response CreateApiKey403ApplicationProblemPlusJSONResponse) VisitCreateApi
 	return err
 }
 
+type CreateApiKey409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateApiKey409ApplicationProblemPlusJSONResponse) VisitCreateApiKeyResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type RevokeApiKeyRequestObject struct {
 	ApiKeyId ApiKeyId `json:"apiKeyId"`
 	Params   RevokeApiKeyParams
@@ -95331,6 +95398,20 @@ func (response GrantInboxAccess404ApplicationProblemPlusJSONResponse) VisitGrant
 	return err
 }
 
+type GrantInboxAccess409ApplicationProblemPlusJSONResponse Problem
+
+func (response GrantInboxAccess409ApplicationProblemPlusJSONResponse) VisitGrantInboxAccessResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetInboxSlackRequestObject struct {
 	InboxId InboxId `json:"inboxId"`
 	Params  GetInboxSlackParams
@@ -110026,6 +110107,20 @@ func (response GrantTeamInboxAccess404ApplicationProblemPlusJSONResponse) VisitG
 	return err
 }
 
+type GrantTeamInboxAccess409ApplicationProblemPlusJSONResponse Problem
+
+func (response GrantTeamInboxAccess409ApplicationProblemPlusJSONResponse) VisitGrantTeamInboxAccessResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type RemoveTeamMemberRequestObject struct {
 	TeamId   TeamId   `json:"teamId"`
 	MemberId MemberId `json:"memberId"`
@@ -110770,6 +110865,20 @@ func (response CreateWebhook404ApplicationProblemPlusJSONResponse) VisitCreateWe
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateWebhook409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateWebhook409ApplicationProblemPlusJSONResponse) VisitCreateWebhookResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }

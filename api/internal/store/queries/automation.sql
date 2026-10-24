@@ -74,7 +74,8 @@ SELECT r.* FROM automation_runs r
 JOIN conversations c ON c.workspace_id = r.workspace_id AND c.id = r.conversation_id
 WHERE r.workspace_id = @workspace_id AND r.rule_id = @rule_id AND c.trashed_at IS NULL
   AND (sqlc.narg(outcome)::text IS NULL OR r.outcome = sqlc.narg(outcome)::text)
-  AND (@all_inboxes::bool OR c.inbox_id = ANY(@inbox_ids::uuid[]))
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR c.inbox_id = ANY(@inbox_ids::uuid[]))
+
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (r.created_at, r.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY r.created_at DESC, r.id DESC

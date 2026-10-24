@@ -263,10 +263,14 @@ func createAPIKey(ctx context.Context, q *store.Queries, p principal, spec APIKe
 		avatar = &u
 	}
 	for _, id := range inboxes {
-		if _, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: workspaceID, ID: id}); store.IsNotFound(err) {
+		in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: workspaceID, ID: id})
+		if store.IsNotFound(err) {
 			return store.ApiKey{}, "", apiKeySpecError("inbox_ids names an inbox that does not exist")
 		} else if err != nil {
 			return store.ApiKey{}, "", err
+		}
+		if in.OwnerMemberID != nil {
+			return store.ApiKey{}, "", errPersonalMailbox("inbox_ids names a personal mailbox: keys never read one")
 		}
 	}
 	prefix, secret := newAPIKey()

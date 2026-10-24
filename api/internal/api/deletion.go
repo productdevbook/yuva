@@ -490,6 +490,19 @@ func (s *Server) deletePerson(ctx context.Context, person store.Person, byOperat
 		if err != nil {
 			return err
 		}
+		var mailboxes []uuid.UUID
+		for _, m := range memberships {
+			ids, err := q.ListMemberPersonalInboxIDs(ctx, store.ListMemberPersonalInboxIDsParams{WorkspaceID: m.WorkspaceID, MemberID: &m.MemberID})
+			if err != nil {
+				return err
+			}
+			mailboxes = append(mailboxes, ids...)
+		}
+		if len(mailboxes) > 0 {
+			e := errPersonalMailbox("you own personal mailboxes: delete them first")
+			e.Extra = map[string]any{"inbox_ids": mailboxes}
+			return e
+		}
 		for _, m := range memberships {
 			by := principal{workspaceID: m.WorkspaceID}
 			if !byOperator {

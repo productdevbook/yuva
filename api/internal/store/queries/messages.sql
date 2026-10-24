@@ -194,7 +194,7 @@ JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversatio
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id
 WHERE m.workspace_id = @workspace_id AND m.draft AND c.trashed_at IS NULL
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
   AND draft_visible_to(m.draft, m.author_type, m.author_member_id, sqlc.narg(viewer_member_id)::uuid)
@@ -216,7 +216,7 @@ LIMIT @lim;
 SELECT count(*) FROM messages m
 JOIN conversations c ON c.workspace_id = m.workspace_id AND c.id = m.conversation_id
 WHERE m.workspace_id = @workspace_id AND m.draft AND c.trashed_at IS NULL
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
   AND draft_visible_to(m.draft, m.author_type, m.author_member_id, sqlc.narg(viewer_member_id)::uuid)
@@ -239,7 +239,7 @@ FROM member_mentions v
 JOIN messages m ON m.workspace_id = v.workspace_id AND m.id = v.message_id
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 WHERE v.workspace_id = @workspace_id AND v.member_id = @member_id AND v.mentions @> ARRAY[@member_id::uuid]
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = v.workspace_id AND iv.inbox_id = v.inbox_id AND iv.viewer_id = @member_id))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
@@ -251,7 +251,7 @@ LIMIT @lim;
 SELECT count(*) FROM member_mentions v
 WHERE v.workspace_id = @workspace_id AND v.member_id = @member_id AND v.mentions @> ARRAY[@member_id::uuid]
   AND NOT v.seen
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = v.workspace_id AND iv.inbox_id = v.inbox_id AND iv.viewer_id = @member_id));
 
@@ -273,7 +273,7 @@ SELECT v.workspace_id, v.member_id, v.message_id, @now
 FROM member_mentions v
 WHERE v.workspace_id = @workspace_id AND v.member_id = @member_id AND v.mentions @> ARRAY[@member_id::uuid]
   AND NOT v.seen
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = v.workspace_id AND pmb.id = v.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = v.workspace_id AND iv.inbox_id = v.inbox_id AND iv.viewer_id = @member_id))
 ON CONFLICT DO NOTHING;

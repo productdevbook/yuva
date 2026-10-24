@@ -179,6 +179,15 @@ func (s *Server) RemoveMember(ctx context.Context, req oas.RemoveMemberRequestOb
 				return err
 			}
 		}
+		owned, err := q.ListMemberPersonalInboxIDs(ctx, store.ListMemberPersonalInboxIDsParams{WorkspaceID: p.workspaceID, MemberID: &target.ID})
+		if err != nil {
+			return err
+		}
+		if len(owned) > 0 {
+			e := errPersonalMailbox("the member owns personal mailboxes: delete them first")
+			e.Extra = map[string]any{"inbox_ids": owned}
+			return e
+		}
 		if err := s.deleteMemberDrafts(ctx, tx, q, p.workspaceID, target.ID); err != nil {
 			return err
 		}

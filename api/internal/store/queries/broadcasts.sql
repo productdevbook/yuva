@@ -52,7 +52,7 @@ SELECT * FROM broadcasts b
 WHERE b.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR b.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (sqlc.narg(states)::text[] IS NULL OR b.state = ANY(sqlc.narg(states)::text[]))
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = @viewer_id))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL

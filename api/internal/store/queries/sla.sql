@@ -160,7 +160,7 @@ JOIN conversations c ON c.workspace_id = o.workspace_id AND c.id = o.conversatio
 WHERE o.workspace_id = @workspace_id AND o.at >= @since AND o.at <= @until
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR o.inbox_id = sqlc.narg(inbox_id)::uuid) AND c.trashed_at IS NULL
   AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = o.workspace_id AND mi.id = o.inbox_id AND mi.purpose = 'mail')
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = o.workspace_id AND pmb.id = o.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = o.workspace_id AND iv.inbox_id = o.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 GROUP BY 1, 2, 3

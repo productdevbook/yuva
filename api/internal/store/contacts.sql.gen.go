@@ -78,7 +78,7 @@ FROM (
     JOIN conversations cv ON cv.workspace_id = i.workspace_id AND cv.id = i.conversation_id
     WHERE i.workspace_id = $1 AND cv.contact_id = $2 AND NOT cv.spam AND cv.trashed_at IS NULL
       AND i.kind = 'message' AND i.direction = 'in'
-      AND ($3::bool OR EXISTS (
+      AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $4::uuid))
     GROUP BY i.conversation_id
@@ -127,11 +127,36 @@ func (q *Queries) ContactFirstReplies(ctx context.Context, arg ContactFirstRepli
 	return items, nil
 }
 
+const contactPersonalOnly = `-- name: ContactPersonalOnly :one
+SELECT (EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
+               WHERE cv.workspace_id = $1 AND cv.contact_id = $2 AND ci.owner_member_id IS NOT NULL)
+   AND NOT EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
+                   WHERE cv.workspace_id = $1 AND cv.contact_id = $2
+                     AND (ci.owner_member_id IS NULL OR EXISTS (
+                         SELECT 1 FROM inbox_viewers iv
+                         WHERE iv.workspace_id = ci.workspace_id AND iv.inbox_id = ci.id AND iv.viewer_id = $3)))
+   AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = $1 AND x.contact_id = $2))::bool
+    AS hidden
+`
+
+type ContactPersonalOnlyParams struct {
+	WorkspaceID uuid.UUID
+	ContactID   uuid.UUID
+	ViewerID    uuid.UUID
+}
+
+func (q *Queries) ContactPersonalOnly(ctx context.Context, arg ContactPersonalOnlyParams) (bool, error) {
+	row := q.db.QueryRow(ctx, contactPersonalOnly, arg.WorkspaceID, arg.ContactID, arg.ViewerID)
+	var hidden bool
+	err := row.Scan(&hidden)
+	return hidden, err
+}
+
 const contactRatings = `-- name: ContactRatings :many
 SELECT cv.rating::text AS rating, count(*) AS n
 FROM conversations cv
 WHERE cv.workspace_id = $1 AND cv.contact_id = $2 AND NOT cv.spam AND cv.kind <> 'feedback' AND cv.rating IS NOT NULL AND cv.trashed_at IS NULL
-  AND ($3::bool OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $4::uuid))
 GROUP BY 1
@@ -360,7 +385,7 @@ SELECT c.id, c.last_active_at, count(cv.id) AS conversations,
        coalesce(max(coalesce(cv.last_message_at, cv.created_at)), c.created_at)::timestamptz AS last_conversation_at
 FROM contacts c
 LEFT JOIN conversations cv ON cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND NOT cv.spam AND cv.trashed_at IS NULL
-  AND ($1::bool OR EXISTS (
+  AND (($1::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = cv.workspace_id AND pmb.id = cv.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))
   AND conversation_visible_to(cv.draft_of, $3::uuid)
@@ -499,7 +524,7 @@ FROM (
     WHERE x.workspace_id = $1 AND x.contact_id = ANY($2::uuid[])
 ) t
 JOIN inboxes i ON i.workspace_id = $1 AND i.id = t.inbox_id
-WHERE ($3::bool OR EXISTS (
+WHERE (($3::bool AND i.owner_member_id IS NULL) OR EXISTS (
     SELECT 1 FROM inbox_viewers iv
     WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = $4::uuid))
 ORDER BY t.contact_id, i.name, i.id
@@ -631,37 +656,46 @@ WHERE c.workspace_id = $1
    OR (c.created_by = $2::uuid
        AND NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
-  AND ($3::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate($3::text, 'İı', 'ii'))
-       OR c.search @@ to_tsquery('simple', $4::text))
-  AND ($5::text IS NULL OR ($5::text = 'known') = (
+  AND (NOT EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
+                   WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND ci.owner_member_id IS NOT NULL)
+       OR EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
+                  WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id
+                    AND (ci.owner_member_id IS NULL OR EXISTS (
+                        SELECT 1 FROM inbox_viewers iv
+                        WHERE iv.workspace_id = ci.workspace_id AND iv.inbox_id = ci.id AND iv.viewer_id = $3::uuid)))
+       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))
+  AND ($4::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate($4::text, 'İı', 'ii'))
+       OR c.search @@ to_tsquery('simple', $5::text))
+  AND ($6::text IS NULL OR ($6::text = 'known') = (
       EXISTS (SELECT 1 FROM contact_emails e WHERE e.workspace_id = c.workspace_id AND e.contact_id = c.id)
       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)))
-  AND ($6::bool IS NULL OR $6::bool = EXISTS (
+  AND ($7::bool IS NULL OR $7::bool = EXISTS (
       SELECT 1 FROM conversations cv
       WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.status = 'open' AND NOT cv.spam AND cv.trashed_at IS NULL
         AND ($2::uuid IS NULL OR EXISTS (
             SELECT 1 FROM inbox_viewers iv
             WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))))
-  AND ($7::uuid IS NULL
-       OR EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.inbox_id = $7::uuid)
-       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id AND x.inbox_id = $7::uuid))
-  AND ($8::timestamptz IS NULL
-       OR (c.created_at, c.id) < ($8::timestamptz, $9::uuid))
+  AND ($8::uuid IS NULL
+       OR EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.inbox_id = $8::uuid)
+       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id AND x.inbox_id = $8::uuid))
+  AND ($9::timestamptz IS NULL
+       OR (c.created_at, c.id) < ($9::timestamptz, $10::uuid))
 ORDER BY c.created_at DESC, c.id DESC
-LIMIT $10
+LIMIT $11
 `
 
 type ListContactsParams struct {
-	WorkspaceID uuid.UUID
-	ViewerID    *uuid.UUID
-	Q           *string
-	Prefix      *string
-	Kind        *string
-	HasOpen     *bool
-	InboxID     *uuid.UUID
-	CursorAt    *time.Time
-	CursorID    *uuid.UUID
-	Lim         int32
+	WorkspaceID      uuid.UUID
+	ViewerID         *uuid.UUID
+	PersonalViewerID uuid.UUID
+	Q                *string
+	Prefix           *string
+	Kind             *string
+	HasOpen          *bool
+	InboxID          *uuid.UUID
+	CursorAt         *time.Time
+	CursorID         *uuid.UUID
+	Lim              int32
 }
 
 type ListContactsRow struct {
@@ -680,6 +714,7 @@ func (q *Queries) ListContacts(ctx context.Context, arg ListContactsParams) ([]L
 	rows, err := q.db.Query(ctx, listContacts,
 		arg.WorkspaceID,
 		arg.ViewerID,
+		arg.PersonalViewerID,
 		arg.Q,
 		arg.Prefix,
 		arg.Kind,
@@ -732,37 +767,46 @@ WHERE c.workspace_id = $1
    OR (c.created_by = $2::uuid
        AND NOT EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id)
        AND NOT EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))))
-  AND ($3::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate($3::text, 'İı', 'ii'))
-       OR c.search @@ to_tsquery('simple', $4::text))
-  AND ($5::text IS NULL OR ($5::text = 'known') = (
+  AND (NOT EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
+                   WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND ci.owner_member_id IS NOT NULL)
+       OR EXISTS (SELECT 1 FROM conversations cv JOIN inboxes ci ON ci.workspace_id = cv.workspace_id AND ci.id = cv.inbox_id
+                  WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id
+                    AND (ci.owner_member_id IS NULL OR EXISTS (
+                        SELECT 1 FROM inbox_viewers iv
+                        WHERE iv.workspace_id = ci.workspace_id AND iv.inbox_id = ci.id AND iv.viewer_id = $3::uuid)))
+       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id))
+  AND ($4::text IS NULL OR c.search @@ websearch_to_tsquery('simple', translate($4::text, 'İı', 'ii'))
+       OR c.search @@ to_tsquery('simple', $5::text))
+  AND ($6::text IS NULL OR ($6::text = 'known') = (
       EXISTS (SELECT 1 FROM contact_emails e WHERE e.workspace_id = c.workspace_id AND e.contact_id = c.id)
       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id)))
-  AND ($6::bool IS NULL OR $6::bool = EXISTS (
+  AND ($7::bool IS NULL OR $7::bool = EXISTS (
       SELECT 1 FROM conversations cv
       WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.status = 'open' AND NOT cv.spam AND cv.trashed_at IS NULL
         AND ($2::uuid IS NULL OR EXISTS (
             SELECT 1 FROM inbox_viewers iv
             WHERE iv.workspace_id = cv.workspace_id AND iv.inbox_id = cv.inbox_id AND iv.viewer_id = $2::uuid))))
-  AND ($7::uuid IS NULL
-       OR EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.inbox_id = $7::uuid)
-       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id AND x.inbox_id = $7::uuid))
-  AND ($8::timestamptz IS NULL
-       OR (coalesce(c.last_active_at, c.created_at), c.id) < ($8::timestamptz, $9::uuid))
+  AND ($8::uuid IS NULL
+       OR EXISTS (SELECT 1 FROM conversations cv WHERE cv.workspace_id = c.workspace_id AND cv.contact_id = c.id AND cv.inbox_id = $8::uuid)
+       OR EXISTS (SELECT 1 FROM contact_external_ids x WHERE x.workspace_id = c.workspace_id AND x.contact_id = c.id AND x.inbox_id = $8::uuid))
+  AND ($9::timestamptz IS NULL
+       OR (coalesce(c.last_active_at, c.created_at), c.id) < ($9::timestamptz, $10::uuid))
 ORDER BY coalesce(c.last_active_at, c.created_at) DESC, c.id DESC
-LIMIT $10
+LIMIT $11
 `
 
 type ListContactsByActivityParams struct {
-	WorkspaceID uuid.UUID
-	ViewerID    *uuid.UUID
-	Q           *string
-	Prefix      *string
-	Kind        *string
-	HasOpen     *bool
-	InboxID     *uuid.UUID
-	CursorAt    *time.Time
-	CursorID    *uuid.UUID
-	Lim         int32
+	WorkspaceID      uuid.UUID
+	ViewerID         *uuid.UUID
+	PersonalViewerID uuid.UUID
+	Q                *string
+	Prefix           *string
+	Kind             *string
+	HasOpen          *bool
+	InboxID          *uuid.UUID
+	CursorAt         *time.Time
+	CursorID         *uuid.UUID
+	Lim              int32
 }
 
 type ListContactsByActivityRow struct {
@@ -782,6 +826,7 @@ func (q *Queries) ListContactsByActivity(ctx context.Context, arg ListContactsBy
 	rows, err := q.db.Query(ctx, listContactsByActivity,
 		arg.WorkspaceID,
 		arg.ViewerID,
+		arg.PersonalViewerID,
 		arg.Q,
 		arg.Prefix,
 		arg.Kind,

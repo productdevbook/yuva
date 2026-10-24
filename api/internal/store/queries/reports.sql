@@ -155,7 +155,7 @@ WHERE (r.label_id IS NOT NULL) = @by_label::bool AND (r.label_id IS NULL OR l.id
   AND (sqlc.narg(channel_kind)::text IS NULL OR r.channel_kind = sqlc.narg(channel_kind)::text)
   AND (sqlc.narg(team_id)::uuid IS NULL OR t.id = sqlc.narg(team_id)::uuid)
   AND (sqlc.narg(member_id)::uuid IS NULL OR mb.id = sqlc.narg(member_id)::uuid)
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = @workspace_id AND pmb.id = r.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = @workspace_id AND iv.inbox_id = r.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 GROUP BY 1, 2, 3, 4;

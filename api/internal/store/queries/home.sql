@@ -5,7 +5,7 @@ WITH open AS (
     WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND NOT c.spam AND c.trashed_at IS NULL
       AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
       AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
-      AND (@all_inboxes::bool OR EXISTS (
+      AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
       AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
@@ -49,7 +49,7 @@ LEFT JOIN conversations c ON c.workspace_id = i.workspace_id AND c.inbox_id = i.
     AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
 WHERE i.workspace_id = @workspace_id AND i.purpose = 'support'
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
 GROUP BY i.id, c.assignee_id, 3
@@ -62,7 +62,7 @@ WHERE c.workspace_id = @workspace_id AND c.last_activity_at >= @since::timestamp
   AND c.created_at >= @since::timestamptz AND c.created_at <= @until::timestamptz AND NOT c.spam AND c.trashed_at IS NULL
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
@@ -75,7 +75,7 @@ WHERE c.workspace_id = @workspace_id AND c.rated_at >= @since::timestamptz AND c
   AND NOT c.spam AND c.kind <> 'feedback' AND c.trashed_at IS NULL
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail')
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 GROUP BY 1, 2, 3;
@@ -88,7 +88,7 @@ LEFT JOIN status_components c ON c.workspace_id = p.workspace_id AND c.page_id =
 LEFT JOIN status_component_groups g ON g.workspace_id = c.workspace_id AND g.id = c.group_id
 WHERE p.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR p.inbox_id = sqlc.narg(inbox_id)::uuid)
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 ORDER BY p.created_at, p.id, g.position NULLS FIRST, g.name NULLS FIRST, g.id NULLS FIRST, c.position, c.name, c.id;
@@ -98,7 +98,7 @@ SELECT d.id, d.inbox_id, d.title, d.vote_count, d.stage::text AS stage
 FROM discussions d
 WHERE d.workspace_id = @workspace_id AND d.kind = 'idea' AND d.state = 'published' AND d.stage NOT IN ('shipped', 'closed')
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR d.inbox_id = sqlc.narg(inbox_id)::uuid)
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 ORDER BY d.vote_count DESC, d.last_activity_at DESC, d.id DESC
@@ -109,7 +109,7 @@ WITH visible AS (
     SELECT i.id FROM inboxes i
     WHERE i.workspace_id = @workspace_id
       AND (sqlc.narg(inbox_id)::uuid IS NULL OR i.id = sqlc.narg(inbox_id)::uuid)
-      AND (@all_inboxes::bool OR EXISTS (
+      AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
 )
@@ -146,7 +146,7 @@ LIMIT @lim;
 SELECT * FROM broadcasts b
 WHERE b.workspace_id = @workspace_id AND b.state = 'sent'
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR b.inbox_id = sqlc.narg(inbox_id)::uuid)
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 ORDER BY b.finished_at DESC NULLS LAST, b.id DESC
@@ -156,7 +156,7 @@ LIMIT 1;
 WITH visible AS (
     SELECT i.id, i.name, i.created_at, i.purpose FROM inboxes i
     WHERE i.workspace_id = @workspace_id
-      AND (@all_inboxes::bool OR EXISTS (
+      AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
           SELECT 1 FROM inbox_viewers iv
           WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id::uuid))
 )
@@ -179,7 +179,7 @@ SELECT 'property', p.id, p.inbox_id, p.name, '', p.created_at, p.domains, p.plat
     row_number() OVER (ORDER BY p.created_at, p.id), ''
 FROM analytics_properties p
 WHERE @with_properties::bool AND p.workspace_id = @workspace_id AND p.deleted_at IS NULL
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 UNION ALL
@@ -187,7 +187,7 @@ SELECT 'list', l.id, l.inbox_id, l.name, '', l.created_at, '{}', '{}', false,
     row_number() OVER (ORDER BY l.created_at DESC, l.id DESC), ''
 FROM mailing_lists l
 WHERE @with_lists::bool AND l.workspace_id = @workspace_id AND l.archived_at IS NULL AND l.kind = 'list'
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = @viewer_id::uuid))
 ORDER BY 1, 10;

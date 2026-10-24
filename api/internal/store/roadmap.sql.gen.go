@@ -849,7 +849,7 @@ const listIdeaReplyTargets = `-- name: ListIdeaReplyTargets :many
 SELECT c.id FROM roadmap_idea_conversations l
 JOIN conversations c ON c.workspace_id = l.workspace_id AND c.id = l.conversation_id
 WHERE l.workspace_id = $1 AND l.idea_id = $2 AND c.status <> 'closed' AND NOT c.spam AND c.trashed_at IS NULL
-  AND ($3::bool OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = $4))
 ORDER BY l.linked_at, c.id
@@ -956,7 +956,7 @@ const listRoadmapBoards = `-- name: ListRoadmapBoards :many
 SELECT id, workspace_id, inbox_id, channel_id, name, description, slug, public, suggestions, analytics_property_id, changed_at, created_at, updated_at, custom_domain, domain_token, domain_state, domain_problem, domain_checked_at, domain_check_at, domain_verified_at, domain_missing_since, domain_claimed_at, cf_hostname_id, cf_status, cf_ssl_status, cf_errors, cf_checked_at FROM roadmap_boards b
 WHERE b.workspace_id = $1
   AND ($2::uuid IS NULL OR b.inbox_id = $2::uuid)
-  AND ($3::bool OR EXISTS (
+  AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = $4))
 ORDER BY b.created_at, b.id

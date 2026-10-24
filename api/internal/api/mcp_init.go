@@ -306,7 +306,7 @@ func (c *mcpCall) workspaceNames(ctx context.Context) []string {
 	if w, err := c.s.st.GetWorkspace(ctx, ws); err == nil {
 		names = append(names, w.Name)
 	}
-	inboxes, _ := c.s.st.ListInboxes(ctx, store.ListInboxesParams{WorkspaceID: ws, AllInboxes: true})
+	inboxes, _ := c.s.st.ListInboxes(ctx, store.ListInboxesParams{WorkspaceID: ws, AllInboxes: true, WithPersonal: true})
 	for _, in := range inboxes {
 		names = append(names, in.Name, in.Slug)
 		chs, _ := c.s.st.ListChannels(ctx, store.ListChannelsParams{WorkspaceID: ws, InboxID: in.ID})

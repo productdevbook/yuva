@@ -4430,6 +4430,20 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
   OAuth grant. This is the one place where an owner does not see every inbox, so that people can
   move their own mail into Yuva. Retention, contact export and deletion, and workspace deletion still
   cover it, and every delegation and hand-over is in the audit log.
+- **As built (#170, migration 00135).** `inboxes.owner_member_id` (FK to the member, `ON DELETE
+  RESTRICT`, only on `mail` inboxes) is set on `POST /v1/inboxes` and never changes. The owner row is
+  part of `member_inbox_access`, so `inbox_viewers`, assignee and mention checks, notifications and
+  `GET /v1/inboxes/{id}/members` follow. Seeing every inbox (owners, admins, full keys, rules) stops
+  short of a personal mailbox: every `all_inboxes` branch in SQL excludes it, `canSeeInbox` and
+  `visibleInbox` refuse it, and `canReadPersonal` (owner session or the owner's grant; system jobs)
+  is the one place #171 adds delegates. Owners, admins and full keys get its metadata only
+  (`visibleInboxMeta`: `GET /v1/inboxes[/{id}]` with `mailbox {addresses, conversations,
+  storage_bytes}`, no signature, import or SES tenant), rename and delete it. Events of it are
+  dropped from realtime, `/v1/events` and MCP for everyone else, webhooks and automation rules never
+  fire for it, and Slack, webhooks, API keys, member and team grants naming it answer `409
+  personal_mailbox`. A contact known only from personal mailboxes the caller does not read is hidden
+  from everyone, owners included. Removing its owner or deleting their account answers `409
+  personal_mailbox` with `inbox_ids` until #172.
 - **Leaving.** When a member with a personal mailbox is removed, an owner or admin deletes the mailbox
   or hands it to a named member; nobody reads it before that choice.
 - **Sending as a person.** A mail goes from the channel address with the member's name, or from the

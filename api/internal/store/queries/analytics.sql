@@ -16,7 +16,7 @@ SELECT * FROM analytics_properties WHERE workspace_id = @workspace_id AND id = @
 -- name: ListAnalyticsProperties :many
 SELECT * FROM analytics_properties p
 WHERE p.workspace_id = @workspace_id AND p.deleted_at IS NULL
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = p.workspace_id AND pmb.id = p.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = p.workspace_id AND iv.inbox_id = p.inbox_id AND iv.viewer_id = @viewer_id))
 ORDER BY p.created_at, p.id;

@@ -1134,6 +1134,7 @@ const (
 	AuditConversationDeleted                 AuditAction = "conversation.deleted"
 	AuditConversationRestored                AuditAction = "conversation.restored"
 	AuditConversationTrashed                 AuditAction = "conversation.trashed"
+	AuditInboxCreated                        AuditAction = "inbox.created"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
 	AuditInboxPurposeChanged                 AuditAction = "inbox.purpose_changed"
@@ -1230,6 +1231,8 @@ func (e AuditAction) Valid() bool {
 	case AuditConversationRestored:
 		return true
 	case AuditConversationTrashed:
+		return true
+	case AuditInboxCreated:
 		return true
 	case AuditInboxDeleted:
 		return true
@@ -9283,6 +9286,9 @@ type AnalyticsRangeProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -10103,7 +10109,7 @@ type Attributes map[string]interface{}
 //     `address`, by `operator`, when the server's operator vouched for the address with
 //     `yuva channel prove`.
 //   - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
-//     `from`, `to`.
+//     `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
 //   - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 //     `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 //     `inbox_name`.
@@ -10231,7 +10237,7 @@ type AuditEntry struct {
 	//   `address`, by `operator`, when the server's operator vouched for the address with
 	//   `yuva channel prove`.
 	// - `inbox.identity_secret_rotated`: none. `inbox.deleted`: `name`. `inbox.purpose_changed`:
-	//   `from`, `to`.
+	//   `from`, `to`. `inbox.created` (personal mailboxes only): `name`, `owner_member_id`.
 	// - `team.created`, `team.deleted`: `name`. `team.member_added`, `team.member_removed`:
 	//   `member_id`. `team.inbox_access_granted`, `team.inbox_access_revoked`: `inbox_id`,
 	//   `inbox_name`.
@@ -10968,6 +10974,9 @@ type BroadcastProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Items `review_failed` only: the blocking review items.
 	Items *[]BroadcastReviewItem `json:"items,omitempty"`
 
@@ -11345,6 +11354,9 @@ type ChangelogConflictProblem struct {
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
+
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -15295,6 +15307,9 @@ type EmailDesignProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -15643,6 +15658,9 @@ type EmailImageProblem struct {
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
+
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -16786,6 +16804,9 @@ type HelpConflictProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -17526,10 +17547,20 @@ type Inbox struct {
 	// and disappearance come as `inbox.updated`; `percent` moves between them without an event.
 	Import *InboxImport `json:"import,omitempty"`
 
+	// Mailbox A personal mailbox's size and addresses, the part of it owners and admins see. Present on
+	// personal mailboxes only.
+	Mailbox *InboxMailbox `json:"mailbox,omitempty"`
+
 	// Mode `live` shows who is available, typing and read receipts; `async` shows the expected reply
 	// time instead.
 	Mode InboxMode `json:"mode"`
 	Name string    `json:"name"`
+
+	// OwnerMemberId The member whose personal mailbox this is; `null` for a shared inbox. Only that member
+	// reads its conversations, messages, attachments, drafts and events: owners, admins,
+	// API keys, webhooks, automation rules and other members' OAuth tokens get `404` or
+	// nothing, as for an inbox they cannot see. Set on creation only.
+	OwnerMemberId nullable.Nullable[uuid.UUID] `json:"owner_member_id"`
 
 	// Purpose `support` (the default, and every inbox made before purposes existed) or `mail`, a team
 	// mailbox. A `mail` inbox has only `email` channels and the support features are off for it:
@@ -17631,7 +17662,10 @@ type InboxCreate struct {
 	Mode *InboxMode `json:"mode,omitempty"`
 	Name string     `json:"name"`
 
-	// Purpose Defaults to `support`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
+	// OwnerMemberId Makes the inbox this member's personal mailbox (see `POST /v1/inboxes`).
+	OwnerMemberId *uuid.UUID `json:"owner_member_id,omitempty"`
+
+	// Purpose Defaults to `support`, or `mail` with `owner_member_id`. A `mail` inbox with an `assignment_mode` other than `off` answers `409 purpose_mismatch`.
 	Purpose *InboxPurpose `json:"purpose,omitempty"`
 
 	// Slug Examples: acme-app
@@ -17727,6 +17761,19 @@ type InboxImportState string
 // InboxList defines model for InboxList.
 type InboxList struct {
 	Items []Inbox `json:"items"`
+}
+
+// InboxMailbox A personal mailbox's size and addresses, the part of it owners and admins see. Present on
+// personal mailboxes only.
+type InboxMailbox struct {
+	// Addresses The addresses of its e-mail channels.
+	Addresses []string `json:"addresses"`
+
+	// Conversations Its conversations, trashed ones included.
+	Conversations int64 `json:"conversations"`
+
+	// StorageBytes The size of its attachments and stored raw e-mails.
+	StorageBytes int64 `json:"storage_bytes"`
 }
 
 // InboxMember defines model for InboxMember.
@@ -19884,6 +19931,9 @@ type MigrationFileProblem struct {
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
 
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
+
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
 	// the workspace already runs as many migrations at a time as the server allows;
@@ -20952,6 +21002,9 @@ type Problem struct {
 	//
 	// Examples: order_id
 	Field *string `json:"field,omitempty"`
+
+	// InboxIds `personal_mailbox` on removing a member: the member's personal mailboxes.
+	InboxIds *[]uuid.UUID `json:"inbox_ids,omitempty"`
 
 	// Limit `hosted_limit` only: the server limit that was reached, named by the operator's setting.
 	// `YUVA_MIGRATION_SOURCES`: the server does not offer this source; `YUVA_MIGRATION_MAX_ACTIVE`:
@@ -36986,7 +37039,8 @@ type ClientInterface interface {
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
 	// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-	// `audit:read` (`403 forbidden`).
+	// `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+	// personal_mailbox`: keys never reach one.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -36998,7 +37052,8 @@ type ClientInterface interface {
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
 	// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-	// `audit:read` (`403 forbidden`).
+	// `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+	// personal_mailbox`: keys never reach one.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -41137,6 +41192,11 @@ type ClientInterface interface {
 	// Owners, admins and API keys see every inbox; agents see the inboxes they were given access
 	// to, and API keys limited to inboxes those inboxes.
 	//
+	// A personal mailbox (`owner_member_id` set) is listed to its owner as any inbox they read,
+	// and to owners, admins and API keys not limited to inboxes as metadata only: its id, name,
+	// purpose, owner and `mailbox` (addresses, conversation count, storage), with an empty
+	// `signature` and no `import` or `ses_tenant`. Nobody but its owner reads its content.
+	//
 	// Scope: `inboxes:read`.
 	//
 	// Corresponds with GET /v1/inboxes (the `ListInboxes` operationId).
@@ -41147,6 +41207,13 @@ type ClientInterface interface {
 	// Owners, admins and API keys. A new identity secret is generated; it is
 	// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
 	// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
+	//
+	// With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+	// `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+	// a member session or their own OAuth token; owners and admins create one for any member.
+	// API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+	// owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+	// the channel, DKIM, deliverability and forwarding-address endpoints).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -41161,6 +41228,13 @@ type ClientInterface interface {
 	// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
 	// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 	//
+	// With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+	// `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+	// a member session or their own OAuth token; owners and admins create one for any member.
+	// API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+	// owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+	// the channel, DKIM, deliverability and forwarding-address endpoints).
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes a body of the `application/json` content type.
@@ -41173,6 +41247,10 @@ type ClientInterface interface {
 	// Owners, admins and API keys. Deletes its channels, conversations,
 	// messages and attachments, and its Amazon SES tenant, when the server manages one.
 	//
+	// A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
+	// who delete it without reading it; API keys and other members get `404`. Audited as
+	// `inbox.deleted`.
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Corresponds with DELETE /v1/inboxes/{inboxId} (the `DeleteInbox` operationId).
@@ -41180,7 +41258,9 @@ type ClientInterface interface {
 
 	// GetInbox Get an inbox
 	//
-	// An inbox the caller cannot see answers `404`.
+	// An inbox the caller cannot see answers `404`. A personal mailbox answers its owner in
+	// full and owners, admins and API keys not limited to inboxes with its metadata only (see
+	// `GET /v1/inboxes`).
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -41191,6 +41271,10 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
 	// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
+	//
+	// A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+	// for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+	// and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -41203,6 +41287,10 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
 	// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
+	//
+	// A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+	// for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+	// and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -41268,6 +41356,7 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys. Replaces the inbox's identity secret, which
 	// host backends use to sign identity tokens; tokens signed with the old secret stop working.
+	// A personal mailbox: its owner only (`404` for everyone else).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -41278,6 +41367,7 @@ type ClientInterface interface {
 	//
 	// Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
 	// Owners and admins see every inbox without a grant and are not listed unless granted.
+	// A personal mailbox lists its owner (`via: direct`); it answers `404` to anyone else.
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -41297,7 +41387,8 @@ type ClientInterface interface {
 	// GrantInboxAccess Give a member access
 	//
 	// Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
-	// the member's access flips (not when a team already gave it).
+	// the member's access flips (not when a team already gave it). A personal mailbox answers
+	// `409 personal_mailbox`: only its owner reads it.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -41320,7 +41411,8 @@ type ClientInterface interface {
 	// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
 	// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
 	// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+	// mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -41332,7 +41424,8 @@ type ClientInterface interface {
 	// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
 	// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
 	// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+	// mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -42046,7 +42139,8 @@ type ClientInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+	// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+	// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
 	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type.
@@ -42063,7 +42157,8 @@ type ClientInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+	// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+	// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
 	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type.
@@ -42525,7 +42620,8 @@ type ClientInterface interface {
 	// RemoveMember Remove a member
 	//
 	// Owners and admins only, with a member session; only an owner removes an owner. The last
-	// owner cannot be removed.
+	// owner cannot be removed. A member who owns personal mailboxes answers `409
+	// personal_mailbox` with their ids in `inbox_ids` until each is deleted.
 	//
 	// Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
 	RemoveMember(ctx context.Context, memberId MemberId, params *RemoveMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -44951,7 +45047,8 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys not limited to inboxes. Every member of the team gains the
 	// inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
-	// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+	// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`). A
+	// personal mailbox answers `409 personal_mailbox`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -45138,7 +45235,10 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
 	// whole workspace; with it, only those of that inbox (contact events for contacts with an
-	// external id or a conversation there). The signing secret is returned once.
+	// external id or a conversation there). The signing secret is returned once. A personal
+	// mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+	// events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+	// cannot read it).
 	//
 	// Scope: `webhooks:manage`.
 	//
@@ -45157,7 +45257,10 @@ type ClientInterface interface {
 	//
 	// Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
 	// whole workspace; with it, only those of that inbox (contact events for contacts with an
-	// external id or a conversation there). The signing secret is returned once.
+	// external id or a conversation there). The signing secret is returned once. A personal
+	// mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+	// events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+	// cannot read it).
 	//
 	// Scope: `webhooks:manage`.
 	//
@@ -49459,7 +49562,8 @@ func (c *Client) ListApiKeys(ctx context.Context, params *ListApiKeysParams, req
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
 // `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-// `audit:read` (`403 forbidden`).
+// `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+// personal_mailbox`: keys never reach one.
 //
 // Takes any type of body and a specified content type.
 //
@@ -49481,7 +49585,8 @@ func (c *Client) CreateApiKeyWithBody(ctx context.Context, params *CreateApiKeyP
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
 // `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-// `audit:read` (`403 forbidden`).
+// `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+// personal_mailbox`: keys never reach one.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -56240,6 +56345,11 @@ func (c *Client) GetHome(ctx context.Context, params *GetHomeParams, reqEditors 
 // Owners, admins and API keys see every inbox; agents see the inboxes they were given access
 // to, and API keys limited to inboxes those inboxes.
 //
+// A personal mailbox (`owner_member_id` set) is listed to its owner as any inbox they read,
+// and to owners, admins and API keys not limited to inboxes as metadata only: its id, name,
+// purpose, owner and `mailbox` (addresses, conversation count, storage), with an empty
+// `signature` and no `import` or `ses_tenant`. Nobody but its owner reads its content.
+//
 // Scope: `inboxes:read`.
 //
 // Corresponds with GET /v1/inboxes (the `ListInboxes` operationId).
@@ -56260,6 +56370,13 @@ func (c *Client) ListInboxes(ctx context.Context, params *ListInboxesParams, req
 // Owners, admins and API keys. A new identity secret is generated; it is
 // returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
 // given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
+//
+// With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+// `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+// a member session or their own OAuth token; owners and admins create one for any member.
+// API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+// owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+// the channel, DKIM, deliverability and forwarding-address endpoints).
 //
 // Scope: `inboxes:manage`.
 //
@@ -56284,6 +56401,13 @@ func (c *Client) CreateInboxWithBody(ctx context.Context, params *CreateInboxPar
 // returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
 // given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 //
+// With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+// `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+// a member session or their own OAuth token; owners and admins create one for any member.
+// API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+// owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+// the channel, DKIM, deliverability and forwarding-address endpoints).
+//
 // Scope: `inboxes:manage`.
 //
 // Takes a body of the `application/json` content type.
@@ -56306,6 +56430,10 @@ func (c *Client) CreateInbox(ctx context.Context, params *CreateInboxParams, bod
 // Owners, admins and API keys. Deletes its channels, conversations,
 // messages and attachments, and its Amazon SES tenant, when the server manages one.
 //
+// A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
+// who delete it without reading it; API keys and other members get `404`. Audited as
+// `inbox.deleted`.
+//
 // Scope: `inboxes:manage`.
 //
 // Corresponds with DELETE /v1/inboxes/{inboxId} (the `DeleteInbox` operationId).
@@ -56323,7 +56451,9 @@ func (c *Client) DeleteInbox(ctx context.Context, inboxId InboxId, params *Delet
 
 // GetInbox Get an inbox
 //
-// An inbox the caller cannot see answers `404`.
+// An inbox the caller cannot see answers `404`. A personal mailbox answers its owner in
+// full and owners, admins and API keys not limited to inboxes with its metadata only (see
+// `GET /v1/inboxes`).
 //
 // Scope: `inboxes:read`.
 //
@@ -56344,6 +56474,10 @@ func (c *Client) GetInbox(ctx context.Context, inboxId InboxId, params *GetInbox
 //
 // Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
 // inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
+//
+// A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+// for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+// and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -56366,6 +56500,10 @@ func (c *Client) UpdateInboxWithBody(ctx context.Context, inboxId InboxId, param
 //
 // Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
 // inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
+//
+// A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+// for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+// and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -56471,6 +56609,7 @@ func (c *Client) CreateChannel(ctx context.Context, inboxId InboxId, params *Cre
 //
 // Owners, admins and API keys. Replaces the inbox's identity secret, which
 // host backends use to sign identity tokens; tokens signed with the old secret stop working.
+// A personal mailbox: its owner only (`404` for everyone else).
 //
 // Scope: `inboxes:manage`.
 //
@@ -56491,6 +56630,7 @@ func (c *Client) RotateInboxIdentitySecret(ctx context.Context, inboxId InboxId,
 //
 // Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
 // Owners and admins see every inbox without a grant and are not listed unless granted.
+// A personal mailbox lists its owner (`via: direct`); it answers `404` to anyone else.
 //
 // Scope: `inboxes:read`.
 //
@@ -56530,7 +56670,8 @@ func (c *Client) RevokeInboxAccess(ctx context.Context, inboxId InboxId, memberI
 // GrantInboxAccess Give a member access
 //
 // Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
-// the member's access flips (not when a team already gave it).
+// the member's access flips (not when a team already gave it). A personal mailbox answers
+// `409 personal_mailbox`: only its owner reads it.
 //
 // Scope: `inboxes:manage`.
 //
@@ -56573,7 +56714,8 @@ func (c *Client) GetInboxSlack(ctx context.Context, inboxId InboxId, params *Get
 // Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
 // (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
 // nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+// mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
 //
 // Takes any type of body and a specified content type.
 //
@@ -56595,7 +56737,8 @@ func (c *Client) SetInboxSlackWithBody(ctx context.Context, inboxId InboxId, par
 // Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
 // (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
 // nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+// mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -57839,7 +57982,8 @@ func (c *Client) RenderMarkdown(ctx context.Context, params *RenderMarkdownParam
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
 // session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes any type of body and a specified content type.
@@ -57866,7 +58010,8 @@ func (c *Client) DeleteMeWithBody(ctx context.Context, contentType string, body 
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
 // session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes a body of the `application/json` content type.
@@ -58748,7 +58893,8 @@ func (c *Client) ListMembers(ctx context.Context, params *ListMembersParams, req
 // RemoveMember Remove a member
 //
 // Owners and admins only, with a member session; only an owner removes an owner. The last
-// owner cannot be removed.
+// owner cannot be removed. A member who owns personal mailboxes answers `409
+// personal_mailbox` with their ids in `inbox_ids` until each is deleted.
 //
 // Corresponds with DELETE /v1/members/{memberId} (the `RemoveMember` operationId).
 func (c *Client) RemoveMember(ctx context.Context, memberId MemberId, params *RemoveMemberParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -62744,7 +62890,8 @@ func (c *Client) RevokeTeamInboxAccess(ctx context.Context, teamId TeamId, inbox
 //
 // Owners, admins and API keys not limited to inboxes. Every member of the team gains the
 // inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
-// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`). A
+// personal mailbox answers `409 personal_mailbox`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -63081,7 +63228,10 @@ func (c *Client) ListWebhooks(ctx context.Context, params *ListWebhooksParams, r
 //
 // Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
 // whole workspace; with it, only those of that inbox (contact events for contacts with an
-// external id or a conversation there). The signing secret is returned once.
+// external id or a conversation there). The signing secret is returned once. A personal
+// mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+// events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+// cannot read it).
 //
 // Scope: `webhooks:manage`.
 //
@@ -63110,7 +63260,10 @@ func (c *Client) CreateWebhookWithBody(ctx context.Context, params *CreateWebhoo
 //
 // Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
 // whole workspace; with it, only those of that inbox (contact events for contacts with an
-// external id or a conversation there). The signing secret is returned once.
+// external id or a conversation there). The signing secret is returned once. A personal
+// mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+// events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+// cannot read it).
 //
 // Scope: `webhooks:manage`.
 //
@@ -99389,7 +99542,8 @@ type ClientWithResponsesInterface interface {
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
 	// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-	// `audit:read` (`403 forbidden`).
+	// `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+	// personal_mailbox`: keys never reach one.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -99401,7 +99555,8 @@ type ClientWithResponsesInterface interface {
 	// Owners and admins only, with a member session. The secret is returned once and stored
 	// only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
 	// `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-	// `audit:read` (`403 forbidden`).
+	// `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+	// personal_mailbox`: keys never reach one.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -103784,6 +103939,11 @@ type ClientWithResponsesInterface interface {
 	// Owners, admins and API keys see every inbox; agents see the inboxes they were given access
 	// to, and API keys limited to inboxes those inboxes.
 	//
+	// A personal mailbox (`owner_member_id` set) is listed to its owner as any inbox they read,
+	// and to owners, admins and API keys not limited to inboxes as metadata only: its id, name,
+	// purpose, owner and `mailbox` (addresses, conversation count, storage), with an empty
+	// `signature` and no `import` or `ses_tenant`. Nobody but its owner reads its content.
+	//
 	// Scope: `inboxes:read`.
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -103796,6 +103956,13 @@ type ClientWithResponsesInterface interface {
 	// Owners, admins and API keys. A new identity secret is generated; it is
 	// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
 	// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
+	//
+	// With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+	// `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+	// a member session or their own OAuth token; owners and admins create one for any member.
+	// API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+	// owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+	// the channel, DKIM, deliverability and forwarding-address endpoints).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -103810,6 +103977,13 @@ type ClientWithResponsesInterface interface {
 	// returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
 	// given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 	//
+	// With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+	// `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+	// a member session or their own OAuth token; owners and admins create one for any member.
+	// API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+	// owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+	// the channel, DKIM, deliverability and forwarding-address endpoints).
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -103822,6 +103996,10 @@ type ClientWithResponsesInterface interface {
 	// Owners, admins and API keys. Deletes its channels, conversations,
 	// messages and attachments, and its Amazon SES tenant, when the server manages one.
 	//
+	// A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
+	// who delete it without reading it; API keys and other members get `404`. Audited as
+	// `inbox.deleted`.
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -103831,7 +104009,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetInboxWithResponse Get an inbox
 	//
-	// An inbox the caller cannot see answers `404`.
+	// An inbox the caller cannot see answers `404`. A personal mailbox answers its owner in
+	// full and owners, admins and API keys not limited to inboxes with its metadata only (see
+	// `GET /v1/inboxes`).
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -103845,6 +104025,10 @@ type ClientWithResponsesInterface interface {
 	// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
 	// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 	//
+	// A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+	// for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+	// and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
+	//
 	// Scope: `inboxes:manage`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -103856,6 +104040,10 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
 	// inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
+	//
+	// A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+	// for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+	// and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -103923,6 +104111,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys. Replaces the inbox's identity secret, which
 	// host backends use to sign identity tokens; tokens signed with the old secret stop working.
+	// A personal mailbox: its owner only (`404` for everyone else).
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -103935,6 +104124,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
 	// Owners and admins see every inbox without a grant and are not listed unless granted.
+	// A personal mailbox lists its owner (`via: direct`); it answers `404` to anyone else.
 	//
 	// Scope: `inboxes:read`.
 	//
@@ -103958,7 +104148,8 @@ type ClientWithResponsesInterface interface {
 	// GrantInboxAccessWithResponse Give a member access
 	//
 	// Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
-	// the member's access flips (not when a team already gave it).
+	// the member's access flips (not when a team already gave it). A personal mailbox answers
+	// `409 personal_mailbox`: only its owner reads it.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -103985,7 +104176,8 @@ type ClientWithResponsesInterface interface {
 	// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
 	// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
 	// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+	// mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -103997,7 +104189,8 @@ type ClientWithResponsesInterface interface {
 	// Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
 	// (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
 	// nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+	// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+	// mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -104761,7 +104954,8 @@ type ClientWithResponsesInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+	// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+	// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
 	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -104778,7 +104972,8 @@ type ClientWithResponsesInterface interface {
 	// follows go, and in each workspace the contact linked to them is deleted when it has no
 	// conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 	// person is the only owner of a workspace: make someone else an owner or delete that
-	// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+	// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+	// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
 	// session made through single sign-on is refused with `403 sso_session_scope`.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -105282,7 +105477,8 @@ type ClientWithResponsesInterface interface {
 	// RemoveMemberWithResponse Remove a member
 	//
 	// Owners and admins only, with a member session; only an owner removes an owner. The last
-	// owner cannot be removed.
+	// owner cannot be removed. A member who owns personal mailboxes answers `409
+	// personal_mailbox` with their ids in `inbox_ids` until each is deleted.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -107864,7 +108060,8 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys not limited to inboxes. Every member of the team gains the
 	// inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
-	// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+	// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`). A
+	// personal mailbox answers `409 personal_mailbox`.
 	//
 	// Scope: `inboxes:manage`.
 	//
@@ -108069,7 +108266,10 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
 	// whole workspace; with it, only those of that inbox (contact events for contacts with an
-	// external id or a conversation there). The signing secret is returned once.
+	// external id or a conversation there). The signing secret is returned once. A personal
+	// mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+	// events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+	// cannot read it).
 	//
 	// Scope: `webhooks:manage`.
 	//
@@ -108088,7 +108288,10 @@ type ClientWithResponsesInterface interface {
 	//
 	// Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
 	// whole workspace; with it, only those of that inbox (contact events for contacts with an
-	// external id or a conversation there). The signing secret is returned once.
+	// external id or a conversation there). The signing secret is returned once. A personal
+	// mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+	// events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+	// cannot read it).
 	//
 	// Scope: `webhooks:manage`.
 	//
@@ -115901,6 +116104,8 @@ type CreateApiKeyResponse struct {
 	ApplicationproblemJSON401 *Problem
 	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
 	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
 }
 
 // GetJSON201 returns the response for an HTTP 201 `application/json` response
@@ -115921,6 +116126,11 @@ func (r CreateApiKeyResponse) GetApplicationproblemJSON401() *Problem {
 // GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
 func (r CreateApiKeyResponse) GetApplicationproblemJSON403() *Problem {
 	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r CreateApiKeyResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
 }
 
 // GetBody returns the raw response body bytes
@@ -129766,6 +129976,8 @@ type GrantInboxAccessResponse struct {
 	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
 }
 
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
@@ -129781,6 +129993,11 @@ func (r GrantInboxAccessResponse) GetApplicationproblemJSON403() *Problem {
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
 func (r GrantInboxAccessResponse) GetApplicationproblemJSON404() *Problem {
 	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r GrantInboxAccessResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
 }
 
 // GetBody returns the raw response body bytes
@@ -142378,6 +142595,8 @@ type GrantTeamInboxAccessResponse struct {
 	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
 }
 
 // GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
@@ -142393,6 +142612,11 @@ func (r GrantTeamInboxAccessResponse) GetApplicationproblemJSON403() *Problem {
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
 func (r GrantTeamInboxAccessResponse) GetApplicationproblemJSON404() *Problem {
 	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r GrantTeamInboxAccessResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
 }
 
 // GetBody returns the raw response body bytes
@@ -143070,6 +143294,8 @@ type CreateWebhookResponse struct {
 	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
 }
 
 // GetJSON201 returns the response for an HTTP 201 `application/json` response
@@ -143095,6 +143321,11 @@ func (r CreateWebhookResponse) GetApplicationproblemJSON403() *Problem {
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
 func (r CreateWebhookResponse) GetApplicationproblemJSON404() *Problem {
 	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r CreateWebhookResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
 }
 
 // GetBody returns the raw response body bytes
@@ -147509,7 +147740,8 @@ func (c *ClientWithResponses) ListApiKeysWithResponse(ctx context.Context, param
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
 // `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-// `audit:read` (`403 forbidden`).
+// `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+// personal_mailbox`: keys never reach one.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -147527,7 +147759,8 @@ func (c *ClientWithResponses) CreateApiKeyWithBodyWithResponse(ctx context.Conte
 // Owners and admins only, with a member session. The secret is returned once and stored
 // only as a hash. A key limited to inboxes cannot hold `inboxes:manage`, `webhooks:manage`,
 // `workspace:manage`, `fields:manage`, `automations:manage` or `audit:read` (`400 validation_failed`); only an owner gives a key
-// `audit:read` (`403 forbidden`).
+// `audit:read` (`403 forbidden`). A personal mailbox in `inbox_ids` answers `409
+// personal_mailbox`: keys never reach one.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -153482,6 +153715,11 @@ func (c *ClientWithResponses) GetHomeWithResponse(ctx context.Context, params *G
 // Owners, admins and API keys see every inbox; agents see the inboxes they were given access
 // to, and API keys limited to inboxes those inboxes.
 //
+// A personal mailbox (`owner_member_id` set) is listed to its owner as any inbox they read,
+// and to owners, admins and API keys not limited to inboxes as metadata only: its id, name,
+// purpose, owner and `mailbox` (addresses, conversation count, storage), with an empty
+// `signature` and no `import` or `ses_tenant`. Nobody but its owner reads its content.
+//
 // Scope: `inboxes:read`.
 //
 // Returns a wrapper object for the known response body format(s).
@@ -153500,6 +153738,13 @@ func (c *ClientWithResponses) ListInboxesWithResponse(ctx context.Context, param
 // Owners, admins and API keys. A new identity secret is generated; it is
 // returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
 // given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
+//
+// With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+// `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+// a member session or their own OAuth token; owners and admins create one for any member.
+// API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+// owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+// the channel, DKIM, deliverability and forwarding-address endpoints).
 //
 // Scope: `inboxes:manage`.
 //
@@ -153520,6 +153765,13 @@ func (c *ClientWithResponses) CreateInboxWithBodyWithResponse(ctx context.Contex
 // returned here and on rotation only, and stored encrypted. `purpose` is `support` unless
 // given; a `mail` inbox with automatic assignment answers `409 purpose_mismatch`.
 //
+// With `owner_member_id` the inbox is that member's personal mailbox: `purpose` becomes
+// `mail` (`support` answers `409 purpose_mismatch`). Any member creates one for themself with
+// a member session or their own OAuth token; owners and admins create one for any member.
+// API keys answer `403 forbidden`, an unknown member `404`. Audited as `inbox.created`. Its
+// owner manages its settings and channels whatever their role (`PATCH /v1/inboxes/{id}`,
+// the channel, DKIM, deliverability and forwarding-address endpoints).
+//
 // Scope: `inboxes:manage`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -153538,6 +153790,10 @@ func (c *ClientWithResponses) CreateInboxWithResponse(ctx context.Context, param
 // Owners, admins and API keys. Deletes its channels, conversations,
 // messages and attachments, and its Amazon SES tenant, when the server manages one.
 //
+// A personal mailbox is deleted by its owner, whatever their role, or by an owner or admin,
+// who delete it without reading it; API keys and other members get `404`. Audited as
+// `inbox.deleted`.
+//
 // Scope: `inboxes:manage`.
 //
 // Returns a wrapper object for the known response body format(s).
@@ -153553,7 +153809,9 @@ func (c *ClientWithResponses) DeleteInboxWithResponse(ctx context.Context, inbox
 
 // GetInboxWithResponse Get an inbox
 //
-// An inbox the caller cannot see answers `404`.
+// An inbox the caller cannot see answers `404`. A personal mailbox answers its owner in
+// full and owners, admins and API keys not limited to inboxes with its metadata only (see
+// `GET /v1/inboxes`).
 //
 // Scope: `inboxes:read`.
 //
@@ -153573,6 +153831,10 @@ func (c *ClientWithResponses) GetInboxWithResponse(ctx context.Context, inboxId 
 // Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
 // inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
 //
+// A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+// for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+// and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
+//
 // Scope: `inboxes:manage`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -153590,6 +153852,10 @@ func (c *ClientWithResponses) UpdateInboxWithBodyWithResponse(ctx context.Contex
 //
 // Owners, admins and API keys. Changing `purpose` or setting `assignment_mode` on a `mail`
 // inbox can answer `409 purpose_mismatch` (see `InboxUpdate.purpose`).
+//
+// A personal mailbox is updated by its owner, whatever their role, and by owners and admins
+// for its `name` only: any other field from them answers `409 personal_mailbox`; API keys
+// and other members get `404`. Its `purpose` stays `mail` (`409 personal_mailbox`).
 //
 // Scope: `inboxes:manage`.
 //
@@ -153681,6 +153947,7 @@ func (c *ClientWithResponses) CreateChannelWithResponse(ctx context.Context, inb
 //
 // Owners, admins and API keys. Replaces the inbox's identity secret, which
 // host backends use to sign identity tokens; tokens signed with the old secret stop working.
+// A personal mailbox: its owner only (`404` for everyone else).
 //
 // Scope: `inboxes:manage`.
 //
@@ -153699,6 +153966,7 @@ func (c *ClientWithResponses) RotateInboxIdentitySecretWithResponse(ctx context.
 //
 // Members with access to this inbox, granted directly or through a team (`via`, `team_ids`).
 // Owners and admins see every inbox without a grant and are not listed unless granted.
+// A personal mailbox lists its owner (`via: direct`); it answers `404` to anyone else.
 //
 // Scope: `inboxes:read`.
 //
@@ -153734,7 +154002,8 @@ func (c *ClientWithResponses) RevokeInboxAccessWithResponse(ctx context.Context,
 // GrantInboxAccessWithResponse Give a member access
 //
 // Owners, admins and API keys. Granting twice is a no-op. Sends `inbox_access.changed` when
-// the member's access flips (not when a team already gave it).
+// the member's access flips (not when a team already gave it). A personal mailbox answers
+// `409 personal_mailbox`: only its owner reads it.
 //
 // Scope: `inboxes:manage`.
 //
@@ -153773,7 +154042,8 @@ func (c *ClientWithResponses) GetInboxSlackWithResponse(ctx context.Context, inb
 // Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
 // (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
 // nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+// mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -153791,7 +154061,8 @@ func (c *ClientWithResponses) SetInboxSlackWithBodyWithResponse(ctx context.Cont
 // Replaces the inbox's Slack settings. A channel must be one `GET /v1/slack/channels` lists
 // (the bot is a member), else `400 validation_failed`; `null` or an absent channel posts
 // nothing for that event. Owners and admins, or API keys and tokens with `inboxes:manage`.
-// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`.
+// `409 slack_not_configured`, `409 slack_not_connected`, `502 slack_failed`. A personal
+// mailbox posts nothing to Slack: a channel for one answers `409 personal_mailbox`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -154873,7 +155144,8 @@ func (c *ClientWithResponses) RenderMarkdownWithResponse(ctx context.Context, pa
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
 // session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -154896,7 +155168,8 @@ func (c *ClientWithResponses) DeleteMeWithBodyWithResponse(ctx context.Context, 
 // follows go, and in each workspace the contact linked to them is deleted when it has no
 // conversations and no external ids, else only unlinked. Refused with `409 last_owner` while the
 // person is the only owner of a workspace: make someone else an owner or delete that
-// workspace first. Needs a member session; the body repeats the person's e-mail address. A
+// workspace first, and with `409 personal_mailbox` (their ids in `inbox_ids`) while they own a
+// personal mailbox. Needs a member session; the body repeats the person's e-mail address. A
 // session made through single sign-on is refused with `403 sso_session_scope`.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
@@ -155652,7 +155925,8 @@ func (c *ClientWithResponses) ListMembersWithResponse(ctx context.Context, param
 // RemoveMemberWithResponse Remove a member
 //
 // Owners and admins only, with a member session; only an owner removes an owner. The last
-// owner cannot be removed.
+// owner cannot be removed. A member who owns personal mailboxes answers `409
+// personal_mailbox` with their ids in `inbox_ids` until each is deleted.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -159176,7 +159450,8 @@ func (c *ClientWithResponses) RevokeTeamInboxAccessWithResponse(ctx context.Cont
 //
 // Owners, admins and API keys not limited to inboxes. Every member of the team gains the
 // inbox at once (`inbox_access.changed` for each whose access flips) and `team.updated` is
-// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`).
+// sent. Granting twice is a no-op. A team holds at most 100 inboxes (`403 team_limit`). A
+// personal mailbox answers `409 personal_mailbox`.
 //
 // Scope: `inboxes:manage`.
 //
@@ -159471,7 +159746,10 @@ func (c *ClientWithResponses) ListWebhooksWithResponse(ctx context.Context, para
 //
 // Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
 // whole workspace; with it, only those of that inbox (contact events for contacts with an
-// external id or a conversation there). The signing secret is returned once.
+// external id or a conversation there). The signing secret is returned once. A personal
+// mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+// events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+// cannot read it).
 //
 // Scope: `webhooks:manage`.
 //
@@ -159496,7 +159774,10 @@ func (c *ClientWithResponses) CreateWebhookWithBodyWithResponse(ctx context.Cont
 //
 // Owners, admins and API keys. Without `inbox_id` the endpoint receives the events of the
 // whole workspace; with it, only those of that inbox (contact events for contacts with an
-// external id or a conversation there). The signing secret is returned once.
+// external id or a conversation there). The signing secret is returned once. A personal
+// mailbox sends no webhooks: neither a workspace-wide endpoint nor one for it receives its
+// events, and an `inbox_id` naming one answers `409 personal_mailbox` (`404` to whoever
+// cannot read it).
 //
 // Scope: `webhooks:manage`.
 //
@@ -165868,6 +166149,13 @@ func ParseCreateApiKeyResponse(rsp *http.Response) (*CreateApiKeyResponse, error
 			return nil, err
 		}
 		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 
@@ -176819,6 +177107,13 @@ func ParseGrantInboxAccessResponse(rsp *http.Response) (*GrantInboxAccessRespons
 		}
 		response.ApplicationproblemJSON404 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
 	}
 
 	return response, nil
@@ -186698,6 +186993,13 @@ func ParseGrantTeamInboxAccessResponse(rsp *http.Response) (*GrantTeamInboxAcces
 		}
 		response.ApplicationproblemJSON404 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
 	}
 
 	return response, nil
@@ -187231,6 +187533,13 @@ func ParseCreateWebhookResponse(rsp *http.Response) (*CreateWebhookResponse, err
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 

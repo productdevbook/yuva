@@ -180,7 +180,7 @@ func (s *Server) visibleEmailChannel(ctx context.Context, p principal, id uuid.U
 
 func (s *Server) CreateDkimKey(ctx context.Context, req oas.CreateDkimKeyRequestObject) (oas.CreateDkimKeyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, uuid.Nil(), req.ChannelId); err != nil {
 		return nil, err
 	}
 	selector := strings.TrimSpace(req.Body.Selector)
@@ -220,7 +220,7 @@ func (s *Server) CreateDkimKey(ctx context.Context, req oas.CreateDkimKeyRequest
 
 func (s *Server) DeleteDkimKey(ctx context.Context, req oas.DeleteDkimKeyRequestObject) (oas.DeleteDkimKeyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, uuid.Nil(), req.ChannelId); err != nil {
 		return nil, err
 	}
 	c, _, err := s.visibleEmailChannel(ctx, p, req.ChannelId)
@@ -352,7 +352,7 @@ func (w *deliverabilityProbeWorker) Work(ctx context.Context, job *river.Job[Del
 
 func (s *Server) CheckDeliverability(ctx context.Context, req oas.CheckDeliverabilityRequestObject) (oas.CheckDeliverabilityResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, uuid.Nil(), req.ChannelId); err != nil {
 		return nil, err
 	}
 	c, e, err := s.visibleEmailChannel(ctx, p, req.ChannelId)

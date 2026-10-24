@@ -25,7 +25,7 @@ WHERE l.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR l.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND @archived::bool = (l.archived_at IS NOT NULL)
   AND l.kind = @kind
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = @viewer_id))
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
@@ -160,7 +160,7 @@ WHERE e.workspace_id = @workspace_id
   AND (sqlc.narg(list_id)::uuid IS NULL OR s.list_id = sqlc.narg(list_id)::uuid)
   AND (sqlc.narg(contact_id)::uuid IS NULL OR s.contact_id = sqlc.narg(contact_id)::uuid)
   AND (sqlc.narg(since)::timestamptz IS NULL OR e.created_at >= sqlc.narg(since)::timestamptz)
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = l.workspace_id AND pmb.id = l.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = l.workspace_id AND iv.inbox_id = l.inbox_id AND iv.viewer_id = @viewer_id))
   AND (sqlc.narg(after_at)::timestamptz IS NULL

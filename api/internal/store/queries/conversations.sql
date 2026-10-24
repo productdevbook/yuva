@@ -40,7 +40,7 @@ LEFT JOIN LATERAL (
       AND sm.scheduled_by = sqlc.narg(scheduled_by)::uuid AND sm.conversation_id = c.id AND sm.scheduled_at IS NOT NULL
     ORDER BY sm.scheduled_at LIMIT 1) sched ON true
 WHERE c.workspace_id = @workspace_id
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id))
   AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
@@ -160,7 +160,7 @@ WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[]);
 SELECT c.inbox_id, c.assignee_id, c.team_id, c.spam, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
@@ -175,7 +175,7 @@ SELECT cl.label_id, count(*) AS n
 FROM conversations c
 JOIN conversation_labels cl ON cl.workspace_id = c.workspace_id AND cl.conversation_id = c.id
 WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
@@ -190,7 +190,7 @@ ORDER BY cl.label_id;
 SELECT (c.feedback->>'category')::text AS category, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam AND c.kind = 'feedback'
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)
@@ -205,7 +205,7 @@ ORDER BY 1;
 SELECT count(*) FROM conversations c
 JOIN conversation_stars st ON st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = @member_id
 WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL AND NOT c.spam
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = c.workspace_id AND iv.inbox_id = c.inbox_id AND iv.viewer_id = @viewer_id::uuid))
   AND conversation_visible_to(c.draft_of, sqlc.narg(viewer_member_id)::uuid)

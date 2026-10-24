@@ -49,14 +49,39 @@ func requireManagerOrKey(p principal) error {
 	return nil
 }
 
+func errPersonalMailbox(detail string) *apiError {
+	return problem(http.StatusConflict, "personal_mailbox", detail)
+}
+
+// canReadPersonal is who reads a personal mailbox's content: its owner, through a session or the
+// owner's own OAuth grant, and the system's own jobs.
+func canReadPersonal(p principal, in store.Inbox) bool {
+	if in.OwnerMemberID == nil || p.auto {
+		return true
+	}
+	return !p.isKey() && p.rule == nil && p.memberID != uuid.Nil() && p.memberID == *in.OwnerMemberID
+}
+
+// canSeeInbox reports whether p reads the inbox's content; seeing every inbox stops short of another
+// member's personal mailbox.
 func canSeeInbox(ctx context.Context, q *store.Queries, p principal, inboxID uuid.UUID) (bool, error) {
-	if p.seesAllInboxes() {
+	if p.auto {
 		return true, nil
 	}
-	return q.ViewerHasInbox(ctx, store.ViewerHasInboxParams{WorkspaceID: p.workspaceID, InboxID: inboxID, ViewerID: p.viewerID()})
+	return q.ViewerReadsInbox(ctx, store.ViewerReadsInboxParams{WorkspaceID: p.workspaceID, InboxID: inboxID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})
 }
 
 func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {
+	in, err := visibleInboxMeta(ctx, q, p, id)
+	if err == nil && !canReadPersonal(p, in) {
+		return in, errInboxGone
+	}
+	return in, err
+}
+
+// visibleInboxMeta also returns another member's personal mailbox to those who see every inbox, for
+// its metadata only.
+func visibleInboxMeta(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.Inbox, error) {
 	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: id})
 	if store.IsNotFound(err) {
 		return in, errInboxGone
@@ -64,7 +89,10 @@ func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UU
 	if err != nil {
 		return in, err
 	}
-	ok, err := canSeeInbox(ctx, q, p, in.ID)
+	if p.seesAllInboxes() {
+		return in, nil
+	}
+	ok, err := q.ViewerHasInbox(ctx, store.ViewerHasInboxParams{WorkspaceID: p.workspaceID, InboxID: in.ID, ViewerID: p.viewerID()})
 	if err != nil {
 		return in, err
 	}
@@ -72,6 +100,31 @@ func visibleInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UU
 		return in, errInboxGone
 	}
 	return in, nil
+}
+
+// hiddenInboxes remembers, for one principal, which inboxes are personal mailboxes it does not read.
+// An inbox's owner is fixed when it is created, so an answer holds while the inbox exists.
+type hiddenInboxes struct {
+	p    principal
+	seen map[uuid.UUID]bool
+}
+
+func (h *hiddenInboxes) hidden(ctx context.Context, q *store.Queries, id uuid.UUID) (bool, error) {
+	if v, ok := h.seen[id]; ok {
+		return v, nil
+	}
+	if h.seen == nil {
+		h.seen = map[uuid.UUID]bool{}
+	}
+	in, err := q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: h.p.workspaceID, ID: id})
+	if store.IsNotFound(err) {
+		return true, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	h.seen[id] = !canReadPersonal(h.p, in)
+	return h.seen[id], nil
 }
 
 // visibleConversation is a conversation of an inbox the caller can see that is not in the trash.
@@ -121,17 +174,7 @@ func conversationHidden(p principal, c store.Conversation) bool {
 }
 
 func memberHasInbox(ctx context.Context, q *store.Queries, workspaceID, inboxID, memberID uuid.UUID) (bool, error) {
-	m, err := q.GetMember(ctx, store.GetMemberParams{WorkspaceID: workspaceID, ID: memberID})
-	if store.IsNotFound(err) {
-		return false, nil
-	}
-	if err != nil {
-		return false, err
-	}
-	if m.Role == roleOwner || m.Role == roleAdmin {
-		return true, nil
-	}
-	return q.HasInboxAccess(ctx, store.HasInboxAccessParams{WorkspaceID: workspaceID, InboxID: inboxID, MemberID: memberID})
+	return q.MemberReadsInbox(ctx, store.MemberReadsInboxParams{WorkspaceID: workspaceID, InboxID: inboxID, MemberID: memberID})
 }
 
 func pageSize(limit *int32) (int32, error) {

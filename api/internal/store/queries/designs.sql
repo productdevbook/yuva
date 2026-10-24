@@ -26,9 +26,10 @@ WHERE d.workspace_id = @workspace_id
   AND @archived::bool = (d.archived_at IS NOT NULL)
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR d.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (sqlc.narg(q)::text IS NULL OR d.name ILIKE '%' || sqlc.narg(q)::text || '%')
-  AND (@all_inboxes::bool OR d.inbox_id IS NULL OR EXISTS (
+  AND (d.inbox_id IS NULL OR (@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = @viewer_id))
+
   AND (sqlc.narg(cursor_at)::timestamptz IS NULL
        OR (d.updated_at, d.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid))
 ORDER BY d.updated_at DESC, d.id DESC

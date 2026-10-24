@@ -199,7 +199,7 @@ func chatChannelsByID(ctx context.Context, q *store.Queries, workspaceID uuid.UU
 
 func (s *Server) RotateChannelPublicKey(ctx context.Context, req oas.RotateChannelPublicKeyRequestObject) (oas.RotateChannelPublicKeyResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, uuid.Nil(), req.ChannelId); err != nil {
 		return nil, err
 	}
 	c, err := s.visibleChannel(ctx, p, req.ChannelId)

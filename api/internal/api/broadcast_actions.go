@@ -300,14 +300,8 @@ func (s *Server) SendBroadcastTest(ctx context.Context, req oas.SendBroadcastTes
 		} else if err != nil {
 			return nil, err
 		}
-		if !p.seesAllInboxes() {
-			ok, err := s.st.ContactVisibleToViewer(ctx, store.ContactVisibleToViewerParams{WorkspaceID: p.workspaceID, ViewerID: p.viewerID(), ContactID: *contactID})
-			if err != nil {
-				return nil, err
-			}
-			if !ok {
-				return nil, errContactGone
-			}
+		if err := visibleContact(ctx, s.st.Queries, p, *contactID); err != nil {
+			return nil, err
 		}
 	}
 	if b.ChannelID == nil || s.broadcastChannel(ctx, s.st.Queries, p.workspaceID, b.InboxID, *b.ChannelID) != nil {

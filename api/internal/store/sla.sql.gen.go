@@ -857,7 +857,7 @@ JOIN conversations c ON c.workspace_id = o.workspace_id AND c.id = o.conversatio
 WHERE o.workspace_id = $1 AND o.at >= $2 AND o.at <= $3
   AND ($4::uuid IS NULL OR o.inbox_id = $4::uuid) AND c.trashed_at IS NULL
   AND NOT EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = o.workspace_id AND mi.id = o.inbox_id AND mi.purpose = 'mail')
-  AND ($5::bool OR EXISTS (
+  AND (($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = o.workspace_id AND pmb.id = o.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = o.workspace_id AND iv.inbox_id = o.inbox_id AND iv.viewer_id = $6::uuid))
 GROUP BY 1, 2, 3

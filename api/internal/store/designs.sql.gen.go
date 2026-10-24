@@ -538,9 +538,10 @@ WHERE d.workspace_id = $1
   AND $2::bool = (d.archived_at IS NOT NULL)
   AND ($3::uuid IS NULL OR d.inbox_id = $3::uuid)
   AND ($4::text IS NULL OR d.name ILIKE '%' || $4::text || '%')
-  AND ($5::bool OR d.inbox_id IS NULL OR EXISTS (
+  AND (d.inbox_id IS NULL OR ($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = $6))
+
   AND ($7::timestamptz IS NULL
        OR (d.updated_at, d.id) < ($7::timestamptz, $8::uuid))
 ORDER BY d.updated_at DESC, d.id DESC

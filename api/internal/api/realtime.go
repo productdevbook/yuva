@@ -266,6 +266,50 @@ func (s *Server) stream(conn *websocket.Conn, r *http.Request, p principal, resu
 type eventFilter struct {
 	p       principal
 	inboxes map[uuid.UUID]bool
+	hidden  hiddenInboxes
+}
+
+// seenByAll keeps from those who see every inbox the events of personal mailboxes they do not read,
+// and contact events of contacts known only from those.
+func (f *eventFilter) seenByAll(ctx context.Context, q *store.Queries, e realtime.Event) (bool, error) {
+	if f.p.auto {
+		return true, nil
+	}
+	f.hidden.p = f.p
+	if e.InboxID != nil && e.Type != realtime.InboxDeleted {
+		if h, err := f.hidden.hidden(ctx, q, *e.InboxID); err != nil || h {
+			return false, err
+		}
+	}
+	var contact uuid.UUID
+	switch e.Type {
+	case realtime.ContactUpdated:
+		var c struct {
+			ID      uuid.UUID `json:"id"`
+			Inboxes []struct {
+				ID uuid.UUID `json:"id"`
+			} `json:"inboxes"`
+		}
+		if err := json.Unmarshal(e.Data, &c); err != nil {
+			return false, err
+		}
+		for _, in := range c.Inboxes {
+			if _, err := f.hidden.hidden(ctx, q, in.ID); err != nil {
+				return false, err
+			}
+		}
+		contact = c.ID
+	case realtime.ContactPresence:
+		var c oas.ContactPresence
+		if err := json.Unmarshal(e.Data, &c); err != nil {
+			return false, err
+		}
+		contact = c.ContactId
+	default:
+		return true, nil
+	}
+	hidden, err := q.ContactPersonalOnly(ctx, store.ContactPersonalOnlyParams{WorkspaceID: f.p.workspaceID, ContactID: contact, ViewerID: f.p.viewerID()})
+	return !hidden, err
 }
 
 func (f *eventFilter) reload(ctx context.Context, q *store.Queries) error {
@@ -380,7 +424,7 @@ func (f *eventFilter) allows(ctx context.Context, q *store.Queries, e realtime.E
 		return !f.p.isKey() && r.MemberID == f.p.memberID, nil
 	}
 	if f.p.seesAllInboxes() {
-		return true, nil
+		return f.seenByAll(ctx, q, e)
 	}
 	if e.Type == realtime.ContactUpdated {
 		var c struct {
@@ -415,8 +459,12 @@ func (f *eventFilter) view(e realtime.Event) (realtime.Event, bool) {
 	case eventConversationStar:
 		return starView(e)
 	}
-	if e.Type != realtime.ContactUpdated || f.p.seesAllInboxes() {
+	if e.Type != realtime.ContactUpdated || (f.p.seesAllInboxes() && f.p.auto) {
 		return e, true
+	}
+	keep := func(id uuid.UUID) bool { return f.inboxes[id] }
+	if f.p.seesAllInboxes() {
+		keep = func(id uuid.UUID) bool { return !f.hidden.seen[id] }
 	}
 	var c map[string]json.RawMessage
 	if json.Unmarshal(e.Data, &c) != nil {
@@ -431,7 +479,7 @@ func (f *eventFilter) view(e realtime.Event) (realtime.Event, bool) {
 	}
 	kept := make([]json.RawMessage, 0, len(raw))
 	for i, x := range all {
-		if f.inboxes[x.ID] {
+		if keep(x.ID) {
 			kept = append(kept, raw[i])
 		}
 	}

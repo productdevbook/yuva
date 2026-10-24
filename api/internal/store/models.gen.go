@@ -1463,6 +1463,7 @@ type Inbox struct {
 	Purpose              string
 	Signature            string
 	SignatureImageIds    []uuid.UUID
+	OwnerMemberID        *uuid.UUID
 }
 
 type InboxMember struct {

@@ -516,7 +516,7 @@ func (s *Server) CleanMigrationAudit(ctx context.Context) error {
 
 func (s *Server) RotateForwardingAddress(ctx context.Context, req oas.RotateForwardingAddressRequestObject) (oas.RotateForwardingAddressResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, uuid.Nil(), req.ChannelId); err != nil {
 		return nil, err
 	}
 	c, err := s.visibleChannel(ctx, p, req.ChannelId)

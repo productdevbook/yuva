@@ -131,7 +131,7 @@ func newVerifyCode() string {
 
 // emailChannelFor returns the e-mail settings of a channel the principal manages.
 func (s *Server) emailChannelFor(ctx context.Context, p principal, id oas.ChannelId) (store.Channel, store.EmailChannel, error) {
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, uuid.Nil(), id); err != nil {
 		return store.Channel{}, store.EmailChannel{}, err
 	}
 	c, err := s.visibleChannel(ctx, p, id)

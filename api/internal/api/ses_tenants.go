@@ -1352,7 +1352,7 @@ type SESChannelReport struct {
 // OperatorSESTenants reports the stored tenants and channel states of a workspace's inboxes, or of
 // one; it calls no AWS operation.
 func (s *Server) OperatorSESTenants(ctx context.Context, ws uuid.UUID, inboxID *uuid.UUID) ([]SESInboxReport, error) {
-	inboxes, err := s.st.ListInboxes(ctx, store.ListInboxesParams{WorkspaceID: ws, AllInboxes: true})
+	inboxes, err := s.st.ListInboxes(ctx, store.ListInboxesParams{WorkspaceID: ws, AllInboxes: true, WithPersonal: true})
 	if err != nil {
 		return nil, err
 	}

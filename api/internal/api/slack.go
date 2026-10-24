@@ -444,8 +444,10 @@ func (s *Server) SetInboxSlack(ctx context.Context, req oas.SetInboxSlackRequest
 	if err := requireManagerOrKey(p); err != nil {
 		return nil, err
 	}
-	if _, err := visibleInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
+	if in, err := visibleInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
+	} else if in.OwnerMemberID != nil {
+		return nil, errPersonalMailbox("a personal mailbox posts nothing to Slack")
 	}
 	b := req.Body
 	newConv, err := slackChannelInput(b.NewConversationsChannelId, "new_conversations_channel_id")

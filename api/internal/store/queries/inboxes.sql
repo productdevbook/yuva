@@ -1,10 +1,11 @@
 -- name: CreateInbox :one
 INSERT INTO inboxes (id, workspace_id, name, slug, purpose, branding, default_locale, timezone, mode,
                      expected_reply_minutes, business_hours, identity_secret, ask_for_rating, rating_since,
-                     assignment_mode, assignment_cap, created_at, updated_at)
+                     assignment_mode, assignment_cap, owner_member_id, created_at, updated_at)
 VALUES (@id, @workspace_id, @name, @slug, @purpose, @branding, @default_locale, @timezone, @mode,
         @expected_reply_minutes, @business_hours, @identity_secret, coalesce(sqlc.narg(ask_for_rating)::bool, false),
-        CASE WHEN sqlc.narg(ask_for_rating)::bool THEN @now::timestamptz END, @assignment_mode, @assignment_cap, @now, @now)
+        CASE WHEN sqlc.narg(ask_for_rating)::bool THEN @now::timestamptz END, @assignment_mode, @assignment_cap,
+        sqlc.narg(owner_member_id), @now, @now)
 RETURNING *;
 
 -- name: GetInbox :one
@@ -19,7 +20,7 @@ SELECT * FROM inboxes WHERE workspace_id = $1 AND id = $2 FOR SHARE;
 -- name: ListInboxes :many
 SELECT i.* FROM inboxes i
 WHERE i.workspace_id = @workspace_id
-  AND (@all_inboxes::bool OR EXISTS (
+  AND ((@all_inboxes::bool AND (@with_personal::bool OR i.owner_member_id IS NULL)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id))
 ORDER BY i.name, i.id;
@@ -82,6 +83,48 @@ SELECT DISTINCT inbox_id FROM inbox_viewers WHERE workspace_id = @workspace_id A
 SELECT EXISTS (
     SELECT 1 FROM inbox_viewers WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND viewer_id = @viewer_id
 ) AS access;
+
+-- name: ViewerReadsInbox :one
+SELECT EXISTS (
+    SELECT 1 FROM inboxes i
+    WHERE i.workspace_id = @workspace_id AND i.id = @inbox_id
+      AND ((@all_inboxes::bool AND i.owner_member_id IS NULL) OR EXISTS (
+          SELECT 1 FROM inbox_viewers iv
+          WHERE iv.workspace_id = i.workspace_id AND iv.inbox_id = i.id AND iv.viewer_id = @viewer_id))
+) AS access;
+
+-- name: MemberReadsInbox :one
+SELECT EXISTS (
+    SELECT 1 FROM inboxes i
+    JOIN members m ON m.workspace_id = i.workspace_id AND m.id = @member_id
+    WHERE i.workspace_id = @workspace_id AND i.id = @inbox_id
+      AND ((m.role IN ('owner', 'admin') AND i.owner_member_id IS NULL) OR EXISTS (
+          SELECT 1 FROM member_inbox_access a
+          WHERE a.workspace_id = i.workspace_id AND a.inbox_id = i.id AND a.member_id = m.id))
+) AS access;
+
+-- name: ListPersonalInboxes :many
+SELECT id, owner_member_id::uuid AS owner_member_id FROM inboxes
+WHERE workspace_id = @workspace_id AND id = ANY(@ids::uuid[]) AND owner_member_id IS NOT NULL;
+
+-- name: ListMemberPersonalInboxIDs :many
+SELECT id FROM inboxes WHERE workspace_id = @workspace_id AND owner_member_id = @member_id ORDER BY id;
+
+-- name: ListInboxMailboxes :many
+SELECT i.id,
+       coalesce((SELECT array_agg(e.address ORDER BY e.address) FROM channels ch
+                 JOIN email_channels e ON e.workspace_id = ch.workspace_id AND e.channel_id = ch.id
+                 WHERE ch.workspace_id = i.workspace_id AND ch.inbox_id = i.id), '{}')::text[] AS addresses,
+       (SELECT count(*) FROM conversations c WHERE c.workspace_id = i.workspace_id AND c.inbox_id = i.id AND c.draft_of IS NULL)::bigint AS conversations,
+       (coalesce((SELECT sum(a.size_bytes) FROM attachments a
+                  JOIN conversations c ON c.workspace_id = a.workspace_id AND c.id = a.conversation_id
+                  WHERE a.workspace_id = i.workspace_id AND c.inbox_id = i.id), 0)
+        + coalesce((SELECT sum(e.raw_size) FROM message_emails e
+                    JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
+                    WHERE e.workspace_id = i.workspace_id AND c.inbox_id = i.id AND e.raw_key IS NOT NULL), 0))::bigint AS storage_bytes
+FROM inboxes i
+WHERE i.workspace_id = @workspace_id AND i.id = ANY(@ids::uuid[]) AND i.owner_member_id IS NOT NULL;
+
 
 -- name: SetInboxFeedbackCategories :one
 UPDATE inboxes SET feedback_categories = @feedback_categories, updated_at = @now

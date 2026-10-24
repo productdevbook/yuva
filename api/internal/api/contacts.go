@@ -192,9 +192,20 @@ func contactAttributes(a *oas.Attributes) ([]byte, error) {
 }
 
 // visibleContact refuses an agent a contact that has conversations or external ids only in inboxes
-// the agent cannot access. A contact with neither is visible to the agent who created it.
+// the agent cannot access. A contact with neither is visible to the agent who created it. A contact
+// known only from personal mailboxes the caller does not read is refused to everyone.
 func visibleContact(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) error {
 	if p.seesAllInboxes() {
+		if p.auto {
+			return nil
+		}
+		hidden, err := q.ContactPersonalOnly(ctx, store.ContactPersonalOnlyParams{WorkspaceID: p.workspaceID, ContactID: id, ViewerID: p.viewerID()})
+		if err != nil {
+			return err
+		}
+		if hidden {
+			return errContactGone
+		}
 		return nil
 	}
 	ok, err := q.ContactVisibleToViewer(ctx, store.ContactVisibleToViewerParams{WorkspaceID: p.workspaceID, ViewerID: p.viewerID(), ContactID: id})
@@ -353,7 +364,7 @@ func (s *Server) ListContacts(ctx context.Context, req oas.ListContactsRequestOb
 	}
 	arg := store.ListContactsParams{
 		WorkspaceID: p.workspaceID, ViewerID: viewer, Q: q, Prefix: prefixQuery(q), Kind: (*string)(prm.Kind), HasOpen: prm.HasOpen, InboxID: prm.InboxId,
-		CursorAt: at, CursorID: id, Lim: lim + 1,
+		PersonalViewerID: p.viewerID(), CursorAt: at, CursorID: id, Lim: lim + 1,
 	}
 	var (
 		rows []contactRow

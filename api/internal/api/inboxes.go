@@ -10,6 +10,7 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/oapi-codegen/nullable"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -32,6 +33,10 @@ func inboxBody(in store.Inbox) oas.Inbox {
 		Mode: oas.InboxMode(in.Mode), ExpectedReplyMinutes: in.ExpectedReplyMinutes, AskForRating: in.AskForRating,
 		AssignmentMode: oas.AssignmentMode(in.AssignmentMode), AssignmentCap: in.AssignmentCap,
 		Sender: inboxSenderBody(in), Signature: in.Signature, CreatedAt: in.CreatedAt, UpdatedAt: in.UpdatedAt,
+	}
+	out.OwnerMemberId = nullable.NewNullNullable[uuid.UUID]()
+	if in.OwnerMemberID != nil {
+		out.OwnerMemberId = nullable.NewNullableWithValue(*in.OwnerMemberID)
 	}
 	out.FeedbackCategories = inboxCategories(in)
 	_ = json.Unmarshal(in.Branding, &out.Branding)
@@ -71,6 +76,43 @@ func withImports(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, i
 					Address: r.SourceAddress, State: oas.InboxImportState(r.State),
 					Percent: inboxImportPercent(r.State, migrationCounts(r.Counts)),
 				}
+			}
+		}
+	}
+	return nil
+}
+
+// withMailboxes adds the size and addresses of the personal mailboxes in items, and leaves of one
+// the caller does not read only what owners and admins see.
+func withMailboxes(ctx context.Context, q *store.Queries, p principal, items []oas.Inbox) error {
+	var ids []uuid.UUID
+	for _, in := range items {
+		if in.OwnerMemberId.IsSpecified() && !in.OwnerMemberId.IsNull() {
+			ids = append(ids, in.Id)
+		}
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	rows, err := q.ListInboxMailboxes(ctx, store.ListInboxMailboxesParams{WorkspaceID: p.workspaceID, Ids: ids})
+	if err != nil {
+		return err
+	}
+	for _, r := range rows {
+		for i := range items {
+			if items[i].Id != r.ID {
+				continue
+			}
+			addresses := r.Addresses
+			if addresses == nil {
+				addresses = []string{}
+			}
+			items[i].Mailbox = &oas.InboxMailbox{Addresses: addresses, Conversations: r.Conversations, StorageBytes: r.StorageBytes}
+			owner := items[i].OwnerMemberId.MustGet()
+			if !canReadPersonal(p, store.Inbox{OwnerMemberID: &owner}) {
+				items[i].Signature = ""
+				items[i].Import = nil
+				items[i].SesTenant = nil
 			}
 		}
 	}
@@ -184,7 +226,7 @@ func (s *Server) sealIdentitySecret(workspaceID, inboxID uuid.UUID) (string, []b
 
 func (s *Server) ListInboxes(ctx context.Context, _ oas.ListInboxesRequestObject) (oas.ListInboxesResponseObject, error) {
 	p := principalFrom(ctx)
-	rows, err := s.st.ListInboxes(ctx, store.ListInboxesParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID()})
+	rows, err := s.st.ListInboxes(ctx, store.ListInboxesParams{WorkspaceID: p.workspaceID, AllInboxes: p.seesAllInboxes(), WithPersonal: true, ViewerID: p.viewerID()})
 	if err != nil {
 		return nil, err
 	}
@@ -198,15 +240,22 @@ func (s *Server) ListInboxes(ctx context.Context, _ oas.ListInboxesRequestObject
 	if err := withSESTenants(ctx, s.st.Queries, p, out.Items); err != nil {
 		return nil, err
 	}
+	if err := withMailboxes(ctx, s.st.Queries, p, out.Items); err != nil {
+		return nil, err
+	}
 	return out, nil
 }
 
 func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObject) (oas.CreateInboxResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	b := req.Body
+	if b.OwnerMemberId == nil {
+		if err := requireManagerOrKey(p); err != nil {
+			return nil, err
+		}
+	} else if err := s.mayOwnMailbox(ctx, p, *b.OwnerMemberId); err != nil {
 		return nil, err
 	}
-	b := req.Body
 	f := inboxFields{
 		name: b.Name, slug: b.Slug, purpose: purposeSupport, locale: "en", timezone: "UTC", mode: string(oas.Async),
 		hours: oas.BusinessHours{Intervals: []oas.BusinessHoursInterval{}}, replyMinutes: b.ExpectedReplyMinutes,
@@ -217,6 +266,12 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 	}
 	if b.Purpose != nil {
 		f.purpose = string(*b.Purpose)
+	}
+	if b.OwnerMemberId != nil {
+		if b.Purpose != nil && *b.Purpose != oas.InboxPurposeMail {
+			return nil, errPurposeMismatch("a personal mailbox is a mail inbox: purpose must be mail")
+		}
+		f.purpose = purposeMail
 	}
 	if b.DefaultLocale != nil {
 		f.locale = *b.DefaultLocale
@@ -245,13 +300,21 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 			ID: id, WorkspaceID: p.workspaceID, Name: f.name, Slug: f.slug, Purpose: f.purpose, Branding: mustJSON(f.branding),
 			DefaultLocale: f.locale, Timezone: f.timezone, Mode: f.mode, ExpectedReplyMinutes: f.replyMinutes,
 			BusinessHours: mustJSON(f.hours), IdentitySecret: sealed, AskForRating: b.AskForRating,
-			AssignmentMode: string(f.assignment.mode), AssignmentCap: f.assignment.cap, Now: s.now(),
+			AssignmentMode: string(f.assignment.mode), AssignmentCap: f.assignment.cap, OwnerMemberID: b.OwnerMemberId, Now: s.now(),
 		})
 		if store.IsUniqueViolation(err) {
 			return errSlugTaken
 		}
+		if store.IsForeignKeyViolation(err) {
+			return errMemberGone
+		}
 		if err != nil {
 			return err
+		}
+		if in.OwnerMemberID != nil {
+			if err := s.audit(ctx, q, p, oas.AuditInboxCreated, oas.AuditTargetInbox, in.ID, auditDetails{"name": in.Name, "owner_member_id": *in.OwnerMemberID}); err != nil {
+				return err
+			}
 		}
 		events.add(realtime.InboxCreated, &in.ID, nil, inboxBody(in))
 		return nil
@@ -259,11 +322,59 @@ func (s *Server) CreateInbox(ctx context.Context, req oas.CreateInboxRequestObje
 	if err != nil {
 		return nil, err
 	}
-	return oas.CreateInbox201JSONResponse{Inbox: inboxBody(in), IdentitySecret: plain}, nil
+	items := []oas.Inbox{inboxBody(in)}
+	if err := withMailboxes(ctx, s.st.Queries, p, items); err != nil {
+		return nil, err
+	}
+	return oas.CreateInbox201JSONResponse{Inbox: items[0], IdentitySecret: plain}, nil
+}
+
+// mayOwnMailbox lets a member make a personal mailbox for themself and owners and admins make one
+// for any member; keys never do.
+func (s *Server) mayOwnMailbox(ctx context.Context, p principal, memberID uuid.UUID) error {
+	if p.isKey() {
+		return errForbidden
+	}
+	if memberID == p.memberID && p.memberID != uuid.Nil() {
+		return nil
+	}
+	if p.role != roleOwner && p.role != roleAdmin {
+		return errForbidden
+	}
+	if _, err := s.st.GetMember(ctx, store.GetMemberParams{WorkspaceID: p.workspaceID, ID: memberID}); store.IsNotFound(err) {
+		return errMemberGone
+	} else if err != nil {
+		return err
+	}
+	return nil
+}
+
+// manageInbox reports whether p changes the inbox's settings: owners, admins and keys for a shared
+// inbox, its owner whatever their role for a personal mailbox. meta is set when p may change only
+// the mailbox's name or delete it.
+func manageInbox(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (in store.Inbox, meta bool, err error) {
+	in, err = q.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: id})
+	if store.IsNotFound(err) {
+		return in, false, errInboxGone
+	}
+	if err != nil {
+		return in, false, err
+	}
+	if in.OwnerMemberID == nil {
+		return in, false, requireManagerOrKey(p)
+	}
+	if canReadPersonal(p, in) {
+		return in, false, nil
+	}
+	if p.isKey() || p.rule != nil || requireManagerOrKey(p) != nil {
+		return in, false, errInboxGone
+	}
+	return in, true, nil
 }
 
 func (s *Server) GetInbox(ctx context.Context, req oas.GetInboxRequestObject) (oas.GetInboxResponseObject, error) {
-	in, err := visibleInbox(ctx, s.st.Queries, principalFrom(ctx), req.InboxId)
+	p := principalFrom(ctx)
+	in, err := visibleInboxMeta(ctx, s.st.Queries, p, req.InboxId)
 	if err != nil {
 		return nil, err
 	}
@@ -272,7 +383,10 @@ func (s *Server) GetInbox(ctx context.Context, req oas.GetInboxRequestObject) (o
 		return nil, err
 	}
 	items := []oas.Inbox{out}
-	if err := withSESTenants(ctx, s.st.Queries, principalFrom(ctx), items); err != nil {
+	if err := withSESTenants(ctx, s.st.Queries, p, items); err != nil {
+		return nil, err
+	}
+	if err := withMailboxes(ctx, s.st.Queries, p, items); err != nil {
 		return nil, err
 	}
 	return oas.GetInbox200JSONResponse(items[0]), nil
@@ -280,17 +394,26 @@ func (s *Server) GetInbox(ctx context.Context, req oas.GetInboxRequestObject) (o
 
 func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObject) (oas.UpdateInboxResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	b := req.Body
+	pre, meta, err := manageInbox(ctx, s.st.Queries, p, req.InboxId)
+	if err != nil {
 		return nil, err
 	}
 	if ok, err := canSeeInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
-	} else if !ok {
+	} else if !ok && !meta {
 		return nil, errInboxGone
 	}
-	b := req.Body
+	if meta && (b.Slug != nil || b.Purpose != nil || b.DefaultLocale != nil || b.Timezone != nil || b.Mode != nil ||
+		b.Branding != nil || b.BusinessHours != nil || b.AskForRating != nil || b.ExpectedReplyMinutes.IsSpecified() ||
+		b.AssignmentMode != nil || b.AssignmentCap != nil || b.FeedbackCategories != nil || b.Sender != nil || b.Signature != nil) {
+		return nil, errPersonalMailbox("owners and admins change only the name of another member's personal mailbox")
+	}
+	if pre.OwnerMemberID != nil && b.Purpose != nil && *b.Purpose != oas.InboxPurposeMail {
+		return nil, errPersonalMailbox("a personal mailbox stays a mail inbox")
+	}
 	var out oas.Inbox
-	err := s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if b.Purpose != nil && *b.Purpose == oas.InboxPurposeMail {
 			// SLA writers hold their conversation before the inbox's share lock, so these go first.
 			early, err := q.ListInboxSLAConversations(ctx, store.ListInboxSLAConversationsParams{WorkspaceID: p.workspaceID, InboxID: req.InboxId})
@@ -418,12 +541,15 @@ func (s *Server) UpdateInbox(ctx context.Context, req oas.UpdateInboxRequestObje
 	if err := withSESTenants(ctx, s.st.Queries, p, items); err != nil {
 		return nil, err
 	}
+	if err := withMailboxes(ctx, s.st.Queries, p, items); err != nil {
+		return nil, err
+	}
 	return oas.UpdateInbox200JSONResponse(items[0]), nil
 }
 
 func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObject) (oas.DeleteInboxResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if _, _, err := manageInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
 	}
 	var keys []string
@@ -505,8 +631,10 @@ func (s *Server) DeleteInbox(ctx context.Context, req oas.DeleteInboxRequestObje
 
 func (s *Server) RotateInboxIdentitySecret(ctx context.Context, req oas.RotateInboxIdentitySecretRequestObject) (oas.RotateInboxIdentitySecretResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if _, meta, err := manageInbox(ctx, s.st.Queries, p, req.InboxId); err != nil {
 		return nil, err
+	} else if meta {
+		return nil, errInboxGone
 	}
 	plain, sealed := s.sealIdentitySecret(p.workspaceID, req.InboxId)
 	err := s.st.InTx(ctx, func(q *store.Queries) error {
@@ -580,6 +708,9 @@ func (s *Server) GrantInboxAccess(ctx context.Context, req oas.GrantInboxAccessR
 	in, err := s.inboxAndMember(ctx, p, req.InboxId, req.MemberId)
 	if err != nil {
 		return nil, err
+	}
+	if in.OwnerMemberID != nil {
+		return nil, errPersonalMailbox("only its owner reads a personal mailbox")
 	}
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if err := q.LockInboxAccess(ctx, p.workspaceID); err != nil {

@@ -139,11 +139,19 @@ func (s *Server) queueAutomations(ctx context.Context, tx pgx.Tx, q *store.Queri
 		loaded   bool
 		runs     []AutomationRunArgs
 		queued   []river.InsertManyParams
+		personal = hiddenInboxes{p: principal{workspaceID: workspaceID}}
 	)
 	for i, e := range ev.items {
 		trigger, msg, ok := automationTriggerOf(e)
 		if !ok || e.noRules || e.onlyMember != nil {
 			continue
+		}
+		if e.inboxID != nil {
+			if skip, err := personal.hidden(ctx, q, *e.inboxID); err != nil {
+				return err
+			} else if skip {
+				continue
+			}
 		}
 		if !loaded {
 			var err error

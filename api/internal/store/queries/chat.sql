@@ -249,9 +249,10 @@ SELECT DISTINCT ON (m.id) m.id, p.name, m.created_at FROM realtime_connections r
 JOIN members m ON m.workspace_id = rc.workspace_id AND m.id = rc.member_id
 JOIN people p ON p.id = m.person_id
 WHERE rc.workspace_id = @workspace_id AND rc.seen_at > @fresh_after AND p.availability = 'auto'
-  AND (m.role IN ('owner', 'admin') OR EXISTS (
+  AND ((m.role IN ('owner', 'admin') AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = m.workspace_id AND pmb.id = @inbox_id AND pmb.owner_member_id IS NOT NULL)) OR EXISTS (
       SELECT 1 FROM member_inbox_access im
       WHERE im.workspace_id = m.workspace_id AND im.inbox_id = @inbox_id AND im.member_id = m.id))
+
 ORDER BY m.id;
 
 -- name: ListPendingReplies :many

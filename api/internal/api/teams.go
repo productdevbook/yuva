@@ -518,6 +518,9 @@ func (s *Server) teamInboxChange(ctx context.Context, p principal, teamID, inbox
 		if err != nil {
 			return false, nil, err
 		}
+		if grant && in.OwnerMemberID != nil {
+			return false, nil, errPersonalMailbox("only its owner reads a personal mailbox")
+		}
 		rows, err := q.ListTeamMemberIDs(ctx, store.ListTeamMemberIDsParams{WorkspaceID: p.workspaceID, TeamIds: []uuid.UUID{t.ID}})
 		if err != nil {
 			return false, nil, err

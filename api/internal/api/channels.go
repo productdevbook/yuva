@@ -133,7 +133,7 @@ func (s *Server) ListChannels(ctx context.Context, req oas.ListChannelsRequestOb
 
 func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequestObject) (oas.CreateChannelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, req.InboxId, uuid.Nil()); err != nil {
 		return nil, err
 	}
 	if !req.Body.Kind.Valid() {
@@ -262,6 +262,27 @@ func (s *Server) CreateChannel(ctx context.Context, req oas.CreateChannelRequest
 	return oas.CreateChannel201JSONResponse(out), nil
 }
 
+// requireChannelManager is requireManagerOrKey, and also lets the owner of a personal mailbox,
+// whatever their role, manage its channels. channelID names the inbox when set.
+func (s *Server) requireChannelManager(ctx context.Context, p principal, inboxID, channelID uuid.UUID) error {
+	err := requireManagerOrKey(p)
+	if err == nil || p.isKey() {
+		return err
+	}
+	if channelID != uuid.Nil() {
+		c, cerr := s.st.GetChannel(ctx, store.GetChannelParams{WorkspaceID: p.workspaceID, ID: channelID})
+		if cerr != nil {
+			return err
+		}
+		inboxID = c.InboxID
+	}
+	in, ierr := s.st.GetInbox(ctx, store.GetInboxParams{WorkspaceID: p.workspaceID, ID: inboxID})
+	if ierr != nil || in.OwnerMemberID == nil || !canReadPersonal(p, in) {
+		return err
+	}
+	return nil
+}
+
 func (s *Server) visibleChannel(ctx context.Context, p principal, id oas.ChannelId) (store.Channel, error) {
 	c, err := s.st.GetChannel(ctx, store.GetChannelParams{WorkspaceID: p.workspaceID, ID: id})
 	if store.IsNotFound(err) {
@@ -295,7 +316,7 @@ func (s *Server) GetChannel(ctx context.Context, req oas.GetChannelRequestObject
 
 func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequestObject) (oas.UpdateChannelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, uuid.Nil(), req.ChannelId); err != nil {
 		return nil, err
 	}
 	cur, err := s.visibleChannel(ctx, p, req.ChannelId)
@@ -428,7 +449,7 @@ func (s *Server) UpdateChannel(ctx context.Context, req oas.UpdateChannelRequest
 
 func (s *Server) DeleteChannel(ctx context.Context, req oas.DeleteChannelRequestObject) (oas.DeleteChannelResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	if err := s.requireChannelManager(ctx, p, uuid.Nil(), req.ChannelId); err != nil {
 		return nil, err
 	}
 	c, err := s.visibleChannel(ctx, p, req.ChannelId)

@@ -357,7 +357,8 @@ SELECT r.id, r.workspace_id, r.rule_id, r.conversation_id, r.trigger, r.trigger_
 JOIN conversations c ON c.workspace_id = r.workspace_id AND c.id = r.conversation_id
 WHERE r.workspace_id = $1 AND r.rule_id = $2 AND c.trashed_at IS NULL
   AND ($3::text IS NULL OR r.outcome = $3::text)
-  AND ($4::bool OR c.inbox_id = ANY($5::uuid[]))
+  AND (($4::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.owner_member_id IS NOT NULL)) OR c.inbox_id = ANY($5::uuid[]))
+
   AND ($6::timestamptz IS NULL
        OR (r.created_at, r.id) < ($6::timestamptz, $7::uuid))
 ORDER BY r.created_at DESC, r.id DESC
