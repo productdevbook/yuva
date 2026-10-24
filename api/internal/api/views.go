@@ -117,7 +117,7 @@ func cleanViewFilters(in map[string]string) (map[string]string, error) {
 }
 
 // viewFilter turns a view's filters into the list's query for p, with the list's own parser.
-func (s *Server) viewFilter(ctx context.Context, q *store.Queries, p principal, filters map[string]string) (store.ListConversationsParams, error) {
+func (s *Server) viewFilter(ctx context.Context, q *store.Queries, p principal, filters map[string]string) (listFilter, error) {
 	vals := url.Values{}
 	fields := map[string][]string{}
 	for k, v := range filters {
@@ -129,9 +129,9 @@ func (s *Server) viewFilter(ctx context.Context, q *store.Queries, p principal, 
 	}
 	prm, err := bindListParams(vals)
 	if err != nil {
-		return store.ListConversationsParams{}, err
+		return listFilter{}, err
 	}
-	arg, err := s.conversationFilter(ctx, q, p, prm, fields)
+	arg, err := s.parseConversationFilter(ctx, q, p, prm, fields)
 	var bad *listFilterError
 	if errors.As(err, &bad) {
 		detail := bad.err.Error()
@@ -245,7 +245,7 @@ func (s *Server) withViewCounts(ctx context.Context, p principal, rows []store.S
 }
 
 func (s *Server) countView(ctx context.Context, p principal, v *oas.SavedView) error {
-	arg, err := s.viewFilter(ctx, s.st.Queries, p, v.Filters)
+	f, err := s.viewFilter(ctx, s.st.Queries, p, v.Filters)
 	if err != nil {
 		var e *apiError
 		if errors.As(err, &e) {
@@ -253,11 +253,15 @@ func (s *Server) countView(ctx context.Context, p principal, v *oas.SavedView) e
 		}
 		return err
 	}
+	arg := f.ListConversationsParams
 	var n int64
 	if arg.Statuses == nil || slices.Contains(arg.Statuses, viewStatusOpen) {
 		arg.Statuses, arg.Lim = []string{viewStatusOpen}, viewCountCap+1
 		var timedOut bool
-		if n, timedOut, err = s.st.CountListConversationsWithin(ctx, arg, viewCountTimeout); err != nil {
+		if n, timedOut, err = s.st.CountListConversationsWithin(ctx, arg, viewCountTimeout,
+			func(ctx context.Context, q *store.Queries, a *store.ListConversationsParams) error {
+				return resolveAddresses(ctx, q, a, f.addresses)
+			}); err != nil {
 			return err
 		}
 		if timedOut {

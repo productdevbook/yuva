@@ -42,11 +42,20 @@ func (q *Queries) CountListConversations(ctx context.Context, arg ListConversati
 }
 
 // CountListConversationsWithin is CountListConversations in a read-only transaction whose statements
-// stop after timeout; timedOut reports a count the database gave up on.
-func (s *Store) CountListConversationsWithin(ctx context.Context, arg ListConversationsParams, timeout time.Duration) (n int64, timedOut bool, err error) {
+// stop after timeout; timedOut reports a count the database gave up on. prepare, when set, completes
+// arg inside that transaction, so its queries stop at the timeout too.
+func (s *Store) CountListConversationsWithin(ctx context.Context, arg ListConversationsParams, timeout time.Duration, prepare func(context.Context, *Queries, *ListConversationsParams) error) (n int64, timedOut bool, err error) {
 	err = pgx.BeginTxFunc(ctx, s.Pool, pgx.TxOptions{AccessMode: pgx.ReadOnly}, func(tx pgx.Tx) error {
 		if _, err := tx.Exec(ctx, "SELECT set_config('statement_timeout', $1, true)", strconv.FormatInt(timeout.Milliseconds(), 10)); err != nil {
 			return err
+		}
+		if _, err := tx.Exec(ctx, "SELECT set_config('jit', 'off', true)"); err != nil {
+			return err
+		}
+		if prepare != nil {
+			if err := prepare(ctx, New(tx), &arg); err != nil {
+				return err
+			}
 		}
 		var err error
 		n, err = New(tx).CountListConversations(ctx, arg)

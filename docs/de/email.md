@@ -215,6 +215,29 @@ setzt alle aktiven Beteiligten in Kopie (Allen antworten); `cc: []` geht nur an 
 (Antworten); eine `cc`-Liste setzt genau diese Adressen in Kopie. Ein Bounce für eine von mehreren
 `To`-Adressen markiert nur diese Adresse als unzustellbar.
 
+## E-Mails durchsuchen
+
+Das Suchfeld der Konversationsliste (`q` von `GET /v1/conversations`, MCP `search_conversations`) nimmt
+neben einfachen Wörtern auch Operatoren an. Schreiben Sie `schlüssel:wert`, `schlüssel:"zwei Wörter"`
+oder `-schlüssel:wert`, um Treffer auszuschließen. Jeder Operator und jeder andere Filter muss
+zutreffen. Schlüssel und Werte unterscheiden nicht zwischen Groß- und Kleinschreibung; ein Begriff, der
+keiner dieser Operatoren ist oder dessen Wert nicht passt, wird als Text gesucht, sodass `ratio:3:1`
+und Links weiter funktionieren. Ein Wert von `from:`, `to:` oder `cc:` braucht mindestens 3 Zeichen und kein Leerzeichen und kein Komma; Datumsangaben gelten von Jahr 1 bis 9999. Entwürfe anderer Mitglieder werden nie durchsucht.
+
+| Operator | Trifft | Beispiel |
+|---|---|---|
+| `from:` | eine gesendete Nachricht, deren Absenderadresse oder -name den Wert enthält; `from:me` sind Sie | `from:ada@example.com` |
+| `to:`, `cc:` | eine Nachricht mit einer Empfängeradresse, die den Wert enthält; `to:me` sind Sie | `to:me cc:@example.com` |
+| `subject:` | den Betreff, wie ihn einfache Wörter treffen | `subject:"quarterly invoice"` |
+| `has:attachment` | eine Nachricht mit Anhang | `has:attachment invoice` |
+| `is:starred` | Konversationen, die Sie markiert haben | `-is:starred` |
+| `in:` | einen Mail-Ordner: `inbox`, `starred`, `snoozed`, `sent`, `archive`, `trash`, `drafts` oder `scheduled` | `in:archive from:ada` |
+| `after:`, `before:` | eine Nachricht, die ab oder vor Mitternacht eines Tages `YYYY-MM-DD` gesendet wurde | `after:2026-01-01 before:2026-02-01` |
+
+`after:` und `before:` verwenden die Zeitzone, die der Client als `timezone` sendet (ohne Angabe UTC).
+`in:trash` braucht dieselben Rechte wie `trashed=true`. Eine Suche hat höchstens 200 Zeichen und 20
+Operatoren.
+
 ## Bounces
 
 Ein Bounce oder eine Beschwerde markiert die Nachricht als fehlgeschlagen und die Adresse als

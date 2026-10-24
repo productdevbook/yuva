@@ -4462,6 +4462,23 @@ Feedback did in M18. Planned after 0.1.0; issues in `backlog.md`. Decisions:
 - **Yuva is the mailbox.** A domain's mail is routed to Yuva (the edge Worker or any MTA) and history
   comes in through Moving to Yuva (M14). Two-way IMAP sync with a mailbox that stays at Gmail or
   Outlook is not planned: it would write to the source, which M14's read-only rule forbids.
+- **Search operators.** `q` of `GET /v1/conversations` (and MCP `search_conversations`) takes `from:`,
+  `to:`, `cc:`, `subject:`, `has:attachment`, `is:starred`, `in:<folder>`, `before:` and `after:`
+  (`key:value`, `key:"quoted"`, `-key:value`), parsed on the server by one function that leaves the
+  rest as the full-text query. A term with another key or a value that does not fit stays text. Every
+  operator is one condition ANDed with the other parameters, a negated one its NOT; they look only at
+  sent messages, never at drafts, and `from:me`, `to:me` and the member folders (`starred`, `sent`,
+  `drafts`, `scheduled`) mean the calling member. Dates are midnight in the request's `timezone`.
+  Addresses match by containing the value (`ILIKE`, `%` `_` `\` escaped). `from:`, `to:` and `cc:`
+  first resolve to the conversations that match, through GIN trigram indexes (migration 00136; the
+  `pg_trgm` extension is trusted since PostgreSQL 13, so the database owner creates it; `to` and `cc`
+  index `address_text()`, an immutable wrapper that joins and lower-cases the address array, and a
+  value under 3 characters or with a space or a comma is searched as text), and the list query keeps or
+  drops those conversations by id; an operator with more than 5000 matches stays a condition on each
+  conversation instead. Redacted messages are never matched, `in:<folder>` means the mail folder of a
+  `mail` inbox, and `after:` with `before:` must hold for one message. The other operators are conditions on each candidate conversation, like the
+  label and star filters. Queries with operators run with JIT off, because the planner prices their
+  subqueries high enough to compile them, which cost more than the query.
 
 ### Storage
 

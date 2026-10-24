@@ -200,6 +200,27 @@ Later replies choose who is copied: a reply without `cc` goes to the contact and
 participant (Reply all); `cc: []` goes to the contact alone (Reply); a `cc` list copies exactly
 those addresses. A bounce for one of several `To` addresses marks only that address undeliverable.
 
+## Searching mail
+
+The search box of the conversation list (`q` of `GET /v1/conversations`, MCP `search_conversations`)
+takes operators on top of plain words. Write `key:value`, `key:"two words"`, or `-key:value` to leave
+out what matches. Every operator and every other filter must hold. Keys and values are case-insensitive;
+a term that is not one of these operators, or whose value does not fit, is searched as text, so
+`ratio:3:1` and links still work. A `from:`, `to:` or `cc:` value needs at least 3 characters and no space or comma, and dates run from year 1 to 9999. Drafts of other members are never searched.
+
+| Operator | Matches | Example |
+|---|---|---|
+| `from:` | a sent message whose sender address or name contains the value; `from:me` is you | `from:ada@example.com` |
+| `to:`, `cc:` | a message with a recipient address that contains the value; `to:me` is you | `to:me cc:@example.com` |
+| `subject:` | the subject, as the plain words match it | `subject:"quarterly invoice"` |
+| `has:attachment` | a message with an attachment | `has:attachment invoice` |
+| `is:starred` | conversations you starred | `-is:starred` |
+| `in:` | a mail folder: `inbox`, `starred`, `snoozed`, `sent`, `archive`, `trash`, `drafts` or `scheduled` | `in:archive from:ada` |
+| `after:`, `before:` | a message sent at or after, or before, midnight of a `YYYY-MM-DD` day | `after:2026-01-01 before:2026-02-01` |
+
+`after:` and `before:` use the time zone the client sends as `timezone` (UTC without it). `in:trash`
+needs the same rights as `trashed=true`. A query holds at most 200 characters and 20 operators.
+
 ## Bounces
 
 A bounce or complaint marks the message failed and the address undeliverable; replies to it are

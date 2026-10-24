@@ -197,7 +197,7 @@ Migrationen laufen vor jedem Pod-Start in einem Init-Container. Anhänge liegen 
 
 | Was | Hinweise |
 |---|---|
-| Postgres 16 oder neuer | Enthält alles. Kein Redis. |
+| Postgres 16 oder neuer | Enthält alles. Kein Redis. Die Datenbank muss die Erweiterung `pg_trgm` erlauben, die die E-Mail-Suche nutzt: Sie ist seit PostgreSQL 13 vertrauenswürdig, der Datenbankbenutzer von Yuva braucht also nur `CREATE` auf der Datenbank, und verwaltete Postgres-Dienste liefern sie mit. |
 | SMTP-Konto | Für Anmeldecodes und Benachrichtigungen. Ohne Konto landen nur Anmeldecodes im Log, andere E-Mails werden nicht gesendet. |
 | Speicher für Anhänge | Ein Docker-Volume oder S3 mit `YUVA_STORAGE=s3` und den `YUVA_S3_*`-[Einstellungen](configuration.md#dateien-und-speicher). |
 | Hostname mit TLS | Passkeys und Web Push brauchen HTTPS. |

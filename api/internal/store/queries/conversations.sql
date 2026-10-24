@@ -106,6 +106,100 @@ WHERE c.workspace_id = @workspace_id
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
             AND ct.search @@ websearch_to_tsquery('simple', translate(sqlc.narg(q_not)::text, 'İı', 'ii')))))
+  AND NOT @op_impossible::bool
+  AND (NOT @op_has_hits::bool OR c.id = ANY(@op_hit_ids::uuid[]))
+  AND NOT (c.id = ANY(coalesce(@op_miss_ids::uuid[], '{}')))
+  AND (coalesce(cardinality(@op_from_vals::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT (@op_from_vals::text[])[i] AS v, (@op_from_neg::bool[])[i] AS neg
+          FROM generate_series(1, cardinality(@op_from_vals::text[])) AS i) o
+      WHERE o.neg = EXISTS (
+          SELECT 1 FROM messages m
+          LEFT JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+            AND (me.from_address ILIKE o.v
+              OR (m.author_contact_id IS NOT NULL AND EXISTS (
+                  SELECT 1 FROM contacts ct
+                  WHERE ct.workspace_id = m.workspace_id AND ct.id = m.author_contact_id
+                    AND (ct.name ILIKE o.v OR EXISTS (
+                        SELECT 1 FROM contact_emails ce
+                        WHERE ce.workspace_id = ct.workspace_id AND ce.contact_id = ct.id AND ce.email ILIKE o.v))))
+              OR (m.author_member_id IS NOT NULL AND EXISTS (
+                  SELECT 1 FROM members mb JOIN people pe ON pe.id = mb.person_id
+                  WHERE mb.workspace_id = m.workspace_id AND mb.id = m.author_member_id
+                    AND (pe.name ILIKE o.v OR pe.email ILIKE o.v)))))))
+  AND (coalesce(cardinality(@op_to_vals::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT (@op_to_vals::text[])[i] AS v, (@op_to_neg::bool[])[i] AS neg
+          FROM generate_series(1, cardinality(@op_to_vals::text[])) AS i) o
+      WHERE o.neg = EXISTS (
+          SELECT 1 FROM messages m
+          JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+            AND address_text(me.to_addresses) ILIKE o.v)))
+  AND (coalesce(cardinality(@op_cc_vals::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT (@op_cc_vals::text[])[i] AS v, (@op_cc_neg::bool[])[i] AS neg
+          FROM generate_series(1, cardinality(@op_cc_vals::text[])) AS i) o
+      WHERE o.neg = EXISTS (
+          SELECT 1 FROM messages m
+          JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+            AND address_text(me.cc_addresses) ILIKE o.v)))
+  AND (coalesce(cardinality(@op_subject_vals::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT (@op_subject_vals::text[])[i] AS v, (@op_subject_neg::bool[])[i] AS neg
+          FROM generate_series(1, cardinality(@op_subject_vals::text[])) AS i) o
+      WHERE o.neg = to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate(o.v, 'İı', 'ii'))))
+  AND ((sqlc.narg(op_after)::timestamptz IS NULL AND sqlc.narg(op_before)::timestamptz IS NULL) OR EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+        AND (sqlc.narg(op_after)::timestamptz IS NULL OR m.created_at >= sqlc.narg(op_after)::timestamptz)
+        AND (sqlc.narg(op_before)::timestamptz IS NULL OR m.created_at < sqlc.narg(op_before)::timestamptz)))
+  AND (sqlc.narg(op_not_after)::timestamptz IS NULL OR NOT EXISTS (
+      SELECT 1 FROM messages m WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward') AND m.created_at >= sqlc.narg(op_not_after)::timestamptz))
+  AND (sqlc.narg(op_not_before)::timestamptz IS NULL OR NOT EXISTS (
+      SELECT 1 FROM messages m WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward') AND m.created_at < sqlc.narg(op_not_before)::timestamptz))
+  AND (sqlc.narg(op_from_me)::bool IS NULL OR sqlc.narg(op_from_me)::bool = EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+        AND (m.author_member_id = sqlc.narg(viewer_member_id)::uuid OR m.sent_by_member_id = sqlc.narg(viewer_member_id)::uuid)))
+  AND (sqlc.narg(op_to_me)::bool IS NULL OR sqlc.narg(op_to_me)::bool = EXISTS (
+      SELECT 1 FROM messages m
+      JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+        AND me.to_addresses && ARRAY(
+            SELECT pe.email FROM members mb JOIN people pe ON pe.id = mb.person_id
+            WHERE mb.workspace_id = @workspace_id AND mb.id = sqlc.narg(viewer_member_id)::uuid
+            UNION
+            SELECT ma.address FROM member_addresses ma
+            WHERE ma.workspace_id = @workspace_id AND ma.member_id = sqlc.narg(viewer_member_id)::uuid AND ma.verified_at IS NOT NULL)))
+  AND (sqlc.narg(op_has_attachment)::bool IS NULL OR sqlc.narg(op_has_attachment)::bool = EXISTS (
+      SELECT 1 FROM attachments a JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
+      WHERE a.workspace_id = c.workspace_id AND a.conversation_id = c.id AND NOT a.inline
+        AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')))
+  AND (sqlc.narg(op_is_starred)::bool IS NULL OR sqlc.narg(op_is_starred)::bool = EXISTS (
+      SELECT 1 FROM conversation_stars st
+      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = sqlc.narg(viewer_member_id)::uuid))
+  AND (sqlc.narg(op_in_starred)::bool IS NULL OR sqlc.narg(op_in_starred)::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+      SELECT 1 FROM conversation_stars st
+      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = sqlc.narg(viewer_member_id)::uuid)))
+  AND (sqlc.narg(op_in_inbox)::bool IS NULL OR sqlc.narg(op_in_inbox)::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'open' AND c.trashed_at IS NULL))
+  AND (sqlc.narg(op_in_snoozed)::bool IS NULL OR sqlc.narg(op_in_snoozed)::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'snoozed' AND c.trashed_at IS NULL))
+  AND (sqlc.narg(op_in_archive)::bool IS NULL OR sqlc.narg(op_in_archive)::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'closed' AND c.trashed_at IS NULL))
+  AND (sqlc.narg(op_in_trash)::bool IS NULL OR sqlc.narg(op_in_trash)::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.trashed_at IS NOT NULL))
+  AND (sqlc.narg(op_in_sent)::bool IS NULL OR sqlc.narg(op_in_sent)::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.kind = 'message' AND m.direction = 'out'
+        AND NOT m.draft AND (m.author_member_id = sqlc.narg(viewer_member_id)::uuid OR m.sent_by_member_id = sqlc.narg(viewer_member_id)::uuid))))
+  AND (sqlc.narg(op_in_drafts)::bool IS NULL OR sqlc.narg(op_in_drafts)::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.draft AND m.scheduled_at IS NULL
+        AND m.author_type = 'member' AND m.author_member_id = sqlc.narg(viewer_member_id)::uuid)))
+  AND (sqlc.narg(op_in_scheduled)::bool IS NULL OR sqlc.narg(op_in_scheduled)::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
+        AND m.scheduled_by = sqlc.narg(viewer_member_id)::uuid AND m.scheduled_at IS NOT NULL)))
   AND (sqlc.narg(sla_states)::text[] IS NULL OR EXISTS (
       SELECT 1 FROM conversation_sla s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id AND s.dropped_at IS NULL
@@ -132,6 +226,49 @@ WHERE c.workspace_id = @workspace_id
               AND (c.last_activity_at, c.id) < (sqlc.narg(cursor_at)::timestamptz, sqlc.narg(cursor_id)::uuid)) END)
 ORDER BY CASE WHEN @by_sla::bool THEN c.sla_due_at END ASC NULLS LAST, sched.at ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
 LIMIT @lim;
+
+-- name: ListFromMatchConversations :many
+SELECT m.conversation_id FROM message_emails me
+JOIN messages m ON m.workspace_id = me.workspace_id AND m.id = me.message_id
+WHERE me.workspace_id = @workspace_id AND me.from_address ILIKE @pattern::text
+  AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+UNION
+SELECT c.id FROM contacts ct
+JOIN conversations c ON c.workspace_id = ct.workspace_id AND c.contact_id = ct.id
+WHERE ct.workspace_id = @workspace_id AND ct.name ILIKE @pattern::text
+  AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.author_contact_id = ct.id
+        AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward'))
+UNION
+SELECT c.id FROM contact_emails ce
+JOIN conversations c ON c.workspace_id = ce.workspace_id AND c.contact_id = ce.contact_id
+WHERE ce.workspace_id = @workspace_id AND ce.email ILIKE @pattern::text
+  AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.author_contact_id = ce.contact_id
+        AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward'))
+UNION
+SELECT m.conversation_id FROM members mb
+JOIN people pe ON pe.id = mb.person_id
+JOIN messages m ON m.workspace_id = mb.workspace_id AND m.author_member_id = mb.id
+WHERE mb.workspace_id = @workspace_id AND (pe.name ILIKE @pattern::text OR pe.email ILIKE @pattern::text)
+  AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+LIMIT @max_rows;
+
+-- name: ListToMatchConversations :many
+SELECT DISTINCT m.conversation_id FROM message_emails me
+JOIN messages m ON m.workspace_id = me.workspace_id AND m.id = me.message_id
+WHERE me.workspace_id = @workspace_id AND address_text(me.to_addresses) ILIKE @pattern::text
+  AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+LIMIT @max_rows;
+
+-- name: ListCcMatchConversations :many
+SELECT DISTINCT m.conversation_id FROM message_emails me
+JOIN messages m ON m.workspace_id = me.workspace_id AND m.id = me.message_id
+WHERE me.workspace_id = @workspace_id AND address_text(me.cc_addresses) ILIKE @pattern::text
+  AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+LIMIT @max_rows;
 
 -- name: ListConversationLabels :many
 SELECT conversation_id, label_id FROM conversation_labels

@@ -196,7 +196,7 @@ Veritabanı geçişleri her pod başlamadan önce bir init container içinde ça
 
 | Ne | Not |
 |---|---|
-| Postgres 16 veya üstü | Her şeyi tutar. Redis yok. |
+| Postgres 16 veya üstü | Her şeyi tutar. Redis yok. Veritabanı, e-posta aramasının kullandığı `pg_trgm` eklentisine izin vermelidir: eklenti PostgreSQL 13'ten beri güvenilirdir, bu yüzden Yuva veritabanı kullanıcısının veritabanında yalnızca `CREATE` yetkisi olması yeter; yönetilen Postgres hizmetleri eklentiyi hazır sunar. |
 | SMTP hesabı | Giriş kodları ve bildirimler için. Yoksa yalnızca giriş kodları loga yazılır, başka e-posta gönderilmez. |
 | Ek depolama | Bir Docker volume'u ya da `YUVA_STORAGE=s3` ve `YUVA_S3_*` [ayarlarıyla](configuration.md#ekler-ve-depolama) S3. |
 | TLS'li alan adı | Geçiş anahtarları ve Web Push HTTPS ister. |

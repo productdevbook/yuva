@@ -26285,6 +26285,9 @@ type ListConversationsParams struct {
 	// comma-separated list. Conversations without an SLA never match.
 	SlaState *[]SlaState `form:"sla_state,omitempty" json:"sla_state,omitempty"`
 
+	// Timezone IANA time zone whose midnight `after:` and `before:` in `q` use; `UTC` by default.
+	Timezone *string `form:"timezone,omitempty" json:"timezone,omitempty"`
+
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
@@ -46024,6 +46027,19 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sla_state"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sla_state", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "timezone" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "timezone", r.URL.Query(), &params.Timezone, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "timezone"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "timezone", Err: err})
 		}
 		return
 	}

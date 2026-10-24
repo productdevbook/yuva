@@ -512,6 +512,40 @@ func (q *Queries) InboxChannelOfKind(ctx context.Context, arg InboxChannelOfKind
 	return i, err
 }
 
+const listCcMatchConversations = `-- name: ListCcMatchConversations :many
+SELECT DISTINCT m.conversation_id FROM message_emails me
+JOIN messages m ON m.workspace_id = me.workspace_id AND m.id = me.message_id
+WHERE me.workspace_id = $1 AND address_text(me.cc_addresses) ILIKE $2::text
+  AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+LIMIT $3
+`
+
+type ListCcMatchConversationsParams struct {
+	WorkspaceID uuid.UUID
+	Pattern     string
+	MaxRows     int32
+}
+
+func (q *Queries) ListCcMatchConversations(ctx context.Context, arg ListCcMatchConversationsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listCcMatchConversations, arg.WorkspaceID, arg.Pattern, arg.MaxRows)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var conversation_id uuid.UUID
+		if err := rows.Scan(&conversation_id); err != nil {
+			return nil, err
+		}
+		items = append(items, conversation_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listContactConversationIDsAll = `-- name: ListContactConversationIDsAll :many
 SELECT id FROM conversations WHERE workspace_id = $1 AND contact_id = $2
 `
@@ -706,74 +740,196 @@ WHERE c.workspace_id = $2
           SELECT 1 FROM contacts ct
           WHERE ct.workspace_id = c.workspace_id AND ct.id = c.contact_id
             AND ct.search @@ websearch_to_tsquery('simple', translate($32::text, 'İı', 'ii')))))
-  AND ($33::text[] IS NULL OR EXISTS (
+  AND NOT $33::bool
+  AND (NOT $34::bool OR c.id = ANY($35::uuid[]))
+  AND NOT (c.id = ANY(coalesce($36::uuid[], '{}')))
+  AND (coalesce(cardinality($37::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT ($37::text[])[i] AS v, ($38::bool[])[i] AS neg
+          FROM generate_series(1, cardinality($37::text[])) AS i) o
+      WHERE o.neg = EXISTS (
+          SELECT 1 FROM messages m
+          LEFT JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+            AND (me.from_address ILIKE o.v
+              OR (m.author_contact_id IS NOT NULL AND EXISTS (
+                  SELECT 1 FROM contacts ct
+                  WHERE ct.workspace_id = m.workspace_id AND ct.id = m.author_contact_id
+                    AND (ct.name ILIKE o.v OR EXISTS (
+                        SELECT 1 FROM contact_emails ce
+                        WHERE ce.workspace_id = ct.workspace_id AND ce.contact_id = ct.id AND ce.email ILIKE o.v))))
+              OR (m.author_member_id IS NOT NULL AND EXISTS (
+                  SELECT 1 FROM members mb JOIN people pe ON pe.id = mb.person_id
+                  WHERE mb.workspace_id = m.workspace_id AND mb.id = m.author_member_id
+                    AND (pe.name ILIKE o.v OR pe.email ILIKE o.v)))))))
+  AND (coalesce(cardinality($39::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT ($39::text[])[i] AS v, ($40::bool[])[i] AS neg
+          FROM generate_series(1, cardinality($39::text[])) AS i) o
+      WHERE o.neg = EXISTS (
+          SELECT 1 FROM messages m
+          JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+            AND address_text(me.to_addresses) ILIKE o.v)))
+  AND (coalesce(cardinality($41::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT ($41::text[])[i] AS v, ($42::bool[])[i] AS neg
+          FROM generate_series(1, cardinality($41::text[])) AS i) o
+      WHERE o.neg = EXISTS (
+          SELECT 1 FROM messages m
+          JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+          WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+            AND address_text(me.cc_addresses) ILIKE o.v)))
+  AND (coalesce(cardinality($43::text[]), 0) = 0 OR NOT EXISTS (
+      SELECT 1 FROM (
+          SELECT ($43::text[])[i] AS v, ($44::bool[])[i] AS neg
+          FROM generate_series(1, cardinality($43::text[])) AS i) o
+      WHERE o.neg = to_tsvector('simple', translate(c.subject, 'İı', 'ii')) @@ websearch_to_tsquery('simple', translate(o.v, 'İı', 'ii'))))
+  AND (($45::timestamptz IS NULL AND $46::timestamptz IS NULL) OR EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+        AND ($45::timestamptz IS NULL OR m.created_at >= $45::timestamptz)
+        AND ($46::timestamptz IS NULL OR m.created_at < $46::timestamptz)))
+  AND ($47::timestamptz IS NULL OR NOT EXISTS (
+      SELECT 1 FROM messages m WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward') AND m.created_at >= $47::timestamptz))
+  AND ($48::timestamptz IS NULL OR NOT EXISTS (
+      SELECT 1 FROM messages m WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward') AND m.created_at < $48::timestamptz))
+  AND ($49::bool IS NULL OR $49::bool = EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+        AND (m.author_member_id = $5::uuid OR m.sent_by_member_id = $5::uuid)))
+  AND ($50::bool IS NULL OR $50::bool = EXISTS (
+      SELECT 1 FROM messages m
+      JOIN message_emails me ON me.workspace_id = m.workspace_id AND me.message_id = m.id
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+        AND me.to_addresses && ARRAY(
+            SELECT pe.email FROM members mb JOIN people pe ON pe.id = mb.person_id
+            WHERE mb.workspace_id = $2 AND mb.id = $5::uuid
+            UNION
+            SELECT ma.address FROM member_addresses ma
+            WHERE ma.workspace_id = $2 AND ma.member_id = $5::uuid AND ma.verified_at IS NOT NULL)))
+  AND ($51::bool IS NULL OR $51::bool = EXISTS (
+      SELECT 1 FROM attachments a JOIN messages m ON m.workspace_id = a.workspace_id AND m.id = a.message_id
+      WHERE a.workspace_id = c.workspace_id AND a.conversation_id = c.id AND NOT a.inline
+        AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')))
+  AND ($52::bool IS NULL OR $52::bool = EXISTS (
+      SELECT 1 FROM conversation_stars st
+      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $5::uuid))
+  AND ($53::bool IS NULL OR $53::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+      SELECT 1 FROM conversation_stars st
+      WHERE st.workspace_id = c.workspace_id AND st.conversation_id = c.id AND st.member_id = $5::uuid)))
+  AND ($54::bool IS NULL OR $54::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'open' AND c.trashed_at IS NULL))
+  AND ($55::bool IS NULL OR $55::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'snoozed' AND c.trashed_at IS NULL))
+  AND ($56::bool IS NULL OR $56::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.status = 'closed' AND c.trashed_at IS NULL))
+  AND ($57::bool IS NULL OR $57::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND c.trashed_at IS NOT NULL))
+  AND ($58::bool IS NULL OR $58::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.kind = 'message' AND m.direction = 'out'
+        AND NOT m.draft AND (m.author_member_id = $5::uuid OR m.sent_by_member_id = $5::uuid))))
+  AND ($59::bool IS NULL OR $59::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.draft AND m.scheduled_at IS NULL
+        AND m.author_type = 'member' AND m.author_member_id = $5::uuid)))
+  AND ($60::bool IS NULL OR $60::bool = (EXISTS (SELECT 1 FROM inboxes mi WHERE mi.workspace_id = c.workspace_id AND mi.id = c.inbox_id AND mi.purpose = 'mail') AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id
+        AND m.scheduled_by = $5::uuid AND m.scheduled_at IS NOT NULL)))
+  AND ($61::text[] IS NULL OR EXISTS (
       SELECT 1 FROM conversation_sla s
       WHERE s.workspace_id = c.workspace_id AND s.conversation_id = c.id AND s.dropped_at IS NULL
         AND (CASE
-            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $34::timestamptz THEN 'breached'
+            WHEN c.sla_due_at IS NOT NULL AND c.sla_due_at <= $62::timestamptz THEN 'breached'
             WHEN c.sla_due_at IS NOT NULL AND s.warn_minutes > 0
-                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= $34::timestamptz THEN 'due_soon'
+                AND c.sla_due_at - s.warn_minutes * interval '1 minute' <= $62::timestamptz THEN 'due_soon'
             WHEN c.sla_due_at IS NOT NULL THEN 'on_track'
             WHEN s.paused_at IS NOT NULL THEN 'paused'
             WHEN s.first_reply_breached_at IS NOT NULL OR s.next_reply_breached_at IS NOT NULL OR s.resolution_breached_at IS NOT NULL THEN 'breached'
             WHEN (s.first_reply_target_s IS NOT NULL AND s.first_reply_met_at IS NOT NULL)
                 OR (s.next_reply_target_s IS NOT NULL AND s.next_reply_met_at IS NOT NULL)
                 OR (s.resolution_target_s IS NOT NULL AND s.resolution_met_at IS NOT NULL) THEN 'met'
-            ELSE 'on_track' END) = ANY ($33::text[])))
-  AND ($35::timestamptz IS NULL OR CASE
-      WHEN $1::uuid IS NOT NULL THEN sched.at > $36::timestamptz
-          OR (sched.at = $36::timestamptz
-              AND (c.last_activity_at, c.id) < ($35::timestamptz, $37::uuid))
-      WHEN NOT $38::bool THEN (c.last_activity_at, c.id) < ($35::timestamptz, $37::uuid)
-      WHEN $36::timestamptz IS NULL THEN c.sla_due_at IS NULL
-          AND (c.last_activity_at, c.id) < ($35::timestamptz, $37::uuid)
-      ELSE c.sla_due_at IS NULL OR c.sla_due_at > $36::timestamptz
-          OR (c.sla_due_at = $36::timestamptz
-              AND (c.last_activity_at, c.id) < ($35::timestamptz, $37::uuid)) END)
-ORDER BY CASE WHEN $38::bool THEN c.sla_due_at END ASC NULLS LAST, sched.at ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
-LIMIT $39
+            ELSE 'on_track' END) = ANY ($61::text[])))
+  AND ($63::timestamptz IS NULL OR CASE
+      WHEN $1::uuid IS NOT NULL THEN sched.at > $64::timestamptz
+          OR (sched.at = $64::timestamptz
+              AND (c.last_activity_at, c.id) < ($63::timestamptz, $65::uuid))
+      WHEN NOT $66::bool THEN (c.last_activity_at, c.id) < ($63::timestamptz, $65::uuid)
+      WHEN $64::timestamptz IS NULL THEN c.sla_due_at IS NULL
+          AND (c.last_activity_at, c.id) < ($63::timestamptz, $65::uuid)
+      ELSE c.sla_due_at IS NULL OR c.sla_due_at > $64::timestamptz
+          OR (c.sla_due_at = $64::timestamptz
+              AND (c.last_activity_at, c.id) < ($63::timestamptz, $65::uuid)) END)
+ORDER BY CASE WHEN $66::bool THEN c.sla_due_at END ASC NULLS LAST, sched.at ASC NULLS LAST, c.last_activity_at DESC, c.id DESC
+LIMIT $67
 `
 
 type ListConversationsParams struct {
-	ScheduledBy    *uuid.UUID
-	WorkspaceID    uuid.UUID
-	AllInboxes     bool
-	ViewerID       uuid.UUID
-	ViewerMemberID *uuid.UUID
-	InboxID        *uuid.UUID
-	ContactID      *uuid.UUID
-	BroadcastID    *uuid.UUID
-	Spam           *bool
-	Trashed        bool
-	Kinds          []string
-	ChannelKinds   []string
-	Site           *string
-	Category       *string
-	Page           *string
-	Statuses       []string
-	IdeaID         *uuid.UUID
-	NoIdea         bool
-	Unassigned     bool
-	AssigneeID     *uuid.UUID
-	TeamID         *uuid.UUID
-	TeamsOf        *uuid.UUID
-	LabelID        *uuid.UUID
-	Fields         []byte
-	Pinned         *bool
-	PinnedBy       *uuid.UUID
-	Purpose        *string
-	Starred        *bool
-	StarredBy      *uuid.UUID
-	SentBy         *uuid.UUID
-	Q              *string
-	QNot           *string
-	SlaStates      []string
-	SlaNow         time.Time
-	CursorAt       *time.Time
-	CursorDue      *time.Time
-	CursorID       *uuid.UUID
-	BySla          bool
-	Lim            int32
+	ScheduledBy     *uuid.UUID
+	WorkspaceID     uuid.UUID
+	AllInboxes      bool
+	ViewerID        uuid.UUID
+	ViewerMemberID  *uuid.UUID
+	InboxID         *uuid.UUID
+	ContactID       *uuid.UUID
+	BroadcastID     *uuid.UUID
+	Spam            *bool
+	Trashed         bool
+	Kinds           []string
+	ChannelKinds    []string
+	Site            *string
+	Category        *string
+	Page            *string
+	Statuses        []string
+	IdeaID          *uuid.UUID
+	NoIdea          bool
+	Unassigned      bool
+	AssigneeID      *uuid.UUID
+	TeamID          *uuid.UUID
+	TeamsOf         *uuid.UUID
+	LabelID         *uuid.UUID
+	Fields          []byte
+	Pinned          *bool
+	PinnedBy        *uuid.UUID
+	Purpose         *string
+	Starred         *bool
+	StarredBy       *uuid.UUID
+	SentBy          *uuid.UUID
+	Q               *string
+	QNot            *string
+	OpImpossible    bool
+	OpHasHits       bool
+	OpHitIds        []uuid.UUID
+	OpMissIds       []uuid.UUID
+	OpFromVals      []string
+	OpFromNeg       []bool
+	OpToVals        []string
+	OpToNeg         []bool
+	OpCcVals        []string
+	OpCcNeg         []bool
+	OpSubjectVals   []string
+	OpSubjectNeg    []bool
+	OpAfter         *time.Time
+	OpBefore        *time.Time
+	OpNotAfter      *time.Time
+	OpNotBefore     *time.Time
+	OpFromMe        *bool
+	OpToMe          *bool
+	OpHasAttachment *bool
+	OpIsStarred     *bool
+	OpInStarred     *bool
+	OpInInbox       *bool
+	OpInSnoozed     *bool
+	OpInArchive     *bool
+	OpInTrash       *bool
+	OpInSent        *bool
+	OpInDrafts      *bool
+	OpInScheduled   *bool
+	SlaStates       []string
+	SlaNow          time.Time
+	CursorAt        *time.Time
+	CursorDue       *time.Time
+	CursorID        *uuid.UUID
+	BySla           bool
+	Lim             int32
 }
 
 type ListConversationsRow struct {
@@ -815,6 +971,34 @@ func (q *Queries) ListConversations(ctx context.Context, arg ListConversationsPa
 		arg.SentBy,
 		arg.Q,
 		arg.QNot,
+		arg.OpImpossible,
+		arg.OpHasHits,
+		arg.OpHitIds,
+		arg.OpMissIds,
+		arg.OpFromVals,
+		arg.OpFromNeg,
+		arg.OpToVals,
+		arg.OpToNeg,
+		arg.OpCcVals,
+		arg.OpCcNeg,
+		arg.OpSubjectVals,
+		arg.OpSubjectNeg,
+		arg.OpAfter,
+		arg.OpBefore,
+		arg.OpNotAfter,
+		arg.OpNotBefore,
+		arg.OpFromMe,
+		arg.OpToMe,
+		arg.OpHasAttachment,
+		arg.OpIsStarred,
+		arg.OpInStarred,
+		arg.OpInInbox,
+		arg.OpInSnoozed,
+		arg.OpInArchive,
+		arg.OpInTrash,
+		arg.OpInSent,
+		arg.OpInDrafts,
+		arg.OpInScheduled,
 		arg.SlaStates,
 		arg.SlaNow,
 		arg.CursorAt,
@@ -1060,6 +1244,62 @@ func (q *Queries) ListExpiredTrash(ctx context.Context, arg ListExpiredTrashPara
 	return items, nil
 }
 
+const listFromMatchConversations = `-- name: ListFromMatchConversations :many
+SELECT m.conversation_id FROM message_emails me
+JOIN messages m ON m.workspace_id = me.workspace_id AND m.id = me.message_id
+WHERE me.workspace_id = $2 AND me.from_address ILIKE $3::text
+  AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+UNION
+SELECT c.id FROM contacts ct
+JOIN conversations c ON c.workspace_id = ct.workspace_id AND c.contact_id = ct.id
+WHERE ct.workspace_id = $2 AND ct.name ILIKE $3::text
+  AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.author_contact_id = ct.id
+        AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward'))
+UNION
+SELECT c.id FROM contact_emails ce
+JOIN conversations c ON c.workspace_id = ce.workspace_id AND c.contact_id = ce.contact_id
+WHERE ce.workspace_id = $2 AND ce.email ILIKE $3::text
+  AND EXISTS (
+      SELECT 1 FROM messages m
+      WHERE m.workspace_id = c.workspace_id AND m.conversation_id = c.id AND m.author_contact_id = ce.contact_id
+        AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward'))
+UNION
+SELECT m.conversation_id FROM members mb
+JOIN people pe ON pe.id = mb.person_id
+JOIN messages m ON m.workspace_id = mb.workspace_id AND m.author_member_id = mb.id
+WHERE mb.workspace_id = $2 AND (pe.name ILIKE $3::text OR pe.email ILIKE $3::text)
+  AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+LIMIT $1
+`
+
+type ListFromMatchConversationsParams struct {
+	MaxRows     int32
+	WorkspaceID uuid.UUID
+	Pattern     string
+}
+
+func (q *Queries) ListFromMatchConversations(ctx context.Context, arg ListFromMatchConversationsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listFromMatchConversations, arg.MaxRows, arg.WorkspaceID, arg.Pattern)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var conversation_id uuid.UUID
+		if err := rows.Scan(&conversation_id); err != nil {
+			return nil, err
+		}
+		items = append(items, conversation_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listInboxConversationIDs = `-- name: ListInboxConversationIDs :many
 SELECT id FROM conversations WHERE workspace_id = $1 AND inbox_id = $2
 `
@@ -1082,6 +1322,40 @@ func (q *Queries) ListInboxConversationIDs(ctx context.Context, arg ListInboxCon
 			return nil, err
 		}
 		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listToMatchConversations = `-- name: ListToMatchConversations :many
+SELECT DISTINCT m.conversation_id FROM message_emails me
+JOIN messages m ON m.workspace_id = me.workspace_id AND m.id = me.message_id
+WHERE me.workspace_id = $1 AND address_text(me.to_addresses) ILIKE $2::text
+  AND NOT m.draft AND m.redacted_at IS NULL AND m.kind IN ('message', 'forward')
+LIMIT $3
+`
+
+type ListToMatchConversationsParams struct {
+	WorkspaceID uuid.UUID
+	Pattern     string
+	MaxRows     int32
+}
+
+func (q *Queries) ListToMatchConversations(ctx context.Context, arg ListToMatchConversationsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listToMatchConversations, arg.WorkspaceID, arg.Pattern, arg.MaxRows)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var conversation_id uuid.UUID
+		if err := rows.Scan(&conversation_id); err != nil {
+			return nil, err
+		}
+		items = append(items, conversation_id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

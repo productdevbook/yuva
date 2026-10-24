@@ -436,7 +436,11 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 		return nil, err
 	}
 	arg.Lim = lim + 1
-	rows, err := s.st.ListConversations(ctx, arg)
+	list := s.st.ListConversations
+	if arg.HasOperators() {
+		list = s.st.ListConversationsPlanned
+	}
+	rows, err := list(ctx, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -464,14 +468,48 @@ func (s *Server) ListConversations(ctx context.Context, req oas.ListConversation
 	return oas.ListConversations200JSONResponse{Items: items, NextCursor: next}, nil
 }
 
-// conversationFilter reads the filters of ListConversations, everything but the page, for p. It is
+// listFilter is a parsed list query; addresses are the from:, to: and cc: operators of q that
+// resolveAddresses still has to look up.
+type listFilter struct {
+	store.ListConversationsParams
+	addresses []searchOperator
+}
+
+func (s *Server) conversationFilter(ctx context.Context, q *store.Queries, p principal, prm oas.ListConversationsParams, fields map[string][]string) (store.ListConversationsParams, error) {
+	f, err := s.parseConversationFilter(ctx, q, p, prm, fields)
+	if err != nil {
+		return store.ListConversationsParams{}, err
+	}
+	if err := resolveAddresses(ctx, q, &f.ListConversationsParams, f.addresses); err != nil {
+		return store.ListConversationsParams{}, err
+	}
+	return f.ListConversationsParams, nil
+}
+
+// parseConversationFilter reads the filters of ListConversations, everything but the page, for p. It is
 // the one parser of those parameters: saved views check and count with it too. A refused value
 // comes back as a listFilterError naming its parameter.
-func (s *Server) conversationFilter(ctx context.Context, q *store.Queries, p principal, prm oas.ListConversationsParams, fields map[string][]string) (store.ListConversationsParams, error) {
-	var none store.ListConversationsParams
+func (s *Server) parseConversationFilter(ctx context.Context, q *store.Queries, p principal, prm oas.ListConversationsParams, fields map[string][]string) (listFilter, error) {
+	var none listFilter
+	loc, err := searchLocation(prm.Timezone)
+	if err != nil {
+		return none, onParam("timezone", err)
+	}
 	search, err := searchQuery(prm.Q)
 	if err != nil {
 		return none, onParam("q", err)
+	}
+	var ops []searchOperator
+	if search != nil {
+		text, parsed, err := parseSearchOperators(*search, loc)
+		if err != nil {
+			return none, onParam("q", err)
+		}
+		ops = parsed
+		search = nil
+		if text != "" {
+			search = &text
+		}
 	}
 	pos, neg := splitSearch(search)
 	if prm.Sort != nil && !prm.Sort.Valid() {
@@ -485,6 +523,10 @@ func (s *Server) conversationFilter(ctx context.Context, q *store.Queries, p pri
 	}
 	if arg.SlaStates, err = enumList(prm.SlaState, "sla_state must be on_track, due_soon, breached, met or paused"); err != nil {
 		return none, onParam("sla_state", err)
+	}
+	addresses, err := applySearchOperators(&arg, p, ops, loc)
+	if err != nil {
+		return none, onParam("q", err)
 	}
 	if arg.Trashed {
 		if err := requireTrashManager(p); err != nil {
@@ -625,7 +667,7 @@ func (s *Server) conversationFilter(ctx context.Context, q *store.Queries, p pri
 		}
 		return none, err
 	}
-	return arg, nil
+	return listFilter{arg, addresses}, nil
 }
 
 // listFilterError names the parameter of ListConversations whose value was refused; it answers as

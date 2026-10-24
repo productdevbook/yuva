@@ -129,7 +129,7 @@ type mcpPage[T any] struct {
 }
 
 type searchConversationsIn struct {
-	Query     string            `json:"query,omitempty" jsonschema:"full-text search over subject, messages, notes and contact; -word excludes"`
+	Query     string            `json:"query,omitempty" jsonschema:"full-text search over subject, messages, notes and contact; -word excludes. Operators, each also negated with a leading -: from:, to:, cc:, subject: (from:me and to:me are the caller), has:attachment, is:starred, in:inbox|starred|snoozed|sent|archive|trash|drafts|scheduled, after:YYYY-MM-DD, before:YYYY-MM-DD; address values need 3 or more characters and no space or comma; a quoted value is for subject:, e.g. subject:\"quarterly invoice\""`
 	InboxID   *uuid.UUID        `json:"inbox_id,omitempty"`
 	Status    string            `json:"status,omitempty"`
 	Assignee  string            `json:"assignee,omitempty" jsonschema:"a member id, me or unassigned"`

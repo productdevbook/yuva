@@ -211,6 +211,29 @@ katılımcıyı kopyalar (Tümünü yanıtla); `cc: []` yalnızca kişiye gider 
 olarak o adresleri kopyalar. Birkaç `To` adresinden biri geri dönerse yalnızca o adres teslim
 edilemez olarak işaretlenir.
 
+## E-postada arama
+
+Konuşma listesinin arama kutusu (`GET /v1/conversations` için `q`, MCP `search_conversations`) düz
+sözcüklerin yanında operatörleri de kabul eder. `anahtar:değer`, `anahtar:"iki sözcük"` yazın;
+eşleşenleri dışarıda bırakmak için `-anahtar:değer` yazın. Her operatör ve her diğer süzgeç birlikte
+sağlanmalıdır. Anahtarlar ve değerler büyük/küçük harfe duyarsızdır; bu operatörlerden biri olmayan ya
+da değeri uymayan bir terim metin olarak aranır, bu yüzden `ratio:3:1` ve bağlantılar çalışmaya devam
+eder. Bir `from:`, `to:` veya `cc:` değeri en az 3 karakter olmalı ve boşluk ya da virgül içermemelidir; tarihler 1 ile 9999 yılları arasındadır. Diğer üyelerin taslakları hiçbir zaman aranmaz.
+
+| Operatör | Eşleşen | Örnek |
+|---|---|---|
+| `from:` | göndericisinin adresi veya adı değeri içeren gönderilmiş bir ileti; `from:me` sizsiniz | `from:ada@example.com` |
+| `to:`, `cc:` | değeri içeren bir alıcı adresi olan ileti; `to:me` sizsiniz | `to:me cc:@example.com` |
+| `subject:` | düz sözcüklerin eşleştiği gibi konu | `subject:"quarterly invoice"` |
+| `has:attachment` | eki olan bir ileti | `has:attachment invoice` |
+| `is:starred` | yıldızladığınız konuşmalar | `-is:starred` |
+| `in:` | bir e-posta klasörü: `inbox`, `starred`, `snoozed`, `sent`, `archive`, `trash`, `drafts` veya `scheduled` | `in:archive from:ada` |
+| `after:`, `before:` | `YYYY-MM-DD` gününün gece yarısından sonra veya önce gönderilmiş ileti | `after:2026-01-01 before:2026-02-01` |
+
+`after:` ve `before:` istemcinin `timezone` olarak gönderdiği saat dilimini kullanır (yoksa UTC).
+`in:trash` için `trashed=true` ile aynı yetkiler gerekir. Bir sorgu en çok 200 karakter ve 20 operatör
+içerir.
+
 ## Geri dönen e-postalar
 
 Bir geri dönme (bounce) ya da şikâyet, mesajı başarısız ve adresi teslim edilemez olarak işaretler;

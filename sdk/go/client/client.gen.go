@@ -26385,6 +26385,9 @@ type ListConversationsParams struct {
 	// comma-separated list. Conversations without an SLA never match.
 	SlaState *[]SlaState `form:"sla_state,omitempty" json:"sla_state,omitempty"`
 
+	// Timezone IANA time zone whose midnight `after:` and `before:` in `q` use; `UTC` by default.
+	Timezone *string `form:"timezone,omitempty" json:"timezone,omitempty"`
+
 	// Q Full-text search (Postgres `simple` configuration, `websearch` syntax).
 	Q *Search `form:"q,omitempty" json:"q,omitempty"`
 
@@ -38591,6 +38594,22 @@ type ClientInterface interface {
 	// full-text search over the subject, the messages and notes, and the contact; a negated term
 	// (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
 	// Conversations in the trash are listed only with `trashed=true`.
+	//
+	// `q` also takes search operators, written `key:value`, `key:"quoted value"` or negated
+	// `-key:value`. Keys are case-insensitive, values match case-insensitively, and every operator
+	// and every other parameter must hold (`-key:value` keeps the conversations where `key:value`
+	// does not). Only sent messages are searched, never drafts. `from:x` matches a sender's
+	// address or name, `to:x` and `cc:x` a recipient address (each by containing `x`; `from:me` and
+	// `to:me` mean the calling member, with their verified addresses), `subject:x` the subject
+	// (as the free text does), `has:attachment` a message with an attachment, `is:starred` a
+	// conversation the caller starred, `in:` one of `inbox`, `starred`, `snoozed`, `sent`,
+	// `archive`, `trash`, `drafts` or `scheduled` (the mail folders; `in:trash` needs the rights of
+	// `trashed=true`; the folders are those of mail inboxes), and `after:YYYY-MM-DD` and `before:YYYY-MM-DD` a message
+	// sent at or after 00:00 of that day and before 00:00 of that day in `timezone`; given together they must hold for one message. A term with another key or a
+	// value that does not fit (`before:soon`, `in:elsewhere`, a `from:`, `to:` or `cc:` value shorter than 3 characters or
+	// holding a space or comma, a date before year 1 or after year 9999) is searched as text, so `ratio:3:1`
+	// and URLs still work. `from:me`, `to:me`, `is:starred` and `in:starred`, `sent`, `drafts` and
+	// `scheduled` need a member session. `q` has at most 200 characters and 20 operators.
 	//
 	// Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 	//
@@ -52267,6 +52286,22 @@ func (c *Client) ListContactVisits(ctx context.Context, contactId ContactId, par
 // full-text search over the subject, the messages and notes, and the contact; a negated term
 // (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
 // Conversations in the trash are listed only with `trashed=true`.
+//
+// `q` also takes search operators, written `key:value`, `key:"quoted value"` or negated
+// `-key:value`. Keys are case-insensitive, values match case-insensitively, and every operator
+// and every other parameter must hold (`-key:value` keeps the conversations where `key:value`
+// does not). Only sent messages are searched, never drafts. `from:x` matches a sender's
+// address or name, `to:x` and `cc:x` a recipient address (each by containing `x`; `from:me` and
+// `to:me` mean the calling member, with their verified addresses), `subject:x` the subject
+// (as the free text does), `has:attachment` a message with an attachment, `is:starred` a
+// conversation the caller starred, `in:` one of `inbox`, `starred`, `snoozed`, `sent`,
+// `archive`, `trash`, `drafts` or `scheduled` (the mail folders; `in:trash` needs the rights of
+// `trashed=true`; the folders are those of mail inboxes), and `after:YYYY-MM-DD` and `before:YYYY-MM-DD` a message
+// sent at or after 00:00 of that day and before 00:00 of that day in `timezone`; given together they must hold for one message. A term with another key or a
+// value that does not fit (`before:soon`, `in:elsewhere`, a `from:`, `to:` or `cc:` value shorter than 3 characters or
+// holding a space or comma, a date before year 1 or after year 9999) is searched as text, so `ratio:3:1`
+// and URLs still work. `from:me`, `to:me`, `is:starred` and `in:starred`, `sent`, `drafts` and
+// `scheduled` need a member session. `q` has at most 200 characters and 20 operators.
 //
 // Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 //
@@ -75795,6 +75830,18 @@ func NewListConversationsRequest(server string, params *ListConversationsParams)
 		if params.SlaState != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "sla_state", *params.SlaState, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Timezone != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "timezone", *params.Timezone, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -101226,6 +101273,22 @@ type ClientWithResponsesInterface interface {
 	// full-text search over the subject, the messages and notes, and the contact; a negated term
 	// (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
 	// Conversations in the trash are listed only with `trashed=true`.
+	//
+	// `q` also takes search operators, written `key:value`, `key:"quoted value"` or negated
+	// `-key:value`. Keys are case-insensitive, values match case-insensitively, and every operator
+	// and every other parameter must hold (`-key:value` keeps the conversations where `key:value`
+	// does not). Only sent messages are searched, never drafts. `from:x` matches a sender's
+	// address or name, `to:x` and `cc:x` a recipient address (each by containing `x`; `from:me` and
+	// `to:me` mean the calling member, with their verified addresses), `subject:x` the subject
+	// (as the free text does), `has:attachment` a message with an attachment, `is:starred` a
+	// conversation the caller starred, `in:` one of `inbox`, `starred`, `snoozed`, `sent`,
+	// `archive`, `trash`, `drafts` or `scheduled` (the mail folders; `in:trash` needs the rights of
+	// `trashed=true`; the folders are those of mail inboxes), and `after:YYYY-MM-DD` and `before:YYYY-MM-DD` a message
+	// sent at or after 00:00 of that day and before 00:00 of that day in `timezone`; given together they must hold for one message. A term with another key or a
+	// value that does not fit (`before:soon`, `in:elsewhere`, a `from:`, `to:` or `cc:` value shorter than 3 characters or
+	// holding a space or comma, a date before year 1 or after year 9999) is searched as text, so `ratio:3:1`
+	// and URLs still work. `from:me`, `to:me`, `is:starred` and `in:starred`, `sent`, `drafts` and
+	// `scheduled` need a member session. `q` has at most 200 characters and 20 operators.
 	//
 	// Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 	//
@@ -150121,6 +150184,22 @@ func (c *ClientWithResponses) ListContactVisitsWithResponse(ctx context.Context,
 // full-text search over the subject, the messages and notes, and the contact; a negated term
 // (`-word`, `-"some phrase"`) excludes every conversation in which any of those contains it.
 // Conversations in the trash are listed only with `trashed=true`.
+//
+// `q` also takes search operators, written `key:value`, `key:"quoted value"` or negated
+// `-key:value`. Keys are case-insensitive, values match case-insensitively, and every operator
+// and every other parameter must hold (`-key:value` keeps the conversations where `key:value`
+// does not). Only sent messages are searched, never drafts. `from:x` matches a sender's
+// address or name, `to:x` and `cc:x` a recipient address (each by containing `x`; `from:me` and
+// `to:me` mean the calling member, with their verified addresses), `subject:x` the subject
+// (as the free text does), `has:attachment` a message with an attachment, `is:starred` a
+// conversation the caller starred, `in:` one of `inbox`, `starred`, `snoozed`, `sent`,
+// `archive`, `trash`, `drafts` or `scheduled` (the mail folders; `in:trash` needs the rights of
+// `trashed=true`; the folders are those of mail inboxes), and `after:YYYY-MM-DD` and `before:YYYY-MM-DD` a message
+// sent at or after 00:00 of that day and before 00:00 of that day in `timezone`; given together they must hold for one message. A term with another key or a
+// value that does not fit (`before:soon`, `in:elsewhere`, a `from:`, `to:` or `cc:` value shorter than 3 characters or
+// holding a space or comma, a date before year 1 or after year 9999) is searched as text, so `ratio:3:1`
+// and URLs still work. `from:me`, `to:me`, `is:starred` and `in:starred`, `sent`, `drafts` and
+// `scheduled` need a member session. `q` has at most 200 characters and 20 operators.
 //
 // Scope: `conversations:read`; with `trashed=true` also `conversations:delete`.
 //

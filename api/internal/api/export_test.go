@@ -168,3 +168,5 @@ func (x Sockets) Open(session, contact uuid.UUID, addr string) Socket {
 func (x Sockets) Ready(s Socket) bool { return x.c.ready(s.s) }
 
 func (x Sockets) Close(s Socket) bool { return x.c.close(s.s) }
+
+func SetAddressMatchCap(n int) { addressMatchCap.Store(int64(n)) }
