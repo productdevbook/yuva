@@ -38,6 +38,7 @@ You host it yourself: one Docker image and Postgres.
 | | |
 |---|---|
 | **Conversations** | One inbox per product with its own branding, language, hours and team. [E-mail](docs/email.md), [live chat](docs/widget.md), [in-app messages](docs/mobile.md) and app feedback in one thread, with notes, labels, mentions and bot drafts a member reviews. |
+| **Team mail** | Shared addresses such as sales@ and people's own [mailboxes](docs/team-mail.md) in the same inbox, with drafts, send later, filters and search operators. Personal mailboxes are private, and you can delegate them. Yuva is the mailbox; it is not an IMAP server for mail apps. |
 | **Reach** | [Mailing lists](docs/lists.md) with consent records and [imports](docs/importing.md), [e-mail designs](docs/designs.md) from templates, [broadcasts](docs/broadcasts.md) with approval and reports, and a [deliverability check](docs/deliverability.md). |
 | **Publish** | [Help center](docs/help-center.md), [documentation pages](docs/documentation-pages.md), [status pages](docs/status-pages.md) on your own domain, a [roadmap board](docs/roadmap-board.md) and [What's new](docs/whats-new.md). |
 | **Insights** | [Reports](docs/reports.md) on opened and closed conversations, response times, SLA and ratings, [cookieless analytics](docs/analytics.md) for websites and apps, and a [support report](docs/analytics-support.md) that ranks pages by the conversations they cause. |

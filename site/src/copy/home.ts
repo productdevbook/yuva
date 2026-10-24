@@ -117,6 +117,19 @@ export function homeCopy(i18n: I18n, quickStartRel: string) {
           href: docs("email/"),
         },
         {
+          id: "team-mail",
+          title: i18n._(msg`Team mail`),
+          body: i18n._(
+            msg`Shared addresses like sales@ and people's own mailboxes, in the inbox your team already uses. Yuva is the mailbox: your domain's mail is routed to it. It is not an IMAP server for mail apps.`
+          ),
+          points: [
+            { term: i18n._(msg`Mailboxes`), text: i18n._(msg`shared, or one for each person`) },
+            { term: i18n._(msg`Privacy`), text: i18n._(msg`a personal one is private, even from admins`) },
+            { term: i18n._(msg`History`), text: i18n._(msg`moved in, read-only at the source`) },
+          ],
+          href: docs("team-mail/"),
+        },
+        {
           id: "contacts",
           title: i18n._(msg`Contacts`),
           body: i18n._(msg`One profile for each person, whichever channel they write from.`),

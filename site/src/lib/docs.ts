@@ -16,6 +16,7 @@ const groups = [
     icon: "mail",
     slugs: [
       "email",
+      "team-mail",
       "widget",
       "mobile",
       "documentation-pages",
