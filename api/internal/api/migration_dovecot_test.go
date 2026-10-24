@@ -874,6 +874,7 @@ WHERE c.workspace_id = $1 AND c.migration_id = $2`, d.tm.ws, id)
 // checkNoOrphans compares the workspace's stored files with the keys its rows name.
 func checkNoOrphans(t *testing.T, d *dovecotRun) {
 	t.Helper()
+	d.h.runStorageDeletes(d.tm.ws)
 	var files []string
 	root := filepath.Join(d.h.storage.Dir, d.tm.ws)
 	_ = filepath.WalkDir(root, func(p string, e fs.DirEntry, err error) error {
