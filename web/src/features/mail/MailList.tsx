@@ -33,7 +33,7 @@ import { useSnoozeTimes } from "@/features/conversation/HeaderActions"
 import { look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
 import { useListCursor } from "@/features/inbox/listCursor"
-import { useBulkUpdateConversations, useConversations, useDrafts } from "@/features/inbox/queries"
+import { useBulkUpdateConversations, useConversations } from "@/features/inbox/queries"
 import { mailFilters, type Folder } from "@/features/mail/folders"
 import { OperatorHelp, OperatorList, useOperatorSuggest } from "@/features/mail/SearchOperators"
 import { useStar } from "@/features/mail/queries"
@@ -248,17 +248,6 @@ export function MailList({
   const [selecting, setSelecting] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const list = useConversations(mailFilters(box, folder, q))
-  const scheduledDrafts = useDrafts({ mine: true, scheduled: true }, folder === "scheduled")
-  const scheduledAt = useMemo(() => {
-    const at = new Map<string, string>()
-    for (const p of scheduledDrafts.data?.pages ?? [])
-      for (const i of p.items) {
-        const when = i.draft.scheduled_at
-        const known = at.get(i.conversation.id)
-        if (when && (!known || when < known)) at.set(i.conversation.id, when)
-      }
-    return at
-  }, [scheduledDrafts.data])
   const rows = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, active, scroller)
   const star = useStar()
@@ -649,7 +638,7 @@ export function MailList({
               selecting={selecting}
               checked={selected.has(c.id)}
               showInbox={box === "all"}
-              scheduledAt={folder === "scheduled" ? scheduledAt.get(c.id) : undefined}
+              scheduledAt={folder === "scheduled" ? c.scheduled_at : undefined}
               onOpen={() => (selecting ? toggle(c.id) : onOpen(c.id))}
               onStar={() => star([c.id], !c.starred)}
             />

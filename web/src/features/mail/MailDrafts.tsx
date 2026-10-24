@@ -1,18 +1,15 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { PaperclipIcon, TriangleAlertIcon } from "lucide-react"
 import { useMemo, useRef } from "react"
-import { useQueryClient } from "@tanstack/react-query"
 
-import { ErrorLine, toast } from "@/components/common"
-import { formatShort, useErrorText } from "@/components/common/text"
+import { ErrorLine } from "@/components/common"
+import { formatShort } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useListCursor } from "@/features/inbox/listCursor"
 import { useDrafts } from "@/features/inbox/queries"
 import { useMailInboxes } from "@/features/mail/folders"
-import { api, unwrap, type DraftItem } from "@/lib/api"
-import { keys } from "@/lib/keys"
-import { useSession } from "@/lib/session"
+import type { DraftItem } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
@@ -101,14 +98,11 @@ export function MailDrafts({
 }: {
   box: string
   currentId: string | null
-  onOpen: (id: string) => void
+  onOpen: (id: string, editDraft?: string) => void
   onCompose: (item: DraftItem) => void
   active: boolean
 }) {
   const { t } = useLingui()
-  const errorText = useErrorText()
-  const qc = useQueryClient()
-  const { workspaceId: ws } = useSession()
   const mailBoxes = useMailInboxes()
   const scroller = useRef<HTMLDivElement>(null)
   const list = useDrafts({ inbox_id: box === "all" ? undefined : box, mine: true, scheduled: false })
@@ -118,27 +112,16 @@ export function MailDrafts({
   }, [list.data, mailBoxes])
   const rows = useMemo(() => items.map((i) => ({ id: i.conversation.id })), [items])
 
-  const open = async (item: DraftItem) => {
-    const id = item.conversation.id
-    try {
-      const c = await qc.fetchQuery({
-        queryKey: keys.conversation(ws, id),
-        queryFn: () =>
-          unwrap(api.GET("/v1/conversations/{conversationId}", { params: { path: { conversationId: id } } })),
-        staleTime: 0,
-      })
-      if (c.last_message_at) onOpen(id)
-      else onCompose(item)
-    } catch (e) {
-      toast(errorText(e))
-    }
+  const open = (item: DraftItem) => {
+    if (item.composed) onCompose(item)
+    else onOpen(item.conversation.id, item.draft.send_error ? item.draft.id : undefined)
   }
   const { cursorId } = useListCursor(
     rows,
     currentId,
     (id) => {
       const item = items.find((i) => i.conversation.id === id)
-      if (item) void open(item)
+      if (item) open(item)
     },
     active,
     scroller
@@ -170,7 +153,7 @@ export function MailDrafts({
               current={item.conversation.id === currentId}
               cursor={item.conversation.id === cursorId}
               showInbox={box === "all"}
-              onOpen={() => void open(item)}
+              onOpen={() => open(item)}
             />
           ))
         )}

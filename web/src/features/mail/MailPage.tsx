@@ -137,7 +137,8 @@ function NoMailInboxes() {
 }
 
 function Thread({ id, onBack, onLeave }: { id: string; onBack?: () => void; onLeave: () => void }) {
-  return <MailThread key={id} id={id} onBack={onBack} onLeave={onLeave} />
+  const state = useLocation().state as { editDraft?: string } | null
+  return <MailThread key={id} id={id} onBack={onBack} onLeave={onLeave} openDraft={state?.editDraft} />
 }
 
 export function MailPage() {
@@ -151,7 +152,11 @@ export function MailPage() {
   const labels = useFolderLabels()
   const counts = useFolderCounts(box)
   const layout = useDefaultLayout({ id: "mail-panes", panelIds: ["list", "thread"] })
-  const open = useCallback((next: string) => navigate(mailPath(box, folder, next)), [navigate, box, folder])
+  const open = useCallback(
+    (next: string, editDraft?: string) =>
+      navigate(mailPath(box, folder, next), editDraft ? { state: { editDraft } } : undefined),
+    [navigate, box, folder]
+  )
   const leave = useCallback(() => navigate(mailPath(box, folder)), [navigate, box, folder])
   useViewing(id ?? undefined)
   const [composing, setComposing] = useState<{ draft?: DraftItem } | null>(null)

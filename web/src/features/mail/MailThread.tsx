@@ -68,7 +68,7 @@ import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useChannelMap, useInboxes, useLabels, useMemberMap } from "@/lib/workspace"
 
-type Props = { id: string; onBack?: () => void; onLeave: () => void }
+type Props = { id: string; onBack?: () => void; onLeave: () => void; openDraft?: string }
 
 function BackButton({ onBack }: { onBack?: () => void }) {
   const { t } = useLingui()
@@ -309,7 +309,7 @@ function MailSnooze({
   )
 }
 
-function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; contact?: Contact }) {
+function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Conversation; contact?: Contact }) {
   const { t } = useLingui()
   const errorText = useErrorText()
   const { canManage, membership } = useSession()
@@ -355,6 +355,13 @@ function Loaded({ c, contact, onBack, onLeave }: Props & { c: Conversation; cont
   )
   const nextCard = cards[0]
   const cardCount = cards.length
+  const edited = useRef(false)
+  const editTarget = openDraft ? items.find((m) => m.id === openDraft) : undefined
+  useEffect(() => {
+    if (!editTarget || edited.current) return
+    edited.current = true
+    reply.current?.edit(editTarget)
+  }, [editTarget])
   useEffect(() => {
     if (cardCount === 0) return
     const down = () => scroller.current?.scrollTo({ top: scroller.current.scrollHeight })
