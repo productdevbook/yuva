@@ -58,7 +58,7 @@ func (s *Server) readDocument(ctx context.Context, q *store.Queries, ws uuid.UUI
 	d, issues, err := design.Parse(raw)
 	switch {
 	case errors.Is(err, design.ErrTooLarge):
-		return d, designProblem(http.StatusRequestEntityTooLarge, "design_too_large", "a design holds at most 200 blocks in 300 KiB of JSON", nil)
+		return d, designProblem(http.StatusRequestEntityTooLarge, "design_too_large", "a design holds at most 200 blocks in 300 KiB of JSON, 1 MiB with its translations", nil)
 	case errors.Is(err, design.ErrUnsupportedSchema):
 		return d, designProblem(http.StatusUnprocessableEntity, "unsupported_schema", "the design was made by a newer Yuva; this server knows schema "+strconv.Itoa(design.Schema), nil)
 	case err != nil:
@@ -151,10 +151,16 @@ type renderScope struct {
 	subject string
 	pre     string
 	dark    bool
+	// version is the language version to render; "" for a design without translations.
+	version string
 }
 
 func (s *Server) renderDesign(ctx context.Context, q *store.Queries, ws uuid.UUID, d design.Document, sc renderScope) (design.Output, error) {
-	in := design.Input{Doc: d, Subject: sc.subject, Preheader: d.Preheader, Lang: "en", Dark: sc.dark, Icon: s.iconURL}
+	doc := d
+	if sc.version != "" {
+		doc = d.Localized(sc.version)
+	}
+	in := design.Input{Doc: doc, Subject: sc.subject, Preheader: doc.Preheader, Lang: "en", Dark: sc.dark, Icon: s.iconURL}
 	if sc.pre != "" {
 		in.Preheader = sc.pre
 	}
@@ -168,6 +174,10 @@ func (s *Server) renderDesign(ctx context.Context, q *store.Queries, ws uuid.UUI
 		in.Sender = design.Sender{LegalName: deref(sc.inbox.SenderLegalName), PostalAddress: deref(sc.inbox.SenderPostalAddress),
 			Registration: deref(sc.inbox.SenderRegistration), Contact: deref(sc.inbox.SenderContact)}
 	}
+	if sc.version != "" {
+		in.Lang, _ = design.FooterLang(sc.version)
+		in.HTMLLang = sc.version
+	}
 	if sc.list != nil {
 		v.ListName = sc.list.Name
 	}
@@ -180,6 +190,9 @@ func (s *Server) renderDesign(ctx context.Context, q *store.Queries, ws uuid.UUI
 	}
 	in.Image = img
 	out, err := design.Render(in)
+	if sc.version != "" {
+		out.Warnings = append(out.Warnings, d.VersionIssues(sc.version)...)
+	}
 	if sc.inbox == nil {
 		kept := out.Warnings[:0]
 		for _, w := range out.Warnings {
@@ -258,6 +271,10 @@ func (s *Server) designBody(ctx context.Context, q *store.Queries, row store.Ema
 			sc.inbox = &in
 		}
 	}
+	versions := d.Versions()
+	if len(versions) > 0 {
+		sc.version = versions[0]
+	}
 	out, err := s.renderDesign(ctx, q, row.WorkspaceID, d, sc)
 	warnings := []oas.EmailDesignIssue{}
 	switch {
@@ -267,6 +284,11 @@ func (s *Server) designBody(ctx context.Context, q *store.Queries, row store.Ema
 		return oas.EmailDesign{}, err
 	default:
 		warnings = issueBodies(out.Warnings)
+	}
+	if len(versions) > 1 {
+		for _, tag := range versions[1:] {
+			warnings = append(warnings, issueBodies(d.VersionIssues(tag))...)
+		}
 	}
 	return oas.EmailDesign{
 		Id: row.ID, Name: row.Name, InboxId: row.InboxID, Version: row.Version, TemplateSlug: row.TemplateSlug,
@@ -430,7 +452,11 @@ func (s *Server) CreateEmailDesign(ctx context.Context, req oas.CreateEmailDesig
 		var slug *string
 		switch {
 		case b.Template != nil:
-			d, err = s.documentFromTemplate(ctx, q, p, b.Template.Slug, b.Template.Locale)
+			var others []oas.EmailTemplateLocale
+			if b.Template.Locales != nil {
+				others = *b.Template.Locales
+			}
+			d, err = s.documentFromTemplate(ctx, q, p, b.Template.Slug, b.Template.Locale, others)
 			if err != nil {
 				return err
 			}
@@ -496,6 +522,27 @@ func (s *Server) saveDesign(ctx context.Context, q *store.Queries, p principal, 
 
 var errVersionConflict = errors.New("version conflict")
 
+// keepTranslations carries the stored language versions over to a document sent without the
+// translations key, so a client that does not know them cannot erase them.
+func keepTranslations(cur store.EmailDesign, d design.Document) (design.Document, error) {
+	old, _, err := design.Parse(cur.Document)
+	if err != nil {
+		return d, err
+	}
+	if d.Locale == "" {
+		d.Locale = old.Locale
+	}
+	if d.FallbackLocale == "" {
+		d.FallbackLocale = old.FallbackLocale
+	}
+	d.Translations = old.Translations
+	d.Prune()
+	if issues := design.Validate(d, design.Options{}); len(issues) > 0 {
+		return d, issuesProblem(issues)
+	}
+	return d, nil
+}
+
 func (s *Server) UpdateEmailDesign(ctx context.Context, req oas.UpdateEmailDesignRequestObject) (oas.UpdateEmailDesignResponseObject, error) {
 	p := principalFrom(ctx)
 	b := req.Body
@@ -518,6 +565,11 @@ func (s *Server) UpdateEmailDesign(ctx context.Context, req oas.UpdateEmailDesig
 		d, err := s.readDocument(ctx, q, p.workspaceID, requestDocument(b.Document), design.Options{})
 		if err != nil {
 			return err
+		}
+		if b.Document.Translations == nil {
+			if d, err = keepTranslations(cur, d); err != nil {
+				return err
+			}
 		}
 		row, err = s.saveDesign(ctx, q, p, cur, b.BaseVersion, name, b.InboxId, d)
 		if errors.Is(err, errVersionConflict) {
@@ -741,13 +793,23 @@ func (s *Server) RenderEmailDesign(ctx context.Context, req oas.RenderEmailDesig
 		}
 		sc.inbox = &in
 	}
+	want := ""
+	if b.Locale != nil {
+		if want, err = languageTag(string(*b.Locale), "locale"); err != nil {
+			return nil, err
+		}
+	}
 	if b.ContactId != nil {
-		v, err := s.contactValues(ctx, q, p, *b.ContactId)
+		v, locale, err := s.contactValues(ctx, q, p, *b.ContactId)
 		if err != nil {
 			return nil, err
 		}
 		sc.values = &v
+		if b.Locale == nil {
+			want = locale
+		}
 	}
+	sc.version, _ = d.Pick(want)
 	out, err := s.renderDesign(ctx, q, p.workspaceID, d, sc)
 	if errors.Is(err, design.ErrHTMLTooLarge) {
 		return nil, designProblem(http.StatusUnprocessableEntity, "html_too_large", "the rendered mail is over 500 KB", nil)
@@ -755,26 +817,30 @@ func (s *Server) RenderEmailDesign(ctx context.Context, req oas.RenderEmailDesig
 	if err != nil {
 		return nil, err
 	}
-	return oas.RenderEmailDesign200JSONResponse{Html: out.HTML, Text: out.Text, SizeBytes: int64(out.Size), Warnings: issueBodies(out.Warnings)}, nil
+	res := oas.RenderEmailDesign200JSONResponse{Html: out.HTML, Text: out.Text, SizeBytes: int64(out.Size), Warnings: issueBodies(out.Warnings)}
+	if sc.version != "" {
+		res.Locale = new(oas.LanguageTag(sc.version))
+	}
+	return res, nil
 }
 
 // contactValues are a contact's merge field values: name, first address and top-level string and
 // number attributes.
-func (s *Server) contactValues(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (design.Values, error) {
+func (s *Server) contactValues(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (design.Values, string, error) {
 	if err := visibleContact(ctx, q, p, id); err != nil {
-		return design.Values{}, err
+		return design.Values{}, "", err
 	}
 	c, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: p.workspaceID, ID: id})
 	if store.IsNotFound(err) {
-		return design.Values{}, errContactGone
+		return design.Values{}, "", errContactGone
 	}
 	if err != nil {
-		return design.Values{}, err
+		return design.Values{}, "", err
 	}
 	v := design.Values{ContactName: c.Name, Attributes: map[string]string{}}
 	emails, err := q.ListContactEmails(ctx, store.ListContactEmailsParams{WorkspaceID: p.workspaceID, ContactIds: []uuid.UUID{id}})
 	if err != nil {
-		return v, err
+		return v, "", err
 	}
 	if len(emails) > 0 {
 		v.ContactEmail = emails[0].Email
@@ -791,5 +857,13 @@ func (s *Server) contactValues(ctx context.Context, q *store.Queries, p principa
 			v.Attributes[k] = strconv.FormatFloat(x, 'f', -1, 64)
 		}
 	}
-	return v, nil
+	return v, deref(c.Locale), nil
+}
+
+func languageTag(v, field string) (string, error) {
+	tag, ok := design.CanonicalTag(strings.TrimSpace(v))
+	if !ok {
+		return "", errValidation(field + " must be a language tag such as en or es-MX")
+	}
+	return tag, nil
 }

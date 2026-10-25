@@ -1971,6 +1971,7 @@ const (
 	BroadcastReviewKeySesTenant        BroadcastReviewKey = "ses_tenant"
 	BroadcastReviewKeySubject          BroadcastReviewKey = "subject"
 	BroadcastReviewKeyTestSent         BroadcastReviewKey = "test_sent"
+	BroadcastReviewKeyTranslations     BroadcastReviewKey = "translations"
 )
 
 // Valid indicates whether the value is a known member of the BroadcastReviewKey enum.
@@ -2009,6 +2010,8 @@ func (e BroadcastReviewKey) Valid() bool {
 	case BroadcastReviewKeySubject:
 		return true
 	case BroadcastReviewKeyTestSent:
+		return true
+	case BroadcastReviewKeyTranslations:
 		return true
 	default:
 		return false
@@ -3251,6 +3254,27 @@ const (
 func (e EmailDesignDocumentSchema) Valid() bool {
 	switch e {
 	case EmailDesignSchema1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailDesignTranslationDirection.
+const (
+	EmailTranslationAuto EmailDesignTranslationDirection = "auto"
+	EmailTranslationLtr  EmailDesignTranslationDirection = "ltr"
+	EmailTranslationRtl  EmailDesignTranslationDirection = "rtl"
+)
+
+// Valid indicates whether the value is a known member of the EmailDesignTranslationDirection enum.
+func (e EmailDesignTranslationDirection) Valid() bool {
+	switch e {
+	case EmailTranslationAuto:
+		return true
+	case EmailTranslationLtr:
+		return true
+	case EmailTranslationRtl:
 		return true
 	default:
 		return false
@@ -10998,8 +11022,12 @@ type Broadcast struct {
 	//
 	//
 	// Examples: Europe/Istanbul
-	Timezone  TimeZone  `json:"timezone"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Timezone TimeZone `json:"timezone"`
+
+	// Translations Subject and preheader per version of the design, by language tag (at most 20). A version
+	// without a subject here goes out with `subject` (review warning `translations`).
+	Translations map[string]BroadcastTranslation `json:"translations"`
+	UpdatedAt    time.Time                       `json:"updated_at"`
 
 	// Utm Links to the web get `utm_source=newsletter`, `utm_medium=email` and
 	// `utm_campaign=<utm_campaign>` (a link that has a `utm_` parameter of its own keeps its
@@ -11045,6 +11073,11 @@ type BroadcastAudience struct {
 type BroadcastAudienceCount struct {
 	// ByList Recipients by the list their mail goes out under.
 	ByList []BroadcastListCount `json:"by_list"`
+
+	// ByLocale When the design has versions: recipients by the version they get, largest first.
+	// `fallback` counts those who get it because their language has no version or they have
+	// none.
+	ByLocale *[]BroadcastLocaleCount `json:"by_locale,omitempty"`
 
 	// Excluded Contacts of the lists who would not get the mail: only `unsubscribed` or only `pending` on
 	// the lists, `suppressed` (the address bounced or complained), `opted_out` (objected to all
@@ -11178,6 +11211,10 @@ type BroadcastCreate struct {
 	// Examples: Europe/Istanbul
 	Timezone *TimeZone `json:"timezone,omitempty"`
 
+	// Translations Subject and preheader per version of the design, by language tag (at most 20). A version
+	// without a subject here goes out with `subject` (review warning `translations`). Draft only.
+	Translations *map[string]BroadcastTranslation `json:"translations,omitempty"`
+
 	// Utm On when absent at creation.
 	Utm *bool `json:"utm,omitempty"`
 
@@ -11206,7 +11243,12 @@ type BroadcastDelivery struct {
 	Id    uuid.UUID `json:"id"`
 
 	// ListId The list the mail went out under; absent when the list was deleted.
-	ListId     *uuid.UUID           `json:"list_id,omitempty"`
+	ListId *uuid.UUID `json:"list_id,omitempty"`
+
+	// Locale The version of the design sent; absent when the design had no versions.
+	//
+	// Examples: en, tr
+	Locale     *LanguageTag         `json:"locale,omitempty"`
 	RepliedAt  *time.Time           `json:"replied_at,omitempty"`
 	SentAt     *time.Time           `json:"sent_at,omitempty"`
 	SkipReason *BroadcastSkipReason `json:"skip_reason,omitempty"`
@@ -11259,6 +11301,37 @@ type BroadcastEventData struct {
 type BroadcastListCount struct {
 	ListId     uuid.UUID `json:"list_id"`
 	Recipients int64     `json:"recipients"`
+}
+
+// BroadcastLocaleCount defines model for BroadcastLocaleCount.
+type BroadcastLocaleCount struct {
+	Fallback int64 `json:"fallback"`
+
+	// Locale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	Locale     LanguageTag `json:"locale"`
+	Recipients int64       `json:"recipients"`
+}
+
+// BroadcastLocaleReport defines model for BroadcastLocaleReport.
+type BroadcastLocaleReport struct {
+	// Counts `recipients` is the audience taken when sending started; `queued` the mails still to go
+	// out. `sent` counts mails the SMTP server accepted; `failed` those it refused for good
+	// without naming a bad address. `bounced` and `complained` count recipients whose mail
+	// bounced or who reported it as spam, `unsubscribed` those who left a list through this
+	// broadcast's links, `replied` those who answered (a conversation), `auto_replied` the
+	// automatic answers (out of office), `clicked` recipients who opened a link (click tracking
+	// only).
+	Counts BroadcastCounts `json:"counts"`
+
+	// Locale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	Locale LanguageTag `json:"locale"`
+
+	// Rates Shares of `sent`, from 0 to 1; all 0 before anything was sent.
+	Rates BroadcastRates `json:"rates"`
 }
 
 // BroadcastPace The broadcast's own pace, below the channel's `broadcast_rate` and the workspace's daily limit:
@@ -11407,7 +11480,7 @@ type BroadcastReport struct {
 
 	// CampaignVisits With `utm` and the scope `analytics:read`: per Analytics property the caller sees, the
 	// visits whose `utm_campaign` is the broadcast's, from the day sending started; only
-	// properties with any.
+	// properties with any. Absent with `locale`.
 	CampaignVisits *[]BroadcastCampaignVisits `json:"campaign_visits,omitempty"`
 
 	// Counts `recipients` is the audience taken when sending started; `queued` the mails still to go
@@ -11419,8 +11492,18 @@ type BroadcastReport struct {
 	// only).
 	Counts BroadcastCounts `json:"counts"`
 
-	// Links Click tracking only, most clicked first.
+	// Links Click tracking only, most clicked first. With versions and no `locale`: one row per URL,
+	// counting the recipients who opened it in any version.
 	Links *[]BroadcastReportLink `json:"links,omitempty"`
+
+	// Locale The version this report is narrowed to; absent for the whole report.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+
+	// Locales Whole report of a broadcast whose design had versions: counts and rates per version,
+	// largest first, from the deliveries (kept 400 days).
+	Locales *[]BroadcastLocaleReport `json:"locales,omitempty"`
 
 	// Rates Shares of `sent`, from 0 to 1; all 0 before anything was sent.
 	Rates BroadcastRates `json:"rates"`
@@ -11485,12 +11568,20 @@ type BroadcastReviewItem struct {
 
 	// Key `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
 	// when the window is closed at the scheduled time (now for a draft), with when sending starts.
+	// `translations`: `ok` for a design without versions or with every version complete,
+	// `warning` naming versions without their own subject, with block texts missing, whose
+	// required footer is in English, and broadcast subjects for languages the design does not
+	// have (they are not used).
 	Key    BroadcastReviewKey    `json:"key"`
 	Status BroadcastReviewStatus `json:"status"`
 }
 
 // BroadcastReviewKey `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
 // when the window is closed at the scheduled time (now for a draft), with when sending starts.
+// `translations`: `ok` for a design without versions or with every version complete,
+// `warning` naming versions without their own subject, with block texts missing, whose
+// required footer is in English, and broadcast subjects for languages the design does not
+// have (they are not used).
 type BroadcastReviewKey string
 
 // BroadcastReviewStatus defines model for BroadcastReviewStatus.
@@ -11541,13 +11632,33 @@ type BroadcastState string
 
 // BroadcastTest defines model for BroadcastTest.
 type BroadcastTest struct {
-	ContactId *uuid.UUID   `json:"contact_id,omitempty"`
+	ContactId *uuid.UUID `json:"contact_id,omitempty"`
+
+	// Locale Send the version a contact with this language gets; with `contact_id` and no `locale`,
+	// the contact's.
+	//
+	//
+	// Examples: en, tr
+	Locale    *LanguageTag `json:"locale,omitempty"`
 	MemberIds *[]uuid.UUID `json:"member_ids,omitempty"`
 }
 
 // BroadcastTestResult defines model for BroadcastTestResult.
 type BroadcastTestResult struct {
-	SentTo []Email `json:"sent_to"`
+	// Locale The version sent; absent for a design without versions.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+	SentTo []Email      `json:"sent_to"`
+}
+
+// BroadcastTranslation defines model for BroadcastTranslation.
+type BroadcastTranslation struct {
+	// Preheader Wins over the design version's own preheader.
+	Preheader *string `json:"preheader,omitempty"`
+
+	// Subject May hold merge fields.
+	Subject *string `json:"subject,omitempty"`
 }
 
 // BroadcastUpdate defines model for BroadcastUpdate.
@@ -11572,6 +11683,11 @@ type BroadcastUpdate struct {
 	//
 	// Examples: Europe/Istanbul
 	Timezone *TimeZone `json:"timezone,omitempty"`
+
+	// Translations Subject and preheader per version of the design, by language tag (at most 20). A version
+	// without a subject here goes out with `subject` (review warning `translations`). Replaced as a
+	// whole; `{}` removes them. Draft only.
+	Translations *map[string]BroadcastTranslation `json:"translations,omitempty"`
 
 	// Utm On when absent at creation.
 	Utm *bool `json:"utm,omitempty"`
@@ -15709,7 +15825,8 @@ type EmailDesign struct {
 	CreatedBy *uuid.UUID `json:"created_by,omitempty"`
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
-	// JSON. Nesting is section › columns › blocks at most.
+	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
+	// most.
 	Document EmailDesignDocument `json:"document"`
 	Id       uuid.UUID           `json:"id"`
 
@@ -15743,7 +15860,8 @@ type EmailDesignBulkChangeAction string
 // EmailDesignCreate At most one of `document` and `template`; with neither the design starts empty.
 type EmailDesignCreate struct {
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
-	// JSON. Nesting is section › columns › blocks at most.
+	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
+	// most.
 	Document *EmailDesignDocument    `json:"document,omitempty"`
 	InboxId  *uuid.UUID              `json:"inbox_id,omitempty"`
 	Name     string                  `json:"name"`
@@ -15751,9 +15869,24 @@ type EmailDesignCreate struct {
 }
 
 // EmailDesignDocument An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
-// JSON. Nesting is section › columns › blocks at most.
+// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
+// most.
 type EmailDesignDocument struct {
 	Blocks []EmailBlock `json:"blocks"`
+
+	// FallbackLocale The version for contacts without a language or without a matching version: `locale` or a
+	// key of `translations`; `locale` when absent.
+	//
+	//
+	// Examples: en, tr
+	FallbackLocale *LanguageTag `json:"fallback_locale,omitempty"`
+
+	// Locale The language of the document's own texts, its base version. Required when `translations`
+	// has an entry. Tags are stored in canonical case (`es-MX`, `zh-Hant`).
+	//
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
 
 	// Preheader The preview text inboxes show after the subject; a broadcast's own preheader wins.
 	Preheader *string `json:"preheader,omitempty"`
@@ -15761,6 +15894,13 @@ type EmailDesignDocument struct {
 	// Schema The document format version.
 	Schema EmailDesignDocumentSchema `json:"schema"`
 	Theme  EmailTheme                `json:"theme"`
+
+	// Translations Versions in other languages, by language tag (at most 20, none equal to `locale`). A
+	// contact gets the version of their exact language, else of a shorter tag (`es-MX` → `es`),
+	// else of the same language in another region (`es` → `es-MX`, `pt-PT` → `pt-BR`), else
+	// `fallback_locale`; a contact without a language gets `fallback_locale`. Layout, theme,
+	// images and block links are shared; each version has only texts.
+	Translations *map[string]EmailDesignTranslation `json:"translations,omitempty"`
 }
 
 // EmailDesignDocumentSchema The document format version.
@@ -15773,8 +15913,12 @@ type EmailDesignDuplicate struct {
 
 // EmailDesignIssue One problem with a document. Error codes: `required`, `invalid`, `too_long`, `too_many`,
 // `duplicate_id`, `nesting`, `invalid_rich_text`, `invalid_url`, `unknown_merge_field`,
-// `merge_field_in_url`, `foreign_asset`, `asset_not_allowed`, `column_widths`. Warning codes
-// are listed under `renderEmailDesign`.
+// `merge_field_in_url`, `foreign_asset`, `asset_not_allowed`, `column_widths`,
+// `locale_required` (`translations` without `locale`), `invalid_locale` (a translation key
+// equal to `locale` or to another key after canonical casing, or a `fallback_locale` that is
+// not a version), `translation_block` (an entry for a block that does not exist or has no
+// text; `field` as `translations.es.blocks.b7`). Warning codes are listed under
+// `renderEmailDesign`.
 type EmailDesignIssue struct {
 	// BlockId The block; absent for the theme and the preheader.
 	BlockId *string `json:"block_id,omitempty"`
@@ -15855,6 +15999,11 @@ type EmailDesignProblem struct {
 type EmailDesignRender struct {
 	Html string `json:"html"`
 
+	// Locale The version rendered; absent for a design without versions.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+
 	// SizeBytes The HTML's size in bytes, as Gmail counts it before clipping.
 	SizeBytes int64              `json:"size_bytes"`
 	Text      string             `json:"text"`
@@ -15867,10 +16016,18 @@ type EmailDesignRenderRequest struct {
 	Dark      *bool      `json:"dark,omitempty"`
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
-	// JSON. Nesting is section › columns › blocks at most.
+	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
+	// most.
 	Document EmailDesignDocument `json:"document"`
 	InboxId  *uuid.UUID          `json:"inbox_id,omitempty"`
 	ListId   *uuid.UUID          `json:"list_id,omitempty"`
+
+	// Locale Render the version a contact with this language gets; with `contact_id` and no `locale`,
+	// the contact's.
+	//
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
 
 	// Preheader Wins over the document's own.
 	Preheader *string `json:"preheader,omitempty"`
@@ -15907,16 +16064,38 @@ type EmailDesignSummary struct {
 // EmailDesignTemplateRef defines model for EmailDesignTemplateRef.
 type EmailDesignTemplateRef struct {
 	Locale *EmailTemplateLocale `json:"locale,omitempty"`
-	Slug   string               `json:"slug"`
+
+	// Locales The template's other languages to add as versions; `locale` is the base. Each version
+	// gets the template's texts in that language.
+	Locales *[]EmailTemplateLocale `json:"locales,omitempty"`
+	Slug    string                 `json:"slug"`
 }
+
+// EmailDesignTranslation One version of a design in another language.
+type EmailDesignTranslation struct {
+	// Blocks By block id, the block's text in this language: a heading's `text`, a text block's `html`,
+	// a button's `label`, an image's `alt`, a footer block's `html`, with that field's rules
+	// (rich-text subset, merge fields, length). A block without an entry shows the base text in
+	// this version (warning `translation_missing`). Sections, columns, dividers, spacers and
+	// social blocks take no entry.
+	Blocks map[string]string `json:"blocks"`
+
+	// Direction This version's writing direction; the theme's when absent.
+	Direction *EmailDesignTranslationDirection `json:"direction,omitempty"`
+	Preheader *string                          `json:"preheader,omitempty"`
+}
+
+// EmailDesignTranslationDirection This version's writing direction; the theme's when absent.
+type EmailDesignTranslationDirection string
 
 // EmailDesignUpdate defines model for EmailDesignUpdate.
 type EmailDesignUpdate struct {
 	// BaseVersion The `version` this edit started from.
 	BaseVersion int32 `json:"base_version"`
 
-	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
-	// JSON. Nesting is section › columns › blocks at most.
+	// Document A document without the `translations` key keeps the design's `locale`,
+	// `fallback_locale` and `translations` (entries of removed blocks are dropped);
+	// `translations: {}` removes every version.
 	Document EmailDesignDocument `json:"document"`
 
 	// InboxId Absent makes the design workspace-wide.
@@ -15940,7 +16119,8 @@ type EmailDesignVersionDetail struct {
 	CreatedAt time.Time `json:"created_at"`
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
-	// JSON. Nesting is section › columns › blocks at most.
+	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
+	// most.
 	Document EmailDesignDocument      `json:"document"`
 	MemberId *uuid.UUID               `json:"member_id,omitempty"`
 	Reason   EmailDesignVersionReason `json:"reason"`
@@ -16429,7 +16609,8 @@ type EmailTemplateDetail struct {
 	Description string `json:"description"`
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
-	// JSON. Nesting is section › columns › blocks at most.
+	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
+	// most.
 	Document EmailDesignDocument  `json:"document"`
 	Images   []EmailTemplateImage `json:"images"`
 	Locale   EmailTemplateLocale  `json:"locale"`
@@ -26445,6 +26626,7 @@ type ListBroadcastDeliveriesParams struct {
 	State   *BroadcastDeliveryState `form:"state,omitempty" json:"state,omitempty"`
 	Q       *string                 `form:"q,omitempty" json:"q,omitempty"`
 	Replied *bool                   `form:"replied,omitempty" json:"replied,omitempty"`
+	Locale  *LanguageTag            `form:"locale,omitempty" json:"locale,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -26467,6 +26649,8 @@ type PauseBroadcastParams struct {
 
 // GetBroadcastReportParams defines parameters for GetBroadcastReport.
 type GetBroadcastReportParams struct {
+	Locale *LanguageTag `form:"locale,omitempty" json:"locale,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -43000,6 +43184,19 @@ func (siw *ServerInterfaceWrapper) ListBroadcastDeliveries(w http.ResponseWriter
 		return
 	}
 
+	// ------------- Optional query parameter "locale" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "locale", r.URL.Query(), &params.Locale, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "locale"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "locale", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "cursor" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
@@ -43144,6 +43341,19 @@ func (siw *ServerInterfaceWrapper) GetBroadcastReport(w http.ResponseWriter, r *
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetBroadcastReportParams
+
+	// ------------- Optional query parameter "locale" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "locale", r.URL.Query(), &params.Locale, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "locale"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "locale", Err: err})
+		}
+		return
+	}
 
 	headers := r.Header
 
@@ -82758,9 +82968,23 @@ func (response GetBroadcastReport200JSONResponse) VisitGetBroadcastReportRespons
 	return err
 }
 
-type GetBroadcastReport401ApplicationProblemPlusJSONResponse struct {
+type GetBroadcastReport400ApplicationProblemPlusJSONResponse struct {
 	ProblemApplicationProblemPlusJSONResponse
 }
+
+func (response GetBroadcastReport400ApplicationProblemPlusJSONResponse) VisitGetBroadcastReportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetBroadcastReport401ApplicationProblemPlusJSONResponse Problem
 
 func (response GetBroadcastReport401ApplicationProblemPlusJSONResponse) VisitGetBroadcastReportResponse(w http.ResponseWriter) error {
 

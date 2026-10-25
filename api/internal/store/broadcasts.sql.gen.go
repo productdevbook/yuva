@@ -107,7 +107,7 @@ func (q *Queries) BroadcastAudienceLeftOut(ctx context.Context, arg BroadcastAud
 
 const broadcastAudiencePage = `-- name: BroadcastAudiencePage :many
 SELECT DISTINCT ON (s.contact_id)
-    s.contact_id, s.email, s.list_id, c.name, c.attributes, c.blocked,
+    s.contact_id, s.email, s.list_id, c.name, c.attributes, c.blocked, c.locale,
     EXISTS (SELECT 1 FROM email_suppressions x WHERE x.workspace_id = s.workspace_id AND x.email = s.email AND x.scope <> 'confirmations')::bool AS suppressed,
     (count(*) OVER (PARTITION BY s.contact_id))::bigint AS subscriptions,
     ((cardinality($1::text[]) = 0 OR EXISTS (
@@ -155,6 +155,7 @@ type BroadcastAudiencePageRow struct {
 	Name          string
 	Attributes    []byte
 	Blocked       bool
+	Locale        *string
 	Suppressed    bool
 	Subscriptions int64
 	Matches       bool
@@ -186,6 +187,7 @@ func (q *Queries) BroadcastAudiencePage(ctx context.Context, arg BroadcastAudien
 			&i.Name,
 			&i.Attributes,
 			&i.Blocked,
+			&i.Locale,
 			&i.Suppressed,
 			&i.Subscriptions,
 			&i.Matches,
@@ -246,22 +248,28 @@ SELECT (CASE WHEN e.t < $1::timestamptz THEN date_trunc('hour', e.t AT TIME ZONE
        count(*) FILTER (WHERE e.kind = 'clicked')::bigint AS clicked
 FROM (
     SELECT d.sent_at AS t, 'sent'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = $2 AND d.broadcast_id = $3 AND d.sent_at IS NOT NULL
+    WHERE d.workspace_id = $2 AND d.broadcast_id = $3
+      AND ($4::text IS NULL OR d.locale = $4::text) AND d.sent_at IS NOT NULL
     UNION ALL
     SELECT d.bounced_at AS t, 'bounced'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = $2 AND d.broadcast_id = $3 AND d.bounced_at IS NOT NULL
+    WHERE d.workspace_id = $2 AND d.broadcast_id = $3
+      AND ($4::text IS NULL OR d.locale = $4::text) AND d.bounced_at IS NOT NULL
     UNION ALL
     SELECT d.complained_at AS t, 'complained'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = $2 AND d.broadcast_id = $3 AND d.complained_at IS NOT NULL
+    WHERE d.workspace_id = $2 AND d.broadcast_id = $3
+      AND ($4::text IS NULL OR d.locale = $4::text) AND d.complained_at IS NOT NULL
     UNION ALL
     SELECT d.unsubscribed_at AS t, 'unsubscribed'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = $2 AND d.broadcast_id = $3 AND d.unsubscribed_at IS NOT NULL
+    WHERE d.workspace_id = $2 AND d.broadcast_id = $3
+      AND ($4::text IS NULL OR d.locale = $4::text) AND d.unsubscribed_at IS NOT NULL
     UNION ALL
     SELECT d.replied_at AS t, 'replied'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = $2 AND d.broadcast_id = $3 AND d.replied_at IS NOT NULL
+    WHERE d.workspace_id = $2 AND d.broadcast_id = $3
+      AND ($4::text IS NULL OR d.locale = $4::text) AND d.replied_at IS NOT NULL
     UNION ALL
     SELECT d.clicked_at AS t, 'clicked'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = $2 AND d.broadcast_id = $3 AND d.clicked_at IS NOT NULL
+    WHERE d.workspace_id = $2 AND d.broadcast_id = $3
+      AND ($4::text IS NULL OR d.locale = $4::text) AND d.clicked_at IS NOT NULL
 ) e
 GROUP BY 1
 ORDER BY 1
@@ -271,6 +279,7 @@ type BroadcastTimelineParams struct {
 	HourlyUntil time.Time
 	WorkspaceID uuid.UUID
 	BroadcastID uuid.UUID
+	Locale      *string
 }
 
 type BroadcastTimelineRow struct {
@@ -284,7 +293,12 @@ type BroadcastTimelineRow struct {
 }
 
 func (q *Queries) BroadcastTimeline(ctx context.Context, arg BroadcastTimelineParams) ([]BroadcastTimelineRow, error) {
-	rows, err := q.db.Query(ctx, broadcastTimeline, arg.HourlyUntil, arg.WorkspaceID, arg.BroadcastID)
+	rows, err := q.db.Query(ctx, broadcastTimeline,
+		arg.HourlyUntil,
+		arg.WorkspaceID,
+		arg.BroadcastID,
+		arg.Locale,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -364,17 +378,24 @@ func (q *Queries) ClaimBroadcastPaceSlot(ctx context.Context, arg ClaimBroadcast
 }
 
 const countBroadcastLinkClick = `-- name: CountBroadcastLinkClick :exec
-UPDATE broadcast_links SET clicks = clicks + 1 WHERE workspace_id = $1 AND broadcast_id = $2 AND position = $3
+UPDATE broadcast_links SET clicks = clicks + 1
+WHERE workspace_id = $1 AND broadcast_id = $2 AND locale = $3 AND position = $4
 `
 
 type CountBroadcastLinkClickParams struct {
 	WorkspaceID uuid.UUID
 	BroadcastID uuid.UUID
+	Locale      string
 	Position    int32
 }
 
 func (q *Queries) CountBroadcastLinkClick(ctx context.Context, arg CountBroadcastLinkClickParams) error {
-	_, err := q.db.Exec(ctx, countBroadcastLinkClick, arg.WorkspaceID, arg.BroadcastID, arg.Position)
+	_, err := q.db.Exec(ctx, countBroadcastLinkClick,
+		arg.WorkspaceID,
+		arg.BroadcastID,
+		arg.Locale,
+		arg.Position,
+	)
 	return err
 }
 
@@ -466,14 +487,14 @@ func (q *Queries) CountWorkspaceMembersByIDs(ctx context.Context, arg CountWorks
 }
 
 const createBroadcast = `-- name: CreateBroadcast :one
-INSERT INTO broadcasts (id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, audience,
+INSERT INTO broadcasts (id, workspace_id, inbox_id, channel_id, name, subject, preheader, translations, design_id, audience,
                         click_tracking, utm, utm_campaign, created_by, pace_per_hour, pace_per_day, pace_per_month,
                         timezone, send_window_start, send_window_end, changelog_entry_id, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
-        $10, $11, $12, $13, $14, $15,
-        $16, $17, $18, $19,
-        $20, $21, $21)
-RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+        $11, $12, $13, $14, $15, $16,
+        $17, $18, $19, $20,
+        $21, $22, $22)
+RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations
 `
 
 type CreateBroadcastParams struct {
@@ -484,6 +505,7 @@ type CreateBroadcastParams struct {
 	Name             string
 	Subject          string
 	Preheader        string
+	Translations     []byte
 	DesignID         *uuid.UUID
 	Audience         []byte
 	ClickTracking    bool
@@ -509,6 +531,7 @@ func (q *Queries) CreateBroadcast(ctx context.Context, arg CreateBroadcastParams
 		arg.Name,
 		arg.Subject,
 		arg.Preheader,
+		arg.Translations,
 		arg.DesignID,
 		arg.Audience,
 		arg.ClickTracking,
@@ -566,6 +589,7 @@ func (q *Queries) CreateBroadcast(ctx context.Context, arg CreateBroadcastParams
 		&i.Timezone,
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
+		&i.Translations,
 	)
 	return i, err
 }
@@ -638,7 +662,7 @@ func (q *Queries) DeleteOldSendingDays(ctx context.Context, arg DeleteOldSending
 }
 
 const dueBroadcastDeliveries = `-- name: DueBroadcastDeliveries :many
-SELECT id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, state, skip_reason, attempts, next_attempt_at, error, sent_at, bounced_at, complained_at, unsubscribed_at, replied_at, auto_replied_at, clicked_at, conversation_id, created_at, relay_message_id FROM broadcast_deliveries
+SELECT id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, state, skip_reason, attempts, next_attempt_at, error, sent_at, bounced_at, complained_at, unsubscribed_at, replied_at, auto_replied_at, clicked_at, conversation_id, created_at, relay_message_id, locale FROM broadcast_deliveries
 WHERE workspace_id = $1 AND broadcast_id = $2 AND state = 'queued'
   AND (next_attempt_at IS NULL OR next_attempt_at <= $3::timestamptz)
 ORDER BY next_attempt_at NULLS FIRST, id
@@ -690,6 +714,7 @@ func (q *Queries) DueBroadcastDeliveries(ctx context.Context, arg DueBroadcastDe
 			&i.ConversationID,
 			&i.CreatedAt,
 			&i.RelayMessageID,
+			&i.Locale,
 		); err != nil {
 			return nil, err
 		}
@@ -702,7 +727,7 @@ func (q *Queries) DueBroadcastDeliveries(ctx context.Context, arg DueBroadcastDe
 }
 
 const findBroadcastDeliveryAnyWorkspace = `-- name: FindBroadcastDeliveryAnyWorkspace :one
-SELECT d.id, d.workspace_id, d.broadcast_id, d.contact_id, d.list_id, d.email, d.email_token, d.header_message_id, d.state, d.skip_reason, d.attempts, d.next_attempt_at, d.error, d.sent_at, d.bounced_at, d.complained_at, d.unsubscribed_at, d.replied_at, d.auto_replied_at, d.clicked_at, d.conversation_id, d.created_at, d.relay_message_id FROM broadcast_deliveries d
+SELECT d.id, d.workspace_id, d.broadcast_id, d.contact_id, d.list_id, d.email, d.email_token, d.header_message_id, d.state, d.skip_reason, d.attempts, d.next_attempt_at, d.error, d.sent_at, d.bounced_at, d.complained_at, d.unsubscribed_at, d.replied_at, d.auto_replied_at, d.clicked_at, d.conversation_id, d.created_at, d.relay_message_id, d.locale FROM broadcast_deliveries d
 JOIN workspaces w ON w.id = d.workspace_id
 WHERE d.header_message_id = $1 AND w.deleted_at IS NULL
 `
@@ -736,12 +761,13 @@ func (q *Queries) FindBroadcastDeliveryAnyWorkspace(ctx context.Context, headerM
 		&i.ConversationID,
 		&i.CreatedAt,
 		&i.RelayMessageID,
+		&i.Locale,
 	)
 	return i, err
 }
 
 const findBroadcastDeliveryByHeader = `-- name: FindBroadcastDeliveryByHeader :one
-SELECT id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, state, skip_reason, attempts, next_attempt_at, error, sent_at, bounced_at, complained_at, unsubscribed_at, replied_at, auto_replied_at, clicked_at, conversation_id, created_at, relay_message_id FROM broadcast_deliveries
+SELECT id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, state, skip_reason, attempts, next_attempt_at, error, sent_at, bounced_at, complained_at, unsubscribed_at, replied_at, auto_replied_at, clicked_at, conversation_id, created_at, relay_message_id, locale FROM broadcast_deliveries
 WHERE workspace_id = $1 AND (header_message_id = $2 OR relay_message_id = $2)
 LIMIT 1
 `
@@ -778,12 +804,13 @@ func (q *Queries) FindBroadcastDeliveryByHeader(ctx context.Context, arg FindBro
 		&i.ConversationID,
 		&i.CreatedAt,
 		&i.RelayMessageID,
+		&i.Locale,
 	)
 	return i, err
 }
 
 const findBroadcastDeliveryByTokens = `-- name: FindBroadcastDeliveryByTokens :one
-SELECT d.id, d.workspace_id, d.broadcast_id, d.contact_id, d.list_id, d.email, d.email_token, d.header_message_id, d.state, d.skip_reason, d.attempts, d.next_attempt_at, d.error, d.sent_at, d.bounced_at, d.complained_at, d.unsubscribed_at, d.replied_at, d.auto_replied_at, d.clicked_at, d.conversation_id, d.created_at, d.relay_message_id FROM broadcast_deliveries d
+SELECT d.id, d.workspace_id, d.broadcast_id, d.contact_id, d.list_id, d.email, d.email_token, d.header_message_id, d.state, d.skip_reason, d.attempts, d.next_attempt_at, d.error, d.sent_at, d.bounced_at, d.complained_at, d.unsubscribed_at, d.replied_at, d.auto_replied_at, d.clicked_at, d.conversation_id, d.created_at, d.relay_message_id, d.locale FROM broadcast_deliveries d
 JOIN broadcasts b ON b.workspace_id = d.workspace_id AND b.id = d.broadcast_id
 WHERE d.workspace_id = $1 AND b.inbox_id = $2
   AND (d.email_token = ANY($3::text[]) OR d.relay_message_id = ANY($4::text[]))
@@ -832,12 +859,13 @@ func (q *Queries) FindBroadcastDeliveryByTokens(ctx context.Context, arg FindBro
 		&i.ConversationID,
 		&i.CreatedAt,
 		&i.RelayMessageID,
+		&i.Locale,
 	)
 	return i, err
 }
 
 const getBroadcast = `-- name: GetBroadcast :one
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end FROM broadcasts WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts WHERE workspace_id = $1 AND id = $2
 `
 
 type GetBroadcastParams struct {
@@ -889,12 +917,13 @@ func (q *Queries) GetBroadcast(ctx context.Context, arg GetBroadcastParams) (Bro
 		&i.Timezone,
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
+		&i.Translations,
 	)
 	return i, err
 }
 
 const getBroadcastDelivery = `-- name: GetBroadcastDelivery :one
-SELECT id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, state, skip_reason, attempts, next_attempt_at, error, sent_at, bounced_at, complained_at, unsubscribed_at, replied_at, auto_replied_at, clicked_at, conversation_id, created_at, relay_message_id FROM broadcast_deliveries WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, state, skip_reason, attempts, next_attempt_at, error, sent_at, bounced_at, complained_at, unsubscribed_at, replied_at, auto_replied_at, clicked_at, conversation_id, created_at, relay_message_id, locale FROM broadcast_deliveries WHERE workspace_id = $1 AND id = $2
 `
 
 type GetBroadcastDeliveryParams struct {
@@ -929,22 +958,29 @@ func (q *Queries) GetBroadcastDelivery(ctx context.Context, arg GetBroadcastDeli
 		&i.ConversationID,
 		&i.CreatedAt,
 		&i.RelayMessageID,
+		&i.Locale,
 	)
 	return i, err
 }
 
 const getBroadcastLink = `-- name: GetBroadcastLink :one
-SELECT workspace_id, broadcast_id, position, url, clicks FROM broadcast_links WHERE workspace_id = $1 AND broadcast_id = $2 AND position = $3
+SELECT workspace_id, broadcast_id, position, url, clicks, locale FROM broadcast_links WHERE workspace_id = $1 AND broadcast_id = $2 AND locale = $3 AND position = $4
 `
 
 type GetBroadcastLinkParams struct {
 	WorkspaceID uuid.UUID
 	BroadcastID uuid.UUID
+	Locale      string
 	Position    int32
 }
 
 func (q *Queries) GetBroadcastLink(ctx context.Context, arg GetBroadcastLinkParams) (BroadcastLink, error) {
-	row := q.db.QueryRow(ctx, getBroadcastLink, arg.WorkspaceID, arg.BroadcastID, arg.Position)
+	row := q.db.QueryRow(ctx, getBroadcastLink,
+		arg.WorkspaceID,
+		arg.BroadcastID,
+		arg.Locale,
+		arg.Position,
+	)
 	var i BroadcastLink
 	err := row.Scan(
 		&i.WorkspaceID,
@@ -952,14 +988,15 @@ func (q *Queries) GetBroadcastLink(ctx context.Context, arg GetBroadcastLinkPara
 		&i.Position,
 		&i.Url,
 		&i.Clicks,
+		&i.Locale,
 	)
 	return i, err
 }
 
 const insertBroadcastDeliveries = `-- name: InsertBroadcastDeliveries :execrows
-INSERT INTO broadcast_deliveries (id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, created_at)
+INSERT INTO broadcast_deliveries (id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, locale, created_at)
 SELECT unnest($1::uuid[]), $2, $3, unnest($4::uuid[]), unnest($5::uuid[]),
-       unnest($6::text[]), unnest($7::text[]), unnest($8::text[]), $9
+       unnest($6::text[]), unnest($7::text[]), unnest($8::text[]), nullif(unnest($9::text[]), ''), $10
 ON CONFLICT DO NOTHING
 `
 
@@ -972,6 +1009,7 @@ type InsertBroadcastDeliveriesParams struct {
 	Emails      []string
 	Tokens      []string
 	Headers     []string
+	Locales     []string
 	Now         time.Time
 }
 
@@ -985,6 +1023,7 @@ func (q *Queries) InsertBroadcastDeliveries(ctx context.Context, arg InsertBroad
 		arg.Emails,
 		arg.Tokens,
 		arg.Headers,
+		arg.Locales,
 		arg.Now,
 	)
 	if err != nil {
@@ -994,13 +1033,14 @@ func (q *Queries) InsertBroadcastDeliveries(ctx context.Context, arg InsertBroad
 }
 
 const insertBroadcastLink = `-- name: InsertBroadcastLink :exec
-INSERT INTO broadcast_links (workspace_id, broadcast_id, position, url) VALUES ($1, $2, $3, $4)
-ON CONFLICT (workspace_id, broadcast_id, position) DO UPDATE SET url = excluded.url, clicks = 0
+INSERT INTO broadcast_links (workspace_id, broadcast_id, locale, position, url) VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT (workspace_id, broadcast_id, locale, position) DO UPDATE SET url = excluded.url, clicks = 0
 `
 
 type InsertBroadcastLinkParams struct {
 	WorkspaceID uuid.UUID
 	BroadcastID uuid.UUID
+	Locale      string
 	Position    int32
 	Url         string
 }
@@ -1009,6 +1049,7 @@ func (q *Queries) InsertBroadcastLink(ctx context.Context, arg InsertBroadcastLi
 	_, err := q.db.Exec(ctx, insertBroadcastLink,
 		arg.WorkspaceID,
 		arg.BroadcastID,
+		arg.Locale,
 		arg.Position,
 		arg.Url,
 	)
@@ -1043,16 +1084,17 @@ func (q *Queries) IsContactSubscribed(ctx context.Context, arg IsContactSubscrib
 }
 
 const listBroadcastDeliveries = `-- name: ListBroadcastDeliveries :many
-SELECT d.id, d.workspace_id, d.broadcast_id, d.contact_id, d.list_id, d.email, d.email_token, d.header_message_id, d.state, d.skip_reason, d.attempts, d.next_attempt_at, d.error, d.sent_at, d.bounced_at, d.complained_at, d.unsubscribed_at, d.replied_at, d.auto_replied_at, d.clicked_at, d.conversation_id, d.created_at, d.relay_message_id, c.name AS contact_name FROM broadcast_deliveries d
+SELECT d.id, d.workspace_id, d.broadcast_id, d.contact_id, d.list_id, d.email, d.email_token, d.header_message_id, d.state, d.skip_reason, d.attempts, d.next_attempt_at, d.error, d.sent_at, d.bounced_at, d.complained_at, d.unsubscribed_at, d.replied_at, d.auto_replied_at, d.clicked_at, d.conversation_id, d.created_at, d.relay_message_id, d.locale, c.name AS contact_name FROM broadcast_deliveries d
 JOIN contacts c ON c.workspace_id = d.workspace_id AND c.id = d.contact_id
 WHERE d.workspace_id = $1 AND d.broadcast_id = $2
   AND ($3::text IS NULL OR d.state = $3::text)
   AND ($4::bool IS NULL OR $4::bool = (d.replied_at IS NOT NULL))
-  AND ($5::text IS NULL OR strpos(d.email, lower($5::text)) > 0
-       OR strpos(lower(c.name), lower($5::text)) > 0)
-  AND ($6::uuid IS NULL OR d.id > $6::uuid)
+  AND ($5::text IS NULL OR d.locale = $5::text)
+  AND ($6::text IS NULL OR strpos(d.email, lower($6::text)) > 0
+       OR strpos(lower(c.name), lower($6::text)) > 0)
+  AND ($7::uuid IS NULL OR d.id > $7::uuid)
 ORDER BY d.id
-LIMIT $7
+LIMIT $8
 `
 
 type ListBroadcastDeliveriesParams struct {
@@ -1060,6 +1102,7 @@ type ListBroadcastDeliveriesParams struct {
 	BroadcastID uuid.UUID
 	State       *string
 	Replied     *bool
+	Locale      *string
 	Q           *string
 	After       *uuid.UUID
 	Lim         int32
@@ -1089,6 +1132,7 @@ type ListBroadcastDeliveriesRow struct {
 	ConversationID  *uuid.UUID
 	CreatedAt       time.Time
 	RelayMessageID  *string
+	Locale          *string
 	ContactName     string
 }
 
@@ -1098,6 +1142,7 @@ func (q *Queries) ListBroadcastDeliveries(ctx context.Context, arg ListBroadcast
 		arg.BroadcastID,
 		arg.State,
 		arg.Replied,
+		arg.Locale,
 		arg.Q,
 		arg.After,
 		arg.Lim,
@@ -1133,6 +1178,7 @@ func (q *Queries) ListBroadcastDeliveries(ctx context.Context, arg ListBroadcast
 			&i.ConversationID,
 			&i.CreatedAt,
 			&i.RelayMessageID,
+			&i.Locale,
 			&i.ContactName,
 		); err != nil {
 			return nil, err
@@ -1146,16 +1192,20 @@ func (q *Queries) ListBroadcastDeliveries(ctx context.Context, arg ListBroadcast
 }
 
 const listBroadcastLinks = `-- name: ListBroadcastLinks :many
-SELECT workspace_id, broadcast_id, position, url, clicks FROM broadcast_links WHERE workspace_id = $1 AND broadcast_id = $2 ORDER BY clicks DESC, position
+SELECT workspace_id, broadcast_id, position, url, clicks, locale FROM broadcast_links
+WHERE workspace_id = $1 AND broadcast_id = $2
+  AND ($3::text IS NULL OR locale = $3::text)
+ORDER BY clicks DESC, locale, position
 `
 
 type ListBroadcastLinksParams struct {
 	WorkspaceID uuid.UUID
 	BroadcastID uuid.UUID
+	Locale      *string
 }
 
 func (q *Queries) ListBroadcastLinks(ctx context.Context, arg ListBroadcastLinksParams) ([]BroadcastLink, error) {
-	rows, err := q.db.Query(ctx, listBroadcastLinks, arg.WorkspaceID, arg.BroadcastID)
+	rows, err := q.db.Query(ctx, listBroadcastLinks, arg.WorkspaceID, arg.BroadcastID, arg.Locale)
 	if err != nil {
 		return nil, err
 	}
@@ -1169,7 +1219,61 @@ func (q *Queries) ListBroadcastLinks(ctx context.Context, arg ListBroadcastLinks
 			&i.Position,
 			&i.Url,
 			&i.Clicks,
+			&i.Locale,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listBroadcastLinksByURL = `-- name: ListBroadcastLinksByURL :many
+WITH clicked AS (
+    SELECT l.url, count(DISTINCT c.delivery_id)::bigint AS recipients
+    FROM broadcast_deliveries d
+    JOIN broadcast_clicks c ON c.workspace_id = d.workspace_id AND c.delivery_id = d.id
+    JOIN broadcast_links l ON l.workspace_id = d.workspace_id AND l.broadcast_id = d.broadcast_id
+        AND l.locale = coalesce(d.locale, '') AND l.position = c.position
+    WHERE d.workspace_id = $1 AND d.broadcast_id = $2
+    GROUP BY l.url
+), kept AS (
+    SELECT EXISTS (SELECT 1 FROM broadcast_deliveries d WHERE d.workspace_id = $1 AND d.broadcast_id = $2) AS yes
+)
+SELECT l.url, min(l.position)::integer AS position,
+       (CASE WHEN (SELECT yes FROM kept) THEN coalesce(max(k.recipients), 0) ELSE sum(l.clicks) END)::bigint AS clicks
+FROM broadcast_links l
+LEFT JOIN clicked k ON k.url = l.url
+WHERE l.workspace_id = $1 AND l.broadcast_id = $2
+GROUP BY l.url
+ORDER BY clicks DESC, position, l.url
+`
+
+type ListBroadcastLinksByURLParams struct {
+	WorkspaceID uuid.UUID
+	BroadcastID uuid.UUID
+}
+
+type ListBroadcastLinksByURLRow struct {
+	Url      string
+	Position int32
+	Clicks   int64
+}
+
+// Without deliveries (older than 400 days) the recipients per URL are the sum of its links' clicks.
+func (q *Queries) ListBroadcastLinksByURL(ctx context.Context, arg ListBroadcastLinksByURLParams) ([]ListBroadcastLinksByURLRow, error) {
+	rows, err := q.db.Query(ctx, listBroadcastLinksByURL, arg.WorkspaceID, arg.BroadcastID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListBroadcastLinksByURLRow
+	for rows.Next() {
+		var i ListBroadcastLinksByURLRow
+		if err := rows.Scan(&i.Url, &i.Position, &i.Clicks); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -1185,6 +1289,7 @@ SELECT d.conversation_id::uuid AS conversation_id, d.contact_id, c.name AS conta
 FROM broadcast_deliveries d
 JOIN contacts c ON c.workspace_id = d.workspace_id AND c.id = d.contact_id
 WHERE d.workspace_id = $1 AND d.broadcast_id = $2 AND d.replied_at IS NOT NULL AND d.conversation_id IS NOT NULL
+  AND ($3::text IS NULL OR d.locale = $3::text)
 ORDER BY d.replied_at, d.id
 LIMIT 50
 `
@@ -1192,6 +1297,7 @@ LIMIT 50
 type ListBroadcastRepliesParams struct {
 	WorkspaceID uuid.UUID
 	BroadcastID uuid.UUID
+	Locale      *string
 }
 
 type ListBroadcastRepliesRow struct {
@@ -1202,7 +1308,7 @@ type ListBroadcastRepliesRow struct {
 }
 
 func (q *Queries) ListBroadcastReplies(ctx context.Context, arg ListBroadcastRepliesParams) ([]ListBroadcastRepliesRow, error) {
-	rows, err := q.db.Query(ctx, listBroadcastReplies, arg.WorkspaceID, arg.BroadcastID)
+	rows, err := q.db.Query(ctx, listBroadcastReplies, arg.WorkspaceID, arg.BroadcastID, arg.Locale)
 	if err != nil {
 		return nil, err
 	}
@@ -1259,7 +1365,7 @@ func (q *Queries) ListBroadcastSenderDomains(ctx context.Context, arg ListBroadc
 }
 
 const listBroadcasts = `-- name: ListBroadcasts :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end FROM broadcasts b
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts b
 WHERE b.workspace_id = $1
   AND ($2::uuid IS NULL OR b.inbox_id = $2::uuid)
   AND ($3::text[] IS NULL OR b.state = ANY($3::text[]))
@@ -1343,6 +1449,7 @@ func (q *Queries) ListBroadcasts(ctx context.Context, arg ListBroadcastsParams) 
 			&i.Timezone,
 			&i.SendWindowStart,
 			&i.SendWindowEnd,
+			&i.Translations,
 		); err != nil {
 			return nil, err
 		}
@@ -1355,7 +1462,7 @@ func (q *Queries) ListBroadcasts(ctx context.Context, arg ListBroadcastsParams) 
 }
 
 const listLatestBroadcasts = `-- name: ListLatestBroadcasts :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end FROM broadcasts WHERE workspace_id = $1 ORDER BY created_at DESC, id DESC LIMIT $2
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts WHERE workspace_id = $1 ORDER BY created_at DESC, id DESC LIMIT $2
 `
 
 type ListLatestBroadcastsParams struct {
@@ -1413,6 +1520,7 @@ func (q *Queries) ListLatestBroadcasts(ctx context.Context, arg ListLatestBroadc
 			&i.Timezone,
 			&i.SendWindowStart,
 			&i.SendWindowEnd,
+			&i.Translations,
 		); err != nil {
 			return nil, err
 		}
@@ -1454,7 +1562,7 @@ func (q *Queries) ListOptOutHashes(ctx context.Context, arg ListOptOutHashesPara
 }
 
 const listRunningBroadcasts = `-- name: ListRunningBroadcasts :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end FROM broadcasts
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts
 WHERE workspace_id = $1 AND state IN ('scheduled', 'preparing', 'sending')
 ORDER BY created_at, id
 `
@@ -1509,6 +1617,7 @@ func (q *Queries) ListRunningBroadcasts(ctx context.Context, workspaceID uuid.UU
 			&i.Timezone,
 			&i.SendWindowStart,
 			&i.SendWindowEnd,
+			&i.Translations,
 		); err != nil {
 			return nil, err
 		}
@@ -1521,7 +1630,7 @@ func (q *Queries) ListRunningBroadcasts(ctx context.Context, workspaceID uuid.UU
 }
 
 const listSendingBroadcastsOfChannel = `-- name: ListSendingBroadcastsOfChannel :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end FROM broadcasts
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts
 WHERE workspace_id = $1 AND channel_id = $2 AND state = 'sending'
 ORDER BY started_at, id
 `
@@ -1581,6 +1690,7 @@ func (q *Queries) ListSendingBroadcastsOfChannel(ctx context.Context, arg ListSe
 			&i.Timezone,
 			&i.SendWindowStart,
 			&i.SendWindowEnd,
+			&i.Translations,
 		); err != nil {
 			return nil, err
 		}
@@ -1628,7 +1738,7 @@ func (q *Queries) ListSendingDays(ctx context.Context, arg ListSendingDaysParams
 }
 
 const lockBroadcast = `-- name: LockBroadcast :one
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end FROM broadcasts WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockBroadcastParams struct {
@@ -1680,6 +1790,7 @@ func (q *Queries) LockBroadcast(ctx context.Context, arg LockBroadcastParams) (B
 		&i.Timezone,
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
+		&i.Translations,
 	)
 	return i, err
 }
@@ -1943,17 +2054,100 @@ func (q *Queries) RecountBroadcast(ctx context.Context, arg RecountBroadcastPara
 	return i, err
 }
 
+const recountBroadcastByLocale = `-- name: RecountBroadcastByLocale :many
+SELECT locale::text AS locale,
+       count(*)::bigint AS recipients,
+       count(*) FILTER (WHERE state = 'queued')::bigint AS queued,
+       count(*) FILTER (WHERE sent_at IS NOT NULL)::bigint AS sent,
+       count(*) FILTER (WHERE state = 'failed')::bigint AS failed,
+       count(*) FILTER (WHERE state = 'bounced')::bigint AS bounced,
+       count(*) FILTER (WHERE complained_at IS NOT NULL)::bigint AS complained,
+       count(*) FILTER (WHERE unsubscribed_at IS NOT NULL)::bigint AS unsubscribed,
+       count(*) FILTER (WHERE replied_at IS NOT NULL)::bigint AS replied,
+       count(*) FILTER (WHERE auto_replied_at IS NOT NULL)::bigint AS auto_replied,
+       count(*) FILTER (WHERE clicked_at IS NOT NULL)::bigint AS clicked,
+       count(*) FILTER (WHERE skip_reason = 'suppressed')::bigint AS skipped_suppressed,
+       count(*) FILTER (WHERE skip_reason = 'opted_out')::bigint AS skipped_opted_out,
+       count(*) FILTER (WHERE skip_reason = 'unsubscribed')::bigint AS skipped_unsubscribed,
+       count(*) FILTER (WHERE skip_reason = 'cancelled')::bigint AS skipped_cancelled
+FROM broadcast_deliveries
+WHERE workspace_id = $1 AND broadcast_id = $2 AND locale IS NOT NULL
+  AND ($3::text IS NULL OR locale = $3::text)
+GROUP BY locale
+ORDER BY recipients DESC, locale
+`
+
+type RecountBroadcastByLocaleParams struct {
+	WorkspaceID uuid.UUID
+	BroadcastID uuid.UUID
+	Locale      *string
+}
+
+type RecountBroadcastByLocaleRow struct {
+	Locale              string
+	Recipients          int64
+	Queued              int64
+	Sent                int64
+	Failed              int64
+	Bounced             int64
+	Complained          int64
+	Unsubscribed        int64
+	Replied             int64
+	AutoReplied         int64
+	Clicked             int64
+	SkippedSuppressed   int64
+	SkippedOptedOut     int64
+	SkippedUnsubscribed int64
+	SkippedCancelled    int64
+}
+
+func (q *Queries) RecountBroadcastByLocale(ctx context.Context, arg RecountBroadcastByLocaleParams) ([]RecountBroadcastByLocaleRow, error) {
+	rows, err := q.db.Query(ctx, recountBroadcastByLocale, arg.WorkspaceID, arg.BroadcastID, arg.Locale)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []RecountBroadcastByLocaleRow
+	for rows.Next() {
+		var i RecountBroadcastByLocaleRow
+		if err := rows.Scan(
+			&i.Locale,
+			&i.Recipients,
+			&i.Queued,
+			&i.Sent,
+			&i.Failed,
+			&i.Bounced,
+			&i.Complained,
+			&i.Unsubscribed,
+			&i.Replied,
+			&i.AutoReplied,
+			&i.Clicked,
+			&i.SkippedSuppressed,
+			&i.SkippedOptedOut,
+			&i.SkippedUnsubscribed,
+			&i.SkippedCancelled,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const saveBroadcast = `-- name: SaveBroadcast :one
 UPDATE broadcasts SET channel_id = $1, name = $2, subject = $3, preheader = $4,
-    design_id = $5, design_version = $6, document = $7,
-    audience = $8, click_tracking = $9, utm = $10, utm_campaign = $11, state = $12, pause_reason = $13,
-    state_detail = $14, scheduled_at = $15, waiting_until = $16,
-    started_at = $17, resumed_at = $18, finished_at = $19,
-    last_test_at = $20, snapshot_after = $21, snapshot_done = $22,
-    sender_failing_since = $23, scheduled_by = $24,
-    scheduled_by_key = $25, updated_at = $26::timestamptz
-WHERE workspace_id = $27 AND id = $28
-RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end
+    translations = $5, design_id = $6, design_version = $7, document = $8,
+    audience = $9, click_tracking = $10, utm = $11, utm_campaign = $12, state = $13, pause_reason = $14,
+    state_detail = $15, scheduled_at = $16, waiting_until = $17,
+    started_at = $18, resumed_at = $19, finished_at = $20,
+    last_test_at = $21, snapshot_after = $22, snapshot_done = $23,
+    sender_failing_since = $24, scheduled_by = $25,
+    scheduled_by_key = $26, updated_at = $27::timestamptz
+WHERE workspace_id = $28 AND id = $29
+RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations
 `
 
 type SaveBroadcastParams struct {
@@ -1961,6 +2155,7 @@ type SaveBroadcastParams struct {
 	Name               string
 	Subject            string
 	Preheader          string
+	Translations       []byte
 	DesignID           *uuid.UUID
 	DesignVersion      *int32
 	Document           []byte
@@ -1993,6 +2188,7 @@ func (q *Queries) SaveBroadcast(ctx context.Context, arg SaveBroadcastParams) (B
 		arg.Name,
 		arg.Subject,
 		arg.Preheader,
+		arg.Translations,
 		arg.DesignID,
 		arg.DesignVersion,
 		arg.Document,
@@ -2060,6 +2256,7 @@ func (q *Queries) SaveBroadcast(ctx context.Context, arg SaveBroadcastParams) (B
 		&i.Timezone,
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
+		&i.Translations,
 	)
 	return i, err
 }
@@ -2120,7 +2317,7 @@ const setBroadcastPace = `-- name: SetBroadcastPace :one
 UPDATE broadcasts SET pace_per_hour = $1, pace_per_day = $2,
     pace_per_month = $3, pace_next_at = $4, updated_at = $5::timestamptz
 WHERE workspace_id = $6 AND id = $7
-RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end
+RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations
 `
 
 type SetBroadcastPaceParams struct {
@@ -2185,6 +2382,7 @@ func (q *Queries) SetBroadcastPace(ctx context.Context, arg SetBroadcastPacePara
 		&i.Timezone,
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
+		&i.Translations,
 	)
 	return i, err
 }
@@ -2193,7 +2391,7 @@ const setBroadcastSendWindow = `-- name: SetBroadcastSendWindow :one
 UPDATE broadcasts SET timezone = $1, send_window_start = $2,
     send_window_end = $3, updated_at = $4::timestamptz
 WHERE workspace_id = $5 AND id = $6
-RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end
+RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations
 `
 
 type SetBroadcastSendWindowParams struct {
@@ -2256,6 +2454,7 @@ func (q *Queries) SetBroadcastSendWindow(ctx context.Context, arg SetBroadcastSe
 		&i.Timezone,
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
+		&i.Translations,
 	)
 	return i, err
 }

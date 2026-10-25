@@ -334,7 +334,7 @@ func (s *Server) changelogDocument(ctx context.Context, q *store.Queries, p prin
 	lang := mailLang(t.Locale)
 	words := changelogMailWords[lang]
 	entryURL := s.changelogEntryURL(c, e.Number, t.Locale, deref(t.PublishedSlug))
-	d, err := s.documentFromTemplate(ctx, q, p, changelogTemplate, templateLocaleFor(t.Locale))
+	d, err := s.documentFromTemplate(ctx, q, p, changelogTemplate, templateLocaleFor(t.Locale), nil)
 	if err != nil {
 		return d, err
 	}

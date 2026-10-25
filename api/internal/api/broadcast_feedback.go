@@ -463,7 +463,7 @@ func (s *Server) serveClick(w http.ResponseWriter, r *http.Request) {
 		goneListPage(w)
 		return
 	}
-	link, err := s.st.GetBroadcastLink(ctx, store.GetBroadcastLinkParams{WorkspaceID: ws, BroadcastID: d.BroadcastID, Position: int32(pos)})
+	link, err := s.st.GetBroadcastLink(ctx, store.GetBroadcastLinkParams{WorkspaceID: ws, BroadcastID: d.BroadcastID, Locale: deref(d.Locale), Position: int32(pos)})
 	if err != nil {
 		goneListPage(w)
 		return
@@ -489,7 +489,7 @@ func (s *Server) countClick(ctx context.Context, d store.BroadcastDelivery, link
 		if err != nil || n == 0 {
 			return err
 		}
-		if err := q.CountBroadcastLinkClick(ctx, store.CountBroadcastLinkClickParams{WorkspaceID: ws, BroadcastID: d.BroadcastID, Position: link.Position}); err != nil {
+		if err := q.CountBroadcastLinkClick(ctx, store.CountBroadcastLinkClickParams{WorkspaceID: ws, BroadcastID: d.BroadcastID, Locale: link.Locale, Position: link.Position}); err != nil {
 			return err
 		}
 		if n, err = q.MarkDeliveryClicked(ctx, store.MarkDeliveryClickedParams{WorkspaceID: ws, ID: d.ID, Now: s.now()}); err != nil || n == 0 {

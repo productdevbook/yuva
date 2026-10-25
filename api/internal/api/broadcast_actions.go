@@ -91,31 +91,39 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 	if err != nil {
 		return out, err
 	}
-	var fields []design.Field
-	var rendered *design.Output
-	var r *bcRenderer
+	var rendered []versionRender
 	if doc == nil {
 		l.add(oas.BroadcastReviewKeyDesign, oas.ReviewBlocking, "choose a design")
 	} else {
-		fields = doc.MergeFields()
-		r, err = s.newBroadcastRenderer(ctx, q, b, *doc, nil)
+		r, err := s.newBroadcastRenderer(ctx, q, b, *doc, nil)
 		if err != nil {
 			return out, err
 		}
-		o, err := r.render(r.sample(false), r.firstList())
-		switch {
-		case errors.Is(err, design.ErrHTMLTooLarge):
-			l.add(oas.BroadcastReviewKeyDesign, oas.ReviewBlocking, "the design renders to more than 500 KB of HTML")
-		case err != nil:
-			return out, err
-		default:
-			rendered = &o
+		tags := doc.Versions()
+		if len(tags) == 0 {
+			tags = []string{""}
+		}
+		tooLarge := ""
+		for _, tag := range tags {
+			o, err := r.render(r.sample(false), r.firstList(), tag)
+			switch {
+			case errors.Is(err, design.ErrHTMLTooLarge):
+				tooLarge = versionNote(tag)
+			case err != nil:
+				return out, err
+			default:
+				rendered = append(rendered, versionRender{tag, o})
+			}
+		}
+		if tooLarge != "" {
+			rendered = nil
+			l.add(oas.BroadcastReviewKeyDesign, oas.ReviewBlocking, "the design renders to more than 500 KB of HTML"+tooLarge)
+		} else {
 			l.add(oas.BroadcastReviewKeyDesign, oas.ReviewOk, "")
 		}
 	}
 	subject := strings.TrimSpace(b.Subject)
-	fields = append(fields, design.Fields(subject)...)
-	count, err := s.countAudience(ctx, q, b, fields)
+	count, err := s.countAudience(ctx, q, b, doc, true)
 	if err != nil {
 		return out, err
 	}
@@ -138,33 +146,43 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 	} else {
 		l.add(oas.BroadcastReviewKeyMergeFields, oas.ReviewOk, "")
 	}
-	if rendered != nil {
-		size := int32(len(rendered.HTML))
+	if len(rendered) > 0 {
+		largest := rendered[0]
+		var altIn, httpIn []string
+		for _, v := range rendered {
+			if len(v.out.HTML) > len(largest.out.HTML) {
+				largest = v
+			}
+			if slices.ContainsFunc(v.out.Warnings, func(w design.Issue) bool { return w.Code == "alt_missing" || w.Code == "image_missing" }) {
+				altIn = append(altIn, v.tag)
+			}
+			for _, m := range hrefAttr.FindAllStringSubmatch(v.out.HTML, -1) {
+				if u := html.UnescapeString(m[1]); strings.HasPrefix(u, "http://") && !strings.HasPrefix(u, s.linkBase()+"/") {
+					httpIn = append(httpIn, v.tag)
+					break
+				}
+			}
+		}
+		size := int32(len(largest.out.HTML))
 		out.HtmlBytes = &size
 		switch {
 		case size > design.ClipBytes:
-			l.add(oas.BroadcastReviewKeyHtmlSize, oas.ReviewBlocking, "over 102 KB of HTML: Gmail cuts the mail off, footer and unsubscribe link included")
+			l.add(oas.BroadcastReviewKeyHtmlSize, oas.ReviewBlocking, "over 102 KB of HTML: Gmail cuts the mail off, footer and unsubscribe link included"+versionNote(largest.tag))
 		case size > design.NearClipBytes:
-			l.add(oas.BroadcastReviewKeyHtmlSize, oas.ReviewWarning, "over 90 KB of HTML, close to where Gmail cuts mail off")
+			l.add(oas.BroadcastReviewKeyHtmlSize, oas.ReviewWarning, "over 90 KB of HTML, close to where Gmail cuts mail off"+versionNote(largest.tag))
 		default:
 			l.add(oas.BroadcastReviewKeyHtmlSize, oas.ReviewOk, "")
 		}
-		alt := oas.ReviewOk
-		detail := ""
-		for _, w := range rendered.Warnings {
-			if w.Code == "alt_missing" || w.Code == "image_missing" {
-				alt, detail = oas.ReviewWarning, "an image has no alt text or no image"
-			}
+		if len(altIn) > 0 {
+			l.add(oas.BroadcastReviewKeyImagesAlt, oas.ReviewWarning, "an image has no alt text or no image"+versionNote(altIn...))
+		} else {
+			l.add(oas.BroadcastReviewKeyImagesAlt, oas.ReviewOk, "")
 		}
-		l.add(oas.BroadcastReviewKeyImagesAlt, alt, detail)
-		links := oas.ReviewOk
-		detail = ""
-		for _, m := range hrefAttr.FindAllStringSubmatch(rendered.HTML, -1) {
-			if u := html.UnescapeString(m[1]); strings.HasPrefix(u, "http://") && !strings.HasPrefix(u, s.linkBase()+"/") {
-				links, detail = oas.ReviewWarning, "a link uses http:, not https:"
-			}
+		if len(httpIn) > 0 {
+			l.add(oas.BroadcastReviewKeyLinks, oas.ReviewWarning, "a link uses http:, not https:"+versionNote(httpIn...))
+		} else {
+			l.add(oas.BroadcastReviewKeyLinks, oas.ReviewOk, "")
 		}
-		l.add(oas.BroadcastReviewKeyLinks, links, detail)
 	}
 	switch n := utf8.RuneCountInString(subject); {
 	case n == 0:
@@ -249,9 +267,25 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 	} else {
 		l.add(oas.BroadcastReviewKeyClickTracking, oas.ReviewOk, "")
 	}
+	l.translations(b, doc)
 	out.Items = l.items
 	out.Ready = len(l.blocking()) == 0
 	return out, nil
+}
+
+// versionRender is the sample render of one language version ("" without translations).
+type versionRender struct {
+	tag string
+	out design.Output
+}
+
+// versionNote names the language versions a review item is about; nothing without versions.
+func versionNote(tags ...string) string {
+	tags = slices.DeleteFunc(slices.Clone(tags), func(t string) bool { return t == "" })
+	if len(tags) == 0 {
+		return ""
+	}
+	return " (" + strings.Join(tags, ", ") + ")"
 }
 
 // sendWindow warns when the window is closed at the time sending starts: the scheduled time when
@@ -326,6 +360,12 @@ func (s *Server) SendBroadcastTest(ctx context.Context, req oas.SendBroadcastTes
 		}
 		contactID = req.Body.ContactId
 	}
+	want := ""
+	if req.Body != nil && req.Body.Locale != nil {
+		if want, err = languageTag(string(*req.Body.Locale), "locale"); err != nil {
+			return nil, err
+		}
+	}
 	if len(memberIDs) == 0 {
 		if p.isKey() {
 			return nil, errValidation("an API key names the members to send the test to in member_ids")
@@ -340,13 +380,17 @@ func (s *Server) SendBroadcastTest(ctx context.Context, req oas.SendBroadcastTes
 		return nil, errValidation("member_ids names someone who is not a member of the workspace; tests go to members only")
 	}
 	if contactID != nil {
-		if _, err := s.st.GetContact(ctx, store.GetContactParams{WorkspaceID: p.workspaceID, ID: *contactID}); store.IsNotFound(err) {
+		c, err := s.st.GetContact(ctx, store.GetContactParams{WorkspaceID: p.workspaceID, ID: *contactID})
+		if store.IsNotFound(err) {
 			return nil, errContactGone
 		} else if err != nil {
 			return nil, err
 		}
 		if err := visibleContact(ctx, s.st.Queries, p, *contactID); err != nil {
 			return nil, err
+		}
+		if req.Body.Locale == nil {
+			want = deref(c.Locale)
 		}
 	}
 	if b.ChannelID == nil || s.broadcastChannel(ctx, s.st.Queries, p.workspaceID, b.InboxID, *b.ChannelID) != nil {
@@ -365,6 +409,10 @@ func (s *Server) SendBroadcastTest(ctx context.Context, req oas.SendBroadcastTes
 		}
 	}
 	out := oas.SendBroadcastTest202JSONResponse{SentTo: make([]oas.Email, len(members))}
+	tag, _ := doc.Pick(want)
+	if tag != "" {
+		out.Locale = new(oas.LanguageTag(tag))
+	}
 	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if err := q.MarkBroadcastTested(ctx, store.MarkBroadcastTestedParams{WorkspaceID: p.workspaceID, ID: b.ID, Now: s.now()}); err != nil {
 			return err
@@ -376,7 +424,7 @@ func (s *Server) SendBroadcastTest(ctx context.Context, req oas.SendBroadcastTes
 		}
 		for i, m := range members {
 			out.SentTo[i] = oas.Email(m.Email)
-			events.job(BroadcastTestArgs{WorkspaceID: p.workspaceID, BroadcastID: b.ID, MemberID: m.ID, ContactID: contactID}, listMailOpts())
+			events.job(BroadcastTestArgs{WorkspaceID: p.workspaceID, BroadcastID: b.ID, MemberID: m.ID, ContactID: contactID, Locale: tag}, listMailOpts())
 		}
 		return nil
 	})
@@ -500,13 +548,21 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 			if err != nil {
 				return err
 			}
-			links, err := r.trackableLinks()
-			if err != nil {
-				return err
+			tags := doc.Versions()
+			if len(tags) == 0 {
+				tags = []string{""}
 			}
-			for pos, u := range links {
-				if err := q.InsertBroadcastLink(ctx, store.InsertBroadcastLinkParams{WorkspaceID: p.workspaceID, BroadcastID: out.ID, Position: int32(pos), Url: u}); err != nil {
+			for _, tag := range tags {
+				links, err := r.trackableLinks(tag)
+				if err != nil {
 					return err
+				}
+				for pos, u := range links {
+					if err := q.InsertBroadcastLink(ctx, store.InsertBroadcastLinkParams{
+						WorkspaceID: p.workspaceID, BroadcastID: out.ID, Locale: tag, Position: int32(pos), Url: u,
+					}); err != nil {
+						return err
+					}
 				}
 			}
 		}
@@ -659,6 +715,9 @@ func broadcastDeliveryBody(d store.ListBroadcastDeliveriesRow) oas.BroadcastDeli
 		ComplainedAt: d.ComplainedAt, UnsubscribedAt: d.UnsubscribedAt, RepliedAt: d.RepliedAt, AutoRepliedAt: d.AutoRepliedAt,
 		ClickedAt: d.ClickedAt, ConversationId: d.ConversationID, CreatedAt: d.CreatedAt,
 	}
+	if d.Locale != nil {
+		out.Locale = new(oas.LanguageTag(*d.Locale))
+	}
 	if d.SkipReason != nil {
 		r := oas.BroadcastSkipReason(*d.SkipReason)
 		out.SkipReason = &r
@@ -692,6 +751,14 @@ func (s *Server) ListBroadcastDeliveries(ctx context.Context, req oas.ListBroadc
 			q = &v
 		}
 	}
+	var locale *string
+	if req.Params.Locale != nil {
+		tag, err := languageTag(string(*req.Params.Locale), "locale")
+		if err != nil {
+			return nil, err
+		}
+		locale = &tag
+	}
 	b, err := visibleBroadcast(ctx, s.st.Queries, p, req.BroadcastId, false)
 	if err != nil {
 		return nil, err
@@ -700,7 +767,7 @@ func (s *Server) ListBroadcastDeliveries(ctx context.Context, req oas.ListBroadc
 		return nil, err
 	}
 	rows, err := s.st.ListBroadcastDeliveries(ctx, store.ListBroadcastDeliveriesParams{
-		WorkspaceID: p.workspaceID, BroadcastID: b.ID, State: state, Q: q, Replied: req.Params.Replied, After: after, Lim: lim + 1,
+		WorkspaceID: p.workspaceID, BroadcastID: b.ID, State: state, Q: q, Replied: req.Params.Replied, Locale: locale, After: after, Lim: lim + 1,
 	})
 	if err != nil {
 		return nil, err
@@ -727,23 +794,53 @@ func rate(n, of int64) float64 {
 
 func (s *Server) GetBroadcastReport(ctx context.Context, req oas.GetBroadcastReportRequestObject) (oas.GetBroadcastReportResponseObject, error) {
 	p := principalFrom(ctx)
+	var locale *string
+	if req.Params.Locale != nil {
+		tag, err := languageTag(string(*req.Params.Locale), "locale")
+		if err != nil {
+			return nil, err
+		}
+		locale = &tag
+	}
 	b, err := visibleBroadcast(ctx, s.st.Queries, p, req.BroadcastId, false)
 	if err != nil {
 		return nil, err
 	}
+	versions := frozenVersions(b)
+	if locale != nil && !slices.Contains(versions, *locale) {
+		return nil, errValidation("locale must be a language version of the broadcast's design: " + strings.Join(versions, ", "))
+	}
+	var byLocale []store.RecountBroadcastByLocaleRow
+	if len(versions) > 0 {
+		if byLocale, err = s.st.RecountBroadcastByLocale(ctx, store.RecountBroadcastByLocaleParams{WorkspaceID: p.workspaceID, BroadcastID: b.ID, Locale: locale}); err != nil {
+			return nil, err
+		}
+	}
 	c := parseCounts(b.Counts)
+	if locale != nil {
+		c = bcCounts{}
+		if len(byLocale) > 0 {
+			c = localeCounts(byLocale[0])
+		}
+	}
 	out := oas.GetBroadcastReport200JSONResponse{
-		BroadcastId: b.ID, Counts: c.body(b.State), Timeline: []oas.BroadcastReportPoint{}, Replies: []oas.BroadcastReportReply{},
-		Rates: oas.BroadcastRates{
-			Bounced: rate(c.Bounced, c.Sent), Complained: rate(c.Complained, c.Sent), Unsubscribed: rate(c.Unsubscribed, c.Sent),
-			Replied: rate(c.Replied, c.Sent), Clicked: rate(c.Clicked, c.Sent),
-		},
+		BroadcastId: b.ID, Counts: c.body(b.State), Rates: c.rates(), Timeline: []oas.BroadcastReportPoint{}, Replies: []oas.BroadcastReportReply{},
+	}
+	if locale != nil {
+		out.Locale = new(oas.LanguageTag(*locale))
+	} else if len(versions) > 0 {
+		list := make([]oas.BroadcastLocaleReport, len(byLocale))
+		for i, r := range byLocale {
+			lc := localeCounts(r)
+			list[i] = oas.BroadcastLocaleReport{Locale: oas.LanguageTag(r.Locale), Counts: lc.body(b.State), Rates: lc.rates()}
+		}
+		out.Locales = &list
 	}
 	start := b.CreatedAt
 	if b.StartedAt != nil {
 		start = *b.StartedAt
 	}
-	points, err := s.st.BroadcastTimeline(ctx, store.BroadcastTimelineParams{WorkspaceID: p.workspaceID, BroadcastID: b.ID, HourlyUntil: start.Add(72 * time.Hour)})
+	points, err := s.st.BroadcastTimeline(ctx, store.BroadcastTimelineParams{WorkspaceID: p.workspaceID, BroadcastID: b.ID, HourlyUntil: start.Add(72 * time.Hour), Locale: locale})
 	if err != nil {
 		return nil, err
 	}
@@ -754,17 +851,27 @@ func (s *Server) GetBroadcastReport(ctx context.Context, req oas.GetBroadcastRep
 		})
 	}
 	if b.ClickTracking {
-		links, err := s.st.ListBroadcastLinks(ctx, store.ListBroadcastLinksParams{WorkspaceID: p.workspaceID, BroadcastID: b.ID})
-		if err != nil {
-			return nil, err
-		}
-		list := make([]oas.BroadcastReportLink, len(links))
-		for i, l := range links {
-			list[i] = oas.BroadcastReportLink{Url: l.Url, Clicks: l.Clicks}
+		list := []oas.BroadcastReportLink{}
+		if len(versions) > 0 && locale == nil {
+			links, err := s.st.ListBroadcastLinksByURL(ctx, store.ListBroadcastLinksByURLParams{WorkspaceID: p.workspaceID, BroadcastID: b.ID})
+			if err != nil {
+				return nil, err
+			}
+			for _, l := range links {
+				list = append(list, oas.BroadcastReportLink{Url: l.Url, Clicks: l.Clicks})
+			}
+		} else {
+			links, err := s.st.ListBroadcastLinks(ctx, store.ListBroadcastLinksParams{WorkspaceID: p.workspaceID, BroadcastID: b.ID, Locale: locale})
+			if err != nil {
+				return nil, err
+			}
+			for _, l := range links {
+				list = append(list, oas.BroadcastReportLink{Url: l.Url, Clicks: l.Clicks})
+			}
 		}
 		out.Links = &list
 	}
-	replies, err := s.st.ListBroadcastReplies(ctx, store.ListBroadcastRepliesParams{WorkspaceID: p.workspaceID, BroadcastID: b.ID})
+	replies, err := s.st.ListBroadcastReplies(ctx, store.ListBroadcastRepliesParams{WorkspaceID: p.workspaceID, BroadcastID: b.ID, Locale: locale})
 	if err != nil {
 		return nil, err
 	}
@@ -772,6 +879,9 @@ func (s *Server) GetBroadcastReport(ctx context.Context, req oas.GetBroadcastRep
 		out.Replies = append(out.Replies, oas.BroadcastReportReply{
 			ConversationId: r.ConversationID, Contact: oas.SubscriptionContact{Id: r.ContactID, Name: r.ContactName}, At: r.RepliedAt,
 		})
+	}
+	if locale != nil {
+		return out, nil
 	}
 	visits, err := s.campaignVisits(ctx, p, b)
 	if err != nil {
@@ -781,4 +891,20 @@ func (s *Server) GetBroadcastReport(ctx context.Context, req oas.GetBroadcastRep
 		out.CampaignVisits = &visits
 	}
 	return out, nil
+}
+
+func (c bcCounts) rates() oas.BroadcastRates {
+	return oas.BroadcastRates{
+		Bounced: rate(c.Bounced, c.Sent), Complained: rate(c.Complained, c.Sent), Unsubscribed: rate(c.Unsubscribed, c.Sent),
+		Replied: rate(c.Replied, c.Sent), Clicked: rate(c.Clicked, c.Sent),
+	}
+}
+
+func localeCounts(r store.RecountBroadcastByLocaleRow) bcCounts {
+	return bcCounts{
+		Recipients: r.Recipients, Queued: r.Queued, Sent: r.Sent, Failed: r.Failed, Bounced: r.Bounced, Complained: r.Complained,
+		Unsubscribed: r.Unsubscribed, Replied: r.Replied, AutoReplied: r.AutoReplied, Clicked: r.Clicked,
+		SkippedSuppressed: r.SkippedSuppressed, SkippedOptedOut: r.SkippedOptedOut, SkippedUnsubscribed: r.SkippedUnsubscribed,
+		SkippedCancelled: r.SkippedCancelled,
+	}
 }

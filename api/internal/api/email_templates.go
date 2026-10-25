@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"net/http"
 	"regexp"
+	"slices"
 	"strings"
 	"uuid"
 
@@ -109,14 +110,34 @@ func (s *Server) GetEmailTemplate(ctx context.Context, req oas.GetEmailTemplateR
 }
 
 // documentFromTemplate is a template's design with its files stored as the workspace's images.
-func (s *Server) documentFromTemplate(ctx context.Context, q *store.Queries, p principal, slug string, locale *oas.EmailTemplateLocale) (design.Document, error) {
+func (s *Server) documentFromTemplate(ctx context.Context, q *store.Queries, p principal, slug string, locale *oas.EmailTemplateLocale, others []oas.EmailTemplateLocale) (design.Document, error) {
 	t, ok := gallery.Find(slug)
 	if !ok {
 		return design.Document{}, errTemplateGone
 	}
-	d, _, err := t.Document(gallery.Embedded(), templateLocale(locale))
+	d, base, err := t.Document(gallery.Embedded(), templateLocale(locale))
 	if err != nil {
 		return d, err
+	}
+	if len(others) > 2 {
+		return d, errValidation("template.locales names at most 2 languages")
+	}
+	for _, l := range others {
+		tag := string(l)
+		if tag == base || d.Translations[tag].Blocks != nil {
+			return d, errValidation("template.locales names other languages than template.locale, once each")
+		}
+		if !slices.Contains(t.Locales, tag) {
+			return d, errValidation("the template " + t.Slug + " has no " + tag + " version")
+		}
+		other, _, err := t.Document(gallery.Embedded(), tag)
+		if err != nil {
+			return d, err
+		}
+		if d.Translations == nil {
+			d.Locale, d.Translations = base, map[string]design.Translation{}
+		}
+		d.Translations[tag] = d.TranslationOf(other)
 	}
 	ids := map[string]uuid.UUID{}
 	var failed error

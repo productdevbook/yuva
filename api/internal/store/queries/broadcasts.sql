@@ -1,8 +1,8 @@
 -- name: CreateBroadcast :one
-INSERT INTO broadcasts (id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, audience,
+INSERT INTO broadcasts (id, workspace_id, inbox_id, channel_id, name, subject, preheader, translations, design_id, audience,
                         click_tracking, utm, utm_campaign, created_by, pace_per_hour, pace_per_day, pace_per_month,
                         timezone, send_window_start, send_window_end, changelog_entry_id, created_at, updated_at)
-VALUES (@id, @workspace_id, @inbox_id, sqlc.narg(channel_id), @name, @subject, @preheader, sqlc.narg(design_id), @audience,
+VALUES (@id, @workspace_id, @inbox_id, sqlc.narg(channel_id), @name, @subject, @preheader, @translations, sqlc.narg(design_id), @audience,
         @click_tracking, @utm, @utm_campaign, sqlc.narg(created_by), sqlc.narg(pace_per_hour), sqlc.narg(pace_per_day),
         sqlc.narg(pace_per_month), @timezone, sqlc.narg(send_window_start), sqlc.narg(send_window_end),
         sqlc.narg(changelog_entry_id), @now, @now)
@@ -16,7 +16,7 @@ SELECT * FROM broadcasts WHERE workspace_id = $1 AND id = $2 FOR UPDATE;
 
 -- name: SaveBroadcast :one
 UPDATE broadcasts SET channel_id = sqlc.narg(channel_id), name = @name, subject = @subject, preheader = @preheader,
-    design_id = sqlc.narg(design_id), design_version = sqlc.narg(design_version), document = sqlc.narg(document),
+    translations = @translations, design_id = sqlc.narg(design_id), design_version = sqlc.narg(design_version), document = sqlc.narg(document),
     audience = @audience, click_tracking = @click_tracking, utm = @utm, utm_campaign = @utm_campaign, state = @state, pause_reason = sqlc.narg(pause_reason),
     state_detail = sqlc.narg(state_detail), scheduled_at = sqlc.narg(scheduled_at), waiting_until = sqlc.narg(waiting_until),
     started_at = sqlc.narg(started_at), resumed_at = sqlc.narg(resumed_at), finished_at = sqlc.narg(finished_at),
@@ -118,7 +118,7 @@ WHERE b.workspace_id = @workspace_id AND b.started_at > @since;
 -- returned so they can be counted.
 -- name: BroadcastAudiencePage :many
 SELECT DISTINCT ON (s.contact_id)
-    s.contact_id, s.email, s.list_id, c.name, c.attributes, c.blocked,
+    s.contact_id, s.email, s.list_id, c.name, c.attributes, c.blocked, c.locale,
     EXISTS (SELECT 1 FROM email_suppressions x WHERE x.workspace_id = s.workspace_id AND x.email = s.email AND x.scope <> 'confirmations')::bool AS suppressed,
     (count(*) OVER (PARTITION BY s.contact_id))::bigint AS subscriptions,
     ((cardinality(@locales::text[]) = 0 OR EXISTS (
@@ -163,9 +163,9 @@ WHERE s.workspace_id = @workspace_id AND s.list_id = ANY(@list_ids::uuid[]) AND 
 SELECT email_hash FROM email_optouts WHERE workspace_id = @workspace_id AND email_hash = ANY(@hashes::bytea[]);
 
 -- name: InsertBroadcastDeliveries :execrows
-INSERT INTO broadcast_deliveries (id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, created_at)
+INSERT INTO broadcast_deliveries (id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, locale, created_at)
 SELECT unnest(@ids::uuid[]), @workspace_id, @broadcast_id, unnest(@contact_ids::uuid[]), unnest(@list_ids::uuid[]),
-       unnest(@emails::text[]), unnest(@tokens::text[]), unnest(@headers::text[]), @now
+       unnest(@emails::text[]), unnest(@tokens::text[]), unnest(@headers::text[]), nullif(unnest(@locales::text[]), ''), @now
 ON CONFLICT DO NOTHING;
 
 -- name: DueBroadcastDeliveries :many
@@ -208,6 +208,28 @@ SELECT count(*)::bigint AS recipients,
        count(*) FILTER (WHERE skip_reason = 'unsubscribed')::bigint AS skipped_unsubscribed,
        count(*) FILTER (WHERE skip_reason = 'cancelled')::bigint AS skipped_cancelled
 FROM broadcast_deliveries WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id;
+
+-- name: RecountBroadcastByLocale :many
+SELECT locale::text AS locale,
+       count(*)::bigint AS recipients,
+       count(*) FILTER (WHERE state = 'queued')::bigint AS queued,
+       count(*) FILTER (WHERE sent_at IS NOT NULL)::bigint AS sent,
+       count(*) FILTER (WHERE state = 'failed')::bigint AS failed,
+       count(*) FILTER (WHERE state = 'bounced')::bigint AS bounced,
+       count(*) FILTER (WHERE complained_at IS NOT NULL)::bigint AS complained,
+       count(*) FILTER (WHERE unsubscribed_at IS NOT NULL)::bigint AS unsubscribed,
+       count(*) FILTER (WHERE replied_at IS NOT NULL)::bigint AS replied,
+       count(*) FILTER (WHERE auto_replied_at IS NOT NULL)::bigint AS auto_replied,
+       count(*) FILTER (WHERE clicked_at IS NOT NULL)::bigint AS clicked,
+       count(*) FILTER (WHERE skip_reason = 'suppressed')::bigint AS skipped_suppressed,
+       count(*) FILTER (WHERE skip_reason = 'opted_out')::bigint AS skipped_opted_out,
+       count(*) FILTER (WHERE skip_reason = 'unsubscribed')::bigint AS skipped_unsubscribed,
+       count(*) FILTER (WHERE skip_reason = 'cancelled')::bigint AS skipped_cancelled
+FROM broadcast_deliveries
+WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id AND locale IS NOT NULL
+  AND (sqlc.narg(locale)::text IS NULL OR locale = sqlc.narg(locale)::text)
+GROUP BY locale
+ORDER BY recipients DESC, locale;
 
 -- SES reports name only our Message-ID, so the delivery is found before the workspace is known
 -- (see "Hosting for others later" in docs/architecture.md).
@@ -263,6 +285,7 @@ JOIN contacts c ON c.workspace_id = d.workspace_id AND c.id = d.contact_id
 WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id
   AND (sqlc.narg(state)::text IS NULL OR d.state = sqlc.narg(state)::text)
   AND (sqlc.narg(replied)::bool IS NULL OR sqlc.narg(replied)::bool = (d.replied_at IS NOT NULL))
+  AND (sqlc.narg(locale)::text IS NULL OR d.locale = sqlc.narg(locale)::text)
   AND (sqlc.narg(q)::text IS NULL OR strpos(d.email, lower(sqlc.narg(q)::text)) > 0
        OR strpos(lower(c.name), lower(sqlc.narg(q)::text)) > 0)
   AND (sqlc.narg(after)::uuid IS NULL OR d.id > sqlc.narg(after)::uuid)
@@ -289,22 +312,28 @@ SELECT (CASE WHEN e.t < @hourly_until::timestamptz THEN date_trunc('hour', e.t A
        count(*) FILTER (WHERE e.kind = 'clicked')::bigint AS clicked
 FROM (
     SELECT d.sent_at AS t, 'sent'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id AND d.sent_at IS NOT NULL
+    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id
+      AND (sqlc.narg(locale)::text IS NULL OR d.locale = sqlc.narg(locale)::text) AND d.sent_at IS NOT NULL
     UNION ALL
     SELECT d.bounced_at AS t, 'bounced'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id AND d.bounced_at IS NOT NULL
+    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id
+      AND (sqlc.narg(locale)::text IS NULL OR d.locale = sqlc.narg(locale)::text) AND d.bounced_at IS NOT NULL
     UNION ALL
     SELECT d.complained_at AS t, 'complained'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id AND d.complained_at IS NOT NULL
+    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id
+      AND (sqlc.narg(locale)::text IS NULL OR d.locale = sqlc.narg(locale)::text) AND d.complained_at IS NOT NULL
     UNION ALL
     SELECT d.unsubscribed_at AS t, 'unsubscribed'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id AND d.unsubscribed_at IS NOT NULL
+    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id
+      AND (sqlc.narg(locale)::text IS NULL OR d.locale = sqlc.narg(locale)::text) AND d.unsubscribed_at IS NOT NULL
     UNION ALL
     SELECT d.replied_at AS t, 'replied'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id AND d.replied_at IS NOT NULL
+    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id
+      AND (sqlc.narg(locale)::text IS NULL OR d.locale = sqlc.narg(locale)::text) AND d.replied_at IS NOT NULL
     UNION ALL
     SELECT d.clicked_at AS t, 'clicked'::text AS kind FROM broadcast_deliveries d
-    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id AND d.clicked_at IS NOT NULL
+    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id
+      AND (sqlc.narg(locale)::text IS NULL OR d.locale = sqlc.narg(locale)::text) AND d.clicked_at IS NOT NULL
 ) e
 GROUP BY 1
 ORDER BY 1;
@@ -314,21 +343,46 @@ SELECT d.conversation_id::uuid AS conversation_id, d.contact_id, c.name AS conta
 FROM broadcast_deliveries d
 JOIN contacts c ON c.workspace_id = d.workspace_id AND c.id = d.contact_id
 WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id AND d.replied_at IS NOT NULL AND d.conversation_id IS NOT NULL
+  AND (sqlc.narg(locale)::text IS NULL OR d.locale = sqlc.narg(locale)::text)
 ORDER BY d.replied_at, d.id
 LIMIT 50;
 
 -- name: InsertBroadcastLink :exec
-INSERT INTO broadcast_links (workspace_id, broadcast_id, position, url) VALUES (@workspace_id, @broadcast_id, @position, @url)
-ON CONFLICT (workspace_id, broadcast_id, position) DO UPDATE SET url = excluded.url, clicks = 0;
+INSERT INTO broadcast_links (workspace_id, broadcast_id, locale, position, url) VALUES (@workspace_id, @broadcast_id, @locale, @position, @url)
+ON CONFLICT (workspace_id, broadcast_id, locale, position) DO UPDATE SET url = excluded.url, clicks = 0;
 
 -- name: DeleteBroadcastLinks :exec
 DELETE FROM broadcast_links WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id;
 
 -- name: ListBroadcastLinks :many
-SELECT * FROM broadcast_links WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id ORDER BY clicks DESC, position;
+SELECT * FROM broadcast_links
+WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id
+  AND (sqlc.narg(locale)::text IS NULL OR locale = sqlc.narg(locale)::text)
+ORDER BY clicks DESC, locale, position;
+
+-- Without deliveries (older than 400 days) the recipients per URL are the sum of its links' clicks.
+-- name: ListBroadcastLinksByURL :many
+WITH clicked AS (
+    SELECT l.url, count(DISTINCT c.delivery_id)::bigint AS recipients
+    FROM broadcast_deliveries d
+    JOIN broadcast_clicks c ON c.workspace_id = d.workspace_id AND c.delivery_id = d.id
+    JOIN broadcast_links l ON l.workspace_id = d.workspace_id AND l.broadcast_id = d.broadcast_id
+        AND l.locale = coalesce(d.locale, '') AND l.position = c.position
+    WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id
+    GROUP BY l.url
+), kept AS (
+    SELECT EXISTS (SELECT 1 FROM broadcast_deliveries d WHERE d.workspace_id = @workspace_id AND d.broadcast_id = @broadcast_id) AS yes
+)
+SELECT l.url, min(l.position)::integer AS position,
+       (CASE WHEN (SELECT yes FROM kept) THEN coalesce(max(k.recipients), 0) ELSE sum(l.clicks) END)::bigint AS clicks
+FROM broadcast_links l
+LEFT JOIN clicked k ON k.url = l.url
+WHERE l.workspace_id = @workspace_id AND l.broadcast_id = @broadcast_id
+GROUP BY l.url
+ORDER BY clicks DESC, position, l.url;
 
 -- name: GetBroadcastLink :one
-SELECT * FROM broadcast_links WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id AND position = @position;
+SELECT * FROM broadcast_links WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id AND locale = @locale AND position = @position;
 
 -- name: RecordBroadcastClick :execrows
 INSERT INTO broadcast_clicks (workspace_id, delivery_id, position, first_at) VALUES (@workspace_id, @delivery_id, @position, @now)
@@ -338,7 +392,8 @@ ON CONFLICT DO NOTHING;
 SELECT count(*) FROM broadcast_clicks WHERE workspace_id = @workspace_id AND delivery_id = @delivery_id AND first_at > @since;
 
 -- name: CountBroadcastLinkClick :exec
-UPDATE broadcast_links SET clicks = clicks + 1 WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id AND position = @position;
+UPDATE broadcast_links SET clicks = clicks + 1
+WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id AND locale = @locale AND position = @position;
 
 -- name: AddSendingDay :exec
 INSERT INTO broadcast_sending_days (workspace_id, day, sent, bounced, complained)

@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"maps"
 	"net/http"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -14,6 +16,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/oapi-codegen/nullable"
 
+	"github.com/productdevbook/yuva/api/internal/mail/design"
 	"github.com/productdevbook/yuva/api/internal/oas"
 )
 
@@ -54,15 +57,18 @@ type listTemplatesIn struct {
 }
 
 type mcpDesign struct {
-	ID           uuid.UUID        `json:"id"`
-	Name         string           `json:"name"`
-	InboxID      *uuid.UUID       `json:"inbox_id,omitempty" jsonschema:"the inbox the design belongs to; absent for a design every inbox may use"`
-	Version      int32            `json:"version" jsonschema:"pass as base_version to update_design"`
-	TemplateSlug string           `json:"template_slug,omitempty"`
-	Document     map[string]any   `json:"document" jsonschema:"the design: schema 1, a theme and blocks; written by the workspace's members"`
-	Warnings     []mcpDesignIssue `json:"warnings" jsonschema:"what to fix before sending, such as missing alt text"`
-	UpdatedAt    time.Time        `json:"updated_at"`
-	PanelURL     string           `json:"panel_url,omitempty" jsonschema:"where a member opens it in Yuva; its workspace parameter opens it in this workspace even when another one is open in the panel"`
+	ID           uuid.UUID           `json:"id"`
+	Name         string              `json:"name"`
+	InboxID      *uuid.UUID          `json:"inbox_id,omitempty" jsonschema:"the inbox the design belongs to; absent for a design every inbox may use"`
+	Version      int32               `json:"version" jsonschema:"pass as base_version to update_design"`
+	TemplateSlug string              `json:"template_slug,omitempty"`
+	Document     map[string]any      `json:"document" jsonschema:"the design: schema 1, a theme and blocks; written by the workspace's members"`
+	Warnings     []mcpDesignIssue    `json:"warnings" jsonschema:"what to fix before sending, such as missing alt text"`
+	Locales      []string            `json:"locales,omitempty" jsonschema:"the design's language versions, the base language first; absent for a design in one language"`
+	Fallback     string              `json:"fallback_locale,omitempty" jsonschema:"the version contacts without a matching language get"`
+	MissingTexts map[string][]string `json:"missing_texts,omitempty" jsonschema:"per version, the ids of blocks that still show the base language's text"`
+	UpdatedAt    time.Time           `json:"updated_at"`
+	PanelURL     string              `json:"panel_url,omitempty" jsonschema:"where a member opens it in Yuva; its workspace parameter opens it in this workspace even when another one is open in the panel"`
 }
 
 type mcpDesignIssue struct {
@@ -110,25 +116,138 @@ func (c *mcpCall) designOut(d oas.EmailDesign) (mcpDesign, error) {
 		ID: d.Id, Name: d.Name, InboxID: d.InboxId, Version: d.Version, TemplateSlug: deref(d.TemplateSlug), Document: doc,
 		Warnings: designIssuesOut(d.Warnings), UpdatedAt: d.UpdatedAt,
 	}
+	if pd, ok := parsedDocument(d.Document); ok && pd.Versioned() {
+		out.Locales, out.Fallback = pd.Versions(), pd.Fallback()
+		for _, tag := range out.Locales[1:] {
+			if m := pd.Missing(tag); len(m) > 0 {
+				if out.MissingTexts == nil {
+					out.MissingTexts = map[string][]string{}
+				}
+				out.MissingTexts[tag] = m
+			}
+		}
+	}
 	if !c.s.noPanel {
 		out.PanelURL = c.panelURL("/broadcasts/designs/" + d.Id.String())
 	}
 	return out, nil
 }
 
+func parsedDocument(d oas.EmailDesignDocument) (design.Document, bool) {
+	raw, err := json.Marshal(d)
+	if err != nil {
+		return design.Document{}, false
+	}
+	pd, _, err := design.Parse(raw)
+	return pd, err == nil
+}
+
 type createDesignIn struct {
-	Name     string         `json:"name" jsonschema:"shown to members, such as October newsletter"`
-	InboxID  *uuid.UUID     `json:"inbox_id,omitempty" jsonschema:"the inbox it belongs to; the design is shared by every inbox when absent"`
-	Template string         `json:"template,omitempty" jsonschema:"a template slug from list_email_templates to start from"`
-	Locale   string         `json:"locale,omitempty" jsonschema:"the language of the template's text"`
-	Document map[string]any `json:"document,omitempty" jsonschema:"a whole design document instead of a template; a blank design when neither is given"`
+	Name       string         `json:"name" jsonschema:"shown to members, such as October newsletter"`
+	InboxID    *uuid.UUID     `json:"inbox_id,omitempty" jsonschema:"the inbox it belongs to; the design is shared by every inbox when absent"`
+	Template   string         `json:"template,omitempty" jsonschema:"a template slug from list_email_templates to start from"`
+	Locale     string         `json:"locale,omitempty" jsonschema:"the design's base language: the template's language when starting from a template, else the language of document's texts"`
+	AddLocales []string       `json:"add_locales,omitempty" jsonschema:"with template: the template's other languages to add as versions, such as [\"tr\", \"de\"]; one design with versions serves contacts in several languages"`
+	Document   map[string]any `json:"document,omitempty" jsonschema:"a whole design document instead of a template; a blank design when neither is given"`
 }
 
 type updateDesignIn struct {
-	DesignID    uuid.UUID      `json:"design_id"`
-	BaseVersion int32          `json:"base_version" jsonschema:"the version create_design or update_design returned last"`
-	Document    map[string]any `json:"document" jsonschema:"the whole changed document: start from the document returned last, keep block ids, the theme and the footer, change texts, links and images, add or remove blocks. Text blocks hold a small HTML subset (p, a, strong, em, ul, ol, li, br); there is no raw HTML block and no remote image. Merge fields need a fallback, such as {{ contact.first_name | \"there\" }}"`
-	Name        string         `json:"name,omitempty" jsonschema:"a new name; unchanged when empty"`
+	DesignID    uuid.UUID         `json:"design_id"`
+	BaseVersion int32             `json:"base_version" jsonschema:"the version create_design or update_design returned last"`
+	Document    map[string]any    `json:"document,omitempty" jsonschema:"the whole changed document of the base language: start from the document returned last, keep block ids, the theme and the footer, change texts, links and images, add or remove blocks. Text blocks hold a small HTML subset (p, a, strong, em, ul, ol, li, br); there is no raw HTML block and no remote image. Merge fields need a fallback, such as {{ contact.first_name | \"there\" }}. Its language versions are kept when it has no translations; unchanged when absent"`
+	Name        string            `json:"name,omitempty" jsonschema:"a new name; unchanged when empty"`
+	Locale      string            `json:"locale,omitempty" jsonschema:"another language to write a version of, such as es or pt-BR: texts, preheader and direction then change that version (added when new) and document is left out. Absent or the base language: document changes the base. A design without a base language takes it as its base language"`
+	Texts       map[string]string `json:"texts,omitempty" jsonschema:"with locale: by block id, the block's text in that language (a heading's text, a text or footer block's HTML, a button's label, an image's alt); an empty text removes the entry"`
+	Preheader   *string           `json:"preheader,omitempty" jsonschema:"with locale: that version's preheader; empty removes it"`
+	Direction   string            `json:"direction,omitempty" jsonschema:"with locale: that version's writing direction"`
+	Remove      bool              `json:"remove_locale,omitempty" jsonschema:"with locale: delete that version"`
+	Fallback    string            `json:"fallback_locale,omitempty" jsonschema:"the version contacts without a matching language get; the base language by default"`
+}
+
+var errNoBaseLocale = errValidation("the design has no base language yet; call update_design with locale alone to set it, then add versions")
+
+func (in updateDesignIn) document(cur oas.EmailDesign) (oas.EmailDesignDocument, error) {
+	base := ""
+	if cur.Document.Locale != nil {
+		base = string(*cur.Document.Locale)
+	}
+	tag := ""
+	if in.Locale != "" {
+		t, ok := design.CanonicalTag(in.Locale)
+		if !ok {
+			return oas.EmailDesignDocument{}, errValidation("locale must be a language tag such as en or es-MX")
+		}
+		tag = t
+	}
+	versionEdit := len(in.Texts) > 0 || in.Preheader != nil || in.Direction != "" || in.Remove
+	if tag == "" || tag == base || base == "" {
+		if versionEdit {
+			if base == "" && tag != "" {
+				return oas.EmailDesignDocument{}, errNoBaseLocale
+			}
+			return oas.EmailDesignDocument{}, errValidation("texts, preheader, direction and remove_locale need locale naming a version other than the base language")
+		}
+		doc := cur.Document
+		if in.Document != nil {
+			d, err := documentIn(in.Document)
+			if err != nil {
+				return d, err
+			}
+			doc = d
+		}
+		if base == "" && tag != "" {
+			doc.Locale = new(oas.LanguageTag(tag))
+		}
+		if in.Fallback != "" {
+			if doc.Translations == nil && cur.Document.Translations != nil {
+				doc.Translations = cur.Document.Translations
+			}
+			doc.FallbackLocale = new(oas.LanguageTag(in.Fallback))
+		}
+		return doc, nil
+	}
+	if in.Document != nil {
+		return oas.EmailDesignDocument{}, errValidation("document changes the base language; leave it out when locale names another version")
+	}
+	doc := cur.Document
+	tr := map[string]oas.EmailDesignTranslation{}
+	if doc.Translations != nil {
+		for k, v := range *doc.Translations {
+			tr[k] = v
+		}
+	}
+	if in.Remove {
+		delete(tr, tag)
+		if doc.FallbackLocale != nil && string(*doc.FallbackLocale) == tag {
+			doc.FallbackLocale = nil
+		}
+	} else {
+		e := tr[tag]
+		blocks := map[string]string{}
+		for k, v := range e.Blocks {
+			blocks[k] = v
+		}
+		for k, v := range in.Texts {
+			if v == "" {
+				delete(blocks, k)
+			} else {
+				blocks[k] = v
+			}
+		}
+		e.Blocks = blocks
+		if in.Preheader != nil {
+			e.Preheader = optString[string](*in.Preheader)
+		}
+		if in.Direction != "" {
+			e.Direction = new(oas.EmailDesignTranslationDirection(in.Direction))
+		}
+		tr[tag] = e
+	}
+	doc.Translations = &tr
+	if in.Fallback != "" {
+		doc.FallbackLocale = new(oas.LanguageTag(in.Fallback))
+	}
+	return doc, nil
 }
 
 type previewDesignIn struct {
@@ -138,10 +257,12 @@ type previewDesignIn struct {
 	Subject   string     `json:"subject,omitempty"`
 	Preheader string     `json:"preheader,omitempty"`
 	Dark      bool       `json:"dark,omitempty" jsonschema:"true renders as a mail app in dark mode shows it"`
+	Locale    string     `json:"locale,omitempty" jsonschema:"render the version a contact with this language gets"`
 }
 
 type previewDesignOut struct {
 	DesignID  uuid.UUID        `json:"design_id"`
+	Locale    string           `json:"locale,omitempty" jsonschema:"the version rendered; absent for a design in one language"`
 	Text      string           `json:"text" jsonschema:"the plain-text part of the mail, with merge fields filled for a sample contact"`
 	SizeBytes int64            `json:"size_bytes" jsonschema:"the HTML's size; Gmail cuts mail off above 102 KB"`
 	Warnings  []mcpDesignIssue `json:"warnings"`
@@ -186,36 +307,51 @@ func broadcastCountsOut(c oas.BroadcastCounts) mcpBroadcastCounts {
 	}
 }
 
+type mcpBroadcastTranslation struct {
+	Locale    string `json:"locale" jsonschema:"a version of the design, such as es or pt-BR"`
+	Subject   string `json:"subject,omitempty" jsonschema:"the subject in that language; merge fields need a fallback"`
+	Preheader string `json:"preheader,omitempty" jsonschema:"the preheader in that language; wins over the design version's own"`
+}
+
+func broadcastTranslationsIn(ts []mcpBroadcastTranslation) *map[string]oas.BroadcastTranslation {
+	out := map[string]oas.BroadcastTranslation{}
+	for _, t := range ts {
+		out[t.Locale] = oas.BroadcastTranslation{Subject: optString[string](t.Subject), Preheader: optString[string](t.Preheader)}
+	}
+	return &out
+}
+
 type mcpBroadcast struct {
-	ID               uuid.UUID                `json:"id"`
-	InboxID          uuid.UUID                `json:"inbox_id"`
-	ChannelID        *uuid.UUID               `json:"channel_id,omitempty" jsonschema:"the e-mail channel it goes out through"`
-	Name             string                   `json:"name"`
-	Subject          string                   `json:"subject"`
-	Preheader        string                   `json:"preheader"`
-	DesignID         *uuid.UUID               `json:"design_id,omitempty"`
-	ListIDs          []uuid.UUID              `json:"list_ids"`
-	Conditions       []mcpBroadcastCondition  `json:"conditions" jsonschema:"contact attribute conditions every recipient meets"`
-	Locales          []string                 `json:"locales" jsonschema:"only contacts with these languages; everyone when empty"`
-	ClickTracking    bool                     `json:"click_tracking"`
-	State            string                   `json:"state"`
-	StateDetail      string                   `json:"state_detail,omitempty" jsonschema:"why it paused or failed, such as the mail server's answer"`
-	PauseReason      string                   `json:"pause_reason,omitempty"`
-	ScheduledAt      *time.Time               `json:"scheduled_at,omitempty"`
-	StartedAt        *time.Time               `json:"started_at,omitempty"`
-	FinishedAt       *time.Time               `json:"finished_at,omitempty"`
-	LastTestAt       *time.Time               `json:"last_test_at,omitempty"`
-	Pace             *oas.BroadcastPace       `json:"pace,omitempty" jsonschema:"its own pace: at most per_hour mails in any 60 minutes, per_day in any 24 hours (with a send window: in each day's window), per_month in any 30 days"`
-	PaceNextAt       *time.Time               `json:"pace_next_at,omitempty" jsonschema:"while sending with at least a minute between mails: the earliest time the next mail may go out"`
-	Timezone         string                   `json:"timezone" jsonschema:"the IANA time zone of send_window and send_at_local"`
-	SendWindow       *oas.BroadcastSendWindow `json:"send_window,omitempty" jsonschema:"mails go out only between start and end each day, in timezone; end before start crosses midnight"`
-	WindowOpens      *time.Time               `json:"window_opens_at,omitempty" jsonschema:"while waiting for the send window: when it opens next"`
-	ScheduledAtLocal string                   `json:"scheduled_at_local,omitempty" jsonschema:"scheduled_at as a wall-clock time YYYY-MM-DDTHH:MM in timezone, the form send_at_local takes"`
-	ScheduledOffset  string                   `json:"scheduled_at_offset,omitempty" jsonschema:"timezone's offset at scheduled_at, such as GMT+3"`
-	Counts           mcpBroadcastCounts       `json:"counts"`
-	CreatedAt        time.Time                `json:"created_at"`
-	UpdatedAt        time.Time                `json:"updated_at"`
-	PanelURL         string                   `json:"panel_url,omitempty" jsonschema:"where a member reviews it in Yuva; its workspace parameter opens it in this workspace even when another one is open in the panel"`
+	ID               uuid.UUID                 `json:"id"`
+	InboxID          uuid.UUID                 `json:"inbox_id"`
+	ChannelID        *uuid.UUID                `json:"channel_id,omitempty" jsonschema:"the e-mail channel it goes out through"`
+	Name             string                    `json:"name"`
+	Subject          string                    `json:"subject"`
+	Preheader        string                    `json:"preheader"`
+	Translations     []mcpBroadcastTranslation `json:"translations" jsonschema:"subject and preheader per language version of the design; versions without one use subject and preheader"`
+	DesignID         *uuid.UUID                `json:"design_id,omitempty"`
+	ListIDs          []uuid.UUID               `json:"list_ids"`
+	Conditions       []mcpBroadcastCondition   `json:"conditions" jsonschema:"contact attribute conditions every recipient meets"`
+	Locales          []string                  `json:"locales" jsonschema:"only contacts with these languages; everyone when empty"`
+	ClickTracking    bool                      `json:"click_tracking"`
+	State            string                    `json:"state"`
+	StateDetail      string                    `json:"state_detail,omitempty" jsonschema:"why it paused or failed, such as the mail server's answer"`
+	PauseReason      string                    `json:"pause_reason,omitempty"`
+	ScheduledAt      *time.Time                `json:"scheduled_at,omitempty"`
+	StartedAt        *time.Time                `json:"started_at,omitempty"`
+	FinishedAt       *time.Time                `json:"finished_at,omitempty"`
+	LastTestAt       *time.Time                `json:"last_test_at,omitempty"`
+	Pace             *oas.BroadcastPace        `json:"pace,omitempty" jsonschema:"its own pace: at most per_hour mails in any 60 minutes, per_day in any 24 hours (with a send window: in each day's window), per_month in any 30 days"`
+	PaceNextAt       *time.Time                `json:"pace_next_at,omitempty" jsonschema:"while sending with at least a minute between mails: the earliest time the next mail may go out"`
+	Timezone         string                    `json:"timezone" jsonschema:"the IANA time zone of send_window and send_at_local"`
+	SendWindow       *oas.BroadcastSendWindow  `json:"send_window,omitempty" jsonschema:"mails go out only between start and end each day, in timezone; end before start crosses midnight"`
+	WindowOpens      *time.Time                `json:"window_opens_at,omitempty" jsonschema:"while waiting for the send window: when it opens next"`
+	ScheduledAtLocal string                    `json:"scheduled_at_local,omitempty" jsonschema:"scheduled_at as a wall-clock time YYYY-MM-DDTHH:MM in timezone, the form send_at_local takes"`
+	ScheduledOffset  string                    `json:"scheduled_at_offset,omitempty" jsonschema:"timezone's offset at scheduled_at, such as GMT+3"`
+	Counts           mcpBroadcastCounts        `json:"counts"`
+	CreatedAt        time.Time                 `json:"created_at"`
+	UpdatedAt        time.Time                 `json:"updated_at"`
+	PanelURL         string                    `json:"panel_url,omitempty" jsonschema:"where a member reviews it in Yuva; its workspace parameter opens it in this workspace even when another one is open in the panel"`
 }
 
 func (c *mcpCall) broadcastOut(b oas.Broadcast) mcpBroadcast {
@@ -235,6 +371,11 @@ func (c *mcpCall) broadcastOut(b oas.Broadcast) mcpBroadcast {
 	}
 	if out.ListIDs == nil {
 		out.ListIDs = []uuid.UUID{}
+	}
+	out.Translations = []mcpBroadcastTranslation{}
+	for _, tag := range slices.Sorted(maps.Keys(b.Translations)) {
+		t := b.Translations[tag]
+		out.Translations = append(out.Translations, mcpBroadcastTranslation{Locale: tag, Subject: deref(t.Subject), Preheader: deref(t.Preheader)})
 	}
 	for _, cd := range b.Audience.Conditions {
 		mc := mcpBroadcastCondition{Attribute: cd.Attribute, Op: string(cd.Op), Value: deref(cd.Value)}
@@ -286,8 +427,15 @@ type mcpListCount struct {
 	Recipients int64     `json:"recipients"`
 }
 
+type mcpLocaleCount struct {
+	Locale     string `json:"locale"`
+	Recipients int64  `json:"recipients"`
+	Fallback   int64  `json:"fallback" jsonschema:"of them, contacts whose language matched no version (or who have none) and get this one as the fallback"`
+}
+
 type mcpAudience struct {
 	ByList             []mcpListCount   `json:"by_list"`
+	ByLocale           []mcpLocaleCount `json:"by_locale,omitempty" jsonschema:"with a design with language versions: recipients per version, largest first"`
 	Excluded           map[string]int64 `json:"excluded" jsonschema:"people on the lists left out, by reason"`
 	MissingMergeFields map[string]int64 `json:"missing_merge_fields" jsonschema:"merge fields without fallback that would be empty, with how many recipients"`
 }
@@ -343,27 +491,33 @@ func (c *mcpCall) getBroadcast(ctx context.Context, id uuid.UUID) (getBroadcastO
 	for k, v := range a.MissingMergeFields {
 		au.MissingMergeFields[k] = v
 	}
+	if a.ByLocale != nil {
+		for _, l := range *a.ByLocale {
+			au.ByLocale = append(au.ByLocale, mcpLocaleCount{Locale: string(l.Locale), Recipients: l.Recipients, Fallback: l.Fallback})
+		}
+	}
 	out.Audience = au
 	return out, nil
 }
 
 type createBroadcastIn struct {
-	InboxID       uuid.UUID               `json:"inbox_id"`
-	ChannelID     *uuid.UUID              `json:"channel_id,omitempty" jsonschema:"the inbox's e-mail channel to send through; list_mailing_lists shows each list's"`
-	Name          string                  `json:"name" jsonschema:"shown to members"`
-	Subject       string                  `json:"subject" jsonschema:"the mail's subject; merge fields need a fallback"`
-	Preheader     string                  `json:"preheader,omitempty" jsonschema:"the line inboxes show after the subject"`
-	DesignID      *uuid.UUID              `json:"design_id,omitempty"`
-	ListIDs       []uuid.UUID             `json:"list_ids" jsonschema:"1 to 10 lists of the inbox"`
-	Locales       []string                `json:"locales,omitempty" jsonschema:"only contacts with these languages, BCP 47 tags"`
-	Conditions    []mcpBroadcastCondition `json:"conditions,omitempty" jsonschema:"contact attribute conditions every recipient must meet"`
-	ClickTracking bool                    `json:"click_tracking,omitempty" jsonschema:"count unique clicks on links; links then point at this server"`
-	PacePerHour   *int32                  `json:"pace_per_hour,omitempty" jsonschema:"at most this many mails in any 60 minutes, 1 to 10,000,000; optional"`
-	PacePerDay    *int32                  `json:"pace_per_day,omitempty" jsonschema:"at most this many mails in any 24 hours, 1 to 10,000,000; optional"`
-	PacePerMonth  *int32                  `json:"pace_per_month,omitempty" jsonschema:"at most this many mails in any 30 days, 1 to 10,000,000; optional"`
-	Timezone      string                  `json:"timezone,omitempty" jsonschema:"an IANA time zone such as Europe/Istanbul; the inbox's when absent"`
-	WindowStart   string                  `json:"send_window_start,omitempty" jsonschema:"HH:MM, 24-hour, in the broadcast's time zone; mails go out only between send_window_start and send_window_end each day; end before start crosses midnight"`
-	WindowEnd     string                  `json:"send_window_end,omitempty" jsonschema:"HH:MM, 24-hour (24:00 for the end of the day), in the broadcast's time zone; at least 30 minutes after send_window_start"`
+	InboxID       uuid.UUID                 `json:"inbox_id"`
+	ChannelID     *uuid.UUID                `json:"channel_id,omitempty" jsonschema:"the inbox's e-mail channel to send through; list_mailing_lists shows each list's"`
+	Name          string                    `json:"name" jsonschema:"shown to members"`
+	Subject       string                    `json:"subject" jsonschema:"the mail's subject; merge fields need a fallback"`
+	Preheader     string                    `json:"preheader,omitempty" jsonschema:"the line inboxes show after the subject"`
+	DesignID      *uuid.UUID                `json:"design_id,omitempty"`
+	ListIDs       []uuid.UUID               `json:"list_ids" jsonschema:"1 to 10 lists of the inbox"`
+	Locales       []string                  `json:"locales,omitempty" jsonschema:"only contacts with these languages, BCP 47 tags"`
+	Conditions    []mcpBroadcastCondition   `json:"conditions,omitempty" jsonschema:"contact attribute conditions every recipient must meet"`
+	ClickTracking bool                      `json:"click_tracking,omitempty" jsonschema:"count unique clicks on links; links then point at this server"`
+	PacePerHour   *int32                    `json:"pace_per_hour,omitempty" jsonschema:"at most this many mails in any 60 minutes, 1 to 10,000,000; optional"`
+	PacePerDay    *int32                    `json:"pace_per_day,omitempty" jsonschema:"at most this many mails in any 24 hours, 1 to 10,000,000; optional"`
+	PacePerMonth  *int32                    `json:"pace_per_month,omitempty" jsonschema:"at most this many mails in any 30 days, 1 to 10,000,000; optional"`
+	Timezone      string                    `json:"timezone,omitempty" jsonschema:"an IANA time zone such as Europe/Istanbul; the inbox's when absent"`
+	WindowStart   string                    `json:"send_window_start,omitempty" jsonschema:"HH:MM, 24-hour, in the broadcast's time zone; mails go out only between send_window_start and send_window_end each day; end before start crosses midnight"`
+	WindowEnd     string                    `json:"send_window_end,omitempty" jsonschema:"HH:MM, 24-hour (24:00 for the end of the day), in the broadcast's time zone; at least 30 minutes after send_window_start"`
+	Translations  []mcpBroadcastTranslation `json:"translations,omitempty" jsonschema:"subject and preheader for the design's other language versions"`
 }
 
 var errWindowHalf = problem(http.StatusBadRequest, "invalid_request", "give send_window_start and send_window_end together")
@@ -404,26 +558,27 @@ func audienceIn(listIDs []uuid.UUID, locales []string, conditions []mcpBroadcast
 }
 
 type updateBroadcastIn struct {
-	BroadcastID   uuid.UUID               `json:"broadcast_id"`
-	Name          *string                 `json:"name,omitempty" jsonschema:"shown to members"`
-	Subject       *string                 `json:"subject,omitempty" jsonschema:"the mail's subject; merge fields need a fallback"`
-	Preheader     *string                 `json:"preheader,omitempty" jsonschema:"the line inboxes show after the subject; empty removes it"`
-	ChannelID     *uuid.UUID              `json:"channel_id,omitempty" jsonschema:"the inbox's e-mail channel to send through, which sets the sender"`
-	DesignID      *uuid.UUID              `json:"design_id,omitempty"`
-	ListIDs       []uuid.UUID             `json:"list_ids,omitempty" jsonschema:"1 to 10 lists of the inbox; replaces the whole audience together with locales and conditions"`
-	Locales       []string                `json:"locales,omitempty" jsonschema:"with list_ids: only contacts with these languages, BCP 47 tags"`
-	Conditions    []mcpBroadcastCondition `json:"conditions,omitempty" jsonschema:"with list_ids: contact attribute conditions every recipient must meet"`
-	ClickTracking *bool                   `json:"click_tracking,omitempty" jsonschema:"count unique clicks on links; links then point at this server"`
-	UTM           *bool                   `json:"utm,omitempty" jsonschema:"add utm_source, utm_medium and utm_campaign to links"`
-	UTMCampaign   string                  `json:"utm_campaign,omitempty" jsonschema:"lowercase letters, digits, -, _ and ."`
-	PacePerHour   *int32                  `json:"pace_per_hour,omitempty" jsonschema:"at most this many mails in any 60 minutes, 1 to 10,000,000"`
-	PacePerDay    *int32                  `json:"pace_per_day,omitempty" jsonschema:"at most this many mails in any 24 hours, 1 to 10,000,000"`
-	PacePerMonth  *int32                  `json:"pace_per_month,omitempty" jsonschema:"at most this many mails in any 30 days, 1 to 10,000,000"`
-	RemovePace    bool                    `json:"remove_pace,omitempty" jsonschema:"send as fast as the channel and the daily limit allow"`
-	Timezone      string                  `json:"timezone,omitempty" jsonschema:"an IANA time zone such as Europe/Istanbul; never moves scheduled_at"`
-	WindowStart   string                  `json:"send_window_start,omitempty" jsonschema:"HH:MM, 24-hour, in the broadcast's time zone; mails go out only between send_window_start and send_window_end each day; end before start crosses midnight"`
-	WindowEnd     string                  `json:"send_window_end,omitempty" jsonschema:"HH:MM, 24-hour (24:00 for the end of the day), in the broadcast's time zone; at least 30 minutes after send_window_start"`
-	RemoveWindow  bool                    `json:"remove_send_window,omitempty" jsonschema:"send at any hour of the day again"`
+	BroadcastID   uuid.UUID                 `json:"broadcast_id"`
+	Name          *string                   `json:"name,omitempty" jsonschema:"shown to members"`
+	Subject       *string                   `json:"subject,omitempty" jsonschema:"the mail's subject; merge fields need a fallback"`
+	Preheader     *string                   `json:"preheader,omitempty" jsonschema:"the line inboxes show after the subject; empty removes it"`
+	ChannelID     *uuid.UUID                `json:"channel_id,omitempty" jsonschema:"the inbox's e-mail channel to send through, which sets the sender"`
+	DesignID      *uuid.UUID                `json:"design_id,omitempty"`
+	ListIDs       []uuid.UUID               `json:"list_ids,omitempty" jsonschema:"1 to 10 lists of the inbox; replaces the whole audience together with locales and conditions"`
+	Locales       []string                  `json:"locales,omitempty" jsonschema:"with list_ids: only contacts with these languages, BCP 47 tags"`
+	Conditions    []mcpBroadcastCondition   `json:"conditions,omitempty" jsonschema:"with list_ids: contact attribute conditions every recipient must meet"`
+	ClickTracking *bool                     `json:"click_tracking,omitempty" jsonschema:"count unique clicks on links; links then point at this server"`
+	UTM           *bool                     `json:"utm,omitempty" jsonschema:"add utm_source, utm_medium and utm_campaign to links"`
+	UTMCampaign   string                    `json:"utm_campaign,omitempty" jsonschema:"lowercase letters, digits, -, _ and ."`
+	PacePerHour   *int32                    `json:"pace_per_hour,omitempty" jsonschema:"at most this many mails in any 60 minutes, 1 to 10,000,000"`
+	PacePerDay    *int32                    `json:"pace_per_day,omitempty" jsonschema:"at most this many mails in any 24 hours, 1 to 10,000,000"`
+	PacePerMonth  *int32                    `json:"pace_per_month,omitempty" jsonschema:"at most this many mails in any 30 days, 1 to 10,000,000"`
+	RemovePace    bool                      `json:"remove_pace,omitempty" jsonschema:"send as fast as the channel and the daily limit allow"`
+	Timezone      string                    `json:"timezone,omitempty" jsonschema:"an IANA time zone such as Europe/Istanbul; never moves scheduled_at"`
+	WindowStart   string                    `json:"send_window_start,omitempty" jsonschema:"HH:MM, 24-hour, in the broadcast's time zone; mails go out only between send_window_start and send_window_end each day; end before start crosses midnight"`
+	WindowEnd     string                    `json:"send_window_end,omitempty" jsonschema:"HH:MM, 24-hour (24:00 for the end of the day), in the broadcast's time zone; at least 30 minutes after send_window_start"`
+	RemoveWindow  bool                      `json:"remove_send_window,omitempty" jsonschema:"send at any hour of the day again"`
+	Translations  []mcpBroadcastTranslation `json:"translations,omitempty" jsonschema:"subject and preheader for the design's other language versions; replaces all of them, an empty list removes them"`
 }
 
 var errNothingToUpdate = problem(http.StatusBadRequest, "invalid_request", "name at least one field to change")
@@ -440,6 +595,9 @@ func (in updateBroadcastIn) body() (oas.BroadcastUpdate, *apiError) {
 	}
 	if in.DesignID != nil {
 		body.DesignId = nullable.NewNullableWithValue(*in.DesignID)
+	}
+	if in.Translations != nil {
+		body.Translations = broadcastTranslationsIn(in.Translations)
 	}
 	if in.ListIDs != nil {
 		aud := audienceIn(in.ListIDs, in.Locales, in.Conditions)
@@ -473,10 +631,12 @@ func (in updateBroadcastIn) body() (oas.BroadcastUpdate, *apiError) {
 type sendTestIn struct {
 	BroadcastID uuid.UUID   `json:"broadcast_id"`
 	MemberIDs   []uuid.UUID `json:"member_ids,omitempty" jsonschema:"with an API key only: 1 to 5 members to send it to; a signed-in assistant sends it to you"`
+	Locale      string      `json:"locale,omitempty" jsonschema:"send the version a contact with this language gets"`
 }
 
 type sendTestOut struct {
 	SentTo []string `json:"sent_to" jsonschema:"the members' addresses the test goes to"`
+	Locale string   `json:"locale,omitempty" jsonschema:"the version sent; absent for a design in one language"`
 }
 
 type scheduleBroadcastIn struct {
@@ -512,8 +672,27 @@ type mcpReportReply struct {
 	CustomerContent mcpReplyContent `json:"customer_content"`
 }
 
+type broadcastReportIn struct {
+	BroadcastID uuid.UUID `json:"broadcast_id"`
+	Locale      string    `json:"locale,omitempty" jsonschema:"only the recipients of this language version"`
+}
+
+type mcpLocaleReport struct {
+	Locale string             `json:"locale"`
+	Counts mcpBroadcastCounts `json:"counts"`
+	Rates  map[string]float64 `json:"rates"`
+}
+
+func ratesOut(r oas.BroadcastRates) map[string]float64 {
+	return map[string]float64{
+		"bounced": r.Bounced, "complained": r.Complained, "unsubscribed": r.Unsubscribed, "replied": r.Replied, "clicked": r.Clicked,
+	}
+}
+
 type mcpReport struct {
 	BroadcastID uuid.UUID          `json:"broadcast_id"`
+	Locale      string             `json:"locale,omitempty" jsonschema:"the version this report is narrowed to"`
+	Locales     []mcpLocaleReport  `json:"locales,omitempty" jsonschema:"for a design with language versions: counts and rates per version"`
 	Counts      mcpBroadcastCounts `json:"counts"`
 	Rates       map[string]float64 `json:"rates" jsonschema:"shares of sent mail, 0 to 1"`
 	Timeline    []mcpReportPoint   `json:"timeline" jsonschema:"hourly for the first 72 hours, then daily"`
@@ -571,11 +750,23 @@ var mcpBroadcastTools = []mcpTool{
 			body := oas.EmailDesignCreate{Name: in.Name, InboxId: in.InboxID}
 			if in.Template != "" {
 				body.Template = &oas.EmailDesignTemplateRef{Slug: in.Template, Locale: optString[oas.EmailTemplateLocale](in.Locale)}
+				if len(in.AddLocales) > 0 {
+					ls := make([]oas.EmailTemplateLocale, len(in.AddLocales))
+					for i, l := range in.AddLocales {
+						ls[i] = oas.EmailTemplateLocale(l)
+					}
+					body.Template.Locales = &ls
+				}
+			} else if len(in.AddLocales) > 0 {
+				return mcpDesign{}, errValidation("add_locales takes a template's languages; pass template too, or add versions with update_design")
 			}
 			if in.Document != nil {
 				doc, err := documentIn(in.Document)
 				if err != nil {
 					return mcpDesign{}, err
+				}
+				if in.Locale != "" {
+					doc.Locale = new(oas.LanguageTag(in.Locale))
 				}
 				body.Document = &doc
 			}
@@ -586,8 +777,8 @@ var mcpBroadcastTools = []mcpTool{
 			return c.designOut(oas.EmailDesign(res.(oas.CreateEmailDesign201JSONResponse)))
 		}),
 	defineTool("update_design", "Change an e-mail design",
-		"Saves a new version of a design: the whole changed document, based on the version you changed. If someone saved it since, nothing is saved and the answer says so; ask the person you work for before overwriting their change. Owners, admins and keys only. Maps to PUT /v1/email-designs/{id}.",
-		idempotent, nil,
+		"Saves a new version of a design, based on the version you changed: the whole changed document of the base language, or with locale the texts of one language version (layout, images and links are shared by all versions). If someone saved it since, nothing is saved and the answer says so; ask the person you work for before overwriting their change. Owners, admins and keys only. Maps to PUT /v1/email-designs/{id}.",
+		idempotent, map[string][]any{"direction": {"ltr", "rtl", "auto"}},
 		mcpTool{ops: []string{"GetEmailDesign", "UpdateEmailDesign"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
 		func(ctx context.Context, c *mcpCall, in updateDesignIn) (mcpDesign, error) {
 			res, err := c.s.GetEmailDesign(ctx, oas.GetEmailDesignRequestObject{DesignId: in.DesignID})
@@ -595,7 +786,7 @@ var mcpBroadcastTools = []mcpTool{
 				return mcpDesign{}, err
 			}
 			cur := oas.EmailDesign(res.(oas.GetEmailDesign200JSONResponse))
-			doc, err := documentIn(in.Document)
+			doc, err := in.document(cur)
 			if err != nil {
 				return mcpDesign{}, err
 			}
@@ -631,13 +822,16 @@ var mcpBroadcastTools = []mcpTool{
 			if in.Preheader != "" {
 				body.Preheader = &in.Preheader
 			}
+			if in.Locale != "" {
+				body.Locale = new(oas.LanguageTag(in.Locale))
+			}
 			rres, err := c.s.RenderEmailDesign(ctx, oas.RenderEmailDesignRequestObject{Body: &body})
 			if err != nil {
 				return previewDesignOut{}, err
 			}
 			r := oas.EmailDesignRender(rres.(oas.RenderEmailDesign200JSONResponse))
 			return previewDesignOut{
-				DesignID: d.Id, Text: r.Text, SizeBytes: r.SizeBytes, Warnings: designIssuesOut(r.Warnings),
+				DesignID: d.Id, Locale: deref((*string)(r.Locale)), Text: r.Text, SizeBytes: r.SizeBytes, Warnings: designIssuesOut(r.Warnings),
 				HTMLURI: mcpURIPrefix + "design/" + d.Id.String() + "/preview.html", html: r.Html,
 			}, nil
 		}),
@@ -697,6 +891,9 @@ var mcpBroadcastTools = []mcpTool{
 				return mcpBroadcast{}, perr
 			}
 			body.SendWindow = w
+			if len(in.Translations) > 0 {
+				body.Translations = broadcastTranslationsIn(in.Translations)
+			}
 			res, err := c.s.CreateBroadcast(ctx, oas.CreateBroadcastRequestObject{Body: &body})
 			if err != nil {
 				return mcpBroadcast{}, err
@@ -723,6 +920,9 @@ var mcpBroadcastTools = []mcpTool{
 		mcpTool{ops: []string{"SendBroadcastTest"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
 		func(ctx context.Context, c *mcpCall, in sendTestIn) (sendTestOut, error) {
 			body := oas.BroadcastTest{}
+			if in.Locale != "" {
+				body.Locale = new(oas.LanguageTag(in.Locale))
+			}
 			if len(in.MemberIDs) > 0 {
 				if !c.p.isKey() {
 					return sendTestOut{}, errValidation("a test from a connected assistant goes to you; leave member_ids out")
@@ -733,8 +933,9 @@ var mcpBroadcastTools = []mcpTool{
 			if err != nil {
 				return sendTestOut{}, err
 			}
-			out := sendTestOut{SentTo: []string{}}
-			for _, e := range res.(oas.SendBroadcastTest202JSONResponse).SentTo {
+			tr := res.(oas.SendBroadcastTest202JSONResponse)
+			out := sendTestOut{SentTo: []string{}, Locale: deref((*string)(tr.Locale))}
+			for _, e := range tr.SentTo {
 				out.SentTo = append(out.SentTo, string(e))
 			}
 			return out, nil
@@ -753,20 +954,26 @@ var mcpBroadcastTools = []mcpTool{
 			return c.broadcastOut(oas.Broadcast(res.(oas.ScheduleBroadcast200JSONResponse))), nil
 		}),
 	defineTool("get_broadcast_report", "Get a broadcast's report",
-		"Reports a broadcast: counts, rates of sent mail, a timeline, clicks per link with click tracking, and the conversations replies opened. Maps to GET /v1/broadcasts/{id}/report.",
+		"Reports a broadcast: counts, rates of sent mail, a timeline, clicks per link with click tracking, and the conversations replies opened; for a design with language versions also counts and rates per version, and with locale the report of one version. Maps to GET /v1/broadcasts/{id}/report.",
 		readOnly, nil, mcpTool{ops: []string{"GetBroadcastReport"}},
-		func(ctx context.Context, c *mcpCall, in broadcastIn) (mcpReport, error) {
-			res, err := c.s.GetBroadcastReport(ctx, oas.GetBroadcastReportRequestObject{BroadcastId: in.BroadcastID})
+		func(ctx context.Context, c *mcpCall, in broadcastReportIn) (mcpReport, error) {
+			params := oas.GetBroadcastReportParams{}
+			if in.Locale != "" {
+				params.Locale = new(oas.LanguageTag(in.Locale))
+			}
+			res, err := c.s.GetBroadcastReport(ctx, oas.GetBroadcastReportRequestObject{BroadcastId: in.BroadcastID, Params: params})
 			if err != nil {
 				return mcpReport{}, err
 			}
 			r := oas.BroadcastReport(res.(oas.GetBroadcastReport200JSONResponse))
 			out := mcpReport{
-				BroadcastID: r.BroadcastId, Counts: broadcastCountsOut(r.Counts), Timeline: []mcpReportPoint{}, Replies: []mcpReportReply{},
-				Rates: map[string]float64{
-					"bounced": r.Rates.Bounced, "complained": r.Rates.Complained, "unsubscribed": r.Rates.Unsubscribed,
-					"replied": r.Rates.Replied, "clicked": r.Rates.Clicked,
-				},
+				BroadcastID: r.BroadcastId, Locale: deref((*string)(r.Locale)), Counts: broadcastCountsOut(r.Counts), Timeline: []mcpReportPoint{},
+				Replies: []mcpReportReply{}, Rates: ratesOut(r.Rates),
+			}
+			if r.Locales != nil {
+				for _, l := range *r.Locales {
+					out.Locales = append(out.Locales, mcpLocaleReport{Locale: string(l.Locale), Counts: broadcastCountsOut(l.Counts), Rates: ratesOut(l.Rates)})
+				}
 			}
 			for _, pt := range r.Timeline {
 				out.Timeline = append(out.Timeline, mcpReportPoint{At: pt.At, Sent: pt.Sent, Bounced: pt.Bounced, Complained: pt.Complained,

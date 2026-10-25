@@ -179,7 +179,7 @@ workspace or another reader is visible.
 ## M13 — Broadcasts and e-mail designs
 
 Status: M13.1–M13.5 done in `v0.0.9` and deployed on 2026-10-12 (#26–#30); M13.6 (#91) and M13.7 (#92)
-done in `v0.0.18`, verified on 2026-10-19; M13.8 planned. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
+done in `v0.0.18`, verified on 2026-10-19; M13.8 planned; M13.9 (#203) in progress. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
 
 - **M13.1 Lists and subscribing:** mailing lists with recorded consent and double opt-in,
   `<yuva-subscribe>` (HTML, React, Nuxt, shadcn), unsubscribe and preference pages with one-click, an API
@@ -210,6 +210,13 @@ done in `v0.0.18`, verified on 2026-10-19; M13.8 planned. Umbrella issue #25, de
   window and at most 100 per local day across a clock change with two pods; scheduling 09:00
   Europe/Istanbul stores 06:00 UTC; the panel shows the time in the broadcast's zone, UTC and the
   member's own zone.
+- **M13.9 Languages:** one design with a version per language (texts, preheader, direction; layout,
+  images and links shared), subjects per version on the broadcast, each contact sent their version
+  (exact tag, shorter tag, the same language in another region, fallback), the audience, review, test
+  sends and the report per language, multilingual gallery templates, the MCP design tools by `locale`.
+  Accept: one broadcast to contacts in pt, es-MX, fr, tr and none sends Portuguese, Spanish,
+  Turkish and the English fallback with one design; the report shows each language and the whole;
+  clicks count per version and per URL.
 
 Accept: a visitor subscribes through `<yuva-subscribe>` and confirms; a member designs a newsletter from a
 gallery template, sends a test and schedules it to the list; the deliverability check on one of our own

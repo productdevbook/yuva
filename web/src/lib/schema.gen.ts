@@ -5690,9 +5690,14 @@ export interface paths {
          *     `html_near_clip` (over 90 KB, close to where Gmail cuts a mail off), `html_clipped` (over
          *     102 KB), `image_missing` (an image block without an image), `alt_missing` (an image that is
          *     not decorative has no alt text), `merge_field_without_fallback`, `sender_identity_missing`
-         *     (the inbox has no legal name or postal address). A document over 500 KB of HTML is
-         *     refused (`422 html_too_large`). At most 120 renders a minute per caller
-         *     (`429 rate_limited`).
+         *     (the inbox has no legal name or postal address), `translation_missing` (a block of the
+         *     rendered version has no text in its language and shows the base text), `footer_language`
+         *     (`detail` the version; the server has no footer words in its language, so the required
+         *     footer is in English). A document over 500 KB of HTML is refused
+         *     (`422 html_too_large`). At most 120 renders a minute per caller (`429 rate_limited`).
+         *
+         *     A design with versions renders the version a contact with `locale` gets; with
+         *     `contact_id` and no `locale`, the contact's; otherwise the fallback version.
          *
          *     Owners, admins and API keys. Scope: `broadcasts:read`.
          */
@@ -6114,8 +6119,12 @@ export interface paths {
          *     (warning), `links` (warning for `http:` links), `subject` (1 to 300 characters; a warning
          *     above 80), `daily_cap` (warning when the send will take more than one day), `pace`
          *     (blocking when sending at the broadcast's pace, or the channel's rate if slower, would
-         *     take more than 365 days), `test_sent` (warning when no test went out since the last change)
-         *     and `click_tracking` (warning: links point at the server's link domain).
+         *     take more than 365 days), `test_sent` (warning when no test went out since the last change),
+         *     `click_tracking` (warning: links point at the server's link domain) and `translations`
+         *     (warning: versions of the design without their own subject, with block texts missing or
+         *     with an English footer, and subjects for languages the design does not have). With
+         *     versions, `html_size`, `merge_fields`, `images_alt` and `links` check every version; the
+         *     worst decides and `detail` names it.
          *
          *     Owners, admins, agents of its inbox and API keys. Scope: `broadcasts:read`.
          */
@@ -6142,7 +6151,9 @@ export interface paths {
          * @description Sends the broadcast as it would go out, with `[Test]` before the subject, to members of the
          *     workspace only, never to another address: `member_ids` (1 to 5), or the calling member when
          *     absent (API keys must name members). `contact_id` fills the merge fields with that
-         *     contact's values instead of sample values. Its unsubscribe link names no list and says it
+         *     contact's values instead of sample values. When the design has versions, `locale` picks the
+         *     version a contact with that language gets; with `contact_id` and no `locale`, the
+         *     contact's; otherwise the fallback. Its unsubscribe link names no list and says it
          *     was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
          *     sender_not_ready` when the channel cannot send; `409 design_required` without a design.
          *
@@ -6297,7 +6308,8 @@ export interface paths {
         /**
          * List a broadcast's deliveries
          * @description One row per recipient, in the order they were taken. `q` matches the address or the
-         *     contact's name; `replied=true` keeps the recipients who answered.
+         *     contact's name; `replied=true` keeps the recipients who answered; `locale` keeps the
+         *     recipients who got that version of the design.
          *
          *     Owners, admins and API keys. Scopes: `broadcasts:read` and `contacts:read`.
          */
@@ -6324,6 +6336,12 @@ export interface paths {
          *     the first 50 conversations opened by replies. There is no open tracking. Clicks are
          *     approximate: a `HEAD` request or three links of one mail opened within two seconds (a
          *     security scanner) are not counted.
+         *
+         *     When the design had versions, `locales` breaks the counts down per version, and `locale`
+         *     narrows the whole report to one version: counts, rates, timeline, links and replies of the
+         *     recipients who got it, without `locales`. Per-version figures come from the deliveries,
+         *     kept 400 days. A `locale` that is not a version of the broadcast is
+         *     `400 validation_failed`.
          *
          *     Owners, admins, agents of its inbox and API keys. Scope: `broadcasts:read`.
          */
@@ -20638,6 +20656,13 @@ export interface components {
             subject: string;
             /** @description The preview text after the subject; the design's own when empty. */
             preheader: string;
+            /**
+             * @description Subject and preheader per version of the design, by language tag (at most 20). A version
+             *     without a subject here goes out with `subject` (review warning `translations`).
+             */
+            translations: {
+                [key: string]: components["schemas"]["BroadcastTranslation"];
+            };
             /** Format: uuid */
             design_id?: string;
             /**
@@ -20735,6 +20760,13 @@ export interface components {
             name: string;
             subject?: string;
             preheader?: string;
+            /**
+             * @description Subject and preheader per version of the design, by language tag (at most 20). A version
+             *     without a subject here goes out with `subject` (review warning `translations`). Draft only.
+             */
+            translations?: {
+                [key: string]: components["schemas"]["BroadcastTranslation"];
+            };
             /** Format: uuid */
             design_id?: string;
             audience?: components["schemas"]["BroadcastAudienceInput"];
@@ -20754,6 +20786,14 @@ export interface components {
             name?: string;
             subject?: string;
             preheader?: string;
+            /**
+             * @description Subject and preheader per version of the design, by language tag (at most 20). A version
+             *     without a subject here goes out with `subject` (review warning `translations`). Replaced as a
+             *     whole; `{}` removes them. Draft only.
+             */
+            translations?: {
+                [key: string]: components["schemas"]["BroadcastTranslation"];
+            };
             /** Format: uuid */
             design_id?: string | null;
             audience?: components["schemas"]["BroadcastAudienceInput"];
@@ -20767,6 +20807,12 @@ export interface components {
             timezone?: components["schemas"]["TimeZone"];
             /** @description `null` removes the window. */
             send_window?: components["schemas"]["BroadcastSendWindow"] | null;
+        };
+        BroadcastTranslation: {
+            /** @description May hold merge fields. */
+            subject?: string;
+            /** @description Wins over the design version's own preheader. */
+            preheader?: string;
         };
         /**
          * @description An IANA time zone, such as `Europe/Istanbul` or `America/New_York`; `UTC` for none. Offsets
@@ -20849,13 +20895,30 @@ export interface components {
             };
             /** @description Recipients by the list their mail goes out under. */
             by_list: components["schemas"]["BroadcastListCount"][];
+            /**
+             * @description When the design has versions: recipients by the version they get, largest first.
+             *     `fallback` counts those who get it because their language has no version or they have
+             *     none.
+             */
+            by_locale?: components["schemas"]["BroadcastLocaleCount"][];
+        };
+        BroadcastLocaleCount: {
+            locale: components["schemas"]["LanguageTag"];
+            /** Format: int64 */
+            recipients: number;
+            /** Format: int64 */
+            fallback: number;
         };
         /**
          * @description `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
          *     when the window is closed at the scheduled time (now for a draft), with when sending starts.
+         *     `translations`: `ok` for a design without versions or with every version complete,
+         *     `warning` naming versions without their own subject, with block texts missing, whose
+         *     required footer is in English, and broadcast subjects for languages the design does not
+         *     have (they are not used).
          * @enum {string}
          */
-        BroadcastReviewKey: "sender_identity" | "sender_ready" | "approval" | "design" | "audience_nonempty" | "merge_fields" | "html_size" | "images_alt" | "links" | "subject" | "deliverability" | "daily_cap" | "pace" | "send_window" | "test_sent" | "click_tracking" | "ses_tenant";
+        BroadcastReviewKey: "sender_identity" | "sender_ready" | "approval" | "design" | "audience_nonempty" | "merge_fields" | "html_size" | "images_alt" | "links" | "subject" | "deliverability" | "daily_cap" | "pace" | "send_window" | "test_sent" | "click_tracking" | "ses_tenant" | "translations";
         /** @enum {string} */
         BroadcastReviewStatus: "ok" | "warning" | "blocking";
         BroadcastReviewItem: {
@@ -20902,9 +20965,16 @@ export interface components {
             member_ids?: string[];
             /** Format: uuid */
             contact_id?: string;
+            /**
+             * @description Send the version a contact with this language gets; with `contact_id` and no `locale`,
+             *     the contact's.
+             */
+            locale?: components["schemas"]["LanguageTag"];
         };
         BroadcastTestResult: {
             sent_to: components["schemas"]["Email"][];
+            /** @description The version sent; absent for a design without versions. */
+            locale?: components["schemas"]["LanguageTag"];
         };
         /** @description At most one of `send_at` and `send_at_local`; neither sends now. */
         BroadcastSchedule: {
@@ -20939,6 +21009,8 @@ export interface components {
              * @description The list the mail went out under; absent when the list was deleted.
              */
             list_id?: string;
+            /** @description The version of the design sent; absent when the design had no versions. */
+            locale?: components["schemas"]["LanguageTag"];
             state: components["schemas"]["BroadcastDeliveryState"];
             skip_reason?: components["schemas"]["BroadcastSkipReason"];
             /** @description The SMTP server's answer when it refused the mail or the last retry failed. */
@@ -21025,16 +21097,31 @@ export interface components {
             rates: components["schemas"]["BroadcastRates"];
             /** @description Per hour for the first 72 hours after sending started, then per UTC day; only periods with something in them. */
             timeline: components["schemas"]["BroadcastReportPoint"][];
-            /** @description Click tracking only, most clicked first. */
+            /** @description The version this report is narrowed to; absent for the whole report. */
+            locale?: components["schemas"]["LanguageTag"];
+            /**
+             * @description Whole report of a broadcast whose design had versions: counts and rates per version,
+             *     largest first, from the deliveries (kept 400 days).
+             */
+            locales?: components["schemas"]["BroadcastLocaleReport"][];
+            /**
+             * @description Click tracking only, most clicked first. With versions and no `locale`: one row per URL,
+             *     counting the recipients who opened it in any version.
+             */
             links?: components["schemas"]["BroadcastReportLink"][];
             /** @description The first 50 conversations opened by replies. */
             replies: components["schemas"]["BroadcastReportReply"][];
             /**
              * @description With `utm` and the scope `analytics:read`: per Analytics property the caller sees, the
              *     visits whose `utm_campaign` is the broadcast's, from the day sending started; only
-             *     properties with any.
+             *     properties with any. Absent with `locale`.
              */
             campaign_visits?: components["schemas"]["BroadcastCampaignVisits"][];
+        };
+        BroadcastLocaleReport: {
+            locale: components["schemas"]["LanguageTag"];
+            counts: components["schemas"]["BroadcastCounts"];
+            rates: components["schemas"]["BroadcastRates"];
         };
         BroadcastCampaignVisits: {
             /** Format: uuid */
@@ -25856,7 +25943,8 @@ export interface components {
         EmailBlock: components["schemas"]["EmailSectionBlock"] | components["schemas"]["EmailColumnsBlock"] | components["schemas"]["EmailHeadingBlock"] | components["schemas"]["EmailTextBlock"] | components["schemas"]["EmailImageBlock"] | components["schemas"]["EmailButtonBlock"] | components["schemas"]["EmailDividerBlock"] | components["schemas"]["EmailSpacerBlock"] | components["schemas"]["EmailSocialBlock"] | components["schemas"]["EmailFooterBlock"];
         /**
          * @description An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
-         *     JSON. Nesting is section › columns › blocks at most.
+         *     JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
+         *     most.
          */
         EmailDesignDocument: {
             /**
@@ -25868,13 +25956,56 @@ export interface components {
             theme: components["schemas"]["EmailTheme"];
             /** @description The preview text inboxes show after the subject; a broadcast's own preheader wins. */
             preheader?: string;
+            /**
+             * @description The language of the document's own texts, its base version. Required when `translations`
+             *     has an entry. Tags are stored in canonical case (`es-MX`, `zh-Hant`).
+             */
+            locale?: components["schemas"]["LanguageTag"];
+            /**
+             * @description The version for contacts without a language or without a matching version: `locale` or a
+             *     key of `translations`; `locale` when absent.
+             */
+            fallback_locale?: components["schemas"]["LanguageTag"];
+            /**
+             * @description Versions in other languages, by language tag (at most 20, none equal to `locale`). A
+             *     contact gets the version of their exact language, else of a shorter tag (`es-MX` → `es`),
+             *     else of the same language in another region (`es` → `es-MX`, `pt-PT` → `pt-BR`), else
+             *     `fallback_locale`; a contact without a language gets `fallback_locale`. Layout, theme,
+             *     images and block links are shared; each version has only texts.
+             */
+            translations?: {
+                [key: string]: components["schemas"]["EmailDesignTranslation"];
+            };
             blocks: components["schemas"]["EmailBlock"][];
+        };
+        /** @description One version of a design in another language. */
+        EmailDesignTranslation: {
+            preheader?: string;
+            /**
+             * @description This version's writing direction; the theme's when absent.
+             * @enum {string}
+             */
+            direction?: "ltr" | "rtl" | "auto";
+            /**
+             * @description By block id, the block's text in this language: a heading's `text`, a text block's `html`,
+             *     a button's `label`, an image's `alt`, a footer block's `html`, with that field's rules
+             *     (rich-text subset, merge fields, length). A block without an entry shows the base text in
+             *     this version (warning `translation_missing`). Sections, columns, dividers, spacers and
+             *     social blocks take no entry.
+             */
+            blocks: {
+                [key: string]: string;
+            };
         };
         /**
          * @description One problem with a document. Error codes: `required`, `invalid`, `too_long`, `too_many`,
          *     `duplicate_id`, `nesting`, `invalid_rich_text`, `invalid_url`, `unknown_merge_field`,
-         *     `merge_field_in_url`, `foreign_asset`, `asset_not_allowed`, `column_widths`. Warning codes
-         *     are listed under `renderEmailDesign`.
+         *     `merge_field_in_url`, `foreign_asset`, `asset_not_allowed`, `column_widths`,
+         *     `locale_required` (`translations` without `locale`), `invalid_locale` (a translation key
+         *     equal to `locale` or to another key after canonical casing, or a `fallback_locale` that is
+         *     not a version), `translation_block` (an entry for a block that does not exist or has no
+         *     text; `field` as `translations.es.blocks.b7`). Warning codes are listed under
+         *     `renderEmailDesign`.
          */
         EmailDesignIssue: {
             /** @description The block; absent for the theme and the preheader. */
@@ -25938,6 +26069,11 @@ export interface components {
         EmailDesignTemplateRef: {
             slug: string;
             locale?: components["schemas"]["EmailTemplateLocale"];
+            /**
+             * @description The template's other languages to add as versions; `locale` is the base. Each version
+             *     gets the template's texts in that language.
+             */
+            locales?: components["schemas"]["EmailTemplateLocale"][];
         };
         /** @description At most one of `document` and `template`; with neither the design starts empty. */
         EmailDesignCreate: {
@@ -25954,6 +26090,11 @@ export interface components {
              * @description Absent makes the design workspace-wide.
              */
             inbox_id?: string;
+            /**
+             * @description A document without the `translations` key keeps the design's `locale`,
+             *     `fallback_locale` and `translations` (entries of removed blocks are dropped);
+             *     `translations: {}` removes every version.
+             */
             document: components["schemas"]["EmailDesignDocument"];
             /**
              * Format: int32
@@ -25998,9 +26139,16 @@ export interface components {
             subject?: string;
             /** @description Wins over the document's own. */
             preheader?: string;
+            /**
+             * @description Render the version a contact with this language gets; with `contact_id` and no `locale`,
+             *     the contact's.
+             */
+            locale?: components["schemas"]["LanguageTag"];
             dark?: boolean;
         };
         EmailDesignRender: {
+            /** @description The version rendered; absent for a design without versions. */
+            locale?: components["schemas"]["LanguageTag"];
             html: string;
             text: string;
             /**
@@ -37059,6 +37207,7 @@ export interface operations {
                 state?: components["schemas"]["BroadcastDeliveryState"];
                 q?: string;
                 replied?: boolean;
+                locale?: components["schemas"]["LanguageTag"];
                 /** @description The `next_cursor` of the previous page. */
                 cursor?: components["parameters"]["Cursor"];
                 /** @description Page size, 1 to 100; 25 by default. */
@@ -37092,7 +37241,9 @@ export interface operations {
     };
     getBroadcastReport: {
         parameters: {
-            query?: never;
+            query?: {
+                locale?: components["schemas"]["LanguageTag"];
+            };
             header?: {
                 /** @description The workspace to act on; see "Workspace selection". */
                 "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
@@ -37113,6 +37264,7 @@ export interface operations {
                     "application/json": components["schemas"]["BroadcastReport"];
                 };
             };
+            400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];

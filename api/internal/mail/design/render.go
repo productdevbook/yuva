@@ -39,7 +39,9 @@ type Input struct {
 	Subject   string
 	Preheader string
 	// Lang is en, tr or de; it sets the html lang and the required footer's language.
-	Lang         string
+	Lang string
+	// HTMLLang, when set, is the html lang instead: the version's tag.
+	HTMLLang     string
 	Sender       Sender
 	SubscribedAt time.Time
 	Values       Values
@@ -205,6 +207,9 @@ func (r *renderer) document() {
 	th := in.Doc.Theme
 	h := &r.h
 	lang := in.Lang
+	if in.HTMLLang != "" {
+		lang = in.HTMLLang
+	}
 	if lang == "" {
 		lang = "en"
 	}

@@ -20,12 +20,14 @@ import (
 const Schema = 1
 
 const (
-	MaxJSONBytes = 300 << 10
-	MaxBlocks    = 200
+	// MaxJSONBytes bounds a document without its translations, MaxDocumentBytes with them.
+	MaxJSONBytes     = 300 << 10
+	MaxDocumentBytes = 1 << 20
+	MaxBlocks        = 200
 )
 
 var (
-	ErrTooLarge          = errors.New("design: document over 300 KiB or 200 blocks")
+	ErrTooLarge          = errors.New("design: document over 300 KiB (1 MiB with translations) or 200 blocks")
 	ErrUnsupportedSchema = errors.New("design: document schema is newer than this server")
 )
 
@@ -104,10 +106,13 @@ type Block struct {
 }
 
 type Document struct {
-	Schema    int     `json:"schema"`
-	Theme     Theme   `json:"theme"`
-	Preheader string  `json:"preheader,omitempty"`
-	Blocks    []Block `json:"blocks"`
+	Schema         int                    `json:"schema"`
+	Theme          Theme                  `json:"theme"`
+	Preheader      string                 `json:"preheader,omitempty"`
+	Locale         string                 `json:"locale,omitempty"`
+	FallbackLocale string                 `json:"fallback_locale,omitempty"`
+	Translations   map[string]Translation `json:"translations,omitempty"`
+	Blocks         []Block                `json:"blocks"`
 }
 
 // Issue is a validation error or a render warning.
@@ -138,12 +143,15 @@ var blockFields = map[string][]string{
 // Content rules are Validate's.
 func Parse(raw []byte) (Document, []Issue, error) {
 	var d Document
-	if len(raw) > MaxJSONBytes {
+	if len(raw) > MaxDocumentBytes {
 		return d, nil, ErrTooLarge
 	}
 	var top map[string]json.RawMessage
 	if err := json.Unmarshal(raw, &top); err != nil {
 		return d, []Issue{{Code: "invalid", Detail: "the document is not a JSON object"}}, nil
+	}
+	if len(raw)-len(top["translations"]) > MaxJSONBytes {
+		return d, nil, ErrTooLarge
 	}
 	var schema int
 	if err := json.Unmarshal(top["schema"], &schema); err != nil || schema < 1 {
@@ -160,7 +168,7 @@ func Parse(raw []byte) (Document, []Issue, error) {
 	top["schema"] = json.RawMessage(strconv.Itoa(Schema))
 	var issues []Issue
 	for k := range top {
-		if !slices.Contains([]string{"schema", "theme", "preheader", "blocks"}, k) {
+		if !slices.Contains([]string{"schema", "theme", "preheader", "locale", "fallback_locale", "translations", "blocks"}, k) {
 			issues = append(issues, Issue{Field: k, Code: "invalid", Detail: "unknown field"})
 		}
 	}
@@ -176,6 +184,7 @@ func Parse(raw []byte) (Document, []Issue, error) {
 			issues = append(issues, Issue{Field: "preheader", Code: "invalid"})
 		}
 	}
+	issues = parseLanguages(top, &d, issues)
 	d.Schema = Schema
 	var blocks []json.RawMessage
 	if err := json.Unmarshal(top["blocks"], &blocks); err != nil || top["blocks"] == nil {
@@ -337,6 +346,7 @@ func Validate(d Document, opt Options) []Issue {
 	for _, b := range d.Blocks {
 		c.block(b, 0)
 	}
+	c.languages(d)
 	return c.issues
 }
 
@@ -593,8 +603,16 @@ func (d *Document) MapImages(f func(b *Block)) {
 }
 
 // MergeFields lists the merge fields of the preheader, headings, rich text, button labels and
-// URLs and image links, in document order.
+// URLs and image links, in document order, then those of each translation.
 func (d Document) MergeFields() []Field {
+	out := d.baseMergeFields()
+	for _, tag := range d.translationTags() {
+		out = append(out, d.Localized(tag).baseMergeFields()...)
+	}
+	return out
+}
+
+func (d Document) baseMergeFields() []Field {
 	out := Fields(d.Preheader)
 	d.Walk(func(b Block) {
 		switch b.Type {

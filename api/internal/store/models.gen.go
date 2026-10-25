@@ -577,6 +577,7 @@ type Broadcast struct {
 	Timezone           string
 	SendWindowStart    *int16
 	SendWindowEnd      *int16
+	Translations       []byte
 }
 
 type BroadcastClick struct {
@@ -610,6 +611,7 @@ type BroadcastDelivery struct {
 	ConversationID  *uuid.UUID
 	CreatedAt       time.Time
 	RelayMessageID  *string
+	Locale          *string
 }
 
 type BroadcastLink struct {
@@ -618,6 +620,7 @@ type BroadcastLink struct {
 	Position    int32
 	Url         string
 	Clicks      int64
+	Locale      string
 }
 
 type BroadcastSendingDay struct {

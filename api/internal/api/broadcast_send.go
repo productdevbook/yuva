@@ -72,6 +72,7 @@ type BroadcastTestArgs struct {
 	BroadcastID uuid.UUID  `json:"broadcast_id"`
 	MemberID    uuid.UUID  `json:"member_id"`
 	ContactID   *uuid.UUID `json:"contact_id,omitempty"`
+	Locale      string     `json:"locale,omitempty"`
 }
 
 func (BroadcastTestArgs) Kind() string { return "broadcast_test" }
@@ -217,14 +218,14 @@ func (s *Server) openClickToken(token string) (ws, delivery uuid.UUID, position 
 
 // bcRenderer renders a broadcast for one recipient after another; it is built once per batch.
 type bcRenderer struct {
-	s       *Server
-	b       store.Broadcast
-	doc     design.Document
-	inbox   store.Inbox
-	lists   map[uuid.UUID]store.MailingList
-	image   func(design.Block) (design.Image, bool)
-	tracked map[int]bool
-	hrefs   int
+	s        *Server
+	b        store.Broadcast
+	doc      design.Document
+	inbox    store.Inbox
+	lists    map[uuid.UUID]store.MailingList
+	image    func(design.Block) (design.Image, bool)
+	links    map[string]map[int]bool
+	versions map[string]*bcVersion
 
 	fromName, from, replyTo, domain string
 	cfg                             email.SMTPConfig
@@ -237,7 +238,7 @@ func (s *Server) newBroadcastRenderer(ctx context.Context, q *store.Queries, b s
 	if err != nil {
 		return nil, err
 	}
-	r := &bcRenderer{s: s, b: b, doc: doc, inbox: in, lists: map[uuid.UUID]store.MailingList{}}
+	r := &bcRenderer{s: s, b: b, doc: doc, inbox: in, lists: map[uuid.UUID]store.MailingList{}, links: map[string]map[int]bool{}, versions: map[string]*bcVersion{}}
 	a := parseAudience(b.Audience)
 	if len(a.ListIDs) > 0 {
 		lists, err := q.ListMailingListsByIDs(ctx, store.ListMailingListsByIDsParams{WorkspaceID: b.WorkspaceID, Ids: a.ListIDs})
@@ -256,16 +257,11 @@ func (s *Server) newBroadcastRenderer(ctx context.Context, q *store.Queries, b s
 		if err != nil {
 			return nil, err
 		}
-		r.tracked = map[int]bool{}
 		for _, l := range links {
-			r.tracked[int(l.Position)] = true
-		}
-		if len(r.tracked) > 0 {
-			sample, err := r.render(r.sample(false), r.firstList())
-			if err != nil {
-				return nil, err
+			if r.links[l.Locale] == nil {
+				r.links[l.Locale] = map[int]bool{}
 			}
-			r.hrefs = len(hrefAttr.FindAllStringIndex(sample.HTML, -1))
+			r.links[l.Locale][int(l.Position)] = true
 		}
 	}
 	if ch != nil {
@@ -321,19 +317,53 @@ func (r *bcRenderer) sample(other bool) design.Values {
 	return v
 }
 
-func (r *bcRenderer) render(v design.Values, listID uuid.UUID) (design.Output, error) {
+// bcVersion is one language version of the broadcast's design ("" without translations) with its
+// tracked links and how many links its mails have.
+type bcVersion struct {
+	doc     design.Document
+	tracked map[int]bool
+	hrefs   int
+}
+
+func (r *bcRenderer) version(tag string) (*bcVersion, error) {
+	if v, ok := r.versions[tag]; ok {
+		return v, nil
+	}
+	v := &bcVersion{doc: r.doc, tracked: r.links[tag]}
+	if tag != "" {
+		v.doc = r.doc.Localized(tag)
+	}
+	r.versions[tag] = v
+	if len(v.tracked) > 0 {
+		sample, err := r.render(r.sample(false), r.firstList(), tag)
+		if err != nil {
+			return nil, err
+		}
+		v.hrefs = len(hrefAttr.FindAllStringIndex(sample.HTML, -1))
+	}
+	return v, nil
+}
+
+func (r *bcRenderer) subject(tag string) string { return broadcastSubject(r.b, tag) }
+
+func (r *bcRenderer) render(v design.Values, listID uuid.UUID, tag string) (design.Output, error) {
+	ver, err := r.version(tag)
+	if err != nil {
+		return design.Output{}, err
+	}
 	v.InboxName = r.inbox.Name
 	if l, ok := r.lists[listID]; ok {
 		v.ListName = l.Name
 	}
 	in := design.Input{
-		Doc: r.doc, Subject: v.Text(r.b.Subject), Preheader: r.doc.Preheader, Lang: mailLang(r.inbox.DefaultLocale), Values: v,
+		Doc: ver.doc, Subject: v.Text(r.subject(tag)), Preheader: broadcastPreheader(r.b, r.doc, tag), Lang: mailLang(r.inbox.DefaultLocale), Values: v,
 		Image: r.image, Icon: r.s.iconURL,
 		Sender: design.Sender{LegalName: deref(r.inbox.SenderLegalName), PostalAddress: deref(r.inbox.SenderPostalAddress),
 			Registration: deref(r.inbox.SenderRegistration), Contact: deref(r.inbox.SenderContact)},
 	}
-	if r.b.Preheader != "" {
-		in.Preheader = r.b.Preheader
+	if tag != "" {
+		in.Lang, _ = design.FooterLang(tag)
+		in.HTMLLang = tag
 	}
 	out, err := design.Render(in)
 	if err != nil {
@@ -342,14 +372,14 @@ func (r *bcRenderer) render(v design.Values, listID uuid.UUID) (design.Output, e
 	return r.addUTM(out), nil
 }
 
-// trackableLinks lists the links that are the same for every recipient (no merge field in them)
-// and lead to the web, by their position among the HTML's links.
-func (r *bcRenderer) trackableLinks() (map[int]string, error) {
-	a, err := r.render(r.sample(false), r.firstList())
+// trackableLinks lists the links of a version that are the same for every recipient (no merge
+// field in them) and lead to the web, by their position among the HTML's links.
+func (r *bcRenderer) trackableLinks(tag string) (map[int]string, error) {
+	a, err := r.render(r.sample(false), r.firstList(), tag)
 	if err != nil {
 		return nil, err
 	}
-	b, err := r.render(r.sample(true), r.firstList())
+	b, err := r.render(r.sample(true), r.firstList(), tag)
 	if err != nil {
 		return nil, err
 	}
@@ -371,18 +401,19 @@ func (r *bcRenderer) trackableLinks() (map[int]string, error) {
 	return out, nil
 }
 
-func (r *bcRenderer) track(htmlBody string, ws, delivery uuid.UUID) string {
-	if len(r.tracked) == 0 {
+func (r *bcRenderer) track(htmlBody string, ws, delivery uuid.UUID, tag string) string {
+	ver := r.versions[tag]
+	if ver == nil || len(ver.tracked) == 0 {
 		return htmlBody
 	}
 	matches := hrefAttr.FindAllStringSubmatchIndex(htmlBody, -1)
-	if len(matches) != r.hrefs {
+	if len(matches) != ver.hrefs {
 		return htmlBody
 	}
 	var b strings.Builder
 	last := 0
 	for i, m := range matches {
-		if !r.tracked[i] {
+		if !ver.tracked[i] {
 			continue
 		}
 		b.WriteString(htmlBody[last:m[2]])
@@ -440,15 +471,16 @@ func (r *bcRenderer) message(d store.BroadcastDelivery, c contactRow) ([]byte, e
 	manage := r.s.manageURL(ws, listID, d.ContactID, r.b.ID)
 	v := contactValues(c.Name, d.Email, c.Attributes)
 	v.UnsubscribeURL, v.PreferencesURL = manage, manage
-	out, err := r.render(v, listID)
+	tag := deref(d.Locale)
+	out, err := r.render(v, listID, tag)
 	if err != nil {
 		return nil, err
 	}
 	l, hasList := r.lists[listID]
 	raw, err := email.Build(email.Outgoing{
 		From: email.Address{Name: r.fromName, Email: r.from}, ReplyTo: email.Address{Name: r.fromName, Email: r.replyTo},
-		To: email.Address{Name: c.Name, Email: d.Email}, Subject: v.Text(r.b.Subject), MessageID: d.HeaderMessageID,
-		Text: out.Text, HTML: r.track(out.HTML, ws, d.ID), Date: r.s.now(), Headers: r.listHeaders(manage, l, hasList),
+		To: email.Address{Name: c.Name, Email: d.Email}, Subject: v.Text(r.subject(tag)), MessageID: d.HeaderMessageID,
+		Text: out.Text, HTML: r.track(out.HTML, ws, d.ID, tag), Date: r.s.now(), Headers: r.listHeaders(manage, l, hasList),
 	})
 	if err != nil {
 		return nil, err
@@ -520,6 +552,12 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 		return -1, s.failBroadcast(ctx, ws, id, "the broadcast's e-mail channel cannot send")
 	}
 	domain := email.Domain(from)
+	var doc design.Document
+	if b.Document != nil {
+		if d, issues, err := design.Parse(b.Document); err == nil && len(issues) == 0 {
+			doc = d
+		}
+	}
 	for {
 		done := false
 		err := s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
@@ -556,6 +594,8 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 					ins.Emails = append(ins.Emails, r.Email)
 					ins.Tokens = append(ins.Tokens, token)
 					ins.Headers = append(ins.Headers, email.NewMessageID(token, domain))
+					tag, _ := doc.Pick(deref(r.Locale))
+					ins.Locales = append(ins.Locales, tag)
 				}
 			}
 			if len(ins.Ids) > 0 {
@@ -1318,7 +1358,11 @@ func (s *Server) SendBroadcastTestMail(ctx context.Context, a BroadcastTestArgs,
 	manage := s.manageURL(ws, uuid.Nil(), uuid.Nil(), b.ID)
 	v.UnsubscribeURL, v.PreferencesURL = manage, manage
 	listID := r.firstList()
-	out, err := r.render(v, listID)
+	tag := ""
+	if doc.Versioned() {
+		tag, _ = doc.Pick(a.Locale)
+	}
+	out, err := r.render(v, listID, tag)
 	if err != nil {
 		return skip(err.Error())
 	}
@@ -1326,7 +1370,7 @@ func (s *Server) SendBroadcastTestMail(ctx context.Context, a BroadcastTestArgs,
 	to := members[0].Email
 	raw, err := email.Build(email.Outgoing{
 		From: email.Address{Name: r.fromName, Email: r.from}, ReplyTo: email.Address{Name: r.fromName, Email: r.replyTo},
-		To: email.Address{Email: to}, Subject: "[Test] " + v.Text(b.Subject), Text: out.Text, HTML: out.HTML, Date: s.now(),
+		To: email.Address{Email: to}, Subject: "[Test] " + v.Text(r.subject(tag)), Text: out.Text, HTML: out.HTML, Date: s.now(),
 		MessageID: email.NewMessageID(email.NewConversationToken(), r.domain), Headers: r.listHeaders(manage, l, hasList),
 	})
 	if err != nil {

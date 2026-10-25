@@ -1,6 +1,7 @@
 package api
 
 import (
+	"cmp"
 	"context"
 	"encoding/json"
 	"errors"
@@ -307,7 +308,7 @@ func (s *Server) broadcastBody(b store.Broadcast) oas.Broadcast {
 	}
 	out := oas.Broadcast{
 		Id: b.ID, InboxId: b.InboxID, ChannelId: b.ChannelID, Name: b.Name, Subject: b.Subject, Preheader: b.Preheader,
-		DesignId: b.DesignID, DesignVersion: b.DesignVersion, Audience: aud, ClickTracking: b.ClickTracking, Utm: b.Utm, UtmCampaign: b.UtmCampaign,
+		Translations: translationsBody(b.Translations), DesignId: b.DesignID, DesignVersion: b.DesignVersion, Audience: aud, ClickTracking: b.ClickTracking, Utm: b.Utm, UtmCampaign: b.UtmCampaign,
 		State: oas.BroadcastState(b.State), StateDetail: b.StateDetail, ScheduledAt: b.ScheduledAt, WaitingUntil: b.WaitingUntil,
 		StartedAt: b.StartedAt, FinishedAt: b.FinishedAt, LastTestAt: b.LastTestAt, Counts: parseCounts(b.Counts).body(b.State),
 		CreatedBy: b.CreatedBy, ScheduledBy: b.ScheduledBy, ScheduledByApiKey: b.ScheduledByKey, ChangelogEntryId: b.ChangelogEntryID, CreatedAt: b.CreatedAt, UpdatedAt: b.UpdatedAt,
@@ -645,6 +646,7 @@ type broadcastDraft struct {
 	pace                     bcPace
 	timezone                 string
 	window                   *[2]int16
+	translations             map[string]bcTranslation
 }
 
 func checkBroadcastDraft(b oas.BroadcastCreate) (broadcastDraft, error) {
@@ -660,6 +662,11 @@ func checkBroadcastDraft(b oas.BroadcastCreate) (broadcastDraft, error) {
 	}
 	if b.Preheader != nil {
 		if d.preheader, err = trimmed(*b.Preheader, 0, 300, "preheader"); err != nil {
+			return d, err
+		}
+	}
+	if b.Translations != nil {
+		if d.translations, err = checkTranslations(*b.Translations); err != nil {
 			return d, err
 		}
 	}
@@ -728,7 +735,7 @@ func (s *Server) insertBroadcast(ctx context.Context, q *store.Queries, p princi
 	}
 	params := store.CreateBroadcastParams{
 		ID: d.id, WorkspaceID: p.workspaceID, InboxID: in.ID, ChannelID: b.ChannelId, Name: d.name, Subject: d.subject,
-		Preheader: d.preheader, DesignID: b.DesignId, Audience: mustJSON(aud), ClickTracking: boolOr(b.ClickTracking, false),
+		Preheader: d.preheader, Translations: translationsJSON(d.translations), DesignID: b.DesignId, Audience: mustJSON(aud), ClickTracking: boolOr(b.ClickTracking, false),
 		Utm: boolOr(b.Utm, true), UtmCampaign: d.campaign, CreatedBy: p.memberRef(), PacePerHour: d.pace.hour,
 		PacePerDay: d.pace.day, PacePerMonth: d.pace.month, Timezone: tz, ChangelogEntryID: entry, Now: s.now(),
 	}
@@ -751,7 +758,7 @@ func (s *Server) GetBroadcast(ctx context.Context, req oas.GetBroadcastRequestOb
 func (s *Server) saveBroadcast(ctx context.Context, q *store.Queries, b store.Broadcast) (store.Broadcast, error) {
 	return q.SaveBroadcast(ctx, store.SaveBroadcastParams{
 		WorkspaceID: b.WorkspaceID, ID: b.ID, ChannelID: b.ChannelID, Name: b.Name, Subject: b.Subject, Preheader: b.Preheader,
-		DesignID: b.DesignID, DesignVersion: b.DesignVersion, Document: b.Document, Audience: b.Audience, ClickTracking: b.ClickTracking,
+		Translations: b.Translations, DesignID: b.DesignID, DesignVersion: b.DesignVersion, Document: b.Document, Audience: b.Audience, ClickTracking: b.ClickTracking,
 		Utm: b.Utm, UtmCampaign: b.UtmCampaign, State: b.State, PauseReason: b.PauseReason, StateDetail: b.StateDetail, ScheduledAt: b.ScheduledAt, WaitingUntil: b.WaitingUntil,
 		StartedAt: b.StartedAt, ResumedAt: b.ResumedAt, FinishedAt: b.FinishedAt, LastTestAt: b.LastTestAt,
 		SnapshotAfter: b.SnapshotAfter, SnapshotDone: b.SnapshotDone, SenderFailingSince: b.SenderFailingSince,
@@ -817,6 +824,13 @@ func (s *Server) UpdateBroadcast(ctx context.Context, req oas.UpdateBroadcastReq
 			if b.Preheader, err = trimmed(*body.Preheader, 0, 300, "preheader"); err != nil {
 				return err
 			}
+		}
+		if body.Translations != nil {
+			trans, err := checkTranslations(*body.Translations)
+			if err != nil {
+				return err
+			}
+			b.Translations = translationsJSON(trans)
 		}
 		if body.ChannelId.IsSpecified() {
 			b.ChannelID = nil
@@ -915,7 +929,7 @@ func (s *Server) changePace(ctx context.Context, q *store.Queries, b, next store
 	if paceLimited(next, now) {
 		remaining := parseCounts(b.Counts).Queued
 		if !b.SnapshotDone {
-			count, err := s.countAudience(ctx, q, b, nil)
+			count, err := s.countAudience(ctx, q, b, nil, false)
 			if err != nil {
 				return b, err
 			}
@@ -1033,17 +1047,53 @@ func contactValues(name, addr string, attributes []byte) design.Values {
 	return v
 }
 
-// countAudience walks the whole audience as sending would take it now.
-func (s *Server) countAudience(ctx context.Context, q *store.Queries, b store.Broadcast, fields []design.Field) (oas.BroadcastAudienceCount, error) {
-	a := parseAudience(b.Audience)
-	out := oas.BroadcastAudienceCount{MissingMergeFields: map[string]int64{}, ByList: []oas.BroadcastListCount{}}
+// requiredFields are the contact merge fields without a fallback, once each.
+func requiredFields(fields []design.Field) []design.Field {
 	var required []design.Field
 	for _, f := range fields {
 		if strings.HasPrefix(f.Name, "contact.") && !f.HasFallback && !slices.ContainsFunc(required, func(x design.Field) bool { return x.Name == f.Name }) {
 			required = append(required, f)
 		}
 	}
+	return required
+}
+
+// countAudience walks the whole audience as sending would take it now. With fields it counts the
+// recipients each merge field without a fallback would be empty for, in the version they get.
+func (s *Server) countAudience(ctx context.Context, q *store.Queries, b store.Broadcast, doc *design.Document, fields bool) (oas.BroadcastAudienceCount, error) {
+	a := parseAudience(b.Audience)
+	out := oas.BroadcastAudienceCount{MissingMergeFields: map[string]int64{}, ByList: []oas.BroadcastListCount{}}
+	var versions []string
+	if doc != nil {
+		versions = doc.Versions()
+	}
+	required := map[string][]design.Field{}
+	if fields {
+		if len(versions) == 0 {
+			var all []design.Field
+			if doc != nil {
+				all = doc.MergeFields()
+			}
+			required[""] = requiredFields(append(all, design.Fields(strings.TrimSpace(b.Subject))...))
+		}
+		for _, tag := range versions {
+			required[tag] = requiredFields(append(doc.Localized(tag).MergeFields(), design.Fields(broadcastSubject(b, tag))...))
+		}
+	}
+	byLocale := map[string][2]int64{}
+	byLocaleBody := func() *[]oas.BroadcastLocaleCount {
+		if len(versions) == 0 {
+			return nil
+		}
+		list := make([]oas.BroadcastLocaleCount, len(versions))
+		for i, tag := range versions {
+			list[i] = oas.BroadcastLocaleCount{Locale: oas.LanguageTag(tag), Recipients: byLocale[tag][0], Fallback: byLocale[tag][1]}
+		}
+		slices.SortStableFunc(list, func(x, y oas.BroadcastLocaleCount) int { return cmp.Compare(y.Recipients, x.Recipients) })
+		return &list
+	}
 	if len(a.ListIDs) == 0 {
+		out.ByLocale = byLocaleBody()
 		return out, nil
 	}
 	byList := map[uuid.UUID]int64{}
@@ -1067,9 +1117,22 @@ func (s *Server) countAudience(ctx context.Context, q *store.Queries, b store.Br
 			default:
 				out.Recipients++
 				byList[r.ListID]++
-				if len(required) > 0 {
+				tag := ""
+				if doc != nil {
+					var matched bool
+					tag, matched = doc.Pick(deref(r.Locale))
+					if tag != "" {
+						n := byLocale[tag]
+						n[0]++
+						if !matched {
+							n[1]++
+						}
+						byLocale[tag] = n
+					}
+				}
+				if len(required[tag]) > 0 {
 					v := contactValues(r.Name, r.Email, r.Attributes)
-					for _, f := range required {
+					for _, f := range required[tag] {
 						if strings.TrimSpace(v.Text("{{ "+f.Name+" }}")) == "" {
 							out.MissingMergeFields[f.Name]++
 						}
@@ -1092,6 +1155,7 @@ func (s *Server) countAudience(ctx context.Context, q *store.Queries, b store.Br
 			out.ByList = append(out.ByList, oas.BroadcastListCount{ListId: id, Recipients: n})
 		}
 	}
+	out.ByLocale = byLocaleBody()
 	return out, nil
 }
 
@@ -1126,16 +1190,11 @@ func (s *Server) CountBroadcastAudience(ctx context.Context, req oas.CountBroadc
 	if err != nil {
 		return nil, err
 	}
-	var fields []design.Field
 	doc, _, err := s.broadcastDocument(ctx, s.st.Queries, b)
 	if err != nil {
 		return nil, err
 	}
-	if doc != nil {
-		fields = doc.MergeFields()
-	}
-	fields = append(fields, design.Fields(b.Subject)...)
-	out, err := s.countAudience(ctx, s.st.Queries, b, fields)
+	out, err := s.countAudience(ctx, s.st.Queries, b, doc, true)
 	if err != nil {
 		return nil, err
 	}

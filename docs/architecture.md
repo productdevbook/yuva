@@ -2451,12 +2451,31 @@ Decisions:
   social, footer) and a theme (colours with dark overrides, a fixed font stack, width, radius,
   direction). Rich text is a stored subset of HTML checked by a bluemonday policy on every write; there is
   no raw-HTML block and no remote image. `api/internal/mail/design` renders it to table HTML with inline
-  styles (hybrid columns, dark-mode classes, Outlook wrappers, a preheader) and a text part; it shares its
+  styles (hybrid columns, dark-mode classes, Outlook wrappers, a preheader) and a text part; a document may carry versions in other languages
+  (`translations`, below); it shares its
   colour and button code with the server's own `layout.html`. Merge fields `{{ contact.first_name |
   "there" }}` are checked on save, and a broadcast is not scheduled while a field without fallback would be
   empty for anyone. A required footer (the inbox's legal name, postal address, registration and contact,
   why the person gets the mail, unsubscribe and preference links) is always added. `email_designs` keep
   a version for concurrent edits and up to 50 snapshots.
+- **Languages (M13.9).** A design document may name its base language (`locale`), a
+  `fallback_locale` and up to 20 `translations`, each with block texts by block id (heading `text`,
+  text and footer `html`, button `label`, image `alt`), its preheader and optionally its writing
+  direction; the document may then be 1 MiB (300 KiB without `translations`). Layout, theme, images
+  and block links are shared; links inside a translated text are that text's. A block without a
+  translation shows the base text (warning `translation_missing`, never a blocker). `schema` stays 1;
+  an update whose document lacks `translations` keeps the stored ones, so older clients cannot erase
+  them (`{}` removes them). A document with a `locale` and no translations is single-language. A
+  broadcast keeps subject and preheader per version (`translations`; a version without its own takes
+  the broadcast's, the preheader the design version's first). When the audience is taken each contact
+  gets one version, stored on the delivery (`locale`): their exact tag, else a shorter tag by RFC 4647
+  lookup (`es-MX` → `es`), else the same language in another region (`es` → `es-MX`, `pt-PT` →
+  `pt-BR`), else the fallback; contacts without a locale get the fallback. The required footer is in
+  the version's language when the server has its words (en, tr, de), else English, with a warning
+  (`footer_language`). The review checks every version (size, merge fields, alt texts, links) and warns
+  about missing texts and subjects. Gallery templates share block ids across languages, so one
+  template becomes one design with several versions (`template.locales`). What's new broadcasts stay
+  single-language.
 - **Images** are uploaded (PNG, JPEG, GIF, WebP; never SVG), re-encoded without metadata at most 1,200 px
   wide (WebP stored as PNG or JPEG) and served publicly at `/i/{token}` with immutable caching and nothing
   recorded per request: the one exception to "objects are never public". What's new entries (M22) keep
@@ -2611,7 +2630,12 @@ Decisions:
   automatic replies, skipped by reason, and unique clicks only when the broadcast turns click tracking on
   (links go through `/c/{token}`). There is no open pixel. Tracked links are the web links of the HTML part
   that are the same for every recipient (no merge field), found when the broadcast is scheduled; a `HEAD`
-  request and a third link of one mail opened within 2 seconds are not counted.
+  request and a third link of one mail opened within 2 seconds are not counted. A broadcast whose design
+  has versions also reports per version (`locales`, and the whole report filtered with `?locale=`),
+  counted from the deliveries and kept as long as they are (400 days). Tracked links are found per
+  version (`broadcast_links.locale`, `''` for a design without versions, so broadcasts scheduled before
+  M13.9 keep resolving); click tokens are unchanged and resolve through the delivery's version; the
+  whole report lists each URL once with the recipients who opened it in any version.
 - **Hosted servers.** `YUVA_BROADCASTS=on|approval|off` (unset: `approval` with `YUVA_SIGNUP=open`, else
   `on`). In `approval` mode a workspace asks the operator, who answers with
   `yuva workspace broadcasts approve|deny|suspend|limit|show`; approved workspaces warm up from 500
@@ -2633,7 +2657,8 @@ Decisions:
   `subscription.updated` and `broadcast.updated` (imports send none per row). MCP tools draft designs and
   broadcasts, preview, send tests to the caller and read reports; `schedule_broadcast` needs the audience
   count it was shown. `broadcast.updated` also follows changes of the time zone or sending hours;
-  `schedule_broadcast` takes `send_at_local`.
+  `schedule_broadcast` takes `send_at_local`. The MCP design tools read and write one language version
+  by `locale`; the broadcast tools take subjects per version and report per version.
 - **Law.** Consent records and their export serve GDPR Art. 7 and 15 and KVKK; objections are kept after
   erasure; the welcome receipt and the footer follow Türkiye's Regulation on Commercial Communication
   (Art. 7–10); links never expire (CAN-SPAM 30 days, CASL 60). Senders in Türkiye register their consents
