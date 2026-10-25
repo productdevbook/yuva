@@ -1,7 +1,7 @@
 import { useLingui } from "@lingui/react/macro"
-import { useCallback, useEffect, useRef, useState } from "react"
 
 import { OverflowTabs } from "@/components/common/OverflowTabs"
+import { useScrollFade } from "@/components/common/useScrollFade"
 import { cn } from "@/lib/utils"
 
 export function ListHead({
@@ -124,38 +124,12 @@ export function ViewChips<T extends string>({
 }) {
   const { i18n } = useLingui()
   const fmt = new Intl.NumberFormat(i18n.locale)
-  const row = useRef<HTMLDivElement>(null)
-  const [fade, setFade] = useState({ left: false, right: false })
-  const measure = useCallback(() => {
-    const el = row.current
-    if (!el) return
-    const away = Math.abs(el.scrollLeft)
-    const more = el.scrollWidth - el.clientWidth - away > 1
-    const rtl = getComputedStyle(el).direction === "rtl"
-    const next = rtl ? { left: more, right: away > 1 } : { left: away > 1, right: more }
-    setFade((f) => (f.left === next.left && f.right === next.right ? f : next))
-  }, [])
-  useEffect(() => {
-    const el = row.current
-    if (!el) return
-    el.querySelector<HTMLElement>("[aria-pressed=true]")?.scrollIntoView({ inline: "nearest", block: "nearest" })
-    measure()
-    const watch = new ResizeObserver(measure)
-    watch.observe(el)
-    return () => watch.disconnect()
-  }, [value, items.length, measure])
-  const edge = "1.5rem"
-  const mask =
-    fade.left || fade.right
-      ? `linear-gradient(to right, ${fade.left ? "transparent" : "#000"}, #000 ${edge}, #000 calc(100% - ${edge}), ${fade.right ? "transparent" : "#000"})`
-      : undefined
+  const scroll = useScrollFade<HTMLDivElement>(value, items.length)
   return (
     <div
-      ref={row}
+      {...scroll}
       role="toolbar"
       aria-label={label}
-      onScroll={measure}
-      style={{ maskImage: mask, WebkitMaskImage: mask }}
       className={cn(
         "flex gap-1.5 overflow-x-auto px-3 pb-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         className

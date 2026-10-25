@@ -409,6 +409,7 @@ function HeadingBody({ block }: { block: BlockOf<"heading"> }) {
         label={t`Heading`}
         readOnly={d.readOnly}
         testId="heading-editor"
+        keepMarks={!!d.locale}
       />
     </Tag>
   )
@@ -436,6 +437,7 @@ function TextBody({ block }: { block: BlockOf<"text"> }) {
         label={t`Text`}
         readOnly={d.readOnly}
         testId="text-editor"
+        keepMarks={!!d.locale}
       />
     </div>
   )
@@ -457,6 +459,7 @@ function FooterBody({ block }: { block: BlockOf<"footer"> }) {
         placeholder={t`Add your own lines above the required footer`}
         label={t`Footer text`}
         readOnly={d.readOnly}
+        keepMarks={!!d.locale}
       />
     </div>
   )

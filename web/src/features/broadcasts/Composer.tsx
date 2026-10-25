@@ -7,6 +7,7 @@ import { ErrorLine, InboxMark, Notice, PersonAvatar, Segmented, useConfirm } fro
 import { PageBar } from "@/components/common/PageBar"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDuration, useLanguageName } from "@/components/common/text"
+import { useScrollFade } from "@/components/common/useScrollFade"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -448,6 +449,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   const tags = designDoc ? versions(designDoc) : []
   const [tab, setTab] = useState<string | null>(null)
   const version = tab && tags.indexOf(tab) > 0 ? tab : null
+  const tabScroll = useScrollFade<HTMLDivElement>(version, tags.length)
   const languageName = useLanguageName()
   const baseLanguage = tags.length ? languageName(tags[0]) : ""
   const own = version ? (d.translations[version] ?? {}) : null
@@ -586,7 +588,10 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                     onChange={(id) => set({ design_id: id ?? "" }, { design_id: id }, 0)}
                   />
                   {tags.length > 1 && (
-                    <div className="-mx-1 overflow-x-auto px-1">
+                    <div
+                      {...tabScroll}
+                      className="-mx-1 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    >
                       <Segmented
                         value={version ?? tags[0]}
                         onChange={(v) => setTab(v === tags[0] ? null : v)}

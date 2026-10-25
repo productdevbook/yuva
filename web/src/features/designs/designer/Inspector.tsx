@@ -677,6 +677,7 @@ function TranslationFields({ block }: { block: Block }) {
               label={target}
               readOnly={d.readOnly}
               testId="translation-editor"
+              keepMarks
             />
           </div>
         )}

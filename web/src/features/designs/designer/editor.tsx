@@ -1,5 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { mergeAttributes, Node, type Editor } from "@tiptap/core"
+import { Extension, mergeAttributes, Node, type Editor } from "@tiptap/core"
+import type { Mark } from "@tiptap/pm/model"
+import { Plugin, PluginKey } from "@tiptap/pm/state"
 import { Placeholder } from "@tiptap/extensions"
 import {
   EditorContent,
@@ -202,6 +204,39 @@ const MergeField = Node.create({
 
 const SingleLine = Node.create({ name: "doc", topNode: true, content: "paragraph" })
 
+const keepMarksKey = new PluginKey<boolean>("keepMarks")
+
+const KeepMarks = Extension.create({
+  name: "keepMarks",
+  addProseMirrorPlugins() {
+    return [
+      new Plugin<boolean>({
+        key: keepMarksKey,
+        state: {
+          init: () => false,
+          apply: (tr, on) => tr.getMeta(keepMarksKey) ?? on,
+        },
+        props: {
+          handleTextInput(view, from, to, text) {
+            if (from === to || !keepMarksKey.getState(view.state)) return false
+            const { doc, schema } = view.state
+            let marks: readonly Mark[] | null = null
+            doc.nodesBetween(from, to, (node) => {
+              if (!node.isText) return true
+              marks = marks ? marks.filter((m) => m.isInSet(node.marks)) : node.marks
+              return false
+            })
+            const kept: readonly Mark[] = marks ?? []
+            if (!kept.some((m) => m.type.spec.inclusive === false)) return false
+            view.dispatch(view.state.tr.replaceWith(from, to, schema.text(text, kept)).scrollIntoView())
+            return true
+          },
+        },
+      }),
+    ]
+  },
+})
+
 function extensionsFor(mode: EditorMode, placeholder: string) {
   const link = {
     openOnClick: false,
@@ -238,6 +273,7 @@ function extensionsFor(mode: EditorMode, placeholder: string) {
     ...(mode === "rich" ? [] : [SingleLine]),
     MergeField,
     Placeholder.configure({ placeholder }),
+    KeepMarks,
   ]
 }
 
@@ -264,6 +300,7 @@ export function RichEditor({
   style,
   readOnly,
   testId,
+  keepMarks = false,
 }: {
   value: string
   onChange: (v: string) => void
@@ -275,6 +312,7 @@ export function RichEditor({
   style?: React.CSSProperties
   readOnly?: boolean
   testId?: string
+  keepMarks?: boolean
 }) {
   const last = useRef(value)
   const change = useLatest(onChange)
@@ -306,6 +344,9 @@ export function RichEditor({
     last.current = value
     editor.commands.setContent(toEditor(value, mode), { emitUpdate: false })
   }, [editor, value, mode])
+  useEffect(() => {
+    editor.view.dispatch(editor.state.tr.setMeta(keepMarksKey, keepMarks))
+  }, [editor, keepMarks])
   useEffect(() => {
     editor.setEditable(!readOnly, false)
   }, [editor, readOnly])

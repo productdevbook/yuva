@@ -6,6 +6,7 @@ import { useState } from "react"
 import { Notice, Segmented, useConfirm } from "@/components/common"
 import { LanguagePicker } from "@/components/common/LanguagePicker"
 import { canonicalTag, useLanguageName } from "@/components/common/text"
+import { useScrollFade } from "@/components/common/useScrollFade"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -77,49 +78,55 @@ export function LanguageBar({
   const missingText = useMissingText()
   const tags = versions(doc)
   const base = tags[0]
+  const scroll = useScrollFade<HTMLDivElement>(current, tags.length)
   return (
     <div
-      className="flex shrink-0 items-center gap-1.5 overflow-x-auto border-b px-3 py-1.5 phone:px-2"
+      className="flex shrink-0 items-center gap-1.5 border-b px-3 py-1.5 phone:px-2"
       role="toolbar"
       aria-label={t`Languages`}
       data-testid="language-bar"
     >
       <LanguagesIcon className="size-4 shrink-0 text-faint" aria-hidden />
-      {tags.map((tag) => {
-        const on = tag === base ? current === null : current === tag
-        const gaps = tag === base ? 0 : missing(doc, tag).length
-        return (
-          <button
-            key={tag}
-            type="button"
-            onClick={() => onSelect(tag === base ? null : tag)}
-            aria-pressed={on}
-            className={cn(
-              "inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border px-2.5 text-small whitespace-nowrap transition-colors",
-              on ? "border-foreground bg-foreground text-background" : "hover:border-faint"
-            )}
-            data-testid="language-chip"
-            data-locale={tag}
-          >
-            {name(tag)}
-            {tag === base && (
-              <span className={cn("text-caption", on ? "opacity-70" : "text-faint")}>
-                · <Trans>Base</Trans>
-              </span>
-            )}
-            {gaps > 0 && (
-              <span
-                className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-warning px-1 text-[10px] font-semibold text-white tabular-nums"
-                title={missingText(gaps)}
-                aria-label={missingText(gaps)}
-                data-testid="language-missing"
-              >
-                {gaps}
-              </span>
-            )}
-          </button>
-        )
-      })}
+      <div
+        {...scroll}
+        className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {tags.map((tag) => {
+          const on = tag === base ? current === null : current === tag
+          const gaps = tag === base ? 0 : missing(doc, tag).length
+          return (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => onSelect(tag === base ? null : tag)}
+              aria-pressed={on}
+              className={cn(
+                "inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border px-2.5 text-small whitespace-nowrap transition-colors",
+                on ? "border-foreground bg-foreground text-background" : "hover:border-faint"
+              )}
+              data-testid="language-chip"
+              data-locale={tag}
+            >
+              {name(tag)}
+              {tag === base && (
+                <span className={cn("text-caption", on ? "opacity-70" : "text-faint")}>
+                  · <Trans>Base</Trans>
+                </span>
+              )}
+              {gaps > 0 && (
+                <span
+                  className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-warning px-1 text-[10px] font-semibold text-white tabular-nums"
+                  title={missingText(gaps)}
+                  aria-label={missingText(gaps)}
+                  data-testid="language-missing"
+                >
+                  {gaps}
+                </span>
+              )}
+            </button>
+          )
+        })}
+      </div>
       {!readOnly && (
         <>
           <Button
@@ -131,9 +138,10 @@ export function LanguageBar({
             data-testid="language-add"
           >
             <PlusIcon />
-            <Trans>Language</Trans>
+            <span className="phone:sr-only">
+              <Trans>Language</Trans>
+            </span>
           </Button>
-          <span className="flex-1" />
           <LanguageSettings doc={doc} onChange={onChange} onRemoved={(tag) => tag === current && onSelect(null)} />
         </>
       )}

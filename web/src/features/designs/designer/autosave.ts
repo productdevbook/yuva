@@ -123,7 +123,14 @@ export function useAutosave({
   )
 
   useEffect(() => {
-    if (!enabled || json === server.current.json) return
+    if (!enabled) return
+    if (json === server.current.json) {
+      if (!blocked.current && !flying.current) {
+        writeDraft(ws, id, null)
+        setStatus((s) => (s === "dirty" ? "saved" : s))
+      }
+      return
+    }
     writeDraft(ws, id, { state, base: server.current.version })
     if (blocked.current) return
     setStatus((s) => (s === "saving" || s === "invalid" || s === "offline" ? s : "dirty"))
