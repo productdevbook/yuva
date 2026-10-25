@@ -574,6 +574,9 @@ type Broadcast struct {
 	PacePerMonth       *int32
 	PaceNextAt         *time.Time
 	ChangelogEntryID   *uuid.UUID
+	Timezone           string
+	SendWindowStart    *int16
+	SendWindowEnd      *int16
 }
 
 type BroadcastClick struct {

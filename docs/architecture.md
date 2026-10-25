@@ -2486,13 +2486,16 @@ Decisions:
 - **Pace.** A broadcast may have its own pace (`pace`: `per_hour`, `per_day`, `per_month`, each optional,
   1 to 10,000,000), set when it is created, on a draft, and alone while it is scheduled, preparing,
   sending or paused (`409 invalid_state` once finished); a change applies to the next mail. Windows are
-  rolling (any 60 minutes, 24 hours, 30 days), so no time zone applies, and the sender spaces mails
-  evenly at the tightest gap (3,600 / `per_hour`, 86,400 / `per_day`, 2,592,000 / `per_month` seconds),
-  which keeps every window within its limit without bursts. The channel's `broadcast_rate` and the
+  rolling (any 60 minutes, 24 hours, 30 days) and the sender spaces mails evenly at the tightest gap
+  (3,600 / `per_hour`, 86,400 / `per_day`, 2,592,000 / `per_month` seconds), which keeps every window
+  within its limit without bursts. With sending hours (below) a day is that day's window: `per_day`
+  counts per window and `per_month` spreads over 30 windows (gaps of window length / `per_day` and
+  30 × window length / `per_month`); `per_hour` is unchanged. The channel's `broadcast_rate` and the
   workspace's daily limit stay upper bounds: the pace only slows sending. Before each mail of a paced
   broadcast the sender claims the slot with one conditional update of `broadcasts.pace_next_at` (taken
-  when `<= now`, then set to `now + gap` from the row's current pace), so two pods or a rescued job never
-  send two mails in one slot; every SMTP attempt takes a slot, skipped recipients none. A wait longer
+  when `<= now`, then set to `now + gap` from the row's current pace and the day length the sender
+  passes: 86,400 seconds, or that day's window), so two pods or a rescued job never send two mails in
+  one slot; every SMTP attempt takes a slot, skipped recipients none. A wait longer
   than a batch ends the batch and snoozes the channel's job until the slot, at most 5 minutes, so other
   broadcasts of the channel keep sending and a changed pace applies within 5 minutes. Pausing keeps the
   next slot (no catch-up burst on resume); changing the pace moves it to the last mail plus the new gap.
@@ -2500,6 +2503,22 @@ Decisions:
   limit's. A send may take at most 365 days at its pace: the review's `pace` item blocks above that and
   `PATCH` refuses such a pace on a started broadcast (`409 pace_too_slow`); the review's
   `duration_seconds` estimates the whole send from the pace, the channel's rate and the daily limit.
+- **Sending hours (M13.8).** Every broadcast has an IANA `timezone`, set from its inbox's when it is
+  created (the setup wizard takes the inbox's from the creator's browser) and changeable; offsets are
+  never stored. An optional `send_window` (`start`–`end`, local wall-clock, `end` before `start` crosses
+  midnight, at least 30 minutes; stored as minutes in `send_window_start`/`_end`) lets mail go out only
+  inside the window each day, continuing the next day. The window keeps its local times when clocks
+  change. One rule resolves local times in Go and the panel: a time the clocks skip moves forward by the
+  jump, a time that happens twice is the first occurrence (a window's close the second).
+  `POST /schedule` takes `send_at_local` in the broadcast's zone as well as `send_at`; the resolved
+  instant is stored, so later tzdata changes do not move it. The window is a gate: the audience is still
+  taken at `scheduled_at`; the sender skips a broadcast whose window is closed (the channel's job snoozes
+  at most 5 minutes, so other broadcasts of the channel keep sending and changes apply within 5 minutes)
+  and re-checks the window before every mail. `window_opens_at` is computed on read; nothing is stored
+  for the wait. The workspace's daily limit stays per UTC day, independent of the window. Zone, window
+  and pace can change while scheduled, sending or paused. There is one zone per broadcast, not one per
+  recipient: contacts have no time zone, and their language does not tell one. The server embeds the
+  time zone database (`time/tzdata`), so every pod uses the same rules.
 - **Amazon SES tenants.** On a shared SES account one inbox's bounces and complaints pause only its own
   SES tenant, never another inbox of the workspace or another workspace (M13.7). One tenant per inbox,
   not per workspace, because inboxes are where a workspace keeps its products. With
@@ -2613,7 +2632,8 @@ Decisions:
   (`broadcasts_by_keys`, off by default). Events and webhook types `subscription.created`,
   `subscription.updated` and `broadcast.updated` (imports send none per row). MCP tools draft designs and
   broadcasts, preview, send tests to the caller and read reports; `schedule_broadcast` needs the audience
-  count it was shown.
+  count it was shown. `broadcast.updated` also follows changes of the time zone or sending hours;
+  `schedule_broadcast` takes `send_at_local`.
 - **Law.** Consent records and their export serve GDPR Art. 7 and 15 and KVKK; objections are kept after
   erasure; the welcome receipt and the footer follow Türkiye's Regulation on Commercial Communication
   (Art. 7–10); links never expire (CAN-SPAM 30 days, CASL 60). Senders in Türkiye register their consents

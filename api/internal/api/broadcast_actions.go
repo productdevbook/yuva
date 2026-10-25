@@ -213,19 +213,28 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 	if err != nil {
 		return out, err
 	}
-	gap := paceGap(b)
-	secs := paceSeconds(n, gap, rate)
+	now := s.now()
+	gap := paceGap(b, now)
+	secs, windowDays := sendingSeconds(b, n, rate, now)
+	sending := secs
+	if _, ok := windowOf(b); ok {
+		sending = secs - windowWait(b, now)
+	}
 	if n > 0 {
 		out.DurationSeconds = new(int64(math.Ceil(max(secs, dailySecs))))
 	}
-	switch {
-	case gap == 0 || secs == 0:
-		l.add(oas.BroadcastReviewKeyPace, oas.ReviewOk, "")
-	case secs > maxPaceDuration.Seconds():
-		l.add(oas.BroadcastReviewKeyPace, oas.ReviewBlocking, fmt.Sprintf("at this pace sending would take about %d days; a broadcast may take at most 365", daysOf(secs)))
-	default:
-		l.add(oas.BroadcastReviewKeyPace, oas.ReviewOk, "about "+aboutDuration(secs))
+	if windowDays > 0 && (out.Days == nil || int64(*out.Days) < windowDays) {
+		out.Days = new(int32(windowDays))
 	}
+	switch {
+	case paceLimited(b, now) && secs > maxPaceDuration.Seconds():
+		l.add(oas.BroadcastReviewKeyPace, oas.ReviewBlocking, fmt.Sprintf("at this pace sending would take about %d days; a broadcast may take at most 365", daysOf(secs)))
+	case gap == 0 || sending == 0:
+		l.add(oas.BroadcastReviewKeyPace, oas.ReviewOk, "")
+	default:
+		l.add(oas.BroadcastReviewKeyPace, oas.ReviewOk, "about "+aboutDuration(sending))
+	}
+	l.sendWindow(b, now)
 	changed := b.UpdatedAt
 	if row != nil && row.UpdatedAt.After(changed) {
 		changed = row.UpdatedAt
@@ -243,6 +252,42 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 	out.Items = l.items
 	out.Ready = len(l.blocking()) == 0
 	return out, nil
+}
+
+// sendWindow warns when the window is closed at the time sending starts: the scheduled time when
+// there is one, else now.
+func (l *reviewList) sendWindow(b store.Broadcast, now time.Time) {
+	w, ok := windowOf(b)
+	if !ok {
+		l.add(oas.BroadcastReviewKeySendWindow, oas.ReviewOk, "")
+		return
+	}
+	start, when := now, "now"
+	if b.ScheduledAt != nil && b.ScheduledAt.After(now) {
+		start, when = *b.ScheduledAt, "at the scheduled time"
+	}
+	open, opens, _ := w.at(start)
+	if open {
+		l.add(oas.BroadcastReviewKeySendWindow, oas.ReviewOk, "")
+		return
+	}
+	l.add(oas.BroadcastReviewKeySendWindow, oas.ReviewWarning, fmt.Sprintf("the window is closed %s; sending starts at %s %s (%s UTC)",
+		when, opens.Format("15:04"), b.Timezone, opens.UTC().Format("2 Jan 2006 15:04")))
+}
+
+// windowWait is how long sending waits for the window from its start, now or scheduled_at while
+// that is later.
+func windowWait(b store.Broadcast, now time.Time) float64 {
+	w, ok := windowOf(b)
+	if !ok {
+		return 0
+	}
+	start := now
+	if b.ScheduledAt != nil && b.ScheduledAt.After(now) {
+		start = *b.ScheduledAt
+	}
+	_, opens, _ := w.at(start)
+	return max(opens.Sub(start), 0).Seconds()
 }
 
 func (s *Server) ReviewBroadcast(ctx context.Context, req oas.ReviewBroadcastRequestObject) (oas.ReviewBroadcastResponseObject, error) {
@@ -360,12 +405,23 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 	sendAt := now
 	var confirm *int64
 	if req.Body != nil {
-		if req.Body.SendAt != nil {
-			if req.Body.SendAt.After(now.Add(maxScheduleAhead)) {
+		at := req.Body.SendAt
+		if req.Body.SendAtLocal != nil {
+			if at != nil {
+				return nil, errValidation("give send_at or send_at_local, not both")
+			}
+			local, err := parseLocalDateTime(*req.Body.SendAtLocal, zoneOf(b))
+			if err != nil {
+				return nil, err
+			}
+			at = &local
+		}
+		if at != nil {
+			if at.After(now.Add(maxScheduleAhead)) {
 				return nil, errValidation("send_at must be at most 90 days ahead")
 			}
-			if req.Body.SendAt.After(now) {
-				sendAt = *req.Body.SendAt
+			if at.After(now) {
+				sendAt = at.UTC()
 			}
 		}
 		confirm = req.Body.ConfirmRecipients
@@ -454,14 +510,14 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 				}
 			}
 		}
-		emitBroadcast(events, out, bcDraft)
+		s.emitBroadcast(events, out, bcDraft)
 		s.queueBroadcastStart(events, out, sendAt)
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	return oas.ScheduleBroadcast200JSONResponse(broadcastBody(out)), nil
+	return oas.ScheduleBroadcast200JSONResponse(s.broadcastBody(out)), nil
 }
 
 // changeBroadcast locks a broadcast the caller may send and applies a state change.
@@ -495,7 +551,7 @@ func (s *Server) changeBroadcast(ctx context.Context, id uuid.UUID, change func(
 				return err
 			}
 		}
-		emitBroadcast(events, out, prev)
+		s.emitBroadcast(events, out, prev)
 		return nil
 	})
 	return out, err
@@ -515,7 +571,7 @@ func (s *Server) UnscheduleBroadcast(ctx context.Context, req oas.UnscheduleBroa
 	if err != nil {
 		return nil, err
 	}
-	return oas.UnscheduleBroadcast200JSONResponse(broadcastBody(out)), nil
+	return oas.UnscheduleBroadcast200JSONResponse(s.broadcastBody(out)), nil
 }
 
 func (s *Server) PauseBroadcast(ctx context.Context, req oas.PauseBroadcastRequestObject) (oas.PauseBroadcastResponseObject, error) {
@@ -529,7 +585,7 @@ func (s *Server) PauseBroadcast(ctx context.Context, req oas.PauseBroadcastReque
 	if err != nil {
 		return nil, err
 	}
-	return oas.PauseBroadcast200JSONResponse(broadcastBody(out)), nil
+	return oas.PauseBroadcast200JSONResponse(s.broadcastBody(out)), nil
 }
 
 func (s *Server) ResumeBroadcast(ctx context.Context, req oas.ResumeBroadcastRequestObject) (oas.ResumeBroadcastResponseObject, error) {
@@ -572,7 +628,7 @@ func (s *Server) ResumeBroadcast(ctx context.Context, req oas.ResumeBroadcastReq
 	if err != nil {
 		return nil, err
 	}
-	return oas.ResumeBroadcast200JSONResponse(broadcastBody(out)), nil
+	return oas.ResumeBroadcast200JSONResponse(s.broadcastBody(out)), nil
 }
 
 func (s *Server) CancelBroadcast(ctx context.Context, req oas.CancelBroadcastRequestObject) (oas.CancelBroadcastResponseObject, error) {
@@ -587,7 +643,7 @@ func (s *Server) CancelBroadcast(ctx context.Context, req oas.CancelBroadcastReq
 	if err != nil {
 		return nil, err
 	}
-	return oas.CancelBroadcast200JSONResponse(broadcastBody(out)), nil
+	return oas.CancelBroadcast200JSONResponse(s.broadcastBody(out)), nil
 }
 
 func broadcastDeliveryBody(d store.ListBroadcastDeliveriesRow) oas.BroadcastDelivery {

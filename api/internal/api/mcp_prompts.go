@@ -304,5 +304,5 @@ func draftNewsletterPrompt(args map[string]string, can newsletterSetup) *mcp.Get
 	return promptResult("Draft a newsletter to "+target,
 		"Draft a newsletter to "+target+" from this brief:\n\n"+args["brief"],
 		strings.Join(steps, "\n"),
-		"Do not schedule it: never call schedule_broadcast here, and send a test with send_test_broadcast only when I ask. End by showing me the subject, the preheader, the text part and the panel_url, and ask me to review the draft in Yuva.")
+		"Do not schedule it: never call schedule_broadcast here, and send a test with send_test_broadcast only when I ask. Times and sending hours I name are in the broadcast's time zone (its timezone, the inbox's unless I name another): set them with send_window_start and send_window_end, and a later schedule_broadcast takes send_at_local, so never convert offsets yourself. End by showing me the subject, the preheader, the text part and the panel_url, and ask me to review the draft in Yuva.")
 }

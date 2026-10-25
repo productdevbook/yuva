@@ -1,10 +1,11 @@
 -- name: CreateBroadcast :one
 INSERT INTO broadcasts (id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, audience,
                         click_tracking, utm, utm_campaign, created_by, pace_per_hour, pace_per_day, pace_per_month,
-                        changelog_entry_id, created_at, updated_at)
+                        timezone, send_window_start, send_window_end, changelog_entry_id, created_at, updated_at)
 VALUES (@id, @workspace_id, @inbox_id, sqlc.narg(channel_id), @name, @subject, @preheader, sqlc.narg(design_id), @audience,
         @click_tracking, @utm, @utm_campaign, sqlc.narg(created_by), sqlc.narg(pace_per_hour), sqlc.narg(pace_per_day),
-        sqlc.narg(pace_per_month), sqlc.narg(changelog_entry_id), @now, @now)
+        sqlc.narg(pace_per_month), @timezone, sqlc.narg(send_window_start), sqlc.narg(send_window_end),
+        sqlc.narg(changelog_entry_id), @now, @now)
 RETURNING *;
 
 -- name: GetBroadcast :one
@@ -31,13 +32,20 @@ UPDATE broadcasts SET pace_per_hour = sqlc.narg(per_hour), pace_per_day = sqlc.n
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
+-- name: SetBroadcastSendWindow :one
+UPDATE broadcasts SET timezone = @timezone, send_window_start = sqlc.narg(window_start),
+    send_window_end = sqlc.narg(window_end), updated_at = @now::timestamptz
+WHERE workspace_id = @workspace_id AND id = @id
+RETURNING *;
+
 -- One mail of a paced broadcast may go out now: takes the slot and sets the next one from the pace
--- stored on the row, so concurrent senders and pace changes cannot double a slot.
+-- stored on the row and the day length the sender passes (86,400 seconds, or that day's sending
+-- window), so concurrent senders and pace changes cannot double a slot.
 -- name: ClaimBroadcastPaceSlot :execrows
 UPDATE broadcasts
 SET pace_next_at = (@now::timestamptz) + make_interval(secs => greatest(
-        coalesce(3600.0 / pace_per_hour, 0), coalesce(86400.0 / pace_per_day, 0),
-        coalesce(2592000.0 / pace_per_month, 0))::float8)
+        coalesce(3600.0 / pace_per_hour, 0), coalesce(sqlc.arg(day_secs)::float8 / pace_per_day, 0),
+        coalesce(30 * sqlc.arg(day_secs)::float8 / pace_per_month, 0))::float8)
 WHERE workspace_id = @workspace_id AND id = @id AND state = 'sending'
   AND (pace_next_at IS NULL OR pace_next_at <= @now::timestamptz);
 

@@ -289,7 +289,7 @@ func (q *Queries) ListInboxesWithSESChannels(ctx context.Context) ([]ListInboxes
 }
 
 const listRunningBroadcastsOfInbox = `-- name: ListRunningBroadcastsOfInbox :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id FROM broadcasts
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end FROM broadcasts
 WHERE workspace_id = $1 AND inbox_id = $2 AND state IN ('scheduled', 'preparing', 'sending')
 ORDER BY created_at, id
 `
@@ -346,6 +346,9 @@ func (q *Queries) ListRunningBroadcastsOfInbox(ctx context.Context, arg ListRunn
 			&i.PacePerMonth,
 			&i.PaceNextAt,
 			&i.ChangelogEntryID,
+			&i.Timezone,
+			&i.SendWindowStart,
+			&i.SendWindowEnd,
 		); err != nil {
 			return nil, err
 		}

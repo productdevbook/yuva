@@ -500,7 +500,7 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 		if b, err = s.saveBroadcast(ctx, q, b); err != nil {
 			return err
 		}
-		emitBroadcast(events, b, prev)
+		s.emitBroadcast(events, b, prev)
 		return nil
 	})
 	if err != nil || !goOn {
@@ -610,7 +610,7 @@ func (s *Server) finishSnapshot(ctx context.Context, q *store.Queries, events *e
 	if err := s.recountBroadcast(ctx, q, &b); err != nil {
 		return err
 	}
-	emitBroadcast(events, b, prev)
+	s.emitBroadcast(events, b, prev)
 	if b.State == bcSending && b.ChannelID != nil {
 		s.queueBroadcastSend(events, b.WorkspaceID, *b.ChannelID)
 	}
@@ -662,7 +662,7 @@ func (s *Server) failBroadcast(ctx context.Context, ws, id uuid.UUID, why string
 		if err := s.recountBroadcast(ctx, q, &b); err != nil {
 			return err
 		}
-		emitBroadcast(events, b, prev)
+		s.emitBroadcast(events, b, prev)
 		return nil
 	})
 }
@@ -682,7 +682,7 @@ func (s *Server) pauseBroadcast(ctx context.Context, q *store.Queries, events *e
 	if b, err = s.saveBroadcast(ctx, q, b); err != nil {
 		return false, err
 	}
-	emitBroadcast(events, b, prev)
+	s.emitBroadcast(events, b, prev)
 	return true, nil
 }
 
@@ -773,6 +773,13 @@ func (s *Server) SendBroadcasts(ctx context.Context, ws, channelID uuid.UUID, bu
 		if b == nil {
 			return wait, nil
 		}
+		if sw, ok := windowOf(*b); ok {
+			if open, opens, _ := sw.at(now); !open {
+				s.broadcastProgress(ctx, *b)
+				deferred[b.ID] = paceWake(opens, now)
+				continue
+			}
+		}
 		w, err := s.st.GetWorkspace(ctx, ws)
 		if err != nil {
 			return 0, err
@@ -802,7 +809,7 @@ func (s *Server) SendBroadcasts(ctx context.Context, ws, channelID uuid.UUID, bu
 				return 0, err
 			}
 		}
-		gap := paceGap(*b)
+		gap := paceGap(*b, now)
 		switch {
 		case gap > batchTime:
 			size = 1
@@ -903,7 +910,7 @@ func (s *Server) SendBroadcasts(ctx context.Context, ws, channelID uuid.UUID, bu
 		if err := s.commitBatch(ctx, *b, results, rejects); err != nil {
 			return 0, err
 		}
-		if stop == stopPace {
+		if stop == stopPace || stop == stopWindow {
 			cur, err := s.st.GetBroadcast(ctx, store.GetBroadcastParams{WorkspaceID: ws, ID: b.ID})
 			if err != nil {
 				return 0, err
@@ -912,6 +919,12 @@ func (s *Server) SendBroadcasts(ctx context.Context, ws, channelID uuid.UUID, bu
 			deferred[b.ID] = now.Add(time.Second)
 			if cur.PaceNextAt != nil && cur.PaceNextAt.After(now) {
 				deferred[b.ID] = paceWake(*cur.PaceNextAt, now)
+			}
+			if sw, ok := windowOf(cur); ok {
+				if open, opens, _ := sw.at(now); !open {
+					s.broadcastProgress(ctx, cur)
+					deferred[b.ID] = paceWake(opens, now)
+				}
 			}
 		}
 	}
@@ -931,11 +944,21 @@ const (
 	stopState
 	stopBroken
 	stopPace
+	stopWindow
 )
 
-// sendBatch sends due mail one by one, re-reading the broadcast's state before each, so pausing or
-// cancelling takes effect within the batch. A batch ends after 50 mails or 5 seconds, so counters
-// move even at a slow pace.
+func windowClosed(b store.Broadcast, now time.Time) bool {
+	w, ok := windowOf(b)
+	if !ok {
+		return false
+	}
+	open, _, _ := w.at(now)
+	return !open
+}
+
+// sendBatch sends due mail one by one, re-reading the broadcast's state and sending window before
+// each, so pausing, cancelling or the window's close takes effect within the batch. A batch ends
+// after 50 mails or 5 seconds, so counters move even at a slow pace.
 func (s *Server) sendBatch(ctx context.Context, r *bcRenderer, sess email.Session, due []store.BroadcastDelivery, pace, gap time.Duration, paceFactor *float64, sessSent *int) ([]deliveryResult, int, int) {
 	ws := r.b.WorkspaceID
 	lists := parseAudience(r.b.Audience).ListIDs
@@ -950,6 +973,9 @@ func (s *Server) sendBatch(ctx context.Context, r *bcRenderer, sess email.Sessio
 		cur, err := s.st.GetBroadcast(ctx, store.GetBroadcastParams{WorkspaceID: ws, ID: r.b.ID})
 		if err != nil || cur.State != bcSending {
 			return out, stopState, rejects
+		}
+		if windowClosed(cur, s.now()) {
+			return out, stopWindow, rejects
 		}
 		res := deliveryResult{d: d, state: deliveryQueued, attempts: d.Attempts}
 		skip := func(reason string) {
@@ -1002,9 +1028,13 @@ func (s *Server) sendBatch(ctx context.Context, r *bcRenderer, sess email.Sessio
 			if err != nil || cur.State != bcSending {
 				return out, stopState, rejects
 			}
+			if windowClosed(cur, s.now()) {
+				return out, stopWindow, rejects
+			}
 		}
 		if gap > 0 {
-			n, err := s.st.ClaimBroadcastPaceSlot(ctx, store.ClaimBroadcastPaceSlotParams{WorkspaceID: ws, ID: r.b.ID, Now: s.now()})
+			now := s.now()
+			n, err := s.st.ClaimBroadcastPaceSlot(ctx, store.ClaimBroadcastPaceSlotParams{WorkspaceID: ws, ID: r.b.ID, Now: now, DaySecs: sendingDay(cur, now).Seconds()})
 			if err != nil {
 				return out, stopState, rejects
 			}
@@ -1219,7 +1249,7 @@ func (s *Server) FinishBroadcast(ctx context.Context, ws, id uuid.UUID) error {
 		if err := s.recountBroadcast(ctx, q, &b); err != nil {
 			return err
 		}
-		emitBroadcast(events, b, bcSending)
+		s.emitBroadcast(events, b, bcSending)
 		return nil
 	})
 }

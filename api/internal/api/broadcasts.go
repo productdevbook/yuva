@@ -89,13 +89,14 @@ func paceOf(b store.Broadcast) bcPace {
 
 func (p bcPace) set() bool { return p.hour != nil || p.day != nil || p.month != nil }
 
-// gap is the least time between two mails of the broadcast; ClaimBroadcastPaceSlot computes the same.
-func (p bcPace) gap() time.Duration {
+// gap is the least time between two mails of the broadcast, with day the length of its sending day
+// (24 hours, or that day's window); ClaimBroadcastPaceSlot computes the same.
+func (p bcPace) gap(day time.Duration) time.Duration {
 	var g time.Duration
 	for _, w := range []struct {
 		n   *int32
 		per time.Duration
-	}{{p.hour, time.Hour}, {p.day, 24 * time.Hour}, {p.month, paceMonth}} {
+	}{{p.hour, time.Hour}, {p.day, day}, {p.month, 30 * day}} {
 		if w.n != nil && *w.n > 0 {
 			g = max(g, w.per/time.Duration(*w.n))
 		}
@@ -110,10 +111,21 @@ func (p bcPace) body() *oas.BroadcastPace {
 	return &oas.BroadcastPace{PerHour: p.hour, PerDay: p.day, PerMonth: p.month}
 }
 
-func paceGap(b store.Broadcast) time.Duration { return paceOf(b).gap() }
+// sendingDay is how long the broadcast may send on the day of now: 24 hours, or the real length of
+// the current or next window.
+func sendingDay(b store.Broadcast, now time.Time) time.Duration {
+	if w, ok := windowOf(b); ok {
+		return w.length(now)
+	}
+	return 24 * time.Hour
+}
 
-func paceNextShown(b store.Broadcast) *time.Time {
-	if b.State != bcSending || b.PaceNextAt == nil || paceGap(b) < paceShownFrom {
+func paceGap(b store.Broadcast, now time.Time) time.Duration {
+	return paceOf(b).gap(sendingDay(b, now))
+}
+
+func paceNextShown(b store.Broadcast, now time.Time) *time.Time {
+	if b.State != bcSending || b.PaceNextAt == nil || paceGap(b, now) < paceShownFrom {
 		return nil
 	}
 	return b.PaceNextAt
@@ -139,6 +151,36 @@ func paceSeconds(n int64, gap time.Duration, rate int32) float64 {
 		return 0
 	}
 	return float64(n-1) * max(gap, time.Second/time.Duration(rate)).Seconds()
+}
+
+// sendingSeconds is about how long n mails take from the start, now or scheduled_at while that is
+// later, at the broadcast's pace and the channel's rate; with a window only its hours send, so the
+// wait for the first one and whole days between them count. days is how many local days of the
+// window that touches, 0 without a window.
+func sendingSeconds(b store.Broadcast, n int64, rate int32, now time.Time) (secs float64, days int64) {
+	w, ok := windowOf(b)
+	if !ok || n == 0 {
+		return paceSeconds(n, paceGap(b, now), rate), 0
+	}
+	start := now
+	if b.ScheduledAt != nil && b.ScheduledAt.After(now) {
+		start = *b.ScheduledAt
+	}
+	_, opens, closes := w.at(start)
+	wait := max(opens.Sub(start), 0).Seconds()
+	per := closes.Sub(opens).Seconds()
+	secs = paceSeconds(n, paceOf(b).gap(closes.Sub(opens)), rate)
+	if secs == 0 {
+		return wait, 1
+	}
+	full := math.Max(math.Ceil(secs/per)-1, 0)
+	return wait + full*86400 + secs - full*per, int64(full) + 1
+}
+
+// paceLimited says whether the 365-day limit applies: the broadcast has a pace or sending hours.
+func paceLimited(b store.Broadcast, now time.Time) bool {
+	_, windowed := windowOf(b)
+	return windowed || paceGap(b, now) > 0
 }
 
 func (s *Server) channelRate(ctx context.Context, q *store.Queries, ws uuid.UUID, channelID *uuid.UUID) (int32, error) {
@@ -251,7 +293,7 @@ func (c bcCounts) body(state string) oas.BroadcastCounts {
 	return out
 }
 
-func broadcastBody(b store.Broadcast) oas.Broadcast {
+func (s *Server) broadcastBody(b store.Broadcast) oas.Broadcast {
 	a := parseAudience(b.Audience)
 	aud := oas.BroadcastAudience{ListIds: a.ListIDs, Conditions: make([]oas.BroadcastCondition, len(a.Conditions)), Locales: make([]oas.LanguageTag, len(a.Locales))}
 	for i, c := range a.Conditions {
@@ -277,13 +319,19 @@ func broadcastBody(b store.Broadcast) oas.Broadcast {
 	if b.State == bcDraft {
 		out.DesignVersion = nil
 	}
+	now := s.now()
 	out.Pace = paceOf(b).body()
-	out.PaceNextAt = paceNextShown(b)
+	out.PaceNextAt = paceNextShown(b, now)
+	out.Timezone = b.Timezone
+	if w, ok := windowOf(b); ok {
+		out.SendWindow = w.body()
+	}
+	out.WindowOpensAt = windowOpensAt(b, now)
 	return out
 }
 
-func emitBroadcast(events *eventBatch, b store.Broadcast, previous string) {
-	data := oas.BroadcastEventData{Broadcast: broadcastBody(b)}
+func (s *Server) emitBroadcast(events *eventBatch, b store.Broadcast, previous string) {
+	data := oas.BroadcastEventData{Broadcast: s.broadcastBody(b)}
 	if previous != "" && previous != b.State {
 		st := oas.BroadcastState(previous)
 		data.PreviousState = &st
@@ -560,7 +608,7 @@ func (s *Server) ListBroadcasts(ctx context.Context, req oas.ListBroadcastsReque
 	}
 	out := oas.ListBroadcasts200JSONResponse{Items: make([]oas.Broadcast, len(rows)), NextCursor: next}
 	for i, r := range rows {
-		out.Items[i] = broadcastBody(r)
+		out.Items[i] = s.broadcastBody(r)
 	}
 	return out, nil
 }
@@ -587,7 +635,7 @@ func (s *Server) CreateBroadcast(ctx context.Context, req oas.CreateBroadcastReq
 	if err != nil {
 		return nil, err
 	}
-	return oas.CreateBroadcast201JSONResponse(broadcastBody(out)), nil
+	return oas.CreateBroadcast201JSONResponse(s.broadcastBody(out)), nil
 }
 
 type broadcastDraft struct {
@@ -595,6 +643,8 @@ type broadcastDraft struct {
 	name, subject, preheader string
 	campaign                 string
 	pace                     bcPace
+	timezone                 string
+	window                   *[2]int16
 }
 
 func checkBroadcastDraft(b oas.BroadcastCreate) (broadcastDraft, error) {
@@ -619,6 +669,18 @@ func checkBroadcastDraft(b oas.BroadcastCreate) (broadcastDraft, error) {
 		if d.campaign, err = checkCampaign(*b.UtmCampaign); err != nil {
 			return d, err
 		}
+	}
+	if b.Timezone != nil {
+		if d.timezone, err = checkZone(*b.Timezone); err != nil {
+			return d, err
+		}
+	}
+	if b.SendWindow != nil {
+		start, end, err := checkSendWindow(*b.SendWindow)
+		if err != nil {
+			return d, err
+		}
+		d.window = &[2]int16{start, end}
 	}
 	d.pace, err = checkPace(b.Pace)
 	return d, err
@@ -657,12 +719,23 @@ func (s *Server) insertBroadcast(ctx context.Context, q *store.Queries, p princi
 	if err != nil {
 		return store.Broadcast{}, err
 	}
-	return q.CreateBroadcast(ctx, store.CreateBroadcastParams{
+	tz := d.timezone
+	if tz == "" {
+		tz = "UTC"
+		if _, err := zone(in.Timezone); err == nil {
+			tz = in.Timezone
+		}
+	}
+	params := store.CreateBroadcastParams{
 		ID: d.id, WorkspaceID: p.workspaceID, InboxID: in.ID, ChannelID: b.ChannelId, Name: d.name, Subject: d.subject,
 		Preheader: d.preheader, DesignID: b.DesignId, Audience: mustJSON(aud), ClickTracking: boolOr(b.ClickTracking, false),
 		Utm: boolOr(b.Utm, true), UtmCampaign: d.campaign, CreatedBy: p.memberRef(), PacePerHour: d.pace.hour,
-		PacePerDay: d.pace.day, PacePerMonth: d.pace.month, ChangelogEntryID: entry, Now: s.now(),
-	})
+		PacePerDay: d.pace.day, PacePerMonth: d.pace.month, Timezone: tz, ChangelogEntryID: entry, Now: s.now(),
+	}
+	if d.window != nil {
+		params.SendWindowStart, params.SendWindowEnd = &d.window[0], &d.window[1]
+	}
+	return q.CreateBroadcast(ctx, params)
 }
 
 func (s *Server) GetBroadcast(ctx context.Context, req oas.GetBroadcastRequestObject) (oas.GetBroadcastResponseObject, error) {
@@ -670,7 +743,7 @@ func (s *Server) GetBroadcast(ctx context.Context, req oas.GetBroadcastRequestOb
 	if err != nil {
 		return nil, err
 	}
-	return oas.GetBroadcast200JSONResponse(broadcastBody(b)), nil
+	return oas.GetBroadcast200JSONResponse(s.broadcastBody(b)), nil
 }
 
 // saveBroadcast writes every column of a broadcast that Go changes; counts change only through
@@ -698,24 +771,35 @@ func (s *Server) UpdateBroadcast(ctx context.Context, req oas.UpdateBroadcastReq
 		if err := s.requireBroadcastWriter(p); err != nil {
 			return err
 		}
+		sendingOnly := oas.BroadcastUpdate{Pace: body.Pace, Timezone: body.Timezone, SendWindow: body.SendWindow}
 		if b.State != bcDraft {
-			if body.Pace == nil || !reflect.DeepEqual(*body, oas.BroadcastUpdate{Pace: body.Pace}) {
+			if (body.Pace == nil && body.Timezone == nil && !body.SendWindow.IsSpecified()) || !reflect.DeepEqual(*body, sendingOnly) {
 				return errBroadcastNotDraft
 			}
 			if !activeBroadcast(b.State) {
 				return errBroadcastState
 			}
-			pace, err := checkPace(body.Pace)
+			next, err := sendTimeUpdate(b, body)
 			if err != nil {
 				return err
 			}
-			if out, err = s.changePace(ctx, q, b, pace); err != nil {
+			pace := paceOf(b)
+			if body.Pace != nil {
+				if pace, err = checkPace(body.Pace); err != nil {
+					return err
+				}
+			}
+			if out, err = s.changePace(ctx, q, b, next, pace); err != nil {
 				return err
 			}
-			emitBroadcast(events, out, "")
+			s.emitBroadcast(events, out, "")
 			return nil
 		}
 		pace, err := checkPace(body.Pace)
+		if err != nil {
+			return err
+		}
+		sendTime, err := sendTimeUpdate(b, body)
 		if err != nil {
 			return err
 		}
@@ -772,8 +856,16 @@ func (s *Server) UpdateBroadcast(ctx context.Context, req oas.UpdateBroadcastReq
 				return err
 			}
 		}
-		if out, err = s.saveBroadcast(ctx, q, b); err != nil || body.Pace == nil {
+		if out, err = s.saveBroadcast(ctx, q, b); err != nil {
 			return err
+		}
+		if body.Timezone != nil || body.SendWindow.IsSpecified() {
+			if out, err = s.setSendWindow(ctx, q, sendTime); err != nil {
+				return err
+			}
+		}
+		if body.Pace == nil {
+			return nil
 		}
 		out, err = q.SetBroadcastPace(ctx, store.SetBroadcastPaceParams{
 			WorkspaceID: b.WorkspaceID, ID: b.ID, PerHour: pace.hour, PerDay: pace.day, PerMonth: pace.month, Now: s.now(),
@@ -783,12 +875,44 @@ func (s *Server) UpdateBroadcast(ctx context.Context, req oas.UpdateBroadcastReq
 	if err != nil {
 		return nil, err
 	}
-	return oas.UpdateBroadcast200JSONResponse(broadcastBody(out)), nil
+	return oas.UpdateBroadcast200JSONResponse(s.broadcastBody(out)), nil
 }
 
-func (s *Server) changePace(ctx context.Context, q *store.Queries, b store.Broadcast, pace bcPace) (store.Broadcast, error) {
-	oldGap, newGap := paceGap(b), pace.gap()
-	if newGap > 0 {
+// sendTimeUpdate is the broadcast with the time zone and send window of an update applied.
+func sendTimeUpdate(b store.Broadcast, body *oas.BroadcastUpdate) (store.Broadcast, error) {
+	if body.Timezone != nil {
+		tz, err := checkZone(*body.Timezone)
+		if err != nil {
+			return b, err
+		}
+		b.Timezone = tz
+	}
+	if body.SendWindow.IsSpecified() {
+		b.SendWindowStart, b.SendWindowEnd = nil, nil
+		if !body.SendWindow.IsNull() {
+			start, end, err := checkSendWindow(body.SendWindow.MustGet())
+			if err != nil {
+				return b, err
+			}
+			b.SendWindowStart, b.SendWindowEnd = &start, &end
+		}
+	}
+	return b, nil
+}
+
+func (s *Server) setSendWindow(ctx context.Context, q *store.Queries, b store.Broadcast) (store.Broadcast, error) {
+	return q.SetBroadcastSendWindow(ctx, store.SetBroadcastSendWindowParams{
+		WorkspaceID: b.WorkspaceID, ID: b.ID, Timezone: b.Timezone, WindowStart: b.SendWindowStart, WindowEnd: b.SendWindowEnd, Now: s.now(),
+	})
+}
+
+// changePace stores the pace, time zone and window of a started broadcast (next holds the new zone
+// and window) and moves the next slot by the change of the gap.
+func (s *Server) changePace(ctx context.Context, q *store.Queries, b, next store.Broadcast, pace bcPace) (store.Broadcast, error) {
+	now := s.now()
+	next.PacePerHour, next.PacePerDay, next.PacePerMonth = pace.hour, pace.day, pace.month
+	oldGap, newGap := paceGap(b, now), paceGap(next, now)
+	if paceLimited(next, now) {
 		remaining := parseCounts(b.Counts).Queued
 		if !b.SnapshotDone {
 			count, err := s.countAudience(ctx, q, b, nil)
@@ -801,16 +925,19 @@ func (s *Server) changePace(ctx context.Context, q *store.Queries, b store.Broad
 		if err != nil {
 			return b, err
 		}
-		if secs := paceSeconds(remaining, newGap, rate); secs > maxPaceDuration.Seconds() {
+		if secs, _ := sendingSeconds(next, remaining, rate, now); secs > maxPaceDuration.Seconds() {
 			return b, errPaceTooSlow(daysOf(secs))
 		}
 	}
-	var next *time.Time
+	var nextAt *time.Time
 	if newGap > 0 && b.PaceNextAt != nil {
-		next = new(b.PaceNextAt.Add(newGap - oldGap))
+		nextAt = new(b.PaceNextAt.Add(newGap - oldGap))
+	}
+	if _, err := s.setSendWindow(ctx, q, next); err != nil {
+		return b, err
 	}
 	return q.SetBroadcastPace(ctx, store.SetBroadcastPaceParams{
-		WorkspaceID: b.WorkspaceID, ID: b.ID, PerHour: pace.hour, PerDay: pace.day, PerMonth: pace.month, NextAt: next, Now: s.now(),
+		WorkspaceID: b.WorkspaceID, ID: b.ID, PerHour: pace.hour, PerDay: pace.day, PerMonth: pace.month, NextAt: nextAt, Now: now,
 	})
 }
 
@@ -1108,6 +1235,6 @@ func (s *Server) broadcastProgress(ctx context.Context, b store.Broadcast) {
 	inbox := b.InboxID
 	s.signal(ctx, realtime.Event{Type: eventBroadcastProgress, WorkspaceID: b.WorkspaceID, InboxID: &inbox, Data: mustJSON(oas.BroadcastProgress{
 		Id: b.ID, State: oas.BroadcastState(b.State), Counts: parseCounts(b.Counts).body(b.State), WaitingUntil: b.WaitingUntil,
-		PaceNextAt: paceNextShown(b),
+		PaceNextAt: paceNextShown(b, s.now()), WindowOpensAt: windowOpensAt(b, s.now()),
 	})})
 }

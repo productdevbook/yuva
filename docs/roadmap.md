@@ -179,7 +179,7 @@ workspace or another reader is visible.
 ## M13 — Broadcasts and e-mail designs
 
 Status: M13.1–M13.5 done in `v0.0.9` and deployed on 2026-10-12 (#26–#30); M13.6 (#91) and M13.7 (#92)
-done in `v0.0.18`, verified on 2026-10-19. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
+done in `v0.0.18`, verified on 2026-10-19; M13.8 planned. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
 
 - **M13.1 Lists and subscribing:** mailing lists with recorded consent and double opt-in,
   `<yuva-subscribe>` (HTML, React, Nuxt, shadcn), unsubscribe and preference pages with one-click, an API
@@ -202,6 +202,14 @@ done in `v0.0.18`, verified on 2026-10-19. Umbrella issue #25, decisions in `arc
   broadcasts carry `X-SES-TENANT`; a channel's own tenant for self-hosters without keys; pauses shown
   on the inbox and its channels and acted on by its broadcasts; the operator's `inbox ses-tenant`
   commands, with the back-fill.
+- **M13.8 Sending hours:** an IANA time zone per broadcast (from the inbox), an optional daily
+  send window in it that sending waits for and resumes in the next day, scheduling by local time
+  with daylight-saving changes handled, the pace's day measured by the window; zones shown as
+  "Istanbul (GMT+3)" in the composer, the review and the broadcast page; API and MCP.
+  Accept: a broadcast with 05:00–12:00 Europe/Berlin and `per_day: 100` sends nothing outside the
+  window and at most 100 per local day across a clock change with two pods; scheduling 09:00
+  Europe/Istanbul stores 06:00 UTC; the panel shows the time in the broadcast's zone, UTC and the
+  member's own zone.
 
 Accept: a visitor subscribes through `<yuva-subscribe>` and confirms; a member designs a newsletter from a
 gallery template, sends a test and schedules it to the list; the deliverability check on one of our own

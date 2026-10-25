@@ -187,30 +187,35 @@ func broadcastCountsOut(c oas.BroadcastCounts) mcpBroadcastCounts {
 }
 
 type mcpBroadcast struct {
-	ID            uuid.UUID               `json:"id"`
-	InboxID       uuid.UUID               `json:"inbox_id"`
-	ChannelID     *uuid.UUID              `json:"channel_id,omitempty" jsonschema:"the e-mail channel it goes out through"`
-	Name          string                  `json:"name"`
-	Subject       string                  `json:"subject"`
-	Preheader     string                  `json:"preheader"`
-	DesignID      *uuid.UUID              `json:"design_id,omitempty"`
-	ListIDs       []uuid.UUID             `json:"list_ids"`
-	Conditions    []mcpBroadcastCondition `json:"conditions" jsonschema:"contact attribute conditions every recipient meets"`
-	Locales       []string                `json:"locales" jsonschema:"only contacts with these languages; everyone when empty"`
-	ClickTracking bool                    `json:"click_tracking"`
-	State         string                  `json:"state"`
-	StateDetail   string                  `json:"state_detail,omitempty" jsonschema:"why it paused or failed, such as the mail server's answer"`
-	PauseReason   string                  `json:"pause_reason,omitempty"`
-	ScheduledAt   *time.Time              `json:"scheduled_at,omitempty"`
-	StartedAt     *time.Time              `json:"started_at,omitempty"`
-	FinishedAt    *time.Time              `json:"finished_at,omitempty"`
-	LastTestAt    *time.Time              `json:"last_test_at,omitempty"`
-	Pace          *oas.BroadcastPace      `json:"pace,omitempty" jsonschema:"its own pace: at most per_hour mails in any 60 minutes, per_day in any 24 hours, per_month in any 30 days"`
-	PaceNextAt    *time.Time              `json:"pace_next_at,omitempty" jsonschema:"while sending with at least a minute between mails: the earliest time the next mail may go out"`
-	Counts        mcpBroadcastCounts      `json:"counts"`
-	CreatedAt     time.Time               `json:"created_at"`
-	UpdatedAt     time.Time               `json:"updated_at"`
-	PanelURL      string                  `json:"panel_url,omitempty" jsonschema:"where a member reviews it in Yuva; its workspace parameter opens it in this workspace even when another one is open in the panel"`
+	ID               uuid.UUID                `json:"id"`
+	InboxID          uuid.UUID                `json:"inbox_id"`
+	ChannelID        *uuid.UUID               `json:"channel_id,omitempty" jsonschema:"the e-mail channel it goes out through"`
+	Name             string                   `json:"name"`
+	Subject          string                   `json:"subject"`
+	Preheader        string                   `json:"preheader"`
+	DesignID         *uuid.UUID               `json:"design_id,omitempty"`
+	ListIDs          []uuid.UUID              `json:"list_ids"`
+	Conditions       []mcpBroadcastCondition  `json:"conditions" jsonschema:"contact attribute conditions every recipient meets"`
+	Locales          []string                 `json:"locales" jsonschema:"only contacts with these languages; everyone when empty"`
+	ClickTracking    bool                     `json:"click_tracking"`
+	State            string                   `json:"state"`
+	StateDetail      string                   `json:"state_detail,omitempty" jsonschema:"why it paused or failed, such as the mail server's answer"`
+	PauseReason      string                   `json:"pause_reason,omitempty"`
+	ScheduledAt      *time.Time               `json:"scheduled_at,omitempty"`
+	StartedAt        *time.Time               `json:"started_at,omitempty"`
+	FinishedAt       *time.Time               `json:"finished_at,omitempty"`
+	LastTestAt       *time.Time               `json:"last_test_at,omitempty"`
+	Pace             *oas.BroadcastPace       `json:"pace,omitempty" jsonschema:"its own pace: at most per_hour mails in any 60 minutes, per_day in any 24 hours (with a send window: in each day's window), per_month in any 30 days"`
+	PaceNextAt       *time.Time               `json:"pace_next_at,omitempty" jsonschema:"while sending with at least a minute between mails: the earliest time the next mail may go out"`
+	Timezone         string                   `json:"timezone" jsonschema:"the IANA time zone of send_window and send_at_local"`
+	SendWindow       *oas.BroadcastSendWindow `json:"send_window,omitempty" jsonschema:"mails go out only between start and end each day, in timezone; end before start crosses midnight"`
+	WindowOpens      *time.Time               `json:"window_opens_at,omitempty" jsonschema:"while waiting for the send window: when it opens next"`
+	ScheduledAtLocal string                   `json:"scheduled_at_local,omitempty" jsonschema:"scheduled_at as a wall-clock time YYYY-MM-DDTHH:MM in timezone, the form send_at_local takes"`
+	ScheduledOffset  string                   `json:"scheduled_at_offset,omitempty" jsonschema:"timezone's offset at scheduled_at, such as GMT+3"`
+	Counts           mcpBroadcastCounts       `json:"counts"`
+	CreatedAt        time.Time                `json:"created_at"`
+	UpdatedAt        time.Time                `json:"updated_at"`
+	PanelURL         string                   `json:"panel_url,omitempty" jsonschema:"where a member reviews it in Yuva; its workspace parameter opens it in this workspace even when another one is open in the panel"`
 }
 
 func (c *mcpCall) broadcastOut(b oas.Broadcast) mcpBroadcast {
@@ -220,6 +225,13 @@ func (c *mcpCall) broadcastOut(b oas.Broadcast) mcpBroadcast {
 		ClickTracking: b.ClickTracking, State: string(b.State), StateDetail: deref(b.StateDetail), ScheduledAt: b.ScheduledAt,
 		StartedAt: b.StartedAt, FinishedAt: b.FinishedAt, LastTestAt: b.LastTestAt, Pace: b.Pace, PaceNextAt: b.PaceNextAt,
 		Counts: broadcastCountsOut(b.Counts), CreatedAt: b.CreatedAt, UpdatedAt: b.UpdatedAt,
+		Timezone: b.Timezone, SendWindow: b.SendWindow, WindowOpens: b.WindowOpensAt,
+	}
+	if b.ScheduledAt != nil {
+		if loc, err := zone(b.Timezone); err == nil {
+			at := b.ScheduledAt.In(loc)
+			out.ScheduledAtLocal, out.ScheduledOffset = at.Format("2006-01-02T15:04"), gmtOffset(at)
+		}
 	}
 	if out.ListIDs == nil {
 		out.ListIDs = []uuid.UUID{}
@@ -349,6 +361,21 @@ type createBroadcastIn struct {
 	PacePerHour   *int32                  `json:"pace_per_hour,omitempty" jsonschema:"at most this many mails in any 60 minutes, 1 to 10,000,000; optional"`
 	PacePerDay    *int32                  `json:"pace_per_day,omitempty" jsonschema:"at most this many mails in any 24 hours, 1 to 10,000,000; optional"`
 	PacePerMonth  *int32                  `json:"pace_per_month,omitempty" jsonschema:"at most this many mails in any 30 days, 1 to 10,000,000; optional"`
+	Timezone      string                  `json:"timezone,omitempty" jsonschema:"an IANA time zone such as Europe/Istanbul; the inbox's when absent"`
+	WindowStart   string                  `json:"send_window_start,omitempty" jsonschema:"HH:MM, 24-hour, in the broadcast's time zone; mails go out only between send_window_start and send_window_end each day; end before start crosses midnight"`
+	WindowEnd     string                  `json:"send_window_end,omitempty" jsonschema:"HH:MM, 24-hour (24:00 for the end of the day), in the broadcast's time zone; at least 30 minutes after send_window_start"`
+}
+
+var errWindowHalf = problem(http.StatusBadRequest, "invalid_request", "give send_window_start and send_window_end together")
+
+func windowIn(start, end string) (*oas.BroadcastSendWindow, *apiError) {
+	if start == "" && end == "" {
+		return nil, nil
+	}
+	if start == "" || end == "" {
+		return nil, errWindowHalf
+	}
+	return &oas.BroadcastSendWindow{Start: start, End: end}, nil
 }
 
 func audienceIn(listIDs []uuid.UUID, locales []string, conditions []mcpBroadcastCondition) oas.BroadcastAudienceInput {
@@ -393,6 +420,10 @@ type updateBroadcastIn struct {
 	PacePerDay    *int32                  `json:"pace_per_day,omitempty" jsonschema:"at most this many mails in any 24 hours, 1 to 10,000,000"`
 	PacePerMonth  *int32                  `json:"pace_per_month,omitempty" jsonschema:"at most this many mails in any 30 days, 1 to 10,000,000"`
 	RemovePace    bool                    `json:"remove_pace,omitempty" jsonschema:"send as fast as the channel and the daily limit allow"`
+	Timezone      string                  `json:"timezone,omitempty" jsonschema:"an IANA time zone such as Europe/Istanbul; never moves scheduled_at"`
+	WindowStart   string                  `json:"send_window_start,omitempty" jsonschema:"HH:MM, 24-hour, in the broadcast's time zone; mails go out only between send_window_start and send_window_end each day; end before start crosses midnight"`
+	WindowEnd     string                  `json:"send_window_end,omitempty" jsonschema:"HH:MM, 24-hour (24:00 for the end of the day), in the broadcast's time zone; at least 30 minutes after send_window_start"`
+	RemoveWindow  bool                    `json:"remove_send_window,omitempty" jsonschema:"send at any hour of the day again"`
 }
 
 var errNothingToUpdate = problem(http.StatusBadRequest, "invalid_request", "name at least one field to change")
@@ -421,6 +452,18 @@ func (in updateBroadcastIn) body() (oas.BroadcastUpdate, *apiError) {
 	} else if in.RemovePace {
 		body.Pace = &oas.BroadcastPace{}
 	}
+	if in.Timezone != "" {
+		body.Timezone = &in.Timezone
+	}
+	w, perr := windowIn(in.WindowStart, in.WindowEnd)
+	switch {
+	case perr != nil:
+		return body, perr
+	case w != nil:
+		body.SendWindow = nullable.NewNullableWithValue(*w)
+	case in.RemoveWindow:
+		body.SendWindow = nullable.NewNullNullable[oas.BroadcastSendWindow]()
+	}
 	if reflect.DeepEqual(body, oas.BroadcastUpdate{}) {
 		return body, errNothingToUpdate
 	}
@@ -437,9 +480,10 @@ type sendTestOut struct {
 }
 
 type scheduleBroadcastIn struct {
-	BroadcastID       uuid.UUID `json:"broadcast_id"`
-	SendAt            time.Time `json:"send_at" jsonschema:"when sending starts, at most 90 days ahead; a time in the past sends now"`
-	ConfirmRecipients int64     `json:"confirm_recipients" jsonschema:"the recipient count get_broadcast showed and the person you work for confirmed"`
+	BroadcastID       uuid.UUID  `json:"broadcast_id"`
+	SendAt            *time.Time `json:"send_at,omitempty" jsonschema:"when sending starts, an instant with its offset, at most 90 days ahead; a time in the past sends now. Give send_at or send_at_local, or neither to send now"`
+	SendAtLocal       string     `json:"send_at_local,omitempty" jsonschema:"a wall-clock time YYYY-MM-DDTHH:MM in the broadcast's time zone, as get_broadcast shows it; use this when the person says a time such as 9:00 Istanbul time"`
+	ConfirmRecipients int64      `json:"confirm_recipients" jsonschema:"the recipient count get_broadcast showed and the person you work for confirmed"`
 }
 
 type mcpReportPoint struct {
@@ -630,7 +674,7 @@ var mcpBroadcastTools = []mcpTool{
 			return c.getBroadcast(ctx, in.BroadcastID)
 		}),
 	defineTool("create_broadcast_draft", "Create a draft broadcast",
-		"Creates a draft broadcast for an inbox: the e-mail channel, the lists, the design, subject and preheader, and an optional pace (per hour, day, 30 days) that spreads the mails evenly. Nothing is sent; check it with get_broadcast. Owners, admins and keys only. Maps to POST /v1/broadcasts.",
+		"Creates a draft broadcast for an inbox: the e-mail channel, the lists, the design, subject and preheader, an optional pace (per hour, day, 30 days) that spreads the mails evenly, and optional sending hours in the broadcast's time zone (the inbox's unless timezone is given). Nothing is sent; check it with get_broadcast. Owners, admins and keys only. Maps to POST /v1/broadcasts.",
 		additive, map[string][]any{"conditions.op": conditionOps},
 		mcpTool{ops: []string{"CreateBroadcast"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
 		func(ctx context.Context, c *mcpCall, in createBroadcastIn) (mcpBroadcast, error) {
@@ -645,6 +689,14 @@ var mcpBroadcastTools = []mcpTool{
 			if in.PacePerHour != nil || in.PacePerDay != nil || in.PacePerMonth != nil {
 				body.Pace = &oas.BroadcastPace{PerHour: in.PacePerHour, PerDay: in.PacePerDay, PerMonth: in.PacePerMonth}
 			}
+			if in.Timezone != "" {
+				body.Timezone = &in.Timezone
+			}
+			w, perr := windowIn(in.WindowStart, in.WindowEnd)
+			if perr != nil {
+				return mcpBroadcast{}, perr
+			}
+			body.SendWindow = w
 			res, err := c.s.CreateBroadcast(ctx, oas.CreateBroadcastRequestObject{Body: &body})
 			if err != nil {
 				return mcpBroadcast{}, err
@@ -652,7 +704,7 @@ var mcpBroadcastTools = []mcpTool{
 			return c.broadcastOut(oas.Broadcast(res.(oas.CreateBroadcast201JSONResponse))), nil
 		}),
 	defineTool("update_broadcast", "Change a draft broadcast",
-		"Changes the fields you pass on a draft: name, subject, preheader, the e-mail channel (the sender), the design, the audience (list_ids with optional locales and conditions, replacing the whole audience), click tracking, UTM tags and the pace (the pace fields replace the whole pace; remove_pace drops it). While a broadcast is scheduled or sending only the pace can change. Returns the broadcast with the review again, so you see what still blocks it. Nothing is sent. Owners, admins and keys only. Maps to PATCH /v1/broadcasts/{id}.",
+		"Changes the fields you pass on a draft: name, subject, preheader, the e-mail channel (the sender), the design, the audience (list_ids with optional locales and conditions, replacing the whole audience), click tracking, UTM tags, the pace (the pace fields replace the whole pace; remove_pace drops it), the time zone and the sending hours (remove_send_window drops them). While a broadcast is scheduled or sending only the pace, time zone and sending hours can change. Returns the broadcast with the review again, so you see what still blocks it. Nothing is sent. Owners, admins and keys only. Maps to PATCH /v1/broadcasts/{id}.",
 		idempotent, map[string][]any{"conditions.op": conditionOps},
 		mcpTool{ops: []string{"UpdateBroadcast", "GetBroadcast", "ReviewBroadcast", "CountBroadcastAudience"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
 		func(ctx context.Context, c *mcpCall, in updateBroadcastIn) (getBroadcastOut, error) {
@@ -688,12 +740,12 @@ var mcpBroadcastTools = []mcpTool{
 			return out, nil
 		}),
 	defineTool("schedule_broadcast", "Schedule a broadcast",
-		"Schedules a draft to go out to its audience at send_at. confirm_recipients must be the recipient count that get_broadcast showed and the person you work for confirmed; if the audience changed since, nothing is scheduled. The review must pass. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/schedule.",
+		"Schedules a draft to go out to its audience at send_at, or at send_at_local in the broadcast's time zone (now when neither is given); with sending hours that are closed then, sending waits for them. confirm_recipients must be the recipient count that get_broadcast showed and the person you work for confirmed; if the audience changed since, nothing is scheduled. The review must pass. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/schedule.",
 		delivering, nil,
 		mcpTool{ops: []string{"ScheduleBroadcast"}, gate: maySchedule},
 		func(ctx context.Context, c *mcpCall, in scheduleBroadcastIn) (mcpBroadcast, error) {
 			res, err := c.s.ScheduleBroadcast(ctx, oas.ScheduleBroadcastRequestObject{BroadcastId: in.BroadcastID, Body: &oas.BroadcastSchedule{
-				SendAt: &in.SendAt, ConfirmRecipients: &in.ConfirmRecipients,
+				SendAt: in.SendAt, SendAtLocal: optString[string](in.SendAtLocal), ConfirmRecipients: &in.ConfirmRecipients,
 			}})
 			if err != nil {
 				return mcpBroadcast{}, scheduleProblem(err)

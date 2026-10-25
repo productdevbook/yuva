@@ -462,5 +462,5 @@ func (s *Server) BroadcastChangelogEntry(ctx context.Context, req oas.BroadcastC
 	if err != nil {
 		return nil, err
 	}
-	return oas.BroadcastChangelogEntry201JSONResponse(broadcastBody(out)), nil
+	return oas.BroadcastChangelogEntry201JSONResponse(s.broadcastBody(out)), nil
 }

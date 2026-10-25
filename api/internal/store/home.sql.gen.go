@@ -242,7 +242,7 @@ func (q *Queries) HomeInbox(ctx context.Context, arg HomeInboxParams) ([]HomeInb
 }
 
 const homeLastBroadcast = `-- name: HomeLastBroadcast :one
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id FROM broadcasts b
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end FROM broadcasts b
 WHERE b.workspace_id = $1 AND b.state = 'sent'
   AND ($2::uuid IS NULL OR b.inbox_id = $2::uuid)
   AND (($3::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.personal)) OR EXISTS (
@@ -306,6 +306,9 @@ func (q *Queries) HomeLastBroadcast(ctx context.Context, arg HomeLastBroadcastPa
 		&i.PacePerMonth,
 		&i.PaceNextAt,
 		&i.ChangelogEntryID,
+		&i.Timezone,
+		&i.SendWindowStart,
+		&i.SendWindowEnd,
 	)
 	return i, err
 }

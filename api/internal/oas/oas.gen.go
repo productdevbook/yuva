@@ -1965,6 +1965,7 @@ const (
 	BroadcastReviewKeyLinks            BroadcastReviewKey = "links"
 	BroadcastReviewKeyMergeFields      BroadcastReviewKey = "merge_fields"
 	BroadcastReviewKeyPace             BroadcastReviewKey = "pace"
+	BroadcastReviewKeySendWindow       BroadcastReviewKey = "send_window"
 	BroadcastReviewKeySenderIdentity   BroadcastReviewKey = "sender_identity"
 	BroadcastReviewKeySenderReady      BroadcastReviewKey = "sender_ready"
 	BroadcastReviewKeySesTenant        BroadcastReviewKey = "ses_tenant"
@@ -1996,6 +1997,8 @@ func (e BroadcastReviewKey) Valid() bool {
 	case BroadcastReviewKeyMergeFields:
 		return true
 	case BroadcastReviewKeyPace:
+		return true
+	case BroadcastReviewKeySendWindow:
 		return true
 	case BroadcastReviewKeySenderIdentity:
 		return true
@@ -10939,10 +10942,12 @@ type Broadcast struct {
 	Name string `json:"name"`
 
 	// Pace The broadcast's own pace, below the channel's `broadcast_rate` and the workspace's daily limit:
-	// at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours and `per_month` in any
-	// 30 days. Mails are spaced evenly at the gap of the tightest one (3,600 / `per_hour`,
-	// 86,400 / `per_day` or 2,592,000 / `per_month` seconds). Every SMTP attempt counts, retries
-	// included; skipped recipients do not. An empty object is no pace.
+	// at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours (with a `send_window`:
+	// in each day's window) and `per_month` in any 30 days (with a window: spread over the window
+	// hours of 30 days). Mails are spaced evenly at the gap of the tightest one (3,600 / `per_hour`,
+	// 86,400 / `per_day` or 2,592,000 / `per_month` seconds; with a window the day is that day's
+	// window length). Every SMTP attempt counts, retries included; skipped recipients do not. An
+	// empty object is no pace.
 	Pace *BroadcastPace `json:"pace,omitempty"`
 
 	// PaceNextAt While sending with at least a minute between mails: the earliest time the next mail may go out.
@@ -10968,7 +10973,14 @@ type Broadcast struct {
 
 	// ScheduledByApiKey The API key that scheduled it.
 	ScheduledByApiKey *uuid.UUID `json:"scheduled_by_api_key,omitempty"`
-	StartedAt         *time.Time `json:"started_at,omitempty"`
+
+	// SendWindow Mails go out only between `start` and `end` each day in the broadcast's `timezone`; outside the
+	// window sending waits and goes on when it opens again, the next day if need be. `end` before
+	// `start` crosses midnight (`22:00`–`06:00`); `end` `24:00` is the end of the day. At least 30
+	// minutes. The window keeps its local times when the clocks change: a time skipped that day moves
+	// forward by the jump, a time that happens twice opens at the first and closes at the second.
+	SendWindow *BroadcastSendWindow `json:"send_window,omitempty"`
+	StartedAt  *time.Time           `json:"started_at,omitempty"`
 
 	// State `draft` → `scheduled` (until `scheduled_at`) → `preparing` (taking the audience) →
 	// `sending` → `sent`. `paused` stops sending until resumed; `cancelled` ends it for good;
@@ -10979,7 +10991,14 @@ type Broadcast struct {
 	StateDetail *string `json:"state_detail,omitempty"`
 
 	// Subject May hold merge fields.
-	Subject   string    `json:"subject"`
+	Subject string `json:"subject"`
+
+	// Timezone The zone of `send_window` and `send_at_local`. Set from the inbox's time zone when the
+	// broadcast is created. Times in the API stay instants (`scheduled_at` and the others).
+	//
+	//
+	// Examples: Europe/Istanbul
+	Timezone  TimeZone  `json:"timezone"`
 	UpdatedAt time.Time `json:"updated_at"`
 
 	// Utm Links to the web get `utm_source=newsletter`, `utm_medium=email` and
@@ -10993,6 +11012,11 @@ type Broadcast struct {
 	// WaitingUntil The workspace's daily limit is reached; sending continues at this time (the next 00:00 UTC).
 	// The broadcast's own pace shows in `pace_next_at`.
 	WaitingUntil *time.Time `json:"waiting_until,omitempty"`
+
+	// WindowOpensAt Scheduled, preparing or sending, with a `send_window` that is closed when sending would
+	// go on (now, or `scheduled_at` while that is later): when it opens next. The daily limit's
+	// wait is `waiting_until`, the pace's `pace_next_at`.
+	WindowOpensAt *time.Time `json:"window_opens_at,omitempty"`
 }
 
 // BroadcastApprovalRequest defines model for BroadcastApprovalRequest.
@@ -11132,13 +11156,27 @@ type BroadcastCreate struct {
 	Name          string                  `json:"name"`
 
 	// Pace The broadcast's own pace, below the channel's `broadcast_rate` and the workspace's daily limit:
-	// at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours and `per_month` in any
-	// 30 days. Mails are spaced evenly at the gap of the tightest one (3,600 / `per_hour`,
-	// 86,400 / `per_day` or 2,592,000 / `per_month` seconds). Every SMTP attempt counts, retries
-	// included; skipped recipients do not. An empty object is no pace.
+	// at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours (with a `send_window`:
+	// in each day's window) and `per_month` in any 30 days (with a window: spread over the window
+	// hours of 30 days). Mails are spaced evenly at the gap of the tightest one (3,600 / `per_hour`,
+	// 86,400 / `per_day` or 2,592,000 / `per_month` seconds; with a window the day is that day's
+	// window length). Every SMTP attempt counts, retries included; skipped recipients do not. An
+	// empty object is no pace.
 	Pace      *BroadcastPace `json:"pace,omitempty"`
 	Preheader *string        `json:"preheader,omitempty"`
-	Subject   *string        `json:"subject,omitempty"`
+
+	// SendWindow Mails go out only between `start` and `end` each day in the broadcast's `timezone`; outside the
+	// window sending waits and goes on when it opens again, the next day if need be. `end` before
+	// `start` crosses midnight (`22:00`–`06:00`); `end` `24:00` is the end of the day. At least 30
+	// minutes. The window keeps its local times when the clocks change: a time skipped that day moves
+	// forward by the jump, a time that happens twice opens at the first and closes at the second.
+	SendWindow *BroadcastSendWindow `json:"send_window,omitempty"`
+	Subject    *string              `json:"subject,omitempty"`
+
+	// Timezone The inbox's time zone when absent.
+	//
+	// Examples: Europe/Istanbul
+	Timezone *TimeZone `json:"timezone,omitempty"`
 
 	// Utm On when absent at creation.
 	Utm *bool `json:"utm,omitempty"`
@@ -11193,8 +11231,8 @@ type BroadcastDeliveryPage struct {
 // was cancelled.
 type BroadcastDeliveryState string
 
-// BroadcastEvent `broadcast.updated`: the broadcast changed state or its pace. Delivered to callers who hold
-// `broadcasts:read` and can see its inbox.
+// BroadcastEvent `broadcast.updated`: the broadcast changed state, its pace, time zone or send window.
+// Delivered to callers who hold `broadcasts:read` and can see its inbox.
 type BroadcastEvent struct {
 	CreatedAt   time.Time          `json:"created_at"`
 	Data        BroadcastEventData `json:"data"`
@@ -11224,10 +11262,12 @@ type BroadcastListCount struct {
 }
 
 // BroadcastPace The broadcast's own pace, below the channel's `broadcast_rate` and the workspace's daily limit:
-// at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours and `per_month` in any
-// 30 days. Mails are spaced evenly at the gap of the tightest one (3,600 / `per_hour`,
-// 86,400 / `per_day` or 2,592,000 / `per_month` seconds). Every SMTP attempt counts, retries
-// included; skipped recipients do not. An empty object is no pace.
+// at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours (with a `send_window`:
+// in each day's window) and `per_month` in any 30 days (with a window: spread over the window
+// hours of 30 days). Mails are spaced evenly at the gap of the tightest one (3,600 / `per_hour`,
+// 86,400 / `per_day` or 2,592,000 / `per_month` seconds; with a window the day is that day's
+// window length). Every SMTP attempt counts, retries included; skipped recipients do not. An
+// empty object is no pace.
 type BroadcastPace struct {
 	PerDay  *int32 `json:"per_day,omitempty"`
 	PerHour *int32 `json:"per_hour,omitempty"`
@@ -11327,6 +11367,9 @@ type BroadcastProgress struct {
 	// `failed` when it cannot go on (its channel was removed).
 	State        BroadcastState `json:"state"`
 	WaitingUntil *time.Time     `json:"waiting_until,omitempty"`
+
+	// WindowOpensAt With a `send_window` that is closed now: when it opens next.
+	WindowOpensAt *time.Time `json:"window_opens_at,omitempty"`
 }
 
 // BroadcastProgressEvent `broadcast.progress`, on `/v1/realtime` only: the counts of a preparing or sending broadcast,
@@ -11417,11 +11460,13 @@ type BroadcastReportReply struct {
 
 // BroadcastReview defines model for BroadcastReview.
 type BroadcastReview struct {
-	// Days How many UTC days sending takes under the workspace's daily limit; absent without a limit.
+	// Days How many days sending takes under the workspace's daily limit (UTC days), counting only the
+	// window's hours when there is a `send_window`; absent with neither.
 	Days *int32 `json:"days,omitempty"`
 
 	// DurationSeconds About how long sending takes from its start: the slowest of the pace, the channel's rate and
-	// the workspace's daily limit (as if no other broadcast used it). Absent when nobody would get it.
+	// the workspace's daily limit (as if no other broadcast used it), counting only the window's
+	// hours when there is one. Absent when nobody would get it.
 	DurationSeconds *int64                `json:"duration_seconds,omitempty"`
 	HtmlBytes       *int32                `json:"html_bytes,omitempty"`
 	Items           []BroadcastReviewItem `json:"items"`
@@ -11436,21 +11481,45 @@ type BroadcastReview struct {
 // BroadcastReviewItem defines model for BroadcastReviewItem.
 type BroadcastReviewItem struct {
 	// Detail What is wrong or what to know, in English.
-	Detail *string               `json:"detail,omitempty"`
+	Detail *string `json:"detail,omitempty"`
+
+	// Key `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
+	// when the window is closed at the scheduled time (now for a draft), with when sending starts.
 	Key    BroadcastReviewKey    `json:"key"`
 	Status BroadcastReviewStatus `json:"status"`
 }
 
-// BroadcastReviewKey defines model for BroadcastReviewKey.
+// BroadcastReviewKey `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
+// when the window is closed at the scheduled time (now for a draft), with when sending starts.
 type BroadcastReviewKey string
 
 // BroadcastReviewStatus defines model for BroadcastReviewStatus.
 type BroadcastReviewStatus string
 
-// BroadcastSchedule defines model for BroadcastSchedule.
+// BroadcastSchedule At most one of `send_at` and `send_at_local`; neither sends now.
 type BroadcastSchedule struct {
 	ConfirmRecipients *int64     `json:"confirm_recipients,omitempty"`
 	SendAt            *time.Time `json:"send_at,omitempty"`
+
+	// SendAtLocal A wall-clock time in the broadcast's `timezone`, such as `2026-11-02T09:00`. A time the
+	// clocks skip that day moves forward by the jump; a time that happens twice is the first.
+	//
+	//
+	// Examples: 2026-11-02T09:00
+	SendAtLocal *string `json:"send_at_local,omitempty"`
+}
+
+// BroadcastSendWindow Mails go out only between `start` and `end` each day in the broadcast's `timezone`; outside the
+// window sending waits and goes on when it opens again, the next day if need be. `end` before
+// `start` crosses midnight (`22:00`–`06:00`); `end` `24:00` is the end of the day. At least 30
+// minutes. The window keeps its local times when the clocks change: a time skipped that day moves
+// forward by the jump, a time that happens twice opens at the first and closes at the second.
+type BroadcastSendWindow struct {
+	// End Examples: 12:00
+	End string `json:"end"`
+
+	// Start Examples: 05:00
+	Start string `json:"start"`
 }
 
 // BroadcastSkipReason defines model for BroadcastSkipReason.
@@ -11492,7 +11561,17 @@ type BroadcastUpdate struct {
 	// Pace Replaces the whole pace; `{}` removes it.
 	Pace      *BroadcastPace `json:"pace,omitempty"`
 	Preheader *string        `json:"preheader,omitempty"`
-	Subject   *string        `json:"subject,omitempty"`
+
+	// SendWindow `null` removes the window.
+	SendWindow nullable.Nullable[BroadcastSendWindow] `json:"send_window,omitempty"`
+	Subject    *string                                `json:"subject,omitempty"`
+
+	// Timezone An IANA time zone, such as `Europe/Istanbul` or `America/New_York`; `UTC` for none. Offsets
+	// (`+03:00`) and abbreviations that are not zone names are refused with `400 validation_failed`.
+	//
+	//
+	// Examples: Europe/Istanbul
+	Timezone *TimeZone `json:"timezone,omitempty"`
 
 	// Utm On when absent at creation.
 	Utm *bool `json:"utm,omitempty"`
@@ -24508,6 +24587,12 @@ type TeamUpdate struct {
 	// Name Unique in the workspace (`409 team_taken`).
 	Name *string `json:"name,omitempty"`
 }
+
+// TimeZone An IANA time zone, such as `Europe/Istanbul` or `America/New_York`; `UTC` for none. Offsets
+// (`+03:00`) and abbreviations that are not zone names are refused with `400 validation_failed`.
+//
+// Examples: Europe/Istanbul
+type TimeZone = string
 
 // TrashEmpty defines model for TrashEmpty.
 type TrashEmpty struct {

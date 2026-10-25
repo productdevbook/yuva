@@ -10351,9 +10351,10 @@ paths:
         A draft of an inbox. `channel_id` names the inbox's e-mail channel that sends it: one with
         an SMTP account and an address to send from (`409 email_channel_required`). The audience
         names up to 10 lists of the same inbox, up to 10 attribute conditions and the contact
-        languages to keep. `pace` sets its own pace (`BroadcastPace`). Everything can be changed
-        while the broadcast is a draft; the review (`GET .../review`) says what is still missing
-        before it can be scheduled.
+        languages to keep. `pace` sets its own pace (`BroadcastPace`). `timezone` is the inbox's
+        when absent; `send_window` limits sending to hours of the day in that zone. Everything can
+        be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
+        missing before it can be scheduled.
 
         Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
         broadcast write answers `403 broadcasts_disabled`.
@@ -10451,10 +10452,16 @@ paths:
       description: |
         Changes the given fields of a draft (`409 not_draft` otherwise). `channel_id: null` and
         `design_id: null` clear them; `audience` replaces the whole audience; `pace` replaces the
-        whole pace and `{}` removes it. While the broadcast is scheduled, preparing, sending or
-        paused, `pace` alone can still change (`409 invalid_state` once it finished); it applies to
-        the next mail, and `409 pace_too_slow` (with `days`, the estimate) refuses a pace under which
-        the mail still to go out would take more than 365 days.
+        whole pace and `{}` removes it; `send_window: null` removes the sending hours. While the
+        broadcast is scheduled, preparing, sending or paused, only `pace`, `timezone` and
+        `send_window` can still change, in any combination (anything else `409 not_draft`,
+        `409 invalid_state` once it finished); a change applies to the next mail, and
+        `409 pace_too_slow` (with `days`, the estimate, which counts the sending hours) refuses a
+        change under which the mail still to go out would take more than 365 days. Changing
+        `timezone` never moves `scheduled_at`.
+
+        `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
+        shorter than 30 minutes or with `start` equal to `end`, a malformed time.
 
         Owners, admins and API keys. Scope: `broadcasts:write`.
       tags: [broadcasts]
@@ -10620,10 +10627,14 @@ paths:
       summary: Schedule or send now
       description: |
         Runs the review and, when nothing blocks, freezes the design and schedules the broadcast
-        for `send_at` (now when absent; at most 90 days ahead). When sending starts, the audience is
-        taken once: contacts who subscribe later are not included, and anyone who unsubscribes,
-        bounces or complains before their mail goes out is skipped. `confirm_recipients`, when
-        given, must equal the current audience count (`409 audience_changed` with `recipients`).
+        for `send_at`, or for `send_at_local`, a wall-clock time in the broadcast's `timezone` (now
+        when both are absent; at most 90 days ahead, counted from the resolved time). Both
+        `send_at` and `send_at_local`: `400 validation_failed`. With a `send_window` that is closed
+        at that time the audience is still taken then and sending waits for the window. When
+        sending starts, the audience is taken once: contacts who subscribe later are not included,
+        and anyone who unsubscribes, bounces or complains before their mail goes out is skipped.
+        `confirm_recipients`, when given, must equal the current audience count
+        (`409 audience_changed` with `recipients`).
 
         Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
         `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
@@ -33427,7 +33438,7 @@ components:
           $ref: "#/components/schemas/BroadcastSkipped"
     Broadcast:
       type: object
-      required: [id, inbox_id, name, subject, preheader, audience, click_tracking, utm, utm_campaign, state, counts, created_at, updated_at]
+      required: [id, inbox_id, name, subject, preheader, audience, click_tracking, utm, utm_campaign, state, timezone, counts, created_at, updated_at]
       properties:
         id:
           type: string
@@ -33492,6 +33503,20 @@ components:
           type: string
           format: date-time
           description: "While sending with at least a minute between mails: the earliest time the next mail may go out."
+        timezone:
+          $ref: "#/components/schemas/TimeZone"
+          description: |
+            The zone of `send_window` and `send_at_local`. Set from the inbox's time zone when the
+            broadcast is created. Times in the API stay instants (`scheduled_at` and the others).
+        send_window:
+          $ref: "#/components/schemas/BroadcastSendWindow"
+        window_opens_at:
+          type: string
+          format: date-time
+          description: |
+            Scheduled, preparing or sending, with a `send_window` that is closed when sending would
+            go on (now, or `scheduled_at` while that is later): when it opens next. The daily limit's
+            wait is `waiting_until`, the pace's `pace_next_at`.
         started_at:
           type: string
           format: date-time
@@ -33572,6 +33597,11 @@ components:
           description: Lowercase letters, digits, `-`, `_` and `.`; made from `name` when absent at creation.
         pace:
           $ref: "#/components/schemas/BroadcastPace"
+        timezone:
+          $ref: "#/components/schemas/TimeZone"
+          description: The inbox's time zone when absent.
+        send_window:
+          $ref: "#/components/schemas/BroadcastSendWindow"
     BroadcastUpdate:
       type: object
       minProperties: 1
@@ -33608,14 +33638,51 @@ components:
         pace:
           $ref: "#/components/schemas/BroadcastPace"
           description: Replaces the whole pace; `{}` removes it.
+        timezone:
+          $ref: "#/components/schemas/TimeZone"
+        send_window:
+          anyOf:
+            - $ref: "#/components/schemas/BroadcastSendWindow"
+            - type: "null"
+          description: "`null` removes the window."
+    TimeZone:
+      type: string
+      description: |
+        An IANA time zone, such as `Europe/Istanbul` or `America/New_York`; `UTC` for none. Offsets
+        (`+03:00`) and abbreviations that are not zone names are refused with `400 validation_failed`.
+      minLength: 1
+      maxLength: 64
+      pattern: "^[A-Za-z][A-Za-z0-9_+/-]{0,63}$"
+      examples: [Europe/Istanbul]
+    BroadcastSendWindow:
+      type: object
+      description: |
+        Mails go out only between `start` and `end` each day in the broadcast's `timezone`; outside the
+        window sending waits and goes on when it opens again, the next day if need be. `end` before
+        `start` crosses midnight (`22:00`–`06:00`); `end` `24:00` is the end of the day. At least 30
+        minutes. The window keeps its local times when the clocks change: a time skipped that day moves
+        forward by the jump, a time that happens twice opens at the first and closes at the second.
+      required: [start, end]
+      additionalProperties: false
+      properties:
+        start:
+          type: string
+          pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+          examples: ["05:00"]
+        end:
+          type: string
+          pattern: "^(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$"
+          examples: ["12:00"]
     BroadcastPace:
       type: object
       description: |
         The broadcast's own pace, below the channel's `broadcast_rate` and the workspace's daily limit:
-        at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours and `per_month` in any
-        30 days. Mails are spaced evenly at the gap of the tightest one (3,600 / `per_hour`,
-        86,400 / `per_day` or 2,592,000 / `per_month` seconds). Every SMTP attempt counts, retries
-        included; skipped recipients do not. An empty object is no pace.
+        at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours (with a `send_window`:
+        in each day's window) and `per_month` in any 30 days (with a window: spread over the window
+        hours of 30 days). Mails are spaced evenly at the gap of the tightest one (3,600 / `per_hour`,
+        86,400 / `per_day` or 2,592,000 / `per_month` seconds; with a window the day is that day's
+        window length). Every SMTP attempt counts, retries included; skipped recipients do not. An
+        empty object is no pace.
       properties:
         per_hour:
           type: integer
@@ -33705,7 +33772,10 @@ components:
             $ref: "#/components/schemas/BroadcastListCount"
     BroadcastReviewKey:
       type: string
-      enum: [sender_identity, sender_ready, approval, design, audience_nonempty, merge_fields, html_size, images_alt, links, subject, deliverability, daily_cap, pace, test_sent, click_tracking, ses_tenant]
+      enum: [sender_identity, sender_ready, approval, design, audience_nonempty, merge_fields, html_size, images_alt, links, subject, deliverability, daily_cap, pace, send_window, test_sent, click_tracking, ses_tenant]
+      description: |
+        `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
+        when the window is closed at the scheduled time (now for a draft), with when sending starts.
     BroadcastReviewStatus:
       type: string
       enum: [ok, warning, blocking]
@@ -33738,13 +33808,16 @@ components:
         days:
           type: integer
           format: int32
-          description: How many UTC days sending takes under the workspace's daily limit; absent without a limit.
+          description: |
+            How many days sending takes under the workspace's daily limit (UTC days), counting only the
+            window's hours when there is a `send_window`; absent with neither.
         duration_seconds:
           type: integer
           format: int64
           description: |
             About how long sending takes from its start: the slowest of the pace, the channel's rate and
-            the workspace's daily limit (as if no other broadcast used it). Absent when nobody would get it.
+            the workspace's daily limit (as if no other broadcast used it), counting only the window's
+            hours when there is one. Absent when nobody would get it.
         items:
           type: array
           items:
@@ -33786,10 +33859,18 @@ components:
             $ref: "#/components/schemas/Email"
     BroadcastSchedule:
       type: object
+      description: At most one of `send_at` and `send_at_local`; neither sends now.
       properties:
         send_at:
           type: string
           format: date-time
+        send_at_local:
+          type: string
+          pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$"
+          description: |
+            A wall-clock time in the broadcast's `timezone`, such as `2026-11-02T09:00`. A time the
+            clocks skip that day moves forward by the jump; a time that happens twice is the first.
+          examples: ["2026-11-02T09:00"]
         confirm_recipients:
           type: integer
           format: int64
@@ -33999,8 +34080,8 @@ components:
     BroadcastEvent:
       type: object
       description: |
-        `broadcast.updated`: the broadcast changed state or its pace. Delivered to callers who hold
-        `broadcasts:read` and can see its inbox.
+        `broadcast.updated`: the broadcast changed state, its pace, time zone or send window.
+        Delivered to callers who hold `broadcasts:read` and can see its inbox.
       required: [id, type, workspace_id, inbox_id, created_at, data]
       properties:
         id:
@@ -34038,6 +34119,10 @@ components:
           type: string
           format: date-time
           description: "While sending with at least a minute between mails: the earliest time the next mail may go out."
+        window_opens_at:
+          type: string
+          format: date-time
+          description: "With a `send_window` that is closed now: when it opens next."
     BroadcastProgressEvent:
       type: object
       description: |
