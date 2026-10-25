@@ -102,6 +102,8 @@ class YuvaClient internal constructor(
 
     @Volatile var session: YuvaSession? = null
         private set
+    @Volatile internal var sessionLanguage: String? = null
+        private set
 
     fun events(): SharedFlow<YuvaEvent> = shared.asSharedFlow()
 
@@ -120,7 +122,9 @@ class YuvaClient internal constructor(
     }
 
     suspend fun refreshSession(): YuvaSession =
-        request<YuvaSession>("GET", "client/v1/session").also { session = it }
+        Locale.getDefault().toLanguageTag().let { language ->
+            request<YuvaSession>("GET", "client/v1/session").also { session = it; sessionLanguage = language }
+        }
 
     suspend fun identify(): YuvaSession {
         identityEnabled = true
@@ -141,6 +145,7 @@ class YuvaClient internal constructor(
             val pending = (stored.pendingRevoke + listOfNotNull(token, stored.token)).distinct()
             token = null
             session = null
+            sessionLanguage = null
             lastEventId = 0
             store.save(StoredSession(pendingRevoke = pending))
             revoke(pending)
@@ -326,6 +331,7 @@ class YuvaClient internal constructor(
         if (token != newToken) lastEventId = 0
         token = newToken
         session = info
+        sessionLanguage = Locale.getDefault().toLanguageTag()
         if (pushJob?.isActive != true) schedulePush()
         store.save(
             stored.copy(

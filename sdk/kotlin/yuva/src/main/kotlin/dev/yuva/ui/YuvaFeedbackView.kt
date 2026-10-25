@@ -91,6 +91,7 @@ import dev.yuva.YuvaFeedbackCategory
 import dev.yuva.YuvaFeedbackCategoryItem
 import dev.yuva.YuvaInbox
 import dev.yuva.YuvaUpload
+import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -139,7 +140,7 @@ fun YuvaFeedbackView(
     val builtIns = YuvaFeedbackCategory.entries.map {
         YuvaFeedbackCategoryItem(it.value, stringResource(categoryLabel(it)))
     }
-    val shown = categories.ifEmpty { builtIns }
+    val shown = categories.ifEmpty { builtIns }.map { item -> builtIns.firstOrNull { it.key == item.key }?.copy(icon = item.icon) ?: item }
 
     fun offer(inbox: YuvaInbox) {
         limits = inbox.attachments
@@ -159,7 +160,9 @@ fun YuvaFeedbackView(
     }
 
     LaunchedEffect(client) {
-        val session = runCatching { client.start() }.getOrNull() ?: return@LaunchedEffect
+        val cached = runCatching { client.start() }.getOrNull() ?: return@LaunchedEffect
+        val session = if (client.sessionLanguage == Locale.getDefault().toLanguageTag()) cached
+        else runCatching { client.refreshSession() }.getOrDefault(cached)
         offer(session.inbox)
         knownEmail = session.contact.email
     }

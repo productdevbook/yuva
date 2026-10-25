@@ -148,6 +148,13 @@ extension YuvaFeedbackInfo {
     }
 }
 
+extension YuvaFeedbackCategoryItem {
+    var localized: YuvaFeedbackCategoryItem {
+        guard let builtin = YuvaFeedbackCategory(rawValue: key) else { return self }
+        return YuvaFeedbackCategoryItem(key: key, name: builtin.item.name, icon: icon)
+    }
+}
+
 extension YuvaFeedbackCategory {
     var item: YuvaFeedbackCategoryItem {
         YuvaFeedbackCategoryItem(key: rawValue, name: L.t("feedback.category." + rawValue), icon: nil)

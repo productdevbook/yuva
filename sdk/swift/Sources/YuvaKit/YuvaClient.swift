@@ -48,6 +48,7 @@ public actor YuvaClient {
     private var pushDirty = false
     private var pushTask: Task<Void, Never>?
     public private(set) var session: YuvaSession?
+    private(set) var sessionLanguage: String?
 
     public init(configuration: YuvaConfiguration, urlSession: URLSession = .shared) {
         self.init(configuration: configuration, urlSession: urlSession, store: SessionStore(channelKey: configuration.channelKey))
@@ -75,8 +76,10 @@ public actor YuvaClient {
 
     @discardableResult
     public func refreshSession() async throws -> YuvaSession {
+        let language = Locale.preferredLanguages.first
         let info: YuvaSession = try await request("GET", "client/v1/session")
         session = info
+        sessionLanguage = language
         return info
     }
 
@@ -104,6 +107,7 @@ public actor YuvaClient {
         }
         token = nil
         session = nil
+        sessionLanguage = nil
         lastEventId = 0
         store.save(StoredSession(pendingRevoke: pending))
         await revoke(pending)
@@ -317,6 +321,7 @@ public actor YuvaClient {
         if self.token != token { lastEventId = 0 }
         self.token = token
         session = info
+        sessionLanguage = Locale.preferredLanguages.first
         stored.token = token
         stored.expiresAt = info.expiresAt
         stored.subject = subject

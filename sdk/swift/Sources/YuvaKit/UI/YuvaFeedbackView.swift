@@ -77,7 +77,9 @@ public struct YuvaFeedbackView: View {
         }
         .countsAsOpen()
         .task {
-            guard let session = try? await client.start() else { return }
+            guard let cached = try? await client.start() else { return }
+            let stale = await client.sessionLanguage != Locale.preferredLanguages.first
+            let session = stale ? (try? await client.refreshSession()) ?? cached : cached
             offer(session.inbox)
             knownEmail = session.contact.email
         }
@@ -118,7 +120,7 @@ public struct YuvaFeedbackView: View {
         Form {
             Section(L.t("feedback.category")) {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 8)], spacing: 8) {
-                    ForEach(categories) { option in
+                    ForEach(categories.map(\.localized)) { option in
                         categoryChip(option)
                     }
                 }
