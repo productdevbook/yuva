@@ -110,7 +110,7 @@ Ayrı bir e-posta sunucusunda S3 depolama kullanın ki ikisi de aynı yere yazs�
 kopyalayın:
 
 ```sh
-docker create --name yuva-bin ghcr.io/productdevbook/yuva:0.2.0
+docker create --name yuva-bin ghcr.io/productdevbook/yuva:0.3.0
 docker cp yuva-bin:/yuva /usr/local/bin/yuva && docker rm yuva-bin
 ```
 

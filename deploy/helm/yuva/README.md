@@ -49,7 +49,7 @@ an operator such as [CloudNativePG](https://cloudnative-pg.io).
 3. Install:
 
    ```sh
-   helm install yuva oci://ghcr.io/productdevbook/charts/yuva --version 0.2.0 -n yuva -f values.yaml
+   helm install yuva oci://ghcr.io/productdevbook/charts/yuva --version 0.3.0 -n yuva -f values.yaml
    ```
 
 4. Create the first owner:
@@ -88,7 +88,7 @@ release, readable by anyone who can read Secrets in the namespace. Other keys in
 become variables too.
 
 Web Push needs a VAPID key pair: run
-`docker run --rm ghcr.io/productdevbook/yuva:0.2.0 vapid-keys` and add both values to the Secret.
+`docker run --rm ghcr.io/productdevbook/yuva:0.3.0 vapid-keys` and add both values to the Secret.
 
 ## Storage
 

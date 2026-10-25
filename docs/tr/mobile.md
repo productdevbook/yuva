@@ -32,7 +32,7 @@ minSdk 26 gerekir. Repository'lerinize `maven("https://jitpack.io")` ekleyin ve 
 release etiketini kullanın (JitPack'in yeni bir etiketi derlemesi birkaç dakika sürer):
 
 ```kotlin
-implementation("com.github.productdevbook:yuva:v0.2.0")
+implementation("com.github.productdevbook:yuva:v0.3.0")
 ```
 
 ```kotlin
