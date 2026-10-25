@@ -13,8 +13,6 @@ import (
 
 const MaxTranslations = 20
 
-// Translation is one version of a document in another language: block texts by block id, its
-// preheader and optionally its writing direction. Everything else is the base document's.
 type Translation struct {
 	Preheader string            `json:"preheader,omitempty"`
 	Direction string            `json:"direction,omitempty"`
@@ -23,12 +21,11 @@ type Translation struct {
 
 var tagPattern = regexp.MustCompile(`^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$`)
 
-// CanonicalTag returns a BCP 47 tag in canonical case (es-MX, zh-Hant), without replacing
-// deprecated subtags; false when it is not a tag.
 func CanonicalTag(s string) (string, bool) {
 	if len(s) > 35 || !tagPattern.MatchString(s) {
 		return "", false
 	}
+	// Raw keeps deprecated subtags as written, so a stored tag never changes under a newer CLDR.
 	t, err := language.Raw.Parse(s)
 	if err != nil {
 		return "", false
@@ -36,8 +33,6 @@ func CanonicalTag(s string) (string, bool) {
 	return t.String(), true
 }
 
-// FooterLang is the language of the required footer for a version: en, tr or de, and false when
-// the server has no footer words in the version's language.
 func FooterLang(tag string) (string, bool) {
 	primary, _, _ := strings.Cut(strings.ToLower(tag), "-")
 	if _, ok := footerTexts[primary]; ok {
@@ -114,7 +109,7 @@ func (c *checker) languages(d Document) {
 	if len(d.Translations) > MaxTranslations {
 		c.add("", "translations", "too_many", fmt.Sprintf("at most %d languages", MaxTranslations))
 	}
-	if d.FallbackLocale != "" && d.Locale != "" && !slices.Contains(d.Versions(), d.FallbackLocale) {
+	if _, ok := d.Translations[d.FallbackLocale]; d.FallbackLocale != "" && d.Locale != "" && d.FallbackLocale != d.Locale && !ok {
 		c.add("", "fallback_locale", "invalid_locale", "locale or a key of translations")
 	}
 	blocks := map[string]Block{}
@@ -197,8 +192,6 @@ func baseText(b Block) string {
 	return ""
 }
 
-// Versioned is true when the document has translations; without them it is a single-language
-// design and its mail carries no version.
 func (d Document) Versioned() bool { return len(d.Translations) > 0 }
 
 func (d Document) translationTags() []string {
@@ -210,8 +203,6 @@ func (d Document) translationTags() []string {
 	return out
 }
 
-// Versions lists the base language, then the translations' sorted; none for a document without
-// translations.
 func (d Document) Versions() []string {
 	if !d.Versioned() || d.Locale == "" {
 		return nil
@@ -219,7 +210,6 @@ func (d Document) Versions() []string {
 	return append([]string{d.Locale}, d.translationTags()...)
 }
 
-// Fallback is the version for contacts without a language or a matching version.
 func (d Document) Fallback() string {
 	if d.FallbackLocale != "" {
 		return d.FallbackLocale
@@ -227,8 +217,6 @@ func (d Document) Fallback() string {
 	return d.Locale
 }
 
-// Pick is the version a contact with this language gets and whether their language matched one;
-// "" for a document without translations.
 func (d Document) Pick(contact string) (string, bool) {
 	if !d.Versioned() {
 		return "", false
@@ -236,9 +224,6 @@ func (d Document) Pick(contact string) (string, bool) {
 	return Resolve(contact, d.Versions(), d.Fallback())
 }
 
-// Resolve matches a contact's language against versions: the tag exactly, then shorter tags by
-// RFC 4647 lookup (es-MX, es), then the first version of the same language in another region,
-// else fallback. Matched is false when fallback was used.
 func Resolve(contact string, versions []string, fallback string) (string, bool) {
 	want := strings.ToLower(strings.ReplaceAll(strings.TrimSpace(contact), "_", "-"))
 	if c, ok := CanonicalTag(want); ok {
@@ -256,24 +241,37 @@ func Resolve(contact string, versions []string, fallback string) (string, bool) 
 		return "", false
 	}
 	parts := strings.Split(want, "-")
-	for n := len(parts); n >= 1; n-- {
-		if n < len(parts) && len(parts[n-1]) == 1 {
+	if v, ok := find(want); ok {
+		return v, true
+	}
+	writing := script(want)
+	for n := len(parts) - 1; n >= 1; n-- {
+		if len(parts[n-1]) == 1 {
 			continue
 		}
-		if v, ok := find(strings.Join(parts[:n], "-")); ok {
+		if v, ok := find(strings.Join(parts[:n], "-")); ok && script(v) == writing {
 			return v, true
 		}
 	}
 	for _, v := range versions {
-		if p, _, _ := strings.Cut(strings.ToLower(v), "-"); p == parts[0] {
+		if p, _, _ := strings.Cut(strings.ToLower(v), "-"); p == parts[0] && script(v) == writing {
 			return v, true
 		}
 	}
 	return fallback, false
 }
 
-// Localized is the document as a version reads: its texts, preheader and direction in place of
-// the base's, without translations. The base, or a tag that is not a version, is the base.
+// The likely script (zh-TW Hant, zh Hans, sr Cyrl) keeps a shorter tag or another region from
+// crossing scripts.
+func script(tag string) string {
+	t, err := language.Parse(tag)
+	if err != nil {
+		return ""
+	}
+	sc, _ := t.Script()
+	return sc.String()
+}
+
 func (d Document) Localized(tag string) Document {
 	var out Document
 	if err := json.Unmarshal(Marshal(d), &out); err != nil {
@@ -318,7 +316,6 @@ func (d Document) Localized(tag string) Document {
 	return out
 }
 
-// Missing lists the blocks with a base text that have none in a translation, in document order.
 func (d Document) Missing(tag string) []string {
 	t, ok := d.Translations[tag]
 	if !ok {
@@ -336,8 +333,6 @@ func (d Document) Missing(tag string) []string {
 	return out
 }
 
-// VersionIssues are the warnings of a version beyond its render: translation_missing per block
-// without a text and footer_language when its required footer is in English.
 func (d Document) VersionIssues(tag string) []Issue {
 	var out []Issue
 	for _, id := range d.Missing(tag) {
@@ -349,7 +344,6 @@ func (d Document) VersionIssues(tag string) []Issue {
 	return out
 }
 
-// Prune drops translation entries of blocks the document no longer has.
 func (d *Document) Prune() {
 	ids := map[string]bool{}
 	d.Walk(func(b Block) {
@@ -367,8 +361,6 @@ func (d *Document) Prune() {
 	}
 }
 
-// TranslationOf takes the texts of other, a document with the same block ids in another
-// language, as a translation of d.
 func (d Document) TranslationOf(other Document) Translation {
 	texts := map[string]string{}
 	other.Walk(func(b Block) {

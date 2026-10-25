@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"slices"
 	"strings"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
-// bcTranslation is a broadcast's subject and preheader for one version of its design.
 type bcTranslation struct {
 	Subject   string `json:"subject,omitempty"`
 	Preheader string `json:"preheader,omitempty"`
@@ -38,14 +38,20 @@ func checkTranslations(in map[string]oas.BroadcastTranslation) (map[string]bcTra
 	if len(in) > design.MaxTranslations {
 		return out, errValidation(fmt.Sprintf("translations names at most %d languages", design.MaxTranslations))
 	}
-	for k, t := range in {
+	tags := map[string]string{}
+	for _, k := range slices.Sorted(maps.Keys(in)) {
 		tag, err := languageTag(k, "each key of translations")
 		if err != nil {
 			return out, err
 		}
-		if _, dup := out[tag]; dup {
+		if _, dup := tags[tag]; dup {
 			return out, errValidation("translations names " + tag + " twice")
 		}
+		tags[tag] = k
+	}
+	for tag, k := range tags {
+		t := in[k]
+		var err error
 		var v bcTranslation
 		if t.Subject != nil {
 			if v.Subject, err = trimmed(*t.Subject, 0, 300, "translations."+tag+".subject"); err != nil {
@@ -79,7 +85,6 @@ func translationsBody(raw []byte) map[string]oas.BroadcastTranslation {
 	return out
 }
 
-// broadcastSubject is the subject of a version: the broadcast's for that language, else its own.
 func broadcastSubject(b store.Broadcast, tag string) string {
 	if t := parseTranslations(b.Translations)[tag]; t.Subject != "" {
 		return t.Subject
@@ -87,8 +92,6 @@ func broadcastSubject(b store.Broadcast, tag string) string {
 	return b.Subject
 }
 
-// broadcastPreheader is the preheader of a version: the broadcast's for that language, the
-// design version's, the broadcast's own, then the design's.
 func broadcastPreheader(b store.Broadcast, doc design.Document, tag string) string {
 	if t := parseTranslations(b.Translations)[tag]; t.Preheader != "" {
 		return t.Preheader
@@ -102,8 +105,6 @@ func broadcastPreheader(b store.Broadcast, doc design.Document, tag string) stri
 	return doc.Preheader
 }
 
-// frozenVersions are the language versions of the document a scheduled broadcast sends; none
-// for a draft or a design without translations.
 func frozenVersions(b store.Broadcast) []string {
 	if b.Document == nil {
 		return nil
@@ -115,8 +116,6 @@ func frozenVersions(b store.Broadcast) []string {
 	return d.Versions()
 }
 
-// translations adds the review item for the versions of a design: subjects, missing texts,
-// English footers and subjects for languages the design does not have.
 func (l *reviewList) translations(b store.Broadcast, doc *design.Document) {
 	trans := parseTranslations(b.Translations)
 	var versions []string

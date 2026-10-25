@@ -33,6 +33,28 @@ func TestResolve(t *testing.T) {
 	if got, matched := Resolve("es", []string{"en", "es-MX"}, "en"); got != "es-MX" || !matched {
 		t.Errorf("es against es-MX: %q %v", got, matched)
 	}
+	scripts := []struct {
+		contact  string
+		versions []string
+		want     string
+		matched  bool
+	}{
+		{"zh-TW", []string{"en", "zh-Hans"}, "en", false},
+		{"zh-Hant-TW", []string{"en", "zh-Hans"}, "en", false},
+		{"zh-TW", []string{"en", "zh"}, "en", false},
+		{"zh-TW", []string{"en", "zh-Hans", "zh-Hant"}, "zh-Hant", true},
+		{"zh-HK", []string{"en", "zh-Hant"}, "zh-Hant", true},
+		{"zh-CN", []string{"en", "zh-Hant", "zh-Hans"}, "zh-Hans", true},
+		{"zh", []string{"en", "zh-Hans"}, "zh-Hans", true},
+		{"sr-Latn", []string{"en", "sr-Cyrl"}, "en", false},
+		{"sr-Latn-RS", []string{"en", "sr"}, "en", false},
+		{"sr-RS", []string{"en", "sr"}, "sr", true},
+	}
+	for _, c := range scripts {
+		if got, matched := Resolve(c.contact, c.versions, "en"); got != c.want || matched != c.matched {
+			t.Errorf("Resolve(%q, %v) = %q %v, want %q %v", c.contact, c.versions, got, matched, c.want, c.matched)
+		}
+	}
 	if got, _ := Resolve("de", []string{"en", "tr"}, "tr"); got != "tr" {
 		t.Errorf("fallback: %q", got)
 	}
@@ -127,6 +149,13 @@ func TestTranslationIssues(t *testing.T) {
 		if !found {
 			t.Errorf("%s: want %s at %s, got %v", name, c.code, c.field, issues)
 		}
+	}
+	single := versioned[:strings.Index(versioned, ",\n\"translations\"")] + "}"
+	if is := Validate(parsed(t, single), Options{}); len(is) > 0 {
+		t.Errorf("fallback equal to the base without translations: %v", is)
+	}
+	if is := Validate(parsed(t, strings.Replace(single, `"fallback_locale": "en"`, `"fallback_locale": "es"`, 1)), Options{}); len(is) == 0 || is[0].Code != "invalid_locale" {
+		t.Errorf("fallback that is not a version: %v", is)
 	}
 	noBase := strings.Replace(versioned, `"locale": "en", `, "", 1)
 	d, _, err := Parse([]byte(noBase))

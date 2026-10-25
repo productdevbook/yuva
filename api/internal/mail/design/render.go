@@ -39,8 +39,7 @@ type Input struct {
 	Subject   string
 	Preheader string
 	// Lang is en, tr or de; it sets the html lang and the required footer's language.
-	Lang string
-	// HTMLLang, when set, is the html lang instead: the version's tag.
+	Lang         string
 	HTMLLang     string
 	Sender       Sender
 	SubscribedAt time.Time

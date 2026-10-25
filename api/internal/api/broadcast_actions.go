@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html"
+	"maps"
 	"math"
 	"net/http"
 	"slices"
@@ -189,10 +190,25 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 		l.add(oas.BroadcastReviewKeySubject, oas.ReviewBlocking, "write a subject")
 	case n > 300:
 		l.add(oas.BroadcastReviewKeySubject, oas.ReviewBlocking, "the subject is longer than 300 characters")
-	case n > subjectWarnRunes:
-		l.add(oas.BroadcastReviewKeySubject, oas.ReviewWarning, "inboxes show about the first 80 characters of a subject")
 	default:
-		l.add(oas.BroadcastReviewKeySubject, oas.ReviewOk, "")
+		var long []string
+		if n > subjectWarnRunes {
+			long = append(long, "")
+			if doc != nil && doc.Versioned() {
+				long[0] = doc.Locale
+			}
+		}
+		trans := parseTranslations(b.Translations)
+		for _, tag := range slices.Sorted(maps.Keys(trans)) {
+			if utf8.RuneCountInString(trans[tag].Subject) > subjectWarnRunes {
+				long = append(long, tag)
+			}
+		}
+		if len(long) > 0 {
+			l.add(oas.BroadcastReviewKeySubject, oas.ReviewWarning, "inboxes show about the first 80 characters of a subject"+versionNote(long...))
+		} else {
+			l.add(oas.BroadcastReviewKeySubject, oas.ReviewOk, "")
+		}
 	}
 	if ch != nil {
 		status, detail, err := s.deliverabilityReview(ctx, q, *ch)
@@ -273,13 +289,11 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 	return out, nil
 }
 
-// versionRender is the sample render of one language version ("" without translations).
 type versionRender struct {
 	tag string
 	out design.Output
 }
 
-// versionNote names the language versions a review item is about; nothing without versions.
 func versionNote(tags ...string) string {
 	tags = slices.DeleteFunc(slices.Clone(tags), func(t string) bool { return t == "" })
 	if len(tags) == 0 {

@@ -244,6 +244,9 @@ func (in updateDesignIn) document(cur oas.EmailDesign) (oas.EmailDesignDocument,
 		tr[tag] = e
 	}
 	doc.Translations = &tr
+	if len(tr) == 0 {
+		doc.FallbackLocale = nil
+	}
 	if in.Fallback != "" {
 		doc.FallbackLocale = new(oas.LanguageTag(in.Fallback))
 	}

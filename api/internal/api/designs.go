@@ -151,7 +151,6 @@ type renderScope struct {
 	subject string
 	pre     string
 	dark    bool
-	// version is the language version to render; "" for a design without translations.
 	version string
 }
 
@@ -522,8 +521,8 @@ func (s *Server) saveDesign(ctx context.Context, q *store.Queries, p principal, 
 
 var errVersionConflict = errors.New("version conflict")
 
-// keepTranslations carries the stored language versions over to a document sent without the
-// translations key, so a client that does not know them cannot erase them.
+// A client that does not know translations sends none; keeping the stored ones means it cannot
+// erase them.
 func keepTranslations(cur store.EmailDesign, d design.Document) (design.Document, error) {
 	old, _, err := design.Parse(cur.Document)
 	if err != nil {

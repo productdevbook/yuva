@@ -112,8 +112,24 @@ func TestDesignLanguages(t *testing.T) {
 		t.Fatalf("MCP preview of pt: %v %q", got, errText)
 	}
 
+	if _, errText := callTool(t, cs, "update_design", map[string]any{"design_id": bt.design, "base_version": 7, "fallback_locale": "es"}); errText != "" {
+		t.Fatal(errText)
+	}
+	for i, tag := range []string{"es", "pt"} {
+		if got, errText = callTool(t, cs, "update_design", map[string]any{"design_id": bt.design, "base_version": 8 + i, "locale": tag, "remove_locale": true}); errText != "" {
+			t.Fatalf("remove %s: %q", tag, errText)
+		}
+	}
+	if _, ok := got["locales"]; ok {
+		t.Fatalf("locales after removing every version: %v", got["locales"])
+	}
+	single := versionedDoc()
+	single["translations"] = map[string]any{}
+	single["fallback_locale"] = "en"
+	o.expect(http.StatusOK, "PUT", path, map[string]any{"name": "News", "document": single, "base_version": 10})
+
 	other := newBroadcastTeam(t, h, bs)
-	other.owner.expectProblem(http.StatusNotFound, "not_found", "PUT", path, map[string]any{"name": "News", "document": versionedDoc(), "base_version": 7})
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "PUT", path, map[string]any{"name": "News", "document": versionedDoc(), "base_version": 11})
 }
 
 func TestBroadcastLanguages(t *testing.T) {
@@ -131,6 +147,9 @@ func TestBroadcastLanguages(t *testing.T) {
 	o.expect(http.StatusOK, "PUT", "/v1/email-designs/"+bt.design, map[string]any{"name": "News", "document": versionedDoc(), "base_version": 1})
 
 	o.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/broadcasts", map[string]any{"inbox_id": bt.chatInbox, "name": "Bad", "translations": map[string]any{"e s": map[string]any{"subject": "x"}}})
+	for i := 0; i < 5; i++ {
+		o.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/broadcasts", map[string]any{"inbox_id": bt.chatInbox, "name": "Twice", "translations": map[string]any{"es": map[string]any{}, "ES": map[string]any{"subject": "X"}}})
+	}
 	id := bt.draft(t, map[string]any{"click_tracking": true, "translations": map[string]any{
 		"es": map[string]any{"subject": "Noticias para {{ contact.first_name | \"ti\" }}"},
 		"pt": map[string]any{"subject": "Notícias", "preheader": "Novidades"},
@@ -263,7 +282,11 @@ func TestBroadcastTestInALanguage(t *testing.T) {
 	o := bt.owner
 	bt.subscribe(t, "success@simulator.amazonses.com")
 	o.expect(http.StatusOK, "PUT", "/v1/email-designs/"+bt.design, map[string]any{"name": "News", "document": versionedDoc(), "base_version": 1})
-	id := bt.draft(t, map[string]any{"translations": map[string]any{"tr": map[string]any{"subject": "Haberler"}}})
+	id := bt.draft(t, map[string]any{"translations": map[string]any{"tr": map[string]any{"subject": strings.Repeat("Haber ", 15)}}})
+	if it := reviewItem(o.expect(http.StatusOK, "GET", "/v1/broadcasts/"+id+"/review", nil).body, "subject"); it["status"] != "warning" || !strings.HasSuffix(it["detail"].(string), "(tr)") {
+		t.Fatalf("review of a long tr subject: %v", it)
+	}
+	o.expect(http.StatusOK, "PATCH", "/v1/broadcasts/"+id, map[string]any{"translations": map[string]any{"tr": map[string]any{"subject": "Haberler"}}})
 	r := o.expect(http.StatusAccepted, "POST", "/v1/broadcasts/"+id+"/test", map[string]any{"locale": "tr-TR"})
 	if r.body["locale"] != "tr" {
 		t.Fatalf("test in tr: %s", r.raw)

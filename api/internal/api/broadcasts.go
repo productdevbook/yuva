@@ -1047,7 +1047,6 @@ func contactValues(name, addr string, attributes []byte) design.Values {
 	return v
 }
 
-// requiredFields are the contact merge fields without a fallback, once each.
 func requiredFields(fields []design.Field) []design.Field {
 	var required []design.Field
 	for _, f := range fields {
@@ -1058,8 +1057,7 @@ func requiredFields(fields []design.Field) []design.Field {
 	return required
 }
 
-// countAudience walks the whole audience as sending would take it now. With fields it counts the
-// recipients each merge field without a fallback would be empty for, in the version they get.
+// countAudience walks the whole audience as sending would take it now.
 func (s *Server) countAudience(ctx context.Context, q *store.Queries, b store.Broadcast, doc *design.Document, fields bool) (oas.BroadcastAudienceCount, error) {
 	a := parseAudience(b.Audience)
 	out := oas.BroadcastAudienceCount{MissingMergeFields: map[string]int64{}, ByList: []oas.BroadcastListCount{}}

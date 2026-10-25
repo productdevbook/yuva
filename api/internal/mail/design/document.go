@@ -20,7 +20,6 @@ import (
 const Schema = 1
 
 const (
-	// MaxJSONBytes bounds a document without its translations, MaxDocumentBytes with them.
 	MaxJSONBytes     = 300 << 10
 	MaxDocumentBytes = 1 << 20
 	MaxBlocks        = 200

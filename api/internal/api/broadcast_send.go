@@ -317,8 +317,6 @@ func (r *bcRenderer) sample(other bool) design.Values {
 	return v
 }
 
-// bcVersion is one language version of the broadcast's design ("" without translations) with its
-// tracked links and how many links its mails have.
 type bcVersion struct {
 	doc     design.Document
 	tracked map[int]bool
@@ -333,14 +331,14 @@ func (r *bcRenderer) version(tag string) (*bcVersion, error) {
 	if tag != "" {
 		v.doc = r.doc.Localized(tag)
 	}
-	r.versions[tag] = v
 	if len(v.tracked) > 0 {
-		sample, err := r.render(r.sample(false), r.firstList(), tag)
+		sample, err := r.renderVersion(v, r.sample(false), r.firstList(), tag)
 		if err != nil {
 			return nil, err
 		}
 		v.hrefs = len(hrefAttr.FindAllStringIndex(sample.HTML, -1))
 	}
+	r.versions[tag] = v
 	return v, nil
 }
 
@@ -351,6 +349,10 @@ func (r *bcRenderer) render(v design.Values, listID uuid.UUID, tag string) (desi
 	if err != nil {
 		return design.Output{}, err
 	}
+	return r.renderVersion(ver, v, listID, tag)
+}
+
+func (r *bcRenderer) renderVersion(ver *bcVersion, v design.Values, listID uuid.UUID, tag string) (design.Output, error) {
 	v.InboxName = r.inbox.Name
 	if l, ok := r.lists[listID]; ok {
 		v.ListName = l.Name
@@ -372,8 +374,8 @@ func (r *bcRenderer) render(v design.Values, listID uuid.UUID, tag string) (desi
 	return r.addUTM(out), nil
 }
 
-// trackableLinks lists the links of a version that are the same for every recipient (no merge
-// field in them) and lead to the web, by their position among the HTML's links.
+// trackableLinks lists the links that are the same for every recipient (no merge field in them)
+// and lead to the web, by their position among the HTML's links.
 func (r *bcRenderer) trackableLinks(tag string) (map[int]string, error) {
 	a, err := r.render(r.sample(false), r.firstList(), tag)
 	if err != nil {
