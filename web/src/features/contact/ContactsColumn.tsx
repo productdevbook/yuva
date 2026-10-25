@@ -218,7 +218,7 @@ export function ContactsColumn() {
         />
         {canManage && items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
       </div>
-      {canManage && <ContactBulkBar items={items} selection={selection} />}
+      {canManage && <ContactBulkBar items={items} selection={selection} className="px-3 pb-2" />}
       <div className="min-h-0 flex-1 overflow-y-auto pb-4">
         {directory.isPending ? (
           <div className="flex flex-col" aria-busy="true">

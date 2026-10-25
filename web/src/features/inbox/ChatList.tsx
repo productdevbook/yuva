@@ -11,6 +11,7 @@ import {
   EllipsisVerticalIcon,
   InboxIcon,
   KeyboardIcon,
+  ListChecksIcon,
   MessageSquarePlusIcon,
   ReplyIcon,
   SearchIcon,
@@ -1215,24 +1216,26 @@ export function ChatList({
       >
         <XIcon />
       </Button>
-      <span className="me-auto shrink-0 pe-1.5 text-small font-semibold whitespace-nowrap" aria-live="polite">
+      <span className="me-auto min-w-0 truncate pe-1.5 text-small font-semibold" aria-live="polite">
         {none ? <Trans>Pick conversations</Trans> : <Trans>{picked} selected</Trans>}
       </span>
       <Button
         variant="ghost"
-        className={cn(bb, "shrink-0")}
+        className={cn(bb, "w-[34px] shrink-0 px-0", allPicked && "bg-background/15")}
         disabled={rows.length === 0}
         onClick={() => setSelected(allPicked ? new Set() : new Set(rows.map((c) => c.id)))}
         aria-pressed={allPicked}
+        aria-label={t`Select all`}
+        title={t`Select all`}
         data-testid="select-all"
       >
-        <Trans>Select all</Trans>
+        <ListChecksIcon />
       </Button>
       {inTrash ? (
         <>
           <Button
             variant="ghost"
-            className={bb}
+            className={cn(bb, "shrink-0")}
             disabled={none || bulk.isPending}
             onClick={restoreChosen}
             data-testid="restore-selected"
@@ -1240,23 +1243,34 @@ export function ChatList({
             <Trans>Restore</Trans>
           </Button>
           {canManage && (
-            <Button
-              variant="ghost"
-              className={bb}
-              disabled={none || trashTools.pending}
-              onClick={deleteChosen}
-              title={t`Delete for good (${SHORTCUTS.deleteForever})`}
-              data-testid="delete-forever-selected"
-            >
-              <Trans>Delete forever</Trans>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<Button variant="ghost" className={cn(bb, "w-[34px] shrink-0 px-0")} disabled={none} />}
+                aria-label={t`More`}
+                title={t`More`}
+                data-testid="more-selected"
+              >
+                <EllipsisVerticalIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-52">
+                <DropdownMenuItem
+                  variant="destructive"
+                  disabled={trashTools.pending}
+                  onClick={deleteChosen}
+                  title={t`Delete for good (${SHORTCUTS.deleteForever})`}
+                  data-testid="delete-forever-selected"
+                >
+                  <Trans>Delete forever</Trans>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </>
       ) : inSpam ? (
         <>
           <Button
             variant="ghost"
-            className={bb}
+            className={cn(bb, "shrink-0")}
             disabled={none || bulk.isPending}
             onClick={notSpamChosen}
             title={t`Not spam (${SHORTCUTS.spam})`}
@@ -1265,16 +1279,26 @@ export function ChatList({
             <Trans>Not spam</Trans>
           </Button>
           {canManage && (
-            <Button
-              variant="ghost"
-              className={bb}
-              disabled={none || bulk.isPending}
-              onClick={trashChosen}
-              title={t`Move to the Trash (${SHORTCUTS.trash})`}
-              data-testid="trash-selected"
-            >
-              <Trans>Move to the Trash</Trans>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<Button variant="ghost" className={cn(bb, "w-[34px] shrink-0 px-0")} disabled={none} />}
+                aria-label={t`More`}
+                title={t`More`}
+                data-testid="more-selected"
+              >
+                <EllipsisVerticalIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-52">
+                <DropdownMenuItem
+                  disabled={bulk.isPending}
+                  onClick={trashChosen}
+                  title={t`Move to the Trash (${SHORTCUTS.trash})`}
+                  data-testid="trash-selected"
+                >
+                  <Trans>Move to the Trash</Trans>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </>
       ) : (

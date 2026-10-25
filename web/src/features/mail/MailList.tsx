@@ -3,6 +3,7 @@ import {
   CheckIcon,
   ChevronDownIcon,
   ClockIcon,
+  ListChecksIcon,
   PaperclipIcon,
   SearchIcon,
   SquareCheckBigIcon,
@@ -512,18 +513,20 @@ export function MailList({
       >
         <XIcon />
       </Button>
-      <span className="me-auto shrink-0 pe-1.5 text-small font-semibold whitespace-nowrap" aria-live="polite">
+      <span className="me-auto min-w-0 truncate pe-1.5 text-small font-semibold" aria-live="polite">
         {none ? <Trans>Pick mails</Trans> : <Trans>Selected: {picked}</Trans>}
       </span>
       <Button
         variant="ghost"
-        className={cn(bb, "shrink-0")}
+        className={cn(bb, "w-[34px] shrink-0 px-0", allPicked && "bg-background/15")}
         disabled={rows.length === 0}
         onClick={() => setSelected(allPicked ? new Set() : new Set(rows.map((c) => c.id)))}
         aria-pressed={allPicked}
+        aria-label={t`Select all`}
+        title={t`Select all`}
         data-testid="select-all"
       >
-        <Trans>Select all</Trans>
+        <ListChecksIcon />
       </Button>
       {inTrash ? (
         <>

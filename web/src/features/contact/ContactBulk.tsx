@@ -10,7 +10,15 @@ import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { Selection } from "@/hooks/use-selection"
 import type { Contact } from "@/lib/api"
 
-export function ContactBulkBar({ items, selection }: { items: Contact[]; selection: Selection }) {
+export function ContactBulkBar({
+  items,
+  selection,
+  className,
+}: {
+  items: Contact[]
+  selection: Selection
+  className?: string
+}) {
   const { t } = useLingui()
   const errorText = useErrorText()
   const bulk = useDeleteContacts()
@@ -43,7 +51,7 @@ export function ContactBulkBar({ items, selection }: { items: Contact[]; selecti
   useHotkeys({ Delete: ask }, selection.selecting && n > 0)
   return (
     <>
-      <SelectionBar selection={selection} busy={bulk.isPending}>
+      <SelectionBar selection={selection} busy={bulk.isPending} className={className}>
         <BulkButton
           selection={selection}
           destructive

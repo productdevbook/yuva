@@ -825,7 +825,7 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
           <section className="flex min-h-0 min-w-0 flex-col" aria-label={t`Contacts`}>
             {header}
             {toolbar}
-            {canManage && <ContactBulkBar items={items} selection={selection} />}
+            {canManage && <ContactBulkBar items={items} selection={selection} className="px-6 pb-2" />}
             {table}
           </section>
           {shown && (
