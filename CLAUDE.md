@@ -23,7 +23,7 @@ Keep this table current when a command changes.
 |---|---|---|
 | `openapi/` | yuva-api | `REDOCLY_TELEMETRY=off npx --yes @redocly/cli@2.54.3 lint --config openapi/redocly.yaml --format=stylish openapi/openapi.yaml` |
 | `api/`, `sdk/go` | yuva-api | in `api/`: `go generate ./... && go vet ./... && go test ./... && go build ./...` (tests that need Postgres run when `YUVA_TEST_DATABASE_URL` is set, as in CI, and skip otherwise); in `sdk/go/`: `go generate ./... && go vet ./... && go test ./... && go build ./...`; then in both `go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...`, and `git diff --exit-code -- api sdk/go` (generated code committed). The IMAP migration tests run against the Dovecot fixture when `YUVA_TEST_IMAP_URL` and `YUVA_TEST_IMAP_FIXTURES` are set, as in CI, and skip otherwise |
-| `web/` | yuva-panel | in `web/`: `npm run -s format:check && npm run -s lint && npm run -s extract && npx lingui compile --strict && npm run -s build` |
+| `web/` | yuva-panel | in `web/`: `npm run -s format:check && npm run -s lint && npm run -s extract && npx lingui compile --strict && npm run -s build && npm run -s test` |
 | `edge/` | yuva-edge | in `edge/`: `bun run check` (oxfmt check, oxlint, tsc, tests) |
 | `sdk/js` | yuva-widget | in `sdk/js/`: `bun run check && bun run build` (`check` runs oxfmt check, oxlint, Lingui compile, tsc and tests; `build` reports the gzip size) |
 | `sdk/shadcn` | yuva-widget | in `sdk/shadcn/`: `bun run check` (oxfmt, oxlint, `shadcn build`); the site serves the registry at `/r/*.json` from it; `examples/shadcn-next`: `npx next build`; `examples/shadcn-vite`: `bun install && bun run build` (type-checks, then builds) |
