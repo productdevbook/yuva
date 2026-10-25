@@ -99,12 +99,12 @@ func (w *broadcastStartWorker) Timeout(*river.Job[BroadcastStartArgs]) time.Dura
 }
 
 func (w *broadcastStartWorker) Work(ctx context.Context, job *river.Job[BroadcastStartArgs]) error {
-	more, err := w.s.StartBroadcast(ctx, job.Args.WorkspaceID, job.Args.BroadcastID, startBudget)
+	wait, err := w.s.StartBroadcast(ctx, job.Args.WorkspaceID, job.Args.BroadcastID, startBudget)
 	if err != nil {
 		return err
 	}
-	if more {
-		return river.JobSnooze(0)
+	if wait >= 0 {
+		return river.JobSnooze(wait)
 	}
 	return nil
 }
@@ -457,14 +457,16 @@ func (r *bcRenderer) message(d store.BroadcastDelivery, c contactRow) ([]byte, e
 }
 
 // StartBroadcast takes the audience of a broadcast whose time has come, page by page, and starts
-// sending. It answers more=true when the budget ran out and it must be called again.
-func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget time.Duration) (bool, error) {
+// sending. It answers how long to wait before calling it again: 0 when the budget ran out, until
+// the scheduled time but at most 5 minutes when that has not come, -1 when there is nothing left to do.
+func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget time.Duration) (time.Duration, error) {
 	if live, err := s.workspaceLive(ctx, ws); err != nil || !live {
-		return false, err
+		return -1, err
 	}
 	deadline := time.Now().Add(budget)
 	var b store.Broadcast
 	goOn := false
+	notYet := time.Duration(-1)
 	err := s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
 		var err error
 		b, err = q.LockBroadcast(ctx, store.LockBroadcastParams{WorkspaceID: ws, ID: id})
@@ -483,6 +485,7 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 			return nil
 		}
 		if b.ScheduledAt != nil && b.ScheduledAt.After(s.now()) {
+			notYet = min(b.ScheduledAt.Sub(s.now()), paceSnoozeAtMost)
 			return nil
 		}
 		w, err := q.GetWorkspace(ctx, ws)
@@ -504,7 +507,7 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 		return nil
 	})
 	if err != nil || !goOn {
-		return false, err
+		return notYet, err
 	}
 	a := parseAudience(b.Audience)
 	from := ""
@@ -514,7 +517,7 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 		}
 	}
 	if from == "" {
-		return false, s.failBroadcast(ctx, ws, id, "the broadcast's e-mail channel cannot send")
+		return -1, s.failBroadcast(ctx, ws, id, "the broadcast's e-mail channel cannot send")
 	}
 	domain := email.Domain(from)
 	for {
@@ -577,13 +580,13 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 			return s.finishSnapshot(ctx, q, events, cur)
 		})
 		if err != nil {
-			return false, err
+			return -1, err
 		}
 		if done {
-			return false, nil
+			return -1, nil
 		}
 		if time.Now().After(deadline) {
-			return true, nil
+			return 0, nil
 		}
 	}
 }

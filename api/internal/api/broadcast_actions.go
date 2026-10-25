@@ -511,6 +511,9 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 			}
 		}
 		s.emitBroadcast(events, out, bcDraft)
+		if err := q.DeleteBroadcastStartJobs(ctx, out.WorkspaceID, out.ID); err != nil {
+			return err
+		}
 		s.queueBroadcastStart(events, out, sendAt)
 		return nil
 	})
@@ -564,6 +567,9 @@ func (s *Server) UnscheduleBroadcast(ctx context.Context, req oas.UnscheduleBroa
 				return errBroadcastState
 			}
 			return errAlreadyStarted
+		}
+		if err := q.DeleteBroadcastStartJobs(ctx, b.WorkspaceID, b.ID); err != nil {
+			return err
 		}
 		b.State, b.ScheduledAt, b.Document, b.DesignVersion, b.ScheduledBy, b.ScheduledByKey = bcDraft, nil, nil, nil, nil, nil
 		return q.DeleteBroadcastLinks(ctx, store.DeleteBroadcastLinksParams{WorkspaceID: b.WorkspaceID, BroadcastID: b.ID})
@@ -632,13 +638,13 @@ func (s *Server) ResumeBroadcast(ctx context.Context, req oas.ResumeBroadcastReq
 }
 
 func (s *Server) CancelBroadcast(ctx context.Context, req oas.CancelBroadcastRequestObject) (oas.CancelBroadcastResponseObject, error) {
-	out, err := s.changeBroadcast(ctx, req.BroadcastId, func(_ *store.Queries, _ *eventBatch, b *store.Broadcast, _ store.Workspace) error {
+	out, err := s.changeBroadcast(ctx, req.BroadcastId, func(q *store.Queries, _ *eventBatch, b *store.Broadcast, _ store.Workspace) error {
 		if !activeBroadcast(b.State) {
 			return errBroadcastState
 		}
 		now := s.now()
 		b.State, b.FinishedAt, b.PauseReason, b.WaitingUntil = bcCancelled, &now, nil, nil
-		return nil
+		return q.DeleteBroadcastStartJobs(ctx, b.WorkspaceID, b.ID)
 	})
 	if err != nil {
 		return nil, err

@@ -194,11 +194,11 @@ func (bt broadcastTeam) run(t *testing.T) time.Duration {
 			t.Fatal(err)
 		}
 		for {
-			more, err := bt.h.srv.StartBroadcast(ctx, a.WorkspaceID, a.BroadcastID, time.Minute)
+			wait, err := bt.h.srv.StartBroadcast(ctx, a.WorkspaceID, a.BroadcastID, time.Minute)
 			if err != nil {
 				t.Fatal(err)
 			}
-			if !more {
+			if wait != 0 {
 				break
 			}
 		}
@@ -408,8 +408,8 @@ func TestBroadcastRechecksEachAddress(t *testing.T) {
 	id := bt.draft(t, nil)
 	bt.schedule(t, id)
 	ctx := context.Background()
-	if more, err := h.srv.StartBroadcast(ctx, uuid.MustParse(bt.ws), uuid.MustParse(id), time.Minute); err != nil || more {
-		t.Fatal(more, err)
+	if wait, err := h.srv.StartBroadcast(ctx, uuid.MustParse(bt.ws), uuid.MustParse(id), time.Minute); err != nil || wait >= 0 {
+		t.Fatal(wait, err)
 	}
 	sub := bt.subscription(t, "leave@example.org")
 	bt.owner.expect(http.StatusOK, "PATCH", "/v1/lists/"+bt.list+"/subscriptions/"+sub["id"].(string), map[string]any{"state": "unsubscribed"})
