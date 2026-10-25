@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import { test } from "node:test"
 
 import { getSchema } from "@tiptap/core"
-import { Slice, type Node } from "@tiptap/pm/model"
+import { Fragment, Slice, type Node } from "@tiptap/pm/model"
 import { EditorState, TextSelection } from "@tiptap/pm/state"
 import { StarterKit } from "@tiptap/starter-kit"
 
@@ -79,4 +79,37 @@ test("an editor without it drops the link as before", () => {
   s = run(s, s.tr.insertText("Ler mais →"))
   assert.equal(texts(s.doc)[0].text, "Ler mais →")
   assert.equal(texts(s.doc)[0].href, undefined)
+})
+
+test("typing key by key over the whole linked text keeps the link on every character", () => {
+  let s = start()
+  s = select(s, 1, end(s))
+  for (const ch of "Ler mais →") s = run(s, s.tr.insertText(ch))
+  assert.deepEqual(texts(s.doc), [{ text: "Ler mais →", href, bold: true }])
+})
+
+test("typing at the end of the link continues it", () => {
+  let s = start()
+  s = select(s, end(s), end(s))
+  s = run(s, s.tr.insertText(" hoje"))
+  assert.deepEqual(texts(s.doc), [{ text: "Read more → hoje", href, bold: true }])
+})
+
+test("pasting another link at the end keeps both links apart", () => {
+  let s = start()
+  s = select(s, end(s), end(s))
+  const other = schema.marks.link.create({ href: "https://example.com/other" })
+  s = run(s, s.tr.replaceSelection(new Slice(Fragment.from(schema.text(" x", [other])), 0, 0)))
+  assert.deepEqual(
+    texts(s.doc).map((t) => t.href),
+    [href, "https://example.com/other"]
+  )
+})
+
+test("an editor without it types after a link outside it", () => {
+  let s = start(false)
+  s = select(s, end(s), end(s))
+  s = run(s, s.tr.insertText(" today"))
+  assert.equal(texts(s.doc)[1].text, " today")
+  assert.equal(texts(s.doc)[1].href, undefined)
 })

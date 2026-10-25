@@ -1,5 +1,5 @@
 import { Extension } from "@tiptap/core"
-import type { Mark, Node } from "@tiptap/pm/model"
+import type { Mark, Node, Slice } from "@tiptap/pm/model"
 import { Plugin, PluginKey, type Transaction } from "@tiptap/pm/state"
 import { Mapping, ReplaceStep } from "@tiptap/pm/transform"
 
@@ -19,6 +19,19 @@ function needsKeeping(marks: readonly Mark[]) {
   return marks.some((m) => m.type.spec.inclusive === false)
 }
 
+function continued(doc: Node, pos: number, slice: Slice): readonly Mark[] {
+  if (slice.openStart || slice.openEnd || !slice.size) return []
+  let inline = true
+  const types = new Set<string>()
+  slice.content.forEach((n) => {
+    if (!n.isInline) inline = false
+    n.marks.forEach((m) => types.add(m.type.name))
+  })
+  const before = doc.resolve(pos).nodeBefore
+  if (!inline || !before?.isText) return []
+  return before.marks.filter((m) => m.type.spec.inclusive === false && !types.has(m.type.name))
+}
+
 export function keepMarksPlugin() {
   return new Plugin<boolean>({
     key: keepMarksKey,
@@ -33,8 +46,11 @@ export function keepMarksPlugin() {
       trs.forEach((tr: Transaction, i) => {
         if (tr.getMeta("composition") !== undefined) return
         tr.steps.forEach((step, j) => {
-          if (!(step instanceof ReplaceStep) || step.from === step.to) return
-          const marks = sharedMarks(tr.docs[j], step.from, step.to)
+          if (!(step instanceof ReplaceStep)) return
+          const insert = step.from === step.to
+          const marks = insert
+            ? continued(tr.docs[j], step.from, step.slice)
+            : sharedMarks(tr.docs[j], step.from, step.to)
           if (!needsKeeping(marks)) return
           if (step.slice.size === 0) {
             stored = marks
