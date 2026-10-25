@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"testing"
 	"time"
+	"uuid"
 
 	"github.com/productdevbook/yuva/api/internal/api"
 )
@@ -395,11 +396,11 @@ func TestEmptyTrashDeletesOnlyTheConfirmedSet(t *testing.T) {
 		h.dropJob(j.id)
 	}
 	h.clock.Advance(6 * 24 * time.Hour)
-	if err := h.srv.CleanTrashEmpties(context.Background()); err != nil || sets() != 1 {
+	if err := h.srv.CleanWorkspaceTrashEmpties(context.Background(), uuid.MustParse(tm.ws)); err != nil || sets() != 1 {
 		t.Fatalf("set of a discarded job cleaned too early: %v", err)
 	}
 	h.clock.Advance(2 * 24 * time.Hour)
-	if err := h.srv.CleanTrashEmpties(context.Background()); err != nil || sets() != 0 {
+	if err := h.srv.CleanWorkspaceTrashEmpties(context.Background(), uuid.MustParse(tm.ws)); err != nil || sets() != 0 {
 		t.Fatalf("set of a discarded job kept: %v", err)
 	}
 	if h.conversationRows(tm.ws, b, d, e) != 3 {

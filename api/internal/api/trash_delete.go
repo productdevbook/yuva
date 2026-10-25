@@ -171,13 +171,17 @@ func (s *Server) CleanTrashEmpties(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	before := s.now().Add(-trashEmptiesKept)
 	for _, ws := range ids {
-		if _, err := s.st.DeleteStaleTrashEmpties(ctx, store.DeleteStaleTrashEmptiesParams{WorkspaceID: ws, Before: before}); err != nil {
+		if err := s.CleanWorkspaceTrashEmpties(ctx, ws); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (s *Server) CleanWorkspaceTrashEmpties(ctx context.Context, ws uuid.UUID) error {
+	_, err := s.st.DeleteStaleTrashEmpties(ctx, store.DeleteStaleTrashEmptiesParams{WorkspaceID: ws, Before: s.now().Add(-trashEmptiesKept)})
+	return err
 }
 
 func (s *Server) EmptyTrash(ctx context.Context, req oas.EmptyTrashRequestObject) (oas.EmptyTrashResponseObject, error) {
