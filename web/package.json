@@ -12,7 +12,8 @@
     "generate": "npx --yes openapi-typescript@7.13.0 ../openapi/openapi.yaml -o src/lib/schema.gen.ts",
     "lint": "oxlint",
     "format": "oxfmt",
-    "format:check": "oxfmt --check"
+    "format:check": "oxfmt --check",
+    "test": "node --test test/*.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

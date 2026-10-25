@@ -1,7 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { Extension, mergeAttributes, Node, type Editor } from "@tiptap/core"
-import type { Mark } from "@tiptap/pm/model"
-import { Plugin, PluginKey } from "@tiptap/pm/state"
+import { mergeAttributes, Node, type Editor } from "@tiptap/core"
 import { Placeholder } from "@tiptap/extensions"
 import {
   EditorContent,
@@ -32,6 +30,7 @@ import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { validUrl } from "@/features/designs/doc"
+import { KeepMarks, keepMarksKey } from "@/features/designs/designer/keepMarks"
 import {
   ATTRIBUTE_PREFIX,
   canonical,
@@ -203,39 +202,6 @@ const MergeField = Node.create({
 })
 
 const SingleLine = Node.create({ name: "doc", topNode: true, content: "paragraph" })
-
-const keepMarksKey = new PluginKey<boolean>("keepMarks")
-
-const KeepMarks = Extension.create({
-  name: "keepMarks",
-  addProseMirrorPlugins() {
-    return [
-      new Plugin<boolean>({
-        key: keepMarksKey,
-        state: {
-          init: () => false,
-          apply: (tr, on) => tr.getMeta(keepMarksKey) ?? on,
-        },
-        props: {
-          handleTextInput(view, from, to, text) {
-            if (from === to || !keepMarksKey.getState(view.state)) return false
-            const { doc, schema } = view.state
-            let marks: readonly Mark[] | null = null
-            doc.nodesBetween(from, to, (node) => {
-              if (!node.isText) return true
-              marks = marks ? marks.filter((m) => m.isInSet(node.marks)) : node.marks
-              return false
-            })
-            const kept: readonly Mark[] = marks ?? []
-            if (!kept.some((m) => m.type.spec.inclusive === false)) return false
-            view.dispatch(view.state.tr.replaceWith(from, to, schema.text(text, kept)).scrollIntoView())
-            return true
-          },
-        },
-      }),
-    ]
-  },
-})
 
 function extensionsFor(mode: EditorMode, placeholder: string) {
   const link = {
