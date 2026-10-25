@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# konuşmada} other {# konuşmada}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# başarısız} other {# başarısız}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# kişi, dilinin sürümü olmadığı için bunu alıyor} other {# kişi, dillerinin sürümü olmadığı için bunu alıyor}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {İncelenecek asistan taslağı} other {İncelenece
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} zaten Yuva'da"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (yedek)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Webhook türünde bir iletişim noktası ekleyin, yukarıdaki adresi yap
 msgid "Add a domain"
 msgstr "Alan adı ekle"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Dil ekle"
@@ -2320,6 +2330,10 @@ msgstr "Tüm içe aktarmalar"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Tüm gelen kutuları"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Tüm diller"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "E-postayla"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "Gruba göre"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "Dile göre"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Her ürünün ya da markanın kendi gelen kutusu olur. Var olanlardan birine ekleyin ya da yenisini açın."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Her alıcı, aldığı tasarım sürümünün altında sayılır."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Her yanıt gelen kutusunda bir konuşmadır. İlk 50 tanesi burada listelenir."
 
@@ -6730,6 +6752,10 @@ msgstr "Çöp kutusunu boşalt"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Çöp kutusu boşaltılsın mı?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Boş bırakılırsa {baseLanguage} konu kullanılır. Birleştirme alanları burada da çalışır."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Alanlar"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Gruplara göre rakamlar"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Dile göre rakamlar"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Etiketler konuşmaları faturalama veya hatalar gibi konulara göre ayı
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Tutulacak dil"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Diller"
 
@@ -11240,6 +11274,10 @@ msgstr "Sıradaki bülten {when} gidiyor."
 msgid "Next check {next}."
 msgstr "Sonraki kontrol: {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Sonraki dil sürümü"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Sonraki posta {local} ({utc} UTC), bu bültenin hızına göre."
@@ -11601,6 +11639,10 @@ msgstr "Henüz etiket yok"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Henüz etiket yok. Ayarlardan ekleyebilirsiniz."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Eşleşen dil yok"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Okumak ve yanıtlamak için bir tartışma seçin."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Bir alan seçin"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Bir dil seçin"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Bu konuşmada ara"
 msgid "Search incidents"
 msgstr "Olaylarda ara"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Dil arayın ya da bir etiket yazın"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Postada ara"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Bazı görsellerin, onları göremeyenler için açıklaması yok."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Bazı dil sürümleri eksik."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Bazı bağlantılar geçersiz."
 
@@ -17544,6 +17598,10 @@ msgstr "Girilen değerlerden bazıları geçerli değil."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Dosyanın bazı parçaları ulaşmadı. Onları göndermek için aynı dosyayı yeniden seçin."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Bazı metinler çevrilmedi, bu yüzden {base} metin görünüyor: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Kişi bir mesaj yazar"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Kişi, notları ve yazdığı her şey kalıcı olarak silinir. Bu geri alınamaz."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Kişinin dili"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Kişiler, konuşmaları, notları ve dosyaları kalıcı olarak silinir. Bu geri alınamaz."
@@ -18453,6 +18515,10 @@ msgstr "Müşteri, konuşma kapatıldığında başparmak yukarı veya aşağı 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Teslim edilebilirlik denetimi henüz bitmedi."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "Tasarımda bu konular için sürüm yok, bu yüzden kullanılmıyorlar: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Kayıtlar 7 gün içinde bulunamadı, bu yüzden talep sona erdi. Aşağ
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "SES hesabınızın bölgesi."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Zorunlu alt bilgi şu dillerde İngilizce: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Birkaç dakika içinde"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Onay olmadan herkes formunuza başkasının adresini yazabilir ve adresin sahibinin izin verdiğini gösteremezsiniz. Formlarınızı yalnızca adresini zaten doğruladığınız kişiler görmüyorsa açık bırakın."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Kendi konusu olmayan bu diller {base} konuyu alır: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

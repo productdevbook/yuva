@@ -50,6 +50,11 @@ msgstr "{0, plural, one {שיחה #} two {# שיחות} other {# שיחות}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# נכשל} two {# נכשלו} other {# נכשלו}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# מהם מקבל אותה כי לשפה שלו אין גרסה} two {# מהם מקבלים אותה כי לשפה שלהם אין גרסה} other {# מהם מקבלים אותה כי לשפה שלהם אין גרסה}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {טיוטת עוזר לבדיקה} other {טיוט�
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} כבר ב-Yuva"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (גיבוי)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "הוסיפו נקודת קשר מסוג Webhook, הדביקו את הכ�
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "הוספת שפה"
@@ -2320,6 +2330,10 @@ msgstr "כל הייבואים"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "כל תיבות הדואר"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "כל השפות"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "באימייל"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "לפי קבוצה"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "לפי שפה"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "לכל מוצר או מותג יש תיבת דואר משלו. הוסף אותו לאחת שיש לך, או התחל חדשה."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "כל נמען נספר תחת גרסת העיצוב שקיבל."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "כל תשובה היא שיחה בתיבת הדואר. 50 הראשונות מוצגות כאן."
 
@@ -6730,6 +6752,10 @@ msgstr "ריקון הפח"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "לרוקן את הפח?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "אם ריק, משמש הנושא ב{baseLanguage}. שדות מיזוג עובדים גם כאן."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "שדות"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "מספרים לפי קבוצה"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "נתונים לפי שפה"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "תוויות ממיינות שיחות לפי נושא, כמו חיוב 
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "שפה לשמירה"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "שפות"
 
@@ -11240,6 +11274,10 @@ msgstr "השליחה הבאה יוצאת {when}."
 msgid "Next check {next}."
 msgstr "הבדיקה הבאה {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "גרסת השפה הבאה"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "הדואר הבא ב-{local} ({utc} UTC), בקצב של השליחה ההמונית הזאת."
@@ -11601,6 +11639,10 @@ msgstr "עדיין אין תוויות"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "עדיין אין תוויות. הוסף אותן בהגדרות."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "אין שפה תואמת"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "בחרו דיון כדי לקרוא ולענות."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "בחרו שדה"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "בחירת שפה"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "חיפוש בשיחה הזאת"
 msgid "Search incidents"
 msgstr "חיפוש אירועים"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "חיפוש שפות או הקלדת קוד"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "חיפוש בדואר"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "לחלק מהתמונות אין תיאור לאנשים שאינם יכולים לראות אותן."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "חלק מגרסאות השפה אינן מלאות."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "חלק מהקישורים אינם תקינים."
 
@@ -17544,6 +17598,10 @@ msgstr "חלק מהערכים אינם תקינים."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "חלק מחלקי הקובץ לא הגיעו. בחר שוב את אותו קובץ כדי לשלוח אותם."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "חלק מהטקסטים לא תורגמו, ולכן מוצג הטקסט ב{base}: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "איש הקשר כותב הודעה"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "איש הקשר, ההערות שלו וכל מה שכתב יימחקו לצמיתות. אי אפשר לבטל זאת."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "השפה של איש הקשר"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "אנשי הקשר, השיחות, ההערות והקבצים שלהם יימחקו לצמיתות. אי אפשר לבטל זאת."
@@ -18453,6 +18515,10 @@ msgstr "הלקוח לוחץ על אגודל למעלה או למטה כשהשי�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "בדיקת יכולת המסירה עדיין לא הסתיימה."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "לעיצוב אין גרסה לנושאים האלה, ולכן הם לא משמשים: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "הרשומות לא נמצאו תוך 7 ימים, ולכן התביעה 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "האזור של חשבון SES שלך."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "הכותרת התחתונה החובה באנגלית עבור: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "תוך דקות"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "בלי אישור כל אחד יכול להקליד כתובת של מישהו אחר בטופס שלך, ואי אפשר להראות שבעל הכתובת הסכים. השאר מופעל אלא אם הטפסים שלך מוצגים רק לאנשים שכבר אימתת את הכתובת שלהם."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "בלי נושא משלהן, השפות האלה מקבלות את הנושא ב{base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

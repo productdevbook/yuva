@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: kn\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# ಪಠ್ಯ ಅನುವಾದವಾಗಿಲ್ಲ} other {# ಪಠ್ಯಗಳು ಅನುವಾದವಾಗಿಲ್ಲ}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (ಪ್ರತಿ)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "ತನ್ನದೇ ಹಿನ್ನೆಲೆಯ ಮೇಲೆ ಬ್ಲಾಕ್‌ಗಳ ಗುಂಪು"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "ಒಂದು ಭಾಷೆ ಎರಡು ಬಾರಿ ನೀಡಲಾಗಿದೆ, ಅಥವಾ ಪರ್ಯಾಯ ಭಾಷೆ ವಿನ್ಯಾಸದ ಭಾಷೆಗಳಲ್ಲಿ ಒಂದಲ್ಲ."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "ಬಟನ್‌ನಂತೆ ಕಾಣುವ ಲಿಂಕ್"
 
@@ -63,17 +71,27 @@ msgstr "ಭಾಗಗಳ ನಡುವೆ ತೆಳು ರೇಖೆ"
 msgid "A title in three sizes"
 msgstr "ಮೂರು ಗಾತ್ರಗಳ ಶೀರ್ಷಿಕೆ"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "ಇನ್ನು ಪಠ್ಯವಿಲ್ಲದ ಬ್ಲಾಕ್‌ಗೆ ಅನುವಾದ ಉಳಿದಿದೆ."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "ನೀವು ಸಂಪಾದಿಸುವಾಗ ಪ್ರತಿ ಹತ್ತು ನಿಮಿಷಕ್ಕೆ ಗರಿಷ್ಠ ಒಂದು ಆವೃತ್ತಿ, ಕೈಯಾರೆ ಉಳಿಸಿದಾಗ, ಒಂದನ್ನು ಮರುಸ್ಥಾಪಿಸಿದಾಗ ಮತ್ತು ಬೇರೆಯವರ ಉಳಿಕೆ ಸಂಘರ್ಷದಲ್ಲಿ ಗೆದ್ದಾಗ ಇಡಲಾಗುತ್ತದೆ. ಹೊಸ 50 ಉಳಿಯುತ್ತವೆ."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "ಸೇರಿಸಿ"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "ಬ್ಲಾಕ್ ಸೇರಿಸಿ"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "ಭಾಷೆ ಸೇರಿಸಿ"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "ಈ ವಿನ್ಯಾಸವನ್ನು ಆರ್ಕೈವ್ ಮಾಡ
 msgid "Archived"
 msgstr "ಆರ್ಕೈವ್ ಮಾಡಲಾಗಿದೆ"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "ಮೂಲದಂತೆ"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "ಗುಣಲಕ್ಷಣ ಕೀಲಿ"
@@ -151,6 +173,15 @@ msgstr "ವಿನ್ಯಾಸಗಳಿಗೆ ಹಿಂತಿರುಗಿ"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "ಹಿನ್ನೆಲೆ"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "ಮೂಲ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "ಮೂಲ ಭಾಷೆ"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "ಬಟನ್‌ಗಳು"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "ರದ್ದುಗೊಳಿಸಿ"
@@ -271,6 +303,10 @@ msgstr "ಕಾಲಮ್‌ಗಳು"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "ಸಂಪರ್ಕ ಗುಣಲಕ್ಷಣ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "ಇದನ್ನು ಪಡೆಯಬೇಕಿದ್ದ ಸಂಪರ್ಕಗಳು ಬದಲಿಗೆ ಪರ್ಯಾಯ ಭಾಷೆಯನ್ನು ಪಡೆಯುತ್ತಾರೆ."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "ಈವೆಂಟ್"
 msgid "Everywhere"
 msgstr "ಎಲ್ಲೆಡೆ"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "ಪರ್ಯಾಯ ಭಾಷೆ"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "ಮೊದಲ ಹೆಸರು"
@@ -498,6 +538,10 @@ msgstr "ಜನರ ಸಾಧನಗಳಲ್ಲಿ ಈಗಾಗಲೇ ಇರುವ
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "ಅಡಿಟಿಪ್ಪಣಿ ಪಠ್ಯ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "ಭಾಷೆ ಇಲ್ಲದ, ಅಥವಾ ತಮ್ಮ ಭಾಷೆಗೆ ಆವೃತ್ತಿ ಇಲ್ಲದ ಸಂಪರ್ಕಗಳಿಗೆ."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "ಕೀಬೋರ್ಡ್ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"
 msgid "Kind"
 msgstr "ಪ್ರಕಾರ"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "ಭಾಷೆ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "ಭಾಷಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "ಭಾಷೆಗಳು"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "ದೊಡ್ಡ"
@@ -665,6 +722,11 @@ msgstr "ಲೇಯರ್‌ಗಳು"
 msgid "Layout"
 msgstr "ಲೇಔಟ್"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "ವಿನ್ಯಾಸ ರಚನೆ ಎಲ್ಲಾ ಭಾಷೆಗಳಿಗೂ ಹಂಚಿಕೊಂಡದ್ದು. ಬದಲಿಸಲು {language}ಗೆ ಬದಲಾಯಿಸಿ."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "ಎಡ"
@@ -673,6 +735,7 @@ msgstr "ಎಡ"
 msgid "Left panel"
 msgstr "ಎಡ ಪ್ಯಾನೆಲ್"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "ಎಡದಿಂದ ಬಲಕ್ಕೆ"
@@ -783,6 +846,10 @@ msgstr "ಮೇಲೆ ಸರಿಸಿ"
 msgid "Name"
 msgstr "ಹೆಸರು"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "ಇತರ ಭಾಷೆಗಳನ್ನು ಸೇರಿಸುವ ಮೊದಲು ಮೂಲ ಭಾಷೆಯನ್ನು ತಿಳಿಸಿ."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "ನೆಟ್‌ವರ್ಕ್"
@@ -828,6 +895,14 @@ msgstr "ಉಳಿಸಿಲ್ಲ: ಗುರುತಿಸಿದ ಬ್ಲಾಕ್
 msgid "Not saved. Try again"
 msgstr "ಉಳಿಸಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "ಅನುವಾದವಾಗಿಲ್ಲ"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "ಅನುವಾದವಾಗಿಲ್ಲ: ನೀವು ಇದನ್ನು ಬರೆಯುವವರೆಗೆ ಮೂಲ ಪಠ್ಯ ಕಾಣಿಸುತ್ತದೆ."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "ಕಾಲಮ್‌ಗಳ ಸಂಖ್ಯೆ"
@@ -848,9 +923,17 @@ msgstr "ಆಫ್‌ಲೈನ್. ನಿಮ್ಮ ಬದಲಾವಣೆಗಳನ
 msgid "Onboarding"
 msgstr "ಆನ್‌ಬೋರ್ಡಿಂಗ್"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "ಪ್ರತಿ ಭಾಷೆಗೆ ಒಂದು ಆವೃತ್ತಿಯಿರುವ ಒಂದೇ ವಿನ್ಯಾಸ. ನೀವು ಮೊದಲು ಆಯ್ಕೆ ಮಾಡಿದ್ದೇ ಮೂಲ."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "ಕಿರಿದಾದ ಪರದೆಗಳಲ್ಲಿ ಒಂದರ ಕೆಳಗೆ ಇನ್ನೊಂದು."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "ಮೂಲ ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "ಪೂರ್ವವೀಕ್ಷಣೆಯ ಗಾತ್ರ"
 msgid "Preview text"
 msgstr "ಪೂರ್ವವೀಕ್ಷಣೆ ಪಠ್ಯ"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "ಮುನ್ನೋಟ ಪಠ್ಯ ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "ಉತ್ಪನ್ನ"
@@ -939,6 +1026,14 @@ msgstr "ಮತ್ತೆ ಮಾಡಿ"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "ತೆಗೆದುಹಾಕಿ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "{language} ತೆಗೆದುಹಾಕಿ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "{language} ಮತ್ತು ಅದರ ಪಠ್ಯಗಳನ್ನು ತೆಗೆದುಹಾಕಬೇಕೆ?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "ಮರುಸ್ಥಾಪಿಸುವುದರಿಂದ ಈ ಆವೃತ�
 msgid "Right"
 msgstr "ಬಲ"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "ಬಲದಿಂದ ಎಡಕ್ಕೆ"
@@ -1077,6 +1173,10 @@ msgstr "ಅವರ ಆವೃತ್ತಿಯನ್ನು ತೋರಿಸಿ. ರ�
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "ಹೆಚ್ಚಿನ ಇನ್‌ಬಾಕ್ಸ್‌ಗಳಲ್ಲಿ ವಿಷಯದ ನಂತರ ತೋರಿಸಲಾಗುತ್ತದೆ. ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ತನ್ನದೇ ಹೊಂದಿಸಬಹುದು."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "ಹೆಚ್ಚಿನ ಇನ್‌ಬಾಕ್ಸ್‌ಗಳಲ್ಲಿ ವಿಷಯದ ನಂತರ ಕಾಣಿಸುತ್ತದೆ. ಖಾಲಿ ಬಿಟ್ಟರೆ ಮೂಲ ಭಾಷೆಯದನ್ನು ಬಳಸಲಾಗುತ್ತದೆ."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "ಅಡಿಟಿಪ್ಪಣಿಗೆ ಇನ್‌ಬಾಕ್ಸ್‌�
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "ಇನ್‌ಬಾಕ್ಸ್‌ನ ಕಳುಹಿಸುವವರ ವಿವರಗಳು ಪ್ರತಿ ಮೇಲ್‌ಗೂ ಸಿಗುವ ಅಡಿಟಿಪ್ಪಣಿಯನ್ನು ತುಂಬುತ್ತವೆ."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "ಬ್ಲಾಕ್‌ಗಳನ್ನು ಬರೆದ ಭಾಷೆ. ರಚನೆ, ಚಿತ್ರಗಳು ಮತ್ತು ಲಿಂಕ್‌ಗಳು ಇದರಿಂದಲೇ ಬರುತ್ತವೆ."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "ವಿನ್ಯಾಸವನ್ನು ಈಗ ಬರೆದಿರುವ ಭಾಷೆ."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "ಮೇಲ್ ಖಾಲಿಯಾಗಿದೆ. ಆರಂಭಿಸಲು ಬ್ಲಾಕ್ ಸೇರಿಸಿ."
@@ -1200,6 +1308,14 @@ msgstr "ಮೇಲ್ 102 KB ಮೀರಿದೆ, ಹಾಗಾಗಿ Gmail ಅದ�
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "ಮೇಲ್ 90 KB ಮೀರಿದೆ. Gmail ಮೇಲ್‌ಗಳನ್ನು ಸುಮಾರು 102 KB ನಲ್ಲಿ ಕತ್ತರಿಸುತ್ತದೆ."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "ಹೊಸ ಆವೃತ್ತಿ ಮೂಲ ಭಾಷೆಯ ಪಠ್ಯಗಳೊಂದಿಗೆ ಆರಂಭವಾಗುತ್ತದೆ. ರಚನೆ, ಚಿತ್ರಗಳು ಮತ್ತು ಲಿಂಕ್‌ಗಳು ಹಂಚಿಕೊಂಡಂತೆಯೇ ಇರುತ್ತವೆ; ನೀವು ಪಠ್ಯಗಳನ್ನು ಮಾತ್ರ ಅನುವಾದಿಸುತ್ತೀರಿ."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "ಈ ಆವೃತ್ತಿಯ ಕಡ್ಡಾಯ ಅಡಿಟಿಪ್ಪಣಿ ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿದೆ: Yuva ಬಳಿ ಈ ಪದಗಳು ಇಂಗ್ಲಿಷ್, ಟರ್ಕಿಶ್ ಮತ್ತು ಜರ್ಮನ್‌ನಲ್ಲಿ ಮಾತ್ರ ಇವೆ."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "ದಪ್ಪ"
 msgid "This block cannot sit inside this one."
 msgstr "ಈ ಬ್ಲಾಕ್ ಇದರೊಳಗೆ ಇರಲಾಗದು."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "ಈ ಬ್ಲಾಕ್‌ನಲ್ಲಿ ಅನುವಾದಿಸಲು ಪಠ್ಯವಿಲ್ಲ."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "ಈ ವಿನ್ಯಾಸ ಬೇರೆಡೆ ಬದಲಾಗಿದೆ"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "ಈ ಸರ್ವರ್‌ಗೆ “{slug}” ಟೆಂಪ್ಲೇಟ್ ಇಲ್ಲ. ಇದಕ್ಕೆ ಹೊಸ Yuva ಬೇಕಾಗಬಹುದು."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "ಈ ಪಠ್ಯ ಇನ್ನೂ ಅನುವಾದವಾಗಿಲ್ಲ, ಆದ್ದರಿಂದ ಮೂಲ ಭಾಷೆಯ ಪಠ್ಯ ಕಾಣಿಸುತ್ತದೆ."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "ಈ ಪಠ್ಯ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲದ ಮರ್ಜ್ ಫೀಲ್ಡ್ ಬಳಸುತ್ತದೆ."
 
@@ -1286,6 +1410,10 @@ msgstr "ಇದು ಇನ್ನೊಂದು ವರ್ಕ್‌ಸ್ಪೇಸ್�
 msgid "This value is not valid."
 msgstr "ಈ ಮೌಲ್ಯ ಮಾನ್ಯವಲ್ಲ."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "ಈ ಆವೃತ್ತಿಗೆ ಇದು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಸಿಗುತ್ತದೆ: Yuva ಬಳಿ ಈ ಪದಗಳು ಇಂಗ್ಲಿಷ್, ಟರ್ಕಿಶ್ ಮತ್ತು ಜರ್ಮನ್‌ನಲ್ಲಿ ಮಾತ್ರ ಇವೆ."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "ಮೂರು"
@@ -1293,6 +1421,10 @@ msgstr "ಮೂರು"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "ಅಗ್ರ"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "ಅನುವಾದ"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "ಶೀರ್ಷಿಕೆ ಬರೆಯಿರಿ"
 msgid "Write something"
 msgstr "ಏನಾದರೂ ಬರೆಯಿರಿ"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "ಅನುವಾದ ಬರೆಯಿರಿ"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "ನಿಮ್ಮ ಓದುಗರಿಗೆ ಏನು ಹೇಳಬೇಕೋ ಅದನ್ನು ಬರೆಯಿರಿ."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "ಬರವಣಿಗೆಯ ದಿಕ್ಕು"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

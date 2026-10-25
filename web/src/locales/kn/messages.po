@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# ಸಂಭಾಷಣೆ} other {# ಸಂಭಾಷಣೆ
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# ವಿಫಲ} other {# ವಿಫಲ}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {ಇವರಲ್ಲಿ # ಜನರಿಗೆ ಅವರ ಭಾಷೆಗೆ ಆವೃತ್ತಿ ಇಲ್ಲದ ಕಾರಣ ಇದು ಸಿಗುತ್ತದೆ} other {ಇವರಲ್ಲಿ # ಜನರಿಗೆ ಅವರ ಭಾಷೆಗೆ ಆವೃತ್ತಿ ಇಲ್ಲದ ಕಾರಣ ಇದು ಸಿಗುತ್ತದೆ}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {ಪರಿಶೀಲಿಸಬೇಕಾದ ಸಹಾ�
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} ಈಗಾಗಲೇ Yuva ನಲ್ಲಿದೆ"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (ಪರ್ಯಾಯ)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Webhook ಪ್ರಕಾರದ ಸಂಪರ್ಕ ಬಿಂದುವನ�
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "ಭಾಷೆ ಸೇರಿಸಿ"
@@ -2320,6 +2330,10 @@ msgstr "ಎಲ್ಲಾ ಆಮದುಗಳು"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "ಎಲ್ಲಾ ಇನ್‌ಬಾಕ್ಸ್‌ಗಳು"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "ಎಲ್ಲಾ ಭಾಷೆಗಳು"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "ಇಮೇಲ್ ಮೂಲಕ"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "ಗುಂಪಿನ ಪ್ರಕಾರ"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "ಭಾಷೆ ಪ್ರಕಾರ"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "ಪ್ರತಿ ಉತ್ಪನ್ನ ಅಥವಾ ಬ್ರ್ಯಾಂಡ್‌ಗೆ ತನ್ನದೇ ಇನ್‌ಬಾಕ್ಸ್ ಇದೆ. ನಿಮ್ಮಲ್ಲಿರುವುದಕ್ಕೆ ಸೇರಿಸಿ, ಅಥವಾ ಹೊಸದನ್ನು ಆರಂಭಿಸಿ."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "ಪ್ರತಿ ಸ್ವೀಕರಿಸುವವರನ್ನು ಅವರು ಪಡೆದ ವಿನ್ಯಾಸದ ಆವೃತ್ತಿಯಡಿ ಎಣಿಸಲಾಗುತ್ತದೆ."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "ಪ್ರತಿ ಉತ್ತರವು ಇನ್‌ಬಾಕ್ಸ್‌ನಲ್ಲಿ ಒಂದು ಸಂಭಾಷಣೆ. ಮೊದಲ 50 ಅನ್ನು ಇಲ್ಲಿ ಪಟ್ಟಿ ಮಾಡಲಾಗಿದೆ."
 
@@ -6730,6 +6752,10 @@ msgstr "ಟ್ರ್ಯಾಶ್ ಖಾಲಿ ಮಾಡಿ"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "ಟ್ರ್ಯಾಶ್ ಖಾಲಿ ಮಾಡಬೇಕೆ?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "ಖಾಲಿ ಬಿಟ್ಟರೆ {baseLanguage} ವಿಷಯ ಬಳಸಲಾಗುತ್ತದೆ. ವಿಲೀನ ಕ್ಷೇತ್ರಗಳು ಇಲ್ಲೂ ಕೆಲಸ ಮಾಡುತ್ತವೆ."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "ಕ್ಷೇತ್ರಗಳು"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "ಗುಂಪಿನ ಪ್ರಕಾರ ಅಂಕಿಗಳು"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "ಭಾಷೆ ಪ್ರಕಾರ ಸಂಖ್ಯೆಗಳು"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "ಲೇಬಲ್‌ಗಳು ಸಂಭಾಷಣೆಗಳನ್ನು ಬ�
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "ಉಳಿಸಬೇಕಾದ ಭಾಷೆ"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "ಭಾಷೆಗಳು"
 
@@ -11240,6 +11274,10 @@ msgstr "ಮುಂದಿನ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ {when} ಹೋ
 msgid "Next check {next}."
 msgstr "ಮುಂದಿನ ಪರಿಶೀಲನೆ {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "ಮುಂದಿನ ಭಾಷಾ ಆವೃತ್ತಿ"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "ಈ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್‌ನ ವೇಗದಲ್ಲಿ, ಮುಂದಿನ ಮೇಲ್ {local} ({utc} UTC) ಕ್ಕೆ."
@@ -11601,6 +11639,10 @@ msgstr "ಇನ್ನೂ ಲೇಬಲ್‌ಗಳಿಲ್ಲ"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "ಇನ್ನೂ ಲೇಬಲ್‌ಗಳಿಲ್ಲ. ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸೇರಿಸಿ."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "ಯಾವ ಭಾಷೆಯೂ ಹೊಂದುತ್ತಿಲ್ಲ"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "ಓದಲು ಮತ್ತು ಉತ್ತರಿಸಲು ಒಂದು �
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "ಕ್ಷೇತ್ರವನ್ನು ಆರಿಸಿ"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "ಈ ಸಂಭಾಷಣೆಯಲ್ಲಿ ಹುಡುಕಿ"
 msgid "Search incidents"
 msgstr "ಘಟನೆಗಳನ್ನು ಹುಡುಕಿ"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "ಭಾಷೆಗಳನ್ನು ಹುಡುಕಿ ಅಥವಾ ಟ್ಯಾಗ್ ಟೈಪ್ ಮಾಡಿ"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "ಮೇಲ್‌ನಲ್ಲಿ ಹುಡುಕಿ"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "ಕೆಲವು ಚಿತ್ರಗಳಿಗೆ ನೋಡಲಾಗದ ಜನರಿಗೆ ವಿವರಣೆ ಇಲ್ಲ."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "ಕೆಲವು ಭಾಷಾ ಆವೃತ್ತಿಗಳು ಪೂರ್ಣವಾಗಿಲ್ಲ."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "ಕೆಲವು ಲಿಂಕ್‌ಗಳು ಮಾನ್ಯವಾಗಿಲ್ಲ."
 
@@ -17544,6 +17598,10 @@ msgstr "ಕೆಲವು ಮೌಲ್ಯಗಳು ಮಾನ್ಯವಾಗಿಲ�
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "ಫೈಲ್‌ನ ಕೆಲವು ಭಾಗಗಳು ತಲುಪಲಿಲ್ಲ. ಅವನ್ನು ಕಳುಹಿಸಲು ಅದೇ ಫೈಲ್ ಅನ್ನು ಮತ್ತೆ ಆರಿಸಿ."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "ಕೆಲವು ಪಠ್ಯಗಳು ಅನುವಾದವಾಗಿಲ್ಲ, ಆದ್ದರಿಂದ {base} ಪಠ್ಯ ಕಾಣಿಸುತ್ತದೆ: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "ಸಂಪರ್ಕ ಒಂದು ಸಂದೇಶ ಬರೆಯುತ್ತ
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "ಸಂಪರ್ಕ, ಅವರ ಟಿಪ್ಪಣಿಗಳು ಮತ್ತು ಅವರು ಬರೆದ ಎಲ್ಲವನ್ನೂ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ. ಇದನ್ನು ರದ್ದುಪಡಿಸಲಾಗದು."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "ಸಂಪರ್ಕದ ಭಾಷೆ"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "ಸಂಪರ್ಕಗಳು, ಅವರ ಸಂಭಾಷಣೆಗಳು, ಟಿಪ್ಪಣಿಗಳು ಮತ್ತು ಫೈಲ್‌ಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ. ಇದನ್ನು ರದ್ದುಪಡಿಸಲಾಗದು."
@@ -18453,6 +18515,10 @@ msgstr "ಸಂಭಾಷಣೆ ಮುಚ್ಚಿದಾಗ ಗ್ರಾಹಕರ�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "ವಿತರಣಾ ಸಾಮರ್ಥ್ಯ ಪರಿಶೀಲನೆ ಇನ್ನೂ ಮುಗಿದಿಲ್ಲ."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "ಈ ವಿಷಯಗಳಿಗೆ ವಿನ್ಯಾಸದಲ್ಲಿ ಆವೃತ್ತಿ ಇಲ್ಲ, ಆದ್ದರಿಂದ ಇವು ಬಳಕೆಯಾಗುವುದಿಲ್ಲ: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "7 ದಿನಗಳಲ್ಲಿ ದಾಖಲೆಗಳು ಸಿಗಲಿ�
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "ನಿಮ್ಮ SES ಖಾತೆಯ ಪ್ರದೇಶ."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "ಕಡ್ಡಾಯ ಅಡಿಟಿಪ್ಪಣಿ ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿದೆ: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "ನಿಮಿಷಗಳೊಳಗೆ"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "ದೃಢೀಕರಣವಿಲ್ಲದಿದ್ದರೆ ಯಾರು ಬೇಕಾದರೂ ನಿಮ್ಮ ಫಾರ್ಮ್‌ಗೆ ಬೇರೆಯವರ ವಿಳಾಸವನ್ನು ಟೈಪ್ ಮಾಡಬಹುದು, ಮತ್ತು ವಿಳಾಸದ ಮಾಲೀಕರು ಒಪ್ಪಿದ್ದಾರೆ ಎಂದು ನೀವು ತೋರಿಸಲಾಗದು. ನಿಮ್ಮ ಫಾರ್ಮ್‌ಗಳನ್ನು ನೀವು ಈಗಾಗಲೇ ವಿಳಾಸ ಪರಿಶೀಲಿಸಿದವರಿಗೆ ಮಾತ್ರ ತೋರಿಸದಿದ್ದರೆ ಇದನ್ನು ಆನ್ ಆಗಿಯೇ ಇಡಿ."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "ಸ್ವಂತ ವಿಷಯವಿಲ್ಲದ ಕಾರಣ ಇವುಗಳಿಗೆ {base} ವಿಷಯ ಸಿಗುತ್ತದೆ: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

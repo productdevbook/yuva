@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: uk\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# текст не перекладено} few {# тексти не перекладено} many {# текстів не перекладено} other {# тексту не перекладено}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (копія)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Група блоків на власному тлі"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "Мову вказано двічі, або резервна мова не входить до мов дизайну."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Посилання, що виглядає як кнопка"
 
@@ -63,17 +71,27 @@ msgstr "Тонка лінія між частинами"
 msgid "A title in three sizes"
 msgstr "Заголовок трьох розмірів"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "Залишився переклад для блоку, у якому більше немає тексту."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "Версія зберігається не частіше за раз на десять хвилин під час редагування, під час ручного збереження, під час відновлення версії та коли чуже збереження перемагає в конфлікті. Залишається найновіших 50."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Додати"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Додати блок"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Додати мову"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Архівувати цей дизайн?"
 msgid "Archived"
 msgstr "В архіві"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Як у базовій"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Ключ атрибута"
@@ -151,6 +173,15 @@ msgstr "Назад до дизайнів"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Тло"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Базова"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Базова мова"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Кнопки"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Скасувати"
@@ -271,6 +303,10 @@ msgstr "Стовпці"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Атрибут контакта"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Контакти, які отримали б її, натомість отримають резервну мову."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Подія"
 msgid "Everywhere"
 msgstr "Скрізь"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Резервна мова"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Ім'я"
@@ -498,6 +538,10 @@ msgstr "Шрифти, уже встановлені на пристроях лю
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Текст підвалу"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Для контактів без мови або з мовою, для якої немає версії."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Гарячі клавіші"
 msgid "Kind"
 msgstr "Тип"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Мова"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Налаштування мов"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Мови"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Великий"
@@ -665,6 +722,11 @@ msgstr "Шари"
 msgid "Layout"
 msgstr "Макет"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Макет спільний для всіх мов. Щоб змінити його, перейдіть на {language}."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Ліворуч"
@@ -673,6 +735,7 @@ msgstr "Ліворуч"
 msgid "Left panel"
 msgstr "Ліва панель"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "Зліва направо"
@@ -783,6 +846,10 @@ msgstr "Перемістити вгору"
 msgid "Name"
 msgstr "Ім'я"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Укажіть базову мову, перш ніж додавати інші."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Мережа"
@@ -828,6 +895,14 @@ msgstr "Не збережено: виправте позначені блоки"
 msgid "Not saved. Try again"
 msgstr "Не збережено. Спробуйте знову"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Не перекладено"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Не перекладено: показується оригінал, доки ви не напишете цей текст."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Кількість стовпців"
@@ -848,9 +923,17 @@ msgstr "Не в мережі. Ваші зміни зберігаються на 
 msgid "Onboarding"
 msgstr "Знайомство"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Один дизайн із версією для кожної мови. Перша вибрана мова — базова."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Один під одним на вузьких екранах."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Оригінал ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Розмір попереднього перегляду"
 msgid "Preview text"
 msgstr "Текст попереднього перегляду"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Текст попереднього перегляду ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Продукт"
@@ -939,6 +1026,14 @@ msgstr "Повторити"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Видалити"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "Вилучити {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "Вилучити {language} та її тексти?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Відновлення зберігає цю версію як найн�
 msgid "Right"
 msgstr "Праворуч"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "Справа наліво"
@@ -1077,6 +1173,10 @@ msgstr "Показати їхню версію. Скасування повер�
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Показується після теми в більшості скриньок. Розсилка може задати свій."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Показується після теми в більшості поштових скриньок. Якщо порожньо, використовується текст базової мови."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "У скриньки немає юридичної назви чи пош
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Дані відправника скриньки заповнюють підвал, який отримує кожен лист."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Мова, якою написано блоки. Макет, зображення й посилання беруться з неї."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Мова, якою зараз написано дизайн."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "Лист порожній. Додайте блок, щоб почати."
@@ -1200,6 +1308,14 @@ msgstr "Лист понад 102 КБ, тож Gmail обріже його й сх
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Лист понад 90 КБ. Gmail обрізає листи приблизно на 102 КБ."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Нова версія починається з текстів базової мови. Макет, зображення й посилання залишаються спільними; ви перекладаєте лише тексти."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Обовʼязковий нижній колонтитул цієї версії англійською: у Yuva ці тексти є лише англійською, турецькою та німецькою."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Товщина"
 msgid "This block cannot sit inside this one."
 msgstr "Цей блок не можна помістити всередину цього."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "У цьому блоці немає тексту для перекладу."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Цей дизайн змінився деінде"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "На цьому сервері немає шаблону «{slug}». Можливо, потрібна новіша версія Yuva."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Цей текст ще не перекладено, тому показується текст базової мови."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "У цьому тексті використано неіснуюче поле злиття."
 
@@ -1286,6 +1410,10 @@ msgstr "Тут використано зображення або посилан
 msgid "This value is not valid."
 msgstr "Це значення недійсне."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Ця версія отримує його англійською: у Yuva ці тексти є лише англійською, турецькою та німецькою."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Три"
@@ -1293,6 +1421,10 @@ msgstr "Три"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Топ"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Переклад"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Напишіть заголовок"
 msgid "Write something"
 msgstr "Напишіть щось"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Напишіть переклад"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Напишіть, що хочете повідомити читачам."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Напрямок письма"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

@@ -676,3 +676,27 @@ export function formatMs(ms: number, locale: string) {
     return new Intl.NumberFormat(locale, { style: "unit", unit: "second", maximumFractionDigits: 1 }).format(ms / 1000)
   return new Intl.NumberFormat(locale, { style: "unit", unit: "millisecond", maximumFractionDigits: 0 }).format(ms)
 }
+
+export function languageName(tag: string, locale: string) {
+  try {
+    const name = new Intl.DisplayNames([locale], { type: "language" }).of(tag)
+    return name && name.toLowerCase() !== tag.toLowerCase() ? name : tag
+  } catch {
+    return tag
+  }
+}
+
+export function useLanguageName() {
+  const { i18n } = useLingui()
+  return (tag: string) => languageName(tag, i18n.locale)
+}
+
+export function canonicalTag(raw: string): string | null {
+  const s = raw.trim().replace(/_/g, "-")
+  if (!/^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(s) || s.length > 35) return null
+  try {
+    return Intl.getCanonicalLocales(s)[0] ?? null
+  } catch {
+    return null
+  }
+}

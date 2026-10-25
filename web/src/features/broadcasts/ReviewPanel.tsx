@@ -5,7 +5,7 @@ import { Link } from "react-router"
 
 import { ErrorLine, Notice, Segmented } from "@/components/common"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
-import { formatBytes } from "@/components/common/text"
+import { formatBytes, languageName } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -21,7 +21,8 @@ import { problemOf, useSchedule, useUpdateBroadcast } from "@/features/broadcast
 import { paceGap, usePaceSummary } from "@/features/broadcasts/Pace"
 import { keyHint, useBroadcastsStatus, useNumber } from "@/features/broadcasts/BroadcastParts"
 import { ZonePicker } from "@/features/broadcasts/SendTime"
-import { designLink } from "@/features/designs/queries"
+import { footerInEnglish, missing, versions, type Doc } from "@/features/designs/doc"
+import { designLink, useDesign } from "@/features/designs/queries"
 import { channelLink, isChecking, useDeliverability } from "@/features/settings/channels/email/deliverability"
 import type {
   Broadcast,
@@ -60,6 +61,7 @@ const ORDER: BroadcastReviewKey[] = [
   "audience_nonempty",
   "design",
   "subject",
+  "translations",
   "merge_fields",
   "html_size",
   "links",
@@ -99,6 +101,7 @@ function useDeliverabilityText(b: Broadcast, review: BroadcastReview) {
 export function useItemText(b: Broadcast, review: BroadcastReview) {
   const { t, i18n } = useLingui()
   const deliverability = useDeliverabilityText(b, review)
+  const doc = useDesign(b.design_id ?? "").data?.document
   const status = useBroadcastsStatus()
   const tenantMissing = useInboxes().data?.find((i) => i.id === b.inbox_id)?.ses_tenant?.state === "missing"
   const size = review.html_bytes !== undefined ? formatBytes(review.html_bytes, i18n.locale) : ""
@@ -122,6 +125,43 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
     test_sent: t`Test mail`,
     click_tracking: t`Click tracking`,
     ses_tenant: t`Amazon SES tenant`,
+    translations: t`Languages`,
+  }
+  const name = (tag: string) => languageName(tag, i18n.locale)
+  const list = (xs: string[]) => new Intl.ListFormat(i18n.locale, { type: "conjunction" }).format(xs)
+  const translationText = () => {
+    const tags = doc ? versions(doc) : []
+    const own = b.translations ?? {}
+    const found: string[] = []
+    if (tags.length > 1) {
+      const base = name(tags[0])
+      const noSubject = tags.slice(1).filter((tag) => !own[tag]?.subject)
+      const gaps = tags
+        .slice(1)
+        .map((tag) => [tag, missing(doc!, tag).length] as const)
+        .filter(([, n]) => n > 0)
+      const english = tags.filter(footerInEnglish)
+      if (noSubject.length) {
+        const languages = list(noSubject.map(name))
+        found.push(t`Without a subject of their own, these get the ${base} subject: ${languages}.`)
+      }
+      if (gaps.length) {
+        const languages = list(gaps.map(([tag, n]) => `${name(tag)} (${n})`))
+        found.push(t`Some texts are not translated, so the ${base} text shows: ${languages}.`)
+      }
+      if (english.length) {
+        const languages = list(english.map(name))
+        found.push(t`The required footer is in English for: ${languages}.`)
+      }
+    }
+    const unused = Object.keys(own)
+      .filter((tag) => !tags.includes(tag))
+      .sort()
+    if (unused.length) {
+      const languages = list(unused.map(name))
+      found.push(t`The design has no version for these subjects, so they are not used: ${languages}.`)
+    }
+    return found.length ? found.join(" ") : t`Some language versions are not complete.`
   }
   const problem = (it: BroadcastReviewItem): string | null => {
     const blocking = it.status === "blocking"
@@ -181,12 +221,14 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
             : t`The inbox’s Amazon SES tenant is still being set up. The broadcast can go out, but check this again before it starts.`
       case "click_tracking":
         return t`Links will point at this server’s link domain instead of your own. Spam filters look at link domains.`
+      case "translations":
+        return translationText()
     }
   }
   return { titles, problem }
 }
 
-export function fixOf(b: Broadcast, key: BroadcastReviewKey): Fix | null {
+export function fixOf(b: Broadcast, key: BroadcastReviewKey, doc?: Doc): Fix | null {
   switch (key) {
     case "sender_identity":
       return { to: `/settings/inboxes/${b.inbox_id}` }
@@ -218,6 +260,12 @@ export function fixOf(b: Broadcast, key: BroadcastReviewKey): Fix | null {
       return { spot: "hours" }
     case "daily_cap":
       return null
+    case "translations": {
+      const gap = doc && b.design_id ? versions(doc).find((tag, i) => i > 0 && missing(doc, tag).length > 0) : undefined
+      return gap && b.design_id
+        ? { to: `${designLink(b.design_id)}?lang=${encodeURIComponent(gap)}` }
+        : { spot: "content" }
+    }
   }
 }
 
@@ -235,6 +283,7 @@ export const PART_OF: Partial<Record<BroadcastReviewKey, Part>> = {
   html_size: "content",
   links: "content",
   images_alt: "content",
+  translations: "content",
   subject: "subject",
 }
 
@@ -278,6 +327,7 @@ function Checklist({
 }) {
   const { t } = useLingui()
   const { titles, problem } = useItemText(b, review)
+  const doc = useDesign(b.design_id ?? "").data?.document
   const items = [...review.items].sort(
     (x, y) => RANK[x.status] - RANK[y.status] || ORDER.indexOf(x.key) - ORDER.indexOf(y.key)
   )
@@ -285,7 +335,7 @@ function Checklist({
     <ul className="flex flex-col divide-y rounded-xl border" data-testid="review-items">
       {items.map((it) => {
         const text = it.status === "ok" ? null : problem(it)
-        const fix = it.status === "ok" || readOnly ? null : fixOf(b, it.key)
+        const fix = it.status === "ok" || readOnly ? null : fixOf(b, it.key, doc)
         return (
           <li
             key={it.key}

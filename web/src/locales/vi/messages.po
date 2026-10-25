@@ -50,6 +50,11 @@ msgstr "{0, plural, other {# cuộc trò chuyện}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, other {# thất bại}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, other {# người trong số đó nhận bản này vì ngôn ngữ của họ không có phiên bản}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, other {Bản nháp của trợ lý cần xem lại}}"
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} đã có trong Yuva"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (dự phòng)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Thêm một điểm liên hệ loại Webhook, dán địa chỉ ở tr�
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Thêm ngôn ngữ"
@@ -2320,6 +2330,10 @@ msgstr "Tất cả lần nhập"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Tất cả hộp thư"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Tất cả ngôn ngữ"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "Qua email"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "Theo nhóm"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "Theo ngôn ngữ"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Mỗi sản phẩm hoặc thương hiệu có hộp thư riêng. Hãy thêm vào một hộp bạn có, hoặc tạo mới."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Mỗi người nhận được tính vào phiên bản thiết kế mà họ đã nhận."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Mỗi phản hồi là một cuộc trò chuyện trong hộp thư. 50 cái đầu được liệt kê ở đây."
 
@@ -6730,6 +6752,10 @@ msgstr "Dọn sạch Thùng rác"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Dọn sạch Thùng rác?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Để trống sẽ dùng tiêu đề bằng {baseLanguage}. Trường hợp nhất cũng dùng được ở đây."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Trường"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Số liệu theo nhóm"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Số liệu theo ngôn ngữ"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Nhãn sắp xếp cuộc trò chuyện theo chủ đề, như thanh toá
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Ngôn ngữ cần giữ"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Ngôn ngữ"
 
@@ -11240,6 +11274,10 @@ msgstr "Lần gửi tiếp theo vào {when}."
 msgid "Next check {next}."
 msgstr "Lần kiểm tra tiếp theo {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Phiên bản ngôn ngữ tiếp theo"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Thư tiếp theo lúc {local} ({utc} UTC), theo tốc độ của thư hàng loạt này."
@@ -11601,6 +11639,10 @@ msgstr "Chưa có nhãn"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Chưa có nhãn. Hãy thêm trong cài đặt."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Không có ngôn ngữ phù hợp"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Chọn một thảo luận để đọc và trả lời."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Chọn một trường"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Chọn ngôn ngữ"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Tìm trong cuộc trò chuyện này"
 msgid "Search incidents"
 msgstr "Tìm sự cố"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Tìm ngôn ngữ hoặc nhập mã"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Tìm trong thư"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Một số hình ảnh chưa có mô tả cho những người không nhìn thấy chúng."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Một số phiên bản ngôn ngữ chưa hoàn chỉnh."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Một số liên kết không hợp lệ."
 
@@ -17544,6 +17598,10 @@ msgstr "Một số giá trị không hợp lệ."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Một số phần của tệp chưa đến. Hãy chọn lại cùng tệp để gửi chúng."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Một số văn bản chưa được dịch nên văn bản bằng {base} sẽ hiển thị: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Người liên hệ viết một tin nhắn"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Liên hệ, ghi chú của họ và mọi thứ họ đã viết bị xóa vĩnh viễn. Không thể hoàn tác."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Ngôn ngữ của liên hệ"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Các liên hệ cùng cuộc trò chuyện, ghi chú và tệp của họ bị xóa vĩnh viễn. Không thể hoàn tác."
@@ -18453,6 +18515,10 @@ msgstr "Khách hàng chạm ngón cái lên hoặc xuống khi cuộc trò chuy�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Việc kiểm tra khả năng gửi thư chưa xong."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "Thiết kế không có phiên bản cho các tiêu đề này nên chúng không được dùng: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Không tìm thấy các bản ghi trong 7 ngày, nên yêu cầu đã k�
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "Khu vực của tài khoản SES của bạn."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Chân trang bắt buộc bằng tiếng Anh cho: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Trong vài phút"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Không có xác nhận, bất kỳ ai cũng có thể gõ địa chỉ của người khác vào biểu mẫu của bạn, và bạn không thể chứng minh chủ địa chỉ đã đồng ý. Hãy giữ bật trừ khi biểu mẫu của bạn chỉ hiện cho những người có địa chỉ bạn đã xác minh."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Không có tiêu đề riêng, các ngôn ngữ này nhận tiêu đề bằng {base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

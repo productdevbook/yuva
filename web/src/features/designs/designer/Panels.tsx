@@ -5,6 +5,7 @@ import { CircleAlertIcon, EyeOffIcon, GripVerticalIcon, TriangleAlertIcon } from
 import { BLOCK_TYPES, containerOf, ROOT, type Block, type BlockType } from "@/features/designs/doc"
 import { useDesigner } from "@/features/designs/designer/context"
 import { BlockIcon } from "@/features/designs/designer/icons"
+import { LayoutHint } from "@/features/designs/designer/Languages"
 import { plainText } from "@/features/designs/rich"
 import { isWarning, useBlockHints, useBlockNames } from "@/features/designs/text"
 import { useIsPhone } from "@/hooks/use-media-query"
@@ -13,12 +14,12 @@ import { cn } from "@/lib/utils"
 function PaletteItem({ type, onAdd }: { type: BlockType; onAdd: (type: BlockType) => void }) {
   const names = useBlockNames()
   const hints = useBlockHints()
-  const { readOnly } = useDesigner()
+  const { locked } = useDesigner()
   const phone = useIsPhone()
   const { setNodeRef, listeners, attributes, isDragging } = useDraggable({
     id: `new:${type}`,
     data: { kind: "new", type },
-    disabled: readOnly || phone,
+    disabled: locked || phone,
   })
   return (
     <button
@@ -27,7 +28,7 @@ function PaletteItem({ type, onAdd }: { type: BlockType; onAdd: (type: BlockType
       {...listeners}
       {...attributes}
       role="button"
-      disabled={readOnly}
+      disabled={locked}
       onClick={() => onAdd(type)}
       title={hints[type]}
       className={cn(
@@ -46,6 +47,7 @@ export function BlockPalette({ onAdd }: { onAdd: (type: BlockType) => void }) {
   const { t } = useLingui()
   return (
     <div className="flex flex-col gap-3">
+      <LayoutHint />
       <div className="grid grid-cols-2 gap-2" role="group" aria-label={t`Blocks`} data-testid="block-palette">
         {BLOCK_TYPES.map((type) => (
           <PaletteItem key={type} type={type} onAdd={onAdd} />
@@ -141,7 +143,7 @@ function LayerRow({
   const { setNodeRef, setActivatorNodeRef, listeners, attributes, isDragging } = useDraggable({
     id: `layer:${block.id}`,
     data: { kind: "block", type: block.type, id: block.id },
-    disabled: d.readOnly,
+    disabled: d.locked,
   })
   const { setNodeRef: setDropRef } = useDroppable({
     id: `layer-over:${block.id}`,

@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ro\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# text netradus} few {# texte netraduse} other {# de texte netraduse}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (copie)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Un grup de blocuri pe propriul fundal"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "O limbă apare de două ori sau limba de rezervă nu este una dintre limbile designului."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Un link care arată ca un buton"
 
@@ -63,17 +71,27 @@ msgstr "O linie subțire între părți"
 msgid "A title in three sizes"
 msgstr "Un titlu în trei dimensiuni"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "A rămas o traducere pentru un bloc care nu mai are text."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "O versiune se păstrează cel mult la zece minute cât editezi, când salvezi manual, când restaurezi una și când salvarea altcuiva câștigă un conflict. Cele mai noi 50 rămân."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Adaugă"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Adaugă un bloc"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Adaugă o limbă"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Arhivezi acest design?"
 msgid "Archived"
 msgstr "Arhivat"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Ca baza"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Cheia atributului"
@@ -151,6 +173,15 @@ msgstr "Înapoi la designuri"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Fundal"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Bază"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Limba de bază"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Butoane"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Anulează"
@@ -271,6 +303,10 @@ msgstr "Coloane"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Atribut de contact"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Contactele care ar primi-o primesc în schimb limba de rezervă."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Eveniment"
 msgid "Everywhere"
 msgstr "Peste tot"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Limba de rezervă"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Prenume"
@@ -498,6 +538,10 @@ msgstr "Fonturi deja prezente pe dispozitivele oamenilor; e-mailurile nu încarc
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Textul subsolului"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Pentru contactele fără limbă sau a căror limbă nu are versiune."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Comenzi rapide de la tastatură"
 msgid "Kind"
 msgstr "Tip"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Limbă"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Setări de limbă"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Limbi"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Mare"
@@ -665,6 +722,11 @@ msgstr "Straturi"
 msgid "Layout"
 msgstr "Aspect"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Aspectul este comun tuturor limbilor. Treci la {language} ca să-l modifici."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Stânga"
@@ -673,6 +735,7 @@ msgstr "Stânga"
 msgid "Left panel"
 msgstr "Panou din stânga"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "De la stânga la dreapta"
@@ -783,6 +846,10 @@ msgstr "Mută în sus"
 msgid "Name"
 msgstr "Nume"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Indică limba de bază înainte de a adăuga alte limbi."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Rețea"
@@ -828,6 +895,14 @@ msgstr "Nesalvat: corectează blocurile marcate"
 msgid "Not saved. Try again"
 msgstr "Nesalvat. Încearcă din nou"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Netradus"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Netradus: apare originalul până scrii acest text."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Numărul de coloane"
@@ -848,9 +923,17 @@ msgstr "Offline. Modificările tale rămân pe acest dispozitiv și sunt salvate
 msgid "Onboarding"
 msgstr "Integrare"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Un design cu câte o versiune pentru fiecare limbă. Prima aleasă este baza."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Una sub alta pe ecrane înguste."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Original ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Dimensiunea previzualizării"
 msgid "Preview text"
 msgstr "Text de previzualizare"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Text de previzualizare ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Produs"
@@ -939,6 +1026,14 @@ msgstr "Refă"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Elimină"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "Elimină {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "Elimini {language} și textele sale?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Restaurarea salvează această versiune ca cea mai nouă. O poți anula.
 msgid "Right"
 msgstr "Dreapta"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "De la dreapta la stânga"
@@ -1077,6 +1173,10 @@ msgstr "Arată versiunea lor. Anularea o readuce pe a ta."
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Afișat după subiect în majoritatea căsuțelor. Un mesaj în masă își poate seta propriul text."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Apare după subiect în majoritatea căsuțelor. Gol înseamnă cel al limbii de bază."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "Căsuța nu are nume legal sau adresă poștală pentru subsol. Adaugă-
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Datele de expeditor ale căsuței completează subsolul pe care îl primește fiecare e-mail."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Limba în care sunt scrise blocurile. Aspectul, imaginile și linkurile vin din ea."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Limba în care este scris acum designul."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "E-mailul este gol. Adaugă un bloc ca să începi."
@@ -1200,6 +1308,14 @@ msgstr "E-mailul depășește 102 KB, deci Gmail îl va tăia și va ascunde lin
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "E-mailul depășește 90 KB. Gmail taie e-mailurile la aproximativ 102 KB."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Noua versiune pornește de la textele limbii de bază. Aspectul, imaginile și linkurile rămân comune; traduci doar textele."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Subsolul obligatoriu al acestei versiuni este în engleză: Yuva are aceste texte doar în engleză, turcă și germană."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Grosime"
 msgid "This block cannot sit inside this one."
 msgstr "Acest bloc nu poate sta în interiorul acestuia."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "Acest bloc nu are text de tradus."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Acest design s-a schimbat în altă parte"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "Acest server nu are șablonul „{slug}”. Poate are nevoie de un Yuva mai nou."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Acest text nu este încă tradus, așa că apare cel al limbii de bază."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "Acest text folosește un câmp de îmbinare care nu există."
 
@@ -1286,6 +1410,10 @@ msgstr "Aceasta folosește o imagine sau un link care aparține altui spațiu de
 msgid "This value is not valid."
 msgstr "Această valoare nu este validă."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Această versiune îl primește în engleză: Yuva are aceste texte doar în engleză, turcă și germană."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Trei"
@@ -1293,6 +1421,10 @@ msgstr "Trei"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Top"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Traducere"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Scrie un titlu"
 msgid "Write something"
 msgstr "Scrie ceva"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Scrie traducerea"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Scrie ce vrei să le spui cititorilor tăi."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Direcția scrierii"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

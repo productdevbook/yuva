@@ -3,10 +3,10 @@ import { CheckIcon, LoaderIcon, MailWarningIcon } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
-import { ErrorLine, InboxMark, Notice, PersonAvatar, useConfirm } from "@/components/common"
+import { ErrorLine, InboxMark, Notice, PersonAvatar, Segmented, useConfirm } from "@/components/common"
 import { PageBar } from "@/components/common/PageBar"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
-import { formatDuration } from "@/components/common/text"
+import { formatDuration, useLanguageName } from "@/components/common/text"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -33,11 +33,12 @@ import {
   type Spot,
 } from "@/features/broadcasts/ReviewPanel"
 import { TestSendDialog, useTestSend } from "@/features/broadcasts/TestSend"
+import { versions } from "@/features/designs/doc"
 import { designLink, useDesign } from "@/features/designs/queries"
 import { Card, Field, Section, ToggleRow } from "@/features/settings/ui"
 import { FrameButton, framePad } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import type { Broadcast, BroadcastReview, BroadcastUpdate, Channel } from "@/lib/api"
+import type { Broadcast, BroadcastReview, BroadcastTranslation, BroadcastUpdate, Channel } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
@@ -51,6 +52,7 @@ type Draft = {
   name: string
   subject: string
   preheader: string
+  translations: Record<string, BroadcastTranslation>
   channel_id: string
   design_id: string
   audience: Audience
@@ -68,6 +70,7 @@ function draftOf(b: Broadcast): Draft {
     name: b.name,
     subject: b.subject,
     preheader: b.preheader,
+    translations: b.translations ?? {},
     channel_id: b.channel_id ?? "",
     design_id: b.design_id ?? "",
     audience: b.audience,
@@ -79,6 +82,17 @@ function draftOf(b: Broadcast): Draft {
     timezone: b.timezone,
     hours: hoursOf(b.send_window),
   }
+}
+
+function cleanTranslations(all: Record<string, BroadcastTranslation>) {
+  const out: Record<string, BroadcastTranslation> = {}
+  for (const [tag, x] of Object.entries(all)) {
+    const entry: BroadcastTranslation = {}
+    if (x.subject) entry.subject = x.subject
+    if (x.preheader) entry.preheader = x.preheader
+    if (entry.subject || entry.preheader) out[tag] = entry
+  }
+  return out
 }
 
 function audienceInput(a: Audience) {
@@ -430,10 +444,31 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   const listNames = new Map((lists.data?.pages.flatMap((p) => p.items) ?? []).map((l) => [l.id, l.name]))
   const channel = useInboxChannels(b.inbox_id).data?.find((c) => c.id === d.channel_id)
   const design = useDesign(d.design_id)
-  const designPreheader = d.design_id ? (design.data?.document.preheader ?? "") : ""
+  const designDoc = d.design_id ? design.data?.document : undefined
+  const tags = designDoc ? versions(designDoc) : []
+  const [tab, setTab] = useState<string | null>(null)
+  const version = tab && tags.indexOf(tab) > 0 ? tab : null
+  const languageName = useLanguageName()
+  const baseLanguage = tags.length ? languageName(tags[0]) : ""
+  const own = version ? (d.translations[version] ?? {}) : null
+  const designPreheader = designDoc?.preheader ?? ""
+  const inherited =
+    (version ? designDoc?.translations?.[version]?.preheader : undefined) || (version && d.preheader) || designPreheader
+  const subject = own ? (own.subject ?? "") : d.subject
+  const preheader = own ? (own.preheader ?? "") : d.preheader
+  const shownSubject = own ? own.subject || d.subject : d.subject
+  const shownPreheader = own ? own.preheader || inherited : d.preheader || designPreheader
   const set = (patch: Partial<Draft>, save: BroadcastUpdate, delay?: number) => {
     setD((x) => ({ ...x, ...patch }))
     if (!readOnly) auto.save(save, delay)
+  }
+  const setText = (field: "subject" | "preheader", value: string) => {
+    if (!version) {
+      set({ [field]: value }, { [field]: value })
+      return
+    }
+    const translations = { ...d.translations, [version]: { ...d.translations[version], [field]: value } }
+    set({ translations }, { translations: cleanTranslations(translations) })
   }
   const fix = (spot: Spot) => {
     if (spot === "test") {
@@ -550,23 +585,44 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                     disabled={readOnly}
                     onChange={(id) => set({ design_id: id ?? "" }, { design_id: id }, 0)}
                   />
+                  {tags.length > 1 && (
+                    <div className="-mx-1 overflow-x-auto px-1">
+                      <Segmented
+                        value={version ?? tags[0]}
+                        onChange={(v) => setTab(v === tags[0] ? null : v)}
+                        label={t`Language`}
+                        items={tags.map((tag) => ({
+                          value: tag,
+                          label: languageName(tag),
+                          testId: "subject-language",
+                        }))}
+                        itemClassName="whitespace-nowrap"
+                      />
+                    </div>
+                  )}
                   <Field
                     label={
                       <span className="flex w-full items-center justify-between gap-2">
                         <Trans>Subject</Trans>
-                        <Counter value={d.subject} max={SUBJECT_MAX} soft={SUBJECT_SOFT} />
+                        <Counter value={subject} max={SUBJECT_MAX} soft={SUBJECT_SOFT} />
                       </span>
                     }
                     htmlFor="broadcast-subject"
-                    hint={<Trans>Merge fields work here too, for example {merge}.</Trans>}
+                    hint={
+                      version ? (
+                        <Trans>Empty uses the {baseLanguage} subject. Merge fields work here too.</Trans>
+                      ) : (
+                        <Trans>Merge fields work here too, for example {merge}.</Trans>
+                      )
+                    }
                   >
                     <Input
                       id="broadcast-subject"
-                      value={d.subject}
+                      value={subject}
                       maxLength={SUBJECT_MAX}
                       disabled={readOnly}
-                      placeholder={t`What is new in October`}
-                      onChange={(e) => set({ subject: e.target.value }, { subject: e.target.value })}
+                      placeholder={version ? d.subject : t`What is new in October`}
+                      onChange={(e) => setText("subject", e.target.value)}
                       data-testid="broadcast-subject"
                     />
                   </Field>
@@ -574,7 +630,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                     label={
                       <span className="flex w-full items-center justify-between gap-2">
                         <Trans>Preview text</Trans>
-                        <Counter value={d.preheader} max={PREHEADER_MAX} />
+                        <Counter value={preheader} max={PREHEADER_MAX} />
                       </span>
                     }
                     htmlFor="broadcast-preheader"
@@ -582,11 +638,11 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                   >
                     <Input
                       id="broadcast-preheader"
-                      value={d.preheader}
+                      value={preheader}
                       maxLength={PREHEADER_MAX}
                       disabled={readOnly}
-                      placeholder={designPreheader || t`A line that makes people open it`}
-                      onChange={(e) => set({ preheader: e.target.value }, { preheader: e.target.value })}
+                      placeholder={inherited || t`A line that makes people open it`}
+                      onChange={(e) => setText("preheader", e.target.value)}
                       data-testid="broadcast-preheader"
                     />
                   </Field>
@@ -733,8 +789,8 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                   <InboxPreview
                     sender={channel?.email?.display_name || channel?.name || ""}
                     address={from}
-                    subject={d.subject}
-                    preheader={d.preheader || designPreheader}
+                    subject={shownSubject}
+                    preheader={shownPreheader}
                   />
                 }
                 action={

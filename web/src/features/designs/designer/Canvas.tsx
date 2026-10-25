@@ -7,6 +7,7 @@ import {
   EyeOffIcon,
   GripVerticalIcon,
   ImageIcon,
+  LanguagesIcon,
   LockIcon,
   PlusIcon,
   Trash2Icon,
@@ -16,7 +17,15 @@ import { createPortal } from "react-dom"
 
 import { Button } from "@/components/ui/button"
 import { textOn } from "@/features/designs/colors"
-import { childContainers, containerOf, ROOT, type Block, type BlockOf } from "@/features/designs/doc"
+import {
+  childContainers,
+  containerOf,
+  footerInEnglish,
+  ROOT,
+  versions,
+  type Block,
+  type BlockOf,
+} from "@/features/designs/doc"
 import { useDesigner } from "@/features/designs/designer/context"
 import { RichEditor } from "@/features/designs/designer/editor"
 import { BlockIcon } from "@/features/designs/designer/icons"
@@ -192,7 +201,7 @@ function BlockView({
   const { setNodeRef, setActivatorNodeRef, listeners, attributes, isDragging } = useDraggable({
     id: block.id,
     data: { kind: "block", type: block.type, id: block.id },
-    disabled: d.readOnly,
+    disabled: d.locked,
   })
   const { setNodeRef: setDropRef } = useDroppable({
     id: `over:${block.id}`,
@@ -202,6 +211,7 @@ function BlockView({
   const errors = issues.filter((i) => !isWarning(i))
   const [top, right, bottom, left] = block.padding ?? defaultPadding(block, nested)
   const hiddenHere = block.hide === (d.view.phone ? "mobile" : "desktop")
+  const untranslated = d.missing.has(block.id)
   return (
     <div
       ref={(el) => {
@@ -240,17 +250,19 @@ function BlockView({
             errors.length > 0 ? "flex bg-destructive text-white" : "hidden bg-card text-muted-foreground"
           )}
         >
-          <button
-            type="button"
-            ref={setActivatorNodeRef}
-            {...listeners}
-            {...attributes}
-            aria-label={t`Drag ${kind}`}
-            className="grid size-5 cursor-grab touch-none place-items-center rounded-full hover:bg-black/10 active:cursor-grabbing"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <GripVerticalIcon className="size-3" />
-          </button>
+          {!d.locked && (
+            <button
+              type="button"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              {...attributes}
+              aria-label={t`Drag ${kind}`}
+              className="grid size-5 cursor-grab touch-none place-items-center rounded-full hover:bg-black/10 active:cursor-grabbing"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <GripVerticalIcon className="size-3" />
+            </button>
+          )}
           <TagLabel block={block} />
         </div>
       )}
@@ -259,35 +271,55 @@ function BlockView({
         d.toolSlot &&
         createPortal(
           <>
-            <span className="flex h-7 items-center gap-1 rounded-full bg-brand py-0.5 ps-0.5 pe-2.5 text-caption font-medium text-white">
-              <button
-                type="button"
-                ref={setActivatorNodeRef}
-                {...listeners}
-                {...attributes}
-                aria-label={t`Drag ${kind}`}
-                className="grid size-6 cursor-grab touch-none place-items-center rounded-full hover:bg-black/10 active:cursor-grabbing"
-                onClick={(e) => e.stopPropagation()}
-                data-testid="block-handle"
-              >
-                <GripVerticalIcon className="size-3.5" />
-              </button>
+            <span
+              className={cn(
+                "flex h-7 items-center gap-1 rounded-full bg-brand py-0.5 pe-2.5 text-caption font-medium text-white",
+                d.locked ? "ps-2.5" : "ps-0.5"
+              )}
+            >
+              {!d.locked && (
+                <button
+                  type="button"
+                  ref={setActivatorNodeRef}
+                  {...listeners}
+                  {...attributes}
+                  aria-label={t`Drag ${kind}`}
+                  className="grid size-6 cursor-grab touch-none place-items-center rounded-full hover:bg-black/10 active:cursor-grabbing"
+                  onClick={(e) => e.stopPropagation()}
+                  data-testid="block-handle"
+                >
+                  <GripVerticalIcon className="size-3.5" />
+                </button>
+              )}
               <TagLabel block={block} compact />
             </span>
-            <Tools block={block} container={container} index={index} count={count} />
+            {!d.locked && <Tools block={block} container={container} index={index} count={count} />}
           </>,
           d.toolSlot
         )}
-      {hiddenHere && (
-        <span
-          className="absolute top-1 end-1.5 z-20 inline-flex items-center gap-1 rounded-full bg-card px-2 py-0.5 font-sans text-[11px] leading-4 font-medium text-muted-foreground shadow-sm"
-          data-testid="hidden-tag"
-        >
-          <EyeOffIcon className="size-3" />
-          {d.view.phone ? <Trans>Hidden on phones</Trans> : <Trans>Hidden on wide screens</Trans>}
+      {(hiddenHere || untranslated) && (
+        <span className="absolute top-1 end-1.5 z-20 flex gap-1">
+          {untranslated && (
+            <span
+              className="inline-flex items-center gap-1 rounded-full bg-warning px-2 py-0.5 font-sans text-[11px] leading-4 font-medium text-white shadow-sm"
+              data-testid="untranslated-tag"
+            >
+              <LanguagesIcon className="size-3" />
+              <Trans>Not translated</Trans>
+            </span>
+          )}
+          {hiddenHere && (
+            <span
+              className="inline-flex items-center gap-1 rounded-full bg-card px-2 py-0.5 font-sans text-[11px] leading-4 font-medium text-muted-foreground shadow-sm"
+              data-testid="hidden-tag"
+            >
+              <EyeOffIcon className="size-3" />
+              {d.view.phone ? <Trans>Hidden on phones</Trans> : <Trans>Hidden on wide screens</Trans>}
+            </span>
+          )}
         </span>
       )}
-      <div className={cn(hiddenHere && "opacity-35")}>
+      <div className={cn((hiddenHere || untranslated) && "opacity-45")}>
         <BlockBody block={block} />
       </div>
     </div>
@@ -372,7 +404,7 @@ function HeadingBody({ block }: { block: BlockOf<"heading"> }) {
         mode="inline"
         owner={block.id}
         value={block.text}
-        onChange={(text) => d.update(block.id, { text }, `text:${block.id}`)}
+        onChange={(text) => d.setText(block.id, text, `text:${block.id}`)}
         placeholder={t`Write a heading`}
         label={t`Heading`}
         readOnly={d.readOnly}
@@ -399,7 +431,7 @@ function TextBody({ block }: { block: BlockOf<"text"> }) {
         mode="rich"
         owner={block.id}
         value={block.html}
-        onChange={(html) => d.update(block.id, { html }, `text:${block.id}`)}
+        onChange={(html) => d.setText(block.id, html, `text:${block.id}`)}
         placeholder={t`Write something`}
         label={t`Text`}
         readOnly={d.readOnly}
@@ -421,7 +453,7 @@ function FooterBody({ block }: { block: BlockOf<"footer"> }) {
         mode="rich"
         owner={block.id}
         value={block.html}
-        onChange={(html) => d.update(block.id, { html }, `text:${block.id}`)}
+        onChange={(html) => d.setText(block.id, html, `text:${block.id}`)}
         placeholder={t`Add your own lines above the required footer`}
         label={t`Footer text`}
         readOnly={d.readOnly}
@@ -444,7 +476,7 @@ function ImageBody({ block }: { block: BlockOf<"image"> }) {
         onClick={(e) => {
           e.stopPropagation()
           d.select(block.id)
-          if (!d.readOnly) d.openLibrary(block.id)
+          if (!d.locked) d.openLibrary(block.id)
         }}
         data-testid="image-placeholder"
       >
@@ -460,7 +492,7 @@ function ImageBody({ block }: { block: BlockOf<"image"> }) {
       width={block.width}
       className="block h-auto max-w-full"
       style={{ width, borderRadius: d.doc.theme.radius ?? 0, ...margins(align) }}
-      onDoubleClick={() => !d.readOnly && d.openLibrary(block.id)}
+      onDoubleClick={() => !d.locked && d.openLibrary(block.id)}
       draggable={false}
       data-testid="canvas-image"
     />
@@ -489,7 +521,7 @@ function ButtonBody({ block }: { block: BlockOf<"button"> }) {
           mode="plain"
           owner={block.id}
           value={block.label}
-          onChange={(label) => d.update(block.id, { label }, `text:${block.id}`)}
+          onChange={(label) => d.setText(block.id, label, `text:${block.id}`)}
           placeholder={t`Button text`}
           label={t`Button text`}
           readOnly={d.readOnly}
@@ -574,7 +606,9 @@ function SocialBody({ block }: { block: BlockOf<"social"> }) {
 }
 
 export function RequiredFooter() {
-  const { doc, view } = useDesigner()
+  const { doc, view, locale, original } = useDesigner()
+  const version = locale ?? original.locale
+  const english = !!version && versions(original).length > 0 && footerInEnglish(version)
   return (
     <div
       className="mx-auto mt-4 flex max-w-full items-start gap-2 px-6 text-center font-sans text-caption"
@@ -587,6 +621,11 @@ export function RequiredFooter() {
           Added to every mail: your legal name and postal address, why the person gets the mail, and the unsubscribe and
           preference links.
         </Trans>
+        {english && (
+          <span className="mt-1 block text-warning" data-testid="footer-english">
+            <Trans>This version gets it in English: Yuva has its words in English, Turkish and German only.</Trans>
+          </span>
+        )}
       </p>
     </div>
   )

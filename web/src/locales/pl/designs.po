@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: pl\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# tekst nieprzetłumaczony} few {# teksty nieprzetłumaczone} many {# tekstów nieprzetłumaczonych} other {# tekstu nieprzetłumaczonego}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (kopia)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Grupa bloków na własnym tle"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "Język jest podany dwa razy albo język zapasowy nie należy do języków projektu."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Link wyglądający jak przycisk"
 
@@ -63,17 +71,27 @@ msgstr "Cienka linia między częściami"
 msgid "A title in three sizes"
 msgstr "Tytuł w trzech rozmiarach"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "Zostało tłumaczenie bloku, który nie ma już tekstu."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "Wersja jest zachowywana najwyżej co dziesięć minut podczas edycji, gdy zapisujesz ręcznie, gdy przywracasz jedną i gdy czyjś zapis wygrywa konflikt. Najnowszych 50 zostaje."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Dodaj"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Dodaj blok"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Dodaj język"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Zarchiwizować ten projekt?"
 msgid "Archived"
 msgstr "Zarchiwizowane"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Jak w bazowym"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Klucz atrybutu"
@@ -151,6 +173,15 @@ msgstr "Wróć do projektów"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Tło"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Bazowy"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Język bazowy"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Przyciski"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Anuluj"
@@ -271,6 +303,10 @@ msgstr "Kolumny"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Atrybut kontaktu"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Kontakty, które by ją dostały, dostaną zamiast tego język zapasowy."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Zdarzenie"
 msgid "Everywhere"
 msgstr "Wszędzie"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Język zapasowy"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Imię"
@@ -498,6 +538,10 @@ msgstr "Czcionki, które ludzie już mają na urządzeniach; wiadomości nie wcz
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Tekst stopki"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Dla kontaktów bez języka lub których język nie ma wersji."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Skróty klawiszowe"
 msgid "Kind"
 msgstr "Rodzaj"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Język"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Ustawienia języków"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Języki"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Duży"
@@ -665,6 +722,11 @@ msgstr "Warstwy"
 msgid "Layout"
 msgstr "Układ"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Układ jest wspólny dla wszystkich języków. Przełącz na {language}, aby go zmienić."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Lewo"
@@ -673,6 +735,7 @@ msgstr "Lewo"
 msgid "Left panel"
 msgstr "Lewy panel"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "Od lewej do prawej"
@@ -783,6 +846,10 @@ msgstr "Przesuń w górę"
 msgid "Name"
 msgstr "Nazwa"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Podaj język bazowy, zanim dodasz inne języki."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Sieć"
@@ -828,6 +895,14 @@ msgstr "Niezapisane: popraw zaznaczone bloki"
 msgid "Not saved. Try again"
 msgstr "Niezapisane. Spróbuj ponownie"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Nieprzetłumaczone"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Nieprzetłumaczone: widać oryginał, dopóki nie napiszesz tego tekstu."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Liczba kolumn"
@@ -848,9 +923,17 @@ msgstr "Offline. Twoje zmiany są przechowywane na tym urządzeniu i zapisane po
 msgid "Onboarding"
 msgstr "Wdrożenie"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Jeden projekt z wersją dla każdego języka. Pierwszy wybrany jest bazowy."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Jeden pod drugim na wąskich ekranach."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Oryginał ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Rozmiar podglądu"
 msgid "Preview text"
 msgstr "Tekst podglądu"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Tekst podglądu ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Produkt"
@@ -939,6 +1026,14 @@ msgstr "Ponów"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Usuń"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "Usuń {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "Usunąć {language} i jego teksty?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Przywrócenie zapisuje tę wersję jako najnowszą. Możesz to cofnąć.
 msgid "Right"
 msgstr "Prawo"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "Od prawej do lewej"
@@ -1077,6 +1173,10 @@ msgstr "Pokaż ich wersję. Cofnij przywraca Twoją."
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Pokazywany po temacie w większości skrzynek. Wysyłka masowa może ustawić własny."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Widoczny po temacie w większości skrzynek. Puste oznacza tekst języka bazowego."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "Skrzynka nie ma nazwy prawnej ani adresu pocztowego do stopki. Dodaj je 
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Dane nadawcy skrzynki wypełniają stopkę, którą dostaje każda wiadomość."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Język, w którym napisano bloki. Układ, obrazy i linki pochodzą z niego."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Język, w którym projekt jest teraz napisany."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "Wiadomość jest pusta. Dodaj blok, aby zacząć."
@@ -1200,6 +1308,14 @@ msgstr "Wiadomość ma ponad 102 KB, więc Gmail ją obetnie i ukryje link rezyg
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Wiadomość ma ponad 90 KB. Gmail obcina wiadomości przy około 102 KB."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Nowa wersja zaczyna się od tekstów języka bazowego. Układ, obrazy i linki pozostają wspólne; tłumaczysz tylko teksty."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Obowiązkowa stopka tej wersji jest po angielsku: Yuva ma te teksty tylko po angielsku, turecku i niemiecku."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Grubość"
 msgid "This block cannot sit inside this one."
 msgstr "Ten blok nie może być wewnątrz tego."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "Ten blok nie ma tekstu do przetłumaczenia."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Ten projekt zmienił się gdzie indziej"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "Ten serwer nie ma szablonu „{slug}”. Może potrzebować nowszej Yuva."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Ten tekst nie jest jeszcze przetłumaczony, więc widać tekst języka bazowego."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "Ten tekst używa pola scalania, które nie istnieje."
 
@@ -1286,6 +1410,10 @@ msgstr "To używa obrazu lub linku należącego do innego obszaru roboczego."
 msgid "This value is not valid."
 msgstr "Ta wartość jest nieprawidłowa."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Ta wersja dostaje ją po angielsku: Yuva ma te teksty tylko po angielsku, turecku i niemiecku."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Trzy"
@@ -1293,6 +1421,10 @@ msgstr "Trzy"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Najlepsze"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Tłumaczenie"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Napisz nagłówek"
 msgid "Write something"
 msgstr "Napisz coś"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Napisz tłumaczenie"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Napisz, co chcesz powiedzieć czytelnikom."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Kierunek pisma"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

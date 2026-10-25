@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: fi\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# teksti kääntämättä} other {# tekstiä kääntämättä}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (kopio)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Ryhmä lohkoja omalla taustallaan"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "Kieli on mainittu kahdesti, tai varakieli ei ole yksi suunnittelun kielistä."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Linkki, joka näyttää painikkeelta"
 
@@ -63,17 +71,27 @@ msgstr "Ohut viiva osien välissä"
 msgid "A title in three sizes"
 msgstr "Otsikko kolmessa koossa"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "Jäljellä on käännös lohkolle, jossa ei enää ole tekstiä."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "Versio säilytetään enintään kymmenen minuutin välein muokatessasi, kun tallennat käsin, kun palautat yhden ja kun jonkun toisen tallennus voittaa ristiriidan. Uusimmat 50 säilyvät."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Lisää"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Lisää lohko"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Lisää kieli"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Arkistoidaanko tämä ulkoasu?"
 msgid "Archived"
 msgstr "Arkistoitu"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Kuten pohja"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Attribuuttiavain"
@@ -151,6 +173,15 @@ msgstr "Takaisin ulkoasuihin"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Tausta"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Pohja"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Pohjakieli"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Painikkeet"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Peruuta"
@@ -271,6 +303,10 @@ msgstr "Sarakkeet"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Kontaktin attribuutti"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Yhteystiedot, jotka saisivat sen, saavat sen sijaan varakielen."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Tapahtuma"
 msgid "Everywhere"
 msgstr "Kaikkialla"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Varakieli"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Etunimi"
@@ -498,6 +538,10 @@ msgstr "Fontit, jotka ovat jo ihmisten laitteilla; viestit eivät lataa verkkofo
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Alatunnisteen teksti"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Yhteystiedoille, joilla ei ole kieltä tai joiden kielellä ei ole versiota."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Pikanäppäimet"
 msgid "Kind"
 msgstr "Tyyppi"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Kieli"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Kieliasetukset"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Kielet"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Suuri"
@@ -665,6 +722,11 @@ msgstr "Tasot"
 msgid "Layout"
 msgstr "Asettelu"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Asettelu on yhteinen kaikille kielille. Vaihda kieleen {language} muuttaaksesi sitä."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Vasen"
@@ -673,6 +735,7 @@ msgstr "Vasen"
 msgid "Left panel"
 msgstr "Vasen paneeli"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "Vasemmalta oikealle"
@@ -783,6 +846,10 @@ msgstr "Siirrä ylös"
 msgid "Name"
 msgstr "Nimi"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Kerro pohjakieli ennen kuin lisäät muita kieliä."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Verkko"
@@ -828,6 +895,14 @@ msgstr "Ei tallennettu: korjaa merkityt lohkot"
 msgid "Not saved. Try again"
 msgstr "Ei tallennettu. Yritä uudelleen"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Kääntämättä"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Kääntämättä: alkuperäinen näkyy, kunnes kirjoitat tämän."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Sarakkeiden määrä"
@@ -848,9 +923,17 @@ msgstr "Offline. Muutoksesi säilytetään tällä laitteella ja tallennetaan, k
 msgid "Onboarding"
 msgstr "Perehdytys"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Yksi suunnittelu, jossa on versio kullekin kielelle. Ensimmäinen valitsemasi on pohja."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Päällekkäin kapeilla näytöillä."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Alkuperäinen ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Esikatselun koko"
 msgid "Preview text"
 msgstr "Esikatseluteksti"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Esikatseluteksti ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Tuote"
@@ -939,6 +1026,14 @@ msgstr "Tee uudelleen"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Poista"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "Poista {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "Poistetaanko {language} ja sen tekstit?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Palauttaminen tallentaa tämän version uusimmaksi. Voit kumota sen."
 msgid "Right"
 msgstr "Oikea"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "Oikealta vasemmalle"
@@ -1077,6 +1173,10 @@ msgstr "Näytä heidän versionsa. Kumoa tuo omasi takaisin."
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Näytetään aiheen jälkeen useimmissa postilaatikoissa. Joukkolähetys voi asettaa omansa."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Näkyy aiheen jälkeen useimmissa saapuneissa. Tyhjänä käytetään pohjakielen tekstiä."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "Postilaatikolla ei ole virallista nimeä tai postiosoitetta alatunnistet
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Postilaatikon lähettäjän tiedot täyttävät jokaisen viestin alatunnisteen."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Kieli, jolla lohkot on kirjoitettu. Asettelu, kuvat ja linkit tulevat siitä."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Kieli, jolla suunnittelu on nyt kirjoitettu."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "Viesti on tyhjä. Lisää lohko aloittaaksesi."
@@ -1200,6 +1308,14 @@ msgstr "Viesti on yli 102 kt, joten Gmail katkaisee sen ja piilottaa poistumisli
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Viesti on yli 90 kt. Gmail katkaisee viestit noin 102 kt:n kohdalla."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Uusi versio alkaa pohjakielen teksteillä. Asettelu, kuvat ja linkit pysyvät yhteisinä; käännät vain tekstit."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Tämän version pakollinen alatunniste on englanniksi: Yuvalla on nämä tekstit vain englanniksi, turkiksi ja saksaksi."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Paksuus"
 msgid "This block cannot sit inside this one."
 msgstr "Tämä lohko ei voi olla tämän sisällä."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "Tässä lohkossa ei ole käännettävää tekstiä."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Tämä ulkoasu muuttui jossain muualla"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "Tällä palvelimella ei ole mallia ”{slug}”. Se saattaa tarvita uudemman Yuvan."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Tätä tekstiä ei ole vielä käännetty, joten pohjakielen teksti näkyy."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "Tämä teksti käyttää yhdistämiskenttää, jota ei ole."
 
@@ -1286,6 +1410,10 @@ msgstr "Tämä käyttää kuvaa tai linkkiä, joka kuuluu toiselle työtilalle."
 msgid "This value is not valid."
 msgstr "Tämä arvo ei ole kelvollinen."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Tämä versio saa sen englanniksi: Yuvalla on nämä tekstit vain englanniksi, turkiksi ja saksaksi."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Kolme"
@@ -1293,6 +1421,10 @@ msgstr "Kolme"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Kärki"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Käännös"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Kirjoita otsikko"
 msgid "Write something"
 msgstr "Kirjoita jotain"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Kirjoita käännös"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Kirjoita, mitä haluat kertoa lukijoillesi."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Kirjoitussuunta"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

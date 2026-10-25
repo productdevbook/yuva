@@ -12,14 +12,18 @@ import {
 } from "lucide-react"
 
 import { Segmented } from "@/components/common"
+import { useLanguageName } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { setColumnCount, type Block, type BlockOf } from "@/features/designs/doc"
+import { findBlock, hasText, setColumnCount, textOf, type Block, type BlockOf } from "@/features/designs/doc"
 import { useDesigner } from "@/features/designs/designer/context"
 import { ColorInput, Group, NumberBox, Row, SliderRow, UrlInput } from "@/features/designs/designer/controls"
+import { RichEditor } from "@/features/designs/designer/editor"
+import { LayoutHint } from "@/features/designs/designer/Languages"
 import { BlockIcon } from "@/features/designs/designer/icons"
 import { NETWORKS, isWarning, useBlockNames, useIssueText, useNetworkNames } from "@/features/designs/text"
 import type { EmailSocialNetwork } from "@/lib/api"
@@ -596,6 +600,91 @@ function Fields({ block }: { block: Block }) {
   }
 }
 
+const boxClass =
+  "min-w-0 rounded-lg border px-3 py-2 text-body [&_a]:underline [&_ol]:list-decimal [&_ol]:ps-5 [&_p+p]:mt-2 [&_ul]:list-disc [&_ul]:ps-5"
+
+function TranslationFields({ block }: { block: Block }) {
+  const { t } = useLingui()
+  const d = useDesigner()
+  const name = useLanguageName()
+  const language = name(d.original.locale ?? "")
+  const target = name(d.locale ?? "")
+  const orig = findBlock(d.original, block.id)
+  if (!orig || !hasText(orig.type) || (orig.type === "image" && orig.decorative))
+    return (
+      <p className="px-4 py-4 text-small text-faint" data-testid="translation-none">
+        <Trans>This block has no text to translate.</Trans>
+      </p>
+    )
+  const mode = orig.type === "heading" ? "inline" : orig.type === "text" || orig.type === "footer" ? "rich" : "plain"
+  const source = textOf(orig)
+  const value = textOf(block)
+  const untranslated = d.missing.has(block.id)
+  const set = (v: string) => d.setText(block.id, v, `text:${block.id}`)
+  const field = `translation-${block.id}`
+  return (
+    <Group title={<Trans>Translation</Trans>}>
+      <Row label={<Trans>Original ({language})</Trans>}>
+        <div className={cn(boxClass, "bg-surface text-muted-foreground")} data-testid="translation-original">
+          {mode === "plain" ? (
+            <p className="break-words whitespace-pre-wrap">{source}</p>
+          ) : (
+            <RichEditor
+              key={`${d.locale}:${source}`}
+              mode={mode}
+              owner={`original:${block.id}`}
+              value={source}
+              onChange={() => undefined}
+              placeholder=""
+              label={t`Original (${language})`}
+              readOnly
+            />
+          )}
+        </div>
+      </Row>
+      <Row
+        label={target}
+        htmlFor={mode === "plain" ? field : undefined}
+        hint={untranslated ? <Trans>Not translated: the original shows until you write this one.</Trans> : undefined}
+      >
+        {mode === "plain" && orig.type === "image" ? (
+          <Textarea
+            id={field}
+            rows={2}
+            maxLength={300}
+            value={value}
+            readOnly={d.readOnly}
+            onChange={(e) => set(e.target.value)}
+            data-testid="translation-input"
+          />
+        ) : mode === "plain" ? (
+          <Input
+            id={field}
+            maxLength={80}
+            value={value}
+            readOnly={d.readOnly}
+            onChange={(e) => set(e.target.value)}
+            data-testid="translation-input"
+          />
+        ) : (
+          <div className={cn(boxClass, "bg-background focus-within:ring-2 focus-within:ring-ring/40")}>
+            <RichEditor
+              mode={mode}
+              owner={block.id}
+              value={value}
+              onChange={set}
+              placeholder={t`Write the translation`}
+              label={target}
+              readOnly={d.readOnly}
+              testId="translation-editor"
+            />
+          </div>
+        )}
+      </Row>
+    </Group>
+  )
+}
+
 export function Inspector({ block }: { block: Block }) {
   const { t } = useLingui()
   const d = useDesigner()
@@ -607,7 +696,7 @@ export function Inspector({ block }: { block: Block }) {
           <BlockIcon type={block.type} className="size-4" />
         </span>
         <h2 className="min-w-0 flex-1 truncate text-body font-semibold">{names[block.type]}</h2>
-        {!d.readOnly && (
+        {!d.locked && (
           <div className="flex items-center">
             <Button variant="ghost" size="icon-sm" aria-label={t`Move up`} onClick={() => d.nudge(block.id, -1)}>
               <ArrowUpIcon />
@@ -619,32 +708,39 @@ export function Inspector({ block }: { block: Block }) {
         )}
       </div>
       <Issues block={block} />
-      <fieldset disabled={d.readOnly} className="flex min-w-0 flex-col">
-        <Fields block={block} />
-        <Layout block={block} />
-        {!d.readOnly && (
-          <div className="flex gap-2 px-4 py-4">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => d.duplicate(block.id)}
-              data-testid="inspector-duplicate"
-            >
-              <CopyIcon />
-              <Trans>Duplicate</Trans>
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1 hover:text-destructive"
-              onClick={() => d.remove(block.id)}
-              data-testid="inspector-delete"
-            >
-              <Trash2Icon />
-              <Trans>Delete block</Trans>
-            </Button>
-          </div>
-        )}
-      </fieldset>
+      {d.locale ? (
+        <>
+          <LayoutHint className="mx-4 mt-3" />
+          <TranslationFields block={block} />
+        </>
+      ) : (
+        <fieldset disabled={d.readOnly} className="flex min-w-0 flex-col">
+          <Fields block={block} />
+          <Layout block={block} />
+          {!d.readOnly && (
+            <div className="flex gap-2 px-4 py-4">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => d.duplicate(block.id)}
+                data-testid="inspector-duplicate"
+              >
+                <CopyIcon />
+                <Trans>Duplicate</Trans>
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 hover:text-destructive"
+                onClick={() => d.remove(block.id)}
+                data-testid="inspector-delete"
+              >
+                <Trash2Icon />
+                <Trans>Delete block</Trans>
+              </Button>
+            </div>
+          )}
+        </fieldset>
+      )}
     </div>
   )
 }

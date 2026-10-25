@@ -9,6 +9,12 @@ export type View = { phone: boolean; dark: boolean; colors: EmailThemeColors }
 
 export type Designer = {
   doc: Doc
+  original: Doc
+  locale: string | null
+  missing: Set<string>
+  locked: boolean
+  setText: (id: string, value: string, key?: string) => void
+  setLocale: (tag: string | null) => void
   view: View
   selected: string | null
   select: (id: string | null) => void

@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { derivedDark, textOn } from "@/features/designs/colors"
+import { setTranslation } from "@/features/designs/doc"
 import { useDesigner } from "@/features/designs/designer/context"
+import { LayoutHint } from "@/features/designs/designer/Languages"
+import { useLanguageName } from "@/components/common/text"
 import { ColorInput, ContrastBadge, Group, Row, SliderRow } from "@/features/designs/designer/controls"
 import { FONTS } from "@/features/designs/designer/Canvas"
 import { useFontNames } from "@/features/designs/text"
@@ -95,6 +98,7 @@ export function ThemePanel({
     ...Object.fromEntries(inboxes.map((i) => [i.id, i.name])),
   }
   const darkCard = dark.card ?? derived.card
+  if (d.locale) return <VersionPanel tag={d.locale} />
   return (
     <fieldset disabled={d.readOnly} className="flex min-w-0 flex-col" data-testid="theme-panel">
       <div className="border-b px-4 py-3">
@@ -257,6 +261,44 @@ export function ThemePanel({
               { value: "ltr", label: t`Left to right` },
               { value: "rtl", label: t`Right to left` },
             ]}
+          />
+        </Row>
+      </Group>
+    </fieldset>
+  )
+}
+
+function VersionPanel({ tag }: { tag: string }) {
+  const d = useDesigner()
+  const name = useLanguageName()
+  const language = name(tag)
+  const value = d.original.translations?.[tag]?.preheader ?? ""
+  return (
+    <fieldset disabled={d.readOnly} className="flex min-w-0 flex-col" data-testid="theme-panel">
+      <div className="border-b px-4 py-3">
+        <h2 className="text-body font-semibold">
+          <Trans>Design</Trans>
+        </h2>
+        <LayoutHint className="mt-2" />
+      </div>
+      <Group title={<Trans>Mail</Trans>}>
+        <Row
+          label={<Trans>Preview text ({language})</Trans>}
+          htmlFor="design-preheader"
+          hint={<Trans>Shown after the subject in most inboxes. Empty uses the base language’s.</Trans>}
+        >
+          <Input
+            id="design-preheader"
+            value={value}
+            maxLength={300}
+            placeholder={d.original.preheader ?? ""}
+            onChange={(e) =>
+              d.setDoc(
+                (doc) => setTranslation(doc, tag, (x) => ({ ...x, preheader: e.target.value || undefined })),
+                `preheader:${tag}`
+              )
+            }
+            data-testid="design-preheader"
           />
         </Row>
       </Group>

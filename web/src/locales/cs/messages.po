@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# konverzace} few {# konverzace} many {# konverzace} ot
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# selhala} few {# selhaly} many {# selhalo} other {# selhalo}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# z nich ho dostane, protože jeho jazyk nemá verzi} few {# z nich ho dostanou, protože jejich jazyk nemá verzi} many {# z nich ho dostane, protože jejich jazyk nemá verzi} other {# z nich ho dostane, protože jejich jazyk nemá verzi}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {Koncept asistenta ke kontrole} few {Koncepty asist
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} už v Yuvě"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (záložní)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Přidejte kontaktní bod typu Webhook, vložte výše uvedenou adresu, p
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Přidat jazyk"
@@ -2320,6 +2330,10 @@ msgstr "Všechny importy"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Všechny schránky"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Všechny jazyky"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "E-mailem"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "Podle skupin"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "Podle jazyka"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Každý produkt nebo značka má vlastní schránku. Přidejte ji k nějaké, kterou máte, nebo začněte novou."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Každý příjemce se počítá u verze návrhu, kterou dostal."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Každá odpověď je konverzace ve schránce. Prvních 50 je uvedeno zde."
 
@@ -6730,6 +6752,10 @@ msgstr "Vysypat koš"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Vysypat koš?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Prázdné použije předmět v jazyce {baseLanguage}. Slučovací pole fungují i tady."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Pole"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Čísla podle skupin"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Čísla podle jazyka"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Štítky třídí konverzace podle tématu, například fakturace nebo c
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Jazyk k ponechání"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Jazyky"
 
@@ -11240,6 +11274,10 @@ msgstr "Další rozesílka odejde {when}."
 msgid "Next check {next}."
 msgstr "Další kontrola {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Další jazyková verze"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Další zpráva {local} ({utc} UTC), tempem této hromadné zprávy."
@@ -11601,6 +11639,10 @@ msgstr "Zatím žádné štítky"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Zatím žádné štítky. Přidejte je v nastavení."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Žádný jazyk neodpovídá"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Vyberte diskusi, kterou si chcete přečíst a odpovědět na ni."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Vyberte pole"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Vyberte jazyk"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Hledat v této konverzaci"
 msgid "Search incidents"
 msgstr "Hledat incidenty"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Hledejte jazyky nebo napište kód"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Hledat v poště"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Některé obrázky nemají popis pro lidi, kteří je nevidí."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Některé jazykové verze nejsou úplné."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Některé odkazy nejsou platné."
 
@@ -17544,6 +17598,10 @@ msgstr "Některé hodnoty nejsou platné."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Některé části souboru nedorazily. Vyberte znovu stejný soubor, aby se odeslaly."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Některé texty nejsou přeložené, proto se zobrazí text v jazyce {base}: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Kontakt napíše zprávu"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Kontakt, jeho poznámky a vše, co napsal, se smaže natrvalo. Nelze to vrátit zpět."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Jazyk kontaktu"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Kontakty, jejich konverzace, poznámky a soubory se smažou natrvalo. Nelze to vrátit zpět."
@@ -18453,6 +18515,10 @@ msgstr "Zákazník klepne na palec nahoru nebo dolů, když se konverzace uzavř
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Kontrola doručitelnosti ještě neskončila."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "Návrh pro tyto předměty nemá verzi, proto se nepoužijí: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Záznamy nebyly do 7 dnů nalezeny, takže nárok skončil. Přidejte z�
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "Oblast vašeho účtu SES."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Povinná patička je v angličtině pro: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Do několika minut"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Bez potvrzení může kdokoli zadat do vašeho formuláře cizí adresu a vy nemůžete prokázat, že majitel adresy souhlasil. Ponechte zapnuto, pokud se vaše formuláře nezobrazují jen lidem, jejichž adresu jste už ověřili."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Bez vlastního předmětu dostanou tyto předmět v jazyce {base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

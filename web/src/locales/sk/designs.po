@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: sk\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# text nepreložený} few {# texty nepreložené} many {# textu nepreloženého} other {# textov nepreložených}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (kópia)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Skupina blokov na vlastnom pozadí"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "Jazyk je uvedený dvakrát alebo záložný jazyk nie je jedným z jazykov návrhu."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Odkaz, ktorý vyzerá ako tlačidlo"
 
@@ -63,17 +71,27 @@ msgstr "Tenká čiara medzi časťami"
 msgid "A title in three sizes"
 msgstr "Nadpis v troch veľkostiach"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "Zostal preklad bloku, ktorý už nemá text."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "Verzia sa uchováva najviac každých desať minút pri úpravách, keď ukladáte ručne, keď jednu obnovíte a keď uloženie niekoho iného vyhrá konflikt. Najnovších 50 zostáva."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Pridať"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Pridať blok"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Pridať jazyk"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Archivovať tento návrh?"
 msgid "Archived"
 msgstr "Archivované"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Ako základ"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Kľúč atribútu"
@@ -151,6 +173,15 @@ msgstr "Späť k návrhom"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Pozadie"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Základ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Základný jazyk"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Tlačidlá"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Zrušiť"
@@ -271,6 +303,10 @@ msgstr "Stĺpce"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Atribút kontaktu"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Kontakty, ktoré by ju dostali, dostanú namiesto toho záložný jazyk."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Udalosť"
 msgid "Everywhere"
 msgstr "Všade"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Záložný jazyk"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Meno"
@@ -498,6 +538,10 @@ msgstr "Písma, ktoré ľudia už majú v zariadeniach; správy nenačítavajú 
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Text pätičky"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Pre kontakty bez jazyka alebo ktorých jazyk nemá verziu."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Klávesové skratky"
 msgid "Kind"
 msgstr "Druh"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Jazyk"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Nastavenia jazykov"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Jazyky"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Veľké"
@@ -665,6 +722,11 @@ msgstr "Vrstvy"
 msgid "Layout"
 msgstr "Rozloženie"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Rozloženie je spoločné pre všetky jazyky. Ak ho chcete zmeniť, prepnite na {language}."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Vľavo"
@@ -673,6 +735,7 @@ msgstr "Vľavo"
 msgid "Left panel"
 msgstr "Ľavý panel"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "Zľava doprava"
@@ -783,6 +846,10 @@ msgstr "Posunúť nahor"
 msgid "Name"
 msgstr "Názov"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Pred pridaním ďalších jazykov uveďte základný jazyk."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Sieť"
@@ -828,6 +895,14 @@ msgstr "Neuložené: opravte označené bloky"
 msgid "Not saved. Try again"
 msgstr "Neuložené. Skúste to znova"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Nepreložené"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Nepreložené: zobrazí sa originál, kým nenapíšete tento text."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Počet stĺpcov"
@@ -848,9 +923,17 @@ msgstr "Offline. Vaše zmeny sa uchovávajú v tomto zariadení a uložia sa, ke
 msgid "Onboarding"
 msgstr "Zaškolenie"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Jeden návrh s verziou pre každý jazyk. Prvý vybraný je základ."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Pod sebou na úzkych obrazovkách."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Originál ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Veľkosť náhľadu"
 msgid "Preview text"
 msgstr "Text náhľadu"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Text náhľadu ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Produkt"
@@ -939,6 +1026,14 @@ msgstr "Znova"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Odstrániť"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "Odstrániť {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "Odstrániť {language} a jeho texty?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Obnovenie uloží túto verziu ako najnovšiu. Môžete to vrátiť spä
 msgid "Right"
 msgstr "Vpravo"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "Sprava doľava"
@@ -1077,6 +1173,10 @@ msgstr "Zobraziť ich verziu. Späť vráti vašu."
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Zobrazuje sa za predmetom vo väčšine schránok. Hromadná správa môže nastaviť vlastný."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Zobrazí sa za predmetom vo väčšine schránok. Prázdne použije text základného jazyka."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "Schránka nemá právny názov ani poštovú adresu pre pätičku. Pred 
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Údaje odosielateľa schránky vyplnia pätičku, ktorú dostane každá správa."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Jazyk, v ktorom sú bloky napísané. Rozloženie, obrázky a odkazy pochádzajú z neho."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Jazyk, v ktorom je návrh teraz napísaný."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "Správa je prázdna. Pridajte blok a začnite."
@@ -1200,6 +1308,14 @@ msgstr "Správa má vyše 102 KB, takže ju Gmail oreže a skryje odkaz na odhl�
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Správa má vyše 90 KB. Gmail správy orezáva asi na 102 KB."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Nová verzia začína textami základného jazyka. Rozloženie, obrázky a odkazy zostávajú spoločné; prekladáte len texty."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Povinná pätička tejto verzie je v angličtine: Yuva má tieto texty len v angličtine, turečtine a nemčine."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Hrúbka"
 msgid "This block cannot sit inside this one."
 msgstr "Tento blok nemôže byť vo vnútri tohto."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "Tento blok nemá text na preklad."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Tento návrh sa zmenil inde"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "Tento server nemá šablónu „{slug}“. Možno potrebuje novšiu Yuvu."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Tento text ešte nie je preložený, preto sa zobrazí text základného jazyka."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "Tento text používa zlučovacie pole, ktoré neexistuje."
 
@@ -1286,6 +1410,10 @@ msgstr "Toto používa obrázok alebo odkaz, ktorý patrí inému pracovnému pr
 msgid "This value is not valid."
 msgstr "Táto hodnota nie je platná."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Táto verzia ju dostane v angličtine: Yuva má tieto texty len v angličtine, turečtine a nemčine."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Tri"
@@ -1293,6 +1421,10 @@ msgstr "Tri"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Hore"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Preklad"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Napíšte nadpis"
 msgid "Write something"
 msgstr "Napíšte niečo"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Napíšte preklad"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Napíšte, čo chcete povedať svojim čitateľom."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Smer písma"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

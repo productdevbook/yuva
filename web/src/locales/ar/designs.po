@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ar\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, zero {لا نصوص غير مترجمة} one {نص واحد غير مترجم} two {نصان غير مترجمين} few {# نصوص غير مترجمة} many {# نصًا غير مترجم} other {# نص غير مترجم}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (نسخة)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "مجموعة كتل على خلفيتها الخاصة"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "ذُكرت لغة مرتين، أو أن اللغة الاحتياطية ليست من لغات التصميم."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "رابط يبدو كزر"
 
@@ -63,17 +71,27 @@ msgstr "خط رفيع بين الأجزاء"
 msgid "A title in three sizes"
 msgstr "عنوان بثلاثة أحجام"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "بقيت ترجمة لكتلة لم يعد فيها نص."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "يُحفظ إصدار مرة كل عشر دقائق كحد أقصى أثناء التعديل، وعند الحفظ يدويًا، وعند استعادة إصدار، وعندما يفوز حفظ شخص آخر في تعارض. يبقى أحدث 50."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "إضافة"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "إضافة كتلة"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "إضافة لغة"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "أرشفة هذا التصميم؟"
 msgid "Archived"
 msgstr "مؤرشف"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "مثل الأساسية"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "مفتاح الخاصية"
@@ -151,6 +173,15 @@ msgstr "العودة إلى التصاميم"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "الخلفية"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "أساسية"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "اللغة الأساسية"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "الأزرار"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "إلغاء"
@@ -271,6 +303,10 @@ msgstr "الأعمدة"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "خاصية جهة الاتصال"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "جهات الاتصال التي كانت ستتلقاها تتلقى اللغة الاحتياطية بدلًا منها."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "الحدث"
 msgid "Everywhere"
 msgstr "في كل مكان"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "اللغة الاحتياطية"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "الاسم الأول"
@@ -498,6 +538,10 @@ msgstr "خطوط موجودة بالفعل على أجهزة الناس؛ لا �
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "نص التذييل"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "لجهات الاتصال التي ليس لها لغة، أو التي ليس للغتها نسخة."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "اختصارات لوحة المفاتيح"
 msgid "Kind"
 msgstr "النوع"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "اللغة"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "إعدادات اللغات"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "اللغات"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "كبير"
@@ -665,6 +722,11 @@ msgstr "الطبقات"
 msgid "Layout"
 msgstr "التخطيط"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "التخطيط مشترك بين كل اللغات. انتقل إلى {language} لتغييره."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "يسار"
@@ -673,6 +735,7 @@ msgstr "يسار"
 msgid "Left panel"
 msgstr "اللوحة اليسرى"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "من اليسار إلى اليمين"
@@ -783,6 +846,10 @@ msgstr "نقل لأعلى"
 msgid "Name"
 msgstr "الاسم"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "حدّد اللغة الأساسية قبل إضافة لغات أخرى."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "الشبكة"
@@ -828,6 +895,14 @@ msgstr "لم يُحفظ: أصلح الكتل المعلَّمة"
 msgid "Not saved. Try again"
 msgstr "لم يُحفظ. حاول مجددًا"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "غير مترجم"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "غير مترجم: يظهر الأصل حتى تكتب هذا النص."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "عدد الأعمدة"
@@ -848,9 +923,17 @@ msgstr "غير متصل. تبقى تغييراتك على هذا الجهاز و
 msgid "Onboarding"
 msgstr "الإعداد الأولي"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "تصميم واحد بنسخة لكل لغة. أول لغة تختارها هي الأساسية."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "واحد تحت الآخر على الشاشات الضيقة."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "الأصل ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "حجم المعاينة"
 msgid "Preview text"
 msgstr "نص المعاينة"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "نص المعاينة ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "المنتج"
@@ -939,6 +1026,14 @@ msgstr "إعادة"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "إزالة"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "إزالة {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "هل تريد إزالة {language} ونصوصها؟"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "تحفظ الاستعادة هذا الإصدار كأحدث إصدار.
 msgid "Right"
 msgstr "يمين"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "من اليمين إلى اليسار"
@@ -1077,6 +1173,10 @@ msgstr "إظهار نسختهم. يعيد التراجع نسختك."
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "يظهر بعد الموضوع في معظم صناديق الوارد. يمكن للرسالة الجماعية أن تضبط نصها الخاص."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "يظهر بعد الموضوع في معظم صناديق البريد. إذا تُرك فارغًا يُستخدم نص اللغة الأساسية."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "ليس لصندوق الوارد اسم قانوني أو عنوان ب�
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "تفاصيل مرسِل صندوق الوارد تملأ التذييل الذي تحصل عليه كل رسالة."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "اللغة المكتوبة بها الكتل. التخطيط والصور والروابط تأتي منها."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "اللغة المكتوب بها التصميم الآن."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "الرسالة فارغة. أضف كتلة للبدء."
@@ -1200,6 +1308,14 @@ msgstr "الرسالة تتجاوز 102 كيلوبايت، لذا سيقتطعه
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "الرسالة تتجاوز 90 كيلوبايت. يقتطع Gmail الرسائل عند نحو 102 كيلوبايت."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "تبدأ النسخة الجديدة بنصوص اللغة الأساسية. يبقى التخطيط والصور والروابط مشتركة؛ وتترجم النصوص فقط."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "التذييل الإلزامي لهذه النسخة بالإنجليزية: لدى Yuva هذه النصوص بالإنجليزية والتركية والألمانية فقط."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "السماكة"
 msgid "This block cannot sit inside this one."
 msgstr "لا يمكن لهذه الكتلة أن تكون داخل هذه."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "لا تحتوي هذه الكتلة على نص للترجمة."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "تغيّر هذا التصميم في مكان آخر"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "ليس لدى هذا الخادم القالب «{slug}». قد يحتاج إلى إصدار أحدث من Yuva."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "هذا النص غير مترجم بعد، لذا يظهر نص اللغة الأساسية."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "يستخدم هذا النص حقل دمج غير موجود."
 
@@ -1286,6 +1410,10 @@ msgstr "يستخدم هذا صورة أو رابطًا يعود إلى مساح�
 msgid "This value is not valid."
 msgstr "هذه القيمة غير صالحة."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "تتلقى هذه النسخة التذييل بالإنجليزية: لدى Yuva هذه النصوص بالإنجليزية والتركية والألمانية فقط."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "ثلاثة"
@@ -1293,6 +1421,10 @@ msgstr "ثلاثة"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "الأعلى"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "الترجمة"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "اكتب عنوانًا"
 msgid "Write something"
 msgstr "اكتب شيئًا"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "اكتب الترجمة"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "اكتب ما تريد إخباره لقرائك."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "اتجاه الكتابة"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

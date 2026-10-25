@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: tr\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# metin çevrilmedi} other {# metin çevrilmedi}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (kopya)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Kendi arka planı olan bir blok grubu"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "Bir dil iki kez yazılmış ya da yedek dil tasarımın dillerinden biri değil."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Düğme gibi görünen bir bağlantı"
 
@@ -63,17 +71,27 @@ msgstr "Bölümler arasında ince bir çizgi"
 msgid "A title in three sizes"
 msgstr "Üç boyutta bir başlık"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "Artık metni olmayan bir blok için çeviri kalmış."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "Düzenlerken en fazla on dakikada bir, elle kaydettiğinizde, bir sürümü geri yüklediğinizde ve bir çakışmada başkasının kaydı öne geçtiğinde bir sürüm saklanır. En yeni 50 sürüm kalır."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Ekle"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Blok ekle"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Dil ekle"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Bu tasarım arşivlensin mi?"
 msgid "Archived"
 msgstr "Arşivlendi"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Temel dildeki gibi"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Özellik anahtarı"
@@ -151,6 +173,15 @@ msgstr "Tasarımlara dön"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Arka plan"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Temel"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Temel dil"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Düğmeler"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Vazgeç"
@@ -271,6 +303,10 @@ msgstr "Sütunlar"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Kişi özelliği"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Bu sürümü alacak kişiler onun yerine yedek dili alır."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Etkinlik"
 msgid "Everywhere"
 msgstr "Her yerde"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Yedek dil"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Ad"
@@ -498,6 +538,10 @@ msgstr "Kişilerin cihazlarında zaten olan yazı tipleri; e-postalar web yazı 
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Alt bilgi metni"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Dili olmayan ya da dilinin sürümü bulunmayan kişiler için."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Klavye kısayolları"
 msgid "Kind"
 msgstr "Tür"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Dil"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Dil ayarları"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Diller"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Büyük"
@@ -665,6 +722,11 @@ msgstr "Katmanlar"
 msgid "Layout"
 msgstr "Yerleşim"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Düzen tüm dillerde ortaktır. Değiştirmek için {language} sürümüne geçin."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Sol"
@@ -673,6 +735,7 @@ msgstr "Sol"
 msgid "Left panel"
 msgstr "Sol panel"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "Soldan sağa"
@@ -783,6 +846,10 @@ msgstr "Yukarı taşı"
 msgid "Name"
 msgstr "Ad"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Başka diller eklemeden önce temel dili belirtin."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Ağ"
@@ -828,6 +895,14 @@ msgstr "Kaydedilmedi: işaretli blokları düzeltin"
 msgid "Not saved. Try again"
 msgstr "Kaydedilmedi. Yeniden deneyin"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Çevrilmedi"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Çevrilmedi: siz bunu yazana kadar özgün metin görünür."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Sütun sayısı"
@@ -848,9 +923,17 @@ msgstr "Çevrimdışı. Değişiklikleriniz bu cihazda saklanıyor ve bağlantı
 msgid "Onboarding"
 msgstr "Başlangıç"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Her dil için bir sürümü olan tek tasarım. İlk seçtiğiniz dil temel dil olur."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Dar ekranlarda alt alta."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Özgün ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Önizleme boyutu"
 msgid "Preview text"
 msgstr "Önizleme metni"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Önizleme metni ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Ürün"
@@ -939,6 +1026,14 @@ msgstr "Yinele"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Kaldır"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "{language} dilini kaldır"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "{language} ve metinleri kaldırılsın mı?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Geri yüklemek bu sürümü en yeni sürüm olarak kaydeder. Geri alabil
 msgid "Right"
 msgstr "Sağ"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "Sağdan sola"
@@ -1077,6 +1173,10 @@ msgstr "Onların sürümünü gösterir. Geri al sizinkini geri getirir."
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Çoğu gelen kutusunda konunun ardından gösterilir. Bülten kendi metnini belirleyebilir."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Çoğu gelen kutusunda konunun ardından görünür. Boş bırakılırsa temel dilinki kullanılır."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "Gelen kutusunun alt bilgi için resmi adı ya da posta adresi yok. Gönd
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Gelen kutusunun gönderen bilgileri her e-postaya eklenen alt bilgiyi doldurur."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Blokların yazıldığı dil. Düzen, görseller ve bağlantılar ondan gelir."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Tasarımın şu an yazıldığı dil."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "E-posta boş. Başlamak için bir blok ekleyin."
@@ -1200,6 +1308,14 @@ msgstr "E-posta 102 KB'ı aşıyor; Gmail onu kesip abonelikten çıkma bağlant
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "E-posta 90 KB'ı aşıyor. Gmail e-postaları yaklaşık 102 KB'ta keser."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Yeni sürüm temel dilin metinleriyle başlar. Düzen, görseller ve bağlantılar ortak kalır; yalnızca metinleri çevirirsiniz."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Bu sürümün zorunlu alt bilgisi İngilizce: Yuva’nın bu metinleri yalnızca İngilizce, Türkçe ve Almanca."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Kalınlık"
 msgid "This block cannot sit inside this one."
 msgstr "Bu blok bunun içine giremez."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "Bu blokta çevrilecek metin yok."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Bu tasarım başka bir yerde değişti"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "Bu sunucuda “{slug}” şablonu yok. Daha yeni bir Yuva gerekebilir."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Bu metin henüz çevrilmedi, bu yüzden temel dildeki metin görünüyor."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "Bu metin olmayan bir birleştirme alanı kullanıyor."
 
@@ -1286,6 +1410,10 @@ msgstr "Bu, başka bir çalışma alanına ait bir görsel ya da bağlantı kull
 msgid "This value is not valid."
 msgstr "Bu değer geçerli değil."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Bu sürüm onu İngilizce alır: Yuva’nın bu metinleri yalnızca İngilizce, Türkçe ve Almanca."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Üç"
@@ -1293,6 +1421,10 @@ msgstr "Üç"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Üst"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Çeviri"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Bir başlık yazın"
 msgid "Write something"
 msgstr "Bir şeyler yazın"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Çeviriyi yazın"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Okurlarınıza anlatmak istediğinizi yazın."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Yazı yönü"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

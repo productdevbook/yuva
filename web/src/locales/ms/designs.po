@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ms\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, other {# teks belum diterjemahkan}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (salinan)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Sekumpulan blok pada latarnya sendiri"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "Satu bahasa disebut dua kali, atau bahasa sandaran bukan salah satu bahasa reka bentuk."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Pautan yang kelihatan seperti butang"
 
@@ -63,17 +71,27 @@ msgstr "Garis nipis di antara bahagian"
 msgid "A title in three sizes"
 msgstr "Tajuk dalam tiga saiz"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "Ada terjemahan yang tertinggal untuk blok yang tiada teks lagi."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "Satu versi disimpan paling kerap setiap sepuluh minit semasa anda menyunting, apabila anda menyimpan secara manual, apabila anda memulihkan satu dan apabila simpanan orang lain menang dalam konflik. 50 terbaharu kekal."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Tambah"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Tambah blok"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Tambah bahasa"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Arkibkan reka bentuk ini?"
 msgid "Archived"
 msgstr "Diarkibkan"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Seperti asas"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Kunci atribut"
@@ -151,6 +173,15 @@ msgstr "Kembali ke reka bentuk"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Latar belakang"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Asas"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Bahasa asas"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Butang"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Batal"
@@ -271,6 +303,10 @@ msgstr "Lajur"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Atribut kenalan"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Kenalan yang sepatutnya menerimanya akan menerima bahasa sandaran."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Peristiwa"
 msgid "Everywhere"
 msgstr "Di mana-mana"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Bahasa sandaran"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Nama pertama"
@@ -498,6 +538,10 @@ msgstr "Fon yang sudah ada pada peranti orang; mel tidak memuatkan fon web."
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Teks pengaki"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Untuk kenalan tanpa bahasa, atau yang bahasanya tiada versi."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Pintasan papan kekunci"
 msgid "Kind"
 msgstr "Jenis"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Bahasa"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Tetapan bahasa"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Bahasa"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Besar"
@@ -665,6 +722,11 @@ msgstr "Lapisan"
 msgid "Layout"
 msgstr "Reka letak"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Susun atur dikongsi oleh semua bahasa. Tukar ke {language} untuk mengubahnya."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Kiri"
@@ -673,6 +735,7 @@ msgstr "Kiri"
 msgid "Left panel"
 msgstr "Panel kiri"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "Kiri ke kanan"
@@ -783,6 +846,10 @@ msgstr "Alih ke atas"
 msgid "Name"
 msgstr "Nama"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Nyatakan bahasa asas sebelum menambah bahasa lain."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Rangkaian"
@@ -828,6 +895,14 @@ msgstr "Tidak disimpan: baiki blok yang ditanda"
 msgid "Not saved. Try again"
 msgstr "Tidak disimpan. Cuba lagi"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Belum diterjemahkan"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Belum diterjemahkan: teks asal dipaparkan sehingga anda menulis yang ini."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Bilangan lajur"
@@ -848,9 +923,17 @@ msgstr "Luar talian. Perubahan anda disimpan pada peranti ini dan disimpan apabi
 msgid "Onboarding"
 msgstr "Orientasi"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Satu reka bentuk dengan satu versi bagi setiap bahasa. Bahasa pertama yang anda pilih ialah asas."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Satu di bawah yang lain pada skrin sempit."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Asal ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Saiz pratonton"
 msgid "Preview text"
 msgstr "Teks pratonton"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Teks pratonton ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Produk"
@@ -939,6 +1026,14 @@ msgstr "Buat semula"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Alih keluar"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "Alih keluar {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "Alih keluar {language} dan teksnya?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Memulihkan menyimpan versi ini sebagai yang terbaharu. Anda boleh membua
 msgid "Right"
 msgstr "Kanan"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "Kanan ke kiri"
@@ -1077,6 +1173,10 @@ msgstr "Tunjuk versi mereka. Buat asal membawa kembali milik anda."
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Ditunjukkan selepas subjek dalam kebanyakan peti masuk. Siaran boleh menetapkan miliknya sendiri."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Dipaparkan selepas subjek dalam kebanyakan peti masuk. Kosong menggunakan milik bahasa asas."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "Peti masuk tiada nama sah atau alamat surat-menyurat untuk pengaki. Tamb
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Butiran penghantar peti masuk mengisi pengaki yang diperoleh setiap mel."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Bahasa yang digunakan untuk menulis blok. Susun atur, imej dan pautan datang daripadanya."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Bahasa yang digunakan reka bentuk sekarang."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "Mel kosong. Tambah blok untuk bermula."
@@ -1200,6 +1308,14 @@ msgstr "Mel melebihi 102 KB, jadi Gmail akan memotongnya dan menyembunyikan paut
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Mel melebihi 90 KB. Gmail memotong mel pada kira-kira 102 KB."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Versi baharu bermula dengan teks bahasa asas. Susun atur, imej dan pautan kekal dikongsi; anda hanya menterjemah teks."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Pengaki wajib versi ini dalam bahasa Inggeris: Yuva hanya ada teks ini dalam bahasa Inggeris, Turki dan Jerman."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Ketebalan"
 msgid "This block cannot sit inside this one."
 msgstr "Blok ini tidak boleh berada di dalam yang ini."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "Blok ini tiada teks untuk diterjemahkan."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Reka bentuk ini berubah di tempat lain"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "Pelayan ini tidak mempunyai templat “{slug}”. Ia mungkin memerlukan Yuva yang lebih baharu."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Teks ini belum diterjemahkan, jadi teks bahasa asas dipaparkan."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "Teks ini menggunakan medan gabung yang tidak wujud."
 
@@ -1286,6 +1410,10 @@ msgstr "Ini menggunakan imej atau pautan milik ruang kerja lain."
 msgid "This value is not valid."
 msgstr "Nilai ini tidak sah."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Versi ini menerimanya dalam bahasa Inggeris: Yuva hanya ada teks ini dalam bahasa Inggeris, Turki dan Jerman."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Tiga"
@@ -1293,6 +1421,10 @@ msgstr "Tiga"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Atas"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Terjemahan"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Tulis tajuk"
 msgid "Write something"
 msgstr "Tulis sesuatu"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Tulis terjemahan"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Tulis apa yang anda mahu beritahu pembaca anda."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Arah tulisan"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

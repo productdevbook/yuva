@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# conversație} few {# conversații} other {# de conver
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# eșuată} few {# eșuate} other {# de eșuate}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# dintre ei îl primește pentru că limba sa nu are versiune} few {# dintre ei îl primesc pentru că limba lor nu are versiune} other {# dintre ei îl primesc pentru că limba lor nu are versiune}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {Ciornă de la asistent de verificat} other {Ciorne
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} deja în Yuva"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (rezervă)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Adăugați un punct de contact de tip Webhook, lipiți adresa de mai sus
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Adaugă o limbă"
@@ -2320,6 +2330,10 @@ msgstr "Toate importurile"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Toate căsuțele"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Toate limbile"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "Prin e-mail"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "După grup"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "După limbă"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Fiecare produs sau marcă are propria căsuță. Adaugă-o la una pe care o ai sau începe una nouă."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Fiecare destinatar contează la versiunea designului pe care a primit-o."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Fiecare răspuns este o conversație în căsuță. Primele 50 sunt listate aici."
 
@@ -6730,6 +6752,10 @@ msgstr "Golește coșul"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Goliți coșul?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Gol înseamnă subiectul în {baseLanguage}. Câmpurile de îmbinare funcționează și aici."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Câmpuri"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Cifre pe grupuri"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Cifre după limbă"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Etichetele sortează conversațiile după subiect, de exemplu facturare 
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Limba de păstrat"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Limbi"
 
@@ -11240,6 +11274,10 @@ msgstr "Următoarea trimitere pleacă {when}."
 msgid "Next check {next}."
 msgstr "Următoarea verificare {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Versiunea de limbă următoare"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Următorul e-mail {local} ({utc} UTC), în ritmul acestui mesaj în masă."
@@ -11601,6 +11639,10 @@ msgstr "Încă nu există etichete"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Încă nu există etichete. Adaugă-le în setări."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Nicio limbă nu se potrivește"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Alege o discuție pentru a o citi și a răspunde."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Alege un câmp"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Alege o limbă"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Caută în această conversație"
 msgid "Search incidents"
 msgstr "Caută incidente"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Caută limbi sau scrie un cod"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Caută în e-mail"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Unele imagini nu au descriere pentru persoanele care nu le pot vedea."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Unele versiuni de limbă nu sunt complete."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Unele linkuri nu sunt valide."
 
@@ -17544,6 +17598,10 @@ msgstr "Unele valori nu sunt valide."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Unele părți ale fișierului nu au ajuns. Alege din nou același fișier ca să le trimiți."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Unele texte nu sunt traduse, așa că apare textul în {base}: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Contactul scrie un mesaj"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Contactul, notele lui și tot ce a scris sunt șterse definitiv. Acțiunea nu poate fi anulată."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Limba contactului"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Contactele, conversațiile, notele și fișierele lor sunt șterse definitiv. Acțiunea nu poate fi anulată."
@@ -18453,6 +18515,10 @@ msgstr "Clientul atinge degetul mare în sus sau în jos când o conversație e 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Verificarea livrabilității nu s-a terminat încă."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "Designul nu are versiune pentru aceste subiecte, așa că nu sunt folosite: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Înregistrările nu au fost găsite în 7 zile, așa că revendicarea s-
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "Regiunea contului tău SES."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Subsolul obligatoriu este în engleză pentru: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "În câteva minute"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Fără o confirmare, oricine poate tasta adresa altcuiva în formularul tău și nu poți arăta că proprietarul adresei a fost de acord. Păstrează-o activată, cu excepția cazului în care formularele tale sunt arătate doar persoanelor a căror adresă ai verificat-o deja."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Fără subiect propriu, acestea primesc subiectul în {base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

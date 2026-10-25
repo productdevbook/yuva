@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# సంభాషణ} other {# సంభాషణలు
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# విఫలమైంది} other {# విఫలమయ్యాయి}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {వీరిలో # మందికి వారి భాషకు వెర్షన్ లేనందున ఇది అందుతుంది} other {వీరిలో # మందికి వారి భాషకు వెర్షన్ లేనందున ఇది అందుతుంది}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {సమీక్షించాల్సిన అ�
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} ఇప్పటికే Yuva లో ఉన్నాయి"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (ప్రత్యామ్నాయం)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Webhook రకం సంప్రదింపు బిందువు�
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "భాషను జోడించండి"
@@ -2320,6 +2330,10 @@ msgstr "అన్ని దిగుమతులు"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "అన్ని ఇన్‌బాక్స్‌లు"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "అన్ని భాషలు"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "ఇమెయిల్ ద్వారా"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "సమూహం వారీగా"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "భాష వారీగా"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "ప్రతి ఉత్పత్తి లేదా బ్రాండ్‌కు దాని స్వంత ఇన్‌బాక్స్ ఉంటుంది. మీ వద్ద ఉన్నదానిలో జోడించండి, లేదా కొత్తది ప్రారంభించండి."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "ప్రతి గ్రహీత తాను అందుకున్న డిజైన్ వెర్షన్ కింద లెక్కించబడతారు."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "ప్రతి జవాబు ఇన్‌బాక్స్‌లో ఒక సంభాషణ. మొదటి 50 ఇక్కడ జాబితా చేయబడ్డాయి."
 
@@ -6730,6 +6752,10 @@ msgstr "ట్రాష్‌ను ఖాళీ చేయండి"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "ట్రాష్‌ను ఖాళీ చేయాలా?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "ఖాళీగా ఉంచితే {baseLanguage} విషయం వాడబడుతుంది. విలీన ఫీల్డ్‌లు ఇక్కడా పనిచేస్తాయి."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "ఫీల్డ్‌లు"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "సమూహం వారీ సంఖ్యలు"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "భాష వారీ సంఖ్యలు"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "లేబుల్‌లు సంభాషణలను బిల్ల�
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "ఉంచాల్సిన భాష"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "భాషలు"
 
@@ -11240,6 +11274,10 @@ msgstr "తదుపరి బ్రాడ్‌కాస్ట్ {when} వె
 msgid "Next check {next}."
 msgstr "తదుపరి తనిఖీ {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "తదుపరి భాషా వెర్షన్"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "తదుపరి మెయిల్ {local} ({utc} UTC) న, ఈ బ్రాడ్‌కాస్ట్ వేగంతో."
@@ -11601,6 +11639,10 @@ msgstr "ఇంకా లేబుల్‌లు లేవు"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "ఇంకా లేబుల్‌లు లేవు. సెట్టింగ్‌లలో జోడించండి."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "ఏ భాషా సరిపోలలేదు"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "చదివి జవాబివ్వడానికి ఒక చర
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "ఫీల్డ్‌ను ఎంచుకోండి"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "భాషను ఎంచుకోండి"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "ఈ సంభాషణలో శోధించండి"
 msgid "Search incidents"
 msgstr "ఘటనలను వెతకండి"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "భాషలను వెతకండి లేదా ట్యాగ్ టైప్ చేయండి"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "మెయిల్‌లో శోధించు"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "కొన్ని చిత్రాలకు, చూడలేని వారి కోసం వివరణ లేదు."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "కొన్ని భాషా వెర్షన్‌లు పూర్తి కాలేదు."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "కొన్ని లింక్‌లు చెల్లవు."
 
@@ -17544,6 +17598,10 @@ msgstr "కొన్ని విలువలు చెల్లవు."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "ఫైల్‌లోని కొన్ని భాగాలు చేరలేదు. వాటిని పంపడానికి అదే ఫైల్‌ను మళ్లీ ఎంచుకోండి."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "కొన్ని పాఠాలు అనువదించబడలేదు, కాబట్టి {base} పాఠం కనిపిస్తుంది: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "సంప్రదింపు సందేశం రాస్తుం�
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "కాంటాక్ట్, వారి నోట్‌లు, వారు రాసినదంతా శాశ్వతంగా తొలగించబడతాయి. దీన్ని రద్దు చేయలేరు."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "సంప్రదింపు భాష"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "కాంటాక్ట్‌లు, వారి సంభాషణలు, నోట్‌లు, ఫైళ్లు శాశ్వతంగా తొలగించబడతాయి. దీన్ని రద్దు చేయలేరు."
@@ -18453,6 +18515,10 @@ msgstr "సంభాషణ ముగిసినప్పుడు కస్ట�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "డెలివరబిలిటీ తనిఖీ ఇంకా పూర్తి కాలేదు."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "ఈ విషయాలకు డిజైన్‌లో వెర్షన్ లేదు, కాబట్టి ఇవి వాడబడవు: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "7 రోజుల్లో రికార్డులు దొరక�
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "మీ SES ఖాతా ప్రాంతం."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "తప్పనిసరి ఫుటర్ ఆంగ్లంలో ఉంది: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "నిమిషాల్లో"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "నిర్ధారణ లేకుండా ఎవరైనా మీ ఫారమ్‌లో మరొకరి చిరునామాను టైప్ చేయవచ్చు, మరియు చిరునామా యజమాని అంగీకరించారని మీరు చూపలేరు. మీ ఫారమ్‌లు ఇప్పటికే చిరునామాను ధృవీకరించిన వారికి మాత్రమే చూపబడితే తప్ప, దీన్ని ఆన్‌లో ఉంచండి."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "సొంత విషయం లేనందున వీటికి {base} విషయం వస్తుంది: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

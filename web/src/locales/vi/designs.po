@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: vi\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, other {# văn bản chưa dịch}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (bản sao)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Một nhóm khối trên nền riêng"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "Một ngôn ngữ được nêu hai lần, hoặc ngôn ngữ dự phòng không thuộc các ngôn ngữ của thiết kế."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Một liên kết trông như nút"
 
@@ -63,17 +71,27 @@ msgstr "Một đường mảnh giữa các phần"
 msgid "A title in three sizes"
 msgstr "Tiêu đề ba cỡ"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "Còn sót một bản dịch cho khối không còn văn bản."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "Một phiên bản được giữ tối đa mỗi mười phút khi bạn chỉnh sửa, khi bạn lưu thủ công, khi bạn khôi phục một bản và khi bản lưu của người khác thắng trong một xung đột. 50 bản mới nhất được giữ."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Thêm"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Thêm một khối"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Thêm ngôn ngữ"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Lưu trữ thiết kế này?"
 msgid "Archived"
 msgstr "Đã lưu trữ"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Như ngôn ngữ gốc"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Khóa thuộc tính"
@@ -151,6 +173,15 @@ msgstr "Quay lại thiết kế"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Nền"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Gốc"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Ngôn ngữ gốc"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Nút"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Hủy"
@@ -271,6 +303,10 @@ msgstr "Cột"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Thuộc tính liên hệ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Những liên hệ lẽ ra nhận bản này sẽ nhận ngôn ngữ dự phòng thay thế."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Sự kiện"
 msgid "Everywhere"
 msgstr "Ở mọi nơi"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Ngôn ngữ dự phòng"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Tên"
@@ -498,6 +538,10 @@ msgstr "Phông chữ có sẵn trên thiết bị của mọi người; thư kh�
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Văn bản chân thư"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Dành cho liên hệ không có ngôn ngữ, hoặc ngôn ngữ của họ không có phiên bản."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Phím tắt"
 msgid "Kind"
 msgstr "Loại"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Ngôn ngữ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Cài đặt ngôn ngữ"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Ngôn ngữ"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Lớn"
@@ -665,6 +722,11 @@ msgstr "Lớp"
 msgid "Layout"
 msgstr "Bố cục"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Bố cục dùng chung cho mọi ngôn ngữ. Chuyển sang {language} để thay đổi."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Trái"
@@ -673,6 +735,7 @@ msgstr "Trái"
 msgid "Left panel"
 msgstr "Bảng bên trái"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "Từ trái sang phải"
@@ -783,6 +846,10 @@ msgstr "Chuyển lên"
 msgid "Name"
 msgstr "Tên"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Hãy chọn ngôn ngữ gốc trước khi thêm ngôn ngữ khác."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Mạng"
@@ -828,6 +895,14 @@ msgstr "Chưa lưu: hãy sửa các khối được đánh dấu"
 msgid "Not saved. Try again"
 msgstr "Chưa lưu. Hãy thử lại"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Chưa dịch"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Chưa dịch: bản gốc hiển thị cho đến khi bạn viết bản này."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Số cột"
@@ -848,9 +923,17 @@ msgstr "Ngoại tuyến. Thay đổi của bạn được giữ trên thiết b�
 msgid "Onboarding"
 msgstr "Làm quen"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Một thiết kế với một phiên bản cho mỗi ngôn ngữ. Ngôn ngữ bạn chọn đầu tiên là ngôn ngữ gốc."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Xếp chồng trên màn hình hẹp."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Bản gốc ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Kích thước xem trước"
 msgid "Preview text"
 msgstr "Văn bản xem trước"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Văn bản xem trước ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Sản phẩm"
@@ -939,6 +1026,14 @@ msgstr "Làm lại"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Gỡ"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "Xóa {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "Xóa {language} và các văn bản của nó?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Khôi phục sẽ lưu phiên bản này thành bản mới nhất. Bạ
 msgid "Right"
 msgstr "Phải"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "Từ phải sang trái"
@@ -1077,6 +1173,10 @@ msgstr "Hiện phiên bản của họ. Hoàn tác đưa bản của bạn trở
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Hiện sau chủ đề trong hầu hết hộp thư. Thư hàng loạt có thể đặt riêng."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Hiển thị sau tiêu đề trong hầu hết hộp thư. Để trống sẽ dùng của ngôn ngữ gốc."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "Hộp thư chưa có tên pháp lý hoặc địa chỉ bưu điện cho
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Thông tin người gửi của hộp thư điền vào chân thư mà mọi thư đều có."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Ngôn ngữ dùng để viết các khối. Bố cục, hình ảnh và liên kết lấy từ ngôn ngữ này."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Ngôn ngữ thiết kế đang được viết hiện nay."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "Thư trống. Hãy thêm một khối để bắt đầu."
@@ -1200,6 +1308,14 @@ msgstr "Thư vượt quá 102 KB, nên Gmail sẽ cắt nó và ẩn liên kết
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Thư vượt quá 90 KB. Gmail cắt thư ở khoảng 102 KB."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Phiên bản mới bắt đầu với văn bản của ngôn ngữ gốc. Bố cục, hình ảnh và liên kết vẫn dùng chung; bạn chỉ dịch văn bản."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Chân trang bắt buộc của phiên bản này bằng tiếng Anh: Yuva chỉ có phần chữ này bằng tiếng Anh, tiếng Thổ Nhĩ Kỳ và tiếng Đức."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Độ dày"
 msgid "This block cannot sit inside this one."
 msgstr "Khối này không thể nằm bên trong khối này."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "Khối này không có văn bản để dịch."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Thiết kế này đã thay đổi ở nơi khác"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "Máy chủ này không có mẫu “{slug}”. Có thể cần Yuva mới hơn."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Văn bản này chưa được dịch nên văn bản của ngôn ngữ gốc sẽ hiển thị."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "Văn bản này dùng một trường hợp nhất không tồn tại."
 
@@ -1286,6 +1410,10 @@ msgstr "Mục này dùng hình ảnh hoặc liên kết thuộc không gian làm
 msgid "This value is not valid."
 msgstr "Giá trị này không hợp lệ."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Phiên bản này nhận nó bằng tiếng Anh: Yuva chỉ có phần chữ này bằng tiếng Anh, tiếng Thổ Nhĩ Kỳ và tiếng Đức."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Ba"
@@ -1293,6 +1421,10 @@ msgstr "Ba"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Đầu"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Bản dịch"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Viết một tiêu đề"
 msgid "Write something"
 msgstr "Viết gì đó"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Viết bản dịch"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Viết điều bạn muốn nói với người đọc."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Hướng viết"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

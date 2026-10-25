@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: zh-Hans\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, other {# 段文本未翻译}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name}(副本)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "在自己的背景上的一组区块"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "某种语言出现了两次，或备用语言不是设计的语言之一。"
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "看起来像按钮的链接"
 
@@ -63,17 +71,27 @@ msgstr "各部分之间的细线"
 msgid "A title in three sizes"
 msgstr "三种大小的标题"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "有一个翻译属于已不再有文本的区块。"
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "编辑时最多每十分钟保留一个版本,手动保存、恢复版本以及他人的保存在冲突中胜出时也会保留。最新的 50 个会保留下来。"
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "添加"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "添加区块"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "添加语言"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "归档此设计?"
 msgid "Archived"
 msgstr "已归档"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "与基础相同"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "属性键"
@@ -151,6 +173,15 @@ msgstr "返回设计列表"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "背景"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "基础"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "基础语言"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "按钮"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "取消"
@@ -271,6 +303,10 @@ msgstr "列"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "联系人属性"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "本应收到此版本的联系人将改为收到备用语言。"
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "事件"
 msgid "Everywhere"
 msgstr "所有位置"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "备用语言"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "名"
@@ -498,6 +538,10 @@ msgstr "人们设备上已有的字体;邮件不会加载网页字体。"
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "页脚文字"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "用于没有语言或其语言没有版本的联系人。"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "键盘快捷键"
 msgid "Kind"
 msgstr "类型"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "语言"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "语言设置"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "语言"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "大"
@@ -665,6 +722,11 @@ msgstr "图层"
 msgid "Layout"
 msgstr "布局"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "布局由所有语言共享。切换到{language}即可修改。"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "左"
@@ -673,6 +735,7 @@ msgstr "左"
 msgid "Left panel"
 msgstr "左侧面板"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "从左到右"
@@ -783,6 +846,10 @@ msgstr "上移"
 msgid "Name"
 msgstr "名称"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "添加其他语言前，请先指定基础语言。"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "网络"
@@ -828,6 +895,14 @@ msgstr "未保存:请修复标记的区块"
 msgid "Not saved. Try again"
 msgstr "未保存。请重试"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "未翻译"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "未翻译：在你写出此文本之前将显示原文。"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "列数"
@@ -848,9 +923,17 @@ msgstr "离线。你的更改保存在此设备上,恢复连接后会保存。"
 msgid "Onboarding"
 msgstr "新手引导"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "一个设计，每种语言一个版本。你选择的第一种语言为基础语言。"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "在窄屏幕上上下堆叠。"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "原文（{language}）"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "预览大小"
 msgid "Preview text"
 msgstr "预览文字"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "预览文本（{language}）"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "产品"
@@ -939,6 +1026,14 @@ msgstr "重做"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "移除"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "移除{language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "移除{language}及其文本？"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "恢复会把此版本保存为最新版本。你可以撤销。"
 msgid "Right"
 msgstr "右"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "从右到左"
@@ -1077,6 +1173,10 @@ msgstr "显示对方的版本。撤销可恢复你的版本。"
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "在大多数收件箱中显示在主题之后。群发可以设置自己的。"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "在大多数收件箱中显示在主题之后。留空则使用基础语言的预览文本。"
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "收件箱没有用于页脚的法定名称或邮寄地址。请在发送
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "收件箱的发件人信息会填入每封邮件都带有的页脚。"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "区块所用的语言。布局、图片和链接都来自它。"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "设计当前所用的语言。"
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "邮件是空的。添加一个区块开始吧。"
@@ -1200,6 +1308,14 @@ msgstr "邮件超过 102 KB,Gmail 会截断它并隐藏退订链接。请删除�
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "邮件超过 90 KB。Gmail 会在约 102 KB 处截断邮件。"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "新版本从基础语言的文本开始。布局、图片和链接保持共享；你只需翻译文本。"
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "此版本的必需页脚为英文：Yuva 仅提供英语、土耳其语和德语的这段文字。"
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "粗细"
 msgid "This block cannot sit inside this one."
 msgstr "此区块不能放在这个区块里。"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "此区块没有可翻译的文本。"
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "此设计在别处发生了更改"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "此服务器没有模板“{slug}”。可能需要更新版本的 Yuva。"
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "此文本尚未翻译，因此显示基础语言的文本。"
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "此文字使用了不存在的合并字段。"
 
@@ -1286,6 +1410,10 @@ msgstr "这里使用了属于另一个工作区的图片或链接。"
 msgid "This value is not valid."
 msgstr "此值无效。"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "此版本将以英文收到：Yuva 仅提供英语、土耳其语和德语的这段文字。"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "三列"
@@ -1293,6 +1421,10 @@ msgstr "三列"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "顶部"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "翻译"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "写一个标题"
 msgid "Write something"
 msgstr "写点什么"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "输入翻译"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "写下你想告诉读者的话。"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "书写方向"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

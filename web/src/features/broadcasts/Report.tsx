@@ -1,20 +1,28 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { ChartLineIcon, ExternalLinkIcon, MessageSquareReplyIcon, SearchIcon, XIcon } from "lucide-react"
 import { useState } from "react"
-import { Link } from "react-router"
+import { Link, useSearchParams } from "react-router"
 
 import { ErrorLine, PersonAvatar, Segmented } from "@/components/common"
 import { DailyChart } from "@/components/common/DailyChart"
-import { BROADCAST_DELIVERY_STATES, formatDateTime, formatShort, useEnumText } from "@/components/common/text"
+import {
+  BROADCAST_DELIVERY_STATES,
+  formatDateTime,
+  formatShort,
+  useEnumText,
+  useLanguageName,
+} from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import type { ChartConfig } from "@/components/ui/chart"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { todayIso } from "@/features/analytics/state"
 import { useDeliveries, useReport } from "@/features/broadcasts/broadcastQueries"
 import { useNumber, usePercent } from "@/features/broadcasts/BroadcastParts"
+import { headClass } from "@/features/reports/parts"
 import { Card, EmptyRow, Rows, Section, StatusTag } from "@/features/settings/ui"
 import { useDebounced } from "@/hooks/use-debounced"
 import type { Broadcast, BroadcastDelivery, BroadcastDeliveryState, BroadcastReport } from "@/lib/api"
@@ -283,19 +291,148 @@ function Replies({ report }: { report: BroadcastReport }) {
   )
 }
 
+const ALL = "all"
+
+function useLanguageReport(b: Broadcast) {
+  const [params, setParams] = useSearchParams()
+  const whole = useReport(b.id)
+  const tags = (whole.data?.locales ?? []).map((l) => l.locale)
+  const raw = params.get("lang") ?? ""
+  const locale = tags.length > 1 && tags.includes(raw) ? raw : ""
+  const narrowed = useReport(b.id, !!locale, locale)
+  const setLocale = (tag: string) =>
+    setParams(
+      (p) => {
+        const next = new URLSearchParams(p)
+        if (tag) next.set("lang", tag)
+        else next.delete("lang")
+        return next
+      },
+      { replace: true }
+    )
+  return { whole, report: locale ? narrowed : whole, tags: tags.length > 1 ? tags : [], locale, setLocale }
+}
+
+function LanguageSelect({
+  tags,
+  locale,
+  onChange,
+}: {
+  tags: string[]
+  locale: string
+  onChange: (tag: string) => void
+}) {
+  const { t } = useLingui()
+  const languageName = useLanguageName()
+  const items: Record<string, string> = {
+    [ALL]: t`All languages`,
+    ...Object.fromEntries(tags.map((tag) => [tag, languageName(tag)])),
+  }
+  return (
+    <Select value={locale || ALL} items={items} onValueChange={(v) => onChange(!v || v === ALL ? "" : String(v))}>
+      <SelectTrigger className="w-56 max-w-full min-w-0" aria-label={t`Language`} data-testid="report-language">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {Object.entries(items).map(([value, label]) => (
+          <SelectItem key={value} value={value}>
+            {label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
+
+function ByLanguage({ b, report }: { b: Broadcast; report: BroadcastReport }) {
+  const { t } = useLingui()
+  const num = useNumber()
+  const pct = usePercent()
+  const languageName = useLanguageName()
+  const rows = report.locales ?? []
+  if (rows.length < 2) return null
+  const cell = (value: number, rate?: number, sent = 0) => (
+    <td className="px-3 py-2.5 text-end tabular-nums">
+      {num(value)}
+      {rate !== undefined && sent > 0 && <span className="block text-caption text-faint">{pct(rate)}</span>}
+    </td>
+  )
+  const th = "px-3 py-2 text-end font-semibold"
+  return (
+    <Section
+      title={<Trans>By language</Trans>}
+      description={<Trans>Each recipient counts under the version of the design they got.</Trans>}
+    >
+      <div className="overflow-x-auto rounded-[14px] border bg-card" data-testid="report-by-language">
+        <table className="w-full min-w-[560px] text-body">
+          <caption className="sr-only">{t`Figures by language`}</caption>
+          <thead className={headClass}>
+            <tr className="border-b">
+              <th scope="col" className="px-3 py-2 text-start font-semibold">
+                <Trans>Language</Trans>
+              </th>
+              <th scope="col" className={th}>
+                <Trans>Recipients</Trans>
+              </th>
+              <th scope="col" className={th}>
+                <Trans>Sent</Trans>
+              </th>
+              <th scope="col" className={th}>
+                <Trans>Bounced</Trans>
+              </th>
+              <th scope="col" className={th}>
+                <Trans>Unsubscribed</Trans>
+              </th>
+              <th scope="col" className={th}>
+                <Trans>Replied</Trans>
+              </th>
+              {b.click_tracking && (
+                <th scope="col" className={th}>
+                  <Trans>Clicked</Trans>
+                </th>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((l) => (
+              <tr key={l.locale} className="border-b last:border-b-0" data-testid="report-language-row">
+                <th scope="row" className="px-3 py-2.5 text-start font-medium">
+                  {languageName(l.locale)}
+                </th>
+                {cell(l.counts.recipients)}
+                {cell(l.counts.sent)}
+                {cell(l.counts.bounced, l.rates.bounced, l.counts.sent)}
+                {cell(l.counts.unsubscribed, l.rates.unsubscribed, l.counts.sent)}
+                {cell(l.counts.replied, l.rates.replied, l.counts.sent)}
+                {b.click_tracking && cell(l.counts.clicked, l.rates.clicked, l.counts.sent)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Section>
+  )
+}
+
 export function ReportStats({ b }: { b: Broadcast }) {
-  const report = useReport(b.id)
+  const { report, tags, locale, setLocale } = useLanguageReport(b)
   if (report.isPending) return <Skeleton className="h-28 rounded-2xl" />
   if (!report.data) return <ErrorLine error={report.error} />
-  return <Tiles b={b} report={report.data} />
+  return (
+    <div className="flex flex-col gap-2">
+      {tags.length > 0 && <LanguageSelect tags={tags} locale={locale} onChange={setLocale} />}
+      <Tiles b={b} report={report.data} />
+    </div>
+  )
 }
 
 export function Report({ b }: { b: Broadcast }) {
-  const report = useReport(b.id)
+  const { whole, report, locale } = useLanguageReport(b)
   if (report.isPending) return <Skeleton className="h-64 rounded-2xl" />
   if (!report.data) return null
   return (
     <>
+      {!locale && whole.data && <ByLanguage b={b} report={whole.data} />}
       <Timeline b={b} report={report.data} />
       {b.click_tracking && <Links report={report.data} />}
       <CampaignVisits b={b} report={report.data} />
@@ -308,14 +445,20 @@ function deliveryTone(s: BroadcastDeliveryState) {
   return s === "sent" ? "success" : s === "queued" || s === "skipped" ? "muted" : s === "bounced" ? "warning" : "danger"
 }
 
-function DeliveryRow({ d }: { d: BroadcastDelivery }) {
+function DeliveryRow({ d, languages }: { d: BroadcastDelivery; languages: boolean }) {
   const { t, i18n } = useLingui()
   const text = useEnumText()
+  const languageName = useLanguageName()
   const at = d.sent_at ?? d.created_at
   const note = d.skip_reason ? text.skipReason[d.skip_reason] : d.error
   return (
     <li className="flex items-center gap-3 px-4 py-2.5" data-testid="delivery-row">
-      <span className="grid min-w-0 flex-1 items-center gap-x-4 gap-y-0.5 sm:grid-cols-[minmax(0,1fr)_9rem_6.5rem]">
+      <span
+        className={cn(
+          "grid min-w-0 flex-1 items-center gap-x-4 gap-y-0.5",
+          languages ? "sm:grid-cols-[minmax(0,1fr)_7rem_9rem_6.5rem]" : "sm:grid-cols-[minmax(0,1fr)_9rem_6.5rem]"
+        )}
+      >
         <span className="flex min-w-0 flex-col">
           <span className="truncate text-body font-medium" dir="ltr">
             {d.email}
@@ -327,6 +470,11 @@ function DeliveryRow({ d }: { d: BroadcastDelivery }) {
           )}
         </span>
         <span className="flex flex-wrap items-center gap-x-2 sm:contents">
+          {languages && (
+            <span className="truncate text-small text-muted-foreground" data-testid="delivery-language">
+              {d.locale ? languageName(d.locale) : ""}
+            </span>
+          )}
           <span className="flex min-w-0 items-center gap-2">
             <StatusTag tone={deliveryTone(d.state)} data-testid="delivery-state">
               {text.deliveryState[d.state]}
@@ -362,9 +510,10 @@ export function Deliveries({ b }: { b: Broadcast }) {
   const [replied, setReplied] = useState(false)
   const [query, setQuery] = useState("")
   const q = useDebounced(query.trim(), 300)
-  const deliveries = useDeliveries(b.id, state, q, replied)
+  const { tags, locale } = useLanguageReport(b)
+  const deliveries = useDeliveries(b.id, state, q, replied, locale)
   const items = deliveries.data?.pages.flatMap((p) => p.items) ?? []
-  const filtered = !!state || !!q || replied
+  const filtered = !!state || !!q || replied || !!locale
   return (
     <Section title={<Trans>Recipients</Trans>}>
       <div className="flex flex-wrap items-center gap-2">
@@ -426,7 +575,7 @@ export function Deliveries({ b }: { b: Broadcast }) {
         ) : (
           <Rows data-testid="deliveries">
             {items.map((d) => (
-              <DeliveryRow key={d.id} d={d} />
+              <DeliveryRow key={d.id} d={d} languages={tags.length > 0} />
             ))}
           </Rows>
         )}

@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# beszélgetés} other {# beszélgetés}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# sikertelen} other {# sikertelen}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {Közülük # azért kapja ezt, mert a nyelvének nincs változata} other {Közülük # azért kapja ezt, mert a nyelvének nincs változata}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {Átnézendő asszisztensvázlat} other {Átnézend
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} már a Yuvában"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (tartalék)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Adjon hozzá egy Webhook típusú kapcsolattartási pontot, illessze be 
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Nyelv hozzáadása"
@@ -2320,6 +2330,10 @@ msgstr "Minden import"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Minden postafiók"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Minden nyelv"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "E-mailben"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "Csoportok szerint"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "Nyelv szerint"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Minden terméknek vagy márkának saját postafiókja van. Add hozzá egy meglévőhöz, vagy kezdj újat."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Minden címzett a tervnek abban a változatában számít, amelyet kapott."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Minden válasz egy beszélgetés a postafiókban. Az első 50 itt van felsorolva."
 
@@ -6730,6 +6752,10 @@ msgstr "Kuka ürítése"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Kiüríted a kukát?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Üresen a(z) {baseLanguage} tárgy érvényes. Az egyesítő mezők itt is működnek."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Mezők"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Számok csoportonként"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Számok nyelv szerint"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "A címkék téma szerint rendezik a beszélgetéseket, például száml�
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Megtartandó nyelv"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Nyelvek"
 
@@ -11240,6 +11274,10 @@ msgstr "A következő kiküldés: {when}."
 msgid "Next check {next}."
 msgstr "Következő ellenőrzés: {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Következő nyelvi változat"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Következő levél: {local} ({utc} UTC), ennek a tömeges levélnek a tempójában."
@@ -11601,6 +11639,10 @@ msgstr "Még nincsenek címkék"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Még nincsenek címkék. Add hozzá őket a beállításokban."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Nincs egyező nyelv"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Válassz egy vitát, hogy elolvasd és válaszolj rá."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Válasszon mezőt"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Válasszon nyelvet"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Keresés ebben a beszélgetésben"
 msgid "Search incidents"
 msgstr "Incidensek keresése"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Keressen nyelvet, vagy írjon be egy kódot"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Keresés a levelekben"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Néhány képnek nincs leírása azoknak, akik nem látják őket."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Néhány nyelvi változat nem teljes."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Néhány link érvénytelen."
 
@@ -17544,6 +17598,10 @@ msgstr "Néhány érték érvénytelen."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "A fájl néhány része nem érkezett meg. Válaszd ki újra ugyanazt a fájlt, hogy elküldd őket."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Néhány szöveg nincs lefordítva, ezért a(z) {base} szöveg jelenik meg: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "A kapcsolattartó üzenetet ír"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "A kontakt, a jegyzetei és minden, amit írt, véglegesen törlődik. Ez nem vonható vissza."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "A kapcsolat nyelve"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "A kontaktok, a beszélgetéseik, jegyzeteik és fájljaik véglegesen törlődnek. Ez nem vonható vissza."
@@ -18453,6 +18515,10 @@ msgstr "Az ügyfél a hüvelykujj felfelé vagy lefelé gombra koppint, amikor e
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "A kézbesíthetőségi ellenőrzés még nem fejeződött be."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "A tervnek nincs változata ezekhez a tárgyakhoz, ezért nem használja őket: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "A rekordokat 7 napon belül nem találtuk meg, ezért az igény lejárt.
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "A SES-fiókod régiója."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "A kötelező lábléc angol nyelvű ezeknél: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Percek alatt"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Megerősítés nélkül bárki beírhatja valaki más címét az űrlapodba, és nem tudod bizonyítani, hogy a cím tulajdonosa beleegyezett. Hagyd bekapcsolva, hacsak az űrlapjaidat nem csak olyan embereknek mutatod, akiknek a címét már ellenőrizted."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Saját tárgy nélkül ezek a(z) {base} tárgyat kapják: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

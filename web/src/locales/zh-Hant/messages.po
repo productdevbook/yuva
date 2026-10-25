@@ -50,6 +50,11 @@ msgstr "{0, plural, other {# 個對話}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, other {# 個失敗}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, other {其中 # 人因其語言沒有對應版本而收到此版本}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, other {待審核的助理草稿}}"
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "已在 Yuva 中 {existing}"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback}（備用）"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "新增一個 Webhook 類型的聯絡點，貼上上方的位址，保持
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "新增語言"
@@ -2320,6 +2330,10 @@ msgstr "所有匯入"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "所有收件匣"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "所有語言"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "透過電子郵件"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "依群組"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "依語言"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "每個產品或品牌都有自己的收件匣。把它新增到你已有的收件匣,或新建一個。"
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "每位收件人依其收到的設計版本計數。"
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "每條回覆都是收件匣中的一個對話。這裡列出前 50 個。"
 
@@ -6730,6 +6752,10 @@ msgstr "清空垃圾箱"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "清空垃圾箱？"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "留空則使用{baseLanguage}主旨。這裡也可以使用合併欄位。"
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "欄位"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "依群組的數據"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "依語言的數據"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "標籤依主題整理對話，例如帳單或錯誤。"
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "要保留的語言"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "語言"
 
@@ -11240,6 +11274,10 @@ msgstr "下一次群發將於 {when} 送出。"
 msgid "Next check {next}."
 msgstr "下次檢查：{next}。"
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "下一個語言版本"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "下一封郵件將在 {local}({utc} UTC)按此群發的速度發出。"
@@ -11601,6 +11639,10 @@ msgstr "還沒有標籤"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "還沒有標籤。請在設定中新增。"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "沒有相符的語言"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "選擇一則討論來閱讀與回覆。"
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "選擇一個欄位"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "選擇語言"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "在此對話中搜尋"
 msgid "Search incidents"
 msgstr "搜尋事件"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "搜尋語言或輸入標籤"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "搜尋郵件"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "有些圖片沒有為看不到的人提供描述。"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "部分語言版本尚未完成。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "有些連結無效。"
 
@@ -17544,6 +17598,10 @@ msgstr "有些值無效。"
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "檔案的某些部分沒有送達。請再次選擇同一個檔案來傳送它們。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "部分文字未翻譯，因此顯示{base}文字：{languages}。"
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "聯絡人傳來訊息"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "聯絡人、其備註以及其寫下的所有內容將永久刪除。此操作無法復原。"
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "聯絡人的語言"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "聯絡人及其對話、備註和檔案將永久刪除。此操作無法復原。"
@@ -18453,6 +18515,10 @@ msgstr "對話關閉時，客戶會點按「讚」或「倒讚」。電子郵件
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "送達率檢查尚未完成。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "設計中沒有這些主旨對應的版本，因此不會使用：{languages}。"
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "7 天內未找到記錄，申請已結束。請新增下方記錄，然�
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "你的 SES 帳號所在的區域。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "必要頁尾為英文的語言：{languages}。"
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "幾分鐘內"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "沒有確認,任何人都可以在你的表單中輸入別人的地址,而你無法證明該地址的所有者同意過。除非你的表單只展示給你已驗證過地址的人,否則請保持開啟。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "沒有自己的主旨，將使用{base}主旨的語言：{languages}。"
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

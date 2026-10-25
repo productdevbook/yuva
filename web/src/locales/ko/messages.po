@@ -50,6 +50,11 @@ msgstr "{0, plural, other {대화 #개}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, other {실패 #건}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, other {그중 #명은 자신의 언어에 버전이 없어 이것을 받습니다}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, other {검토할 어시스턴트 초안}}"
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "이미 Yuva에 있음 {existing}"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (대체)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Webhook 유형의 연락 지점을 추가하고 위 주소를 붙여 넣
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "언어 추가"
@@ -2320,6 +2330,10 @@ msgstr "모든 가져오기"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "모든 받은 편지함"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "모든 언어"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "이메일로"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "그룹별"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "언어별"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "제품 또는 브랜드마다 받은 편지함이 따로 있습니다. 가진 받은 편지함에 추가하거나 새로 만드세요."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "각 수신자는 받은 디자인 버전으로 집계됩니다."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "각 답장은 받은 편지함의 대화가 됩니다. 처음 50개가 여기에 표시됩니다."
 
@@ -6730,6 +6752,10 @@ msgstr "휴지통 비우기"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "휴지통을 비울까요?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "비워 두면 {baseLanguage} 제목을 사용합니다. 병합 필드도 여기서 쓸 수 있습니다."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "필드"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "그룹별 수치"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "언어별 수치"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "레이블은 결제나 버그 같은 주제별로 대화를 분류합니
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "유지할 언어"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "언어"
 
@@ -11240,6 +11274,10 @@ msgstr "다음 발송은 {when}입니다."
 msgid "Next check {next}."
 msgstr "다음 확인: {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "다음 언어 버전"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "다음 메일은 {local}({utc} UTC)에 이 일괄 발송의 속도로 나갑니다."
@@ -11601,6 +11639,10 @@ msgstr "아직 레이블이 없습니다"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "아직 레이블이 없습니다. 설정에서 추가하세요."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "일치하는 언어가 없습니다"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "읽고 답할 토론을 고르세요."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "필드 선택"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "언어 선택"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "이 대화에서 검색"
 msgid "Search incidents"
 msgstr "인시던트 검색"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "언어를 검색하거나 태그를 입력하세요"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "메일 검색"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "일부 이미지에는 볼 수 없는 사람을 위한 설명이 없습니다."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "일부 언어 버전이 완성되지 않았습니다."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "일부 링크가 올바르지 않습니다."
 
@@ -17544,6 +17598,10 @@ msgstr "올바르지 않은 값이 있습니다."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "파일의 일부가 도착하지 않았습니다. 같은 파일을 다시 선택해 보내세요."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "일부 텍스트가 번역되지 않아 {base} 텍스트가 표시됩니다: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "연락처가 메시지를 보낼 때"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "연락처, 메모, 작성한 모든 내용이 영구 삭제됩니다. 되돌릴 수 없습니다."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "연락처의 언어"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "연락처와 대화, 메모, 파일이 영구 삭제됩니다. 되돌릴 수 없습니다."
@@ -18453,6 +18515,10 @@ msgstr "대화가 종료되면 고객이 좋아요 또는 싫어요를 누릅니
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "전달률 확인이 아직 끝나지 않았습니다."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "디자인에 이 제목들의 버전이 없어 사용되지 않습니다: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "7일 안에 레코드를 찾지 못해 신청이 끝났습니다. 아래
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "SES 계정의 리전."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "필수 바닥글이 영어인 언어: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "몇 분 이내"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "확인 없이는 누구나 다른 사람의 주소를 양식에 입력할 수 있으며, 그 주소의 주인이 동의했음을 보여 줄 수 없습니다. 양식을 주소를 이미 확인한 사람에게만 보여 주는 경우가 아니라면 켜 두세요."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "자체 제목이 없어 {base} 제목을 받는 언어: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

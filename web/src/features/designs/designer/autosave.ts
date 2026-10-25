@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import type { DesignState } from "@/features/designs/designer/history"
 import { useLatest } from "@/hooks/use-latest"
+import { pruneTranslations } from "@/features/designs/doc"
 import { conflictOf, issuesOf, saveDesign, useRefreshDesigns } from "@/features/designs/queries"
 import { ApiError, type EmailDesign, type EmailDesignIssue } from "@/lib/api"
 
@@ -85,7 +86,7 @@ export function useAutosave({
         const d = await saveDesign(id, {
           name: s.name.trim() || fallbackName.current,
           inbox_id: s.inbox_id,
-          document: s.document,
+          document: pruneTranslations(s.document),
           base_version: server.current.version,
           snapshot: snapshot || undefined,
         })

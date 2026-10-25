@@ -5,7 +5,7 @@ import { FilePlusIcon, LanguagesIcon, LoaderIcon } from "lucide-react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
-import { Dot, ErrorLine } from "@/components/common"
+import { CheckItem, CheckList, Dot, ErrorLine } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { designLink, useCreateDesign, useTemplates } from "@/features/designs/queries"
-import { useCategory } from "@/features/designs/text"
+import { useCategory, useTemplateLocales } from "@/features/designs/text"
 import type { EmailTemplate, EmailTemplateLocale } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
@@ -110,6 +110,15 @@ export function NewDesignDialog({
   const [inbox, setInbox] = useState(inboxes.length === 1 ? inboxes[0].id : WORKSPACE)
   const choosing = mode === "choose"
   const tpl = choosing ? picked : mode.use
+  const localeNames = useTemplateLocales()
+  const offered = tpl ? localeNames.filter((l) => tpl.locales.includes(l.value)) : []
+  const [chosen, setChosen] = useState<EmailTemplateLocale[] | null>(null)
+  const kept = (chosen ?? []).filter((l) => tpl?.locales.includes(l))
+  const langs: EmailTemplateLocale[] = kept.length
+    ? kept
+    : [tpl?.locales.includes(locale) ? locale : (offered[0]?.value ?? locale)]
+  const toggle = (l: EmailTemplateLocale, on: boolean) =>
+    setChosen(on ? [...langs.filter((x) => x !== l), l] : langs.filter((x) => x !== l))
   const name = typed ?? (tpl ? tpl.name : t`Untitled design`)
   const items: Record<string, string> = {
     [WORKSPACE]: t`Whole workspace`,
@@ -121,7 +130,9 @@ export function NewDesignDialog({
       {
         name: name.trim(),
         inbox_id: inbox === WORKSPACE ? undefined : inbox,
-        template: tpl ? { slug: tpl.slug, locale } : undefined,
+        template: tpl
+          ? { slug: tpl.slug, locale: langs[0], locales: langs.length > 1 ? langs.slice(1) : undefined }
+          : undefined,
       },
       { onSuccess: (d) => navigate(designLink(d.id)) }
     )
@@ -170,6 +181,36 @@ export function NewDesignDialog({
                     />
                   ))}
             </ul>
+          )}
+          {offered.length > 1 && (
+            <CheckList
+              labelId="new-design-languages"
+              label={<Trans>Languages</Trans>}
+              hint={
+                <p className="text-small text-faint">
+                  <Trans>One design with a version per language. The first one you pick is the base.</Trans>
+                </p>
+              }
+            >
+              {offered.map((l) => (
+                <CheckItem
+                  key={l.value}
+                  checked={langs.includes(l.value)}
+                  disabled={langs.length === 1 && langs[0] === l.value}
+                  onChange={(on) => toggle(l.value, on)}
+                  testId="new-design-language"
+                >
+                  <span className="flex items-center gap-2">
+                    {l.label}
+                    {langs[0] === l.value && (
+                      <span className="text-caption text-faint">
+                        <Trans>Base</Trans>
+                      </span>
+                    )}
+                  </span>
+                </CheckItem>
+              ))}
+            </CheckList>
           )}
           <div className="flex flex-col gap-2">
             <Label htmlFor="design-name-new">

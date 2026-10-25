@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# razgovor} few {# razgovora} other {# razgovora}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# neuspješan} few {# neuspješna} other {# neuspješnih}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# od njih ga dobiva jer njegov jezik nema verziju} few {# od njih ga dobivaju jer njihov jezik nema verziju} other {# od njih ga dobiva jer njihov jezik nema verziju}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {Skica asistenta za pregled} few {Skice asistenta z
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} već u Yuvi"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (zamjenski)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Dodajte kontaktnu točku vrste Webhook, zalijepite gornju adresu, ostavi
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Dodaj jezik"
@@ -2320,6 +2330,10 @@ msgstr "Svi uvozi"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Svi pretinci"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Svi jezici"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "E-poštom"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "Po skupinama"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "Po jeziku"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Svaki proizvod ili marka ima vlastiti pretinac. Dodajte ga uz neki koji imate ili započnite novi."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Svaki se primatelj broji pod verzijom dizajna koju je dobio."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Svaki odgovor je razgovor u pretincu. Prvih 50 navedeno je ovdje."
 
@@ -6730,6 +6752,10 @@ msgstr "Isprazni smeće"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Isprazniti smeće?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Prazno koristi predmet na jeziku {baseLanguage}. Polja za spajanje rade i ovdje."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Polja"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Brojke po skupinama"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Brojke po jeziku"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Oznake razvrstavaju razgovore po temi, na primjer naplata ili greške."
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Jezik za zadržati"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Jezici"
 
@@ -11240,6 +11274,10 @@ msgstr "Sljedeće slanje ide {when}."
 msgid "Next check {next}."
 msgstr "Sljedeća provjera {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Sljedeća jezična verzija"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Sljedeća poruka {local} ({utc} UTC), tempom ove masovne poruke."
@@ -11601,6 +11639,10 @@ msgstr "Još nema oznaka"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Još nema oznaka. Dodajte ih u postavkama."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Nijedan jezik ne odgovara"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Odaberi raspravu da je pročitaš i odgovoriš."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Odaberite polje"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Odaberite jezik"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Traži u ovom razgovoru"
 msgid "Search incidents"
 msgstr "Traži incidente"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Tražite jezike ili upišite oznaku"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Pretraži poštu"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Neke slike nemaju opis za ljude koji ih ne vide."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Neke jezične verzije nisu dovršene."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Neke poveznice nisu valjane."
 
@@ -17544,6 +17598,10 @@ msgstr "Neke vrijednosti nisu valjane."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Neki dijelovi datoteke nisu stigli. Ponovno odaberite istu datoteku da ih pošaljete."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Neki tekstovi nisu prevedeni, pa se prikazuje tekst na jeziku {base}: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Kontakt napiše poruku"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Kontakt, njegove bilješke i sve što je napisao trajno se brišu. Ovo se ne može poništiti."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Jezik kontakta"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Kontakti, njihovi razgovori, bilješke i datoteke trajno se brišu. Ovo se ne može poništiti."
@@ -18453,6 +18515,10 @@ msgstr "Kupac dodirne palac gore ili dolje kad se razgovor zatvori. Kontakti e-p
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Provjera isporučivosti još nije završila."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "Dizajn nema verziju za ove predmete, pa se ne koriste: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Zapisi nisu pronađeni u 7 dana, pa je zahtjev istekao. Dodajte zapise i
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "Regija vašeg SES računa."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Obavezno podnožje je na engleskom za: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Unutar nekoliko minuta"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Bez potvrde svatko može upisati tuđu adresu u vaš obrazac, a vi ne možete pokazati da je vlasnik adrese pristao. Ostavite uključeno osim ako se vaši obrasci prikazuju samo ljudima čiju ste adresu već potvrdili."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Bez vlastitog predmeta ovi dobivaju predmet na jeziku {base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

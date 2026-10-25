@@ -4,28 +4,33 @@ import { useState } from "react"
 
 import { CheckItem, CheckList, ErrorLine, MemberAvatar } from "@/components/common"
 import { BROADCAST_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
-import { formatRelative } from "@/components/common/text"
+import { formatRelative, useLanguageName } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSendTest } from "@/features/broadcasts/broadcastQueries"
 import { ContactSearch } from "@/features/contact/ContactSearch"
+import { fallbackOf, versions } from "@/features/designs/doc"
+import { useDesign } from "@/features/designs/queries"
 import { contactName } from "@/features/contact/Section"
 import type { Broadcast, Contact } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { useMembers } from "@/lib/workspace"
 
 const MAX = 5
+const AUTO = "auto"
 
 export function useTestSend(id: string) {
   const { membership } = useSession()
   const [members, setMembers] = useState<string[]>([membership.member_id])
   const [contact, setContact] = useState<Contact | null>(null)
+  const [locale, setLocale] = useState(AUTO)
   const send = useSendTest(id)
   const run = () => {
     if (members.length === 0 || send.isPending) return
-    send.mutate({ member_ids: members, contact_id: contact?.id })
+    send.mutate({ member_ids: members, contact_id: contact?.id, locale: locale === AUTO ? undefined : locale })
   }
-  return { members, setMembers, contact, setContact, send, run }
+  return { members, setMembers, contact, setContact, locale, setLocale, send, run }
 }
 
 export function TestSend({
@@ -40,7 +45,15 @@ export function TestSend({
   const { t, i18n } = useLingui()
   const team = useMembers().data ?? []
   const [picking, setPicking] = useState(false)
-  const { members, setMembers, contact, setContact, send, run } = state
+  const { members, setMembers, contact, setContact, locale, setLocale, send, run } = state
+  const languageName = useLanguageName()
+  const doc = useDesign(b.design_id ?? "").data?.document
+  const tags = doc ? versions(doc) : []
+  const fallback = languageName(doc ? (fallbackOf(doc) ?? "") : "")
+  const languages: Record<string, string> = {
+    [AUTO]: contact ? t`The contact’s language` : t`${fallback} (fallback)`,
+    ...Object.fromEntries(tags.map((tag) => [tag, languageName(tag)])),
+  }
   const chosen = new Set(members)
   const unnamed = t`Unnamed contact`
   const who = contact ? contactName(contact, unnamed) : ""
@@ -109,6 +122,30 @@ export function TestSend({
           </div>
         )}
       </div>
+      {tags.length > 1 && (
+        <div className="flex flex-col gap-2">
+          <span id="test-language" className="text-body font-medium">
+            <Trans>Language</Trans>
+          </span>
+          <Select
+            value={tags.includes(locale) ? locale : AUTO}
+            items={languages}
+            disabled={disabled}
+            onValueChange={(v) => setLocale(String(v ?? AUTO))}
+          >
+            <SelectTrigger className="w-full min-w-0" aria-labelledby="test-language" data-testid="test-language">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(languages).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-3">
         <Button
           variant="outline"

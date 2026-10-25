@@ -11,6 +11,8 @@ export const WARNING_CODES = new Set([
   "alt_missing",
   "merge_field_without_fallback",
   "sender_identity_missing",
+  "translation_missing",
+  "footer_language",
 ])
 
 export function isWarning(i: EmailDesignIssue) {
@@ -174,6 +176,16 @@ export function useIssueText() {
         return t`Pick an image from your library.`
       case "column_widths":
         return t`The column widths must add up to 100.`
+      case "translation_missing":
+        return t`This text is not translated yet, so the base language’s text shows.`
+      case "footer_language":
+        return t`The required footer of this version is in English: Yuva has its words in English, Turkish and German only.`
+      case "locale_required":
+        return t`Name the base language before adding other languages.`
+      case "invalid_locale":
+        return t`A language is named twice, or the fallback language is not one of the design’s languages.`
+      case "translation_block":
+        return t`A translation is left for a block that no longer has text.`
       default:
         return i.detail ?? t`This value is not valid.`
     }

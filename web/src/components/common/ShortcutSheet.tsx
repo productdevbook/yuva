@@ -262,6 +262,8 @@ export const DESIGNER_KEYS = {
   image: "i",
   versions: "v",
   checks: "c",
+  language: "l",
+  addLanguage: "L",
 } as const
 
 export function keyLabel(k: string): string[] {
@@ -633,6 +635,8 @@ export function ShortcutSheet({
         [k(DESIGNER_KEYS.image), t`Choose the selected block’s image`],
         [k(DESIGNER_KEYS.versions), t`Versions`],
         [k(DESIGNER_KEYS.checks), t`Checks`],
+        [k(DESIGNER_KEYS.language), t`Next language version`],
+        [k(DESIGNER_KEYS.addLanguage), t`Add a language`],
         [
           [DESIGNER_KEYS.edit, DESIGNER_KEYS.desktop, DESIGNER_KEYS.phone, DESIGNER_KEYS.dark],
           t`Edit, or preview on a desktop, a phone or in dark mode`,

@@ -1,9 +1,11 @@
-import type { EmailBlock, EmailDesignDocument } from "@/lib/api"
+import type { EmailBlock, EmailDesignDocument, EmailDesignTranslation } from "@/lib/api"
 
 export type Doc = EmailDesignDocument
 export type Block = EmailBlock
 export type BlockType = Block["type"]
 export type BlockOf<T extends BlockType> = Extract<Block, { type: T }>
+export type Translation = EmailDesignTranslation
+export type TextType = "heading" | "text" | "button" | "image" | "footer"
 
 export const ROOT = "root"
 
@@ -322,4 +324,132 @@ export function fileName(name: string) {
     .replace(/\s+/g, "-")
     .toLowerCase()
   return `${base || "design"}.json`
+}
+
+export const MAX_VERSIONS = 20
+
+const TEXT_TYPES: BlockType[] = ["heading", "text", "button", "image", "footer"]
+
+export function hasText(type: BlockType): type is TextType {
+  return TEXT_TYPES.includes(type)
+}
+
+export function textOf(b: Block): string {
+  switch (b.type) {
+    case "heading":
+      return b.text
+    case "text":
+    case "footer":
+      return b.html
+    case "button":
+      return b.label
+    case "image":
+      return b.alt ?? ""
+    default:
+      return ""
+  }
+}
+
+function baseText(b: Block) {
+  return b.type === "image" && b.decorative ? "" : textOf(b)
+}
+
+function withText(b: Block, s: string): Block {
+  switch (b.type) {
+    case "heading":
+      return { ...b, text: s }
+    case "text":
+    case "footer":
+      return { ...b, html: s }
+    case "button":
+      return { ...b, label: s }
+    case "image":
+      return { ...b, alt: s }
+    default:
+      return b
+  }
+}
+
+export const sameTag = (a: string | undefined, b: string | undefined) =>
+  !!a && !!b && a.toLowerCase() === b.toLowerCase()
+
+export function versions(doc: Doc): string[] {
+  const keys = Object.keys(doc.translations ?? {})
+  if (!doc.locale || keys.length === 0) return []
+  return [doc.locale, ...keys.sort()]
+}
+
+export function fallbackOf(doc: Doc) {
+  return doc.fallback_locale ?? doc.locale
+}
+
+export function translationOf(doc: Doc, tag: string | null): Translation | undefined {
+  return tag ? doc.translations?.[tag] : undefined
+}
+
+export function localized(doc: Doc, tag: string | null): Doc {
+  const tr = translationOf(doc, tag)
+  if (!tr) return doc
+  return {
+    ...doc,
+    preheader: tr.preheader || doc.preheader,
+    theme: tr.direction ? { ...doc.theme, direction: tr.direction } : doc.theme,
+    blocks: mapBlocks(doc.blocks, (b) => (b.id in tr.blocks ? withText(b, tr.blocks[b.id]) : b)),
+  }
+}
+
+export function missing(doc: Doc, tag: string): string[] {
+  const tr = doc.translations?.[tag]
+  if (!tr) return []
+  return walk(doc)
+    .filter((e) => hasText(e.block.type) && baseText(e.block) !== "" && !(e.block.id in tr.blocks))
+    .map((e) => e.block.id)
+}
+
+export function setTranslation(doc: Doc, tag: string, fn: (t: Translation) => Translation): Doc {
+  const cur = doc.translations?.[tag]
+  if (!cur) return doc
+  return { ...doc, translations: { ...doc.translations, [tag]: fn(cur) } }
+}
+
+export function setTranslatedText(doc: Doc, tag: string, id: string, s: string): Doc {
+  return setTranslation(doc, tag, (t) => ({ ...t, blocks: { ...t.blocks, [id]: s } }))
+}
+
+export function addVersion(doc: Doc, tag: string, base?: string): Doc {
+  return {
+    ...doc,
+    locale: doc.locale ?? base,
+    translations: { ...doc.translations, [tag]: { blocks: {} } },
+  }
+}
+
+export function removeVersion(doc: Doc, tag: string): Doc {
+  const rest = { ...doc.translations }
+  delete rest[tag]
+  const fallback = sameTag(doc.fallback_locale, tag) || Object.keys(rest).length === 0 ? undefined : doc.fallback_locale
+  return { ...doc, translations: rest, fallback_locale: fallback }
+}
+
+export function pruneTranslations(doc: Doc): Doc {
+  if (!doc.translations) return doc
+  const ids = new Set(
+    walk(doc)
+      .filter((e) => hasText(e.block.type))
+      .map((e) => e.block.id)
+  )
+  let changed = false
+  const out: Record<string, Translation> = {}
+  for (const [tag, t] of Object.entries(doc.translations)) {
+    const blocks = Object.fromEntries(Object.entries(t.blocks).filter(([id]) => ids.has(id)))
+    if (Object.keys(blocks).length !== Object.keys(t.blocks).length) changed = true
+    out[tag] = { ...t, blocks }
+  }
+  return changed ? { ...doc, translations: out } : doc
+}
+
+const FOOTER_LANGUAGES = ["en", "tr", "de"]
+
+export function footerInEnglish(tag: string) {
+  return !FOOTER_LANGUAGES.includes(tag.split("-")[0].toLowerCase())
 }

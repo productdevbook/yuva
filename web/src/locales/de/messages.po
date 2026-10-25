@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# Unterhaltung} other {# Unterhaltungen}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# fehlgeschlagen} other {# fehlgeschlagen}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# davon erhält sie, weil es für die eigene Sprache keine Version gibt} other {# davon erhalten sie, weil es für ihre Sprache keine Version gibt}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {Assistenten-Entwurf zu prüfen} other {Assistenten
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} bereits in Yuva"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (Ersatz)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Fügen Sie einen Kontaktpunkt vom Typ Webhook hinzu, fügen Sie die obig
 msgid "Add a domain"
 msgstr "Domain hinzufügen"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Sprache hinzufügen"
@@ -2320,6 +2330,10 @@ msgstr "Alle Importe"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Alle Postfächer"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Alle Sprachen"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "Per E-Mail"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "Nach Gruppe"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "Nach Sprache"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Jedes Produkt oder jede Marke hat ein eigenes Postfach. Fügen Sie es zu einem vorhandenen hinzu oder legen Sie ein neues an."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Jeder Empfänger zählt unter der Version des Designs, die er erhalten hat."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Jede Antwort ist eine Unterhaltung im Postfach. Die ersten 50 sind hier aufgeführt."
 
@@ -6730,6 +6752,10 @@ msgstr "Papierkorb leeren"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Papierkorb leeren?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Leer gilt der Betreff auf {baseLanguage}. Platzhalter funktionieren auch hier."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Felder"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Zahlen nach Gruppe"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Zahlen nach Sprache"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Labels sortieren Unterhaltungen nach Thema, etwa Abrechnung oder Fehler.
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Zu behaltende Sprache"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Sprachen"
 
@@ -11240,6 +11274,10 @@ msgstr "Der nächste Broadcast geht am {when} raus."
 msgid "Next check {next}."
 msgstr "Nächste Prüfung {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Nächste Sprachversion"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Nächste Mail am {local} ({utc} UTC), im Tempo dieses Broadcasts."
@@ -11601,6 +11639,10 @@ msgstr "Noch keine Labels"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Noch keine Labels. Fügen Sie sie in den Einstellungen hinzu."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Keine Sprache passt"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Wählen Sie eine Diskussion, um sie zu lesen und zu beantworten."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Feld wählen"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Sprache wählen"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "In dieser Unterhaltung suchen"
 msgid "Search incidents"
 msgstr "Vorfälle suchen"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Sprachen suchen oder ein Kürzel eingeben"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Mail durchsuchen"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Manche Bilder haben keine Beschreibung für Menschen, die sie nicht sehen können."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Einige Sprachversionen sind nicht vollständig."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Manche Links sind ungültig."
 
@@ -17544,6 +17598,10 @@ msgstr "Manche Werte sind ungültig."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Manche Teile der Datei sind nicht angekommen. Wählen Sie dieselbe Datei erneut, um sie zu senden."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Einige Texte sind nicht übersetzt, daher erscheint der Text auf {base}: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Der Kontakt schreibt eine Nachricht"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Der Kontakt, seine Notizen und alles, was er geschrieben hat, werden endgültig gelöscht. Das lässt sich nicht rückgängig machen."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Die Sprache des Kontakts"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Die Kontakte, ihre Unterhaltungen, Notizen und Dateien werden endgültig gelöscht. Das lässt sich nicht rückgängig machen."
@@ -18453,6 +18515,10 @@ msgstr "Der Kunde tippt auf Daumen hoch oder runter, wenn eine Unterhaltung gesc
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Die Prüfung der Zustellbarkeit ist noch nicht abgeschlossen."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "Das Design hat für diese Betreffzeilen keine Version, daher werden sie nicht verwendet: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Die Einträge wurden innerhalb von 7 Tagen nicht gefunden, daher ist der
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "Die Region Ihres SES-Kontos."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Die Pflichtfußzeile ist auf Englisch für: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Innerhalb von Minuten"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Ohne Bestätigung kann jeder die Adresse eines anderen in Ihr Formular eintippen, und Sie können nicht zeigen, dass der Inhaber der Adresse zugestimmt hat. Lassen Sie sie an, es sei denn, Ihre Formulare werden nur Personen gezeigt, deren Adresse Sie bereits verifiziert haben."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Ohne eigenen Betreff erhalten diese den Betreff auf {base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

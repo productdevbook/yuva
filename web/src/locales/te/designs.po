@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: te\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# పాఠం అనువదించబడలేదు} other {# పాఠాలు అనువదించబడలేదు}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (కాపీ)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "దాని స్వంత నేపథ్యంపై బ్లాక్‌ల సమూహం"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "ఒక భాష రెండుసార్లు ఇవ్వబడింది, లేదా ప్రత్యామ్నాయ భాష డిజైన్ భాషల్లో ఒకటి కాదు."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "బటన్‌లా కనిపించే లింక్"
 
@@ -63,17 +71,27 @@ msgstr "భాగాల మధ్య సన్నని గీత"
 msgid "A title in three sizes"
 msgstr "మూడు పరిమాణాల్లో శీర్షిక"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "ఇక పాఠం లేని ఒక బ్లాక్‌కు అనువాదం మిగిలి ఉంది."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "మీరు సవరించేటప్పుడు గరిష్టంగా ప్రతి పది నిమిషాలకు, చేతితో సేవ్ చేసినప్పుడు, ఒకదాన్ని పునరుద్ధరించినప్పుడు మరియు మరొకరి సేవ్ ఘర్షణలో గెలిచినప్పుడు వెర్షన్ ఉంచబడుతుంది. తాజా 50 ఉంటాయి."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "జోడించండి"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "బ్లాక్‌ను జోడించండి"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "భాషను జోడించండి"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "ఈ డిజైన్‌ను ఆర్కైవ్ చేయాలా
 msgid "Archived"
 msgstr "ఆర్కైవ్ చేయబడింది"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "బేస్ లాగే"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "అట్రిబ్యూట్ కీ"
@@ -151,6 +173,15 @@ msgstr "డిజైన్‌లకు తిరిగి"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "నేపథ్యం"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "బేస్"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "బేస్ భాష"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "బటన్‌లు"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "రద్దు చేయండి"
@@ -271,6 +303,10 @@ msgstr "నిలువు వరుసలు"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "కాంటాక్ట్ అట్రిబ్యూట్"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "దీన్ని అందుకోవాల్సిన సంప్రదింపులు బదులుగా ప్రత్యామ్నాయ భాషను అందుకుంటారు."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "ఈవెంట్"
 msgid "Everywhere"
 msgstr "ప్రతిచోటా"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "ప్రత్యామ్నాయ భాష"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "మొదటి పేరు"
@@ -498,6 +538,10 @@ msgstr "ప్రజల పరికరాల్లో ఇప్పటికే 
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "ఫుటర్ టెక్స్ట్"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "భాష లేని, లేదా తమ భాషకు వెర్షన్ లేని సంప్రదింపుల కోసం."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "కీబోర్డ్ షార్ట్‌కట్‌లు"
 msgid "Kind"
 msgstr "రకం"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "భాష"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "భాషా సెట్టింగ్‌లు"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "భాషలు"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "పెద్ద"
@@ -665,6 +722,11 @@ msgstr "లేయర్‌లు"
 msgid "Layout"
 msgstr "లేఅవుట్"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "లేఅవుట్ అన్ని భాషలకూ ఉమ్మడి. దాన్ని మార్చడానికి {language}కి మారండి."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "ఎడమ"
@@ -673,6 +735,7 @@ msgstr "ఎడమ"
 msgid "Left panel"
 msgstr "ఎడమ ప్యానెల్"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "ఎడమ నుండి కుడికి"
@@ -783,6 +846,10 @@ msgstr "పైకి తరలించండి"
 msgid "Name"
 msgstr "పేరు"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "ఇతర భాషలను జోడించే ముందు బేస్ భాషను తెలపండి."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "నెట్‌వర్క్"
@@ -828,6 +895,14 @@ msgstr "సేవ్ కాలేదు: గుర్తించిన బ్�
 msgid "Not saved. Try again"
 msgstr "సేవ్ కాలేదు. మళ్లీ ప్రయత్నించండి"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "అనువదించబడలేదు"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "అనువదించబడలేదు: మీరు దీన్ని రాసే వరకు మూల పాఠం కనిపిస్తుంది."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "నిలువు వరుసల సంఖ్య"
@@ -848,9 +923,17 @@ msgstr "ఆఫ్‌లైన్. మీ మార్పులు ఈ పరి�
 msgid "Onboarding"
 msgstr "ఆన్‌బోర్డింగ్"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "ప్రతి భాషకు ఒక వెర్షన్‌తో ఒకే డిజైన్. మీరు మొదట ఎంచుకున్నదే బేస్."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "ఇరుకైన స్క్రీన్‌లపై ఒకదాని కింద ఒకటి."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "మూలం ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "ప్రివ్యూ పరిమాణం"
 msgid "Preview text"
 msgstr "ప్రివ్యూ టెక్స్ట్"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "ప్రివ్యూ పాఠం ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "ఉత్పత్తి"
@@ -939,6 +1026,14 @@ msgstr "మళ్లీ చేయండి"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "తొలగించండి"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "{language}ను తీసివేయండి"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "{language}ను, దాని పాఠాలను తీసివేయాలా?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "పునరుద్ధరిస్తే ఈ వెర్షన్ త
 msgid "Right"
 msgstr "కుడి"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "కుడి నుండి ఎడమకు"
@@ -1077,6 +1173,10 @@ msgstr "వారి వెర్షన్‌ను చూపండి. రద�
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "చాలా ఇన్‌బాక్స్‌లలో విషయం తర్వాత చూపబడుతుంది. బ్రాడ్‌కాస్ట్ తన స్వంతదాన్ని సెట్ చేయవచ్చు."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "చాలా ఇన్‌బాక్స్‌లలో విషయం తర్వాత కనిపిస్తుంది. ఖాళీగా ఉంచితే బేస్ భాషది వాడబడుతుంది."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "ఇన్‌బాక్స్‌కు ఫుటర్ కోసం చ
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "ఇన్‌బాక్స్ పంపేవారి వివరాలు ప్రతి మెయిల్‌కు వచ్చే ఫుటర్‌ను నింపుతాయి."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "బ్లాక్‌లు రాయబడిన భాష. లేఅవుట్, చిత్రాలు, లింక్‌లు దీని నుంచే వస్తాయి."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "డిజైన్ ప్రస్తుతం రాయబడిన భాష."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "మెయిల్ ఖాళీగా ఉంది. ప్రారంభించడానికి బ్లాక్‌ను జోడించండి."
@@ -1200,6 +1308,14 @@ msgstr "మెయిల్ 102 KB కంటే ఎక్కువ, కాబట�
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "మెయిల్ 90 KB కంటే ఎక్కువ. Gmail సుమారు 102 KB వద్ద మెయిల్‌లను కత్తిరిస్తుంది."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "కొత్త వెర్షన్ బేస్ భాష పాఠాలతో మొదలవుతుంది. లేఅవుట్, చిత్రాలు, లింక్‌లు ఉమ్మడిగానే ఉంటాయి; మీరు పాఠాలను మాత్రమే అనువదిస్తారు."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "ఈ వెర్షన్ తప్పనిసరి ఫుటర్ ఆంగ్లంలో ఉంది: Yuva వద్ద ఈ పదాలు ఆంగ్లం, టర్కిష్, జర్మన్‌లలో మాత్రమే ఉన్నాయి."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "మందం"
 msgid "This block cannot sit inside this one."
 msgstr "ఈ బ్లాక్ దీని లోపల ఉండలేదు."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "ఈ బ్లాక్‌లో అనువదించడానికి పాఠం లేదు."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "ఈ డిజైన్ వేరే చోట మారింది"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "ఈ సర్వర్‌లో “{slug}” టెంప్లేట్ లేదు. కొత్త Yuva అవసరం కావచ్చు."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "ఈ పాఠం ఇంకా అనువదించబడలేదు, కాబట్టి బేస్ భాష పాఠం కనిపిస్తుంది."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "ఈ టెక్స్ట్ లేని మెర్జ్ ఫీల్డ్‌ను ఉపయోగిస్తోంది."
 
@@ -1286,6 +1410,10 @@ msgstr "ఇది మరో వర్క్‌స్పేస్‌కు చె
 msgid "This value is not valid."
 msgstr "ఈ విలువ చెల్లదు."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "ఈ వెర్షన్‌కు ఇది ఆంగ్లంలో అందుతుంది: Yuva వద్ద ఈ పదాలు ఆంగ్లం, టర్కిష్, జర్మన్‌లలో మాత్రమే ఉన్నాయి."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "మూడు"
@@ -1293,6 +1421,10 @@ msgstr "మూడు"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "పైన"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "అనువాదం"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "శీర్షిక రాయండి"
 msgid "Write something"
 msgstr "ఏదైనా రాయండి"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "అనువాదం రాయండి"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "మీ పాఠకులకు చెప్పాలనుకున్నది రాయండి."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "రాత దిశ"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

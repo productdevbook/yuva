@@ -126,7 +126,7 @@ export function useSendTest(id: string) {
   const qc = useQueryClient()
   const { workspaceId: ws } = useSession()
   return useMutation({
-    mutationFn: (body: { member_ids?: string[]; contact_id?: string }) =>
+    mutationFn: (body: { member_ids?: string[]; contact_id?: string; locale?: string }) =>
       unwrap(api.POST("/v1/broadcasts/{broadcastId}/test", { params: { path: { broadcastId: id } }, body })),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: keys.broadcast(ws, id) })
@@ -177,20 +177,31 @@ export function useBroadcastAction(id: string) {
   })
 }
 
-export function useReport(id: string, enabled = true) {
+export function useReport(id: string, enabled = true, locale = "") {
   const { workspaceId: ws } = useSession()
   return useQuery({
-    queryKey: keys.broadcastReport(ws, id),
-    queryFn: () => unwrap(api.GET("/v1/broadcasts/{broadcastId}/report", { params: { path: { broadcastId: id } } })),
+    queryKey: locale ? [...keys.broadcastReport(ws, id), locale] : keys.broadcastReport(ws, id),
+    queryFn: () =>
+      unwrap(
+        api.GET("/v1/broadcasts/{broadcastId}/report", {
+          params: { path: { broadcastId: id }, query: { locale: locale || undefined } },
+        })
+      ),
     enabled,
     placeholderData: keepPreviousData,
   })
 }
 
-export function useDeliveries(id: string, state: BroadcastDeliveryState | "", q: string, replied: boolean) {
+export function useDeliveries(
+  id: string,
+  state: BroadcastDeliveryState | "",
+  q: string,
+  replied: boolean,
+  locale = ""
+) {
   const { workspaceId: ws } = useSession()
   return useInfiniteQuery({
-    queryKey: keys.broadcastDeliveries(ws, id, state, q, replied),
+    queryKey: keys.broadcastDeliveries(ws, id, state, q, replied, locale),
     queryFn: ({ pageParam }) =>
       unwrap(
         api.GET("/v1/broadcasts/{broadcastId}/deliveries", {
@@ -200,6 +211,7 @@ export function useDeliveries(id: string, state: BroadcastDeliveryState | "", q:
               state: state || undefined,
               q: q || undefined,
               replied: replied || undefined,
+              locale: locale || undefined,
               cursor: pageParam,
               limit: 50,
             },

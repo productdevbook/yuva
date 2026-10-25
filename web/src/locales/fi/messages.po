@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# keskustelu} other {# keskustelua}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# epäonnistui} other {# epäonnistui}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# heistä saa sen, koska hänen kielellään ei ole versiota} other {# heistä saa sen, koska heidän kielellään ei ole versiota}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {Tarkistettava avustajan luonnos} other {Tarkistett
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} jo Yuvassa"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (varakieli)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Lisää Webhook-tyyppinen yhteyspiste, liitä yllä oleva osoite, jätä
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Lisää kieli"
@@ -2320,6 +2330,10 @@ msgstr "Kaikki tuonnit"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Kaikki postilaatikot"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Kaikki kielet"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "Sähköpostitse"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "Ryhmittäin"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "Kielen mukaan"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Jokaisella tuotteella tai brändillä on oma postilaatikkonsa. Lisää se olemassa olevaan tai luo uusi."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Jokainen vastaanottaja lasketaan sen version alle, jonka hän sai."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Jokainen vastaus on keskustelu postilaatikossa. Ensimmäiset 50 luetellaan tässä."
 
@@ -6730,6 +6752,10 @@ msgstr "Tyhjennä roskakori"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Tyhjennetäänkö roskakori?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Tyhjänä käytetään aihetta kielellä {baseLanguage}. Yhdistämiskentät toimivat täälläkin."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Kentät"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Luvut ryhmittäin"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Luvut kielen mukaan"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Tunnisteet lajittelevat keskustelut aiheen mukaan, esimerkiksi laskutus 
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Säilytettävä kieli"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Kielet"
 
@@ -11240,6 +11274,10 @@ msgstr "Seuraava lähetys lähtee {when}."
 msgid "Next check {next}."
 msgstr "Seuraava tarkistus {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Seuraava kieliversio"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Seuraava viesti {local} ({utc} UTC), tämän joukkolähetyksen tahdilla."
@@ -11601,6 +11639,10 @@ msgstr "Ei vielä tunnisteita"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Ei vielä tunnisteita. Lisää niitä asetuksissa."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Mikään kieli ei vastaa"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Valitse keskustelu, jonka haluat lukea ja johon haluat vastata."
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Valitse kenttä"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Valitse kieli"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Hae tästä keskustelusta"
 msgid "Search incidents"
 msgstr "Hae häiriöitä"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Hae kieliä tai kirjoita tunniste"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Hae postista"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Joillakin kuvilla ei ole kuvausta ihmisille, jotka eivät näe niitä."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Osa kieliversioista on keskeneräisiä."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Jotkin linkit eivät ole kelvollisia."
 
@@ -17544,6 +17598,10 @@ msgstr "Jotkin arvot eivät ole kelvollisia."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Joitakin tiedoston osia ei saapunut. Valitse sama tiedosto uudelleen lähettääksesi ne."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Osa teksteistä on kääntämättä, joten näkyy teksti kielellä {base}: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Yhteystieto kirjoittaa viestin"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Yhteystieto, sen muistiinpanot ja kaikki, mitä se kirjoitti, poistetaan pysyvästi. Tätä ei voi perua."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Yhteystiedon kieli"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Yhteystiedot, niiden keskustelut, muistiinpanot ja tiedostot poistetaan pysyvästi. Tätä ei voi perua."
@@ -18453,6 +18515,10 @@ msgstr "Asiakas napauttaa peukkua ylös tai alas, kun keskustelu suljetaan. Säh
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Toimitettavuustarkistus ei ole vielä valmis."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "Suunnittelussa ei ole versiota näille aiheille, joten niitä ei käytetä: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Tietueita ei löytynyt 7 päivässä, joten vaatimus päättyi. Lisää 
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "SES-tilisi alue."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Pakollinen alatunniste on englanniksi näille: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Minuuttien sisällä"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Ilman vahvistusta kuka tahansa voi kirjoittaa lomakkeeseesi jonkun toisen osoitteen, etkä voi osoittaa, että osoitteen omistaja suostui. Pidä se päällä, ellei lomakkeitasi näytetä vain ihmisille, joiden osoite olet jo vahvistanut."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Ilman omaa aihetta nämä saavat aiheen kielellä {base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

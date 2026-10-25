@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Link } from "react-router"
 
 import { CheckItem, CheckList, Notice } from "@/components/common"
+import { useLanguageName } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -380,6 +381,7 @@ export function AudienceCount({
   const { t } = useLingui()
   const num = useNumber()
   const names = useExcludedNames()
+  const languageName = useLanguageName()
   if (!count) {
     return (
       <Card className="bg-surface" data-testid="audience-count">
@@ -428,6 +430,35 @@ export function AudienceCount({
             </li>
           ))}
         </ul>
+      )}
+      {(count.by_locale?.length ?? 0) > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <span className="text-small font-medium text-faint">
+            <Trans>Languages</Trans>
+          </span>
+          <ul className="flex flex-col gap-1 text-small" data-testid="audience-by-locale">
+            {count.by_locale!.map((l) => {
+              const language = languageName(l.locale)
+              return (
+                <li key={l.locale} className="flex flex-col" data-locale={l.locale}>
+                  <span className="flex justify-between gap-3">
+                    <span className="min-w-0 truncate text-muted-foreground">{language}</span>
+                    <span className="tabular-nums">{num(l.recipients)}</span>
+                  </span>
+                  {l.fallback > 0 && (
+                    <span className="text-caption text-faint">
+                      <Plural
+                        value={l.fallback}
+                        one="# of them gets it because their language has no version"
+                        other="# of them get it because their language has no version"
+                      />
+                    </span>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       )}
       <div className="flex flex-col gap-1.5">
         <span className="text-small font-medium text-faint" data-testid="audience-left-out">

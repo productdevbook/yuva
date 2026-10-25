@@ -421,12 +421,14 @@ export function BroadcastPage() {
     )
   }
   if (draft) return <Composer key={b.id} b={b} readOnly={!canManage} />
+  const lang = params.get("lang")
+  const withLang = (to: string) => (lang ? `${to}${to.includes("?") ? "&" : "?"}lang=${encodeURIComponent(lang)}` : to)
   const names: Record<Tab, string> = { report: t`Report`, recipients: t`Recipients`, broadcast: t`Broadcast` }
   const tabs = TABS.filter((v) => (v === "recipients" ? canManage : true))
     .filter((v) => !scheduled || v === "broadcast")
     .map((v) => ({
       key: v,
-      to: broadcastLink(b.id, v === "report" ? undefined : v),
+      to: withLang(broadcastLink(b.id, v === "report" ? undefined : v)),
       label: names[v],
       testId: `broadcast-tab-${v}`,
     }))

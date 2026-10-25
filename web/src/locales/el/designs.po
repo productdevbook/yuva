@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: el\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# κείμενο αμετάφραστο} other {# κείμενα αμετάφραστα}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (αντίγραφο)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "Μια ομάδα μπλοκ σε δικό της φόντο"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "Μια γλώσσα αναφέρεται δύο φορές ή η εναλλακτική γλώσσα δεν είναι μία από τις γλώσσες του σχεδίου."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "Ένας σύνδεσμος που μοιάζει με κουμπί"
 
@@ -63,17 +71,27 @@ msgstr "Μια λεπτή γραμμή ανάμεσα σε τμήματα"
 msgid "A title in three sizes"
 msgstr "Ένας τίτλος σε τρία μεγέθη"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "Έμεινε μια μετάφραση για ένα μπλοκ που δεν έχει πια κείμενο."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "Μια έκδοση κρατιέται το πολύ κάθε δέκα λεπτά όσο επεξεργάζεστε, όταν αποθηκεύετε χειροκίνητα, όταν επαναφέρετε μία και όταν η αποθήκευση κάποιου άλλου κερδίζει σε σύγκρουση. Μένουν οι 50 νεότερες."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "Προσθήκη"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "Προσθήκη μπλοκ"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "Προσθήκη γλώσσας"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "Αρχειοθέτηση αυτού του σχεδίου;"
 msgid "Archived"
 msgstr "Αρχειοθετημένο"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "Όπως η βάση"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "Κλειδί χαρακτηριστικού"
@@ -151,6 +173,15 @@ msgstr "Πίσω στα σχέδια"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "Φόντο"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "Βάση"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "Βασική γλώσσα"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "Κουμπιά"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "Ακύρωση"
@@ -271,6 +303,10 @@ msgstr "Στήλες"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "Χαρακτηριστικό επαφής"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "Οι επαφές που θα τη λάμβαναν παίρνουν αντί γι’ αυτό την εναλλακτική γλώσσα."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "Συμβάν"
 msgid "Everywhere"
 msgstr "Παντού"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "Εναλλακτική γλώσσα"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "Όνομα"
@@ -498,6 +538,10 @@ msgstr "Γραμματοσειρές που υπάρχουν ήδη στις σ�
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "Κείμενο υποσέλιδου"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "Για επαφές χωρίς γλώσσα ή των οποίων η γλώσσα δεν έχει έκδοση."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "Συντομεύσεις πληκτρολογίου"
 msgid "Kind"
 msgstr "Είδος"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "Γλώσσα"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "Ρυθμίσεις γλωσσών"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "Γλώσσες"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "Μεγάλο"
@@ -665,6 +722,11 @@ msgstr "Επίπεδα"
 msgid "Layout"
 msgstr "Διάταξη"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "Η διάταξη είναι κοινή για όλες τις γλώσσες. Μεταβείτε στα {language} για να την αλλάξετε."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "Αριστερά"
@@ -673,6 +735,7 @@ msgstr "Αριστερά"
 msgid "Left panel"
 msgstr "Αριστερός πίνακας"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "Από αριστερά προς δεξιά"
@@ -783,6 +846,10 @@ msgstr "Μετακίνηση πάνω"
 msgid "Name"
 msgstr "Όνομα"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "Ορίστε τη βασική γλώσσα πριν προσθέσετε άλλες γλώσσες."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "Δίκτυο"
@@ -828,6 +895,14 @@ msgstr "Δεν αποθηκεύτηκε: διορθώστε τα επισημα�
 msgid "Not saved. Try again"
 msgstr "Δεν αποθηκεύτηκε. Δοκιμάστε ξανά"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "Αμετάφραστο"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "Αμετάφραστο: εμφανίζεται το πρωτότυπο μέχρι να γράψετε αυτό."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "Αριθμός στηλών"
@@ -848,9 +923,17 @@ msgstr "Εκτός σύνδεσης. Οι αλλαγές σας κρατούντ
 msgid "Onboarding"
 msgstr "Ενσωμάτωση χρηστών"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "Ένα σχέδιο με μία έκδοση ανά γλώσσα. Η πρώτη που επιλέγετε είναι η βάση."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "Η μία κάτω από την άλλη σε στενές οθόνες."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "Πρωτότυπο ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "Μέγεθος προεπισκόπησης"
 msgid "Preview text"
 msgstr "Κείμενο προεπισκόπησης"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "Κείμενο προεπισκόπησης ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "Προϊόν"
@@ -939,6 +1026,14 @@ msgstr "Επανάληψη"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "Αφαίρεση"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "Αφαίρεση {language}"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "Αφαίρεση {language} και των κειμένων της;"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "Η αποκατάσταση αποθηκεύει αυτή την έκδ�
 msgid "Right"
 msgstr "Δεξιά"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "Από δεξιά προς αριστερά"
@@ -1077,6 +1173,10 @@ msgstr "Εμφάνιση της δικής τους έκδοσης. Η αναί�
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "Εμφανίζεται μετά το θέμα στα περισσότερα εισερχόμενα. Μια μαζική αποστολή μπορεί να ορίσει δικό της."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "Εμφανίζεται μετά το θέμα στα περισσότερα εισερχόμενα. Κενό σημαίνει της βασικής γλώσσας."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "Τα εισερχόμενα δεν έχουν νομική επωνυμ�
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "Τα στοιχεία αποστολέα των εισερχομένων γεμίζουν το υποσέλιδο που παίρνει κάθε e-mail."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "Η γλώσσα στην οποία είναι γραμμένα τα μπλοκ. Διάταξη, εικόνες και σύνδεσμοι προέρχονται από αυτήν."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "Η γλώσσα στην οποία είναι γραμμένο τώρα το σχέδιο."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "Το e-mail είναι κενό. Προσθέστε ένα μπλοκ για να ξεκινήσετε."
@@ -1200,6 +1308,14 @@ msgstr "Το e-mail ξεπερνά τα 102 KB, οπότε το Gmail θα το 
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Το e-mail ξεπερνά τα 90 KB. Το Gmail κόβει τα e-mail περίπου στα 102 KB."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "Η νέα έκδοση ξεκινά με τα κείμενα της βασικής γλώσσας. Διάταξη, εικόνες και σύνδεσμοι μένουν κοινά· μεταφράζετε μόνο τα κείμενα."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "Το υποχρεωτικό υποσέλιδο αυτής της έκδοσης είναι στα αγγλικά: το Yuva έχει αυτά τα κείμενα μόνο στα αγγλικά, τουρκικά και γερμανικά."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "Πάχος"
 msgid "This block cannot sit inside this one."
 msgstr "Αυτό το μπλοκ δεν μπορεί να μπει μέσα σε αυτό."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "Αυτό το μπλοκ δεν έχει κείμενο για μετάφραση."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Αυτό το σχέδιο άλλαξε αλλού"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "Αυτός ο διακομιστής δεν έχει το πρότυπο «{slug}». Μπορεί να χρειάζεται νεότερο Yuva."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "Αυτό το κείμενο δεν έχει μεταφραστεί ακόμη, οπότε εμφανίζεται το κείμενο της βασικής γλώσσας."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "Αυτό το κείμενο χρησιμοποιεί πεδίο συγχώνευσης που δεν υπάρχει."
 
@@ -1286,6 +1410,10 @@ msgstr "Εδώ χρησιμοποιείται εικόνα ή σύνδεσμος
 msgid "This value is not valid."
 msgstr "Αυτή η τιμή δεν είναι έγκυρη."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "Αυτή η έκδοση το λαμβάνει στα αγγλικά: το Yuva έχει αυτά τα κείμενα μόνο στα αγγλικά, τουρκικά και γερμανικά."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "Τρεις"
@@ -1293,6 +1421,10 @@ msgstr "Τρεις"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "Κορυφαία"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "Μετάφραση"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "Γράψτε έναν τίτλο"
 msgid "Write something"
 msgstr "Γράψτε κάτι"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "Γράψτε τη μετάφραση"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "Γράψτε τι θέλετε να πείτε στους αναγνώστες σας."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "Κατεύθυνση γραφής"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

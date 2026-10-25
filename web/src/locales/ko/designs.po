@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ko\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, other {번역되지 않은 텍스트 #개}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name}(사본)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "자체 배경이 있는 블록 묶음"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "언어가 두 번 지정되었거나 대체 언어가 디자인의 언어가 아닙니다."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "버튼처럼 보이는 링크"
 
@@ -63,17 +71,27 @@ msgstr "부분 사이의 가는 선"
 msgid "A title in three sizes"
 msgstr "세 가지 크기의 제목"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "더 이상 텍스트가 없는 블록의 번역이 남아 있습니다."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "편집하는 동안 최대 10분마다, 직접 저장할 때, 복원할 때, 다른 사람의 저장이 충돌에서 이길 때 버전이 보관됩니다. 최신 50개가 남습니다."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "추가"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "블록 추가"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "언어 추가"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "이 디자인을 보관할까요?"
 msgid "Archived"
 msgstr "보관됨"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "기본과 같게"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "속성 키"
@@ -151,6 +173,15 @@ msgstr "디자인으로 돌아가기"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "배경"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "기본"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "기본 언어"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "버튼"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "취소"
@@ -271,6 +303,10 @@ msgstr "열"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "연락처 속성"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "이 버전을 받을 연락처는 대신 대체 언어를 받습니다."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "이벤트"
 msgid "Everywhere"
 msgstr "어디서나"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "대체 언어"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "이름"
@@ -498,6 +538,10 @@ msgstr "사람들의 기기에 이미 있는 글꼴입니다. 메일은 웹 글�
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "바닥글 텍스트"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "언어가 없거나 언어에 버전이 없는 연락처용입니다."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "키보드 단축키"
 msgid "Kind"
 msgstr "종류"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "언어"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "언어 설정"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "언어"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "큼"
@@ -665,6 +722,11 @@ msgstr "레이어"
 msgid "Layout"
 msgstr "레이아웃"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "레이아웃은 모든 언어에서 공유됩니다. 바꾸려면 {language}(으)로 전환하세요."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "왼쪽"
@@ -673,6 +735,7 @@ msgstr "왼쪽"
 msgid "Left panel"
 msgstr "왼쪽 패널"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "왼쪽에서 오른쪽"
@@ -783,6 +846,10 @@ msgstr "위로 이동"
 msgid "Name"
 msgstr "이름"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "다른 언어를 추가하기 전에 기본 언어를 지정하세요."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "네트워크"
@@ -828,6 +895,14 @@ msgstr "저장되지 않음: 표시된 블록을 수정하세요"
 msgid "Not saved. Try again"
 msgstr "저장되지 않음. 다시 시도하세요"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "번역 안 됨"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "번역 안 됨: 이 텍스트를 쓰기 전까지 원문이 표시됩니다."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "열 개수"
@@ -848,9 +923,17 @@ msgstr "오프라인입니다. 변경 사항은 이 기기에 보관되었다가
 msgid "Onboarding"
 msgstr "온보딩"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "언어마다 버전이 있는 하나의 디자인입니다. 처음 고른 언어가 기본입니다."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "좁은 화면에서는 위아래로 쌓입니다."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "원문 ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "미리 보기 크기"
 msgid "Preview text"
 msgstr "미리 보기 텍스트"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "미리보기 텍스트 ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "제품"
@@ -939,6 +1026,14 @@ msgstr "다시 실행"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "제거"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "{language} 제거"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "{language}와(과) 해당 텍스트를 제거할까요?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "복원하면 이 버전이 최신 버전으로 저장됩니다. 되돌�
 msgid "Right"
 msgstr "오른쪽"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "오른쪽에서 왼쪽"
@@ -1077,6 +1173,10 @@ msgstr "상대 버전을 보여 줍니다. 실행 취소하면 내 것이 돌아
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "대부분의 받은 편지함에서 제목 뒤에 표시됩니다. 일괄 발송은 자체로 지정할 수 있습니다."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "대부분의 받은편지함에서 제목 뒤에 표시됩니다. 비워 두면 기본 언어의 것을 사용합니다."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "받은 편지함에 바닥글용 법적 이름이나 우편 주소가 �
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "받은 편지함의 발신자 정보가 모든 메일이 받는 바닥글을 채웁니다."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "블록이 작성된 언어입니다. 레이아웃, 이미지, 링크는 여기서 가져옵니다."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "디자인이 지금 작성된 언어입니다."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "메일이 비어 있습니다. 블록을 추가해 시작하세요."
@@ -1200,6 +1308,14 @@ msgstr "메일이 102KB를 넘어 Gmail이 잘라내고 구독 취소 링크를 
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "메일이 90KB를 넘습니다. Gmail은 약 102KB에서 메일을 잘라냅니다."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "새 버전은 기본 언어의 텍스트로 시작합니다. 레이아웃, 이미지, 링크는 공유되며 텍스트만 번역합니다."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "이 버전의 필수 바닥글은 영어입니다: Yuva에는 이 문구가 영어, 터키어, 독일어로만 있습니다."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "두께"
 msgid "This block cannot sit inside this one."
 msgstr "이 블록은 이 블록 안에 놓을 수 없습니다."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "이 블록에는 번역할 텍스트가 없습니다."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "이 디자인이 다른 곳에서 변경되었습니다"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "이 서버에는 템플릿 \"{slug}\"이(가) 없습니다. 더 새로운 Yuva가 필요할 수 있습니다."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "이 텍스트는 아직 번역되지 않아 기본 언어의 텍스트가 표시됩니다."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "이 텍스트는 존재하지 않는 병합 필드를 사용합니다."
 
@@ -1286,6 +1410,10 @@ msgstr "다른 워크스페이스의 이미지나 링크를 사용하고 있습�
 msgid "This value is not valid."
 msgstr "이 값은 올바르지 않습니다."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "이 버전은 영어로 받습니다: Yuva에는 이 문구가 영어, 터키어, 독일어로만 있습니다."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "세 개"
@@ -1293,6 +1421,10 @@ msgstr "세 개"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "상단"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "번역"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "제목 쓰기"
 msgid "Write something"
 msgstr "무언가 쓰기"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "번역 작성"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "독자에게 전하고 싶은 내용을 쓰세요."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "쓰기 방향"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# розмова} few {# розмови} many {# роз
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# невдала} few {# невдалі} many {# невдалих} other {# невдалої}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# з них отримує її, бо для його мови немає версії} few {# з них отримують її, бо для їхньої мови немає версії} many {# з них отримують її, бо для їхньої мови немає версії} other {# з них отримують її, бо для їхньої мови немає версії}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {Чернетка асистента на пере�
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} уже в Yuva"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (резервна)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Додайте контактну точку типу Webhook, вста�
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Додати мову"
@@ -2320,6 +2330,10 @@ msgstr "Усі імпорти"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Усі скриньки"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Усі мови"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "Електронною поштою"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "За групами"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "За мовами"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Кожен продукт або бренд має власну скриньку. Додайте його до наявної або створіть нову."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Кожен одержувач враховується у версії дизайну, яку отримав."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Кожна відповідь — це розмова у вхідних. Тут показано перші 50."
 
@@ -6730,6 +6752,10 @@ msgstr "Очистити кошик"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Очистити кошик?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Якщо порожньо, використовується тема мовою {baseLanguage}. Поля підстановки працюють і тут."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Поля"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Цифри за групами"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Цифри за мовами"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Мітки сортують розмови за темою, наприк
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Мова для збереження"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Мови"
 
@@ -11240,6 +11274,10 @@ msgstr "Наступна розсилка піде {when}."
 msgid "Next check {next}."
 msgstr "Наступна перевірка: {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Наступна мовна версія"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Наступний лист {local} ({utc} UTC) у темпі цієї розсилки."
@@ -11601,6 +11639,10 @@ msgstr "Міток поки немає"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Міток поки немає. Додайте їх у налаштуваннях."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Немає відповідної мови"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Виберіть обговорення, щоб прочитати й в
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Виберіть поле"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Виберіть мову"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Пошук у цій розмові"
 msgid "Search incidents"
 msgstr "Шукати інциденти"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Знайдіть мову або введіть код"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Пошук у пошті"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "У деяких зображень немає опису для тих, хто їх не бачить."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Деякі мовні версії не завершені."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Деякі посилання недійсні."
 
@@ -17544,6 +17598,10 @@ msgstr "Деякі значення недійсні."
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Деякі частини файлу не дійшли. Виберіть той самий файл ще раз, щоб надіслати їх."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Деякі тексти не перекладені, тому показується текст мовою {base}: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Контакт пише повідомлення"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Контакт, його нотатки та все, що він написав, буде видалено назавжди. Це не можна скасувати."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Мова контакту"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Контакти, їхні розмови, нотатки та файли буде видалено назавжди. Це не можна скасувати."
@@ -18453,6 +18515,10 @@ msgstr "Клієнт натискає «великий палець вгору»
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Перевірка доставлюваності ще не завершена."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "У дизайні немає версії для цих тем, тому вони не використовуються: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Записи не знайдено протягом 7 днів, тому
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "Регіон вашого облікового запису SES."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Обовʼязковий нижній колонтитул англійською для: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Протягом хвилин"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Без підтвердження будь-хто може ввести у вашу форму чужу адресу, і ви не зможете показати, що власник адреси погодився. Залиште ввімкненим, якщо лише ваші форми не показуються людям, чию адресу ви вже перевірили."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Без власної теми ці версії отримують тему мовою {base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

@@ -50,6 +50,11 @@ msgstr "{0, plural, one {# συνομιλία} other {# συνομιλίες}}"
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# αποτυχημένη} other {# αποτυχημένες}}"
 
+#. placeholder {0}: l.fallback
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "{0, plural, one {# of them gets it because their language has no version} other {# of them get it because their language has no version}}"
+msgstr "{0, plural, one {# από αυτούς το λαμβάνει επειδή η γλώσσα του δεν έχει έκδοση} other {# από αυτούς το λαμβάνουν επειδή η γλώσσα τους δεν έχει έκδοση}}"
+
 #. placeholder {0}: c.activity.open_conversations
 #: src/features/contact/ContactsColumn.tsx
 msgid "{0, plural, one {# open} other {# open}}"
@@ -437,6 +442,10 @@ msgstr "{drafts, plural, one {Πρόχειρο βοηθού για έλεγχο}
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "Το {existing} είναι ήδη στο Yuva"
+
+#: src/features/broadcasts/TestSend.tsx
+msgid "{fallback} (fallback)"
+msgstr "{fallback} (εναλλακτική)"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -1890,6 +1899,7 @@ msgstr "Προσθέστε ένα σημείο επαφής τύπου Webhook, 
 msgid "Add a domain"
 msgstr "Add a domain"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Add a language"
 msgstr "Προσθήκη γλώσσας"
@@ -2320,6 +2330,10 @@ msgstr "Όλες οι εισαγωγές"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Όλα τα εισερχόμενα"
+
+#: src/features/broadcasts/Report.tsx
+msgid "All languages"
+msgstr "Όλες οι γλώσσες"
 
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/text.ts
@@ -3750,6 +3764,10 @@ msgstr "Με e-mail"
 #: src/features/reports/TrendsReport.tsx
 msgid "By group"
 msgstr "Ανά ομάδα"
+
+#: src/features/broadcasts/Report.tsx
+msgid "By language"
+msgstr "Ανά γλώσσα"
 
 #: src/features/reports/ReportsColumn.tsx
 msgid "By member"
@@ -6554,6 +6572,10 @@ msgid "Each product or brand has its own inbox. Add it to one you have, or start
 msgstr "Κάθε προϊόν ή επωνυμία έχει τα δικά του εισερχόμενα. Προσθέστε το σε κάποια που έχετε ή ξεκινήστε νέα."
 
 #: src/features/broadcasts/Report.tsx
+msgid "Each recipient counts under the version of the design they got."
+msgstr "Κάθε παραλήπτης μετρά στην έκδοση του σχεδίου που έλαβε."
+
+#: src/features/broadcasts/Report.tsx
 msgid "Each reply is a conversation in the inbox. The first 50 are listed here."
 msgstr "Κάθε απάντηση είναι μια συνομιλία στα εισερχόμενα. Εδώ εμφανίζονται οι πρώτες 50."
 
@@ -6730,6 +6752,10 @@ msgstr "Άδειασμα του Κάδου"
 #: src/features/conversation/TrashBulk.tsx
 msgid "Empty the Trash?"
 msgstr "Άδειασμα του Κάδου;"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Empty uses the {baseLanguage} subject. Merge fields work here too."
+msgstr "Κενό σημαίνει το θέμα στα {baseLanguage}. Τα πεδία συγχώνευσης λειτουργούν και εδώ."
 
 #. placeholder {0}: r.count
 #: src/features/conversation/TrashBulk.tsx
@@ -7229,6 +7255,10 @@ msgstr "Πεδία"
 #: src/features/reports/TrendsReport.tsx
 msgid "Figures by group"
 msgstr "Αριθμοί ανά ομάδα"
+
+#: src/features/broadcasts/Report.tsx
+msgid "Figures by language"
+msgstr "Αριθμοί ανά γλώσσα"
 
 #: src/features/migrations/Wizard.tsx
 msgid "File"
@@ -9182,7 +9212,10 @@ msgstr "Οι ετικέτες ταξινομούν τις συνομιλίες �
 
 #: src/app/UserMenu.tsx
 #: src/components/common/LanguageMenu.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -9202,6 +9235,7 @@ msgstr "Γλώσσα προς διατήρηση"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
 msgstr "Γλώσσες"
 
@@ -11240,6 +11274,10 @@ msgstr "Η επόμενη αποστολή φεύγει {when}."
 msgid "Next check {next}."
 msgstr "Επόμενος έλεγχος {next}."
 
+#: src/components/common/ShortcutSheet.tsx
+msgid "Next language version"
+msgstr "Επόμενη γλωσσική έκδοση"
+
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "Next mail on {local} ({utc} UTC), at this broadcast’s pace."
 msgstr "Επόμενο e-mail στις {local} ({utc} UTC), με τον ρυθμό αυτής της μαζικής αποστολής."
@@ -11601,6 +11639,10 @@ msgstr "Καμία ετικέτα ακόμη"
 #: src/features/inbox/ChatList.tsx
 msgid "No labels yet. Add them in settings."
 msgstr "Καμία ετικέτα ακόμη. Προσθέστε στις ρυθμίσεις."
+
+#: src/components/common/LanguagePicker.tsx
+msgid "No language matches"
+msgstr "Καμία γλώσσα δεν ταιριάζει"
 
 #: src/features/settings/audit/sentence.ts
 msgid "no limit"
@@ -13711,6 +13753,10 @@ msgstr "Επιλέξτε μια συζήτηση για να τη διαβάσε
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Pick a field"
 msgstr "Επιλέξτε ένα πεδίο"
+
+#: src/components/common/LanguagePicker.tsx
+msgid "Pick a language"
+msgstr "Επιλέξτε γλώσσα"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -16053,6 +16099,10 @@ msgstr "Αναζήτηση σε αυτή τη συνομιλία"
 msgid "Search incidents"
 msgstr "Αναζήτηση περιστατικών"
 
+#: src/components/common/LanguagePicker.tsx
+msgid "Search languages or type a tag"
+msgstr "Αναζητήστε γλώσσες ή πληκτρολογήστε κωδικό"
+
 #: src/features/mail/MailList.tsx
 msgid "Search mail"
 msgstr "Αναζήτηση στην αλληλογραφία"
@@ -17530,6 +17580,10 @@ msgid "Some images have no description for people who cannot see them."
 msgstr "Ορισμένες εικόνες δεν έχουν περιγραφή για άτομα που δεν μπορούν να τις δουν."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some language versions are not complete."
+msgstr "Ορισμένες γλωσσικές εκδόσεις δεν είναι πλήρεις."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Some links are not valid."
 msgstr "Ορισμένοι σύνδεσμοι δεν είναι έγκυροι."
 
@@ -17544,6 +17598,10 @@ msgstr "Ορισμένες από τις τιμές δεν είναι έγκυρ
 #: src/components/common/text.ts
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "Ορισμένα μέρη του αρχείου δεν έφτασαν. Επιλέξτε ξανά το ίδιο αρχείο για να σταλούν."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Some texts are not translated, so the {base} text shows: {languages}."
+msgstr "Ορισμένα κείμενα δεν έχουν μεταφραστεί, οπότε εμφανίζεται το κείμενο στα {base}: {languages}."
 
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
@@ -18422,6 +18480,10 @@ msgstr "Η επαφή γράφει ένα μήνυμα"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Η επαφή, οι σημειώσεις της και ό,τι έγραψε διαγράφονται οριστικά. Αυτό δεν αναιρείται."
 
+#: src/features/broadcasts/TestSend.tsx
+msgid "The contact’s language"
+msgstr "Η γλώσσα της επαφής"
+
 #: src/features/contact/ContactBulk.tsx
 msgid "The contacts, their conversations, notes and files are deleted for good. This cannot be undone."
 msgstr "Οι επαφές, οι συνομιλίες, οι σημειώσεις και τα αρχεία τους διαγράφονται οριστικά. Αυτό δεν αναιρείται."
@@ -18453,6 +18515,10 @@ msgstr "Ο πελάτης πατά τον αντίχειρα πάνω ή κάτ�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The deliverability check has not finished yet."
 msgstr "Ο έλεγχος παραδοσιμότητας δεν έχει ολοκληρωθεί ακόμη."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The design has no version for these subjects, so they are not used: {languages}."
+msgstr "Το σχέδιο δεν έχει έκδοση για αυτά τα θέματα, οπότε δεν χρησιμοποιούνται: {languages}."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -19090,6 +19156,10 @@ msgstr "Οι εγγραφές δεν βρέθηκαν σε 7 ημέρες, οπ�
 #: src/features/setup/email/EmailRepliesStep.tsx
 msgid "The region of your SES account."
 msgstr "Η περιοχή του λογαριασμού σας SES."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The required footer is in English for: {languages}."
+msgstr "Το υποχρεωτικό υποσέλιδο είναι στα αγγλικά για: {languages}."
 
 #: src/components/common/text.ts
 msgid "The review found something that blocks sending. Fix the red items first."
@@ -21694,6 +21764,10 @@ msgstr "Εντός λεπτών"
 #: src/features/broadcasts/ListForm.tsx
 msgid "Without a confirmation anyone can type someone else's address into your form, and you cannot show that the owner of the address agreed. Keep it on unless your forms are only shown to people whose address you have already verified."
 msgstr "Χωρίς επιβεβαίωση, οποιοσδήποτε μπορεί να πληκτρολογήσει τη διεύθυνση κάποιου άλλου στη φόρμα σας και δεν μπορείτε να δείξετε ότι ο κάτοχος της διεύθυνσης συμφώνησε. Κρατήστε την ενεργή εκτός αν οι φόρμες σας εμφανίζονται μόνο σε άτομα των οποίων έχετε ήδη επαληθεύσει τη διεύθυνση."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Without a subject of their own, these get the {base} subject: {languages}."
+msgstr "Χωρίς δικό τους θέμα, αυτές λαμβάνουν το θέμα στα {base}: {languages}."
 
 #: src/features/conversation/messages/Thread.tsx
 msgid "without attachments"

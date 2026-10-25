@@ -26,6 +26,7 @@ import {
   EllipsisIcon,
   HistoryIcon,
   KeyboardIcon,
+  LanguagesIcon,
   LayersIcon,
   LoaderIcon,
   MonitorIcon,
@@ -39,12 +40,12 @@ import {
   XIcon,
 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Link, Navigate, useNavigate, useParams } from "react-router"
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 
 import { useShell } from "@/app/shell"
 import { ErrorLine, Kbd, Notice, Segmented, toast, useConfirm } from "@/components/common"
-import { DESIGNER_KEYS, mod } from "@/components/common/ShortcutSheet"
-import { formatBytes } from "@/components/common/text"
+import { DESIGNER_KEYS, keyLabel, mod } from "@/components/common/ShortcutSheet"
+import { formatBytes, useLanguageName } from "@/components/common/text"
 import { keyHint } from "@/features/broadcasts/BroadcastParts"
 import { Button } from "@/components/ui/button"
 import {
@@ -61,6 +62,7 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import {
+  addVersion,
   children,
   countBlocks,
   duplicateBlock,
@@ -69,13 +71,17 @@ import {
   imageIds,
   insertBlock,
   insertNear,
+  localized,
   makeBlock,
   MAX_BLOCKS,
+  missing,
   moveBlock,
   nudge,
   removeBlock,
   resolveDrop,
+  setTranslatedText,
   updateBlock,
+  versions,
   walk,
   type Block,
   type BlockType,
@@ -91,6 +97,7 @@ import { useHistory, type DesignState } from "@/features/designs/designer/histor
 import { BlockIcon } from "@/features/designs/designer/icons"
 import { ImageLibrary } from "@/features/designs/designer/ImageLibrary"
 import { Inspector } from "@/features/designs/designer/Inspector"
+import { AddLanguageDialog, LanguageBar } from "@/features/designs/designer/Languages"
 import { BlockPalette, Layers } from "@/features/designs/designer/Panels"
 import { Preview } from "@/features/designs/designer/Preview"
 import { ThemePanel } from "@/features/designs/designer/ThemePanel"
@@ -114,6 +121,7 @@ import { useIsPhone } from "@/hooks/use-media-query"
 import type { EmailDesign, EmailDesignIssue } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
+import { useInboxes } from "@/lib/workspace"
 
 type RightTab = "block" | "design" | "versions"
 
@@ -195,6 +203,11 @@ function bootState(initial: EmailDesign, ws: string) {
     return { state: draft.state, base: draft.base, conflict: initial }
   }
   return { state: server, base: initial.version, conflict: null as EmailDesign | null }
+}
+
+function versionOf(i: EmailDesignIssue) {
+  const m = /^translations\.([^.]+)/.exec(i.field ?? "")
+  return m ? m[1] : null
 }
 
 function StatusLine({ status, onRetry, onChecks }: { status: SaveStatus; onRetry: () => void; onChecks: () => void }) {
@@ -466,8 +479,18 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
   const history = useHistory(boot.state)
   const commit = history.commit
   const state = history.state
-  const doc = state.document
-  const readOnly = doc.schema !== 1
+  const original = state.document
+  const readOnly = original.schema !== 1
+  const [params] = useSearchParams()
+  const [langRaw, setLang] = useState<string | null>(() => params.get("lang"))
+  const tags = versions(original)
+  const locale = langRaw && tags.slice(1).includes(langRaw) ? langRaw : null
+  const doc = useMemo(() => localized(original, locale), [original, locale])
+  const gaps = useMemo(() => new Set(locale ? missing(original, locale) : []), [original, locale])
+  const locked = readOnly || !!locale
+  const [adding, setAdding] = useState(false)
+  const inboxes = useInboxes().data ?? []
+  const languageName = useLanguageName()
   const save = useAutosave({
     ws,
     design: initial,
@@ -503,9 +526,15 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
   const [confirm, confirmDialog] = useConfirm()
   const palette = useRef<HTMLDivElement>(null)
 
+  const renderLocale = tags.length > 0 ? (locale ?? tags[0]) : undefined
   const renderInput = useMemo(
-    () => ({ document: doc, inbox_id: state.inbox_id, dark: (preview && dark) || undefined }),
-    [doc, state.inbox_id, preview, dark]
+    () => ({
+      document: original,
+      inbox_id: state.inbox_id,
+      dark: (preview && dark) || undefined,
+      locale: renderLocale,
+    }),
+    [original, state.inbox_id, preview, dark, renderLocale]
   )
   const debounced = useDebounced(renderInput, preview ? 400 : 2000)
   const render = useRender(debounced)
@@ -535,8 +564,14 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
     if (selected) setRtab("block")
   }
 
+  const layoutHint = () => {
+    const language = languageName(original.locale ?? "")
+    toast(t`Layout is shared by all languages. Switch to ${language} to change it.`)
+  }
+
   const add = (type: BlockType, at?: DropTarget) => {
     if (readOnly) return
+    if (locked) return layoutHint()
     if (countBlocks(doc) >= MAX_BLOCKS) {
       toast(t`A design can hold at most 200 blocks.`)
       return
@@ -557,8 +592,29 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
     [dark, doc.theme.colors, doc.theme.dark]
   )
 
+  const setText = (id: string, value: string, key?: string) => {
+    if (locale) commitDoc((d) => setTranslatedText(d, locale, id, value), key)
+    else
+      commitDoc((d) => {
+        const b = findBlock(d, id)
+        if (!b) return d
+        const field =
+          b.type === "heading" ? "text" : b.type === "button" ? "label" : b.type === "image" ? "alt" : "html"
+        return updateBlock(d, id, (x: Block) => ({ ...x, [field]: value }) as Block)
+      }, key)
+  }
+
   const ctx: Designer = {
     doc,
+    original,
+    locale,
+    missing: gaps,
+    locked,
+    setText,
+    setLocale: (tag) => {
+      setLang(tag)
+      clearActiveEditor()
+    },
     view: { phone: phoneView, dark, colors },
     selected,
     select,
@@ -566,6 +622,7 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
     update: (id, patch, key) =>
       commitDoc((d) => updateBlock(d, id, patch as Partial<Block> | ((b: Block) => Block)), key),
     remove: (id) => {
+      if (locale) return layoutHint()
       const entries = walk(doc)
       const i = entries.findIndex((e) => e.block.id === id)
       const next = entries.slice(i + 1).find((e) => !findBlock({ ...doc, blocks: [entries[i].block] }, e.block.id))
@@ -573,12 +630,13 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
       setSelected(next?.block.id ?? entries[i - 1]?.block.id ?? null)
     },
     duplicate: (id) => {
+      if (locale) return layoutHint()
       if (countBlocks(doc) >= MAX_BLOCKS) return toast(t`A design can hold at most 200 blocks.`)
       const r = duplicateBlock(doc, id)
       history.commit({ ...state, document: r.doc })
       setSelected(r.id)
     },
-    nudge: (id, by) => commitDoc((d) => nudge(d, id, by)),
+    nudge: (id, by) => (locale ? layoutHint() : commitDoc((d) => nudge(d, id, by))),
     images,
     issues: new Map(),
     readOnly,
@@ -594,10 +652,12 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
     const warnings = renderIssues ?? save.warnings
     const seen = new Set(list.map((i) => `${i.code}:${i.block_id}:${i.field}`))
     for (const w of warnings) if (!seen.has(`${w.code}:${w.block_id}:${w.field}`)) list.push(w)
-    return list
+    return list.filter((i) => i.code !== "translation_missing")
   }, [save.errors, save.warnings, render.error, renderIssues])
   for (const i of allIssues) {
     if (!i.block_id) continue
+    const of = versionOf(i)
+    if (of && of !== locale) continue
     const list = ctx.issues.get(i.block_id) ?? []
     list.push(i)
     ctx.issues.set(i.block_id, list)
@@ -738,7 +798,12 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
       else if (e.key === DESIGNER_KEYS.versions) {
         if (phone) setVersionsOpen(true)
         else setRtab("versions")
-      } else if (e.key === DESIGNER_KEYS.image && selectedBlock?.type === "image") setLibrary(selectedBlock.id)
+      } else if (e.key === DESIGNER_KEYS.language && tags.length > 0) {
+        const i = locale ? tags.indexOf(locale) : 0
+        const next = tags[(i + 1) % tags.length]
+        ctx.setLocale(next === tags[0] ? null : next)
+      } else if (e.key === DESIGNER_KEYS.addLanguage) setAdding(true)
+      else if (e.key === DESIGNER_KEYS.image && selectedBlock?.type === "image" && !locked) setLibrary(selectedBlock.id)
       else if (e.key === "?") shell.openShortcuts()
       else return
       e.preventDefault()
@@ -762,7 +827,7 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
     const name = state.name
     setBusy(true)
     create.mutate(
-      { name: t`${name} (copy)`, inbox_id: state.inbox_id, document: doc },
+      { name: t`${name} (copy)`, inbox_id: state.inbox_id, document: original },
       {
         onSuccess: (copy) => {
           save.resolve.theirs(theirs)
@@ -811,8 +876,10 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
   const block = selectedBlock ? <Inspector key={selectedBlock.id} block={selectedBlock} /> : emptyBlock
   const right = selectedBlock ? block : design
 
-  const showIssue = (_: EmailDesignIssue, b: Block | null) => {
+  const showIssue = (issue: EmailDesignIssue, b: Block | null) => {
     setPreview(false)
+    const of = versionOf(issue)
+    if (of) setLang(of === original.locale ? null : of)
     if (phone) setChecksOpen(false)
     if (!b) {
       setSelected(null)
@@ -962,6 +1029,16 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
             >
               <Redo2Icon />
             </IconButton>
+            {!phone && tags.length === 0 && !readOnly && (
+              <IconButton
+                label={t`Add a language`}
+                keys={keyLabel(DESIGNER_KEYS.addLanguage)}
+                onClick={() => setAdding(true)}
+                testId="language-add-first"
+              >
+                <LanguagesIcon />
+              </IconButton>
+            )}
             {!phone && (
               <ChecksButton
                 count={issueCount}
@@ -1004,6 +1081,12 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
                       <HistoryIcon />
                       <Trans>Versions</Trans>
                     </DropdownMenuItem>
+                    {tags.length === 0 && !readOnly && (
+                      <DropdownMenuItem onClick={() => setAdding(true)}>
+                        <LanguagesIcon />
+                        <Trans>Add a language</Trans>
+                      </DropdownMenuItem>
+                    )}
                   </>
                 )}
                 <DropdownMenuItem onClick={flushNow} disabled={readOnly} data-testid="save-version">
@@ -1072,6 +1155,16 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
             )}
           </header>
           {phone && <div className="border-b px-2 py-1.5">{viewControls}</div>}
+          {tags.length > 0 && (
+            <LanguageBar
+              doc={original}
+              current={locale}
+              onSelect={ctx.setLocale}
+              onAdd={() => setAdding(true)}
+              onChange={(fn) => commitDoc(fn)}
+              readOnly={readOnly}
+            />
+          )}
           {checksOpen && (
             <ChecksStrip
               size={size}
@@ -1275,6 +1368,19 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
         onDownload={() => download(state)}
       />
       {confirmDialog}
+      <AddLanguageDialog
+        open={adding}
+        onOpenChange={setAdding}
+        doc={original}
+        suggestedBase={
+          inboxes.find((i) => i.id === state.inbox_id)?.default_locale ?? inboxes[0]?.default_locale ?? "en"
+        }
+        onAdd={(tag, base) => {
+          commitDoc((d) => addVersion(d, tag, base))
+          setLang(tag)
+          setAdding(false)
+        }}
+      />
       <span className="sr-only" aria-live="polite">
         {save.status === "saved" ? t`Saved` : ""}
       </span>

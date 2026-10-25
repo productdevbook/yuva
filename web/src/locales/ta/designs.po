@@ -7,6 +7,10 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ta\n"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "{count, plural, one {# text not translated} other {# texts not translated}}"
+msgstr "{count, plural, one {# உரை மொழிபெயர்க்கப்படவில்லை} other {# உரைகள் மொழிபெயர்க்கப்படவில்லை}}"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "{name} (copy)"
 msgstr "{name} (நகல்)"
@@ -44,6 +48,10 @@ msgid "A group of blocks on its own background"
 msgstr "தன் சொந்தப் பின்னணியில் தொகுதிகளின் குழு"
 
 #: src/features/designs/text.ts
+msgid "A language is named twice, or the fallback language is not one of the design’s languages."
+msgstr "ஒரு மொழி இருமுறை குறிப்பிடப்பட்டுள்ளது, அல்லது மாற்று மொழி வடிவமைப்பின் மொழிகளில் ஒன்றல்ல."
+
+#: src/features/designs/text.ts
 msgid "A link that looks like a button"
 msgstr "பொத்தான் போலத் தெரியும் இணைப்பு"
 
@@ -63,17 +71,27 @@ msgstr "பகுதிகளுக்கு இடையே மெல்லி�
 msgid "A title in three sizes"
 msgstr "மூன்று அளவுகளில் தலைப்பு"
 
+#: src/features/designs/text.ts
+msgid "A translation is left for a block that no longer has text."
+msgstr "இனி உரை இல்லாத ஒரு தொகுதிக்கான மொழிபெயர்ப்பு மீதமுள்ளது."
+
 #: src/features/designs/designer/Versions.tsx
 msgid "A version is kept at most every ten minutes while you edit, when you save by hand, when you restore one and when someone else's save wins a conflict. The newest 50 stay."
 msgstr "நீங்கள் திருத்தும்போது அதிகபட்சம் ஒவ்வொரு பத்து நிமிடமும், கைமுறையாகச் சேமிக்கும்போது, ஒன்றை மீட்டெடுக்கும்போது, வேறொருவரின் சேமிப்பு முரண்பாட்டில் வெல்லும்போது பதிப்பு வைக்கப்படும். புதிய 50 இருக்கும்."
 
 #: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
 msgid "Add"
 msgstr "சேர்"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Add a block"
 msgstr "தொகுதியைச் சேர்"
+
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Add a language"
+msgstr "மொழியைச் சேர்"
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
@@ -136,6 +154,10 @@ msgstr "இந்த வடிவமைப்பைக் காப்பகப�
 msgid "Archived"
 msgstr "காப்பகப்படுத்தப்பட்டது"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "As the base"
+msgstr "அடிப்படையைப் போல"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Attribute key"
 msgstr "பண்புக்கூறு விசை"
@@ -151,6 +173,15 @@ msgstr "வடிவமைப்புகளுக்குத் திரு�
 #: src/features/designs/designer/Inspector.tsx
 msgid "Background"
 msgstr "பின்னணி"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Base"
+msgstr "அடிப்படை"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Base language"
+msgstr "அடிப்படை மொழி"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Block settings"
@@ -208,6 +239,7 @@ msgid "Buttons"
 msgstr "பொத்தான்கள்"
 
 #: src/features/designs/designer/ImageLibrary.tsx
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/NewDesignDialog.tsx
 msgid "Cancel"
 msgstr "ரத்துசெய்"
@@ -271,6 +303,10 @@ msgstr "நெடுவரிசைகள்"
 #: src/features/designs/designer/editor.tsx
 msgid "Contact attribute"
 msgstr "தொடர்புப் பண்புக்கூறு"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Contacts who would get it get the fallback language instead."
+msgstr "இதைப் பெற வேண்டிய தொடர்புகள் அதற்குப் பதிலாக மாற்று மொழியைப் பெறுவார்கள்."
 
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Content background"
@@ -481,6 +517,10 @@ msgstr "நிகழ்வு"
 msgid "Everywhere"
 msgstr "எல்லா இடங்களிலும்"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Fallback language"
+msgstr "மாற்று மொழி"
+
 #: src/features/designs/text.ts
 msgid "First name"
 msgstr "முதல் பெயர்"
@@ -498,6 +538,10 @@ msgstr "மக்களின் சாதனங்களில் ஏற்க�
 #: src/features/designs/text.ts
 msgid "Footer text"
 msgstr "அடிக்குறிப்பு உரை"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "For contacts without a language, or whose language has no version."
+msgstr "மொழி இல்லாத அல்லது தங்கள் மொழிக்குப் பதிப்பு இல்லாத தொடர்புகளுக்கு."
 
 #: src/features/designs/designer/Inspector.tsx
 msgid "For dark logos on a transparent background."
@@ -652,6 +696,19 @@ msgstr "விசைப்பலகைக் குறுக்குவழி�
 msgid "Kind"
 msgstr "வகை"
 
+#: src/features/designs/designer/Languages.tsx
+msgid "Language"
+msgstr "மொழி"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Language settings"
+msgstr "மொழி அமைப்புகள்"
+
+#: src/features/designs/designer/Languages.tsx
+#: src/features/designs/NewDesignDialog.tsx
+msgid "Languages"
+msgstr "மொழிகள்"
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Large"
 msgstr "பெரிய"
@@ -665,6 +722,11 @@ msgstr "அடுக்குகள்"
 msgid "Layout"
 msgstr "தளவமைப்பு"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Languages.tsx
+msgid "Layout is shared by all languages. Switch to {language} to change it."
+msgstr "தளவமைப்பு எல்லா மொழிகளுக்கும் பொதுவானது. அதை மாற்ற {language}க்கு மாறவும்."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Left"
 msgstr "இடது"
@@ -673,6 +735,7 @@ msgstr "இடது"
 msgid "Left panel"
 msgstr "இடது பலகை"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Left to right"
 msgstr "இடமிருந்து வலம்"
@@ -783,6 +846,10 @@ msgstr "மேலே நகர்த்து"
 msgid "Name"
 msgstr "பெயர்"
 
+#: src/features/designs/text.ts
+msgid "Name the base language before adding other languages."
+msgstr "பிற மொழிகளைச் சேர்க்கும் முன் அடிப்படை மொழியைக் குறிப்பிடவும்."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Network"
 msgstr "நெட்வொர்க்"
@@ -828,6 +895,14 @@ msgstr "சேமிக்கப்படவில்லை: குறிக்�
 msgid "Not saved. Try again"
 msgstr "சேமிக்கப்படவில்லை. மீண்டும் முயலுங்கள்"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "Not translated"
+msgstr "மொழிபெயர்க்கப்படவில்லை"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Not translated: the original shows until you write this one."
+msgstr "மொழிபெயர்க்கப்படவில்லை: நீங்கள் இதை எழுதும் வரை மூல உரை காட்டப்படும்."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Number of columns"
 msgstr "நெடுவரிசைகளின் எண்ணிக்கை"
@@ -848,9 +923,17 @@ msgstr "ஆஃப்லைன். உங்கள் மாற்றங்கள
 msgid "Onboarding"
 msgstr "தொடக்க வழிகாட்டல்"
 
+#: src/features/designs/NewDesignDialog.tsx
+msgid "One design with a version per language. The first one you pick is the base."
+msgstr "ஒவ்வொரு மொழிக்கும் ஒரு பதிப்புடன் ஒரே வடிவமைப்பு. நீங்கள் முதலில் தேர்வுசெய்வதே அடிப்படை."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "One under the other on narrow screens."
 msgstr "குறுகிய திரைகளில் ஒன்றன் கீழ் ஒன்று."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Original ({language})"
+msgstr "மூலம் ({language})"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Owners and admins make e-mail designs and send broadcasts."
@@ -919,6 +1002,10 @@ msgstr "முன்னோட்டத்தின் அளவு"
 msgid "Preview text"
 msgstr "முன்னோட்ட உரை"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Preview text ({language})"
+msgstr "முன்னோட்ட உரை ({language})"
+
 #: src/features/designs/text.ts
 msgid "Product"
 msgstr "தயாரிப்பு"
@@ -939,6 +1026,14 @@ msgstr "மீண்டும் செய்"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Remove"
 msgstr "அகற்று"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language}"
+msgstr "{language} ஐ அகற்று"
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Remove {language} and its texts?"
+msgstr "{language} மற்றும் அதன் உரைகளை அகற்றவா?"
 
 #: src/features/designs/designer/editor.tsx
 msgid "Remove link"
@@ -969,6 +1064,7 @@ msgstr "மீட்டெடுத்தால் இந்தப் பதி�
 msgid "Right"
 msgstr "வலது"
 
+#: src/features/designs/designer/Languages.tsx
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Right to left"
 msgstr "வலமிருந்து இடம்"
@@ -1077,6 +1173,10 @@ msgstr "அவர்களுடைய பதிப்பைக் காட்�
 #: src/features/designs/designer/ThemePanel.tsx
 msgid "Shown after the subject in most inboxes. A broadcast can set its own."
 msgstr "பெரும்பாலான இன்பாக்ஸ்களில் தலைப்புக்குப் பிறகு காட்டப்படும். ஒளிபரப்பு தன் சொந்தத்தை அமைக்கலாம்."
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Shown after the subject in most inboxes. Empty uses the base language’s."
+msgstr "பெரும்பாலான இன்பாக்ஸ்களில் பொருளுக்குப் பின் காட்டப்படும். காலியாக விட்டால் அடிப்படை மொழியினுடையது பயன்படும்."
 
 #: src/features/designs/designer/DesignerPage.tsx
 #: src/features/designs/designer/Inspector.tsx
@@ -1189,6 +1289,14 @@ msgstr "இன்பாக்ஸுக்கு அடிக்குறிப�
 msgid "The inbox’s sender details fill the footer every mail gets."
 msgstr "இன்பாக்ஸின் அனுப்புநர் விவரங்கள் ஒவ்வோர் அஞ்சலும் பெறும் அடிக்குறிப்பை நிரப்பும்."
 
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the blocks are written in. Layout, images and links come from it."
+msgstr "தொகுதிகள் எழுதப்பட்ட மொழி. தளவமைப்பு, படங்கள், இணைப்புகள் இதிலிருந்தே வருகின்றன."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The language the design is written in now."
+msgstr "வடிவமைப்பு இப்போது எழுதப்பட்டுள்ள மொழி."
+
 #: src/features/designs/designer/Panels.tsx
 msgid "The mail is empty. Add a block to start."
 msgstr "அஞ்சல் காலியாக உள்ளது. தொடங்க ஒரு தொகுதியைச் சேருங்கள்."
@@ -1200,6 +1308,14 @@ msgstr "அஞ்சல் 102 KB-ஐத் தாண்டியது, என�
 #: src/features/designs/text.ts
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "அஞ்சல் 90 KB-ஐத் தாண்டியது. Gmail சுமார் 102 KB-இல் அஞ்சலை வெட்டும்."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
+msgstr "புதிய பதிப்பு அடிப்படை மொழியின் உரைகளுடன் தொடங்கும். தளவமைப்பு, படங்கள், இணைப்புகள் பொதுவாகவே இருக்கும்; நீங்கள் உரைகளை மட்டும் மொழிபெயர்க்கிறீர்கள்."
+
+#: src/features/designs/text.ts
+msgid "The required footer of this version is in English: Yuva has its words in English, Turkish and German only."
+msgstr "இந்தப் பதிப்பின் கட்டாய அடிக்குறிப்பு ஆங்கிலத்தில் உள்ளது: Yuva-விடம் இந்தச் சொற்கள் ஆங்கிலம், துருக்கியம், ஜெர்மன் மொழிகளில் மட்டுமே உள்ளன."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1242,6 +1358,10 @@ msgstr "தடிமன்"
 msgid "This block cannot sit inside this one."
 msgstr "இந்தத் தொகுதி இதற்குள் இருக்க முடியாது."
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "This block has no text to translate."
+msgstr "இந்தத் தொகுதியில் மொழிபெயர்க்க உரை இல்லை."
+
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "இந்த வடிவமைப்பு வேறிடத்தில் மாறியது"
@@ -1275,6 +1395,10 @@ msgid "This server does not have the template “{slug}”. It may need a newer 
 msgstr "இந்தச் சேவையகத்தில் “{slug}” வார்ப்புரு இல்லை. புதிய Yuva தேவைப்படலாம்."
 
 #: src/features/designs/text.ts
+msgid "This text is not translated yet, so the base language’s text shows."
+msgstr "இந்த உரை இன்னும் மொழிபெயர்க்கப்படவில்லை, எனவே அடிப்படை மொழியின் உரை காட்டப்படும்."
+
+#: src/features/designs/text.ts
 msgid "This text uses a merge field that does not exist."
 msgstr "இந்த உரை இல்லாத இணைப்புப் புலத்தைப் பயன்படுத்துகிறது."
 
@@ -1286,6 +1410,10 @@ msgstr "இது வேறொரு பணியிடத்தின் பட
 msgid "This value is not valid."
 msgstr "இந்த மதிப்பு சரியானது அல்ல."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "This version gets it in English: Yuva has its words in English, Turkish and German only."
+msgstr "இந்தப் பதிப்புக்கு இது ஆங்கிலத்தில் கிடைக்கும்: Yuva-விடம் இந்தச் சொற்கள் ஆங்கிலம், துருக்கியம், ஜெர்மன் மொழிகளில் மட்டுமே உள்ளன."
+
 #: src/features/designs/designer/Inspector.tsx
 msgid "Three"
 msgstr "மூன்று"
@@ -1293,6 +1421,10 @@ msgstr "மூன்று"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Top"
 msgstr "மேல்"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "Translation"
+msgstr "மொழிபெயர்ப்பு"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Try another kind."
@@ -1405,9 +1537,17 @@ msgstr "தலைப்பை எழுதுங்கள்"
 msgid "Write something"
 msgstr "ஏதாவது எழுதுங்கள்"
 
+#: src/features/designs/designer/Inspector.tsx
+msgid "Write the translation"
+msgstr "மொழிபெயர்ப்பை எழுதுக"
+
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Write what you want to tell your readers."
 msgstr "உங்கள் வாசகர்களுக்குச் சொல்ல விரும்புவதை எழுதுங்கள்."
+
+#: src/features/designs/designer/Languages.tsx
+msgid "Writing direction"
+msgstr "எழுத்துத் திசை"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "You can reply to this mail; a person reads every answer."

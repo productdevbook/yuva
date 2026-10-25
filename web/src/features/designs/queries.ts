@@ -99,7 +99,7 @@ export function useCreateDesign() {
       name: string
       inbox_id?: string
       document?: EmailDesignDocument
-      template?: { slug: string; locale?: EmailTemplateLocale }
+      template?: { slug: string; locale?: EmailTemplateLocale; locales?: EmailTemplateLocale[] }
     }) => unwrap(api.POST("/v1/email-designs", { body })),
     onSuccess: (d) => refresh(d),
   })
@@ -262,7 +262,7 @@ export function useBulkImages() {
   })
 }
 
-export type RenderInput = { document: EmailDesignDocument; inbox_id?: string; dark?: boolean }
+export type RenderInput = { document: EmailDesignDocument; inbox_id?: string; dark?: boolean; locale?: string }
 
 export function useRender(input: RenderInput | null) {
   const { workspaceId: ws } = useSession()
