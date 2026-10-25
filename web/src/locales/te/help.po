@@ -63,8 +63,8 @@ msgid "{0, plural, one {The help center does not offer this language, so its tra
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{drafts} drafts"
-msgstr "{drafts} డ్రాఫ్ట్‌లు"
+msgid "{drafts, plural, one {# draft} other {# drafts}}"
+msgstr "{drafts, plural, one {# చిత్తుప్రతి} other {# చిత్తుప్రతులు}}"
 
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
@@ -122,6 +122,10 @@ msgstr "చిరునామా ముగింపు"
 #: src/features/help/SettingsTab.tsx
 msgid "Agents may publish"
 msgstr "ఏజెంట్లు ప్రచురించవచ్చు"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "All"
+msgstr "అన్నీ"
 
 #: src/features/help/Revisions.tsx
 msgid "An API key"
@@ -553,6 +557,7 @@ msgstr "భాష"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "భాషలు"
@@ -935,11 +940,11 @@ msgstr "సేవ్ చేయబడింది"
 msgid "Saving…"
 msgstr "సేవ్ అవుతోంది…"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles"
 msgstr "శీర్షికల్లో వెతుకు"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles ({findKey})"
 msgstr "శీర్షికల్లో వెతుకు ({findKey})"
 
@@ -1217,6 +1222,7 @@ msgstr "సైట్‌ను చూడండి"
 msgid "View site ({openKey})"
 msgstr "సైట్‌ను చూడండి ({openKey})"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "వీక్షణలు"

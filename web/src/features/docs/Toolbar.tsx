@@ -54,7 +54,7 @@ export function DocsSitePicker({ className }: { className?: string }) {
     >
       <SelectTrigger
         aria-label={t`Site`}
-        className={cn("h-[30px] w-auto max-w-64 rounded-lg", className)}
+        className={cn("h-8 w-auto max-w-64 rounded-lg bg-card", className)}
         data-testid="docs-site-picker"
       >
         <GlobeIcon className="size-4 text-faint" />
@@ -114,7 +114,7 @@ export function DocsSort() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<button type="button" className={look.chip} />}
+        render={<button type="button" className={look.listChip} />}
         aria-label={t`Sort`}
         data-testid="docs-sort"
       >

@@ -21,20 +21,10 @@ msgstr "{0, plural, one {# vrstica} two {# vrstici} few {# vrstice} other {# vrs
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {obiskovalec danes} two {obiskovalca danes} few {obiskovalci danes} other {obiskovalcev danes}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "Pogovorov: {0}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "{0} obiskovalcev"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "Obiskovalcev: {0}"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "Podrobni zapisi se hranijo od {rawDay}."
 msgid "Detailed records kept since"
 msgstr "Podrobni zapisi hranjeni od"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "Podrobnosti"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "Naprava"
@@ -1417,10 +1411,6 @@ msgstr "Mesečna omejitev"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "Meseci"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "Več pogledov"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

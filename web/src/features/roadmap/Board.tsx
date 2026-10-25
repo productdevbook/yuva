@@ -72,56 +72,53 @@ function Card({
       ref={setNodeRef}
       {...listeners}
       className={cn(
-        "group relative flex cursor-grab items-start gap-3 rounded-[10px] border bg-card p-3 transition-colors hover:border-faint active:cursor-grabbing",
-        current && "border-brand",
+        "group relative flex cursor-grab flex-col gap-2 rounded-[11px] border bg-card p-3 shadow-[0_1px_2px_rgb(0_0_0/0.04)] transition-colors hover:border-faint active:cursor-grabbing",
+        current &&
+          "border-brand shadow-[0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)] before:absolute before:inset-y-3 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand",
         cursor && "ring-2 ring-ring",
         isDragging && "opacity-40"
       )}
       data-testid="idea-card"
       data-idea-id={idea.id}
     >
-      <span
-        className="flex h-10 w-[42px] shrink-0 flex-col items-center justify-center rounded-lg border bg-background leading-none tabular-nums"
-        title={t`${votes} votes`}
-        data-testid="idea-card-votes"
+      <Link
+        to={ideaLink(idea.board_id ?? "", idea.id, all)}
+        className="line-clamp-3 pe-6 text-[13.5px] leading-[19px] font-semibold break-words outline-none hover:underline focus-visible:underline"
+        data-testid="idea-card-link"
       >
-        <span className="text-[8px] text-muted-foreground" aria-hidden>
-          ▲
-        </span>
-        <span className="sr-only">{t`${votes} votes`}</span>
-        <span className="mt-0.5 text-[15px] font-semibold" aria-hidden>
-          {votes}
-        </span>
-      </span>
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <Link
-          to={ideaLink(idea.board_id ?? "", idea.id, all)}
-          className="line-clamp-3 pe-5 text-[14px] leading-[1.35] font-medium break-words outline-none hover:underline focus-visible:underline"
-          data-testid="idea-card-link"
+        {idea.title}
+      </Link>
+      <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-caption text-faint tabular-nums">
+        <span
+          className="inline-flex h-[22px] items-center gap-1 rounded-[7px] bg-muted px-[7px] font-semibold text-foreground"
+          title={t`${votes} votes`}
+          data-testid="idea-card-votes"
         >
-          {idea.title}
-        </Link>
-        <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-small text-faint tabular-nums">
-          {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
-          <span
-            className={cn("inline-flex items-center gap-1", linked > 0 && "font-medium text-brand")}
-            data-testid="idea-card-linked"
-          >
-            {linked > 0 && <MessageSquareIcon className="size-3.5" aria-hidden />}
-            <Plural value={linked} one="# feedback" other="# feedback" />
+          <span className="text-[8px]" aria-hidden>
+            ▲
           </span>
-          {pending > 0 && (
-            <span
-              className="inline-flex items-center gap-1 font-medium text-warning"
-              title={t`${pending} waiting for approval`}
-              data-testid="idea-card-pending"
-            >
-              <HourglassIcon className="size-3.5" />
-              {pending}
-            </span>
-          )}
+          <span className="sr-only">{t`${votes} votes`}</span>
+          <span aria-hidden>{votes}</span>
         </span>
-      </div>
+        <span
+          className={cn("inline-flex items-center gap-1", linked > 0 && "font-medium text-brand")}
+          data-testid="idea-card-linked"
+        >
+          <MessageSquareIcon className="size-3.5" aria-hidden />
+          <Plural value={linked} one="# feedback" other="# feedback" />
+        </span>
+        {pending > 0 && (
+          <span
+            className="inline-flex items-center gap-1 font-medium text-warning"
+            title={t`${pending} waiting for approval`}
+            data-testid="idea-card-pending"
+          >
+            <HourglassIcon className="size-3.5" />
+            {pending}
+          </span>
+        )}
+        {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
+      </span>
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
@@ -179,7 +176,7 @@ function StageColumn({
     <section
       ref={setNodeRef}
       className={cn(
-        "flex min-w-56 flex-1 basis-0 snap-start flex-col gap-2.5 rounded-xl border bg-surface p-3 transition-colors phone:min-w-[82vw]",
+        "flex min-w-64 flex-1 basis-0 snap-start flex-col gap-2 rounded-[14px] border bg-surface p-2.5 transition-colors max-md:min-w-[82%] max-md:flex-none",
         stage === "closed" && "opacity-80",
         isOver && "bg-brand-wash"
       )}
@@ -187,7 +184,7 @@ function StageColumn({
       data-testid="stage-column"
       data-stage={stage}
     >
-      <h2 className="flex items-center gap-2 px-0.5 pt-0.5 text-body font-semibold">
+      <h2 className="flex items-center gap-2 px-1 pt-0.5 pb-1 text-body font-semibold">
         <span aria-hidden className={cn("size-[7px] shrink-0 rounded-full", STAGE_DOT[stage])} />
         <span className="min-w-0 flex-1 truncate">{text.stage[stage]}</span>
         <span className="text-caption font-normal text-faint tabular-nums" data-testid="stage-count">
@@ -195,12 +192,12 @@ function StageColumn({
         </span>
       </h2>
       {list.isPending ? (
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-16 rounded-[10px]" />
-          <Skeleton className="h-16 rounded-[10px]" />
+        <div className="flex flex-col gap-2" aria-busy>
+          <Skeleton className="h-[86px] rounded-[11px]" />
+          <Skeleton className="h-16 rounded-[11px]" />
         </div>
       ) : (
-        <ul className="flex min-h-12 flex-col gap-2.5">
+        <ul className="flex min-h-12 flex-col gap-2">
           {items.map((idea) => (
             <Card
               key={idea.id}
@@ -213,7 +210,7 @@ function StageColumn({
             />
           ))}
           {items.length === 0 && (
-            <li className="px-2 py-3.5 text-center text-body text-faint" data-testid="stage-empty">
+            <li className="px-2 py-4 text-center text-small text-faint" data-testid="stage-empty">
               {stage === "ideas" ? <Trans>No ideas yet. New ones land here.</Trans> : <Trans>Nothing here yet.</Trans>}
             </li>
           )}
@@ -251,7 +248,7 @@ function Pending({
   if (items.length === 0) return null
   return (
     <section
-      className="flex shrink-0 flex-col gap-3 rounded-xl border bg-card px-4 py-3"
+      className="flex shrink-0 flex-col gap-3 rounded-[14px] border bg-card px-4 py-3"
       aria-label={t`Waiting for approval`}
       data-testid="pending-strip"
     >
@@ -425,26 +422,28 @@ export function Board({
 
   return (
     <>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6 phone:px-4 phone:pt-4">
-        <Pending scope={scope} inScope={inScope} inboxOf={inboxOf} all={all} />
-        <DndContext sensors={sensors} onDragEnd={onDragEnd}>
-          <div className="flex min-h-0 flex-1 snap-x items-stretch gap-4 overflow-x-auto" data-testid="board-columns">
-            {stages.map((stage, i) => (
-              <StageColumn
-                key={stage}
-                stage={stage}
-                count={count(stage)}
-                inboxOf={inboxOf}
-                list={lists[stage]}
-                items={columns[i] ?? []}
-                ideaId={ideaId}
-                cursorId={cursorId}
-                all={all}
-                onMove={onMoving}
-              />
-            ))}
-          </div>
-        </DndContext>
+      <div className="@container min-h-0 min-w-0 flex-1 overflow-y-auto">
+        <div className="flex min-h-full flex-col gap-4 p-6 @max-3xl:px-4 @max-3xl:pt-4">
+          <Pending scope={scope} inScope={inScope} inboxOf={inboxOf} all={all} />
+          <DndContext sensors={sensors} onDragEnd={onDragEnd}>
+            <div className="flex min-h-0 flex-1 snap-x items-stretch gap-3 overflow-x-auto" data-testid="board-columns">
+              {stages.map((stage, i) => (
+                <StageColumn
+                  key={stage}
+                  stage={stage}
+                  count={count(stage)}
+                  inboxOf={inboxOf}
+                  list={lists[stage]}
+                  items={columns[i] ?? []}
+                  ideaId={ideaId}
+                  cursorId={cursorId}
+                  all={all}
+                  onMove={onMoving}
+                />
+              ))}
+            </div>
+          </DndContext>
+        </div>
       </div>
       {moving && (
         <MoveDialog

@@ -1,6 +1,6 @@
 import "@/features/roadmap/i18n"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowUpRightIcon, KanbanIcon, PlusIcon } from "lucide-react"
+import { ArrowUpRightIcon, CircleAlertIcon, KanbanIcon, PlusIcon } from "lucide-react"
 import { useState } from "react"
 import { Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 
@@ -154,14 +154,30 @@ export function RoadmapPage() {
         }
       />
       {boards.isPending ? (
-        <div className="flex flex-1 gap-4 p-6">
-          <Skeleton className="h-64 flex-1 rounded-xl" />
-          <Skeleton className="h-64 flex-1 rounded-xl" />
-          <Skeleton className="h-64 flex-1 rounded-xl" />
-          <Skeleton className="h-64 flex-1 rounded-xl" />
+        <div className="@container min-w-0 flex-1 overflow-hidden" aria-busy data-testid="roadmap-loading">
+          <div className="flex gap-3 p-6 @max-3xl:p-4">
+            {[96, 64, 120, 40].map((h, n) => (
+              <div
+                key={n}
+                className="flex min-w-64 flex-1 basis-0 flex-col gap-2 rounded-[14px] border bg-surface p-2.5 max-md:min-w-[82%] max-md:flex-none"
+              >
+                <Skeleton className="m-1 h-4 w-24" />
+                <Skeleton className="h-[86px] rounded-[11px]" />
+                <Skeleton className="rounded-[11px]" style={{ height: h }} />
+              </div>
+            ))}
+          </div>
         </div>
       ) : boards.error ? (
-        <ErrorLine error={boards.error} className="m-6" />
+        <div className="mx-auto my-12 flex max-w-sm flex-col items-center gap-3 px-4 text-center">
+          <span className="grid size-8 place-items-center rounded-full bg-destructive/10 text-destructive">
+            <CircleAlertIcon className="size-4" aria-hidden />
+          </span>
+          <ErrorLine error={boards.error} />
+          <Button variant="outline" className={look.btn} onClick={() => void boards.refetch()}>
+            <Trans>Try again</Trans>
+          </Button>
+        </div>
       ) : missingBoard ? (
         <div className="flex flex-1 flex-col gap-3 p-6">
           <PaneBack to="/board" label={t`Roadmap`} />
@@ -170,8 +186,10 @@ export function RoadmapPage() {
           </p>
         </div>
       ) : scoped.length === 0 ? (
-        <div className="m-6 flex flex-col items-center gap-3 self-start rounded-xl border border-dashed px-6 py-12 text-center phone:m-4">
-          <KanbanIcon className="size-6 text-faint" />
+        <div className="mx-auto my-8 flex w-[min(560px,calc(100%-2rem))] flex-col items-center gap-3 rounded-[14px] border bg-card px-6 py-10 text-center">
+          <span className="grid size-10 place-items-center rounded-xl bg-brand-wash text-brand">
+            <KanbanIcon className="size-5" aria-hidden />
+          </span>
           <p className="max-w-md text-body text-muted-foreground">
             {firstMissing ? (
               <Trans>
@@ -191,18 +209,20 @@ export function RoadmapPage() {
         </div>
       ) : (
         <>
-          <BoardBar
-            boards={scoped}
-            inboxes={inboxById}
-            selected={selected}
-            all={all}
-            settings={tab === "settings"}
-            missing={missing}
-            canManage={canManage}
-            busy={patch.isPending}
-            onCreate={setCreating}
-            onTogglePublic={togglePublic}
-          />
+          <div className="@container shrink-0">
+            <BoardBar
+              boards={scoped}
+              inboxes={inboxById}
+              selected={selected}
+              all={all}
+              settings={tab === "settings"}
+              missing={missing}
+              canManage={canManage}
+              busy={patch.isPending}
+              onCreate={setCreating}
+              onTogglePublic={togglePublic}
+            />
+          </div>
           <ErrorLine error={patch.error} className="mx-6 mt-2 phone:mx-4" />
           {tab === "settings" && selected ? (
             <div className="min-h-0 flex-1 overflow-y-auto pt-4" data-testid="board-settings-page">

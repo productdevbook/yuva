@@ -165,7 +165,7 @@ export function OperatorList({ s }: { s: ReturnType<typeof useOperatorSuggest> }
     <ul
       id={s.listId}
       role="listbox"
-      className="absolute inset-x-3 top-full z-30 mt-0.5 overflow-hidden rounded-lg border bg-popover py-1 text-popover-foreground shadow-md"
+      className="absolute inset-x-3 top-full z-30 mt-0.5 overflow-hidden rounded-xl border bg-popover p-1.5 text-popover-foreground shadow-[0_16px_40px_rgb(0_0_0/0.14)]"
       data-testid="operator-suggestions"
     >
       {s.items.map((it, i) => (
@@ -179,12 +179,12 @@ export function OperatorList({ s }: { s: ReturnType<typeof useOperatorSuggest> }
           onMouseEnter={() => s.setActive(i)}
           onClick={() => s.complete(it)}
           className={cn(
-            "flex min-w-0 items-baseline gap-2 px-3 py-1.5 text-body",
+            "flex min-w-0 items-baseline gap-2 rounded-lg px-2.5 py-1.5 text-body",
             it.pick && "cursor-pointer",
             i === s.active && "bg-muted"
           )}
         >
-          <span className="shrink-0 font-mono text-small font-medium">{it.label}</span>
+          <span className="shrink-0 font-mono text-caption font-medium">{it.label}</span>
           <span className="min-w-0 truncate text-small text-muted-foreground">{it.detail}</span>
         </li>
       ))}
@@ -243,7 +243,9 @@ export function OperatorHelp() {
                 <dt className="font-mono text-small font-medium">{r.op}</dt>
                 <dd className="text-body text-muted-foreground">{r.detail}</dd>
                 <dd>
-                  <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-small break-all">{r.example}</code>
+                  <code className="rounded-md border bg-muted px-1.5 py-0.5 font-mono text-caption break-all">
+                    {r.example}
+                  </code>
                 </dd>
               </div>
             ))}

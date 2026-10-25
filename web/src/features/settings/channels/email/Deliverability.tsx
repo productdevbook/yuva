@@ -23,7 +23,8 @@ import {
   useRunCheck,
   useSetDkim,
 } from "@/features/settings/channels/email/deliverability"
-import { Card, Field, Section, StatusTag } from "@/features/settings/ui"
+import { PageSection } from "@/features/settings/channels/sections"
+import { Card, Field, StatusTag } from "@/features/settings/ui"
 import { ApiError, type Channel, type DeliverabilityCheck } from "@/lib/api"
 import { useSession } from "@/lib/session"
 
@@ -289,7 +290,8 @@ export function DeliverabilityCard({ channel }: { channel: Channel }) {
   const retry = limited ? formatShort(new Date(limited.retryAt).toISOString(), i18n.locale) : ""
   const when = c ? formatDateTime(c.checked_at ?? c.created_at, i18n.locale) : ""
   return (
-    <Section
+    <PageSection
+      id="deliverability"
       title={<Trans>Deliverability</Trans>}
       action={
         canManage && (
@@ -352,7 +354,7 @@ export function DeliverabilityCard({ channel }: { channel: Channel }) {
           <ErrorLine error={run.error} />
         )}
       </Card>
-    </Section>
+    </PageSection>
   )
 }
 
@@ -372,7 +374,8 @@ export function DkimSection({ channel }: { channel: Channel }) {
   const relay =
     !!dkim?.unsupported_reason || (toggle.error instanceof ApiError && toggle.error.code === "dkim_relay_unsupported")
   return (
-    <Section
+    <PageSection
+      id="dkim-key"
       title={<Trans>Yuva DKIM</Trans>}
       description={
         <Trans>
@@ -547,6 +550,6 @@ export function DkimSection({ channel }: { channel: Channel }) {
         )}
       </Card>
       {confirmDialog}
-    </Section>
+    </PageSection>
   )
 }

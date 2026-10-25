@@ -38,6 +38,13 @@ type Entry = {
   shortcut: string
   badge?: number
   badgeLabel?: string
+  hot?: boolean
+}
+
+export function mainKeys(mailFirst: boolean): Section[] {
+  return mailFirst
+    ? ["home", "mail", "conversations", "mentions", "assistants"]
+    : ["home", "conversations", "mail", "mentions", "assistants"]
 }
 
 export function useUnreadCount() {
@@ -74,11 +81,12 @@ export function useEntries(): Entry[] {
     ...(mailFirst ? mailEntry : []),
     {
       key: "conversations",
-      label: t`Conversations`,
+      label: t`Inbox`,
       icon: MessagesSquareIcon,
       shortcut: SHORTCUTS.conversations,
       badge: unread,
       badgeLabel: t`Conversations, ${unread} unread`,
+      hot: true,
     },
     ...(mailFirst ? [] : mailEntry),
     {
@@ -88,6 +96,7 @@ export function useEntries(): Entry[] {
       shortcut: SHORTCUTS.mentions,
       badge: unseen,
       badgeLabel: t`Mentions, ${unseen} unseen`,
+      hot: true,
     },
     {
       key: "feedback",
@@ -102,8 +111,8 @@ export function useEntries(): Entry[] {
     { key: "reports", label: t`Reports`, icon: BarChart3Icon, shortcut: SHORTCUTS.reports },
     { key: "docs", label: t`Docs`, icon: BookOpenTextIcon, shortcut: SHORTCUTS.docs },
     { key: "broadcasts", label: t`Broadcasts`, icon: MegaphoneIcon, shortcut: SHORTCUTS.broadcasts },
-    { key: "status", label: t`Status`, icon: ActivityIcon, shortcut: SHORTCUTS.status },
-    { key: "knowledge", label: t`Help`, icon: LifeBuoyIcon, shortcut: SHORTCUTS.helpCenter },
+    { key: "status", label: t`Status pages`, icon: ActivityIcon, shortcut: SHORTCUTS.status },
+    { key: "knowledge", label: t`Help center`, icon: LifeBuoyIcon, shortcut: SHORTCUTS.helpCenter },
     { key: "board", label: t`Roadmap`, icon: KanbanIcon, shortcut: SHORTCUTS.roadmap },
     { key: "updates", label: t`What’s new`, icon: SparklesIcon, shortcut: SHORTCUTS.updates },
     { key: "analytics", label: t`Analytics`, icon: ChartLineIcon, shortcut: SHORTCUTS.analytics },
@@ -132,10 +141,10 @@ export function useGo() {
   return (key: Section) => {
     if (key === "home") {
       if (pathname !== homePath) navigate(homePath)
-    } else if (key === "mentions") {
+    } else if (key === "mentions" || key === "assistants") {
       setRailView(key)
-      if (pathname !== "/mentions") navigate("/mentions")
-    } else if (key === "conversations" || key === "assistants") {
+      if (pathname !== `/${key}`) navigate(`/${key}`)
+    } else if (key === "conversations") {
       setRailView(key)
       if (!isChats(pathname, apart) || search) navigate(inboxRoot(apart))
     } else if (section !== key || (isFullPage(key) && pathname !== `/${key}`)) {
@@ -144,14 +153,11 @@ export function useGo() {
   }
 }
 
-function Badge({ n, id, className }: { n: number; id: string; className?: string }) {
+function Badge({ n, id }: { n: number; id: string }) {
   if (!n) return null
   return (
     <span
-      className={cn(
-        "absolute -top-1 -end-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-brand px-1 text-[11px] leading-none font-semibold text-white tabular-nums",
-        className
-      )}
+      className="absolute -top-0.5 end-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-brand-solid px-1 text-[10px] leading-none font-semibold text-white tabular-nums"
       data-testid={`rail-badge-${id}`}
     >
       {n > 99 ? "99+" : n}
@@ -169,19 +175,27 @@ export function moveFocus(e: React.KeyboardEvent<HTMLElement>) {
   items[(i + step + items.length) % items.length].focus()
 }
 
+const tabClass =
+  "flex min-w-0 flex-1 basis-0 flex-col items-center gap-0.5 pt-2 pb-1.5 text-[11px] text-sidebar-muted outline-none focus-visible:bg-sidebar-accent aria-[current=page]:font-semibold aria-[current=page]:text-brand-ink"
+
+const tabActiveClass = "bg-sidebar-active shadow-[inset_0_0_0_1px_var(--sidebar-active-ring)]"
+
 export function TabBar() {
   const { t } = useLingui()
   const view = useSection()
   const go = useGo()
   const all = useEntries()
+  const { mailFirst } = useSession()
   const { setOpenMobile } = useSidebar()
-  const entries = all.slice(0, 4)
+  const entries = mainKeys(mailFirst)
+    .flatMap((k) => all.find((e) => e.key === k) ?? [])
+    .slice(0, 4)
   const elsewhere = !entries.some((e) => e.key === view)
   return (
     <nav
       aria-label={t`Sections`}
       onKeyDown={moveFocus}
-      className="flex shrink-0 items-stretch border-t bg-background ps-[max(0.5rem,env(safe-area-inset-left))] pe-[max(0.5rem,env(safe-area-inset-right))] pb-[env(safe-area-inset-bottom)]"
+      className="flex shrink-0 items-stretch border-t border-sidebar-border bg-card ps-[max(0.5rem,env(safe-area-inset-left))] pe-[max(0.5rem,env(safe-area-inset-right))] pb-[env(safe-area-inset-bottom)]"
       data-testid="tab-bar"
     >
       {entries.map((e) => (
@@ -191,23 +205,20 @@ export function TabBar() {
           onClick={() => go(e.key)}
           aria-current={e.key === view ? "page" : undefined}
           aria-label={e.badge ? e.badgeLabel : e.label}
-          className="flex min-w-0 flex-1 basis-0 flex-col items-center gap-0.5 pt-2 pb-1.5 text-[11px] text-muted-foreground outline-none focus-visible:bg-muted aria-[current=page]:min-w-max aria-[current=page]:px-1 aria-[current=page]:text-brand"
+          className={tabClass}
           data-rail-item
           data-testid={`tab-${e.key}`}
         >
           <span
             className={cn(
               "relative grid h-7 w-full max-w-12 place-items-center rounded-full",
-              e.key === view && "bg-brand-wash"
+              e.key === view && tabActiveClass
             )}
           >
-            <e.icon className="size-5" />
-            <Badge n={e.badge ?? 0} id={e.key} className="-top-1 end-auto start-[calc(50%+6px)]" />
+            <e.icon className="size-[19px]" />
+            <Badge n={e.badge ?? 0} id={e.key} />
           </span>
-          <span
-            aria-hidden
-            className={cn("font-medium whitespace-nowrap", e.key !== view && "invisible max-w-full overflow-hidden")}
-          >
+          <span aria-hidden className="max-w-full truncate">
             {e.label}
           </span>
         </button>
@@ -217,14 +228,14 @@ export function TabBar() {
         onClick={() => setOpenMobile(true)}
         aria-current={elsewhere ? "page" : undefined}
         aria-label={t`Menu`}
-        className="flex min-w-0 flex-1 basis-0 flex-col items-center gap-0.5 pt-2 pb-1.5 text-[11px] text-muted-foreground outline-none focus-visible:bg-muted aria-[current=page]:text-brand"
+        className={tabClass}
         data-rail-item
         data-testid="tab-menu"
       >
-        <span className={cn("grid h-7 w-full max-w-12 place-items-center rounded-full", elsewhere && "bg-brand-wash")}>
-          <MenuIcon className="size-5" />
+        <span className={cn("grid h-7 w-full max-w-12 place-items-center rounded-full", elsewhere && tabActiveClass)}>
+          <MenuIcon className="size-[19px]" />
         </span>
-        <span aria-hidden className={cn("font-medium whitespace-nowrap", !elsewhere && "invisible")}>
+        <span aria-hidden className="max-w-full truncate">
           {t`Menu`}
         </span>
       </button>

@@ -63,8 +63,8 @@ msgid "{0, plural, one {The help center does not offer this language, so its tra
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{drafts} drafts"
-msgstr "{drafts} esborranys"
+msgid "{drafts, plural, one {# draft} other {# drafts}}"
+msgstr "{drafts, plural, one {# esborrany} other {# esborranys}}"
 
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
@@ -122,6 +122,10 @@ msgstr "Final de l’adreça"
 #: src/features/help/SettingsTab.tsx
 msgid "Agents may publish"
 msgstr "Els agents poden publicar"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "All"
+msgstr "Tot"
 
 #: src/features/help/Revisions.tsx
 msgid "An API key"
@@ -553,6 +557,7 @@ msgstr "Idioma"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Idiomes"
@@ -935,11 +940,11 @@ msgstr "Desat"
 msgid "Saving…"
 msgstr "S’està desant…"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles"
 msgstr "Cerca als títols"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles ({findKey})"
 msgstr "Cerca als títols ({findKey})"
 
@@ -1217,6 +1222,7 @@ msgstr "Mostra el lloc"
 msgid "View site ({openKey})"
 msgstr "Mostra el lloc ({openKey})"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Visualitzacions"

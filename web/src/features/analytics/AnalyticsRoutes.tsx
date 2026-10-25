@@ -2,7 +2,7 @@ import "@/features/analytics/i18n"
 
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useEffect, useRef } from "react"
-import { ChartLineIcon, ChevronsUpDownIcon, EllipsisIcon, PlusIcon } from "lucide-react"
+import { ChartLineIcon, ChevronsUpDownIcon, PlusIcon } from "lucide-react"
 import {
   Link,
   Navigate,
@@ -21,7 +21,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Skeleton } from "@/components/ui/skeleton"
 import { UsageBanner } from "@/features/analytics/AnalyticsColumn"
 import { BreakdownView } from "@/features/analytics/Breakdown"
-import { Controls, FilterBar, RangePicker } from "@/features/analytics/Controls"
+import { ComparePicker, FilterBar, RangePicker, SegmentPicker } from "@/features/analytics/Controls"
 import { EventsView } from "@/features/analytics/Events"
 import { FunnelsView } from "@/features/analytics/Funnels"
 import { GoalsView } from "@/features/analytics/Goals"
@@ -38,7 +38,7 @@ import { useAnalyticsText } from "@/features/analytics/text"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { PagesView } from "@/features/analytics/Pages"
-import { headButton, Page, PageHeader } from "@/features/settings/ui"
+import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import type { SetupState } from "@/features/setup/setup"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
@@ -68,37 +68,43 @@ function AnalyticsHome() {
   const first = list.data?.items.find((p) => !inboxId || p.inbox_id === inboxId)
   if (first && !phone) return <Navigate to={`/analytics/${first.id}`} replace />
   return (
-    <Page testId="analytics-home">
-      <PageHeader
-        back={false}
-        title={<Trans>Analytics</Trans>}
-        description={<Trans>Cookieless visitors across your sites and apps</Trans>}
-      />
-      <div className="flex flex-col items-center gap-2 rounded-xl border bg-card px-6 py-12 text-center">
-        <span className="mb-2 grid size-12 place-items-center rounded-2xl bg-brand-wash text-brand">
-          <ChartLineIcon className="size-6" />
-        </span>
-        <p className="text-title">
-          <Trans>Count your website’s visitors</Trans>
-        </p>
-        <p className="max-w-md text-body text-muted-foreground">
-          <Trans>
-            Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent
-            banner where the law allows it.
-          </Trans>
-        </p>
-        {canManage && (
-          <Button className="mt-3" render={<Link to="/analytics/new" />} data-testid="analytics-home-add">
-            <PlusIcon />
-            <Trans>Add a website</Trans>
-          </Button>
-        )}
+    <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="analytics-home">
+      <PageTop title={<Trans>Analytics</Trans>} sub={<Trans>Cookieless visitors across your sites and apps</Trans>} />
+      <div className="@container min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto w-full max-w-[1240px] p-6 pb-16 @max-xl:p-4">
+          <div className="flex flex-col items-center gap-2 rounded-[14px] border bg-card px-6 py-12 text-center">
+            <span className="mb-2 grid size-12 place-items-center rounded-xl bg-brand-wash text-brand">
+              <ChartLineIcon className="size-6" />
+            </span>
+            <p className="text-title">
+              <Trans>Count your website’s visitors</Trans>
+            </p>
+            <p className="max-w-md text-body text-muted-foreground">
+              <Trans>
+                Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent
+                banner where the law allows it.
+              </Trans>
+            </p>
+            {canManage && (
+              <Button
+                className={cn(look.btnInk, "mt-3")}
+                render={<Link to="/analytics/new" />}
+                data-testid="analytics-home-add"
+              >
+                <PlusIcon />
+                <Trans>Add a website</Trans>
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
-    </Page>
+    </main>
   )
 }
 
 const HEADED: ViewKey[] = ["overview", "pages", "goals"]
+
+const pickerClass = "h-[30px] rounded-lg"
 
 function PropertyLayout() {
   const { t } = useLingui()
@@ -143,10 +149,12 @@ function PropertyLayout() {
   }, [inboxId, p, list, current, search, navigate])
   if (!p) {
     return (
-      <Page>
-        <PageHeader back={false} title={<Trans>Analytics</Trans>} />
-        {property.error ? <ErrorLine error={property.error} /> : <Skeleton className="h-64 rounded-xl" />}
-      </Page>
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface">
+        <PageTop title={<Trans>Analytics</Trans>} />
+        <div className="mx-auto w-full max-w-[1240px] p-6 @max-xl:p-4">
+          {property.error ? <ErrorLine error={property.error} /> : <Skeleton className="h-64 rounded-[14px]" />}
+        </div>
+      </main>
     )
   }
   const controls = current !== "realtime" && current !== "settings" && current !== "retention"
@@ -178,18 +186,34 @@ function PropertyLayout() {
   const picked = params.get("goal")
   const newGoal = new URLSearchParams(search)
   newGoal.set("goal", "new")
+  const tabs = VIEWS.map((v) => ({
+    key: v,
+    label: names[v],
+    to: to(v),
+    testId: `analytics-tab-${v}`,
+  }))
+  const toolbar = controls ? (
+    <div
+      className="flex flex-wrap items-center gap-2 border-b px-6 py-3 empty:hidden phone:px-4"
+      data-testid="analytics-toolbar"
+    >
+      {current !== "goals" && <RangePicker plain className={pickerClass} />}
+      {!headed && current !== "events" && current !== "funnels" && <ComparePicker className={pickerClass} />}
+      {!headed && current !== "funnels" && <SegmentPicker propertyId={p.id} className={pickerClass} />}
+      {headed ? current !== "pages" && <FilterBar /> : current !== "funnels" && <FilterBar />}
+    </div>
+  ) : null
   return (
-    <Page testId="analytics-property" key={p.id}>
-      <PageHeader
-        back={false}
+    <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="analytics-property" key={p.id}>
+      <PageTop
         title={head[current]?.title ?? names[current]}
-        description={head[current]?.description ?? where}
-        action={
+        sub={head[current]?.description ?? where}
+        actions={
           <>
             {others.length > 1 ? (
               <DropdownMenu>
                 <DropdownMenuTrigger
-                  render={<Button variant="outline" className={cn(headButton.secondary, "max-w-56")} />}
+                  render={<Button variant="outline" className={cn(look.btn, "max-w-56 bg-card")} />}
                   data-testid="analytics-property-name"
                 >
                   <span className="truncate">{p.name}</span>
@@ -213,35 +237,11 @@ function PropertyLayout() {
                 {p.name}
               </span>
             )}
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<Button variant="outline" size="icon" className={cn(headButton.secondary, "w-[34px] px-0")} />}
-                aria-label={t`More views`}
-                title={t`More views`}
-                data-testid="analytics-tab-more"
-              >
-                <EllipsisIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                {VIEWS.map((v) => (
-                  <DropdownMenuItem
-                    key={v}
-                    onClick={() => navigate(to(v))}
-                    aria-current={v === current ? "page" : undefined}
-                    className="aria-[current=page]:font-medium"
-                    data-testid={`analytics-tab-${v}`}
-                  >
-                    {names[v]}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {controls && current !== "goals" && <RangePicker plain className={headButton.secondary} />}
             {current === "goals"
               ? canManage &&
                 picked !== "new" && (
                   <Button
-                    className={headButton.primary}
+                    className={look.btnInk}
                     render={<Link to={`?${newGoal.toString()}`} />}
                     data-testid="analytics-goal-new"
                   >
@@ -251,7 +251,7 @@ function PropertyLayout() {
               : canManage &&
                 current !== "pages" && (
                   <Button
-                    className={headButton.primary}
+                    className={look.btnInk}
                     render={<Link to={`/analytics/${p.id}/settings?tab=sharing`} />}
                     data-testid="analytics-share"
                   >
@@ -260,22 +260,17 @@ function PropertyLayout() {
                 )}
           </>
         }
+        tabs={<FrameTabs label={t`Analytics`} value={current} items={tabs} moreTestId="analytics-tab-more" />}
       />
-      {usage && <UsageBanner usage={usage} />}
-      {!p.first_event_at && current !== "settings" && <WaitForFirstEvent propertyId={p.id} />}
-      {controls &&
-        (headed ? (
-          current !== "pages" && <FilterBar />
-        ) : (
-          <Controls
-            propertyId={p.id}
-            range={false}
-            compare={current !== "events" && current !== "funnels"}
-            filters={current !== "funnels"}
-          />
-        ))}
-      <Outlet context={{ property: p }} />
-    </Page>
+      {toolbar}
+      <div className="@container min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-4 p-6 pb-16 @max-xl:p-4 @max-xl:pb-16">
+          {usage && <UsageBanner usage={usage} />}
+          {!p.first_event_at && current !== "settings" && <WaitForFirstEvent propertyId={p.id} />}
+          <Outlet context={{ property: p }} />
+        </div>
+      </div>
+    </main>
   )
 }
 

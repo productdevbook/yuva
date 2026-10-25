@@ -13,7 +13,7 @@ import { QueueList } from "@/features/docs/discussions/QueuePane"
 import { DiscussionsTab } from "@/features/docs/DiscussionsTab"
 import { FromDocsDialog } from "@/features/docs/FromDocs"
 import { InstallDialog } from "@/features/docs/InstallDialog"
-import { helpfulShare, PagesTab } from "@/features/docs/PagesTab"
+import { PagesTab } from "@/features/docs/PagesTab"
 import { useDocsDays, useDocsSummary } from "@/features/docs/queries"
 import { DocsSitePicker, DocsSort, DocsWindow, usePickedSite } from "@/features/docs/Toolbar"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
@@ -39,7 +39,7 @@ function ThreadSheet({ id, onClose }: { id: string; onClose: () => void }) {
       <aside
         role="region"
         aria-label={t`Discussion`}
-        className="absolute inset-y-0 end-0 z-30 flex w-[min(640px,100%)] flex-col border-s bg-background shadow-[0_0_60px_-20px_rgb(15_23_42/0.4)]"
+        className="absolute inset-y-0 end-0 z-30 flex w-[min(640px,100%)] flex-col border-s bg-card shadow-[0_0_60px_-20px_rgb(15_23_42/0.4)]"
         data-testid="docs-sheet"
       >
         <div className="flex shrink-0 justify-end px-3 pt-2">
@@ -52,34 +52,6 @@ function ThreadSheet({ id, onClose }: { id: string; onClose: () => void }) {
         </div>
       </aside>
     </>
-  )
-}
-
-function Summary() {
-  const { t, i18n } = useLingui()
-  const [inboxId] = useInboxFilter()
-  const [days] = useDocsDays()
-  const site = usePickedSite(inboxId)
-  const totals = useDocsSummary(inboxId, site, days).data?.totals
-  if (!totals) return null
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const figures: [string, string, string?][] = [
-    [helpfulShare(totals, i18n.locale), t`helpful share`],
-    [fmt.format(totals.feedback), t`feedback`],
-    [fmt.format(totals.threads), t`new discussions`],
-    [fmt.format(totals.pending_posts), t`waiting for approval`, totals.pending_posts ? "text-warning" : undefined],
-  ]
-  return (
-    <p
-      className="ms-auto flex flex-wrap items-center gap-x-3 gap-y-0.5 text-caption text-faint phone:ms-0"
-      data-testid="docs-summary"
-    >
-      {figures.map(([value, label, tone]) => (
-        <span key={label} className="whitespace-nowrap">
-          <b className={tone ?? "font-semibold text-foreground"}>{value}</b> {label}
-        </span>
-      ))}
-    </p>
   )
 }
 
@@ -180,10 +152,11 @@ export function DocsPage({ tab }: { tab: DocsTabKey }) {
   ]
 
   return (
-    <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="docs-home">
+    <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="docs-home">
       {!detailOnPhone && (
         <>
           <PageTop
+            className="bg-surface"
             title={<Trans>Docs</Trans>}
             sub={<Trans>Ratings, questions and discussions from the documentation pages on your own site</Trans>}
             actions={
@@ -210,7 +183,7 @@ export function DocsPage({ tab }: { tab: DocsTabKey }) {
             tabs={<FrameTabs label={t`Docs`} value={tab} items={tabs} />}
           />
           <div
-            className="flex shrink-0 flex-wrap items-center gap-2.5 border-b px-6 py-2.5 phone:px-4"
+            className="flex shrink-0 flex-wrap items-center gap-2.5 border-b bg-surface px-6 py-3 phone:px-4"
             data-testid="docs-toolbar"
           >
             <DocsSitePicker />
@@ -221,7 +194,6 @@ export function DocsPage({ tab }: { tab: DocsTabKey }) {
               </>
             )}
             {tab === "discussions" && <ThreadFilters pending={pending} />}
-            <Summary />
           </div>
         </>
       )}
@@ -231,7 +203,7 @@ export function DocsPage({ tab }: { tab: DocsTabKey }) {
         )}
         {tab === "discussions" && <DiscussionsTab discussionId={discussionId} />}
         {tab === "queue" && (
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto bg-surface">
             <QueueList hrefOf={queueLink} keyboard={!sheetId} />
           </div>
         )}

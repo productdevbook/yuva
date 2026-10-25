@@ -21,20 +21,10 @@ msgstr "{0, plural, one {# rivi} other {# riviä}}"
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {kävijä tänään} other {kävijää tänään}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "{0} keskustelua"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "{0} kävijöistä"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "{0} kävijää"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "Yksityiskohtaiset tiedot säilytetään {rawDay} lähtien."
 msgid "Detailed records kept since"
 msgstr "Yksityiskohtaiset tiedot säilytetty alkaen"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "Tiedot"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "Laite"
@@ -1417,10 +1411,6 @@ msgstr "Kuukausiraja"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "Kuukaudet"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "Lisää näkymiä"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

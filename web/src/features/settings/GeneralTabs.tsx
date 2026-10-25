@@ -3,7 +3,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { SettingsStrip } from "@/components/common/SettingsStrip"
 import { useMigrations } from "@/features/migrations/queries"
 import { useAutomationRules } from "@/features/settings/automation/queries"
-import { PageHeader, PageTabs } from "@/features/settings/ui"
+import { PageHeader, PageTabs, type PageTab } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
 import { useCannedReplies, useCustomFields, useLabels, useMacros, useSlaPolicies, useTeams } from "@/lib/workspace"
 
@@ -19,7 +19,7 @@ type Tab =
   | "migrations"
   | "audit-log"
 
-export function GeneralTabs({ current }: { current: Tab }) {
+export function useGeneralTabItems(): PageTab[] {
   const { t } = useLingui()
   const { canManage, isOwner } = useSession()
   const labels = useLabels().data
@@ -30,78 +30,77 @@ export function GeneralTabs({ current }: { current: Tab }) {
   const sla = useSlaPolicies().data
   const rules = useAutomationRules().data
   const moves = useMigrations().data?.pages[0]?.items
-  return (
-    <PageTabs
-      label={t`General`}
-      current={current}
-      items={[
-        { key: "workspace", to: "/settings/workspace", label: t`Workspace`, testId: "general-tab-workspace" },
-        {
-          key: "labels",
-          to: "/settings/labels",
-          label: t`Labels`,
-          count: labels?.length,
-          testId: "general-tab-labels",
-        },
-        {
-          key: "canned-replies",
-          to: "/settings/canned-replies",
-          label: t`Canned replies`,
-          count: canned?.length,
-          testId: "general-tab-canned-replies",
-        },
-        {
-          key: "macros",
-          to: "/settings/macros",
-          label: t`Macros`,
-          count: macros?.length,
-          testId: "general-tab-macros",
-        },
-        ...(canManage
-          ? [
-              {
-                key: "teams",
-                to: "/settings/teams",
-                label: t`Teams`,
-                count: teams?.length,
-                testId: "general-tab-teams",
-              },
-              {
-                key: "fields",
-                to: "/settings/fields",
-                label: t`Custom fields`,
-                count: fields?.length,
-                testId: "general-tab-fields",
-              },
-              {
-                key: "sla",
-                to: "/settings/sla",
-                label: t`SLA policies`,
-                count: sla?.length,
-                testId: "general-tab-sla",
-              },
-              {
-                key: "automation",
-                to: "/settings/automation",
-                label: t`Automation`,
-                count: rules?.length,
-                testId: "general-tab-automation",
-              },
-              {
-                key: "migrations",
-                to: "/settings/migrations",
-                label: t`Move to Yuva`,
-                count: moves?.length,
-                testId: "general-tab-migrations",
-              },
-            ]
-          : []),
-        ...(isOwner
-          ? [{ key: "audit-log", to: "/settings/audit-log", label: t`Audit log`, testId: "general-tab-audit-log" }]
-          : []),
-      ]}
-    />
-  )
+  return [
+    { key: "workspace", to: "/settings/workspace", label: t`Workspace`, testId: "general-tab-workspace" },
+    {
+      key: "labels",
+      to: "/settings/labels",
+      label: t`Labels`,
+      count: labels?.length,
+      testId: "general-tab-labels",
+    },
+    {
+      key: "canned-replies",
+      to: "/settings/canned-replies",
+      label: t`Canned replies`,
+      count: canned?.length,
+      testId: "general-tab-canned-replies",
+    },
+    {
+      key: "macros",
+      to: "/settings/macros",
+      label: t`Macros`,
+      count: macros?.length,
+      testId: "general-tab-macros",
+    },
+    ...(canManage
+      ? [
+          {
+            key: "teams",
+            to: "/settings/teams",
+            label: t`Teams`,
+            count: teams?.length,
+            testId: "general-tab-teams",
+          },
+          {
+            key: "fields",
+            to: "/settings/fields",
+            label: t`Custom fields`,
+            count: fields?.length,
+            testId: "general-tab-fields",
+          },
+          {
+            key: "sla",
+            to: "/settings/sla",
+            label: t`SLA policies`,
+            count: sla?.length,
+            testId: "general-tab-sla",
+          },
+          {
+            key: "automation",
+            to: "/settings/automation",
+            label: t`Automation`,
+            count: rules?.length,
+            testId: "general-tab-automation",
+          },
+          {
+            key: "migrations",
+            to: "/settings/migrations",
+            label: t`Move to Yuva`,
+            count: moves?.length,
+            testId: "general-tab-migrations",
+          },
+        ]
+      : []),
+    ...(isOwner
+      ? [{ key: "audit-log", to: "/settings/audit-log", label: t`Audit log`, testId: "general-tab-audit-log" }]
+      : []),
+  ]
+}
+
+export function GeneralTabs({ current }: { current: Tab }) {
+  const { t } = useLingui()
+  return <PageTabs label={t`General`} current={current} items={useGeneralTabItems()} />
 }
 
 export function GeneralHeader({ current }: { current: Tab }) {

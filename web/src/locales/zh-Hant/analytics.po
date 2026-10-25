@@ -21,20 +21,10 @@ msgstr "{0, plural, other {# 行}}"
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, other {今日訪客}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "{0} 個對話"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "佔訪客的 {0}"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "{0} 位訪客"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "詳細記錄自 {rawDay} 起保留。"
 msgid "Detailed records kept since"
 msgstr "詳細記錄保留起始日"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "詳情"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "裝置"
@@ -1417,10 +1411,6 @@ msgstr "每月上限"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "月"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "更多檢視"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

@@ -423,7 +423,7 @@ export function FunnelsView() {
       },
       { replace: true }
     )
-  if (funnels.isPending || goals.isPending) return <Skeleton className="h-64 rounded-2xl" />
+  if (funnels.isPending || goals.isPending) return <Skeleton className="h-64 rounded-[14px]" />
   if (funnels.error || goals.error) return <ErrorLine error={funnels.error ?? goals.error} />
   const canCreate = canManage && goalList.length >= 2
   const newButton = canManage && (
@@ -442,7 +442,7 @@ export function FunnelsView() {
     <section className="flex flex-col gap-3" data-testid="analytics-funnels">
       {list.length === 0 ? (
         <div
-          className="flex flex-col items-center gap-2 rounded-2xl border border-dashed px-4 py-10 text-center"
+          className="flex flex-col items-center gap-2 rounded-[14px] border border-dashed px-4 py-10 text-center"
           data-testid="funnels-empty"
         >
           <FilterIcon className="size-6 text-faint" />
@@ -486,7 +486,7 @@ export function FunnelsView() {
                 onChange={pick}
                 options={list.map((f) => [f.id, f.name] as const)}
                 label={t`Funnel`}
-                className="min-w-48 phone:flex-1"
+                className="min-w-48 @max-2xl:flex-1"
               />
             )}
             <span className="flex-1" />

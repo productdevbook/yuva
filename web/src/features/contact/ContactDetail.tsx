@@ -18,7 +18,6 @@ import {
   filterStatus,
   Identities,
   NewConversationDialog,
-  SectionTitle,
   sinceText,
   useContactConversations,
   type ConversationFilter,
@@ -27,10 +26,13 @@ import { DeleteContactDialog } from "@/features/contact/DeleteContactDialog"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { useContact, useContactSummary, useContactVisits, useUpdateContact } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
-import { look } from "@/features/inbox/PageFrame"
-import { pageTabClass } from "@/features/settings/ui"
+import { Overline } from "@/features/inbox/PageFrame"
+import { OverflowTabs } from "@/components/common/OverflowTabs"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
+
+const inkButton = "h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
+const outlineButton = "h-8 rounded-[9px] border-input bg-card px-3 font-normal"
 
 type DetailTab = "details" | "activity" | "conversations" | "notes"
 
@@ -46,8 +48,10 @@ function Block({
   children: React.ReactNode
 }) {
   return (
-    <section className={cn(page ? "rounded-2xl border bg-card px-4 py-3.5" : "border-b px-5 py-4", className)}>
-      <SectionTitle className="mb-2.5">{title}</SectionTitle>
+    <section
+      className={cn(page ? "rounded-2xl border bg-card px-4 py-3.5" : "border-b border-b-muted px-5 py-4", className)}
+    >
+      <Overline className="mb-2.5 font-semibold tracking-[0.06em]">{title}</Overline>
       {children}
     </section>
   )
@@ -55,10 +59,34 @@ function Block({
 
 function Stat({ value, label }: { value: string; label: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center">
-      <span className="text-title tabular-nums">{value}</span>
+    <div className="flex flex-col items-center gap-0.5 px-1.5 py-2.5">
+      <span className="text-[17px] leading-6 font-semibold tabular-nums">{value}</span>
       <span className="text-caption text-faint">{label}</span>
     </div>
+  )
+}
+
+function StatStrip({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="grid grid-cols-3 overflow-hidden rounded-xl border [&>*]:border-s [&>*:first-child]:border-s-0"
+      data-testid="contact-summary"
+    >
+      {children}
+    </div>
+  )
+}
+
+function Tag({ tone, children }: { tone: "danger" | "warn"; children: React.ReactNode }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex h-[22px] items-center gap-1.5 rounded-full px-2 text-caption font-medium before:size-1.5 before:rounded-full before:bg-current",
+        tone === "danger" ? "bg-destructive/10 text-destructive" : "bg-warning/10 text-warning"
+      )}
+    >
+      {children}
+    </span>
   )
 }
 
@@ -67,8 +95,8 @@ function Banner({ tone, children, testId }: { tone: "danger" | "warn"; children:
     <p
       role="status"
       className={cn(
-        "rounded-lg px-3 py-2 text-small",
-        tone === "danger" ? "bg-destructive/10 text-destructive" : "bg-warning/10 text-foreground"
+        "rounded-[10px] px-3 py-2.5 text-small leading-[19px]",
+        tone === "danger" ? "bg-destructive/10 text-destructive" : "bg-warning/10 text-warning"
       )}
       data-testid={testId}
     >
@@ -106,9 +134,16 @@ export function ContactDetail({
 
   if (contact.isPending) {
     return (
-      <div className="flex flex-col gap-3 p-5" data-testid="contact-panel">
-        <Skeleton className="size-12 rounded-full" />
-        <Skeleton className="h-5 w-32" />
+      <div className="flex flex-col gap-4 p-5" data-testid="contact-panel" aria-busy="true">
+        <div className="flex items-center gap-3.5">
+          <Skeleton className="size-14 shrink-0 rounded-full" />
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-5 w-40" />
+            <Skeleton className="h-3.5 w-28" />
+          </div>
+        </div>
+        <Skeleton className="h-8 w-full rounded-[9px]" />
+        <Skeleton className="h-16 w-full rounded-xl" />
       </div>
     )
   }
@@ -163,19 +198,24 @@ export function ContactDetail({
       <ContactSubscriptions contactId={c.id} />
     </Block>
   )
-  const stats = c.activity && (
+  const statCells = c.activity && (
+    <>
+      <Stat value={fmt.format(c.activity.conversations)} label={<Trans>conversations</Trans>} />
+      <Stat
+        value={
+          summary?.median_first_reply_seconds !== undefined
+            ? formatDuration(summary.median_first_reply_seconds, i18n.locale)
+            : "—"
+        }
+        label={<Trans>first reply</Trans>}
+      />
+      <Stat value={rated ? `${fmt.format(good)} / ${fmt.format(rated)}` : "—"} label={<Trans>rated good</Trans>} />
+    </>
+  )
+  const stats = statCells && (
     <Block page={page} title={<Trans>Summary</Trans>}>
       <div className="grid grid-cols-3 gap-2" data-testid="contact-summary">
-        <Stat value={fmt.format(c.activity.conversations)} label={<Trans>conversations</Trans>} />
-        <Stat
-          value={
-            summary?.median_first_reply_seconds !== undefined
-              ? formatDuration(summary.median_first_reply_seconds, i18n.locale)
-              : "—"
-          }
-          label={<Trans>first reply</Trans>}
-        />
-        <Stat value={rated ? `${fmt.format(good)} / ${fmt.format(rated)}` : "—"} label={<Trans>rated good</Trans>} />
+        {statCells}
       </div>
     </Block>
   )
@@ -227,33 +267,29 @@ export function ContactDetail({
   ]
 
   return (
-    <div className={cn("flex min-w-0 flex-col", page && "gap-4")} data-testid="contact-panel">
+    <div className={cn("flex min-w-0 flex-col", page ? "gap-4" : "h-full min-h-0")} data-testid="contact-panel">
       {back && <BackLink {...back} />}
-      <header className={cn("flex flex-col gap-3", page ? "" : "border-b px-5 pt-5 pb-4")}>
-        <div className="flex min-w-0 items-center gap-3.5">
+      <header className={cn("@container flex shrink-0 flex-col gap-3.5", !page && "border-b px-5 pt-4 pb-4")}>
+        <div className="flex min-w-0 items-start gap-3.5">
           <ContactAvatar
             id={c.id}
             name={name}
-            className={cn("shrink-0 font-semibold", page ? "size-16" : "size-[52px]")}
+            className={cn("shrink-0 font-semibold", page ? "size-16" : "size-14 text-lg")}
           />
-          <div className="flex min-w-0 flex-1 flex-col leading-[1.35]">
-            <span className="flex min-w-0 items-center gap-2">
-              <h2
-                className={cn("min-w-0 truncate", page ? "text-page" : "text-[18px] font-semibold")}
-                data-testid="contact-name"
-              >
-                {name}
-              </h2>
-              {blocked && (
-                <span className="shrink-0 rounded-md bg-destructive/10 px-2 py-0.5 text-caption text-destructive">
-                  <Trans>Blocked</Trans>
-                </span>
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <h2
+              className={cn(
+                "min-w-0 [overflow-wrap:anywhere]",
+                page ? "text-page" : "text-[18px] leading-6 font-semibold"
               )}
-            </span>
+              data-testid="contact-name"
+            >
+              {name}
+            </h2>
             {c.emails[0] && c.emails[0] !== name && (
-              <span className="truncate text-muted-foreground">{c.emails[0]}</span>
+              <span className="truncate text-small text-muted-foreground">{c.emails[0]}</span>
             )}
-            <span className="text-caption text-faint">
+            <span className="text-small text-faint">
               <Trans>Contact since {since}</Trans>
               {seen && (
                 <>
@@ -264,16 +300,39 @@ export function ContactDetail({
                 </>
               )}
             </span>
+            {(blocked || undeliverable) && (
+              <span className="mt-1 flex flex-wrap gap-1.5">
+                {blocked && (
+                  <Tag tone="danger">
+                    <Trans>Blocked</Trans>
+                  </Tag>
+                )}
+                {undeliverable && (
+                  <Tag tone="warn">
+                    <Trans>Undeliverable</Trans>
+                  </Tag>
+                )}
+              </span>
+            )}
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button className={look.btnPSm} onClick={() => setStarting(true)} data-testid="new-conversation-open">
+        <div className="flex gap-2">
+          <Button
+            className={cn(inkButton, "min-w-0 flex-1")}
+            onClick={() => setStarting(true)}
+            data-testid="new-conversation-open"
+          >
             <Trans>New conversation</Trans>
           </Button>
+          {!page && pageLink && (
+            <Button variant="outline" className={cn(outlineButton, "@max-sm:hidden")} render={<Link to={pageLink} />}>
+              <Trans>Open full page</Trans>
+            </Button>
+          )}
           {canManage && (
             <Button
               variant="outline"
-              className={look.btnSm}
+              className={outlineButton}
               onClick={() => setMerging(true)}
               data-testid="merge-contact"
             >
@@ -282,7 +341,7 @@ export function ContactDetail({
           )}
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="outline" className={cn(look.btnSm, "w-[30px] px-0")} />}
+              render={<Button variant="outline" className={cn(outlineButton, "w-8 px-0")} />}
               aria-label={t`More`}
               data-testid="contact-more"
             >
@@ -328,6 +387,7 @@ export function ContactDetail({
             </Trans>
           </Banner>
         )}
+        {!page && statCells && <StatStrip>{statCells}</StatStrip>}
       </header>
 
       {page ? (
@@ -346,42 +406,30 @@ export function ContactDetail({
         </div>
       ) : (
         <>
-          <div
-            role="tablist"
-            aria-label={t`Contact`}
-            className="flex gap-5 overflow-x-auto border-b px-5 [scrollbar-width:none]"
-          >
-            {tabs.map((x) => (
-              <button
-                key={x.key}
-                type="button"
-                role="tab"
-                aria-selected={tab === x.key}
-                aria-current={tab === x.key ? "page" : undefined}
-                className={pageTabClass}
-                onClick={() => setTab(x.key)}
-                data-testid={`contact-tab-${x.key}`}
-              >
-                {x.label}
-                {x.count && <span className="text-caption font-normal text-faint tabular-nums">{x.count}</span>}
-              </button>
-            ))}
+          <OverflowTabs
+            label={t`Contact`}
+            current={tab}
+            className="mx-0 shrink-0 border-b px-5"
+            items={tabs.map((x) => ({
+              key: x.key,
+              label: x.label,
+              count: x.count,
+              testId: `contact-tab-${x.key}`,
+              onSelect: () => setTab(x.key),
+            }))}
+          />
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {tab === "details" && (
+              <>
+                {identities}
+                {attributes}
+                {lists}
+              </>
+            )}
+            {tab === "activity" && visitsBlock}
+            {tab === "conversations" && convs}
+            {tab === "notes" && notes}
           </div>
-          {tab === "details" && (
-            <>
-              {identities}
-              {attributes}
-              {lists}
-            </>
-          )}
-          {tab === "activity" && (
-            <>
-              {stats}
-              {visitsBlock}
-            </>
-          )}
-          {tab === "conversations" && convs}
-          {tab === "notes" && notes}
         </>
       )}
 

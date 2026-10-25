@@ -67,7 +67,7 @@ export function Revisions({
           ) : (
             <ul className="flex flex-col gap-2">
               {(revisions.data ?? []).map((r) => (
-                <li key={r.id} className="rounded-xl border bg-card" data-testid="help-revision">
+                <li key={r.id} className="rounded-[14px] border bg-card" data-testid="help-revision">
                   <button
                     type="button"
                     className="flex w-full flex-col items-start gap-0.5 px-3 py-2.5 text-start outline-none focus-visible:ring-2 focus-visible:ring-ring"

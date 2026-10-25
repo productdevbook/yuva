@@ -284,7 +284,7 @@ export function ContactPanel({
   return (
     <aside
       aria-label={t`Contact details`}
-      className="flex h-full min-h-0 flex-col bg-background"
+      className="flex h-full min-h-0 flex-col bg-surface"
       data-testid="contact-panel"
     >
       <ContactAside contactId={contactId} conversationId={conversationId} onClose={onClose} />

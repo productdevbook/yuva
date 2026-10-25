@@ -53,7 +53,7 @@ export function PreviewPane({
         {fetching && <LoaderIcon className="size-3 animate-spin" />}
       </div>
       <ErrorLine error={error} />
-      <div className="overflow-hidden rounded-xl border">
+      <div className="overflow-hidden rounded-[14px] border bg-card">
         <MailFrame html={doc} title={frameTitle} dark={dark} />
       </div>
     </div>

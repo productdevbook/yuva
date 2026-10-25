@@ -7,7 +7,8 @@ import { ErrorLine, toast, useConfirm } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, Field, FormActions, FormCard, Section } from "@/features/settings/ui"
+import { Sec } from "@/features/settings/workspace/parts"
+import { Card, Field, FormActions, FormCard } from "@/features/settings/ui"
 import {
   api,
   unwrap,
@@ -53,19 +54,21 @@ export function PageSection({
   title,
   description,
   action,
+  tone,
   children,
 }: {
   id: string
   title: React.ReactNode
   description?: React.ReactNode
   action?: React.ReactNode
+  tone?: "danger"
   children: React.ReactNode
 }) {
   return (
     <div id={id} className="scroll-mt-4" data-testid={`section-${id}`}>
-      <Section title={title} description={description} action={action}>
+      <Sec id={`${id}-sec`} title={title} description={description} pill={action} tone={tone}>
         {children}
-      </Section>
+      </Sec>
     </div>
   )
 }
@@ -175,7 +178,7 @@ export function RemoveSection({ channel }: { channel: Channel }) {
     },
   })
   return (
-    <PageSection id="remove" title={<Trans>Remove</Trans>}>
+    <PageSection id="remove" title={<Trans>Remove</Trans>} tone="danger">
       <Card tone="danger">
         <div className="flex flex-wrap items-center gap-3">
           <p className="min-w-0 flex-1 text-body text-muted-foreground">

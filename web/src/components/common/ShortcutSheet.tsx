@@ -139,6 +139,12 @@ export const LIST_KEYS = {
   export: "E",
 } as const
 
+export const HOME_KEYS = {
+  next: "j",
+  previous: "k",
+  take: "a",
+} as const
+
 export const DESIGN_KEYS = {
   create: "c",
   mine: "1",
@@ -631,6 +637,17 @@ export function ShortcutSheet({
         ],
       ],
     },
+    ...(home
+      ? [
+          {
+            title: t`Home`,
+            items: [
+              [[HOME_KEYS.next, HOME_KEYS.previous], t`Move through the conversations waiting longest`],
+              [k(HOME_KEYS.take), t`Assign the selected waiting conversation to you`],
+            ] as [string[], string][],
+          },
+        ]
+      : []),
     {
       title: t`Everywhere`,
       items: [

@@ -9,7 +9,7 @@ import { useInboxes } from "@/lib/workspace"
 function Part({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-1">
-      <h3 className="text-small font-medium text-faint">{title}</h3>
+      <h3 className="text-[11px] leading-4 font-semibold tracking-[0.06em] text-faint uppercase">{title}</h3>
       {children}
     </section>
   )
@@ -29,7 +29,7 @@ export function MergePreview({ source, target }: { source: Contact; target: Cont
   )
   const count = conversations.data?.count ?? 0
   return (
-    <div className="flex min-w-0 flex-col gap-4 rounded-xl bg-surface p-4" data-testid="merge-preview">
+    <div className="flex min-w-0 flex-col gap-4 rounded-xl border bg-surface p-4" data-testid="merge-preview">
       <Part title={<Trans>Conversations</Trans>}>
         {conversations.isPending ? (
           <Skeleton className="h-5 w-32" />

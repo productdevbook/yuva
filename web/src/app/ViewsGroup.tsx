@@ -1,14 +1,14 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { BookmarkIcon, CheckIcon, PlusIcon } from "lucide-react"
+import { CheckIcon, ListFilterIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Link, useLocation, useSearchParams } from "react-router"
 
+import { groupLabelClass, rowClass } from "@/app/Sidebar"
 import { inboxRoot, isChats } from "@/app/shell"
 import { toast } from "@/components/common"
 import { useErrorText } from "@/components/common/text"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
-  SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuBadge,
@@ -30,7 +30,7 @@ function CountBadge({ view }: { view: SavedView }) {
   if (view.count === undefined || view.count_unavailable) return null
   return (
     <SidebarMenuBadge
-      className="right-1.5 in-data-[mobile=true]:top-3.5! in-data-[mobile=true]:right-3 in-data-[mobile=true]:text-xs text-sidebar-muted"
+      className="top-1.5 right-auto end-2.5 font-mono text-caption font-normal text-sidebar-muted in-data-[mobile=true]:top-3"
       data-testid="view-count"
     >
       {view.count_capped ? "1000+" : view.count}
@@ -78,7 +78,7 @@ function ViewRow({
         isActive={active}
         aria-current={active ? "page" : undefined}
         title={writable ? `${view.name} · ${reorderTitle}` : view.name}
-        className="h-8 gap-2.5 px-2.5 pe-11 text-body in-data-[mobile=true]:h-12 in-data-[mobile=true]:gap-3.5 in-data-[mobile=true]:px-3 in-data-[mobile=true]:text-base in-data-[mobile=true]:[&_svg]:size-5 text-sidebar-foreground data-active:bg-sidebar-primary data-active:font-medium data-active:text-sidebar-primary-foreground data-active:hover:bg-sidebar-primary data-active:hover:text-sidebar-primary-foreground [&_svg]:size-4.5"
+        className={cn(rowClass, "h-8 pe-14 [&_svg]:size-[15px] [&_svg]:text-sidebar-muted")}
         onClick={() => setOpenMobile(false)}
         onKeyDown={(e) => {
           if (!writable || !e.altKey || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return
@@ -90,7 +90,7 @@ function ViewRow({
         data-view-id={view.id}
         data-testid="view-link"
       >
-        <BookmarkIcon />
+        <ListFilterIcon />
         <span className="min-w-0 flex-1 truncate">{view.name}</span>
       </SidebarMenuButton>
       <CountBadge view={view} />
@@ -182,20 +182,17 @@ export function ViewsGroup() {
   if (sections.length === 0 && strangers.length === 0) return null
   const activeId = isChats(pathname, apart) ? params.get("view") : null
   return (
-    <SidebarGroup
-      className="px-3 py-1 group-data-[collapsible=icon]:hidden"
+    <div
+      className="mt-2 flex flex-col gap-px group-data-[collapsible=icon]:hidden"
       role="group"
       aria-label={t`Saved views`}
       data-testid="views-group"
     >
-      <SidebarGroupLabel className="h-7 px-2.5 text-[11px] tracking-[0.06em] text-sidebar-muted uppercase">
-        <Trans>Saved views</Trans>
-      </SidebarGroupLabel>
-      {sections.map((s, i) => (
+      {sections.map((s) => (
         <SidebarMenu key={s.key} className="gap-px" data-testid="views-section">
-          {(i > 0 || sections.length > 1) && (
-            <li className="truncate px-2.5 pt-1.5 pb-0.5 text-caption font-medium text-sidebar-muted">{s.title}</li>
-          )}
+          <SidebarGroupLabel render={<li />} className={cn(groupLabelClass, "block truncate pt-1.5")}>
+            {s.title}
+          </SidebarGroupLabel>
           {s.views.map((v) => (
             <ViewRow
               key={v.id}
@@ -216,16 +213,11 @@ export function ViewsGroup() {
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
-                  <SidebarMenuButton
-                    className={cn(
-                      "h-8 gap-2.5 px-2.5 text-body text-sidebar-muted in-data-[mobile=true]:h-12 in-data-[mobile=true]:text-base [&_svg]:size-4.5"
-                    )}
-                  />
+                  <SidebarMenuButton className="h-[30px] rounded-lg px-2.5 text-small text-sidebar-muted in-data-[mobile=true]:h-11 in-data-[mobile=true]:text-base" />
                 }
                 data-rail-item
                 data-testid="views-browse"
               >
-                <PlusIcon />
                 <span className="min-w-0 flex-1 truncate">
                   <Trans>Another team’s views</Trans>
                 </span>
@@ -242,6 +234,6 @@ export function ViewsGroup() {
           </SidebarMenuItem>
         </SidebarMenu>
       )}
-    </SidebarGroup>
+    </div>
   )
 }

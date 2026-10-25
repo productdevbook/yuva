@@ -30,16 +30,23 @@ function CenterRow({ c, current, cursor }: { c: HelpCenter; current: boolean; cu
       <Link
         to={centerLink(c.id)}
         className={cn(
-          "flex flex-col gap-1 rounded-xl px-2.5 py-2.5 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
-          current && "bg-muted",
-          cursor && "ring-2 ring-ring"
+          "relative mx-2 flex flex-col gap-1 rounded-xl px-2.5 py-2.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+          current ? "bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05),0_0_0_1px_var(--border)]" : "hover:bg-muted/60",
+          cursor && !current && "bg-muted/60",
+          (current || cursor) &&
+            "before:absolute before:inset-y-3 before:-start-2 before:w-[3px] before:rounded-e-[3px] before:bg-brand"
         )}
         aria-current={current ? "page" : undefined}
         data-testid="help-row"
       >
         <span className="flex items-center gap-2">
           <span className="min-w-0 flex-1 truncate text-body font-medium">{c.name}</span>
-          <span className="shrink-0 text-caption text-faint">
+          <span
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1.5 text-caption font-medium before:size-1.5 before:rounded-full before:bg-current before:content-['']",
+              c.published ? "text-success" : "text-faint"
+            )}
+          >
             {c.published ? <Trans>Published</Trans> : <Trans>Unpublished</Trans>}
           </span>
         </span>
@@ -95,17 +102,17 @@ export default function HelpColumn() {
   let index = 0
   return (
     <>
-      <section className="flex h-full min-h-0 flex-col bg-background" data-testid="help-panel">
+      <section className="flex h-full min-h-0 flex-col bg-surface" data-testid="help-panel">
         <ListHead
           title={<Trans>Help center</Trans>}
           sub={<Trans>Articles people read before they write to you</Trans>}
           action={<InboxPicker className="max-w-36" />}
         />
-        <nav aria-label={t`Help centers`} className="flex min-h-0 flex-1 flex-col overflow-y-auto px-2 pb-4" ref={list}>
+        <nav aria-label={t`Help centers`} className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-4" ref={list}>
           {centers.isPending || inboxQuery.isPending ? (
-            <div className="flex flex-col gap-2 p-2">
-              <Skeleton className="h-14 w-full" />
-              <Skeleton className="h-14 w-full" />
+            <div className="flex flex-col gap-2 p-2" aria-busy="true">
+              <Skeleton className="h-14 w-full rounded-xl" />
+              <Skeleton className="h-14 w-full rounded-xl" />
             </div>
           ) : centers.error ? (
             <ErrorLine error={centers.error} className="p-3" />
@@ -127,7 +134,7 @@ export default function HelpColumn() {
                     <CenterRow c={center} current={center.id === currentId} cursor={index++ === cursor} />
                   </ul>
                 ) : canManage ? (
-                  <div className="px-2.5 py-2">
+                  <div className="px-4 py-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -140,7 +147,7 @@ export default function HelpColumn() {
                     </Button>
                   </div>
                 ) : (
-                  <p className="px-2.5 py-2 text-small text-faint" data-testid="help-none">
+                  <p className="px-4 py-2 text-small text-faint" data-testid="help-none">
                     <Trans>No help center yet. Owners and admins create it.</Trans>
                   </p>
                 )}

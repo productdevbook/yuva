@@ -63,8 +63,8 @@ msgid "{0, plural, one {The help center does not offer this language, so its tra
 msgstr "{0, plural, one {Yardım merkezi bu dili sunmuyor, bu yüzden bu dildeki çeviriler içe aktarılmadı.} other {Yardım merkezi bu dilleri sunmuyor, bu yüzden bu dillerdeki çeviriler içe aktarılmadı.}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{drafts} drafts"
-msgstr "{drafts} taslak"
+msgid "{drafts, plural, one {# draft} other {# drafts}}"
+msgstr "{drafts, plural, one {# taslak} other {# taslak}}"
 
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
@@ -122,6 +122,10 @@ msgstr "Adres sonu"
 #: src/features/help/SettingsTab.tsx
 msgid "Agents may publish"
 msgstr "Temsilciler yayımlayabilir"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "All"
+msgstr "Tümü"
 
 #: src/features/help/Revisions.tsx
 msgid "An API key"
@@ -553,6 +557,7 @@ msgstr "Dil"
 msgid "Language of the articles"
 msgstr "Makalelerin dili"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Diller"
@@ -935,11 +940,11 @@ msgstr "Kaydedildi"
 msgid "Saving…"
 msgstr "Kaydediliyor…"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles"
 msgstr "Başlıklarda ara"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles ({findKey})"
 msgstr "Başlıklarda ara ({findKey})"
 
@@ -1217,6 +1222,7 @@ msgstr "Siteyi görüntüle"
 msgid "View site ({openKey})"
 msgstr "Siteyi görüntüle ({openKey})"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Görüntüleme"

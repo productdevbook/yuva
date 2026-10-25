@@ -5,7 +5,8 @@ import { AddressState } from "@/components/common/AddressState"
 import { Button } from "@/components/ui/button"
 import { useApproveAddress, useMemberAddresses } from "@/features/settings/addresses/queries"
 import type { MemberAddress } from "@/lib/api"
-import { Card, Row, Rows, Section } from "@/features/settings/ui"
+import { cn } from "@/lib/utils"
+import { look, Overline } from "@/features/inbox/PageFrame"
 
 function MemberAddressRow({
   address: a,
@@ -19,12 +20,18 @@ function MemberAddressRow({
   const { t } = useLingui()
   const address = a.address
   return (
-    <Row className="flex-wrap" data-testid="member-address">
-      <span className="min-w-0 flex-1 basis-48 truncate">{address}</span>
+    <li
+      className={cn(
+        "flex min-h-10 flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-[10px] border px-3 py-1.5 text-small",
+        !a.verified && a.verification === "approval" && "border-warning/40 bg-warning/5"
+      )}
+      data-testid="member-address"
+    >
+      <bdi className="min-w-0 flex-1 basis-48 break-words">{address}</bdi>
       <AddressState address={a} />
       {!a.verified && a.verification === "approval" && (
         <Button
-          size="sm"
+          className={look.btnInkSm}
           disabled={pending}
           aria-label={t`Approve ${address}`}
           onClick={onApprove}
@@ -33,7 +40,7 @@ function MemberAddressRow({
           <Trans>Approve</Trans>
         </Button>
       )}
-    </Row>
+    </li>
   )
 }
 
@@ -44,27 +51,26 @@ export function MemberAddresses({ memberId, name }: { memberId: string; name: st
   const items = list.data ?? []
   if (!list.isPending && !list.error && items.length === 0) return null
   return (
-    <Section
-      title={<Trans>Addresses to send from</Trans>}
-      description={
+    <section className="flex flex-col gap-2.5 border-b px-5 py-4">
+      <Overline>
+        <Trans>Addresses to send from</Trans>
+      </Overline>
+      <p className="text-caption text-faint">
         <Trans>Addresses {name} added to send mail from. Those waiting for approval need an owner or admin.</Trans>
-      }
-    >
+      </p>
       <ErrorLine error={list.error ?? approve.error} />
       {items.length > 0 && (
-        <Card flush data-testid="member-addresses">
-          <Rows>
-            {items.map((a) => (
-              <MemberAddressRow
-                key={a.id}
-                address={a}
-                pending={approve.isPending}
-                onApprove={() => approve.mutate(a.id, { onSuccess: () => toast(t`Address approved`) })}
-              />
-            ))}
-          </Rows>
-        </Card>
+        <ul className="flex flex-col gap-1.5" data-testid="member-addresses">
+          {items.map((a) => (
+            <MemberAddressRow
+              key={a.id}
+              address={a}
+              pending={approve.isPending}
+              onApprove={() => approve.mutate(a.id, { onSuccess: () => toast(t`Address approved`) })}
+            />
+          ))}
+        </ul>
       )}
-    </Section>
+    </section>
   )
 }

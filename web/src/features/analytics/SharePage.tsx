@@ -201,7 +201,7 @@ function SharedLayout({ scope, expiresAt }: { scope: ShareScope; expiresAt?: str
         </div>
         <LanguageMenu />
       </header>
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-5 px-4 py-5 sm:px-6">
+      <main className="@container mx-auto flex w-full max-w-5xl flex-1 flex-col gap-5 px-4 py-5 sm:px-6">
         {views.length > 1 && (
           <div className="-mx-1 max-w-[calc(100%+0.5rem)] overflow-x-auto px-1 py-1">
             <Segmented

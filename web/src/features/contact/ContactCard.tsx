@@ -35,8 +35,8 @@ export function CardSection({
   testId?: string
 }) {
   return (
-    <section className={cn("border-b px-4 py-3.5", className)} data-testid={testId}>
-      <Overline className="mb-2.5">{title}</Overline>
+    <section className={cn("border-b px-[18px] py-4", className)} data-testid={testId}>
+      <Overline className="mb-2.5 font-semibold tracking-[0.06em]">{title}</Overline>
       {children}
     </section>
   )
@@ -90,10 +90,10 @@ export function DetailRows({ contact }: { contact: Contact }) {
     <dl className="flex flex-col gap-2" data-testid="attributes">
       {entries.map(([k, v, raw]) => (
         <div key={k} className="flex min-w-0 items-baseline gap-3">
-          <dt className="shrink-0 text-muted-foreground" lang={raw ? "" : undefined}>
+          <dt className="w-24 shrink-0 text-faint" lang={raw ? "" : undefined}>
             {k}
           </dt>
-          <dd className="min-w-0 flex-1 truncate text-end" title={v}>
+          <dd className="min-w-0 flex-1 truncate" title={v}>
             {v}
           </dd>
         </div>
@@ -192,7 +192,7 @@ export function ContactAside({
   const c = contact.data
 
   const tools = (
-    <span className="absolute end-2 top-2 flex gap-0.5">
+    <span className="absolute end-2.5 top-4 flex gap-0.5">
       <Button
         variant="ghost"
         size="icon-xs"
@@ -230,23 +230,23 @@ export function ContactAside({
   const name = contactName(c, t`Unnamed contact`)
   return (
     <div className="min-h-0 flex-1 overflow-y-auto">
-      <header className="relative flex flex-col items-start border-b px-4 pt-4 pb-3.5">
+      <header className="relative flex items-center gap-3 border-b py-4 ps-[18px] pe-16">
         {tools}
-        <ContactAvatar id={c.id} name={name} className="size-12 text-[15px] font-semibold" />
-        <h2 className="mt-3 max-w-full truncate text-[17px] leading-6 font-semibold" data-testid="contact-sheet-name">
-          {name}
-        </h2>
-        {c.emails[0] && c.emails[0] !== name && (
-          <span className="max-w-full truncate text-muted-foreground">{c.emails[0]}</span>
-        )}
-        <div className="mt-1">
+        <ContactAvatar id={c.id} name={name} className="size-[38px] text-[13px] font-semibold" />
+        <div className="flex min-w-0 flex-1 flex-col items-start">
+          <h2 className="max-w-full truncate font-semibold" data-testid="contact-sheet-name">
+            {name}
+          </h2>
+          {c.emails[0] && c.emails[0] !== name && (
+            <span className="max-w-full truncate text-caption text-faint">{c.emails[0]}</span>
+          )}
           <Seen contactId={c.id} />
+          {c.blocked && (
+            <span className="mt-1.5 rounded-md bg-destructive/10 px-2 py-0.5 text-caption text-destructive">
+              <Trans>Blocked</Trans>
+            </span>
+          )}
         </div>
-        {c.blocked && (
-          <span className="mt-1.5 rounded-md bg-destructive/10 px-2 py-0.5 text-caption text-destructive">
-            <Trans>Blocked</Trans>
-          </span>
-        )}
       </header>
       {conversationId && hasFields && (
         <CardSection title={<Trans>Fields</Trans>} testId="fields-section">
@@ -275,7 +275,7 @@ export function ContactAside({
         <ContactNotes contactId={c.id} />
       </CardSection>
       {conversationId && (
-        <section className="border-b px-4 py-3">
+        <section className="border-b px-[18px] py-3.5">
           <button
             type="button"
             onClick={() => setMedia((m) => !m)}

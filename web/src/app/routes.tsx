@@ -172,6 +172,7 @@ export function AppRoutes() {
           <Route path="mail/:box/:folder" element={<MailPage />} />
           <Route path="mail/:box/:folder/:conversationId" element={<MailPage />} />
           <Route path="mentions" element={<ChatsPage />} />
+          <Route path="assistants" element={<ChatsPage />} />
           <Route path="feedback" element={<ChatsPage section="feedback" />} />
           <Route path="feedback/:conversationId" element={<ChatsPage section="feedback" />} />
           <Route path="contacts" element={<ContactsHome />} />

@@ -59,6 +59,9 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
@@ -77,7 +80,7 @@ import { LinkIncidentDialog } from "@/features/status/LinkIncidentDialog"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { ImportBanner } from "@/features/migrations/ImportBanner"
 import { InboxChip } from "@/features/inbox/InboxPicker"
-import { UnderlineTabs } from "@/features/inbox/ListHead"
+import { ViewChips } from "@/features/inbox/ListHead"
 import { useActiveView } from "@/features/inbox/views/useActiveView"
 import { ViewsMenu } from "@/features/inbox/views/ViewsMenu"
 import { ProductTag } from "@/features/inbox/ProductTag"
@@ -246,15 +249,18 @@ function Row({
   const now = useNow(60_000)
   const subject = c.subject.trim()
   const since = c.assign_waiting_since ? formatDateTime(c.assign_waiting_since, i18n.locale) : ""
+  const urgent = c.priority === "urgent"
   return (
     <button
       type="button"
       onClick={(e) => onOpen(e.shiftKey)}
       className={cn(
-        "group flex w-full items-start gap-2.5 border-b px-3.5 py-3 text-start outline-none transition-colors",
-        current ? "bg-surface" : "hover:bg-surface",
-        cursor && !current && "bg-surface",
-        (current || cursor) && "shadow-[inset_2px_0_0_var(--brand)] rtl:shadow-[inset_-2px_0_0_var(--brand)]"
+        "group relative mx-2 flex w-[calc(100%-1rem)] items-start gap-3 rounded-xl px-2.5 py-2.5 text-start outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+        current ? "bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05),0_0_0_1px_var(--border)]" : "hover:bg-muted/60",
+        cursor && !current && "bg-muted/60",
+        (current || cursor) &&
+          "before:absolute before:inset-y-3 before:-start-2 before:w-[3px] before:rounded-e-[3px] before:bg-brand",
+        checked && "bg-brand/7 shadow-[0_0_0_1px_color-mix(in_srgb,var(--brand)_30%,var(--border))]"
       )}
       aria-current={current || undefined}
       aria-pressed={selecting ? checked : undefined}
@@ -268,8 +274,8 @@ function Row({
         <span
           aria-hidden
           className={cn(
-            "grid size-5 shrink-0 place-items-center rounded-[6px] border",
-            checked ? "border-brand bg-brand text-white" : "border-input bg-background"
+            "mt-2.5 grid size-[18px] shrink-0 place-items-center rounded-[5px] border-[1.5px]",
+            checked ? "border-foreground bg-foreground text-background" : "border-input bg-card"
           )}
           data-testid="row-check"
         >
@@ -278,9 +284,9 @@ function Row({
       )}
       <span className="relative shrink-0">
         {visitor ? (
-          <VisitorAvatar className="size-[34px]" />
+          <VisitorAvatar className="size-[38px]" />
         ) : (
-          <ContactAvatar id={c.contact.id} name={name} className="size-[34px] font-semibold" />
+          <ContactAvatar id={c.contact.id} name={name} className="size-[38px] font-semibold" />
         )}
         {live && (
           <span
@@ -291,32 +297,26 @@ function Row({
         )}
       </span>
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="flex min-w-0 items-baseline gap-2">
-          <span className={cn("min-w-0 flex-1 truncate text-body", c.unread ? "font-semibold" : "font-medium")}>
+        <span className="flex min-w-0 items-center gap-1.5">
+          {c.pinned_at && (
+            <PinIcon className="size-3 shrink-0 rotate-45 text-faint" aria-label={t`Pinned`} data-testid="row-pinned" />
+          )}
+          <span
+            className={cn(
+              "min-w-0 truncate text-body",
+              c.unread ? "font-semibold text-foreground" : "font-medium text-foreground/80"
+            )}
+          >
             {name}
           </span>
-          {c.pinned_at && (
-            <PinIcon
-              className="size-3.5 shrink-0 rotate-45 self-center text-faint"
-              aria-label={t`Pinned`}
-              data-testid="row-pinned"
-            />
-          )}
           {c.unread && (
-            <span
-              className="size-2 shrink-0 self-center rounded-full bg-brand"
-              aria-label={t`Unread`}
-              data-testid="row-unread"
-            />
+            <span className="size-2 shrink-0 rounded-full bg-brand" aria-label={t`Unread`} data-testid="row-unread" />
           )}
-          <time
-            className={cn("shrink-0 text-caption", waiting ? "font-medium text-brand" : "text-faint")}
-            dateTime={c.last_activity_at}
-          >
-            {waiting
-              ? formatDuration(Math.max(60, (now - Date.parse(c.last_activity_at)) / 1000), i18n.locale)
-              : formatShort(c.last_activity_at, i18n.locale)}
-          </time>
+          {urgent && (
+            <span className="shrink-0 rounded-full bg-destructive/10 px-1.5 text-[11px] leading-[18px] font-semibold text-destructive">
+              <Trans>Urgent</Trans>
+            </span>
+          )}
         </span>
         <span className="flex min-w-0 items-center gap-1.5 text-body text-muted-foreground">
           {c.trashed_at && <Trash2Icon className="size-3.5 shrink-0 text-faint" aria-label={t`Trash`} />}
@@ -331,7 +331,7 @@ function Row({
           </span>
         </span>
         {c.trashed_at && <TrashLine c={c} />}
-        <span className="flex min-w-0 items-center gap-1.5 text-caption" data-testid="row-source">
+        <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-caption" data-testid="row-source">
           <ProductTag id={c.inbox_id} />
           {c.imported && <ImportedChip at={c.imported.at} />}
           {source && <span className="shrink-0 text-faint">{sourceText[source]}</span>}
@@ -359,12 +359,25 @@ function Row({
               <Trans>Waiting for a teammate</Trans>
             </span>
           )}
-          {assignee && (
-            <span title={t`Assigned to ${assignee.name || assignee.email}`} data-testid="row-assignee">
-              <MemberAvatar name={assignee.name || assignee.email} className="size-[18px] text-[8px]" />
-            </span>
-          )}
         </span>
+      </span>
+      <span className="flex shrink-0 flex-col items-end gap-1.5 pt-px">
+        <time
+          className={cn(
+            "font-mono text-[12px] whitespace-nowrap tabular-nums",
+            waiting ? "font-medium text-brand" : "text-faint"
+          )}
+          dateTime={c.last_activity_at}
+        >
+          {waiting
+            ? formatDuration(Math.max(60, (now - Date.parse(c.last_activity_at)) / 1000), i18n.locale)
+            : formatShort(c.last_activity_at, i18n.locale)}
+        </time>
+        {assignee && (
+          <span title={t`Assigned to ${assignee.name || assignee.email}`} data-testid="row-assignee">
+            <MemberAvatar name={assignee.name || assignee.email} className="size-5 text-[9px]" />
+          </span>
+        )}
       </span>
     </button>
   )
@@ -377,7 +390,7 @@ function AwayBanner() {
   return (
     <Alert
       role="status"
-      className="mx-3 mb-2 flex items-center gap-2 rounded-xl border-border bg-card py-2 ps-3 pe-2 text-small text-muted-foreground"
+      className="mx-3 mb-2.5 flex items-center gap-2.5 rounded-[10px] border-0 bg-note py-2.5 ps-3 pe-2 text-small text-note-ink"
       data-testid="away-banner"
     >
       <ClockIcon className="size-3.5 shrink-0" />
@@ -387,7 +400,7 @@ function AwayBanner() {
       <Button
         variant="outline"
         size="sm"
-        className="shrink-0"
+        className="h-7 shrink-0 rounded-lg bg-card text-foreground"
         onClick={() => set.mutate("auto")}
         disabled={set.isPending}
       >
@@ -425,7 +438,7 @@ function CleanupBanner({ inboxId }: { inboxId: string }) {
   return (
     <Alert
       role="status"
-      className="mx-3 mb-2 flex flex-wrap items-center gap-2 rounded-xl border-dashed border-border bg-card py-2 ps-3 pe-2 text-small"
+      className="mx-3 mb-2.5 flex flex-wrap items-center gap-2 rounded-[10px] border-dashed border-border bg-card py-2 ps-3 pe-2 text-small"
       data-testid="cleanup-banner"
     >
       <span className="min-w-0 flex-1">
@@ -591,7 +604,7 @@ function OrderChip({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<button type="button" className={cn(unreadOnly ? look.chipOn : look.chip, "ms-auto")} />}
+        render={<button type="button" className={cn(unreadOnly ? look.listChipOn : look.listChip, "ms-auto")} />}
         aria-label={t`Order and view`}
         data-testid="list-order"
       >
@@ -627,7 +640,7 @@ function LabelChip({ value, onChange }: { value: string; onChange: (id: string) 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<button type="button" className={current ? look.chipOn : look.chip} />}
+        render={<button type="button" className={current ? look.listChipOn : look.listChip} />}
         aria-label={t`Filter by label`}
         title={t`Filter by label`}
         data-testid="label-filter"
@@ -667,7 +680,7 @@ function TeamChip({ value, onChange }: { value: string; onChange: (id: string) =
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<button type="button" className={current ? look.chipOn : look.chip} />}
+        render={<button type="button" className={current ? look.listChipOn : look.listChip} />}
         aria-label={t`Filter by team`}
         title={t`Filter by team`}
         data-testid="team-filter"
@@ -714,6 +727,7 @@ export function ChatList({
   inbox: controlledInbox,
   onInbox,
   embedded = false,
+  head,
 }: {
   currentId: string | null
   onOpen: (id: string) => void
@@ -723,6 +737,7 @@ export function ChatList({
   inbox?: string
   onInbox?: (id: string) => void
   embedded?: boolean
+  head?: React.ReactNode
 }) {
   const { t } = useLingui()
   const errorText = useErrorText()
@@ -1122,7 +1137,7 @@ export function ChatList({
   )
 
   const searchBox = (
-    <InputGroup className="h-[34px] min-w-0 flex-1 rounded-lg border-input bg-background shadow-none focus-within:border-faint">
+    <InputGroup className="h-8 min-w-0 flex-1 rounded-[9px] border-input bg-card shadow-none focus-within:border-faint">
       <InputGroupAddon>
         <SearchIcon className="size-[15px] text-faint" />
       </InputGroupAddon>
@@ -1163,11 +1178,11 @@ export function ChatList({
   )
 
   const searchRow = (
-    <div className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-2.5 pb-1.5">
+    <div className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-3 pb-2">
       {searchBox}
       <Button
         variant="outline"
-        className={cn(look.btn, "w-[34px] px-0", selecting && "bg-muted")}
+        className={cn("h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal", selecting && "bg-muted")}
         onClick={() => (selecting ? stopSelecting() : setSelecting(true))}
         aria-pressed={selecting}
         aria-label={t`Select conversations`}
@@ -1181,19 +1196,31 @@ export function ChatList({
   )
 
   const none = picked === 0
+  const bb =
+    "h-[34px] rounded-lg px-2.5 font-normal text-background hover:bg-background/15 hover:text-background aria-expanded:bg-background/15 aria-expanded:text-background disabled:opacity-40"
   const selection = (
     <div
-      className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-1 pb-2"
+      className="relative mx-2.5 mb-2.5 flex shrink-0 items-center gap-0.5 rounded-xl bg-foreground p-1.5 text-background shadow-[0_12px_32px_rgb(0_0_0/0.18)]"
       role="toolbar"
       aria-label={t`Selection`}
       data-testid="selection-bar"
     >
-      <span className="me-1 min-w-0 truncate text-small font-medium" aria-live="polite">
-        {none ? <Trans>Pick conversations</Trans> : <Trans>Selected: {picked}</Trans>}
+      <Button
+        variant="ghost"
+        className={cn(bb, "w-[34px] px-0")}
+        onClick={stopSelecting}
+        aria-label={t`Cancel`}
+        title={t`Clear the selection (Esc)`}
+        data-testid="cancel-selection"
+      >
+        <XIcon />
+      </Button>
+      <span className="me-auto shrink-0 pe-1.5 text-small font-semibold whitespace-nowrap" aria-live="polite">
+        {none ? <Trans>Pick conversations</Trans> : <Trans>{picked} selected</Trans>}
       </span>
       <Button
-        variant="outline"
-        className={look.btnSm}
+        variant="ghost"
+        className={cn(bb, "shrink-0")}
         disabled={rows.length === 0}
         onClick={() => setSelected(allPicked ? new Set() : new Set(rows.map((c) => c.id)))}
         aria-pressed={allPicked}
@@ -1204,8 +1231,8 @@ export function ChatList({
       {inTrash ? (
         <>
           <Button
-            variant="outline"
-            className={look.btnSm}
+            variant="ghost"
+            className={bb}
             disabled={none || bulk.isPending}
             onClick={restoreChosen}
             data-testid="restore-selected"
@@ -1214,8 +1241,8 @@ export function ChatList({
           </Button>
           {canManage && (
             <Button
-              variant="outline"
-              className={cn(look.btnSm, "text-destructive")}
+              variant="ghost"
+              className={bb}
               disabled={none || trashTools.pending}
               onClick={deleteChosen}
               title={t`Delete for good (${SHORTCUTS.deleteForever})`}
@@ -1228,8 +1255,8 @@ export function ChatList({
       ) : inSpam ? (
         <>
           <Button
-            variant="outline"
-            className={look.btnSm}
+            variant="ghost"
+            className={bb}
             disabled={none || bulk.isPending}
             onClick={notSpamChosen}
             title={t`Not spam (${SHORTCUTS.spam})`}
@@ -1239,8 +1266,8 @@ export function ChatList({
           </Button>
           {canManage && (
             <Button
-              variant="outline"
-              className={cn(look.btnSm, "text-destructive")}
+              variant="ghost"
+              className={bb}
               disabled={none || bulk.isPending}
               onClick={trashChosen}
               title={t`Move to the Trash (${SHORTCUTS.trash})`}
@@ -1253,111 +1280,102 @@ export function ChatList({
       ) : (
         <>
           <Button
-            variant="outline"
-            className={look.btnSm}
+            variant="ghost"
+            className={cn(bb, "shrink-0")}
             disabled={none || bulk.isPending}
             onClick={closeChosen}
             data-testid="close-selected"
           >
-            <Trans>Close all</Trans>
-          </Button>
-          <Button
-            variant="outline"
-            className={look.btnSm}
-            disabled={none}
-            onClick={readChosen}
-            data-testid="read-selected"
-          >
-            {anyUnread || none ? <Trans>Mark as read</Trans> : <Trans>Mark as unread</Trans>}
+            <Trans>Close</Trans>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="outline" className={look.btnSm} disabled={none || bulk.isPending} />}
-              data-testid="label-selected"
+              render={<Button variant="ghost" className={cn(bb, "w-[34px] shrink-0 px-0")} disabled={none} />}
+              aria-label={t`More`}
+              title={t`More`}
+              data-testid="more-selected"
             >
-              <Trans>Label</Trans>
-              <ChevronDownIcon className="text-faint" />
+              <EllipsisVerticalIcon />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48">
-              {allLabels.length === 0 && (
-                <p className="px-2.5 py-1.5 text-body text-muted-foreground">
-                  <Trans>No labels yet. Add them in settings.</Trans>
-                </p>
+            <DropdownMenuContent align="end" className="min-w-52">
+              <DropdownMenuItem onClick={readChosen} data-testid="read-selected">
+                {anyUnread ? <Trans>Mark as read</Trans> : <Trans>Mark as unread</Trans>}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger data-testid="label-selected" disabled={bulk.isPending}>
+                  <span className="flex-1">
+                    <Trans>Label</Trans>
+                  </span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-[60svh] min-w-48 overflow-y-auto">
+                  {allLabels.length === 0 && (
+                    <p className="px-2.5 py-1.5 text-body text-muted-foreground">
+                      <Trans>No labels yet. Add them in settings.</Trans>
+                    </p>
+                  )}
+                  {allLabels.map((l) => (
+                    <DropdownMenuCheckboxItem
+                      key={l.id}
+                      checked={chosenRows.length > 0 && chosenRows.every((c) => c.labels.includes(l.id))}
+                      onCheckedChange={() => labelChosen(l.id)}
+                    >
+                      <Dot color={l.color} />
+                      {l.name}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              {allTeams.length > 0 && (
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger data-testid="team-selected" disabled={bulkTeam.isPending}>
+                    <span className="flex-1">
+                      <Trans>Team</Trans>
+                    </span>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="max-h-[60svh] min-w-48 overflow-y-auto">
+                    {teamsForAll.length === 0 && (
+                      <p className="px-2.5 py-1.5 text-body text-muted-foreground">
+                        <Trans>No team covers all the selected inboxes.</Trans>
+                      </p>
+                    )}
+                    {teamsForAll.map((team) => (
+                      <DropdownMenuItem key={team.id} onClick={() => teamChosen(team.id)}>
+                        {team.name}
+                      </DropdownMenuItem>
+                    ))}
+                    {teamsForAll.length > 0 && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => teamChosen(null)}>
+                          <Trans>Remove the team</Trans>
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
               )}
-              {allLabels.map((l) => (
-                <DropdownMenuCheckboxItem
-                  key={l.id}
-                  checked={chosenRows.length > 0 && chosenRows.every((c) => c.labels.includes(l.id))}
-                  onCheckedChange={() => labelChosen(l.id)}
-                >
-                  <Dot color={l.color} />
-                  {l.name}
-                </DropdownMenuCheckboxItem>
-              ))}
+              <DropdownMenuItem onClick={() => setLinking(true)} data-testid="link-selected">
+                <Trans>Link to an incident</Trans>
+                <DropdownMenuShortcut>{linkKey}</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              {canManage && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    variant="destructive"
+                    disabled={bulk.isPending}
+                    onClick={trashChosen}
+                    data-testid="trash-selected"
+                  >
+                    <Trans>Delete</Trans>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
-          {allTeams.length > 0 && (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<Button variant="outline" className={look.btnSm} disabled={none || bulkTeam.isPending} />}
-                data-testid="team-selected"
-              >
-                <Trans>Team</Trans>
-                <ChevronDownIcon className="text-faint" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="max-h-[60svh] min-w-48">
-                {teamsForAll.length === 0 && (
-                  <p className="px-2.5 py-1.5 text-body text-muted-foreground">
-                    <Trans>No team covers all the selected inboxes.</Trans>
-                  </p>
-                )}
-                {teamsForAll.map((team) => (
-                  <DropdownMenuItem key={team.id} onClick={() => teamChosen(team.id)}>
-                    {team.name}
-                  </DropdownMenuItem>
-                ))}
-                {teamsForAll.length > 0 && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => teamChosen(null)}>
-                      <Trans>Remove the team</Trans>
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-          <Button
-            variant="outline"
-            className={look.btnSm}
-            disabled={none}
-            onClick={() => setLinking(true)}
-            title={t`Link to an incident (${linkKey})`}
-            data-testid="link-selected"
-          >
-            <Trans>Link to an incident</Trans>
-          </Button>
-          {canManage && (
-            <Button
-              variant="outline"
-              className={cn(look.btnSm, "text-destructive")}
-              disabled={none || bulk.isPending}
-              onClick={trashChosen}
-              data-testid="trash-selected"
-            >
-              <Trans>Delete</Trans>
-            </Button>
-          )}
         </>
       )}
-      <Button
-        variant="ghost"
-        className="h-[30px] rounded-lg px-2"
-        onClick={stopSelecting}
-        title={t`Clear the selection (Esc)`}
-      >
-        <Trans>Cancel</Trans>
-      </Button>
     </div>
   )
 
@@ -1411,12 +1429,13 @@ export function ChatList({
   return (
     <nav
       aria-label={t`Conversations`}
-      className="@container/list flex h-full min-h-0 flex-col bg-background"
+      className="@container/list flex h-full min-h-0 flex-col bg-surface"
       data-testid="chat-list"
     >
+      {embedded && head}
       {!embedded && (
         <PhoneHeader>
-          <UnderlineTabs
+          <ViewChips
             value={view.id ? null : chip}
             onChange={setChip}
             label={t`Filter`}
@@ -1439,13 +1458,13 @@ export function ChatList({
         </PhoneHeader>
       )}
       {searchRow}
-      {selecting ? selection : chips}
+      {chips}
       <AwayBanner />
       {!view.id && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
       {inTrash && canManage && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
       {trashTools.dialogs}
       <ImportBanner />
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto border-t" data-testid="list">
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto pb-3" data-testid="list">
         {list.isPending ? (
           <div className="grid gap-1 p-3">
             {[0, 1, 2, 3].map((i) => (
@@ -1459,8 +1478,8 @@ export function ChatList({
             ))}
           </div>
         ) : rows.length === 0 && !hasNextPage ? (
-          <div className="flex flex-col items-center gap-3 px-4 py-10 text-center" data-testid="list-empty">
-            <p className="text-body text-faint">
+          <div className="flex flex-col items-start gap-3 px-6 py-10" data-testid="list-empty">
+            <p className="text-body text-muted-foreground">
               {q ? (
                 <Trans>Nothing matches your search here.</Trans>
               ) : narrowed || unreadOnly ? (
@@ -1470,7 +1489,12 @@ export function ChatList({
               )}
             </p>
             {filtered && (
-              <Button variant="outline" className={look.btnSm} onClick={clearFilters} data-testid="clear-filters">
+              <Button
+                variant="outline"
+                className="h-8 rounded-[9px] border-input bg-card px-3 font-normal"
+                onClick={clearFilters}
+                data-testid="clear-filters"
+              >
                 <Trans>Clear search and filters</Trans>
               </Button>
             )}
@@ -1478,10 +1502,7 @@ export function ChatList({
         ) : (
           <>
             {pinnedRows.length > 0 && (
-              <div
-                className="flex items-center gap-1.5 border-b px-4 pt-2 pb-1.5 text-caption font-medium text-faint"
-                data-testid="pinned-heading"
-              >
+              <div className={cn(look.over, "flex items-center gap-1.5 px-5 pt-3 pb-1.5")} data-testid="pinned-heading">
                 <PinIcon className="size-3 rotate-45" />
                 <Trans>Pinned</Trans>
               </div>
@@ -1498,9 +1519,7 @@ export function ChatList({
                 onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
               />
             ))}
-            {pinnedRows.length > 0 && mainRows.length > 0 && (
-              <div className="h-2 border-b bg-surface" role="separator" />
-            )}
+            {pinnedRows.length > 0 && mainRows.length > 0 && <div className="h-2" role="separator" />}
             {mainRows.map((c) => (
               <Row
                 key={c.id}
@@ -1524,6 +1543,7 @@ export function ChatList({
         )}
         <ErrorLine error={isSearchError(list.error) ? null : list.error} className="px-4 py-2" />
       </div>
+      {selecting && selection}
       {confirmDialog}
       <BulkFailuresDialog failures={failures} rows={rows} onClose={() => setFailures([])} />
       {linking && (

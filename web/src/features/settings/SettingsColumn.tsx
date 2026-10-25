@@ -65,6 +65,8 @@ function isWide(pathname: string) {
 
 export function SettingsPane() {
   const { pathname } = useLocation()
+  if (pathname === "/settings/workspace" || /^\/settings\/inboxes\/[^/]+\/channels\/[^/]+$/.test(pathname))
+    return <Outlet />
   return (
     <Page testId="settings" width={isWide(pathname) ? "full" : "form"}>
       <Outlet />

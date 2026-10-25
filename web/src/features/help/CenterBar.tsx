@@ -11,6 +11,7 @@ import { centerLink, useUpdateHelpCenter } from "@/features/help/queries"
 import { look } from "@/features/inbox/PageFrame"
 import { Pill } from "@/features/status/PageFrame"
 import type { HelpCenter, Inbox } from "@/lib/api"
+import { cn } from "@/lib/utils"
 
 export type CenterGroup = { inbox: Inbox; center?: HelpCenter }
 
@@ -46,7 +47,7 @@ export function ProductChips({
   return (
     <nav
       aria-label={t`Help center`}
-      className="-my-1 flex min-w-0 items-center gap-2 overflow-x-auto py-1 [scrollbar-width:none]"
+      className="-my-1 flex min-w-0 items-center gap-2 overflow-x-auto py-1 [scrollbar-width:none] phone:flex-1"
       data-testid="help-center-picker"
     >
       {groups.map(({ inbox, center }) => {
@@ -64,7 +65,7 @@ export function ProductChips({
               key={inbox.id}
               to={centerLink(center.id)}
               aria-current={on ? "page" : undefined}
-              className={on ? look.chipOn : look.chip}
+              className={on ? look.listChipOn : look.listChip}
               onClick={() => filter && setFilter(inbox.id)}
               data-testid="help-row"
             >
@@ -78,7 +79,7 @@ export function ProductChips({
           <button
             key={inbox.id}
             type="button"
-            className={on ? look.chipOn : look.chipDash}
+            className={cn(on ? look.listChipOn : look.listChip, !on && "border-dashed bg-transparent")}
             onClick={() => onCreate(inbox)}
             data-testid="create-help-center-open"
           >
@@ -112,14 +113,14 @@ export function CenterBar({
   const inbox = groups.find((g) => g.inbox.id === center.inbox_id)?.inbox
   return (
     <div
-      className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b px-6 py-2.5 phone:px-4"
+      className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b bg-surface px-6 py-2.5 phone:px-4"
       data-testid="help-center-bar"
     >
-      <span className="flex min-w-0 flex-1 basis-64 items-center gap-2">
+      <span className="flex min-w-0 flex-1 basis-64 items-center gap-2 phone:basis-full">
         {inbox && <InboxMark name={inbox.name} color={inbox.branding.color} className="size-5 text-[10px]" />}
         <span className="flex min-w-0 flex-col leading-[1.3]">
           <span className="flex items-center gap-2">
-            <span className="truncate font-semibold" data-testid="help-center-name">
+            <span className="truncate text-reading font-semibold" data-testid="help-center-name">
               {center.name}
             </span>
             <Pill tone={center.published ? "success" : "muted"} data-testid="help-published">
@@ -132,7 +133,7 @@ export function CenterBar({
         </span>
       </span>
       <ProductChips groups={groups} currentInboxId={center.inbox_id} canManage={canManage} onCreate={onCreate} />
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2 phone:ms-auto">
         {center.published && (
           <Button
             variant="outline"

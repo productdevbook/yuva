@@ -1,9 +1,9 @@
 import { useLingui } from "@lingui/react/macro"
-import { Link, type To } from "react-router"
+import { type To } from "react-router"
 
+import { OverflowTabs } from "@/components/common/OverflowTabs"
 import { formatDateTime, formatDuration, formatShort } from "@/components/common/text"
 import { useNow } from "@/hooks/use-now"
-import { pageTabClass } from "@/features/settings/ui"
 import { cn } from "@/lib/utils"
 
 export const look = {
@@ -17,6 +17,10 @@ export const look = {
     "inline-flex h-[30px] shrink-0 items-center gap-1 rounded-lg border border-dashed border-input bg-transparent px-2.5 text-body text-muted-foreground outline-none transition-colors hover:border-faint hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-popup-open:border-faint",
   chipOn:
     "inline-flex h-[30px] shrink-0 items-center gap-1.5 rounded-lg border border-brand/40 bg-brand-wash px-2.5 text-body font-medium text-brand outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  listChip:
+    "inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border bg-card px-2.5 text-small text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-popup-open:bg-muted data-popup-open:text-foreground",
+  listChipOn:
+    "inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border border-foreground bg-foreground px-2.5 text-small text-background outline-none focus-visible:ring-2 focus-visible:ring-ring",
   over: "text-[11px] leading-4 font-medium tracking-[0.06em] text-faint uppercase",
   card: "overflow-hidden rounded-xl border bg-background",
   th: "text-caption font-medium text-faint",
@@ -38,59 +42,21 @@ export function FrameTabs<T extends string>({
   value,
   onChange,
   label,
+  moreTestId,
 }: {
   items: readonly FrameTab<T>[]
   value: T | null
   onChange?: (key: T) => void
   label: string
+  moreTestId?: string
 }) {
-  const { i18n } = useLingui()
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const cls = pageTabClass
   return (
-    <nav aria-label={label} className="-mx-1 overflow-x-auto px-1 [scrollbar-width:none]" data-testid="page-tabs">
-      <ul className="flex gap-5">
-        {items.map((tab) => {
-          const current = tab.key === value ? ("page" as const) : undefined
-          const inner = (
-            <>
-              {tab.label}
-              {tab.count !== undefined && (
-                <span className="text-caption font-normal text-faint tabular-nums">{fmt.format(tab.count)}</span>
-              )}
-            </>
-          )
-          return (
-            <li key={tab.key} className="shrink-0">
-              {tab.to !== undefined ? (
-                <Link
-                  to={tab.to}
-                  aria-current={current}
-                  className={cls}
-                  title={tab.title}
-                  onClick={() => onChange?.(tab.key)}
-                  data-testid={tab.testId}
-                >
-                  {inner}
-                </Link>
-              ) : (
-                <button
-                  type="button"
-                  aria-current={current}
-                  aria-pressed={tab.key === value}
-                  className={cls}
-                  title={tab.title}
-                  onClick={() => onChange?.(tab.key)}
-                  data-testid={tab.testId}
-                >
-                  {inner}
-                </button>
-              )}
-            </li>
-          )
-        })}
-      </ul>
-    </nav>
+    <OverflowTabs
+      label={label}
+      current={value}
+      moreTestId={moreTestId}
+      items={items.map((tab) => ({ ...tab, onSelect: onChange && (() => onChange(tab.key)) }))}
+    />
   )
 }
 

@@ -46,7 +46,7 @@ function NoInbox({ p }: { p: AnalyticsProperty }) {
   const search = useViewSearch()
   return (
     <section
-      className="flex flex-col items-center gap-2 rounded-2xl border border-dashed px-4 py-10 text-center"
+      className="flex flex-col items-center gap-2 rounded-[14px] border border-dashed px-4 py-10 text-center"
       data-testid="support-no-inbox"
     >
       <LifeBuoyIcon className="size-6 text-faint" />
@@ -122,11 +122,11 @@ function Tiles({
   const value = (m: NumMetric, o?: Record<string, unknown>) =>
     m === "support_rate" && !o?.pageviews ? undefined : (o?.[m] as number | undefined)
   return (
-    <div className="grid grid-cols-3 gap-2 phone:grid-cols-2" data-testid="support-tiles">
+    <div className="grid grid-cols-3 gap-2 @max-2xl:grid-cols-2" data-testid="support-tiles">
       {TILES.map((m) => (
         <div
           key={m}
-          className="flex min-w-0 flex-col items-start rounded-2xl border bg-card px-4 py-3 phone:px-3"
+          className="flex min-w-0 flex-col items-start rounded-[14px] border bg-card px-4 py-3 @max-2xl:px-3"
           title={text.metricHelp[m]}
           data-testid={`support-${m}`}
         >
@@ -218,7 +218,7 @@ function SupportReport({ p }: { p: AnalyticsProperty }) {
         />
         <CsvButton testId="support-csv" run={() => downloadCsv(p.id, body, `${p.name}-support-${dim}`)} />
       </div>
-      <div className="overflow-hidden rounded-2xl border bg-card">
+      <div className="overflow-hidden rounded-[14px] border bg-card">
         <table className="w-full table-fixed text-body" data-testid="support-table">
           <thead>
             <tr className="border-b text-caption text-faint">
@@ -227,7 +227,7 @@ function SupportReport({ p }: { p: AnalyticsProperty }) {
                 const label = m === "ratings_up" ? t`Ratings` : text.metric[m]
                 const active = order?.metric === m
                 return (
-                  <th key={m} className={cn("w-24 px-2 py-2.5 text-end font-medium", i > 1 && "phone:hidden")}>
+                  <th key={m} className={cn("w-24 px-2 py-2.5 text-end font-medium", i > 1 && "@max-2xl:hidden")}>
                     {sortable(m) ? (
                       <button
                         type="button"
@@ -299,7 +299,7 @@ function SupportReport({ p }: { p: AnalyticsProperty }) {
                         key={m}
                         className={cn(
                           "px-2 py-2 text-end tabular-nums",
-                          j > 1 && "phone:hidden",
+                          j > 1 && "@max-2xl:hidden",
                           low && m === "support_rate" && "text-faint"
                         )}
                         title={low && m === "support_rate" ? t`Fewer than 100 views` : undefined}

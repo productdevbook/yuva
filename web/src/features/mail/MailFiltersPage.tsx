@@ -3,10 +3,9 @@ import { ArrowLeftIcon } from "lucide-react"
 import { Link, Navigate, useParams } from "react-router"
 
 import { Button } from "@/components/ui/button"
-import { PageTop, look } from "@/features/inbox/PageFrame"
+import { PageTop } from "@/features/inbox/PageFrame"
 import { mailPath, useFilterAccess, useMailInboxes } from "@/features/mail/folders"
 import { RuleList } from "@/features/settings/automation/RuleList"
-import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
 export function MailFiltersPage() {
@@ -26,7 +25,7 @@ export function MailFiltersPage() {
         actions={
           <Button
             variant="outline"
-            className={cn(look.btn, "gap-1.5")}
+            className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal"
             render={<Link to={mailPath(box, "inbox")} />}
             aria-label={t`Back to the mail`}
           >
@@ -35,7 +34,7 @@ export function MailFiltersPage() {
           </Button>
         }
       />
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 phone:px-4">
+      <div className="min-h-0 flex-1 overflow-y-auto bg-background px-6 py-5 phone:px-4">
         <div className="flex max-w-3xl flex-col gap-4">
           <RuleList
             inboxId={box}

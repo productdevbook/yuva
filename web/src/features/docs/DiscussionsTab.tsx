@@ -60,38 +60,40 @@ export function DiscussionsTab({ discussionId }: { discussionId?: string }) {
 
   if (phone) {
     return discussionId ? (
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-4 pb-24">
+      <div className="min-h-0 flex-1 overflow-y-auto bg-card px-4 pt-4 pb-24">
         <Thread embedded discussionId={discussionId} back={back} key={discussionId} />
       </div>
     ) : (
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto bg-card">
         <ThreadList filters={filters} showPage bare keyboard selectable empty={empty} />
       </div>
     )
   }
   return (
-    <div className="flex min-h-0 flex-1">
-      <div className="min-h-0 w-[420px] shrink-0 overflow-y-auto border-e">
-        <ThreadList
-          filters={filters}
-          showPage
-          bare
-          keyboard={!discussionId}
-          currentId={discussionId}
-          selectable
-          empty={empty}
-        />
-      </div>
-      <div className="min-w-0 flex-1 overflow-y-auto">
-        {discussionId ? (
-          <div className="mx-auto w-full max-w-[760px] px-6 pt-5 pb-24">
-            <Thread embedded discussionId={discussionId} key={discussionId} />
-          </div>
-        ) : (
-          <p className="px-6 py-12 text-center text-body text-faint">
-            <Trans>Pick a discussion to read and answer it.</Trans>
-          </p>
-        )}
+    <div className="flex min-h-0 flex-1 bg-surface p-6">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1360px] overflow-hidden rounded-[14px] border bg-card">
+        <div className="min-h-0 w-[360px] shrink-0 overflow-y-auto border-e">
+          <ThreadList
+            filters={filters}
+            showPage
+            bare
+            keyboard={!discussionId}
+            currentId={discussionId}
+            selectable
+            empty={empty}
+          />
+        </div>
+        <div className="min-w-0 flex-1 overflow-y-auto">
+          {discussionId ? (
+            <div className="mx-auto w-full max-w-[760px] px-6 pt-5 pb-24">
+              <Thread embedded discussionId={discussionId} key={discussionId} />
+            </div>
+          ) : (
+            <p className="px-6 py-12 text-center text-body text-faint">
+              <Trans>Pick a discussion to read and answer it.</Trans>
+            </p>
+          )}
+        </div>
       </div>
     </div>
   )

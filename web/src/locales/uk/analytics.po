@@ -21,20 +21,10 @@ msgstr "{0, plural, one {# рядок} few {# рядки} many {# рядків} 
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {відвідувач сьогодні} few {відвідувачі сьогодні} many {відвідувачів сьогодні} other {відвідувача сьогодні}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "Розмов: {0}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "{0} відвідувачів"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "Відвідувачів: {0}"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "Докладні записи зберігаються з {rawDay}."
 msgid "Detailed records kept since"
 msgstr "Докладні записи зберігаються з"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "Подробиці"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "Пристрій"
@@ -1417,10 +1411,6 @@ msgstr "Місячний ліміт"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "Місяці"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "Більше переглядів"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

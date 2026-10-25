@@ -272,7 +272,7 @@ function Row({
     <li
       ref={setDropRef}
       className={cn(
-        "flex items-center gap-2 py-2 pe-2 transition-colors",
+        "flex min-h-14 items-center gap-2 py-2 pe-2 transition-colors hover:bg-surface/60",
         isOver && "bg-brand-wash",
         isDragging && "opacity-50"
       )}
@@ -296,7 +296,7 @@ function Row({
       </button>
       <Icon className="size-4 shrink-0 text-muted-foreground" />
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-body font-medium">{name}</span>
+        <span className="block truncate text-body font-semibold">{name}</span>
         {missing.length > 0 && center.locales.length > 1 && (
           <span className="block truncate text-caption text-faint">
             {missing.map((l) => l.toUpperCase()).join(" ")} <Trans>not named</Trans>
@@ -411,7 +411,7 @@ export function CollectionsTab({ center }: { center: HelpCenter }) {
     })
   }
 
-  if (query.isPending) return <Skeleton className="h-40 w-full rounded-2xl" />
+  if (query.isPending) return <Skeleton className="h-40 w-full rounded-[14px]" />
   return (
     <div className="flex flex-col gap-4" data-testid="help-collections">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -433,15 +433,17 @@ export function CollectionsTab({ center }: { center: HelpCenter }) {
       </div>
       <ErrorLine error={query.error ?? m.reorder.error ?? m.remove.error} />
       {all.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 rounded-2xl border border-dashed px-6 py-12 text-center">
-          <FoldersIcon className="size-6 text-faint" />
+        <div className="flex flex-col items-center gap-2 rounded-[14px] border bg-card px-6 py-12 text-center">
+          <span className="mb-1 grid size-12 place-items-center rounded-2xl bg-muted text-faint">
+            <FoldersIcon className="size-5" />
+          </span>
           <p className="text-body text-muted-foreground" data-testid="help-collections-empty">
             <Trans>No collections yet. Articles can stay without one.</Trans>
           </p>
         </div>
       ) : (
         <DndContext sensors={sensors} onDragEnd={onDragEnd}>
-          <ul className="flex flex-col divide-y overflow-hidden rounded-2xl border bg-card">
+          <ul className="flex flex-col divide-y overflow-hidden rounded-[14px] border bg-card">
             {tops.flatMap((top, i) => [
               <Row
                 key={top.id}

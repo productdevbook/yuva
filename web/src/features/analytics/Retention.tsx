@@ -24,7 +24,7 @@ function Empty({
 }) {
   return (
     <div
-      className="flex flex-col items-center gap-2 rounded-2xl border border-dashed px-4 py-10 text-center"
+      className="flex flex-col items-center gap-2 rounded-[14px] border border-dashed px-4 py-10 text-center"
       data-testid="retention-empty"
     >
       <RepeatIcon className="size-6 text-faint" />
@@ -190,7 +190,7 @@ export function RetentionView() {
       </div>
       <QueryProblem error={q.error} />
       {q.isPending ? (
-        <Skeleton className="h-64 rounded-2xl" />
+        <Skeleton className="h-64 rounded-[14px]" />
       ) : q.data && q.data.cohorts.length === 0 ? (
         <Empty title={<Trans>No consented visitors yet</Trans>}>
           <p>

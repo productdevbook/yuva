@@ -21,20 +21,10 @@ msgstr "{0, plural, one {#টি সারি} other {#টি সারি}}"
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {আজকের ভিজিটর} other {আজকের ভিজিটর}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "{0}টি কথোপকথন"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "ভিজিটরের {0}"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "{0} জন ভিজিটর"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "বিস্তারিত রেকর্ড {rawDay} থেকে র
 msgid "Detailed records kept since"
 msgstr "বিস্তারিত রেকর্ড এর পর থেকে রাখা হয়"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "বিবরণ"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "ডিভাইস"
@@ -1417,10 +1411,6 @@ msgstr "মাসিক সীমা"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "মাস"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "আরও ভিউ"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

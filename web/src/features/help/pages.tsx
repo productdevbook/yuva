@@ -1,6 +1,6 @@
 import "@/features/help/i18n"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { LifeBuoyIcon, LoaderIcon, SearchIcon } from "lucide-react"
+import { LifeBuoyIcon, LoaderIcon } from "lucide-react"
 import { useRef, useState } from "react"
 import { Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 
@@ -83,12 +83,16 @@ export function HelpHome() {
   const target =
     all.find((g) => g.inbox.id === picked && !g.center) ?? groups.find((g) => !g.center) ?? all.find((g) => !g.center)
   return (
-    <main className="flex min-h-0 flex-1 flex-col" data-testid="help-home">
-      <PageTop title={<Trans>Help center</Trans>} sub={<Trans>Articles people read before they write to you</Trans>} />
+    <main className="flex min-h-0 flex-1 flex-col bg-surface" data-testid="help-home">
+      <PageTop
+        className="bg-surface"
+        title={<Trans>Help center</Trans>}
+        sub={<Trans>Articles people read before they write to you</Trans>}
+      />
       <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 phone:px-4">
         <div className="flex max-w-[720px] flex-col gap-4">
           {pending ? (
-            <Skeleton className="h-40 w-full rounded-xl" />
+            <Skeleton className="h-40 w-full rounded-[14px]" />
           ) : error ? (
             <ErrorLine error={error} />
           ) : (
@@ -99,10 +103,10 @@ export function HelpHome() {
                 canManage={canManage}
                 onCreate={(i) => setPicked(i.id)}
               />
-              <div className={`${look.card} flex flex-col gap-3 p-7`} data-testid="help-panel">
+              <div className={`${look.card} flex flex-col gap-3 rounded-[14px] p-6`} data-testid="help-panel">
                 {target ? (
                   <>
-                    <h2 className="text-[18px] font-semibold">
+                    <h2 className="text-reading font-semibold">
                       <Trans>No help center for {target.inbox.name} yet</Trans>
                     </h2>
                     <p className="text-muted-foreground">
@@ -236,15 +240,28 @@ export function CenterPane() {
 
   if (center.isPending) {
     return (
-      <main className="flex flex-col gap-4 px-6 py-5">
+      <main className="flex flex-1 flex-col gap-4 bg-surface px-6 py-5 phone:px-4" aria-busy="true">
         <Skeleton className="h-8 w-60" />
-        <Skeleton className="h-24 w-full rounded-xl" />
+        <div className="grid grid-cols-[220px_minmax(0,1fr)_290px] gap-4 phone:grid-cols-1">
+          <Skeleton className="h-64 rounded-xl" />
+          <Skeleton className="h-[480px] rounded-[14px]" />
+          <Skeleton className="h-72 rounded-[14px] phone:hidden" />
+        </div>
       </main>
     )
   }
   if (!c) {
     return (
-      <main className="px-6 py-5">
+      <main
+        className="flex flex-1 flex-col items-center gap-2.5 bg-surface px-6 py-12 text-center"
+        data-testid="help-center-error"
+      >
+        <span
+          className="grid size-8 place-items-center rounded-full bg-destructive/10 text-body font-bold text-destructive"
+          aria-hidden
+        >
+          !
+        </span>
         <ErrorLine error={center.error} />
       </main>
     )
@@ -264,10 +281,10 @@ export function CenterPane() {
   }
   const previewKey = keyLabel(HELP_KEYS.preview).join("")
   const newKey = keyLabel(HELP_KEYS.newArticle).join("")
-  const findKey = keyLabel(HELP_KEYS.search).join("")
   return (
-    <main className="flex min-h-0 flex-1 flex-col" data-testid="help-center" key={c.id}>
+    <main className="flex min-h-0 flex-1 flex-col bg-surface" data-testid="help-center" key={c.id}>
       <PageTop
+        className="bg-surface"
         title={<Trans>Help center</Trans>}
         sub={<Trans>Articles people read before they write to you</Trans>}
         actions={
@@ -304,25 +321,6 @@ export function CenterPane() {
             }))}
           />
         }
-        aside={
-          <>
-            {listing && (
-              <label className="relative flex h-[30px] w-56 items-center">
-                <SearchIcon className="pointer-events-none absolute start-2.5 size-3.5 text-faint" aria-hidden />
-                <input
-                  ref={search}
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  onKeyDown={(e) => e.key === "Escape" && e.currentTarget.blur()}
-                  placeholder={t`Search titles (${findKey})`}
-                  aria-label={t`Search titles`}
-                  className="size-full rounded-lg border border-input bg-background ps-8 pe-2 text-body outline-none placeholder:text-faint focus-visible:border-faint"
-                  data-testid="help-article-search"
-                />
-              </label>
-            )}
-          </>
-        }
       />
       <CenterBar
         center={c}
@@ -332,23 +330,27 @@ export function CenterPane() {
         onCreate={create}
         onTogglePublish={togglePublish}
       />
-      <div className="shrink-0 px-6 pt-3 phone:px-4">
-        <DocsNote />
-      </div>
       <ErrorLine error={pub.error} className="px-6 pt-2" />
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5 phone:px-4">
-        {listing && (
-          <ArticlesTab
-            key={tab}
-            center={c}
-            drafts={tab === "drafts"}
-            q={q}
-            onWrite={(title, collectionId) => setCreating({ title, collectionId })}
-          />
-        )}
-        {tab === "collections" && <CollectionsTab center={c} />}
-        {tab === "report" && <ReportTab center={c} />}
-        {tab === "settings" && canManage && <SettingsTab center={c} />}
+      <div className="@container min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-12 phone:px-4">
+        <div className="max-w-[1240px]">
+          {listing && (
+            <ArticlesTab
+              key={tab}
+              center={c}
+              drafts={tab === "drafts"}
+              q={q}
+              onQ={setQ}
+              search={search}
+              onWrite={(title, collectionId) => setCreating({ title, collectionId })}
+            />
+          )}
+          {tab === "collections" && <CollectionsTab center={c} />}
+          {tab === "report" && <ReportTab center={c} />}
+          {tab === "settings" && canManage && <SettingsTab center={c} />}
+        </div>
+        <div className="mt-6">
+          <DocsNote />
+        </div>
       </div>
       {createDialog}
       {pub.dialog}

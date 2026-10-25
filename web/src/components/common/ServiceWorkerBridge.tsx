@@ -1,14 +1,14 @@
 import { Trans } from "@lingui/react/macro"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useNavigate } from "react-router"
 
 import { Button } from "@/components/ui/button"
-import { onServiceWorkerNavigate, useWaitingUpdate } from "@/lib/pwa"
+import { onServiceWorkerNavigate, useUpdateDismissed, useWaitingUpdate } from "@/lib/pwa"
 
 export function ServiceWorkerBridge() {
   const navigate = useNavigate()
   const update = useWaitingUpdate()
-  const [dismissed, setDismissed] = useState(false)
+  const [dismissed, dismiss] = useUpdateDismissed()
   useEffect(() => {
     onServiceWorkerNavigate((path) => navigate(path))
     return () => onServiceWorkerNavigate(null)
@@ -18,7 +18,7 @@ export function ServiceWorkerBridge() {
     <div
       role="status"
       data-testid="update-toast"
-      className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4"
+      className="pointer-events-none fixed inset-x-0 bottom-4 z-50 max-md:bottom-[calc(4.25rem+env(safe-area-inset-bottom))] flex justify-center px-4"
     >
       <div className="pointer-events-auto flex max-w-full items-center gap-2 rounded-full border bg-card py-1 ps-4 pe-1 text-body shadow-[0_12px_32px_-16px_rgb(15_23_42/0.3)]">
         <span className="size-1.5 shrink-0 rounded-full bg-brand" />
@@ -28,7 +28,7 @@ export function ServiceWorkerBridge() {
         <Button size="sm" onClick={update} data-testid="update-reload">
           <Trans>Reload</Trans>
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => setDismissed(true)}>
+        <Button variant="ghost" size="sm" onClick={() => dismiss()}>
           <Trans>Later</Trans>
         </Button>
       </div>

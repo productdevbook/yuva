@@ -1,9 +1,9 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ChevronDownIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react"
+import { ArrowLeftRightIcon, BookUserIcon, ChevronDownIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
-import { ContactAvatar, ErrorLine, toast } from "@/components/common"
+import { ContactAvatar, Dot, ErrorLine, toast } from "@/components/common"
 import { useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
@@ -31,9 +31,8 @@ import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { useContactDirectory, useCreateContact } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { Ago, look } from "@/features/inbox/PageFrame"
-import { ProductTag } from "@/features/inbox/ProductTag"
-import { headButton, Page, PageHeader, PageTabs } from "@/features/settings/ui"
+import { Ago } from "@/features/inbox/PageFrame"
+import { PageTabs } from "@/features/settings/ui"
 import { useDebounced } from "@/hooks/use-debounced"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useSelection } from "@/hooks/use-selection"
@@ -45,7 +44,17 @@ import { useInboxes } from "@/lib/workspace"
 type Tab = "all" | "recent" | "duplicates"
 
 const GRID =
-  "grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_64px_92px_minmax(0,90px)] items-center gap-3 px-4 max-xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_64px_92px]"
+  "grid grid-cols-[minmax(200px,2.2fr)_minmax(110px,1.2fr)_minmax(0,100px)_72px_96px] items-center gap-3 px-3 max-xl:grid-cols-[minmax(180px,2fr)_minmax(100px,1fr)_minmax(0,90px)_72px]"
+
+const chipBase =
+  "inline-flex h-[34px] shrink-0 items-center gap-1.5 rounded-[9px] border px-2.5 text-small whitespace-nowrap outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring"
+const chipOff =
+  "border-dashed border-input bg-transparent text-muted-foreground hover:border-faint hover:text-foreground"
+const chipOn = "border-input bg-card font-medium text-foreground data-popup-open:bg-muted"
+const toggleOff = "border-input bg-card text-muted-foreground hover:border-faint hover:text-foreground"
+const toggleOn = "border-foreground bg-foreground text-background"
+const actionInk = "h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
+const actionOutline = "h-8 rounded-[9px] border-input bg-card px-3 font-normal"
 
 export function countryOf(c: Contact, locale: string) {
   const attr = c.attributes?.country
@@ -118,14 +127,14 @@ function FilterChip({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<button type="button" className={current ? look.chipOn : look.chipDash} />}
+        render={<button type="button" className={cn(chipBase, current ? chipOn : chipOff)} />}
         aria-label={ariaLabel}
         data-testid={testId}
       >
         {current ? (
           <>
             <span className="max-w-28 truncate">{current.label}</span>
-            <ChevronDownIcon className="size-3.5" />
+            <ChevronDownIcon className="size-3 text-faint" />
           </>
         ) : (
           <>
@@ -164,7 +173,7 @@ function ToggleChip({
       type="button"
       aria-pressed={on}
       onClick={onClick}
-      className={on ? look.chipOn : look.chipDash}
+      className={cn(chipBase, on ? toggleOn : toggleOff)}
       data-testid={testId}
     >
       {children}
@@ -172,12 +181,12 @@ function ToggleChip({
   )
 }
 
-function Pill({ tone, children }: { tone: "danger" | "warn"; children: React.ReactNode }) {
+function Tag({ tone, children }: { tone: "danger" | "warn"; children: React.ReactNode }) {
   return (
     <span
       className={cn(
-        "shrink-0 rounded-full border px-1.5 text-[11px] leading-4 font-medium",
-        tone === "danger" ? "border-destructive/35 text-destructive" : "border-warning/45 text-warning"
+        "inline-flex h-5 shrink-0 items-center rounded-md px-[7px] text-[11px] font-semibold",
+        tone === "danger" ? "bg-destructive/10 text-destructive" : "bg-warning/10 text-warning"
       )}
     >
       {children}
@@ -199,11 +208,12 @@ function Row({
   check?: { checked: boolean; onToggle: (range: boolean) => void }
 }) {
   const { t, i18n } = useLingui()
+  const inboxes = useInboxes().data
   const name = contactName(c, t`Unnamed contact`)
   const sub = c.emails[0] && c.emails[0] !== name ? c.emails[0] : (c.external_ids[0]?.external_id ?? "")
   const seen = c.activity?.last_seen_at
   return (
-    <li className="flex items-center border-t">
+    <li className="flex items-center">
       {check && <RowCheck className="ms-4" checked={check.checked} name={name} onToggle={check.onToggle} />}
       <Link
         to={`/contacts/${c.id}${search}`}
@@ -218,44 +228,49 @@ function Row({
         className={cn(
           "min-w-0 flex-1",
           GRID,
-          "py-2.5 outline-none transition-colors hover:bg-surface focus-visible:bg-surface",
-          current && "bg-surface shadow-[inset_2px_0_0_var(--brand)] rtl:shadow-[inset_-2px_0_0_var(--brand)]",
-          cursor && !current && "bg-surface"
+          "relative min-h-14 border-b border-b-muted py-2 outline-none transition-colors hover:bg-muted/60 focus-visible:bg-muted/60",
+          current && "rounded-[10px] border-b-transparent bg-card shadow-[0_0_0_1px_var(--border)] hover:bg-card",
+          cursor && !current && "bg-muted/60",
+          (current || cursor) &&
+            "before:absolute before:inset-y-3 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand"
         )}
         aria-current={current ? "page" : undefined}
         data-testid="contact-row"
       >
-        <span className="flex min-w-0 items-center gap-2.5">
-          <ContactAvatar id={c.id} name={name} className="size-[30px] shrink-0 text-caption font-semibold" />
-          <span className="flex min-w-0 flex-col leading-[1.3]">
+        <span className="flex min-w-0 items-center gap-3">
+          <ContactAvatar id={c.id} name={name} className="size-[34px] shrink-0 text-caption font-semibold" />
+          <span className="flex min-w-0 flex-col">
             <span className="flex min-w-0 items-center gap-1.5">
-              <span className="truncate font-medium">{name}</span>
+              <span className="truncate text-[13.5px] font-semibold">{name}</span>
               {c.blocked && (
-                <Pill tone="danger">
+                <Tag tone="danger">
                   <Trans>Blocked</Trans>
-                </Pill>
+                </Tag>
               )}
               {c.undeliverable.length > 0 && (
-                <Pill tone="warn">
+                <Tag tone="warn">
                   <Trans>Undeliverable</Trans>
-                </Pill>
+                </Tag>
               )}
             </span>
             <span className="truncate text-caption text-faint">{sub || <Trans>Visitor</Trans>}</span>
           </span>
         </span>
-        <span className="flex min-w-0 flex-wrap gap-1 overflow-hidden">
+        <span className="flex min-w-0 flex-wrap gap-x-2.5 gap-y-1 overflow-hidden">
           {c.inboxes.slice(0, 3).map((i) => (
-            <ProductTag key={i.id} id={i.id} always />
+            <span key={i.id} className="inline-flex min-w-0 items-center gap-[5px] text-caption text-muted-foreground">
+              <Dot color={inboxes?.find((x) => x.id === i.id)?.branding.color} className="size-2 rounded-[3px]" />
+              <span className="truncate">{i.name}</span>
+            </span>
           ))}
         </span>
-        <span className="tabular-nums">
-          {c.activity ? new Intl.NumberFormat(i18n.locale).format(c.activity.conversations) : "—"}
-        </span>
-        <span className="truncate">{seen ? <Ago iso={seen} /> : <span className="text-faint">—</span>}</span>
-        <span className="truncate max-xl:hidden">
+        <span className="truncate text-[12.5px] text-muted-foreground">
           {countryOf(c, i18n.locale) ?? <span className="text-faint">—</span>}
         </span>
+        <span className="text-small text-muted-foreground tabular-nums">
+          {c.activity ? new Intl.NumberFormat(i18n.locale).format(c.activity.conversations) : "—"}
+        </span>
+        <span className="truncate text-[12.5px] text-faint max-xl:hidden">{seen ? <Ago iso={seen} /> : "—"}</span>
       </Link>
     </li>
   )
@@ -267,14 +282,14 @@ function Side({ c }: { c: Contact }) {
   const products = c.inboxes.map((i) => i.name).join(", ")
   const n = c.activity?.conversations ?? 0
   return (
-    <div className="flex min-w-0 flex-1 items-center gap-3 px-4 py-4">
-      <ContactAvatar id={c.id} name={name} className="size-10 shrink-0 font-semibold" />
+    <div className="flex min-w-0 flex-1 items-center gap-3">
+      <ContactAvatar id={c.id} name={name} className="size-[34px] shrink-0 text-caption font-semibold" />
       <span className="flex min-w-0 flex-col leading-[1.35]">
-        <Link to={`/contacts/${c.id}`} className="truncate font-semibold hover:underline">
+        <Link to={`/contacts/${c.id}`} className="truncate text-[13.5px] font-semibold hover:underline">
           {name}
         </Link>
-        <span className="truncate text-caption text-muted-foreground">{c.emails[0] ?? <Trans>no e-mail</Trans>}</span>
-        <span className="truncate text-caption text-muted-foreground">
+        <span className="truncate text-caption text-faint">{c.emails[0] ?? <Trans>no e-mail</Trans>}</span>
+        <span className="truncate text-caption text-faint">
           {products ? `${products} · ` : ""}
           {n === 1 ? <Trans>1 conversation</Trans> : <Trans>{n} conversations</Trans>}
         </span>
@@ -289,26 +304,25 @@ function PairCard({ pair, onDismiss }: { pair: Pair; onDismiss: () => void }) {
   const shared = pair.inbox
   return (
     <li
-      className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_220px] overflow-hidden rounded-xl border phone:grid-cols-1"
+      className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_auto] items-center gap-3 rounded-[14px] border bg-card px-4 py-3.5 max-xl:grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)] max-xl:[&>:last-child]:col-span-full"
       data-testid="duplicate-pair"
     >
       <Side c={pair.a} />
-      <div className="my-3 flex min-w-0 border-s border-dashed phone:my-0 phone:border-s-0 phone:border-t">
-        <Side c={pair.b} />
-      </div>
-      <div className="flex flex-col justify-center gap-2.5 border-s px-4 py-3.5 phone:border-s-0 phone:border-t">
-        <p className="text-caption text-muted-foreground">
+      <ArrowLeftRightIcon className="mx-auto size-4 text-faint" aria-hidden />
+      <Side c={pair.b} />
+      <div className="flex flex-col items-end gap-1.5 max-xl:items-start">
+        <p className="text-caption text-faint">
           {shared ? <Trans>Same name, both wrote to {shared}.</Trans> : <Trans>Same name.</Trans>}
         </p>
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
+          <Button variant="outline" className={actionOutline} onClick={onDismiss} data-testid="duplicate-dismiss">
+            <Trans>Not the same</Trans>
+          </Button>
           {canManage && (
-            <Button className={look.btnPSm} onClick={() => setMerging(true)} data-testid="duplicate-merge">
+            <Button className={actionInk} onClick={() => setMerging(true)} data-testid="duplicate-merge">
               <Trans>Merge…</Trans>
             </Button>
           )}
-          <Button variant="outline" className={look.btnSm} onClick={onDismiss} data-testid="duplicate-dismiss">
-            <Trans>Not the same</Trans>
-          </Button>
         </div>
       </div>
       {canManage && (
@@ -366,7 +380,7 @@ function AddContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={200}
-              className="h-9"
+              className="h-[38px] rounded-[9px]"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -378,7 +392,7 @@ function AddContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-9"
+              className="h-[38px] rounded-[9px]"
             />
           </div>
         </form>
@@ -518,62 +532,64 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   }, [cursor])
 
   const header = (
-    <PageHeader
-      back={false}
-      title={<Trans>Contacts</Trans>}
-      description={
-        product ? (
-          <Trans>People who wrote to {product}</Trans>
-        ) : (
-          <Trans>Everyone who has written to your products</Trans>
-        )
-      }
-      action={
-        <Button className={headButton.primary} onClick={() => setAdding(true)} data-testid="add-contact-open">
+    <header className="flex shrink-0 flex-col gap-3 px-6 pt-[18px]" data-testid="contacts-head">
+      <div className="flex min-w-0 flex-wrap items-center gap-3">
+        <div className="flex min-w-0 flex-1 basis-56 flex-col gap-0.5">
+          <h1 className="text-[22px] leading-7 font-semibold tracking-[-0.01em]">
+            <Trans>Contacts</Trans>
+          </h1>
+          <p className="truncate text-small text-faint">
+            {product ? (
+              <Trans>People who wrote to {product}</Trans>
+            ) : (
+              <Trans>Everyone who has written to your products</Trans>
+            )}
+          </p>
+        </div>
+        <Button className={actionInk} onClick={() => setAdding(true)} data-testid="add-contact-open">
+          <PlusIcon className="size-3.5" aria-hidden />
           <Trans>Add contact</Trans>
         </Button>
-      }
-      tabs={
-        <PageTabs
-          label={t`Show`}
-          current={tab}
-          items={[
-            { key: "all", to: tabTo("all"), label: <Trans>All</Trans>, testId: "contacts-filter-all" },
-            {
-              key: "recent",
-              to: tabTo("recent"),
-              label: <Trans>Recently active</Trans>,
-              testId: "contacts-filter-recent",
-            },
-            {
-              key: "duplicates",
-              to: tabTo("duplicates"),
-              label: <Trans>Duplicates</Trans>,
-              count: everyone.data && !everyone.hasNextPage ? pairs.length : undefined,
-              testId: "contacts-filter-duplicates",
-            },
-          ]}
-        />
-      }
-    />
+      </div>
+      <PageTabs
+        label={t`Show`}
+        current={tab}
+        items={[
+          { key: "all", to: tabTo("all"), label: <Trans>All</Trans>, testId: "contacts-filter-all" },
+          {
+            key: "recent",
+            to: tabTo("recent"),
+            label: <Trans>Recently active</Trans>,
+            testId: "contacts-filter-recent",
+          },
+          {
+            key: "duplicates",
+            to: tabTo("duplicates"),
+            label: <Trans>Duplicates</Trans>,
+            count: everyone.data && !everyone.hasNextPage ? pairs.length : undefined,
+            testId: "contacts-filter-duplicates",
+          },
+        ]}
+      />
+    </header>
   )
 
   const duplicates = (
-    <div className="flex flex-col gap-3" data-testid="duplicates">
-      <p className="max-w-3xl text-muted-foreground">
+    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-6 pt-4 pb-6" data-testid="duplicates">
+      <p className="max-w-3xl text-small text-faint">
         <Trans>
           These look like the same person. Merging keeps the left one and moves addresses, ids and conversations into
           it. Nothing is merged until you have seen what changes.
         </Trans>
       </p>
       {everyone.isPending ? (
-        <Skeleton className="h-24 w-full max-w-[980px] rounded-xl" />
+        <Skeleton className="h-24 w-full max-w-[980px] rounded-[14px]" />
       ) : pairs.length === 0 ? (
-        <p className="max-w-[980px] rounded-xl border border-dashed px-4 py-10 text-center text-faint">
+        <p className="max-w-[980px] py-10 text-center text-small text-faint">
           <Trans>No contacts look alike right now.</Trans>
         </p>
       ) : (
-        <ul className="flex max-w-[980px] flex-col gap-4">
+        <ul className="flex max-w-[980px] flex-col gap-2.5">
           {pairs.map((p) => (
             <PairCard key={p.key} pair={p} onDismiss={() => dismiss(p.key)} />
           ))}
@@ -581,9 +597,8 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
       )}
       {everyone.hasNextPage && (
         <Button
-          variant="ghost"
-          size="sm"
-          className="self-start"
+          variant="outline"
+          className={cn(actionOutline, "self-start")}
           onClick={() => void everyone.fetchNextPage()}
           disabled={everyone.isFetchingNextPage}
         >
@@ -594,9 +609,9 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   )
 
   const toolbar = (
-    <div className="flex flex-wrap items-center gap-2" data-testid="contacts-filters">
-      <label className="relative flex h-[34px] w-[280px] max-w-full items-center">
-        <SearchIcon className="pointer-events-none absolute start-2.5 size-3.5 text-faint" aria-hidden />
+    <div className="flex shrink-0 flex-wrap items-center gap-2 px-6 py-3" data-testid="contacts-filters">
+      <label className="flex h-[34px] max-w-[360px] min-w-[220px] flex-1 items-center gap-2 rounded-[9px] border border-input bg-card px-2.5 focus-within:border-brand focus-within:ring-[3px] focus-within:ring-brand/20">
+        <SearchIcon className="pointer-events-none size-3.5 shrink-0 text-faint" aria-hidden />
         <input
           ref={search}
           value={q}
@@ -621,14 +636,14 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
           }}
           placeholder={t`Search name, e-mail or id…`}
           aria-label={t`Search contacts`}
-          className="size-full rounded-lg border border-input bg-background ps-8 pe-8 text-body outline-none placeholder:text-faint focus-visible:border-faint"
+          className="min-w-0 flex-1 bg-transparent text-small outline-none placeholder:text-faint"
           data-testid="contacts-search"
         />
         {q && (
           <button
             type="button"
             onClick={() => set("q", "")}
-            className="absolute end-2 text-faint hover:text-foreground"
+            className="grid size-6 shrink-0 place-items-center rounded-lg text-faint hover:bg-muted hover:text-foreground"
             aria-label={t`Clear the search`}
           >
             <XIcon className="size-3.5" />
@@ -668,9 +683,14 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
         <Trans>Undeliverable</Trans>
       </ToggleChip>
       {anyFilter && (
-        <Button variant="ghost" size="sm" onClick={clearFilters} data-testid="contacts-clear">
+        <button
+          type="button"
+          onClick={clearFilters}
+          className="h-7 rounded-[7px] px-2 text-small font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+          data-testid="contacts-clear"
+        >
           <Trans>Clear filters</Trans>
-        </Button>
+        </button>
       )}
       <span className="ms-auto text-caption text-faint tabular-nums" data-testid="contacts-count">
         {directory.hasNextPage ? <Trans>People so far: {shownCount}</Trans> : <Trans>People: {shownCount}</Trans>}
@@ -680,8 +700,14 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   )
 
   const table = (
-    <div className={look.card}>
-      <div className={cn(GRID, "h-[38px]", look.th)} aria-hidden>
+    <div className="min-h-0 flex-1 overflow-auto px-4 pb-6">
+      <div
+        className={cn(
+          GRID,
+          "sticky top-0 z-[2] h-[34px] border-b bg-surface text-[11px] font-semibold tracking-[0.05em] text-faint uppercase"
+        )}
+        aria-hidden
+      >
         <span>
           <Trans>Person</Trans>
         </span>
@@ -689,32 +715,53 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
           <Trans>Products</Trans>
         </span>
         <span>
-          <Trans>Convers.</Trans>
+          <Trans>Country</Trans>
         </span>
         <span>
-          <Trans>Last seen</Trans>
+          <Trans>Convers.</Trans>
         </span>
         <span className="max-xl:hidden">
-          <Trans>Country</Trans>
+          <Trans>Last seen</Trans>
         </span>
       </div>
       {directory.isPending ? (
-        <div className="flex flex-col gap-2 border-t p-3">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
+        <div className="flex flex-col" aria-busy="true">
+          {[62, 48, 70, 54, 66, 44, 58, 50].map((w, i) => (
+            <div key={i} className="flex h-14 items-center gap-3 border-b border-b-muted px-3">
+              <Skeleton className="size-[34px] shrink-0 rounded-full" />
+              <div className="flex flex-1 flex-col gap-1.5">
+                <Skeleton className="h-3" style={{ width: `${w}%`, maxWidth: 240 }} />
+                <Skeleton className="h-2.5 w-30" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : directory.error ? (
-        <ErrorLine error={directory.error} className="border-t p-4" />
+        <ErrorLine error={directory.error} className="p-4" />
       ) : items.length === 0 ? (
-        <p className="border-t px-4 py-10 text-center text-faint">
-          {query ? (
-            <Trans>No contact matches “{query}”.</Trans>
-          ) : anyFilter ? (
-            <Trans>No contacts in this view.</Trans>
+        <div className="mx-auto flex max-w-sm flex-col items-center gap-3 px-2 py-14 text-center">
+          <span className="grid size-12 place-items-center rounded-xl bg-brand-wash text-brand">
+            <BookUserIcon className="size-5" aria-hidden />
+          </span>
+          <p className="text-body text-faint">
+            {query ? (
+              <Trans>No contact matches “{query}”.</Trans>
+            ) : anyFilter ? (
+              <Trans>No contacts in this view.</Trans>
+            ) : (
+              <Trans>No contacts yet. They appear when someone writes in.</Trans>
+            )}
+          </p>
+          {anyFilter ? (
+            <Button variant="outline" className={actionOutline} onClick={clearFilters}>
+              <Trans>Clear filters</Trans>
+            </Button>
           ) : (
-            <Trans>No contacts yet. They appear when someone writes in.</Trans>
+            <Button variant="outline" className={actionOutline} onClick={() => setAdding(true)}>
+              <Trans>Add contact</Trans>
+            </Button>
           )}
-        </p>
+        </div>
       ) : (
         <ul ref={list} className="flex flex-col">
           {items.map((c, i) => (
@@ -734,10 +781,10 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
         </ul>
       )}
       {directory.hasNextPage && (
-        <div className="flex justify-center border-t py-2">
+        <div className="flex justify-center py-4">
           <Button
-            variant="ghost"
-            size="sm"
+            variant="outline"
+            className={actionOutline}
             onClick={() => void directory.fetchNextPage()}
             disabled={directory.isFetchingNextPage}
             data-testid="contacts-more"
@@ -750,29 +797,39 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   )
 
   return (
-    <Page testId="contacts-page">
-      {header}
+    <main className="flex h-svh min-h-0 flex-col bg-surface max-md:h-[calc(100svh-49px)]" data-testid="contacts-page">
       {tab === "duplicates" ? (
-        duplicates
+        <>
+          {header}
+          {duplicates}
+        </>
       ) : fullPage ? (
-        <ContactDetail
-          key={contactId}
-          id={contactId}
-          page
-          back={{ to: `/contacts/${contactId}${suffix}`, label: t`Contacts` }}
-        />
+        <>
+          {header}
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-16">
+            <ContactDetail
+              key={contactId}
+              id={contactId}
+              page
+              back={{ to: `/contacts/${contactId}${suffix}`, label: t`Contacts` }}
+            />
+          </div>
+        </>
       ) : (
-        <div className="grid grid-cols-[minmax(0,1fr)_400px] items-start gap-6 max-xl:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="flex min-w-0 flex-col gap-3">
+        <div
+          className={cn(
+            "grid min-h-0 flex-1",
+            shown ? "grid-cols-[minmax(0,1fr)_440px] max-xl:grid-cols-[minmax(0,1fr)_380px]" : "grid-cols-1"
+          )}
+        >
+          <section className="flex min-h-0 min-w-0 flex-col" aria-label={t`Contacts`}>
+            {header}
             {toolbar}
             {canManage && <ContactBulkBar items={items} selection={selection} />}
             {table}
-          </div>
+          </section>
           {shown && (
-            <aside
-              className="sticky top-48 max-h-[calc(100svh-13rem)] overflow-y-auto rounded-xl border bg-card"
-              aria-label={t`Contact details`}
-            >
+            <aside className="flex min-h-0 flex-col overflow-hidden border-s bg-card" aria-label={t`Contact details`}>
               <ContactDetail
                 key={shown}
                 id={shown}
@@ -784,6 +841,6 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
         </div>
       )}
       <AddContactDialog open={adding} onOpenChange={setAdding} />
-    </Page>
+    </main>
   )
 }

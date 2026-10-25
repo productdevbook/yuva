@@ -171,7 +171,7 @@ function GoalDialog({ goal, onClose }: { goal?: AnalyticsGoal; onClose: () => vo
                   ))}
                 </datalist>
               </Field>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 @xl:grid-cols-2">
                 <Field label={<Trans>Only with prop</Trans>} htmlFor="goal-prop-key">
                   <Input
                     id="goal-prop-key"
@@ -415,11 +415,11 @@ function GoalDetail({ goal, onBack }: { goal: AnalyticsGoal; onBack: () => void 
         </Notice>
       )}
       <QueryProblem error={q.error} />
-      <div className="grid grid-cols-3 gap-2 phone:grid-cols-2" data-testid="goal-kpis">
+      <div className="grid grid-cols-3 gap-2 @max-2xl:grid-cols-2" data-testid="goal-kpis">
         {GOAL_KPIS.map((m) => (
           <div
             key={m}
-            className="flex min-w-0 flex-col rounded-2xl border bg-card px-4 py-3 phone:px-3"
+            className="flex min-w-0 flex-col rounded-[14px] border bg-card px-4 py-3 @max-2xl:px-3"
             title={text.metricHelp[m]}
             data-testid={`kpi-${m}`}
           >
@@ -492,14 +492,14 @@ function GoalList({
   return (
     <>
       <QueryProblem error={totals.error} />
-      <ul className="grid grid-cols-3 gap-4 max-xl:grid-cols-2 phone:grid-cols-1" data-testid="goals-table">
+      <ul className="grid grid-cols-3 gap-4 @max-5xl:grid-cols-2 @max-2xl:grid-cols-1" data-testid="goals-table">
         {goals.map((g) => {
           const m = totals.data?.get(g.id)
           return (
             <li key={g.id}>
               <button
                 type="button"
-                className="flex h-full w-full min-w-0 flex-col gap-3 rounded-xl border bg-card p-[18px] text-start outline-none transition-colors hover:border-faint focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-full w-full min-w-0 flex-col gap-3 rounded-[14px] border bg-card p-[18px] text-start outline-none transition-colors hover:border-faint focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => onPick(g.id)}
                 data-testid="goal-row"
               >
@@ -544,7 +544,7 @@ function GoalList({
             <button
               type="button"
               onClick={onNew}
-              className="flex h-full min-h-36 w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-input p-[18px] text-center text-muted-foreground outline-none transition-colors hover:border-faint hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex h-full min-h-36 w-full flex-col items-center justify-center gap-1.5 rounded-[14px] border border-dashed border-input p-[18px] text-center text-muted-foreground outline-none transition-colors hover:border-faint hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
               data-testid="goal-new"
             >
               <PlusIcon className="size-5" />
@@ -583,14 +583,14 @@ export function GoalsView() {
       else next.delete("goal")
       return next
     })
-  if (goals.isPending) return <Skeleton className="h-64 rounded-2xl" />
+  if (goals.isPending) return <Skeleton className="h-64 rounded-[14px]" />
   if (goals.error) return <ErrorLine error={goals.error} />
   if (picked) return <GoalDetail key={picked.id} goal={picked} onBack={() => pick(null)} />
   return (
     <section className="@container flex flex-col gap-3" data-testid="analytics-goals">
       {list.length === 0 ? (
         <div
-          className="flex flex-col items-center gap-2 rounded-2xl border border-dashed px-4 py-10 text-center"
+          className="flex flex-col items-center gap-2 rounded-[14px] border border-dashed px-4 py-10 text-center"
           data-testid="goals-empty"
         >
           <TargetIcon className="size-6 text-faint" />

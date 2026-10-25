@@ -11,6 +11,7 @@ import { todayIso, useView } from "@/features/analytics/state"
 import { api, ApiError, unwrap, type AnalyticsProperty } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useOptionalSession } from "@/lib/session"
+import { look } from "@/features/inbox/PageFrame"
 import { cn } from "@/lib/utils"
 
 export function useCurrentProperty() {
@@ -39,7 +40,7 @@ export function BarList({
   return (
     <div className="flex flex-col" data-testid={testId}>
       {head && (
-        <div className="flex justify-between px-1 pb-1.5 text-caption font-medium text-faint">
+        <div className={cn(look.over, "flex justify-between px-2 pb-1.5")}>
           <span>{head[0]}</span>
           <span>{head[1]}</span>
         </div>
@@ -50,17 +51,17 @@ export function BarList({
             <>
               <span
                 aria-hidden
-                className="absolute inset-y-0 start-0 rounded-md bg-brand-wash"
+                className="absolute inset-y-[3px] start-0 rounded-md bg-brand/10"
                 style={{ width: `${Math.max(1.5, (it.value / max) * 100)}%` }}
               />
               <span className="relative min-w-0 flex-1 truncate text-start" dir={it.ltr ? "ltr" : undefined}>
                 {it.label}
               </span>
-              <span className="relative shrink-0 text-body tabular-nums">{it.display}</span>
+              <span className="relative shrink-0 text-body font-semibold tabular-nums">{it.display}</span>
             </>
           )
           const cls =
-            "relative flex h-8 w-full items-center gap-3 rounded-md px-2 text-body outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            "relative flex h-[34px] w-full items-center gap-3 rounded-md px-2 text-body outline-none focus-visible:ring-2 focus-visible:ring-ring"
           return (
             <li key={it.key}>
               {it.onClick ? (
@@ -195,10 +196,10 @@ export function Panel({
   testId?: string
 }) {
   return (
-    <section className={cn("flex min-w-0 flex-col rounded-2xl border bg-card", className)} data-testid={testId}>
+    <section className={cn("flex min-w-0 flex-col rounded-[14px] border bg-card", className)} data-testid={testId}>
       {(title || action) && (
         <header className="flex min-h-12 flex-wrap items-center gap-2 px-4 pt-2.5 pb-1">
-          {title && <h2 className="min-w-0 flex-1 text-body font-medium">{title}</h2>}
+          {title && <h2 className="min-w-0 flex-1 text-[14px] leading-5 font-semibold">{title}</h2>}
           {action}
         </header>
       )}

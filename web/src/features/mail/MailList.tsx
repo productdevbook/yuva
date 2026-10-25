@@ -11,7 +11,7 @@ import {
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
-import { ErrorLine, Kbd, toast } from "@/components/common"
+import { ContactAvatar, ErrorLine, Kbd, toast } from "@/components/common"
 import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { MAIL_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatWhen } from "@/components/common/SendLater"
@@ -31,7 +31,6 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDraftText } from "@/features/conversation/actions"
 import { useSnoozeTimes } from "@/features/conversation/HeaderActions"
-import { look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
 import { useListCursor } from "@/features/inbox/listCursor"
 import { useBulkUpdateConversations, useConversations } from "@/features/inbox/queries"
@@ -91,10 +90,12 @@ function Row({
   return (
     <div
       className={cn(
-        "group relative flex w-full items-start border-b transition-colors",
-        current ? "bg-surface" : "hover:bg-surface",
-        cursor && !current && "bg-surface",
-        (current || cursor) && "shadow-[inset_2px_0_0_var(--brand)] rtl:shadow-[inset_-2px_0_0_var(--brand)]"
+        "group relative mx-2 flex w-[calc(100%-1rem)] items-start rounded-xl transition-colors",
+        current ? "bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05),0_0_0_1px_var(--border)]" : "hover:bg-muted/60",
+        cursor && !current && "bg-muted/60",
+        (current || cursor) &&
+          "before:absolute before:inset-y-3 before:-start-2 before:w-[3px] before:rounded-e-[3px] before:bg-brand",
+        checked && "bg-brand/7 shadow-[0_0_0_1px_color-mix(in_srgb,var(--brand)_30%,var(--border))]"
       )}
       data-testid="mail-row"
       data-conversation-id={c.id}
@@ -103,22 +104,8 @@ function Row({
     >
       <button
         type="button"
-        onClick={onStar}
-        className={cn(
-          "mt-2.5 ms-1.5 grid size-8 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
-          starred ? "text-warning" : "text-faint"
-        )}
-        aria-pressed={starred}
-        aria-label={starred ? t`Remove the star` : t`Star`}
-        title={starred ? t`Remove the star (S)` : t`Star (S)`}
-        data-testid="mail-star"
-      >
-        <StarIcon className={cn("size-4", starred && "fill-current")} />
-      </button>
-      <button
-        type="button"
         onClick={(e) => onOpen(e.shiftKey)}
-        className="flex min-w-0 flex-1 items-start gap-2.5 py-3 ps-1 pe-3.5 text-start outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+        className="flex min-w-0 flex-1 items-start gap-3 rounded-xl px-2.5 py-2.5 text-start outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-current={current || undefined}
         aria-pressed={selecting ? checked : undefined}
         data-testid="mail-open"
@@ -127,56 +114,29 @@ function Row({
           <span
             aria-hidden
             className={cn(
-              "mt-0.5 grid size-5 shrink-0 place-items-center rounded-[6px] border",
-              checked ? "border-brand bg-brand text-white" : "border-input bg-background"
+              "mt-2.5 grid size-[18px] shrink-0 place-items-center rounded-[5px] border-[1.5px]",
+              checked ? "border-foreground bg-foreground text-background" : "border-input bg-card"
             )}
             data-testid="row-check"
           >
-            {checked && <CheckIcon className="size-3.5" strokeWidth={3} />}
+            {checked && <CheckIcon className="size-3" strokeWidth={3} />}
           </span>
         )}
-        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="flex min-w-0 items-baseline gap-2">
+        <ContactAvatar id={c.contact.id} name={who} className="size-[38px] font-semibold" />
+        <span className="flex min-w-0 flex-1 flex-col gap-px">
+          <span className="flex min-w-0 items-center gap-1.5">
+            {c.unread && (
+              <span className="size-2 shrink-0 rounded-full bg-brand" aria-label={t`Unread`} data-testid="row-unread" />
+            )}
             <span
-              className={cn("min-w-0 flex-1 truncate text-body", c.unread ? "font-semibold" : "font-medium")}
+              className={cn(
+                "min-w-0 truncate text-body",
+                c.unread ? "font-semibold text-foreground" : "font-medium text-foreground/80"
+              )}
               data-testid="mail-sender"
             >
               {folder === "sent" || folder === "scheduled" ? t`To: ${who}` : who}
             </span>
-            {c.has_attachments && (
-              <PaperclipIcon
-                className="size-3.5 shrink-0 self-center text-faint"
-                aria-label={t`Has attachments`}
-                data-testid="mail-attachment"
-              />
-            )}
-            {c.status === "snoozed" && folder !== "snoozed" && (
-              <ClockIcon className="size-3.5 shrink-0 self-center text-faint" aria-label={t`Snoozed`} />
-            )}
-            {c.unread && (
-              <span
-                className="size-2 shrink-0 self-center rounded-full bg-brand"
-                aria-label={t`Unread`}
-                data-testid="row-unread"
-              />
-            )}
-            {scheduledAt ? (
-              <time
-                className="flex shrink-0 items-center gap-1 text-caption text-warning"
-                dateTime={scheduledAt}
-                data-testid="mail-scheduled-at"
-              >
-                <ClockIcon className="size-3" />
-                {formatWhen(scheduledAt, i18n.locale)}
-              </time>
-            ) : (
-              <time
-                className={cn("shrink-0 text-caption", c.unread ? "font-semibold text-foreground" : "text-faint")}
-                dateTime={c.last_activity_at}
-              >
-                {formatShort(c.last_activity_at, i18n.locale)}
-              </time>
-            )}
           </span>
           <span
             className={cn(
@@ -187,24 +147,72 @@ function Row({
           >
             {subject}
           </span>
-          <span className="flex min-w-0 items-center gap-1.5 text-small text-muted-foreground">
-            {showInbox && inbox && (
-              <span className="shrink-0 rounded border px-1 text-caption text-faint">{inbox.name}</span>
-            )}
+          <span className="min-w-0 truncate text-small text-faint">
             {draft && !current ? (
-              <span className="min-w-0 truncate">
-                <span className="font-medium text-brand">
+              <>
+                <span className="font-semibold text-destructive">
                   <Trans>Draft:</Trans>
                 </span>{" "}
                 {draft}
-              </span>
+              </>
             ) : (
-              <span className={cn("min-w-0 truncate", c.last_message?.redacted && "italic")} data-testid="mail-line">
+              <span className={cn(c.last_message?.redacted && "italic")} data-testid="mail-line">
                 {line}
               </span>
             )}
           </span>
+          {showInbox && inbox && (
+            <span className="mt-1 flex min-w-0">
+              <span className="max-w-full truncate rounded-full bg-muted px-2 text-[11px] leading-[18px] text-muted-foreground">
+                {inbox.name}
+              </span>
+            </span>
+          )}
         </span>
+        <span className="flex shrink-0 flex-col items-end gap-1.5 pt-px">
+          {scheduledAt ? (
+            <time
+              className="flex items-center gap-1 font-mono text-[12px] whitespace-nowrap text-warning"
+              dateTime={scheduledAt}
+              data-testid="mail-scheduled-at"
+            >
+              <ClockIcon className="size-3" />
+              {formatWhen(scheduledAt, i18n.locale)}
+            </time>
+          ) : (
+            <time
+              className={cn(
+                "font-mono text-[12px] whitespace-nowrap tabular-nums",
+                c.unread ? "font-medium text-foreground" : "text-faint"
+              )}
+              dateTime={c.last_activity_at}
+            >
+              {formatShort(c.last_activity_at, i18n.locale)}
+            </time>
+          )}
+          <span className="flex h-6 items-center gap-1.5 pe-7 text-faint">
+            {c.status === "snoozed" && folder !== "snoozed" && (
+              <ClockIcon className="size-3.5" aria-label={t`Snoozed`} />
+            )}
+            {c.has_attachments && (
+              <PaperclipIcon className="size-3.5" aria-label={t`Has attachments`} data-testid="mail-attachment" />
+            )}
+          </span>
+        </span>
+      </button>
+      <button
+        type="button"
+        onClick={onStar}
+        className={cn(
+          "absolute end-2 bottom-2 grid size-7 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
+          starred ? "text-warning" : "text-faint"
+        )}
+        aria-pressed={starred}
+        aria-label={starred ? t`Remove the star` : t`Star`}
+        title={starred ? t`Remove the star (S)` : t`Star (S)`}
+        data-testid="mail-star"
+      >
+        <StarIcon className={cn("size-4", starred && "fill-current")} />
       </button>
     </div>
   )
@@ -230,12 +238,14 @@ export function MailList({
   currentId,
   onOpen,
   active,
+  head,
 }: {
   box: string
   folder: Folder
   currentId: string | null
   onOpen: (id: string) => void
   active: boolean
+  head?: React.ReactNode
 }) {
   const { t } = useLingui()
   const errorText = useErrorText()
@@ -440,7 +450,7 @@ export function MailList({
   const searchInput = useRef<HTMLInputElement>(null)
   const suggest = useOperatorSuggest(query, setQuery, searchInput)
   const searchBox = (
-    <InputGroup className="h-[34px] min-w-0 flex-1 rounded-lg border-input bg-background shadow-none focus-within:border-faint">
+    <InputGroup className="h-8 min-w-0 flex-1 rounded-[9px] border-input bg-card shadow-none focus-within:border-faint">
       <InputGroupAddon>
         <SearchIcon className="size-[15px] text-faint" />
       </InputGroupAddon>
@@ -484,19 +494,30 @@ export function MailList({
     </InputGroup>
   )
 
+  const bb =
+    "h-[34px] shrink-0 rounded-lg px-2.5 font-normal text-background hover:bg-background/15 hover:text-background aria-expanded:bg-background/15 aria-expanded:text-background disabled:opacity-40"
   const selection = (
     <div
-      className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-1 pb-2"
+      className="relative mx-2.5 mb-2.5 flex shrink-0 flex-wrap items-center gap-0.5 rounded-xl bg-foreground p-1.5 text-background shadow-[0_12px_32px_rgb(0_0_0/0.18)]"
       role="toolbar"
       aria-label={t`Selection`}
       data-testid="selection-bar"
     >
-      <span className="me-1 min-w-0 truncate text-small font-medium" aria-live="polite">
+      <Button
+        variant="ghost"
+        className={cn(bb, "w-[34px] px-0")}
+        onClick={stopSelecting}
+        aria-label={t`Cancel`}
+        title={t`Clear the selection (Esc)`}
+      >
+        <XIcon />
+      </Button>
+      <span className="me-auto shrink-0 pe-1.5 text-small font-semibold whitespace-nowrap" aria-live="polite">
         {none ? <Trans>Pick mails</Trans> : <Trans>Selected: {picked}</Trans>}
       </span>
       <Button
-        variant="outline"
-        className={look.btnSm}
+        variant="ghost"
+        className={cn(bb, "shrink-0")}
         disabled={rows.length === 0}
         onClick={() => setSelected(allPicked ? new Set() : new Set(rows.map((c) => c.id)))}
         aria-pressed={allPicked}
@@ -507,8 +528,8 @@ export function MailList({
       {inTrash ? (
         <>
           <Button
-            variant="outline"
-            className={look.btnSm}
+            variant="ghost"
+            className={bb}
             disabled={none || bulk.isPending}
             onClick={restoreChosen}
             title={t`Restore (Z)`}
@@ -517,8 +538,8 @@ export function MailList({
             <Trans>Restore</Trans>
           </Button>
           <Button
-            variant="outline"
-            className={cn(look.btnSm, "text-destructive")}
+            variant="ghost"
+            className={bb}
             disabled={none || trashTools.pending}
             onClick={deleteChosen}
             title={t`Delete for good (${MAIL_KEYS.deleteForever})`}
@@ -531,8 +552,8 @@ export function MailList({
         <>
           {folder === "archive" ? (
             <Button
-              variant="outline"
-              className={look.btnSm}
+              variant="ghost"
+              className={bb}
               disabled={none || bulk.isPending}
               onClick={inboxChosen}
               title={t`Move to the Inbox (E)`}
@@ -542,8 +563,8 @@ export function MailList({
             </Button>
           ) : (
             <Button
-              variant="outline"
-              className={look.btnSm}
+              variant="ghost"
+              className={bb}
               disabled={none || bulk.isPending}
               onClick={archiveChosen}
               title={t`Archive (E)`}
@@ -553,8 +574,8 @@ export function MailList({
             </Button>
           )}
           <Button
-            variant="outline"
-            className={look.btnSm}
+            variant="ghost"
+            className={bb}
             disabled={none}
             onClick={starChosen}
             title={t`Star or unstar (S)`}
@@ -563,8 +584,8 @@ export function MailList({
             {allStarred ? <Trans>Remove the star</Trans> : <Trans>Star</Trans>}
           </Button>
           <Button
-            variant="outline"
-            className={look.btnSm}
+            variant="ghost"
+            className={bb}
             disabled={none}
             onClick={readChosen}
             title={t`Mark as read or unread (U)`}
@@ -574,13 +595,13 @@ export function MailList({
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="outline" className={look.btnSm} disabled={none || bulk.isPending} />}
+              render={<Button variant="ghost" className={bb} disabled={none || bulk.isPending} />}
               data-testid="snooze-selected"
             >
               <Trans>Snooze</Trans>
-              <ChevronDownIcon className="text-faint" />
+              <ChevronDownIcon className="opacity-70" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="min-w-56">
+            <DropdownMenuContent align="start" side="top" className="min-w-56">
               <DropdownMenuGroup>
                 <DropdownMenuLabel>
                   <Trans>When should they come back?</Trans>
@@ -596,8 +617,8 @@ export function MailList({
           </DropdownMenu>
           {canManage && (
             <Button
-              variant="outline"
-              className={cn(look.btnSm, "text-destructive")}
+              variant="ghost"
+              className={bb}
               disabled={none || bulk.isPending}
               onClick={trashChosen}
               title={t`Move to the Trash (#)`}
@@ -608,14 +629,6 @@ export function MailList({
           )}
         </>
       )}
-      <Button
-        variant="ghost"
-        className="h-[30px] rounded-lg px-2"
-        onClick={stopSelecting}
-        title={t`Clear the selection (Esc)`}
-      >
-        <Trans>Cancel</Trans>
-      </Button>
     </div>
   )
 
@@ -631,12 +644,13 @@ export function MailList({
   }
 
   return (
-    <nav aria-label={t`Mail`} className="flex h-full min-h-0 flex-col bg-background" data-testid="mail-list">
-      <div className="relative flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-2.5 pb-1.5">
+    <nav aria-label={t`Mail`} className="flex h-full min-h-0 flex-col bg-surface" data-testid="mail-list">
+      {head}
+      <div className="relative flex shrink-0 flex-wrap items-center gap-1.5 px-3 pt-1 pb-2">
         {searchBox}
         <Button
           variant="outline"
-          className={cn(look.btn, "w-[34px] px-0", selecting && "bg-muted")}
+          className={cn("h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal", selecting && "bg-muted")}
           onClick={() => (selecting ? stopSelecting() : setSelecting(true))}
           aria-pressed={selecting}
           aria-label={t`Select mails`}
@@ -648,21 +662,26 @@ export function MailList({
         <OperatorList s={suggest} />
         <SearchError error={list.error} className="w-full" />
       </div>
-      {selecting && selection}
       {inTrash && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto border-t" data-testid="list">
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto pb-3" data-testid="list">
         {list.isPending ? (
-          <div className="grid gap-1 p-3">
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col gap-2 py-2">
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-3 w-3/4" />
+          <div className="grid gap-1.5 px-4 py-2">
+            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="flex items-start gap-3 py-2">
+                <Skeleton className="size-9 rounded-full" />
+                <div className="flex flex-1 flex-col gap-1.5">
+                  <Skeleton className="h-3 w-[45%]" />
+                  <Skeleton className="h-3 w-4/5" />
+                  <Skeleton className="h-3 w-[95%]" />
+                </div>
               </div>
             ))}
           </div>
         ) : rows.length === 0 && !hasNextPage ? (
-          <div className="flex flex-col items-center gap-3 px-4 py-10 text-center" data-testid="list-empty">
-            <p className="text-body text-faint">{q ? <Trans>No mail matches your search.</Trans> : empty[folder]}</p>
+          <div className="flex flex-col items-start gap-1.5 px-6 py-10" data-testid="list-empty">
+            <p className="text-body text-muted-foreground">
+              {q ? <Trans>No mail matches your search.</Trans> : empty[folder]}
+            </p>
           </div>
         ) : (
           rows.map((c) => (
@@ -683,12 +702,14 @@ export function MailList({
         )}
         <div ref={sentinel} className="h-px" />
         {isFetchingNextPage && (
-          <div className="flex flex-col gap-2 px-3 py-2">
+          <div className="flex items-center gap-3 px-5 py-2">
+            <Skeleton className="size-9 rounded-full" />
             <Skeleton className="h-4 w-1/2" />
           </div>
         )}
         <ErrorLine error={isSearchError(list.error) ? null : list.error} className="px-4 py-2" />
       </div>
+      {selecting && selection}
       {confirmDialog}
       {trashTools.dialogs}
     </nav>

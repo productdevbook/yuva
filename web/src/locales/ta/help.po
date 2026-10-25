@@ -63,8 +63,8 @@ msgid "{0, plural, one {The help center does not offer this language, so its tra
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{drafts} drafts"
-msgstr "{drafts} வரைவுகள்"
+msgid "{drafts, plural, one {# draft} other {# drafts}}"
+msgstr "{drafts, plural, one {# வரைவு} other {# வரைவுகள்}}"
 
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
@@ -122,6 +122,10 @@ msgstr "முகவரியின் முடிவு"
 #: src/features/help/SettingsTab.tsx
 msgid "Agents may publish"
 msgstr "முகவர்கள் வெளியிடலாம்"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "All"
+msgstr "அனைத்தும்"
 
 #: src/features/help/Revisions.tsx
 msgid "An API key"
@@ -553,6 +557,7 @@ msgstr "மொழி"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "மொழிகள்"
@@ -935,11 +940,11 @@ msgstr "சேமிக்கப்பட்டது"
 msgid "Saving…"
 msgstr "சேமிக்கிறது…"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles"
 msgstr "தலைப்புகளில் தேடு"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles ({findKey})"
 msgstr "தலைப்புகளில் தேடு ({findKey})"
 
@@ -1217,6 +1222,7 @@ msgstr "தளத்தைப் பார்"
 msgid "View site ({openKey})"
 msgstr "தளத்தைப் பார் ({openKey})"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "பார்வைகள்"

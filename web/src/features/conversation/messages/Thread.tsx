@@ -110,9 +110,9 @@ function Time({ iso, className }: { iso: string; className?: string }) {
 }
 
 const tagClass = "h-auto px-1.5 py-px text-caption"
-const hitRing = "ring-2 ring-warning ring-offset-1 ring-offset-surface"
-const headerClass = "flex-wrap gap-x-1.5 gap-y-0.5 px-1 text-caption font-normal text-faint"
-const footerClass = "flex-wrap gap-x-1 gap-y-0.5 px-1 text-caption font-normal text-faint"
+const hitRing = "ring-2 ring-warning ring-offset-2 ring-offset-background"
+const headerClass = "flex-wrap items-baseline gap-x-2 gap-y-0.5 px-0 text-caption font-normal text-faint"
+const footerClass = "flex-wrap gap-x-1 gap-y-0.5 px-0 text-caption font-normal text-faint"
 
 function EmailTags({ m }: { m: Message }) {
   const { t } = useLingui()
@@ -230,43 +230,22 @@ function Face({ m, side, ctx, name }: { m: Message; side: Side; ctx: ThreadConte
   const author = useAuthorName(m, ctx)
   const by = useAuthorName({ ...m, author: m.sent_by ?? m.author }, ctx)
   if (side === "in")
-    return <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={name} className="size-[26px]" />
-  if (side === "bot") return <BotAvatar name={author} url={m.author.avatar_url} className="size-[26px]" />
+    return <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={name} className="size-[34px]" />
+  if (side === "bot") return <BotAvatar name={author} url={m.author.avatar_url} className="size-[34px]" />
   return (
     <PersonAvatar
       name={by}
-      className={cn("size-[26px] text-white", side === "me" ? "bg-muted-foreground text-background" : "bg-mate")}
+      className={cn("size-[34px] text-white", side === "me" ? "bg-muted-foreground text-background" : "bg-mate")}
     />
   )
 }
 
-function Meta({ m, side, ctx, name }: { m: Message; side: Side; ctx: ThreadContext; name: string }) {
-  const who = useWho(m, side, ctx, name)
-  return (
-    <MessageFooter className="gap-1 px-1 text-caption font-normal text-faint">
-      <span>
-        {side === "in" ? who.split(" ")[0] : who} · <Time iso={m.created_at} />
-      </span>
-      {side !== "in" && !m.delivery && <Ticks at={m.created_at} readAt={ctx.contactReadAt} />}
-    </MessageFooter>
-  )
+function Who({ who, className }: { who: string; className?: string }) {
+  return <b className={cn("min-w-0 truncate text-body font-semibold text-foreground", className)}>{who}</b>
 }
 
-const sideBubble: Record<Side, { variant: "default" | "outline"; className?: string }> = {
-  in: { variant: "outline", className: "*:data-[slot=bubble-content]:bg-card" },
-  me: { variant: "default" },
-  mate: {
-    variant: "default",
-    className: "*:data-[slot=bubble-content]:bg-mate *:data-[slot=bubble-content]:text-white",
-  },
-  bot: { variant: "outline", className: "*:data-[slot=bubble-content]:bg-surface" },
-}
-
-const avatarSlot = "size-[26px] min-w-[26px] bg-transparent group-has-data-[slot=message-footer]/message:-translate-y-5"
-
-function tail(out: boolean) {
-  return out ? "rounded-ee-md" : "rounded-es-md"
-}
+const avatarSlot =
+  "size-[34px] min-w-[34px] self-start bg-transparent group-has-data-[slot=message-footer]/message:translate-y-0"
 
 function Delivery({ m }: { m: Message }) {
   if (!m.delivery) return null
@@ -285,27 +264,51 @@ function Signed({ html, framed }: { html: string; framed?: boolean }) {
   )
 }
 
-function Line({ m, ctx, name, me, last }: { m: Message; ctx: ThreadContext; name: string; me: string; last: boolean }) {
+function Line({
+  m,
+  ctx,
+  name,
+  me,
+  first,
+  last,
+}: {
+  m: Message
+  ctx: ThreadContext
+  name: string
+  me: string
+  first: boolean
+  last: boolean
+}) {
   const side = sideOf(m, me)
   const out = side !== "in"
-  const align = out ? "end" : "start"
-  const look = sideBubble[side]
+  const who = useWho(m, side, ctx, name)
   const text = withoutCardLines(m.body, m.cards)
+  const ticks = out && !m.delivery
   return (
     <MessageFrame
-      align={align}
       tabIndex={-1}
-      className={cn("outline-none pointer-coarse:flex-wrap pointer-coarse:gap-y-1", last ? "pb-2" : "pb-0.5")}
+      className={cn(
+        "gap-3 outline-none pointer-coarse:flex-wrap pointer-coarse:gap-y-1",
+        first ? "pt-2" : "pt-0",
+        last ? "pb-2" : "pb-0.5"
+      )}
       data-testid="message"
       data-message-id={m.id}
     >
-      <MessageAvatar className={cn(avatarSlot, !last && "invisible")}>
+      <MessageAvatar className={cn(avatarSlot, !first && "invisible")}>
         <Face m={m} side={side} ctx={ctx} name={name} />
       </MessageAvatar>
-      <MessageContent className="w-auto max-w-[80%] gap-1 phone:max-w-[88%]">
+      <MessageContent className="max-w-[720px] gap-1.5">
+        {first && (
+          <MessageHeader className={headerClass}>
+            <Who who={who} />
+            <Time iso={m.created_at} />
+            {ticks && last && <Ticks at={m.created_at} readAt={ctx.contactReadAt} />}
+          </MessageHeader>
+        )}
         {text && (
-          <Bubble variant={look.variant} align={align} className={cn("max-w-full", look.className)}>
-            <BubbleContent className={cn("rounded-2xl", last && tail(out), ctx.find?.current === m.id && hitRing)}>
+          <Bubble variant="ghost" className="max-w-full">
+            <BubbleContent className={cn("rounded-md text-reading", ctx.find?.current === m.id && hitRing)}>
               <div className="text-reading break-words whitespace-pre-wrap">
                 <Highlight text={text} query={ctx.find?.query} />
               </div>
@@ -313,24 +316,28 @@ function Line({ m, ctx, name, me, last }: { m: Message; ctx: ThreadContext; name
             </BubbleContent>
           </Bubble>
         )}
-        <Attachments items={m.attachments} outgoing={out} />
-        <ArticleCards items={m.cards} outgoing={out} />
+        <Attachments items={m.attachments} outgoing={false} />
+        <ArticleCards items={m.cards} outgoing={false} />
         <Delivery m={m} />
-        {last && <Meta m={m} side={side} ctx={ctx} name={name} />}
-        <MessageActions m={m} ctx={ctx} className={out ? "justify-end" : undefined} />
+        {ticks && last && !first && (
+          <MessageFooter className={footerClass}>
+            <Ticks at={m.created_at} readAt={ctx.contactReadAt} />
+          </MessageFooter>
+        )}
+        <MessageActions m={m} ctx={ctx} />
       </MessageContent>
     </MessageFrame>
   )
 }
 
 const mailLook = {
+  text: { variant: "ghost", className: undefined },
   "original-dark": { variant: "outline", className: "*:data-[slot=bubble-content]:bg-card" },
   "original-light": {
     variant: "outline",
     className: "*:data-[slot=bubble-content]:bg-white *:data-[slot=bubble-content]:text-neutral-900",
   },
   reading: { variant: "outline", className: "*:data-[slot=bubble-content]:bg-card" },
-  readingOut: { variant: "tinted", className: undefined },
 } as const
 
 function Mail({
@@ -351,18 +358,16 @@ function Mail({
   const mail = useMail(m, ctx.expandQuoted)
   const side = sideOf(m, me)
   const out = side !== "in"
-  const align = out ? "end" : "start"
   const who = useWho(m, side, ctx, name)
   const surface = mailSurface(mail)
   const framed = surface === "original-dark" || surface === "original-light"
-  const look = surface === "text" ? sideBubble[side] : mailLook[surface === "reading" && out ? "readingOut" : surface]
+  const look = mailLook[surface]
   const wide = surface !== "text"
   const e = m.email
   return (
     <MessageFrame
-      align={align}
       tabIndex={-1}
-      className="pb-2 outline-none pointer-coarse:flex-wrap pointer-coarse:gap-y-1"
+      className="gap-3 pt-2 pb-2 outline-none pointer-coarse:flex-wrap pointer-coarse:gap-y-1"
       data-testid="message"
       data-kind="email"
       data-message-id={m.id}
@@ -370,15 +375,10 @@ function Mail({
       <MessageAvatar className={avatarSlot}>
         <Face m={m} side={side} ctx={ctx} name={name} />
       </MessageAvatar>
-      <MessageContent
-        className={cn(
-          "gap-1",
-          wide ? "max-w-[88%] phone:max-w-full phone:flex-1" : "w-auto max-w-[80%] phone:max-w-[88%]"
-        )}
-      >
+      <MessageContent className={cn("gap-1", wide ? "max-w-[88%] phone:max-w-full phone:flex-1" : "max-w-[720px]")}>
         <MessageHeader className={headerClass}>
-          <span className="min-w-0 truncate" title={e && !out ? e.from : undefined}>
-            {who}
+          <span title={e && !out ? e.from : undefined} className="min-w-0">
+            <Who who={who} />
           </span>
           {e && !out && e.from !== who && (
             <span className="max-w-full min-w-0 truncate text-faint" title={e.from}>
@@ -387,11 +387,10 @@ function Mail({
           )}
           <EmailTags m={m} />
         </MessageHeader>
-        <Bubble variant={look.variant} align={align} className={cn("max-w-full", wide && "w-full", look.className)}>
+        <Bubble variant={look.variant} className={cn("max-w-full", wide && "w-full", look.className)}>
           <BubbleContent
             className={cn(
-              "rounded-2xl",
-              tail(out),
+              wide ? "rounded-xl" : "rounded-md",
               wide && "w-full",
               framed && "p-0",
               ctx.find?.current === m.id && hitRing
@@ -409,8 +408,8 @@ function Mail({
             {m.signature_html && <Signed html={m.signature_html} framed={framed} />}
           </BubbleContent>
         </Bubble>
-        <Attachments items={mail.listed} outgoing={out} />
-        <ArticleCards items={m.cards} outgoing={out} />
+        <Attachments items={mail.listed} outgoing={false} />
+        <ArticleCards items={m.cards} outgoing={false} />
         <Delivery m={m} />
         <MessageFooter className={footerClass}>
           <Time iso={m.created_at} className="me-1" />
@@ -431,7 +430,7 @@ function Mail({
             </a>
           )}
         </MessageFooter>
-        <MessageActions m={m} ctx={ctx} className={out ? "justify-end" : undefined} />
+        <MessageActions m={m} ctx={ctx} />
       </MessageContent>
     </MessageFrame>
   )
@@ -480,7 +479,9 @@ function FeedbackMessage({
           </BubbleContent>
         </Bubble>
         <Attachments items={m.attachments} />
-        <Meta m={m} side="in" ctx={ctx} name={name} />
+        <MessageFooter className={footerClass}>
+          <Time iso={m.created_at} />
+        </MessageFooter>
       </MessageContent>
     </MessageFrame>
   )
@@ -549,38 +550,37 @@ function Note({ m, ctx, name, me }: { m: Message; ctx: ThreadContext; name: stri
   const who = useWho(m, side, ctx, name)
   return (
     <MessageFrame
-      align="end"
       tabIndex={-1}
-      className="pb-2 outline-none pointer-coarse:flex-wrap pointer-coarse:gap-y-1"
+      className="gap-3 pt-2 pb-2 outline-none pointer-coarse:flex-wrap pointer-coarse:gap-y-1"
       data-testid="note"
       data-message-id={m.id}
     >
       <MessageAvatar className={avatarSlot}>
         <Face m={m} side={side} ctx={ctx} name={name} />
       </MessageAvatar>
-      <MessageContent className="w-auto max-w-[80%] gap-1 phone:max-w-[88%]">
-        <MessageHeader className={cn(headerClass, "justify-end")}>{who}</MessageHeader>
+      <MessageContent className="max-w-[720px] gap-1.5">
+        <MessageHeader className={headerClass}>
+          <Who who={who} />
+          <Time iso={m.created_at} />
+        </MessageHeader>
         {m.body && (
           <Bubble
             variant="outline"
-            align="end"
             className="max-w-full *:data-[slot=bubble-content]:border-note-border *:data-[slot=bubble-content]:bg-note"
           >
-            <BubbleContent
-              className={cn("rounded-2xl rounded-ee-md text-reading", ctx.find?.current === m.id && hitRing)}
-            >
+            <BubbleContent className={cn("rounded-xl px-3.5 py-2 text-reading", ctx.find?.current === m.id && hitRing)}>
               <NoteBody m={m} ctx={ctx} />
             </BubbleContent>
           </Bubble>
         )}
-        <Attachments items={m.attachments} outgoing />
+        <Attachments items={m.attachments} outgoing={false} />
         <MessageFooter className={cn(footerClass, "gap-1 text-note-ink")}>
           <LockIcon className="size-3" />
           <span>
-            <Trans>Only the team sees this</Trans> · <Time iso={m.created_at} />
+            <Trans>Only the team sees this</Trans>
           </span>
         </MessageFooter>
-        <MessageActions m={m} ctx={ctx} className="justify-end" />
+        <MessageActions m={m} ctx={ctx} />
       </MessageContent>
     </MessageFrame>
   )
@@ -853,9 +853,7 @@ function Rated({ m, ctx, name }: { m: Message; ctx: ThreadContext; name: string 
 function DayMarker({ label }: { label: string }) {
   return (
     <Marker variant="separator" className="py-2.5" data-testid="day-separator">
-      <MarkerContent className="rounded-full border bg-card px-3 py-1 text-caption text-muted-foreground shadow-[0_1px_2px_rgb(0_0_0/0.06)]">
-        {label}
-      </MarkerContent>
+      <MarkerContent className="px-1 text-caption text-faint">{label}</MarkerContent>
     </Marker>
   )
 }
@@ -873,19 +871,17 @@ function ImportedMarker() {
 
 function Pending({ p }: { p: PendingReply }) {
   return (
-    <MessageFrame align="end" className="pb-2" data-testid="pending-reply">
-      <MessageContent className="w-auto max-w-[80%] gap-1 phone:max-w-[88%]">
+    <MessageFrame className="gap-3 pt-2 pb-2 ps-[46px]" data-testid="pending-reply">
+      <MessageContent className="max-w-[720px] gap-1.5">
         {p.body.trim() && (
-          <Bubble variant="default" align="end" className="max-w-full opacity-70">
-            <BubbleContent className="rounded-2xl rounded-ee-md">
+          <Bubble variant="ghost" className="max-w-full opacity-70">
+            <BubbleContent>
               <div className="text-reading break-words whitespace-pre-wrap">{p.body}</div>
             </BubbleContent>
           </Bubble>
         )}
-        {p.files.length > 0 && (
-          <div className="self-end text-caption text-faint">{p.files.map((f) => f.name).join(", ")}</div>
-        )}
-        <MessageFooter className="px-1 text-caption font-normal text-faint">
+        {p.files.length > 0 && <div className="text-caption text-faint">{p.files.map((f) => f.name).join(", ")}</div>}
+        <MessageFooter className="px-0 text-caption font-normal text-faint">
           {p.close ? <Trans>Sending, then closing…</Trans> : <Trans>Sending…</Trans>}
         </MessageFooter>
       </MessageContent>
@@ -895,12 +891,10 @@ function Pending({ p }: { p: PendingReply }) {
 
 function Typing({ name }: { name: string }) {
   return (
-    <MessageFrame className="items-center pt-1.5" role="status" data-testid="typing">
-      <Bubble variant="outline" className="*:data-[slot=bubble-content]:bg-card">
-        <BubbleContent className="rounded-[14px] px-3 py-2.5">
-          <TypingDots className="gap-[3px] [&>span]:size-[5px]" />
-        </BubbleContent>
-      </Bubble>
+    <MessageFrame className="items-center gap-3 pt-1.5" role="status" data-testid="typing">
+      <span className="grid w-[34px] place-items-center text-faint">
+        <TypingDots className="gap-[3px] [&>span]:size-[4px]" />
+      </span>
       <span className="text-small text-faint">
         <Trans>{name} is typing…</Trans>
       </span>
@@ -961,7 +955,7 @@ function DayChip({ items, root }: { items: Message[]; root: React.RefObject<HTML
   return (
     <div
       className={cn(
-        "pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center bg-linear-to-b from-surface from-60% to-transparent pt-2 pb-4 transition-opacity duration-300",
+        "pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center bg-linear-to-b from-background from-60% to-transparent pt-2 pb-4 transition-opacity duration-300",
         start && scrolling ? "opacity-100" : "opacity-0"
       )}
       aria-hidden
@@ -1127,13 +1121,22 @@ function ThreadView({
     if (m.id === feedbackId && conversation.feedback)
       return <FeedbackMessage m={m} ctx={ctx} name={name} feedback={conversation.feedback} />
     if (isMail(m)) return <Mail m={m} ctx={ctx} name={name} me={me} subject={subjects.get(m.id)} />
-    return <Line m={m} ctx={ctx} name={name} me={me} last={!sameGroup(m, items[i + 1])} />
+    return (
+      <Line
+        m={m}
+        ctx={ctx}
+        name={name}
+        me={me}
+        first={!sameGroup(items[i - 1], m)}
+        last={!sameGroup(m, items[i + 1])}
+      />
+    )
   }
 
   return (
-    <MessageScroller className="bg-surface">
+    <MessageScroller className="bg-background">
       <MessageScrollerViewport ref={viewport} aria-label={t`Messages`} data-testid="thread">
-        <MessageScrollerContent className="mx-auto w-full max-w-[880px] gap-0 px-5 pt-11 pb-16 phone:px-3">
+        <MessageScrollerContent className="mx-auto w-full max-w-[776px] gap-0 px-7 pt-6 pb-8 phone:px-3">
           {top && <Row>{top}</Row>}
           {older.has && (
             <Row>

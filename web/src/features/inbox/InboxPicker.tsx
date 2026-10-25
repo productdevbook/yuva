@@ -86,7 +86,7 @@ export function InboxChip({
       <button
         type="button"
         disabled
-        className={cn(look.chip, "cursor-default opacity-80 hover:border-input")}
+        className={cn(look.listChip, "cursor-default opacity-80 hover:border-input")}
         title={t`Set by the product in the sidebar`}
         aria-label={t`Product`}
         data-testid="inbox-chip"
@@ -99,7 +99,7 @@ export function InboxChip({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<button type="button" className={look.chip} />}
+        render={<button type="button" className={look.listChip} />}
         aria-label={t`Product`}
         data-testid="inbox-chip"
       >

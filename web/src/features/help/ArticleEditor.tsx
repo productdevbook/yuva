@@ -389,11 +389,11 @@ function Editor({
     cn(pane === name ? "block" : "hidden", desktop ? "lg:block" : "lg:hidden")
 
   return (
-    <main className="min-h-0 flex-1 overflow-y-auto bg-background" data-testid="help-editor">
+    <main className="min-h-0 flex-1 overflow-y-auto bg-surface" data-testid="help-editor">
       <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-4 px-6 pt-6 pb-24 phone:px-4 phone:pt-3">
         <PaneBack to={centerLink(center.id)} label={t`Articles`} always />
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <div className="-my-1 max-w-full overflow-x-auto py-1">
+          <div className="-my-1 max-w-full overflow-x-auto py-1 phone:basis-full">
             <Segmented
               value={locale}
               onChange={(l) => void switchTo(l)}
@@ -430,8 +430,8 @@ function Editor({
           <span className="text-small text-faint" role="status" data-testid="help-editor-saving">
             {status}
           </span>
-          <span className="flex-1" />
-          <div className="flex flex-wrap items-center gap-2">
+          <span className="flex-1 phone:hidden" />
+          <div className="flex items-center gap-2 phone:basis-full phone:justify-end">
             <Button
               variant={showPreview ? "secondary" : "outline"}
               size="sm"
@@ -675,7 +675,7 @@ function Editor({
             )}
           </div>
         </div>
-        <div className="grid gap-5 rounded-2xl border bg-card p-4 sm:grid-cols-2" data-testid="help-editor-details">
+        <div className="grid gap-5 rounded-[14px] border bg-card p-4 sm:grid-cols-2" data-testid="help-editor-details">
           <Field
             label={<Trans>Address ending</Trans>}
             htmlFor="help-article-slug"
@@ -785,7 +785,7 @@ export function ArticleEditorPage() {
     return (
       <Pane wide className="gap-4">
         <Skeleton className="h-8 w-60" />
-        <Skeleton className="h-64 w-full rounded-2xl" />
+        <Skeleton className="h-64 w-full rounded-[14px]" />
       </Pane>
     )
   }

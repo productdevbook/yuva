@@ -1,10 +1,9 @@
 import { Trans } from "@lingui/react/macro"
 import { useState } from "react"
 
-import { ErrorLine } from "@/components/common"
 import { FocusChoice } from "@/components/common/FocusChoice"
-import { Button } from "@/components/ui/button"
-import { Block, headButton } from "@/features/settings/ui"
+import { Pill } from "@/features/settings/ui"
+import { Sec, SecBody, SecFoot, secCard } from "@/features/settings/workspace/parts"
 import { useSaveFocus } from "@/features/settings/workspace/focus"
 import type { WorkspaceFocus } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -16,34 +15,48 @@ export function FocusForm() {
   const save = useSaveFocus()
   const dirty = picked !== current
   return (
-    <Block
+    <Sec
+      id="w-focus"
       title={<Trans>What Yuva is for</Trans>}
       description={<Trans>Sets what you see first: the Setup cards, the sidebar and the page Yuva opens on.</Trans>}
-      onSubmit={() => picked && save.mutate(picked)}
-      testId="workspace-focus"
-      footer={
-        canManage ? (
-          <>
-            <ErrorLine error={save.error} className="min-w-0 flex-1" />
-            {save.isSuccess && !dirty && !save.error && (
-              <span className="flex-1 text-muted-foreground" role="status">
-                <Trans>Saved</Trans>
-              </span>
+      pill={
+        current && (
+          <Pill tone="muted">
+            {current === "support" ? (
+              <Trans>Support</Trans>
+            ) : current === "mail" ? (
+              <Trans>Team mail</Trans>
+            ) : (
+              <Trans>Both</Trans>
             )}
-            <Button type="submit" className={headButton.primary} disabled={save.isPending || !dirty || !picked}>
-              <Trans>Save</Trans>
-            </Button>
-          </>
-        ) : (
-          <p className="me-auto text-muted-foreground">
-            <Trans>Only owners and admins can change this.</Trans>
-          </p>
+          </Pill>
         )
       }
     >
-      <div className="px-[18px] py-4">
-        <FocusChoice value={picked} onChange={setPicked} disabled={!canManage} />
-      </div>
-    </Block>
+      <form
+        className={secCard}
+        data-testid="workspace-focus"
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (picked) save.mutate(picked)
+        }}
+      >
+        <SecBody>
+          <FocusChoice value={picked} onChange={setPicked} disabled={!canManage} cards />
+        </SecBody>
+        <SecFoot
+          dirty={dirty}
+          pending={save.isPending}
+          saved={save.isSuccess}
+          error={save.error}
+          invalid={!picked}
+          readOnly={canManage ? undefined : <Trans>Only owners and admins can change this.</Trans>}
+          onDiscard={() => {
+            setPicked(current)
+            save.reset()
+          }}
+        />
+      </form>
+    </Sec>
   )
 }

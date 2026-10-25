@@ -69,11 +69,11 @@ export function Realtime() {
     <div className="flex flex-col gap-4" data-testid="analytics-realtime">
       <ErrorLine error={live.error} />
       {!r ? (
-        <Skeleton className="h-64 rounded-2xl" />
+        <Skeleton className="h-64 rounded-[14px]" />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-2xl border bg-card px-4 py-3.5">
+            <div className="rounded-[14px] border bg-card px-4 py-3.5">
               <span className="flex items-center gap-2 text-small text-faint">
                 <span className="relative flex size-2">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden" />
@@ -85,7 +85,7 @@ export function Realtime() {
                 {fmt.format(r.visitors)}
               </b>
             </div>
-            <div className="rounded-2xl border bg-card px-4 py-3.5">
+            <div className="rounded-[14px] border bg-card px-4 py-3.5">
               <span className="text-small text-faint">{text.title.lastHalfHour}</span>
               <b className="block text-[2.5rem] leading-tight tabular-nums">{fmt.format(r.pageviews)}</b>
             </div>
@@ -127,7 +127,7 @@ export function Realtime() {
               </BarChart>
             </ChartContainer>
           </Panel>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 @2xl:grid-cols-2">
             <Top title={text.title.pages} dim="page" items={r.pages} testId="realtime-pages" />
             <Top title={<Trans>Sources</Trans>} dim="source" items={r.sources} testId="realtime-sources" />
             <Top

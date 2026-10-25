@@ -1,6 +1,8 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import {
+  AlertCircleIcon,
   ExternalLinkIcon,
+  FileTextIcon,
   HourglassIcon,
   MessageSquareTextIcon,
   MessagesSquareIcon,
@@ -23,7 +25,14 @@ import { useAnalytics } from "@/features/analytics/queries"
 import { CategoryChip } from "@/features/conversation/Feedback"
 import { ThreadList } from "@/features/docs/discussions/DiscussionsPane"
 import { pageLabel, PageRatingMark } from "@/features/docs/PageContext"
-import { docsPageLink, useDocsDays, useDocsPage, useDocsPages, useDocsSort } from "@/features/docs/queries"
+import {
+  docsPageLink,
+  useDocsDays,
+  useDocsPage,
+  useDocsPages,
+  useDocsSort,
+  useDocsSummary,
+} from "@/features/docs/queries"
 import { usePickedSite } from "@/features/docs/Toolbar"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { look } from "@/features/inbox/PageFrame"
@@ -85,6 +94,9 @@ function Count({
   )
 }
 
+const ROW_COLS =
+  "grid grid-cols-[minmax(0,2.2fr)_minmax(150px,1.2fr)_72px_104px] items-center gap-3 px-4 @max-3xl:grid-cols-[minmax(0,1fr)_auto]"
+
 function PageRow({
   p,
   current,
@@ -102,60 +114,73 @@ function PageRow({
   const [up, down, feedback, threads, pending] = [p.up, p.down, p.open_feedback, p.open_threads, p.pending_posts].map(
     (n) => fmt.format(n)
   )
+  const rated = p.up + p.down
+  const low = rated > 0 && p.up / rated < 0.7
   return (
     <li>
       <Link
         to={docsPageLink(p.inbox_id, p.page)}
         className={cn(
-          "flex flex-col gap-1 rounded-xl px-2.5 py-2.5 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
-          current && "bg-muted",
-          cursor && "ring-2 ring-ring"
+          ROW_COLS,
+          "min-h-[54px] border-b py-2 text-small outline-none transition-colors hover:bg-surface/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+          current && "bg-brand/5",
+          cursor && "bg-surface ring-2 ring-ring ring-inset"
         )}
         aria-current={current ? "page" : undefined}
         data-testid="docs-row"
       >
-        <span className="flex items-center gap-2">
-          {inboxColor && <Dot color={inboxColor} className="size-[7px] shrink-0 rounded-[2px]" />}
-          <span className="min-w-0 flex-1 truncate text-body font-medium">{p.title || pageLabel(p.page)}</span>
-          <span className="flex shrink-0 items-center gap-2.5 text-small">
-            <Count n={p.up} icon={ThumbsUpIcon} label={t`${up} helpful`} className="text-success" />
-            <Count n={p.down} icon={ThumbsDownIcon} label={t`${down} not helpful`} className="text-destructive" />
-            <span
-              className={cn("w-10 text-end tabular-nums", p.up + p.down ? "text-success" : "text-faint")}
-              title={t`${share} helpful`}
-              data-testid="helpful-share"
-            >
-              <span className="sr-only">{t`${share} helpful`}</span>
-              <span aria-hidden>{share}</span>
-            </span>
+        <span className="flex min-w-0 flex-col">
+          <span className="flex items-center gap-2">
+            {inboxColor && <Dot color={inboxColor} className="size-[7px] shrink-0 rounded-[2px]" />}
+            <span className="min-w-0 flex-1 truncate text-body font-semibold">{p.title || pageLabel(p.page)}</span>
           </span>
-        </span>
-        <span className="flex items-center gap-2 text-caption text-faint">
-          <span className="min-w-0 flex-1 truncate" dir="ltr">
+          <span className="truncate text-caption text-faint" dir="ltr">
             {pageLabel(p.page)}
           </span>
-          <span className="flex shrink-0 items-center gap-2.5">
-            <Count
-              n={p.open_feedback}
-              icon={MessageSquareTextIcon}
-              label={t`${feedback} open feedback`}
-              className={p.open_feedback ? "text-brand" : undefined}
-            />
-            <Count
-              n={p.open_threads}
-              icon={MessagesSquareIcon}
-              label={t`${threads} open discussions`}
-              className={p.unanswered_threads ? "text-brand" : undefined}
-            />
-            <Count
-              n={p.pending_posts}
-              icon={HourglassIcon}
-              label={t`${pending} posts waiting for approval`}
-              className={p.pending_posts ? "text-warning" : undefined}
-            />
+        </span>
+        <span className="flex items-center gap-2.5">
+          <ShareBar up={p.up} down={p.down} className="h-2 w-[84px] shrink-0 @max-3xl:hidden" />
+          <span
+            className={cn(
+              "tabular-nums",
+              rated === 0 ? "text-faint" : low ? "font-semibold text-destructive" : "text-foreground"
+            )}
+            title={t`${share} helpful`}
+            data-testid="helpful-share"
+          >
+            <span className="sr-only">{t`${share} helpful`}</span>
+            <span aria-hidden>{share}</span>
+          </span>
+          <span className="flex items-center gap-2 text-caption @max-3xl:hidden">
+            <Count n={p.up} icon={ThumbsUpIcon} label={t`${up} helpful`} className="text-success" />
+            <Count n={p.down} icon={ThumbsDownIcon} label={t`${down} not helpful`} className="text-destructive" />
           </span>
         </span>
-        <ShareBar up={p.up} down={p.down} className="mt-0.5" />
+        <span className="@max-3xl:hidden">
+          <Count
+            n={p.open_feedback}
+            icon={MessageSquareTextIcon}
+            label={t`${feedback} open feedback`}
+            className={p.open_feedback ? "text-brand" : undefined}
+          />
+        </span>
+        <span className="flex items-center gap-2 @max-3xl:hidden">
+          <Count
+            n={p.open_threads}
+            icon={MessagesSquareIcon}
+            label={t`${threads} open discussions`}
+            className={p.unanswered_threads ? "text-brand" : undefined}
+          />
+          {p.pending_posts > 0 && (
+            <span
+              className="inline-flex h-5 items-center gap-1 rounded-md bg-warning/10 px-1.5 text-[11.5px] font-semibold text-warning tabular-nums"
+              title={t`${pending} posts waiting for approval`}
+            >
+              <HourglassIcon className="size-3" />
+              {pending}
+            </span>
+          )}
+        </span>
       </Link>
     </li>
   )
@@ -163,11 +188,58 @@ function PageRow({
 
 function Tiles({ tiles, testId }: { tiles: [string, string, string?][]; testId: string }) {
   return (
-    <div className="grid grid-cols-3 gap-2 phone:grid-cols-2" data-testid={testId}>
+    <div className="grid grid-cols-3 gap-2.5 phone:grid-cols-2" data-testid={testId}>
       {tiles.map(([value, label, tone]) => (
-        <div key={label} className="rounded-xl border bg-card px-4 py-3.5">
-          <b className={cn("block text-page tabular-nums", tone)}>{value}</b>
-          <span className="text-small text-faint">{label}</span>
+        <div key={label} className="flex min-w-0 flex-col gap-0.5 rounded-[14px] border bg-card px-3.5 py-3">
+          <span className="truncate text-small text-faint">{label}</span>
+          <b className={cn("block text-[20px] leading-7 font-semibold tracking-[-0.01em] tabular-nums", tone)}>
+            {value}
+          </b>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function SummaryTiles({ inboxId, site, days }: { inboxId: string; site: string; days: DocsDays }) {
+  const { t, i18n } = useLingui()
+  const summary = useDocsSummary(inboxId, site, days)
+  const totals = summary.data?.totals
+  if (summary.isPending) {
+    return (
+      <div className="grid grid-cols-4 gap-2.5 @max-3xl:grid-cols-2" aria-busy="true">
+        {[0, 1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-[92px] rounded-[14px]" />
+        ))}
+      </div>
+    )
+  }
+  if (!totals) return null
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const [up, down] = [totals.up, totals.down].map((n) => fmt.format(n))
+  const figures: { label: string; value: string; sub?: string; tone?: string }[] = [
+    {
+      label: t`helpful share`,
+      value: helpfulShare(totals, i18n.locale),
+      sub: totals.up + totals.down > 0 ? `${t`${up} helpful`} · ${t`${down} not helpful`}` : undefined,
+    },
+    { label: t`feedback`, value: fmt.format(totals.feedback) },
+    { label: t`new discussions`, value: fmt.format(totals.threads) },
+    {
+      label: t`waiting for approval`,
+      value: fmt.format(totals.pending_posts),
+      tone: totals.pending_posts ? "text-warning" : undefined,
+    },
+  ]
+  return (
+    <div className="grid grid-cols-4 gap-2.5 @max-3xl:grid-cols-2" data-testid="docs-summary">
+      {figures.map((f) => (
+        <div key={f.label} className="flex min-w-0 flex-col gap-0.5 rounded-[14px] border bg-card px-4 py-3.5">
+          <span className="block truncate text-small text-faint first-letter:uppercase">{f.label}</span>
+          <b className={cn("block text-[24px] leading-[30px] font-semibold tracking-[-0.01em] tabular-nums", f.tone)}>
+            {f.value}
+          </b>
+          <span className="truncate text-caption text-faint">{f.sub ?? "\u00a0"}</span>
         </div>
       ))}
     </div>
@@ -335,7 +407,7 @@ function PageTraffic({
       }
     >
       {q.isPending ? (
-        <Skeleton className="h-20 rounded-2xl" />
+        <Skeleton className="h-20 rounded-[14px]" />
       ) : q.error ? (
         <ErrorLine error={q.error} />
       ) : (
@@ -357,11 +429,13 @@ function PageDetail({
   page,
   sheetHref,
   back,
+  embedded,
 }: {
   inboxId: string
   page: string
   sheetHref: (id: string) => string
   back?: { to: string; label: string }
+  embedded?: boolean
 }) {
   const { t, i18n } = useLingui()
   const [days] = useDocsDays()
@@ -381,14 +455,16 @@ function PageDetail({
       ]
     : []
   return (
-    <div className="flex max-w-[900px] flex-col gap-4 p-6 pb-16 phone:px-4 phone:pt-4" data-testid="docs-page">
+    <div className={cn("flex flex-col gap-4", embedded ? "min-w-0" : "p-4 pb-16 phone:pt-4")} data-testid="docs-page">
       {back && (
         <div className="-mb-3">
           <PaneBack to={back.to} label={back.label} always />
         </div>
       )}
       <div className="flex flex-col gap-0.5">
-        <h2 className="text-title break-words">{d?.title || pageLabel(page)}</h2>
+        <h2 className="text-[18px] leading-6 font-semibold tracking-[-0.01em] break-words">
+          {d?.title || pageLabel(page)}
+        </h2>
         <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-body text-muted-foreground">
           {inbox && (
             <span className="inline-flex items-center gap-1.5">
@@ -409,7 +485,7 @@ function PageDetail({
           </a>
         </span>
       </div>
-      {detail.isPending && <Skeleton className="h-28 rounded-2xl" />}
+      {detail.isPending && <Skeleton className="h-28 rounded-[14px]" />}
       <ErrorLine error={detail.error} />
       {d && (
         <>
@@ -468,9 +544,12 @@ function DocsEmpty({ onInstall }: { onInstall: () => void }) {
     },
   ]
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8 phone:px-4" data-testid="docs-empty">
+    <div className="min-h-0 flex-1 overflow-y-auto bg-surface px-6 py-8 phone:px-4" data-testid="docs-empty">
       <div className="mx-auto flex max-w-[760px] flex-col gap-5">
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col items-start gap-1.5">
+          <span className="mb-1 grid size-12 place-items-center rounded-2xl bg-muted text-faint">
+            <FileTextIcon className="size-5" />
+          </span>
           <h2 className="text-[20px] leading-[1.3] font-semibold tracking-[-0.01em]">
             <Trans>No pages yet</Trans>
           </h2>
@@ -482,7 +561,7 @@ function DocsEmpty({ onInstall }: { onInstall: () => void }) {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-3 phone:grid-cols-1">
-          <div className={cn(look.card, "flex flex-col gap-1.5 border-brand p-4")}>
+          <div className={cn(look.card, "flex flex-col gap-1.5 rounded-[14px] border-brand p-4")}>
             <span className={look.over}>
               <Trans>Docs</Trans>
             </span>
@@ -495,7 +574,7 @@ function DocsEmpty({ onInstall }: { onInstall: () => void }) {
               </Trans>
             </span>
           </div>
-          <div className={cn(look.card, "flex flex-col gap-1.5 p-4")}>
+          <div className={cn(look.card, "flex flex-col gap-1.5 rounded-[14px] p-4")}>
             <span className={look.over}>
               <Trans>Help center</Trans>
             </span>
@@ -514,7 +593,7 @@ function DocsEmpty({ onInstall }: { onInstall: () => void }) {
             </span>
           </div>
         </div>
-        <div className={look.card}>
+        <div className={cn(look.card, "rounded-[14px]")}>
           <ol className="flex flex-col gap-3 p-4">
             {steps.map((s, i) => (
               <li key={i} className="flex items-start gap-3">
@@ -603,18 +682,34 @@ export function PagesTab({
 
   if (pages.isPending) {
     return (
-      <div className="flex flex-col gap-2 p-6 phone:px-4">
-        <Skeleton className="h-14 w-full" />
-        <Skeleton className="h-14 w-full" />
+      <div className="min-h-0 flex-1 overflow-y-auto bg-surface" aria-busy="true">
+        <div className="mx-auto flex max-w-[1360px] flex-col gap-4 px-6 py-5 phone:px-4">
+          <div className="grid grid-cols-4 gap-2.5 phone:grid-cols-2">
+            {[0, 1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-[92px] rounded-[14px]" />
+            ))}
+          </div>
+          <Skeleton className="h-[420px] rounded-[14px]" />
+        </div>
       </div>
     )
   }
-  if (pages.error) return <ErrorLine error={pages.error} className="m-6 phone:mx-4" />
+  if (pages.error)
+    return (
+      <div className="min-h-0 flex-1 overflow-y-auto bg-surface px-6 py-12 phone:px-4">
+        <div className="mx-auto flex max-w-sm flex-col items-center gap-2.5 text-center">
+          <span className="mb-1 grid size-10 place-items-center rounded-full bg-destructive/10 text-destructive">
+            <AlertCircleIcon className="size-5" />
+          </span>
+          <ErrorLine error={pages.error} />
+        </div>
+      </div>
+    )
   if (items.length === 0 && !hasPick) return <DocsEmpty onInstall={onInstall} />
 
   if (phone && selected) {
     return (
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto bg-surface">
         <PageDetail
           inboxId={selected.inbox}
           page={selected.url}
@@ -627,62 +722,77 @@ export function PagesTab({
   }
   const currentKey = selected ? `${selected.inbox} ${selected.url}` : ""
   return (
-    <div className="flex min-h-0 flex-1">
-      <nav
-        aria-label={t`Documentation pages`}
-        className="flex min-h-0 w-[400px] shrink-0 flex-col border-e phone:w-full phone:border-e-0"
-      >
-        <div className="min-h-0 flex-1 overflow-y-auto p-2">
-          <ul ref={list} className="flex flex-col">
-            {items.map((p, i) => (
-              <PageRow
-                key={`${p.inbox_id} ${p.page}`}
-                p={p}
-                current={`${p.inbox_id} ${p.page}` === currentKey}
-                cursor={i === cursor}
-                inboxColor={inboxes.length > 1 && !inboxId ? colors.get(p.inbox_id) : undefined}
-              />
-            ))}
-          </ul>
-          {pages.hasNextPage && (
-            <div className="mt-2 flex justify-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => void pages.fetchNextPage()}
-                disabled={pages.isFetchingNextPage}
-              >
-                <Trans>Load more</Trans>
-              </Button>
+    <div className="@container min-h-0 flex-1 overflow-y-auto bg-surface">
+      <div className="mx-auto flex max-w-[1360px] flex-col gap-4 px-6 py-5 phone:px-4">
+        <SummaryTiles inboxId={inboxId} site={site} days={days} />
+        <div className="grid grid-cols-[minmax(0,1fr)_420px] items-start gap-4 @max-5xl:grid-cols-1">
+          <section aria-label={t`Documentation pages`} className={cn(look.card, "rounded-[14px] bg-card")}>
+            <div className={cn(ROW_COLS, "h-9 border-b bg-surface/50", look.over, "@max-3xl:hidden")} aria-hidden>
+              <span>
+                <Trans>Page</Trans>
+              </span>
+              <span>
+                <Trans>Helpful</Trans>
+              </span>
+              <span>
+                <Trans>Feedback</Trans>
+              </span>
+              <span>
+                <Trans>Discussions</Trans>
+              </span>
+            </div>
+            <ul ref={list} className="flex flex-col [&>li:last-child>a]:border-b-0">
+              {items.map((p, i) => (
+                <PageRow
+                  key={`${p.inbox_id} ${p.page}`}
+                  p={p}
+                  current={`${p.inbox_id} ${p.page}` === currentKey}
+                  cursor={i === cursor}
+                  inboxColor={inboxes.length > 1 && !inboxId ? colors.get(p.inbox_id) : undefined}
+                />
+              ))}
+            </ul>
+            {pages.hasNextPage && (
+              <div className="flex justify-center border-t p-3">
+                <Button
+                  variant="outline"
+                  className={look.btnSm}
+                  onClick={() => void pages.fetchNextPage()}
+                  disabled={pages.isFetchingNextPage}
+                >
+                  <Trans>Load more</Trans>
+                </Button>
+              </div>
+            )}
+            <p className="border-t px-4 py-2.5 text-caption text-faint">
+              <Trans>
+                Pages live on your own site. Articles hosted by Yuva are in{" "}
+                <Link to="/knowledge" className="text-brand hover:underline">
+                  Help center
+                </Link>
+                .
+              </Trans>
+            </p>
+          </section>
+          {!phone && (
+            <div className="min-w-0">
+              {selected ? (
+                <PageDetail
+                  embedded
+                  inboxId={selected.inbox}
+                  page={selected.url}
+                  sheetHref={sheetHref}
+                  key={`${selected.inbox} ${selected.url}`}
+                />
+              ) : (
+                <p className="px-6 py-12 text-center text-body text-faint">
+                  <Trans>Pick a page to see its ratings, discussions and questions.</Trans>
+                </p>
+              )}
             </div>
           )}
         </div>
-        <p className="border-t px-4 py-2.5 text-caption text-faint">
-          <Trans>
-            Pages live on your own site. Articles hosted by Yuva are in{" "}
-            <Link to="/knowledge" className="text-brand hover:underline">
-              Help center
-            </Link>
-            .
-          </Trans>
-        </p>
-      </nav>
-      {!phone && (
-        <div className="min-w-0 flex-1 overflow-y-auto">
-          {selected ? (
-            <PageDetail
-              inboxId={selected.inbox}
-              page={selected.url}
-              sheetHref={sheetHref}
-              key={`${selected.inbox} ${selected.url}`}
-            />
-          ) : (
-            <p className="px-6 py-12 text-center text-body text-faint">
-              <Trans>Pick a page to see its ratings, discussions and questions.</Trans>
-            </p>
-          )}
-        </div>
-      )}
+      </div>
     </div>
   )
 }

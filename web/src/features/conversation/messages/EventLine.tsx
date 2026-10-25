@@ -141,8 +141,8 @@ export function EventLine({ m, ctx }: { m: Message; ctx: ThreadContext }) {
     }
   }
   return (
-    <Marker className="justify-center py-2" data-testid="event-line">
-      <MarkerContent className="max-w-full rounded-full border bg-card px-2.5 py-[3px] text-center text-caption text-faint">
+    <Marker className="justify-start py-1.5 ps-[46px]" data-testid="event-line">
+      <MarkerContent className="max-w-full px-0 text-start text-caption text-faint">
         {body}
         <span aria-hidden> · </span>
         <time dateTime={m.created_at} title={formatDateTime(m.created_at, i18n.locale)}>

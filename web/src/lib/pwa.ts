@@ -5,9 +5,28 @@ type InstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
 }
 
-type State = { installPrompt: InstallPromptEvent | null; waiting: ServiceWorker | null }
+type State = { installPrompt: InstallPromptEvent | null; waiting: ServiceWorker | null; updateDismissed: boolean }
 
-let state: State = { installPrompt: null, waiting: null }
+const DISMISSED_KEY = "yuva.update-dismissed"
+
+function readDismissed() {
+  try {
+    return sessionStorage.getItem(DISMISSED_KEY) === "1"
+  } catch {
+    return false
+  }
+}
+
+function writeDismissed(on: boolean) {
+  try {
+    if (on) sessionStorage.setItem(DISMISSED_KEY, "1")
+    else sessionStorage.removeItem(DISMISSED_KEY)
+  } catch {
+    return
+  }
+}
+
+let state: State = { installPrompt: null, waiting: null, updateDismissed: readDismissed() }
 const listeners = new Set<() => void>()
 let navigateTo: ((path: string) => void) | null = null
 let pendingPath: string | null = null
@@ -47,6 +66,17 @@ export function useWaitingUpdate() {
   }
 }
 
+export function useUpdateDismissed() {
+  const dismissed = usePwa().updateDismissed
+  return [
+    dismissed,
+    () => {
+      writeDismissed(true)
+      set({ updateDismissed: true })
+    },
+  ] as const
+}
+
 export function onServiceWorkerNavigate(fn: ((path: string) => void) | null) {
   navigateTo = fn
   if (fn && pendingPath) {
@@ -72,7 +102,10 @@ function watch(reg: ServiceWorkerRegistration) {
   reg.addEventListener("updatefound", () => {
     const next = reg.installing
     next?.addEventListener("statechange", () => {
-      if (next.state === "installed") offer()
+      if (next.state !== "installed") return
+      writeDismissed(false)
+      set({ updateDismissed: false })
+      offer()
     })
   })
   document.addEventListener("visibilitychange", () => {

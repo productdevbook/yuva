@@ -1,21 +1,22 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { DownloadIcon } from "lucide-react"
+import { ChartLineIcon, DownloadIcon } from "lucide-react"
 import { useMemo, useState } from "react"
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import { useSearchParams } from "react-router"
 
 import { ErrorLine } from "@/components/common"
-import { DailyChart } from "@/components/common/DailyChart"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Segmented } from "@/components/common/Segmented"
 import { formatDuration, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
-import { Skeleton } from "@/components/ui/skeleton"
+import { KpiTile, Legend } from "@/features/analytics/Overview"
+import { Panel } from "@/features/analytics/parts"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { look } from "@/features/inbox/PageFrame"
 import { addDays, dayKey, daysBetween, downloadReport, useReport, type ReportQuery } from "@/features/reports/data"
-import { Card, headButton, StatTile, tableHeadClass } from "@/features/settings/ui"
+import { ActionsPortal, headClass, ReportSkeleton, SlaBar, ToolbarPortal } from "@/features/reports/parts"
 import type { ChannelKind, ReportGranularity, ReportGroupBy, ReportValues } from "@/lib/api"
 import { useNow } from "@/hooks/use-now"
 import { cn } from "@/lib/utils"
@@ -66,12 +67,15 @@ function defaultGranularity(days: number): ReportGranularity {
   return days <= 45 ? "day" : days <= 200 ? "week" : "month"
 }
 
-function slaShare(v: ReportValues | undefined) {
-  if (!v?.sla) return undefined
+function slaCounts(v: ReportValues | undefined) {
+  if (!v?.sla) return { met: 0, breached: 0 }
   const { first_reply: a, next_reply: b, resolution: c } = v.sla
-  const met = a.met + b.met + c.met
-  const total = met + a.breached + b.breached + c.breached
-  return total ? met / total : undefined
+  return { met: a.met + b.met + c.met, breached: a.breached + b.breached + c.breached }
+}
+
+function slaShare(v: ReportValues | undefined) {
+  const { met, breached } = slaCounts(v)
+  return met + breached ? met / (met + breached) : undefined
 }
 
 function ratingShare(v: ReportValues | undefined) {
@@ -155,6 +159,39 @@ function useGroupName(by: ReportGroupBy | undefined) {
   }
 }
 
+const pick =
+  "[&>select]:h-[30px] [&>select]:rounded-lg [&>select]:bg-card [&>select]:py-0 [&>select]:text-body [&>select]:shadow-none dark:[&>select]:bg-card"
+const pickOn = "[&>select]:border-brand/40 [&>select]:bg-brand-wash [&>select]:text-brand dark:[&>select]:bg-brand-wash"
+const dateInput = "h-[30px] rounded-lg border border-input bg-card px-2 text-body text-foreground"
+
+function Filter({
+  label,
+  value,
+  onChange,
+  testId,
+  children,
+}: {
+  label: React.ReactNode
+  value: string
+  onChange: (v: string) => void
+  testId: string
+  children: React.ReactNode
+}) {
+  return (
+    <label className="inline-flex shrink-0 items-center gap-1.5 text-small text-faint @max-[640px]:flex-col @max-[640px]:items-stretch @max-[640px]:gap-1">
+      {label}
+      <NativeSelect
+        className={cn(pick, value && pickOn, "@max-[640px]:w-full")}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        data-testid={testId}
+      >
+        {children}
+      </NativeSelect>
+    </label>
+  )
+}
+
 function Controls({
   preset,
   setPreset,
@@ -209,17 +246,19 @@ function Controls({
     member: t`Member`,
   }
   const granularityText: Record<ReportGranularity, string> = { day: t`Days`, week: t`Weeks`, month: t`Months` }
-  const field = "flex min-w-0 flex-col gap-1 text-caption text-faint"
-  const select = "w-full"
+  const all = <NativeSelectOption value="">{t`All`}</NativeSelectOption>
   return (
-    <div className="flex flex-col gap-3" data-testid="trends-controls">
-      <div className="flex flex-wrap items-end gap-3">
-        <label className={cn(field, "w-full sm:w-48")}>
-          <Trans>Period</Trans>
+    <>
+      <ToolbarPortal>
+        <div
+          className="flex flex-wrap items-center gap-2 @max-[640px]:grid @max-[640px]:grid-cols-[minmax(0,1fr)_auto]"
+          data-testid="trends-controls"
+        >
           <NativeSelect
-            className={select}
+            className={cn(pick, "@max-[640px]:w-full")}
             value={preset}
             onChange={(e) => setPreset(e.target.value as Preset)}
+            aria-label={t`Period`}
             data-testid="trends-preset"
           >
             {PRESETS.map((p) => (
@@ -228,47 +267,127 @@ function Controls({
               </NativeSelectOption>
             ))}
           </NativeSelect>
-        </label>
-        {preset === "custom" && (
-          <>
-            <label className={cn(field, "min-w-36 flex-1 sm:flex-none")}>
-              <Trans>From</Trans>
-              <input
-                type="date"
-                className="h-9 rounded-md border border-input bg-transparent px-2.5 text-sm text-foreground"
-                value={custom.from}
-                max={custom.to}
-                onChange={(e) => e.target.value && setCustom({ ...custom, from: e.target.value })}
-                aria-invalid={invalid}
-                data-testid="trends-from"
-              />
-            </label>
-            <label className={cn(field, "min-w-36 flex-1 sm:flex-none")}>
-              <Trans>To</Trans>
-              <input
-                type="date"
-                className="h-9 rounded-md border border-input bg-transparent px-2.5 text-sm text-foreground"
-                value={custom.to}
-                min={custom.from}
-                onChange={(e) => e.target.value && setCustom({ ...custom, to: e.target.value })}
-                aria-invalid={invalid}
-                data-testid="trends-to"
-              />
-            </label>
-          </>
-        )}
-        <div className="flex min-w-0 flex-col gap-1 text-caption text-faint">
-          <Trans>Split by</Trans>
+          {preset === "custom" && (
+            <>
+              <label className="inline-flex shrink-0 items-center gap-1.5 text-small text-faint @max-[640px]:justify-between">
+                <Trans>From</Trans>
+                <input
+                  type="date"
+                  className={dateInput}
+                  value={custom.from}
+                  max={custom.to}
+                  onChange={(e) => e.target.value && setCustom({ ...custom, from: e.target.value })}
+                  aria-invalid={invalid}
+                  data-testid="trends-from"
+                />
+              </label>
+              <label className="inline-flex shrink-0 items-center gap-1.5 text-small text-faint @max-[640px]:justify-between">
+                <Trans>To</Trans>
+                <input
+                  type="date"
+                  className={dateInput}
+                  value={custom.to}
+                  min={custom.from}
+                  onChange={(e) => e.target.value && setCustom({ ...custom, to: e.target.value })}
+                  aria-invalid={invalid}
+                  data-testid="trends-to"
+                />
+              </label>
+            </>
+          )}
           <Segmented
             value={granularity}
             label={t`Split by`}
             onChange={setGranularity}
             items={GRANULARITIES.map((g) => ({ value: g, label: granularityText[g], testId: `trends-gran-${g}` }))}
           />
+          <span className="h-5 w-px shrink-0 bg-border @max-[640px]:hidden" aria-hidden />
+          <div className="contents @max-[640px]:col-span-2 @max-[640px]:grid @max-[640px]:grid-cols-2 @max-[640px]:gap-2">
+            <Filter
+              label={<Trans>Group by</Trans>}
+              value={group}
+              onChange={(v) => setGroup(v as ReportGroupBy | "")}
+              testId="trends-group"
+            >
+              <NativeSelectOption value="">{t`Nothing`}</NativeSelectOption>
+              {GROUPS.map((g) => (
+                <NativeSelectOption key={g} value={g}>
+                  {groupText[g]}
+                </NativeSelectOption>
+              ))}
+            </Filter>
+            <Filter
+              label={groupText.inbox}
+              value={filters.inbox}
+              onChange={(v) => setFilter("inbox", v)}
+              testId="trends-filter-inbox"
+            >
+              {all}
+              {inboxes.map((x) => (
+                <NativeSelectOption key={x.id} value={x.id}>
+                  {x.name}
+                </NativeSelectOption>
+              ))}
+            </Filter>
+            <Filter
+              label={groupText.channel}
+              value={filters.channel}
+              onChange={(v) => setFilter("channel", v)}
+              testId="trends-filter-channel"
+            >
+              {all}
+              {CHANNELS.map((k) => (
+                <NativeSelectOption key={k} value={k}>
+                  {text.channel[k]}
+                </NativeSelectOption>
+              ))}
+            </Filter>
+            <Filter
+              label={groupText.label}
+              value={filters.label}
+              onChange={(v) => setFilter("label", v)}
+              testId="trends-filter-label"
+            >
+              {all}
+              {labels.map((x) => (
+                <NativeSelectOption key={x.id} value={x.id}>
+                  {x.name}
+                </NativeSelectOption>
+              ))}
+            </Filter>
+            <Filter
+              label={groupText.team}
+              value={filters.team}
+              onChange={(v) => setFilter("team", v)}
+              testId="trends-filter-team"
+            >
+              {all}
+              {teams.map((x) => (
+                <NativeSelectOption key={x.id} value={x.id}>
+                  {x.name}
+                </NativeSelectOption>
+              ))}
+            </Filter>
+            <Filter
+              label={groupText.member}
+              value={filters.member}
+              onChange={(v) => setFilter("member", v)}
+              testId="trends-filter-member"
+            >
+              {all}
+              {members.map((x) => (
+                <NativeSelectOption key={x.id} value={x.id}>
+                  {x.name || x.email}
+                </NativeSelectOption>
+              ))}
+            </Filter>
+          </div>
         </div>
+      </ToolbarPortal>
+      <ActionsPortal>
         <Button
           variant="outline"
-          className={cn(headButton.secondary, "ms-auto")}
+          className={cn(look.btn, "bg-card")}
           disabled={invalid || exporting}
           onClick={onExport}
           data-testid="trends-export"
@@ -276,117 +395,16 @@ function Controls({
           <DownloadIcon className="size-4" />
           <Trans>Export CSV</Trans>
         </Button>
-      </div>
-      {invalid && (
-        <p className="text-caption text-destructive" role="alert">
-          <Trans>The end must not be before the start, and the range can be at most 13 months.</Trans>
-        </p>
-      )}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <label className={field}>
-          <Trans>Group by</Trans>
-          <NativeSelect
-            className={select}
-            value={group}
-            onChange={(e) => setGroup(e.target.value as ReportGroupBy | "")}
-            data-testid="trends-group"
-          >
-            <NativeSelectOption value="">{t`Nothing`}</NativeSelectOption>
-            {GROUPS.map((g) => (
-              <NativeSelectOption key={g} value={g}>
-                {groupText[g]}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </label>
-        <label className={field}>
-          {groupText.inbox}
-          <NativeSelect
-            className={select}
-            value={filters.inbox}
-            onChange={(e) => setFilter("inbox", e.target.value)}
-            data-testid="trends-filter-inbox"
-          >
-            <NativeSelectOption value="">{t`All`}</NativeSelectOption>
-            {inboxes.map((x) => (
-              <NativeSelectOption key={x.id} value={x.id}>
-                {x.name}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </label>
-        <label className={field}>
-          {groupText.channel}
-          <NativeSelect
-            className={select}
-            value={filters.channel}
-            onChange={(e) => setFilter("channel", e.target.value)}
-            data-testid="trends-filter-channel"
-          >
-            <NativeSelectOption value="">{t`All`}</NativeSelectOption>
-            {CHANNELS.map((k) => (
-              <NativeSelectOption key={k} value={k}>
-                {text.channel[k]}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </label>
-        <label className={field}>
-          {groupText.label}
-          <NativeSelect
-            className={select}
-            value={filters.label}
-            onChange={(e) => setFilter("label", e.target.value)}
-            data-testid="trends-filter-label"
-          >
-            <NativeSelectOption value="">{t`All`}</NativeSelectOption>
-            {labels.map((x) => (
-              <NativeSelectOption key={x.id} value={x.id}>
-                {x.name}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </label>
-        <label className={field}>
-          {groupText.team}
-          <NativeSelect
-            className={select}
-            value={filters.team}
-            onChange={(e) => setFilter("team", e.target.value)}
-            data-testid="trends-filter-team"
-          >
-            <NativeSelectOption value="">{t`All`}</NativeSelectOption>
-            {teams.map((x) => (
-              <NativeSelectOption key={x.id} value={x.id}>
-                {x.name}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </label>
-        <label className={field}>
-          {groupText.member}
-          <NativeSelect
-            className={select}
-            value={filters.member}
-            onChange={(e) => setFilter("member", e.target.value)}
-            data-testid="trends-filter-member"
-          >
-            <NativeSelectOption value="">{t`All`}</NativeSelectOption>
-            {members.map((x) => (
-              <NativeSelectOption key={x.id} value={x.id}>
-                {x.name || x.email}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </label>
-      </div>
-    </div>
+      </ActionsPortal>
+    </>
   )
 }
 
 function periodTick(g: ReportGranularity, locale: string) {
   const month = new Intl.DateTimeFormat(locale, { month: "short", year: "2-digit", timeZone: "UTC" })
-  return g === "month" ? (d: string) => month.format(new Date(`${d}T00:00:00Z`)) : undefined
+  const short = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", timeZone: "UTC" })
+  const fmt = g === "month" ? month : short
+  return (d: string) => fmt.format(new Date(`${d}T00:00:00Z`))
 }
 
 function periodLabel(g: ReportGranularity, locale: string) {
@@ -398,6 +416,21 @@ function periodLabel(g: ReportGranularity, locale: string) {
   }
 }
 
+function seriesRow(config: ChartConfig, format: (v: number) => string, dashed: string[]) {
+  return (value: unknown, name: unknown) => (
+    <div className="flex w-full items-center gap-2">
+      <span
+        className={cn("h-0 w-3 shrink-0 border-t-2", dashed.includes(String(name)) && "border-dashed")}
+        style={{ borderColor: `var(--color-${String(name)})` }}
+      />
+      <span className="flex-1 text-muted-foreground">{config[String(name)]?.label}</span>
+      <span className="font-mono font-medium text-foreground tabular-nums">{format(Number(value))}</span>
+    </div>
+  )
+}
+
+const chartMargin = { top: 8, right: 8, bottom: 0, left: -4 }
+
 function VolumeChart({
   series,
   granularity,
@@ -408,7 +441,7 @@ function VolumeChart({
   const { t, i18n } = useLingui()
   const config: ChartConfig = {
     opened: { label: t`Opened`, color: "var(--brand)" },
-    closed: { label: t`Closed`, color: "var(--success)" },
+    closed: { label: t`Closed`, color: "var(--foreground)" },
     replies: { label: t`Replies`, color: "var(--muted-foreground)" },
   }
   const rows = series.map((p) => ({
@@ -417,19 +450,84 @@ function VolumeChart({
     closed: p.values.closed ?? 0,
     replies: p.values.replies ?? 0,
   }))
+  const tick = periodTick(granularity, i18n.locale)
+  const label = periodLabel(granularity, i18n.locale)
+  const count = new Intl.NumberFormat(i18n.locale)
+  const compact = new Intl.NumberFormat(i18n.locale, { notation: "compact" })
   return (
-    <Card>
-      <h2 className="mb-3 font-semibold">
-        <Trans>Conversations and replies</Trans>
-      </h2>
-      <DailyChart
-        rows={rows}
-        config={config}
-        testId="trends-volume"
-        tick={periodTick(granularity, i18n.locale)}
-        label={periodLabel(granularity, i18n.locale)}
-      />
-    </Card>
+    <Panel
+      title={<Trans>Conversations and replies</Trans>}
+      action={
+        <Legend
+          items={[
+            { color: "var(--brand)", label: config.opened!.label },
+            { color: "var(--foreground)", label: config.closed!.label },
+            { color: "var(--muted-foreground)", label: config.replies!.label, dashed: true },
+          ]}
+        />
+      }
+    >
+      <ChartContainer config={config} className="aspect-auto h-56 w-full px-1" data-testid="trends-volume">
+        <AreaChart data={rows} margin={chartMargin}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="day"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            minTickGap={28}
+            interval="preserveStartEnd"
+            tickFormatter={(d) => tick(String(d))}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            width={40}
+            allowDecimals={false}
+            tickFormatter={(v) => compact.format(Number(v))}
+          />
+          <ChartTooltip
+            cursor={{ stroke: "var(--faint)", strokeWidth: 1 }}
+            content={
+              <ChartTooltipContent
+                indicator="line"
+                labelFormatter={(_, p) => (p?.[0] ? label(String(p[0].payload.day)) : "")}
+                formatter={seriesRow(config, (v) => count.format(v), ["replies"])}
+              />
+            }
+          />
+          <Area
+            dataKey="opened"
+            type="monotone"
+            stroke="var(--color-opened)"
+            strokeWidth={2}
+            fill="var(--color-opened)"
+            fillOpacity={0.08}
+            activeDot={{ r: 4 }}
+            isAnimationActive={false}
+          />
+          <Area
+            dataKey="closed"
+            type="monotone"
+            stroke="var(--color-closed)"
+            strokeWidth={2}
+            fill="none"
+            activeDot={{ r: 4 }}
+            isAnimationActive={false}
+          />
+          <Area
+            dataKey="replies"
+            type="monotone"
+            stroke="var(--color-replies)"
+            strokeDasharray="4 4"
+            strokeWidth={1.5}
+            fill="none"
+            activeDot={{ r: 3 }}
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ChartContainer>
+    </Panel>
   )
 }
 
@@ -452,63 +550,58 @@ function TimesChart({
     p90: which === "first" ? p.values.first_reply_p90_seconds : p.values.resolution_p90_seconds,
   }))
   const any = rows.some((r) => r.median !== undefined)
-  const short = new Intl.DateTimeFormat(i18n.locale, { day: "numeric", month: "short", timeZone: "UTC" })
-  const tick = periodTick(granularity, i18n.locale) ?? ((d: string) => short.format(new Date(`${d}T00:00:00Z`)))
+  const tick = periodTick(granularity, i18n.locale)
   const label = periodLabel(granularity, i18n.locale)
   return (
-    <Card>
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="font-semibold">
-          <Trans>Response times</Trans>
-        </h2>
-        <Segmented
-          value={which}
-          label={t`Time`}
-          onChange={setWhich}
-          items={[
-            { value: "first", label: t`First reply`, testId: "trends-times-first" },
-            { value: "resolution", label: t`Resolved in`, testId: "trends-times-resolution" },
-          ]}
-        />
-      </div>
+    <Panel
+      title={<Trans>Response times</Trans>}
+      action={
+        <>
+          <Legend
+            items={[
+              { color: "var(--brand)", label: config.median!.label },
+              { color: "var(--muted-foreground)", label: config.p90!.label, dashed: true },
+            ]}
+          />
+          <Segmented
+            value={which}
+            label={t`Time`}
+            onChange={setWhich}
+            itemClassName="h-6 px-2 text-small"
+            items={[
+              { value: "first", label: t`First reply`, testId: "trends-times-first" },
+              { value: "resolution", label: t`Resolved in`, testId: "trends-times-resolution" },
+            ]}
+          />
+        </>
+      }
+    >
       {any ? (
-        <ChartContainer config={config} className="aspect-auto h-48 w-full" data-testid="trends-times">
-          <LineChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+        <ChartContainer config={config} className="aspect-auto h-56 w-full px-1" data-testid="trends-times">
+          <LineChart data={rows} margin={chartMargin}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="day"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              minTickGap={24}
+              minTickGap={28}
+              interval="preserveStartEnd"
               tickFormatter={(d) => tick(String(d))}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
-              width="auto"
+              width={48}
               tickFormatter={(v) => formatDuration(Number(v), i18n.locale)}
             />
             <ChartTooltip
-              cursor={false}
+              cursor={{ stroke: "var(--faint)", strokeWidth: 1 }}
               content={
                 <ChartTooltipContent
+                  indicator="line"
                   labelFormatter={(_, p) => (p?.[0] ? label(String(p[0].payload.day)) : "")}
-                  formatter={(value, name) => (
-                    <div className="flex w-full items-center gap-2">
-                      <span
-                        className={
-                          name === "p90"
-                            ? "h-0 w-2.5 shrink-0 border-t-2 border-dashed border-muted-foreground"
-                            : "size-2.5 shrink-0 rounded-[2px] bg-brand"
-                        }
-                      />
-                      <span className="flex-1 text-muted-foreground">{config[String(name)]?.label}</span>
-                      <span className="font-mono font-medium text-foreground tabular-nums">
-                        {formatDuration(Number(value), i18n.locale)}
-                      </span>
-                    </div>
-                  )}
+                  formatter={seriesRow(config, (v) => formatDuration(v, i18n.locale), ["p90"])}
                 />
               }
             />
@@ -517,7 +610,8 @@ function TimesChart({
               type="monotone"
               stroke="var(--color-median)"
               strokeWidth={2}
-              dot={rows.length < 40}
+              dot={false}
+              activeDot={{ r: 4 }}
               connectNulls
               isAnimationActive={false}
             />
@@ -528,23 +622,33 @@ function TimesChart({
               strokeDasharray="4 4"
               strokeWidth={1.5}
               dot={false}
+              activeDot={{ r: 3 }}
               connectNulls
               isAnimationActive={false}
             />
           </LineChart>
         </ChartContainer>
       ) : (
-        <p className="py-10 text-center text-body text-muted-foreground">
+        <p className="py-14 text-center text-body text-faint">
           <Trans>Nothing was measured in this period.</Trans>
         </p>
       )}
-    </Card>
+    </Panel>
   )
 }
 
-function GroupTable({ by, groups }: { by: ReportGroupBy; groups: { key?: string; totals: ReportValues }[] }) {
+function GroupTable({
+  by,
+  groups,
+  totals,
+}: {
+  by: ReportGroupBy
+  groups: { key?: string; totals: ReportValues }[]
+  totals: ReportValues
+}) {
   const { t, i18n } = useLingui()
   const name = useGroupName(by)
+  const inboxes = useInboxes().data ?? []
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: "opened", desc: true })
   const fmt = new Intl.NumberFormat(i18n.locale)
   const pct = new Intl.NumberFormat(i18n.locale, { style: "percent", maximumFractionDigits: 0 })
@@ -553,6 +657,7 @@ function GroupTable({ by, groups }: { by: ReportGroupBy; groups: { key?: string;
   const rows = groups.map((g) => ({
     key: g.key ?? "",
     name: name(g.key),
+    color: by === "inbox" ? inboxes.find((x) => x.id === g.key)?.branding.color : undefined,
     v: g.totals,
     sla: slaShare(g.totals),
     rating: ratingShare(g.totals),
@@ -591,13 +696,13 @@ function GroupTable({ by, groups }: { by: ReportGroupBy; groups: { key?: string;
   const head = (key: SortKey, label: React.ReactNode, end = true) => (
     <th
       scope="col"
-      className={cn("px-3 py-2.5 font-medium", end ? "text-end" : "text-start")}
+      className={cn("h-9 px-3 font-semibold", end ? "text-end" : "text-start")}
       aria-sort={sort.key === key ? (sort.desc ? "descending" : "ascending") : "none"}
     >
       <button
         type="button"
         className={cn(
-          "outline-none focus-visible:underline",
+          "tracking-[inherit] uppercase outline-none focus-visible:underline",
           sort.key === key ? "text-foreground" : "hover:text-foreground"
         )}
         onClick={() => setSort((s) => ({ key, desc: s.key === key ? !s.desc : key !== "name" }))}
@@ -608,12 +713,32 @@ function GroupTable({ by, groups }: { by: ReportGroupBy; groups: { key?: string;
       </button>
     </th>
   )
+  const cells = (v: ReportValues, sla: number | undefined, rating: number | undefined) => {
+    const { met, breached } = slaCounts(v)
+    return (
+      <>
+        <td className="px-3 py-2.5 text-end tabular-nums">{fmt.format(v.opened ?? 0)}</td>
+        <td className="px-3 py-2.5 text-end tabular-nums">{fmt.format(v.closed ?? 0)}</td>
+        <td className="px-3 py-2.5 text-end tabular-nums">{fmt.format(v.replies ?? 0)}</td>
+        <td className="px-3 py-2.5 text-end tabular-nums">{dur(v.first_reply_median_seconds)}</td>
+        <td className="px-3 py-2.5 text-end tabular-nums">{dur(v.first_reply_p90_seconds)}</td>
+        <td className="px-3 py-2.5 text-end tabular-nums">{dur(v.resolution_median_seconds)}</td>
+        <td className="px-3 py-2.5 tabular-nums">
+          <span className="flex items-center justify-end gap-2">
+            <SlaBar met={met} breached={breached} />
+            {share(sla)}
+          </span>
+        </td>
+        <td className="px-3 py-2.5 text-end tabular-nums">{share(rating)}</td>
+      </>
+    )
+  }
   return (
-    <section className="overflow-x-auto rounded-xl border bg-card" data-testid="trends-groups">
-      <table className="w-full min-w-[820px] text-body">
+    <section className="overflow-x-auto rounded-[14px] border bg-card" data-testid="trends-groups">
+      <table className="w-full min-w-[860px] text-body">
         <caption className="sr-only">{t`Figures by group`}</caption>
-        <thead className={tableHeadClass}>
-          <tr>
+        <thead className={headClass}>
+          <tr className="border-b">
             {head("name", <Trans>Name</Trans>, false)}
             {head("opened", <Trans>Opened</Trans>)}
             {head("closed", <Trans>Closed</Trans>)}
@@ -627,20 +752,24 @@ function GroupTable({ by, groups }: { by: ReportGroupBy; groups: { key?: string;
         </thead>
         <tbody>
           {sorted.map((r) => (
-            <tr key={r.key || "none"} className="border-t" data-testid="trends-group-row">
-              <th scope="row" className="max-w-56 truncate px-3 py-2.5 text-start font-medium">
-                {r.name}
+            <tr key={r.key || "none"} className="border-b" data-testid="trends-group-row">
+              <th scope="row" className="max-w-56 px-3 py-2.5 text-start font-medium">
+                <span className="flex min-w-0 items-center gap-2">
+                  {r.color && (
+                    <i className="size-2 shrink-0 rounded-[3px]" style={{ backgroundColor: r.color }} aria-hidden />
+                  )}
+                  <span className="truncate">{r.name}</span>
+                </span>
               </th>
-              <td className="px-3 py-2.5 text-end tabular-nums">{fmt.format(r.v.opened ?? 0)}</td>
-              <td className="px-3 py-2.5 text-end tabular-nums">{fmt.format(r.v.closed ?? 0)}</td>
-              <td className="px-3 py-2.5 text-end tabular-nums">{fmt.format(r.v.replies ?? 0)}</td>
-              <td className="px-3 py-2.5 text-end tabular-nums">{dur(r.v.first_reply_median_seconds)}</td>
-              <td className="px-3 py-2.5 text-end tabular-nums">{dur(r.v.first_reply_p90_seconds)}</td>
-              <td className="px-3 py-2.5 text-end tabular-nums">{dur(r.v.resolution_median_seconds)}</td>
-              <td className="px-3 py-2.5 text-end tabular-nums">{share(r.sla)}</td>
-              <td className="px-3 py-2.5 text-end tabular-nums">{share(r.rating)}</td>
+              {cells(r.v, r.sla, r.rating)}
             </tr>
           ))}
+          <tr className="bg-muted/50 font-semibold" data-testid="trends-group-total">
+            <th scope="row" className="px-3 py-2.5 text-start">
+              <Trans>All</Trans>
+            </th>
+            {cells(totals, slaShare(totals), ratingShare(totals))}
+          </tr>
         </tbody>
       </table>
     </section>
@@ -824,49 +953,61 @@ export function TrendsReport() {
         exporting={exporting}
         onExport={onExport}
       />
+      {invalid && (
+        <p className="text-caption text-destructive" role="alert">
+          <Trans>The end must not be before the start, and the range can be at most 13 months.</Trans>
+        </p>
+      )}
       <ErrorLine error={report.error ?? failure} />
       {report.isPending && !invalid ? (
-        <div className="flex flex-col gap-4" data-testid="trends-loading">
-          <Skeleton className="h-24 rounded-xl" />
-          <Skeleton className="h-56 rounded-xl" />
-        </div>
+        <ReportSkeleton tiles={5} testId="trends-loading" />
       ) : (
         report.data && (
           <div
             className={cn("flex flex-col gap-4 transition-opacity", report.isPlaceholderData && "opacity-60")}
             data-testid="trends"
           >
-            <p className="text-caption text-faint" data-testid="trends-built-until">
+            <p className="text-small text-faint" data-testid="trends-built-until">
               {builtText ? <Trans>Data up to {builtText}</Trans> : <Trans>The figures are still being prepared.</Trans>}
             </p>
             {empty ? (
-              <EmptyBox title={<Trans>No activity in this period</Trans>} testId="trends-empty">
+              <EmptyBox
+                icon={ChartLineIcon}
+                title={<Trans>No activity in this period</Trans>}
+                className="rounded-[14px] border-solid bg-card"
+                testId="trends-empty"
+              >
                 <Trans>Nothing was opened, replied to or closed here. Try a longer period or other filters.</Trans>
               </EmptyBox>
             ) : (
               <>
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4" data-testid="trends-tiles">
-                  {tiles.map((x) => (
-                    <StatTile
+                <div className="grid grid-cols-12 gap-2.5 @max-[760px]:grid-cols-2" data-testid="trends-tiles">
+                  {tiles.map((x, i) => (
+                    <KpiTile
                       key={x.key}
                       label={x.label}
+                      wrapLabel
                       value={x.value}
                       hint={<Delta cur={x.cur} prev={x.prev} kind={x.kind} better={x.better} />}
-                      hintClassName="whitespace-normal"
                       testId={`trends-tile-${x.key}`}
+                      className={cn(
+                        i < 4 ? "col-span-3" : "col-span-4",
+                        "@max-[760px]:col-span-1",
+                        i === tiles.length - 1 && "@max-[760px]:col-span-2"
+                      )}
                     />
                   ))}
                 </div>
-                <div className="grid gap-4 xl:grid-cols-2">
+                <div className="grid grid-cols-2 gap-4 @max-[1000px]:grid-cols-1">
                   <VolumeChart series={report.data.series} granularity={granularity} />
                   <TimesChart series={report.data.series} granularity={granularity} />
                 </div>
                 {group && report.data.groups && (
                   <>
-                    <h2 className="font-semibold">
+                    <h2 className="text-[14px] leading-5 font-semibold">
                       <Trans>By group</Trans>
                     </h2>
-                    <GroupTable by={group} groups={report.data.groups} />
+                    <GroupTable by={group} groups={report.data.groups} totals={report.data.totals} />
                   </>
                 )}
               </>

@@ -21,20 +21,10 @@ msgstr "{0, plural, one {# wiersz} few {# wiersze} many {# wierszy} other {# wie
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {odwiedzający dziś} few {odwiedzających dziś} many {odwiedzających dziś} other {odwiedzających dziś}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "Rozmowy: {0}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "{0} odwiedzających"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "Odwiedzający: {0}"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "Szczegółowe rekordy są przechowywane od {rawDay}."
 msgid "Detailed records kept since"
 msgstr "Szczegółowe rekordy przechowywane od"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "Szczegóły"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "Urządzenie"
@@ -1417,10 +1411,6 @@ msgstr "Limit miesięczny"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "Miesiące"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "Więcej widoków"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

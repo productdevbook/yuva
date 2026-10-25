@@ -53,7 +53,7 @@ export function BoardBar({
   }
   return (
     <div
-      className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b px-6 py-2.5 phone:px-4"
+      className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b px-6 py-2.5 @max-3xl:px-4"
       data-testid="board-bar"
     >
       {chips ? (
@@ -66,7 +66,7 @@ export function BoardBar({
             <Link
               to="/board"
               aria-current={all ? "page" : undefined}
-              className={all ? look.chipOn : look.chip}
+              className={all ? look.listChipOn : look.listChip}
               data-testid="board-chip-all"
             >
               <Trans>All boards</Trans>
@@ -80,7 +80,7 @@ export function BoardBar({
                 key={b.id}
                 to={boardLink(b.id, settings ? "settings" : undefined)}
                 aria-current={on ? "page" : undefined}
-                className={on ? look.chipOn : look.chip}
+                className={on ? look.listChipOn : look.listChip}
                 data-testid="board-chip"
               >
                 {mark(b)}
@@ -96,7 +96,7 @@ export function BoardBar({
                 <button
                   key={i.id}
                   type="button"
-                  className={look.chipDash}
+                  className={cn(look.listChip, "border-dashed bg-transparent")}
                   onClick={() => onCreate(i)}
                   title={t`Create board (${newKey})`}
                   data-testid="create-board-open"
@@ -121,7 +121,7 @@ export function BoardBar({
         )
       )}
       {selected && !all && (
-        <div className="flex min-w-0 items-center gap-2.5 phone:flex-wrap" data-testid="board-state">
+        <div className="flex min-w-0 items-center gap-2.5 @max-3xl:flex-wrap" data-testid="board-state">
           <Pill tone={selected.public ? "success" : "muted"} data-testid="board-visibility">
             {selected.public ? <Trans>Public</Trans> : <Trans>Private</Trans>}
           </Pill>
@@ -130,7 +130,7 @@ export function BoardBar({
               href={selected.url}
               target="_blank"
               rel="noreferrer noopener"
-              className={cn(look.faint, "max-w-64 truncate hover:text-foreground hover:underline phone:max-w-40")}
+              className={cn(look.faint, "max-w-64 truncate hover:text-foreground hover:underline @max-3xl:max-w-40")}
               dir="ltr"
               data-testid="board-url"
             >

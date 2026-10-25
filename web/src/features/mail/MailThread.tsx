@@ -18,7 +18,7 @@ import {
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
-import { EmptyState, Kbd, Notice, toast, useContactName } from "@/components/common"
+import { ContactAvatar, EmptyState, Kbd, Notice, PersonAvatar, toast, useContactName } from "@/components/common"
 import { MAIL_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDateTime, useErrorText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
@@ -59,7 +59,6 @@ import {
   useParticipants,
   useTrashConversation,
 } from "@/features/conversation/queries"
-import { look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
 import { FilterDialog } from "@/features/mail/FilterDialog"
 import { useFilterAccess } from "@/features/mail/folders"
@@ -99,12 +98,14 @@ export function MailThread(props: Props) {
   if (conversation.isPending) {
     return (
       <div className="flex min-h-0 flex-1 flex-col" data-testid="mail-loading">
-        <div className="flex h-15 items-center gap-3 border-b px-4">
+        <div className="flex min-h-15 items-center gap-3 border-b border-border/60 px-6 phone:px-3">
           <BackButton onBack={props.onBack} />
-          <Skeleton className="h-5 w-64" />
+          <div className="flex flex-1 flex-col gap-1.5">
+            <Skeleton className="h-4 w-[55%]" />
+            <Skeleton className="h-3 w-[30%]" />
+          </div>
         </div>
-        <div className="flex flex-1 flex-col gap-3 bg-surface p-6">
-          <Skeleton className="h-16 w-full rounded-xl" />
+        <div className="flex flex-1 flex-col gap-4 bg-background px-7 py-5 phone:px-4">
           <Skeleton className="h-40 w-full rounded-xl" />
         </div>
       </div>
@@ -114,7 +115,7 @@ export function MailThread(props: Props) {
     return (
       <div className="flex min-h-0 flex-1 flex-col">
         {props.onBack && (
-          <div className="flex h-15 items-center border-b px-3">
+          <div className="flex h-15 items-center border-b border-border/60 px-3">
             <BackButton onBack={props.onBack} />
           </div>
         )}
@@ -172,18 +173,24 @@ function MailCard({
         : author
   const date = formatDateTime(m.created_at, i18n.locale)
   const snippet = m.body.replace(/\s+/g, " ").trim()
+  const face = out ? (
+    <PersonAvatar name={by} className="size-7 shrink-0 bg-muted-foreground text-background" />
+  ) : (
+    <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={contactName} className="size-7 shrink-0" />
+  )
   if (!open) {
     return (
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full min-w-0 items-center gap-3 rounded-xl border bg-card px-4 py-2.5 text-start outline-none hover:bg-surface focus-visible:ring-2 focus-visible:ring-ring"
+        className="flex w-full min-w-0 items-center gap-3 rounded-xl border border-border/60 bg-surface px-3.5 py-2.5 text-start outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring"
         aria-expanded={false}
         data-testid="mail-message"
         data-collapsed
         data-message-id={m.id}
       >
-        <span className="w-40 shrink-0 truncate text-body font-medium phone:w-28">{name}</span>
+        {face}
+        <span className="w-36 shrink-0 truncate text-small font-semibold phone:w-24">{name}</span>
         <span className="min-w-0 flex-1 truncate text-small text-muted-foreground">{snippet}</span>
         {m.attachments.length > 0 && <PaperclipIcon className="size-3.5 shrink-0 text-faint" />}
         <time className="shrink-0 text-caption text-faint" dateTime={m.created_at}>
@@ -194,51 +201,58 @@ function MailCard({
   }
   return (
     <article
-      className="flex min-w-0 flex-col rounded-xl border bg-card"
+      className="flex min-w-0 flex-col rounded-[14px] border bg-card shadow-[0_1px_2px_rgb(0_0_0/0.03)]"
       tabIndex={-1}
       data-testid="mail-message"
       data-message-id={m.id}
     >
-      <header className="flex min-w-0 flex-col gap-1 border-b px-4 pt-3 pb-2.5">
-        <button
-          type="button"
-          onClick={onToggle}
-          className="flex min-w-0 items-baseline gap-2 rounded-md text-start outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-expanded
-          title={t`Collapse`}
-        >
-          <span className="min-w-0 flex-1 truncate phone:whitespace-normal phone:break-words">
-            <span className="text-body font-semibold" data-testid="mail-from-name">
-              {name}
-            </span>
-            {e?.from && (
-              <span className="ms-1.5 text-small text-faint" data-testid="mail-from">
-                &lt;{e.from}&gt;
-              </span>
-            )}
-          </span>
-          <time className="shrink-0 text-caption text-faint" dateTime={m.created_at}>
-            {date}
-          </time>
-        </button>
-        {e && (
-          <dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-small text-muted-foreground">
-            <Address label={<Trans>To</Trans>} value={e.to.join(", ")} testId="mail-to" />
-            <Address label={<Trans>Cc</Trans>} value={e.cc?.join(", ") ?? ""} testId="mail-cc" />
-            <Address label={<Trans>Bcc</Trans>} value={e.bcc?.join(", ") ?? ""} testId="mail-bcc" />
-          </dl>
+      <header className="flex min-w-0 items-start gap-3 px-5 pt-4 pb-2.5 phone:px-4">
+        {out ? (
+          <PersonAvatar name={by} className="size-9 shrink-0 bg-muted-foreground text-background" />
+        ) : (
+          <ContactAvatar id={ctx.contact?.id ?? m.conversation_id} name={contactName} className="size-9 shrink-0" />
         )}
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <button
+            type="button"
+            onClick={onToggle}
+            className="flex min-w-0 items-baseline gap-2 rounded-md text-start outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-expanded
+            title={t`Collapse`}
+          >
+            <span className="min-w-0 flex-1 truncate phone:whitespace-normal phone:break-words">
+              <span className="text-body font-semibold" data-testid="mail-from-name">
+                {name}
+              </span>
+              {e?.from && (
+                <span className="ms-1.5 text-small text-faint" data-testid="mail-from">
+                  &lt;{e.from}&gt;
+                </span>
+              )}
+            </span>
+            <time className="shrink-0 text-caption text-faint" dateTime={m.created_at}>
+              {date}
+            </time>
+          </button>
+          {e && (
+            <dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-small text-muted-foreground">
+              <Address label={<Trans>To</Trans>} value={e.to.join(", ")} testId="mail-to" />
+              <Address label={<Trans>Cc</Trans>} value={e.cc?.join(", ") ?? ""} testId="mail-cc" />
+              <Address label={<Trans>Bcc</Trans>} value={e.bcc?.join(", ") ?? ""} testId="mail-bcc" />
+            </dl>
+          )}
+        </div>
       </header>
-      <div className={cn("min-w-0", mail.originalHtml || mail.waiting ? "" : "px-4 py-3")}>
+      <div className={cn("min-w-0", mail.originalHtml || mail.waiting ? "" : "px-5 pb-4 phone:px-4")}>
         <MailBody mail={mail} />
       </div>
       {(mail.listed.length > 0 || m.delivery) && (
-        <div className="flex flex-col gap-2 px-4 pb-3">
+        <div className="flex flex-col gap-2 px-5 pb-4 phone:px-4">
           <Attachments items={mail.listed} />
           {m.delivery && <DeliveryState d={m.delivery} />}
         </div>
       )}
-      <footer className="flex flex-wrap items-center gap-1 border-t px-2 py-1">
+      <footer className="flex flex-wrap items-center gap-1 border-t border-border/60 px-3 py-1.5">
         <MailControls mail={mail} />
         {onFilter && (
           <button
@@ -278,16 +292,16 @@ function NoteCard({ m, ctx }: { m: Message; ctx: ThreadContext }) {
   const author = useAuthorName(m, ctx)
   return (
     <article
-      className="flex min-w-0 flex-col gap-1 rounded-xl border border-warning/30 bg-warning/6 px-4 py-2.5"
+      className="flex min-w-0 flex-col gap-1 rounded-xl border border-note-border bg-note/40 px-4 py-2.5"
       data-testid="mail-note"
       data-message-id={m.id}
     >
       <span className="flex items-center gap-1.5 text-caption text-faint">
-        <StickyNoteIcon className="size-3.5" />
-        <span className="font-medium text-foreground">{author}</span>
-        <span aria-hidden>·</span>
-        <Trans>Note for the team</Trans>
-        <span aria-hidden>·</span>
+        <StickyNoteIcon className="size-3.5 text-note-ink" />
+        <span className="font-semibold text-foreground">{author}</span>
+        <span className="rounded-full bg-note px-1.5 text-[11px] leading-[18px] font-semibold text-note-ink">
+          <Trans>Note for the team</Trans>
+        </span>
         <time dateTime={m.created_at}>{formatDateTime(m.created_at, i18n.locale)}</time>
       </span>
       <div className="text-reading break-words whitespace-pre-wrap">{m.body}</div>
@@ -310,7 +324,9 @@ function MailSnooze({
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger
-        render={<Button variant="outline" className={look.btnSm} />}
+        render={
+          <Button variant="outline" className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal" />
+        }
         title={t`Snooze (B)`}
         data-testid="mail-snooze"
       >
@@ -536,7 +552,7 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
   )
 
   const subject = c.subject.trim() || t`(no subject)`
-  const btn = cn(look.btnSm, "gap-1.5")
+  const btn = "h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal"
   return (
     <section
       aria-label={subject}
@@ -544,18 +560,26 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
       data-testid="mail-thread"
       data-conversation-id={c.id}
     >
-      <header className="flex shrink-0 flex-col gap-2 border-b bg-background px-5 pt-3 pb-2.5 phone:px-3 phone:pt-2">
-        <div className="flex min-w-0 items-center gap-2">
+      <header className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border/60 bg-background px-6 py-2.5 phone:px-3 phone:py-2">
+        <div className="flex min-w-0 flex-1 basis-64 items-center gap-2">
           <BackButton onBack={onBack} />
-          <h2 className="min-w-0 flex-1 truncate text-[17px] font-semibold" data-testid="mail-thread-subject">
-            {subject}
-          </h2>
+          <div className="flex min-w-0 flex-1 flex-col leading-tight">
+            <h2 className="truncate text-[16px] font-semibold" data-testid="mail-thread-subject">
+              {subject}
+            </h2>
+            {inbox && (
+              <span className="inline-flex min-w-0 items-center gap-1 text-caption text-faint">
+                <MailIcon className="size-3.5 shrink-0" />
+                <span className="truncate">{inbox.name}</span>
+              </span>
+            )}
+          </div>
           <button
             type="button"
             disabled={!write}
             onClick={toggleStar}
             className={cn(
-              "grid size-8 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none",
+              "grid size-8 shrink-0 place-items-center rounded-lg outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none",
               starred ? "text-warning" : "text-faint"
             )}
             aria-pressed={starred}
@@ -569,15 +593,9 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
         <div
           role="toolbar"
           aria-label={t`Mail actions`}
-          className="flex flex-wrap items-center gap-1.5"
+          className="flex flex-wrap items-center gap-1.5 phone:w-full"
           data-testid="mail-actions"
         >
-          {inbox && (
-            <span className="me-1 inline-flex min-w-0 items-center gap-1 text-caption text-faint">
-              <MailIcon className="size-3.5 shrink-0" />
-              <span className="truncate">{inbox.name}</span>
-            </span>
-          )}
           {!trashed && (
             <>
               {write && (
@@ -626,8 +644,8 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
         </div>
       </header>
       {trashed && <TrashBanner c={c} onRestore={restore} busy={trasher.isPending} />}
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto bg-surface" data-testid="mail-messages">
-        <div className="mx-auto flex max-w-[880px] flex-col gap-2 px-4 py-4 phone:px-2">
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto bg-background" data-testid="mail-messages">
+        <div className="mx-auto flex max-w-[776px] flex-col gap-2 px-7 pt-5 pb-2 phone:px-3 phone:pt-4">
           {messages.hasNextPage && (
             <Button
               variant="ghost"
@@ -682,7 +700,7 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
           {queued.map((p) => (
             <div
               key={p.key}
-              className="rounded-xl border border-dashed bg-card px-4 py-3 opacity-70"
+              className="rounded-[14px] border border-dashed bg-card px-5 py-3 opacity-70"
               data-testid="pending-reply"
             >
               <p className="text-reading break-words whitespace-pre-wrap">{p.body}</p>
@@ -700,20 +718,19 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
         </div>
       </div>
       {!trashed && !write && (
-        <div className="shrink-0 border-t bg-background px-4 py-3 phone:px-2">
-          <Notice className="mx-auto max-w-[880px]" data-testid="mail-read-only">
+        <div className="shrink-0 bg-background px-7 pt-2 pb-5 phone:px-3">
+          <Notice className="mx-auto max-w-[776px]" data-testid="mail-read-only">
             <Trans>You can read this mailbox but not change it. Its owner can let you send from it.</Trans>
           </Notice>
         </div>
       )}
       {!trashed && write && (
-        <div className="shrink-0 border-t bg-background px-4 pt-2 pb-3 phone:px-2 phone:pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-          <div className="mx-auto flex max-w-[880px] flex-col gap-2">
-            <div className="flex items-center gap-1.5" data-testid="mail-reply-modes">
+        <div className="shrink-0 bg-background px-7 pt-2 pb-5 phone:px-3 phone:pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+          <div className="mx-auto flex max-w-[776px] flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-2" data-testid="mail-reply-modes">
               <Button
-                variant="ghost"
-                size="sm"
-                className="gap-1.5"
+                variant="outline"
+                className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal"
                 onClick={() => replyTo(false)}
                 title={t`Reply (R)`}
                 data-testid="mail-reply"
@@ -723,9 +740,8 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
                 <Kbd className="phone:hidden">{MAIL_KEYS.reply}</Kbd>
               </Button>
               <Button
-                variant="ghost"
-                size="sm"
-                className="gap-1.5"
+                variant="outline"
+                className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal"
                 onClick={() => replyTo(true)}
                 title={t`Reply all (A)`}
                 data-testid="mail-reply-all"

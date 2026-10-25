@@ -62,7 +62,6 @@ msgstr "{0, plural, other {답장 #개}}"
 
 #. placeholder {0}: g.requests_this_month
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "{0, plural, one {# request this month} other {# requests this month}}"
 msgstr "{0, plural, other {이번 달 요청 #건}}"
 
@@ -102,7 +101,7 @@ msgstr "{0}개 종료됨"
 msgid "{0} events"
 msgstr "이벤트 {0}개"
 
-#. placeholder {0}: pct.format(good)
+#. placeholder {0}: pct.format(good ?? 0)
 #. placeholder {0}: pct.format(p.share)
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
@@ -163,11 +162,6 @@ msgstr "스코프 {0}개"
 #: src/app/Palette.tsx
 msgid "{0} settings"
 msgstr "{0} 설정"
-
-#. placeholder {0}: percent(u.uptime)
-#: src/features/status/StatusPages.tsx
-msgid "{0} uptime"
-msgstr "가동률 {0}"
 
 #: src/features/conversation/messages/EventLine.tsx
 msgid "{actor} added {added} and removed {removed}"
@@ -282,6 +276,10 @@ msgstr "{author}, 보낸 사람 {by}"
 msgid "{available} of {total}"
 msgstr "{available}/{total}"
 
+#: src/features/home/HomePage.tsx
+msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
+msgstr "{bad, plural, other {나쁜 평가 #개}}"
+
 #: src/features/contact/ContactDetails.tsx
 msgid "{bad} bad"
 msgstr "나쁨 {bad}"
@@ -293,10 +291,6 @@ msgstr "{by}, {date}"
 #: src/components/common/BulkReport.tsx
 msgid "{changed} changed"
 msgstr "{changed}개 변경됨"
-
-#: src/features/home/HomePage.tsx
-msgid "{channel} · waiting since {at}"
-msgstr "{channel} · {at}부터 대기 중"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "{clientName} is connected"
@@ -332,11 +326,14 @@ msgstr "{count, plural, other {조건 #개}}"
 msgid "{count, plural, one {# folder} other {# folders}}"
 msgstr "{count, plural, other {폴더 #개}}"
 
+#: src/features/home/HomeSide.tsx
+msgid "{count, plural, one {# issue} other {# issues}}"
+msgstr "{count, plural, other {문제 #개}}"
+
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
 msgstr "{count, plural, other {메일함 #개}}"
 
-#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, other {권한 #개}}"
@@ -377,27 +374,29 @@ msgstr "메시지 {count}개 · {size}"
 msgid "{count} settings"
 msgstr "설정 {count}개"
 
+#: src/features/home/HomePage.tsx
 #: src/features/migrations/ReviewStep.tsx
 msgid "{created, plural, one {# new} other {# new}}"
 msgstr "{created, plural, other {신규 #건}}"
 
+#: src/features/home/HomePage.tsx
+msgid "{created} new conversations and {replied} first replies in the period"
+msgstr "기간 중 새 대화 {created}개, 첫 답장 {replied}개"
+
 #: src/features/broadcasts/Growth.tsx
 #: src/features/docs/Toolbar.tsx
 #: src/features/settings/audit/sentence.ts
+#: src/features/settings/workspace/RetentionForm.tsx
 msgid "{d, plural, one {# day} other {# days}}"
 msgstr "{d, plural, other {#일}}"
 
 #: src/features/home/HomePage.tsx
-msgid "{days, plural, one {{shown} in # day · by product} other {{shown} in # days · by product}}"
-msgstr "{days, plural, other {{shown} (#일 동안 · 제품별)}}"
+msgid "{date}: {newCount} new, {replyCount} first replies"
+msgstr "{date}: 새 대화 {newCount}개, 첫 답장 {replyCount}개"
 
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
 msgstr "{days, plural, other {#일}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{days, plural, one {median, last # day} other {median, last # days}}"
-msgstr "{days, plural, other {중앙값, 최근 #일}}"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
@@ -415,10 +414,13 @@ msgstr "{done} / {total}행"
 msgid "{doneParts} of {totalParts} parts"
 msgstr "{doneParts} / {totalParts} 부분"
 
-#: src/features/home/HomePage.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "{doneText} of {total}"
 msgstr "{doneText} / {total}"
+
+#: src/features/home/HomePage.tsx
+msgid "{doneText} of {total} done"
+msgstr "{total}개 중 {doneText}개 완료"
 
 #: src/features/status/StatusPages.tsx
 msgid "{down, plural, one {# down} other {# down}}"
@@ -428,13 +430,13 @@ msgstr "{down, plural, other {#개 중단}}"
 msgid "{down} not helpful"
 msgstr "도움 안 됨 {down}"
 
+#: src/features/home/HomeSide.tsx
+msgid "{drafts, plural, one {Assistant draft to review} other {Assistant drafts to review}}"
+msgstr "{drafts, plural, other {검토할 어시스턴트 초안}}"
+
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "이미 Yuva에 있음 {existing}"
-
-#: src/features/home/HomePage.tsx
-msgid "{feedback, plural, one {# feedback is not resolved yet} other {# feedback are not resolved yet}}"
-msgstr "{feedback, plural, other {아직 해결되지 않은 의견이 #건 있습니다}}"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{feedback} open feedback"
@@ -456,10 +458,6 @@ msgstr "{first}님이 대화를 👍로 평가했습니다"
 msgid "{first} rated the conversation 👎"
 msgstr "{first}님이 대화를 👎로 평가했습니다"
 
-#: src/features/home/HomePage.tsx
-msgid "{from} – today, {scope}"
-msgstr "{from} ~ 오늘, {scope}"
-
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "{from} has an SPF record. Whether it passes is known once the test mail is read."
 msgstr "{from}에 SPF 레코드가 있습니다. 통과 여부는 테스트 메일을 읽은 뒤 알 수 있습니다."
@@ -475,6 +473,10 @@ msgstr "{from}에 SPF 레코드가 없습니다. SMTP 제공업체를 포함하�
 #: src/features/contact/ContactDetails.tsx
 msgid "{good} good"
 msgstr "좋음 {good}"
+
+#: src/features/home/HomePage.tsx
+msgid "{goodText} good of {ratedText}"
+msgstr "{ratedText}개 중 {goodText}개 좋음"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
@@ -528,6 +530,10 @@ msgstr "{inboxName}에는 {address}용 이메일 채널이 아직 없습니다. 
 msgid "{incoming} received, {outgoing} sent"
 msgstr "받은 메일 {incoming}개, 보낸 메일 {outgoing}개"
 
+#: src/features/home/HomePage.tsx
+msgid "{left, plural, one {# setup step left.} other {# setup steps left.}}"
+msgstr "{left, plural, other {설정 단계가 #개 남았습니다.}}"
+
 #: src/features/conversation/SlaPopover.tsx
 msgid "{left} left when it resumes"
 msgstr "재개하면 {left} 남음"
@@ -536,9 +542,17 @@ msgstr "재개하면 {left} 남음"
 msgid "{listName} is ready"
 msgstr "{listName}이(가) 준비되었습니다"
 
+#: src/features/home/SiteCard.tsx
+msgid "{live} now"
+msgstr "지금 {live}"
+
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "최근 30분간 {liveText}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{mentions, plural, one {Mention of you} other {Mentions of you}}"
+msgstr "{mentions, plural, other {나를 멘션한 메모}}"
 
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
@@ -654,6 +668,7 @@ msgstr "{n}개의 별표를 해제했습니다"
 msgid "{name} · {statusText}"
 msgstr "{name} · {statusText}"
 
+#: src/features/home/HomeSide.tsx
 #: src/features/team/TeamPage.tsx
 msgid "{name} (you)"
 msgstr "{name}(나)"
@@ -736,26 +751,22 @@ msgstr "{name}, {via} 경유"
 msgid "{name} website"
 msgstr "{name} 웹사이트"
 
+#: src/features/home/SiteCard.tsx
+msgid "{name}, visitors in the last seven days: {series}"
+msgstr "{name}, 지난 7일 방문자: {series}"
+
+#: src/features/home/HomeSide.tsx
+msgid "{names} operational"
+msgstr "{names} 정상 작동"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "{names} will be notified"
 msgstr "{names}님에게 알림이 갑니다"
 
-#: src/features/home/HomePage.tsx
-msgid "{needs, plural, one {# thing needs you today.} other {# things need you today.}}"
-msgstr "{needs, plural, other {오늘 처리할 일이 #건 있습니다.}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{on} of {of} online"
-msgstr "{of}명 중 {on}명 온라인"
-
 #: src/components/common/Linked.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, other {열림 #건}}"
-
-#: src/features/home/HomePage.tsx
-msgid "{open} open · {rate} good"
-msgstr "열림 {open}개 · 좋음 {rate}"
 
 #: src/features/broadcasts/Import.tsx
 msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
@@ -786,6 +797,10 @@ msgstr "{people, plural, other {구독 #건과 동의 기록이 삭제됩니다.
 msgid "{people} people"
 msgstr "{people}명"
 
+#: src/features/home/HomeSide.tsx
+msgid "{people} recipients"
+msgstr "수신자 {people}명"
+
 #: src/features/migrations/ImportBanner.tsx
 msgid "{percent}%"
 msgstr "{percent}%"
@@ -813,6 +828,14 @@ msgstr "{percent}%, {sent} / {size}"
 #: src/features/settings/audit/sentence.ts
 msgid "{person} left the workspace by deleting their account"
 msgstr "{person} 님이 계정을 삭제하여 워크스페이스를 떠났습니다"
+
+#: src/features/inbox/ChatList.tsx
+msgid "{picked} selected"
+msgstr "{picked}개 선택됨"
+
+#: src/features/home/HomePage.tsx
+msgid "{product} only"
+msgstr "{product}만"
 
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
@@ -878,6 +901,10 @@ msgstr "{provider}은(는) 브라우저에서 한 번 로그인하길 요구합�
 msgid "{provider}'s tags become Yuva labels on their conversations."
 msgstr "{provider}의 태그는 해당 대화의 Yuva 레이블이 됩니다."
 
+#: src/features/home/HomePage.tsx
+msgid "{ptsText} pts"
+msgstr "{ptsText}점"
+
 #: src/features/migrations/CopyStep.tsx
 msgid "{rate} a minute"
 msgstr "분당 {rate}건"
@@ -896,8 +923,8 @@ msgid "{rate} mails a second · one every {every}"
 msgstr "초당 메일 {rate}통 · {every}마다 1통"
 
 #: src/features/home/HomePage.tsx
-msgid "{rated, plural, =0 {no ratings yet} one {# rating} other {# ratings}}"
-msgstr "{rated, plural, =0 {아직 평가가 없습니다} other {평가 #개}}"
+msgid "{rated, plural, =0 {no ratings} one {# rating} other {# ratings}}"
+msgstr "{rated, plural, =0 {평가 없음} other {평가 #개}}"
 
 #: src/features/reports/ReportPages.tsx
 msgid "{rated, plural, one {# rating} other {# ratings}}"
@@ -961,6 +988,10 @@ msgstr "가동률 {share}"
 msgid "{size} · pick another file"
 msgstr "{size} · 다른 파일 선택"
 
+#: src/features/broadcasts/Overview.tsx
+msgid "{spam} marked as spam"
+msgstr "스팸 신고 {spam}건"
+
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
 msgstr "{since}부터 {state}"
@@ -969,10 +1000,6 @@ msgstr "{since}부터 {state}"
 msgid "{subscribed} subscribed"
 msgstr "구독 {subscribed}"
 
-#: src/features/status/StatusPages.tsx
-msgid "{subscribed} subscribers"
-msgstr "구독자 {subscribed}명"
-
 #: src/features/reports/TrendsReport.tsx
 msgid "{text} vs previous period"
 msgstr "이전 기간 대비 {text}"
@@ -980,6 +1007,14 @@ msgstr "이전 기간 대비 {text}"
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "열린 토론 {threads}개"
+
+#: src/features/home/HomeSide.tsx
+msgid "{total, plural, one {# item} other {# items}}"
+msgstr "{total, plural, other {#개 항목}}"
+
+#: src/features/broadcasts/Overview.tsx
+msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
+msgstr "{total, plural, other {최근 30일 · 일괄 발송 #건}}"
 
 #: src/features/reports/ReportPages.tsx
 msgid "{total} in total"
@@ -992,6 +1027,10 @@ msgstr "{totalText}개 중 {unseenText}개 읽지 않음"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "{unsubscribed} unsubscribed"
 msgstr "{unsubscribed}명 구독 취소"
+
+#: src/features/broadcasts/Overview.tsx
+msgid "{unsubscribedShare} of sent"
+msgstr "발송 대비 {unsubscribedShare}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{up, plural, one {# up} other {# up}}"
@@ -1024,6 +1063,10 @@ msgstr "{views, plural, other {조회 #회}}"
 msgid "{votes} votes"
 msgstr "{votes}표"
 
+#: src/features/home/HomePage.tsx
+msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
+msgstr "{waiting, plural, one {받은편지함에서 열기} other {받은편지함의 {total}개 모두}}"
+
 #: src/features/status/StatusPages.tsx
 msgid "{watching, plural, one {Watched by # monitor} other {Watched by # monitors}}"
 msgstr "{watching, plural, other {모니터 #개가 감시 중}}"
@@ -1039,11 +1082,6 @@ msgstr "{who}님이 {contact}에서 회원님을 언급했습니다, {subject}. 
 #: src/features/inbox/SidePanels.tsx
 msgid "{who} mentioned you in {contact}. Open the conversation"
 msgstr "{who}님이 {contact}에서 회원님을 언급했습니다. 대화 열기"
-
-#. placeholder {0}: m.note.text
-#: src/features/home/HomePage.tsx
-msgid "{who} mentioned you: “{0}”"
-msgstr "{who}님이 회원님을 멘션했습니다: “{0}”"
 
 #: src/features/account/AccountPage.tsx
 msgid "{who} replied in <0>{title}</0>"
@@ -1065,6 +1103,14 @@ msgstr "+ 주소 추가"
 #: src/features/broadcasts/ListsHome.tsx
 msgid "+{added} this month"
 msgstr "이번 달 +{added}"
+
+#: src/features/home/HomeSide.tsx
+msgid "+{off} offline"
+msgstr "+{off}명 오프라인"
+
+#: src/features/home/HomeSide.tsx
+msgid "+{off} offline · {offOpen} open"
+msgstr "+{off}명 오프라인 · {offOpen}개 열림"
 
 #: src/features/settings/channels/email/Ses.tsx
 msgid "<0>{domain}</0> is not a verified identity in the server’s Amazon SES account. Mail goes out without tenant isolation and broadcasts are blocked. Ask the server’s operator to verify the domain."
@@ -1294,6 +1340,10 @@ msgstr "claude.ai와 Claude Desktop용 커스텀 커넥터입니다. 사용자 �
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "A custom MCP server in ChatGPT on the web. It acts as you, with the access you allow."
 msgstr "웹 ChatGPT의 커스텀 MCP 서버입니다. 사용자 권한으로 동작하며, 허용한 접근 범위 안에서 작업합니다."
+
+#: src/features/settings/workspace/RetentionForm.tsx
+msgid "A daily run deletes what nobody touched for that long."
+msgstr "매일 실행되는 작업이 그 기간 동안 아무도 건드리지 않은 항목을 삭제합니다."
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "A day ahead, lower the TTL of the MX records, so the change spreads quickly."
@@ -1890,10 +1940,6 @@ msgstr "{listName}에 구독자 추가"
 msgid "Add a website chat in the inbox settings"
 msgstr "받은 편지함 설정에서 웹사이트 채팅 추가"
 
-#: src/features/home/HomePage.tsx
-msgid "Add a website or app"
-msgstr "웹사이트 또는 앱 추가"
-
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Add an action"
 msgstr "작업 추가"
@@ -1931,6 +1977,10 @@ msgstr "내부 메모 추가"
 #: src/features/migrations/text.ts
 msgid "Add an OAuth client named “Yuva”, as a confidential client, and enter the redirect URL below as its redirect URL."
 msgstr "\"Yuva\"라는 이름의 OAuth 클라이언트를 기밀 클라이언트로 추가하고 아래 리디렉션 URL을 리디렉션 URL로 입력하세요."
+
+#: src/features/home/HomePage.tsx
+msgid "Add analytics"
+msgstr "애널리틱스 추가"
 
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -1994,6 +2044,10 @@ msgstr "라벨 {labelName} 추가"
 #: src/features/settings/automation/text.ts
 msgid "Add labels"
 msgstr "레이블 추가"
+
+#: src/features/home/HomePage.tsx
+msgid "Add live chat to your site"
+msgstr "사이트에 라이브 채팅 추가"
 
 #: src/features/status/MonitorDialog.tsx
 msgid "Add monitor"
@@ -2167,6 +2221,7 @@ msgid "Admins see every inbox and manage products, channels and members."
 msgstr "관리자는 모든 받은편지함을 보고 제품, 채널, 멤버를 관리합니다."
 
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Affects"
 msgstr "영향 범위"
 
@@ -2268,6 +2323,7 @@ msgid "All marked as read"
 msgstr "모두 읽음으로 표시했습니다"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All monitors"
 msgstr "모든 모니터"
 
@@ -2275,11 +2331,14 @@ msgstr "모든 모니터"
 msgid "All of its conversations, messages and attachments are deleted with it. This cannot be undone."
 msgstr "대화, 메시지, 첨부 파일이 모두 함께 삭제됩니다. 되돌릴 수 없습니다."
 
+#: src/features/home/HomeSide.tsx
+msgid "All operational"
+msgstr "모두 정상 작동"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "All parts arrived. Reading the file…"
 msgstr "모든 부분이 도착했습니다. 파일을 읽는 중…"
 
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "all products"
 msgstr "모든 제품"
@@ -2302,10 +2361,6 @@ msgstr "모든 스코프"
 #: src/features/docs/Toolbar.tsx
 msgid "All sites"
 msgstr "모든 사이트"
-
-#: src/features/home/HomePage.tsx
-msgid "all sites and apps"
-msgstr "모든 사이트와 앱"
 
 #: src/features/status/StatusPages.tsx
 msgid "All systems operational"
@@ -2640,14 +2695,11 @@ msgstr "업로드가 중간에 끊겼습니다. {count}개 부분, {size}이(가
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Analytics"
 msgstr "분석"
-
-#: src/features/home/HomePage.tsx
-msgid "analytics not set up"
-msgstr "애널리틱스가 설정되지 않음"
 
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Android (FCM)"
@@ -2843,6 +2895,7 @@ msgstr "API"
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API 및 MCP"
 
@@ -3058,6 +3111,10 @@ msgstr "메일 서버 관리자에게 {address} 메일을 {provider} 대신 아�
 msgid "Ask the admin of your mail server to forward {address} to the address below on the server, keeping delivery to the mailbox."
 msgstr "메일 서버 관리자에게 {address} 메일을 메일함 배달은 유지한 채 서버에서 아래 주소로도 전달하도록 요청하세요."
 
+#: src/features/home/HomePage.tsx
+msgid "Ask the operator"
+msgstr "운영자에게 요청"
+
 #: src/features/settings/ProductsPage.tsx
 msgid "asked after closing"
 msgstr "종료 후 질문함"
@@ -3078,6 +3135,10 @@ msgstr "배정(A)"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Assign or hand to a teammate"
 msgstr "팀원에게 배정하거나 넘기기"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Assign the selected waiting conversation to you"
+msgstr "선택한 대기 중인 대화를 나에게 배정"
 
 #: src/features/conversation/composer/MacroChips.tsx
 msgid "Assign to {name}"
@@ -3115,6 +3176,10 @@ msgstr "{assignee}님에게 배정됨"
 msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee}님에게 배정됨, 이름으로 유지"
 
+#: src/features/home/HomePage.tsx
+msgid "Assigned to you"
+msgstr "나에게 배정됨"
+
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
@@ -3127,7 +3192,6 @@ msgstr "어시스턴트"
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Assistants"
 msgstr "어시스턴트"
 
@@ -3498,6 +3562,7 @@ msgid "Bot name (optional)"
 msgstr "봇 이름(선택)"
 
 #: src/components/common/FocusChoice.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 msgid "Both"
 msgstr "둘 다"
 
@@ -3506,7 +3571,6 @@ msgid "Both records were found. Yuva checks them once a day; keep them in place.
 msgstr "두 레코드를 모두 찾았습니다. Yuva는 하루에 한 번 확인하므로 그대로 두세요."
 
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Bots"
 msgstr "봇"
 
@@ -3543,6 +3607,7 @@ msgid "bounced"
 msgstr "반송"
 
 #: src/components/common/text.ts
+#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 msgid "Bounced"
 msgstr "반송됨"
@@ -3596,13 +3661,10 @@ msgstr "기존 메일 가져오기"
 msgid "Broadcast"
 msgstr "일괄 발송"
 
-#: src/features/home/HomePage.tsx
-msgid "Broadcast · {people} people · {when}"
-msgstr "일괄 발송 · {people}명 · {when}"
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Broadcast sending"
 msgstr "일괄 발송 전송"
 
@@ -3617,6 +3679,10 @@ msgstr "일괄 발송 전송"
 msgid "Broadcasts"
 msgstr "일괄 발송"
 
+#: src/features/home/HomePage.tsx
+msgid "Broadcasts are suspended."
+msgstr "대량 발송이 정지되었습니다."
+
 #: src/components/common/text.ts
 msgid "Broadcasts are turned off on this server."
 msgstr "이 서버에서는 일괄 발송이 꺼져 있습니다."
@@ -3625,9 +3691,17 @@ msgstr "이 서버에서는 일괄 발송이 꺼져 있습니다."
 msgid "Broadcasts are turned off on this server. Lists and their forms still work, so you can collect subscribers."
 msgstr "이 서버에서는 일괄 발송이 꺼져 있습니다. 리스트와 양식은 계속 작동하므로 구독자를 모을 수 있습니다."
 
+#: src/features/home/HomePage.tsx
+msgid "Broadcasts can’t go out yet."
+msgstr "대량 발송을 아직 보낼 수 없습니다."
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "Broadcasts from this channel go out through its SMTP account for replies, or through a separate account. A separate account, ideally on its own subdomain, keeps spam complaints about newsletters away from your support mail."
 msgstr "이 채널의 일괄 발송은 답장용 SMTP 계정 또는 별도 계정으로 나갑니다. 가능하면 전용 서브도메인의 별도 계정을 쓰면 뉴스레터에 대한 스팸 신고가 지원 메일로 가지 않습니다."
+
+#: src/features/home/HomePage.tsx
+msgid "Broadcasts wait for the operator’s approval."
+msgstr "대량 발송은 운영자의 승인을 기다리고 있습니다."
 
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Browser"
@@ -3998,8 +4072,10 @@ msgstr "채널 설정"
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
+#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Channels"
 msgstr "채널"
 
@@ -4256,7 +4332,7 @@ msgstr "클릭 집계"
 msgid "Click tracking"
 msgstr "클릭 추적"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 msgid "clicked"
 msgstr "클릭함"
 
@@ -4269,7 +4345,7 @@ msgstr "클릭함"
 msgid "clicked a link, roughly"
 msgstr "링크를 클릭함(추정)"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 msgid "clicks not tracked"
 msgstr "클릭은 추적되지 않음"
 
@@ -4296,6 +4372,7 @@ msgstr "클라이언트 시크릿"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/docs/DocsPage.tsx
+#: src/features/inbox/ChatList.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/setup/SetupHub.tsx
@@ -4368,8 +4445,8 @@ msgid "Closed before a reply"
 msgstr "답변 전에 종료됨"
 
 #: src/features/settings/workspace/RetentionForm.tsx
-msgid "Closed conversations untouched for this many days are deleted with their messages and attachments, and raw e-mails older than this are deleted. Leave empty to keep everything."
-msgstr "이 일수 동안 변동이 없는 종료된 대화는 메시지와 첨부 파일과 함께 삭제되고, 이보다 오래된 원본 이메일도 삭제됩니다. 비워 두면 모두 보관합니다."
+msgid "Closed conversations"
+msgstr "종료된 대화"
 
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/team/TeamPage.tsx
@@ -4411,9 +4488,12 @@ msgid "Collapse or expand the sidebar"
 msgstr "사이드바 접기 또는 펼치기"
 
 #: src/app/Sidebar.tsx
-#: src/app/TopBar.tsx
 msgid "Collapse the sidebar"
 msgstr "사이드바 접기"
+
+#: src/features/home/HomePage.tsx
+msgid "Collect ratings on your docs pages"
+msgstr "문서 페이지에서 평가 받기"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collections"
@@ -4445,13 +4525,18 @@ msgstr "열"
 msgid "Coming later"
 msgstr "추후 제공"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Coming up"
 msgstr "예정"
 
 #: src/features/broadcasts/Import.tsx
 msgid "commas"
 msgstr "쉼표"
+
+#: src/features/settings/workspace/RetentionForm.tsx
+msgid "Common choices"
+msgstr "자주 쓰는 기간"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Comparison of condition {n}"
@@ -4562,8 +4647,8 @@ msgid "confirmed their address in the last {days} days"
 msgstr "최근 {days}일 이내에 주소를 확인함"
 
 #: src/features/account/ConnectPage.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/text.ts
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -4589,6 +4674,10 @@ msgstr "{provider} 연결"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Connect a provider and verify a domain first."
 msgstr "Connect a provider and verify a domain first."
+
+#: src/features/home/HomePage.tsx
+msgid "Connect a support address"
+msgstr "지원 주소 연결"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "Connect a tracker"
@@ -4624,6 +4713,10 @@ msgstr "Connect Slack"
 #: src/features/account/ConnectPage.tsx
 msgid "Connect to {host}"
 msgstr "{host}에 연결"
+
+#: src/features/home/HomePage.tsx
+msgid "Connect your iOS or Android app"
+msgstr "iOS 또는 Android 앱 연결"
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Connect your servers and bots to Yuva"
@@ -4665,10 +4758,10 @@ msgstr "{created}에 연결됨"
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "연결된 앱"
 
@@ -4709,6 +4802,10 @@ msgstr "{provider}에 연결됨"
 #: src/features/migrations/ConnectStep.tsx
 msgid "Connected to {storedHost}. Enter the password again only to change it."
 msgstr "{storedHost}에 연결되어 있습니다. 비밀번호를 바꿀 때만 다시 입력하세요."
+
+#: src/features/home/HomePage.tsx
+msgid "Connecting"
+msgstr "연결 중"
 
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/setup/WaitStep.tsx
@@ -4887,7 +4984,6 @@ msgstr "대화를 시작했습니다"
 msgid "conversations"
 msgstr "대화"
 
-#: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -4895,7 +4991,6 @@ msgstr "대화"
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
@@ -4928,6 +5023,10 @@ msgstr "가져온 뒤 아무도 답하지 않은 대화는 삭제됩니다. {add
 msgid "Conversations nobody wrote in after the import are deleted. Nothing changed in {provider}."
 msgstr "가져온 뒤 아무도 답하지 않은 대화는 삭제됩니다. {provider}에는 변경이 없습니다."
 
+#: src/features/home/HomePage.tsx
+msgid "Conversations show up here as soon as the first customer writes."
+msgstr "첫 고객이 메시지를 보내면 여기에 대화가 표시됩니다."
+
 #: src/features/reports/ReportPages.tsx
 msgid "conversations started"
 msgstr "시작된 대화"
@@ -4955,6 +5054,10 @@ msgstr "팀이 답한 대화는 유지됩니다. {provider}에는 변경이 없�
 #: src/app/Rail.tsx
 msgid "Conversations, {unread} unread"
 msgstr "대화, 읽지 않음 {unread}개"
+
+#: src/features/settings/workspace/RetentionForm.tsx
+msgid "Conversations, attachments and raw e-mails stay until someone deletes them."
+msgstr "대화, 첨부 파일, 원본 이메일은 누군가 삭제할 때까지 유지됩니다."
 
 #: src/components/common/CopyButton.tsx
 #: src/features/conversation/Feedback.tsx
@@ -5060,9 +5163,21 @@ msgstr "서버에 연결할 수 없습니다"
 msgid "Could not reach the server. Check your connection and try again."
 msgstr "서버에 연결할 수 없습니다. 연결을 확인하고 다시 시도하세요."
 
+#: src/features/home/HomePage.tsx
+msgid "Couldn’t load Home. Your inbox still works."
+msgstr "홈을 불러오지 못했습니다. 받은편지함은 계속 사용할 수 있습니다."
+
+#: src/features/home/HomePage.tsx
+msgid "Couldn’t refresh since {time}. The figures below may be out of date; your inbox still works."
+msgstr "{time} 이후 새로 고치지 못했습니다. 아래 수치는 최신이 아닐 수 있습니다. 받은편지함은 계속 사용할 수 있습니다."
+
 #: src/features/broadcasts/Composer.tsx
 msgid "Count clicks"
 msgstr "클릭 집계"
+
+#: src/features/home/HomePage.tsx
+msgid "Count visitors on your site"
+msgstr "사이트 방문자 집계"
 
 #: src/components/common/Linked.tsx
 msgid "Counting…"
@@ -5072,6 +5187,7 @@ msgstr "세는 중…"
 msgid "Country"
 msgstr "국가"
 
+#: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/DeveloperTabs.tsx
 msgid "Create"
@@ -5237,7 +5353,9 @@ msgid "Create, change, reorder and delete automation rules"
 msgstr "자동화 규칙 만들기, 변경, 순서 바꾸기, 삭제"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
+#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Created"
 msgstr "생성됨"
 
@@ -5337,6 +5455,7 @@ msgid "Daily limit"
 msgstr "일일 한도"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Danger zone"
 msgstr "위험 영역"
 
@@ -5487,6 +5606,10 @@ msgstr "{name} 삭제…"
 #: src/features/settings/workspace/RetentionForm.tsx
 msgid "Delete after (days)"
 msgstr "삭제까지 일수"
+
+#: src/features/settings/workspace/RetentionForm.tsx
+msgid "Delete after a set time"
+msgstr "일정 기간 후 삭제"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Delete component"
@@ -5890,6 +6013,7 @@ msgstr "디렉터리(테넌트) ID(선택)"
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/mail/Compose.tsx
+#: src/features/settings/workspace/parts.tsx
 msgid "Discard"
 msgstr "버리기"
 
@@ -6177,14 +6301,12 @@ msgid "Draft"
 msgstr "임시 저장"
 
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Draft author"
 msgstr "초안 작성자"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Draft by {author}"
 msgstr "{author}님의 초안"
 
@@ -6225,12 +6347,10 @@ msgid "Drafts and timeline events cannot be removed."
 msgstr "임시 보관 답장과 타임라인 이벤트는 삭제할 수 없습니다."
 
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting"
 msgstr "대기 중인 초안"
 
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Drafts waiting for review and the assistants you connected"
 msgstr "검토를 기다리는 초안과 연결한 어시스턴트"
 
@@ -6555,6 +6675,11 @@ msgstr "{editingWhen}에 예약된 메시지 편집 중"
 msgid "Elevated API errors"
 msgstr "API 오류 증가"
 
+#: src/features/settings/channels/Frame.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
+msgid "Elsewhere in settings"
+msgstr "설정의 다른 항목"
+
 #: src/features/settings/channels/chat/ChatInstall.tsx
 msgid "Embed snippet"
 msgstr "삽입 스니펫"
@@ -6678,8 +6803,8 @@ msgid "Enter the SMTP user name from the SES console."
 msgstr "SES 콘솔의 SMTP 사용자 이름을 입력하세요."
 
 #: src/features/settings/workspace/RetentionForm.tsx
-msgid "Enter whole days from 1 to 36,500, or leave it empty."
-msgstr "1에서 36,500 사이의 정수 일수를 입력하거나 비워 두세요."
+msgid "Enter whole days from 1 to 36,500."
+msgstr "1에서 36,500 사이의 정수 일수를 입력하세요."
 
 #: src/features/auth/SignInPage.tsx
 msgid "Enter your work e-mail and we send you a code. No password; the same code signs you in later."
@@ -6883,7 +7008,6 @@ msgid "Expand or collapse every message"
 msgstr "모든 메시지 펼치기 또는 접기"
 
 #: src/app/Sidebar.tsx
-#: src/app/TopBar.tsx
 msgid "Expand the sidebar"
 msgstr "사이드바 펼치기"
 
@@ -6905,6 +7029,7 @@ msgid "Expected status to"
 msgstr "기대 상태 끝"
 
 #: src/features/settings/sso/SamlForm.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Expired"
 msgstr "Expired"
 
@@ -6999,7 +7124,7 @@ msgstr "유예 시간을 기다리지 않고 즉시 모니터를 다운시킵니
 msgid "Failures to go down"
 msgstr "다운되기까지 연속 실패 횟수"
 
-#: src/features/docs/DocsPage.tsx
+#: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "의견"
 
@@ -7040,10 +7165,6 @@ msgstr "의견 세부 정보"
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback form"
 msgstr "의견 양식"
-
-#: src/features/home/HomePage.tsx
-msgid "Feedback from your apps and pages"
-msgstr "앱과 페이지에서 받은 의견"
 
 #: src/features/conversation/actions.ts
 msgid "Feedback resolved"
@@ -7183,6 +7304,10 @@ msgid "Finish now"
 msgstr "지금 마치기"
 
 #: src/features/home/HomePage.tsx
+msgid "Finish setting up"
+msgstr "설정 마치기"
+
+#: src/features/home/HomePage.tsx
 msgid "Finish setup"
 msgstr "설정 완료"
 
@@ -7211,12 +7336,19 @@ msgstr "첫 메시지"
 msgid "First name"
 msgstr "이름"
 
+#: src/features/home/HomePage.tsx
+msgid "First replies"
+msgstr "첫 답장"
+
+#: src/features/home/HomePage.tsx
+msgid "First replies today took {took} at the median."
+msgstr "오늘 첫 답장 중앙값은 {took}입니다."
+
 #: src/features/contact/ContactDetail.tsx
 msgid "first reply"
 msgstr "첫 답장"
 
 #: src/features/conversation/SlaPopover.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
@@ -7234,6 +7366,10 @@ msgstr "{first}의 첫 답장"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "첫 답변, 90번째 백분위수"
+
+#: src/features/home/HomePage.tsx
+msgid "First reply, median"
+msgstr "첫 답장 중앙값"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -7400,7 +7536,6 @@ msgstr "이메일로 전달…"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Forward draft by {author}"
 msgstr "{author} 님의 전달 임시 저장본"
 
@@ -7592,6 +7727,7 @@ msgstr "{team} 팀에 {inbox} 접근 권한을 부여함"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
 msgstr "일반"
 
@@ -7616,6 +7752,7 @@ msgstr "파일 받기"
 msgid "Get the SDK lines"
 msgstr "SDK 코드 받기"
 
+#: src/features/home/HomePage.tsx
 #: src/features/setup/AddChannelStep.tsx
 msgid "Get the snippet"
 msgstr "스니펫 받기"
@@ -7639,6 +7776,10 @@ msgstr "채널에 새 전달 주소를 발급할까요?"
 #: src/features/status/SettingsTab.tsx
 msgid "Give the page a name."
 msgstr "페이지 이름을 입력하세요."
+
+#: src/features/home/HomePage.tsx
+msgid "Give the team a shared mailbox"
+msgstr "팀에 공유 메일함 제공"
 
 #: src/components/common/AssignmentFields.tsx
 msgid "Gives a conversation without an assignee to a teammate when it arrives or is reopened by the contact. Automation rules run first."
@@ -7680,6 +7821,10 @@ msgstr "목표"
 msgid "Goes out through {via}"
 msgstr "{via}을(를) 통해 발송됩니다"
 
+#: src/features/broadcasts/Overview.tsx
+msgid "Going out now"
+msgstr "발송 중"
+
 #: src/features/reports/ReportPages.tsx
 msgid "good"
 msgstr "좋음"
@@ -7689,16 +7834,16 @@ msgid "Good"
 msgstr "좋음"
 
 #: src/features/home/HomePage.tsx
-msgid "Good afternoon, {first}"
-msgstr "안녕하세요, {first}님"
+msgid "Good afternoon, {first}."
+msgstr "좋은 오후예요, {first}님."
 
 #: src/features/home/HomePage.tsx
-msgid "Good evening, {first}"
-msgstr "좋은 저녁입니다, {first}님"
+msgid "Good evening, {first}."
+msgstr "좋은 저녁이에요, {first}님."
 
 #: src/features/home/HomePage.tsx
-msgid "Good morning, {first}"
-msgstr "좋은 아침입니다, {first}님"
+msgid "Good morning, {first}."
+msgstr "좋은 아침이에요, {first}님."
 
 #: src/features/reports/ReportPages.tsx
 msgid "Good only"
@@ -7842,7 +7987,6 @@ msgid "Hello, I am moving the mailbox {address} to Yuva, our support inbox. Our 
 msgstr "안녕하세요. 메일함 {address}을(를) 지원 받은 편지함인 Yuva로 옮기고 있습니다. 저희 Microsoft 365 조직에서는 관리자만 앱을 허용할 수 있습니다. 관리자로서 이 링크를 열어 수락해 주세요. 그러면 Yuva가 IMAP으로 메일함을 읽을 수 있습니다: {url}"
 
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Help"
 msgstr "도움말"
@@ -7864,7 +8008,7 @@ msgstr "도움말 문서"
 msgid "Help articles"
 msgstr "도움말 문서"
 
-#: src/app/Sidebar.tsx
+#: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/PagesTab.tsx
 msgid "Help center"
@@ -7896,7 +8040,6 @@ msgstr "도움이 됨"
 msgid "Helpful"
 msgstr "도움이 됨"
 
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 msgid "helpful share"
 msgstr "도움이 된 비율"
@@ -7989,6 +8132,7 @@ msgstr "기록을 삭제했습니다"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Home"
 msgstr "홈"
@@ -8276,6 +8420,10 @@ msgstr "{date}에 Yuva로 가져옴"
 msgid "Importing"
 msgstr "가져오는 중"
 
+#: src/features/home/HomeSide.tsx
+msgid "Importing {source} history"
+msgstr "{source} 기록 가져오는 중"
+
 #: src/features/migrations/ImportBanner.tsx
 msgid "Importing history from {address} · {percent}% · new mail keeps arriving as usual"
 msgstr "{address}에서 기록을 가져오는 중 · {percent}% · 새 메일은 평소처럼 계속 도착합니다"
@@ -8423,7 +8571,8 @@ msgid "In Zoho Mail, open Settings › Mail accounts › IMAP access and turn IM
 msgstr "Zoho Mail에서 설정 › 메일 계정 › IMAP 접근을 열고 IMAP을 켜세요."
 
 #: src/app/Palette.tsx
-#: src/app/Sidebar.tsx
+#: src/app/Rail.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/NewBroadcastDialog.tsx
@@ -8473,7 +8622,7 @@ msgstr "받은 편지함"
 msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "받은 편지함은 80자를 넘는 제목을 잘라냅니다."
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "인시던트"
@@ -8853,6 +9002,10 @@ msgstr "방금 작성함"
 msgid "Keep"
 msgstr "유지"
 
+#: src/features/settings/workspace/RetentionForm.tsx
+msgid "Keep everything"
+msgstr "모두 보관"
+
 #: src/features/migrations/MapStep.tsx
 msgid "Keep original messages"
 msgstr "원본 메시지 유지"
@@ -8873,6 +9026,14 @@ msgstr "이 페이지를 열어 두세요. 연결이 끊겨도 복구되면 업�
 msgid "Keep writing"
 msgstr "계속 쓰기"
 
+#: src/features/home/HomePage.tsx
+msgid "Keeping up"
+msgstr "처리 현황"
+
+#: src/features/settings/workspace/RetentionForm.tsx
+msgid "Keeps everything"
+msgstr "모두 보관합니다"
+
 #: src/features/contact/MergeContactDialog.tsx
 msgid "kept"
 msgstr "유지됨"
@@ -8887,10 +9048,6 @@ msgstr "이 파일에서 가져오는 모든 구독에 동의 기록으로 함�
 msgid "Key"
 msgstr "키"
 
-#: src/features/home/HomePage.tsx
-msgid "Key figures"
-msgstr "주요 수치"
-
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Key ID"
 msgstr "키 ID"
@@ -8900,7 +9057,7 @@ msgid "Key set"
 msgstr "키 설정됨"
 
 #: src/app/Palette.tsx
-#: src/app/TopBar.tsx
+#: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Keyboard shortcuts"
@@ -9024,6 +9181,10 @@ msgstr "이 서버의 메시지 하나당 제한보다 큼"
 msgid "Largest file (MB)"
 msgstr "최대 파일 크기 (MB)"
 
+#: src/features/home/HomePage.tsx
+msgid "last {shown} days"
+msgstr "최근 {shown}일"
+
 #: src/features/reports/TrendsReport.tsx
 msgid "Last 12 months"
 msgstr "최근 12개월"
@@ -9056,9 +9217,9 @@ msgstr "최근 7일"
 msgid "Last attempt"
 msgstr "마지막 시도"
 
-#: src/features/home/HomePage.tsx
-msgid "Last broadcast"
-msgstr "마지막 일괄 발송"
+#: src/features/home/HomeSide.tsx
+msgid "Last broadcast · {name}"
+msgstr "최근 발송 · {name}"
 
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Last check"
@@ -9129,7 +9290,6 @@ msgid "last used {used}"
 msgstr "마지막 사용 {used}"
 
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Last used {used}"
 msgstr "마지막 사용 {used}"
 
@@ -9354,10 +9514,6 @@ msgstr "아이디어에 연결 (B)"
 msgid "Link to an incident"
 msgstr "인시던트에 연결"
 
-#: src/features/inbox/ChatList.tsx
-msgid "Link to an incident ({linkKey})"
-msgstr "인시던트에 연결 ({linkKey})"
-
 #: src/features/settings/slack/SlackAccount.tsx
 msgid "Link your Slack user so replies you write in Slack threads are written as you."
 msgstr "Link your Slack user so replies you write in Slack threads are written as you."
@@ -9464,11 +9620,13 @@ msgstr "티켓을 불러오는 중…"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Lists"
 msgstr "리스트"
 
 #: src/components/common/text.ts
+#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/ChannelState.tsx
 msgid "Live"
 msgstr "실시간"
@@ -9508,6 +9666,10 @@ msgstr "더 보기"
 #: src/features/mail/MailThread.tsx
 msgid "Load older messages"
 msgstr "이전 메시지 불러오기"
+
+#: src/features/home/HomePage.tsx
+msgid "Loading your day…"
+msgstr "오늘 현황을 불러오는 중…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Loading…"
@@ -9625,6 +9787,7 @@ msgstr "싱글 사인온을 필수로 바꿨습니다"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
@@ -9671,6 +9834,10 @@ msgstr "메일은 {address}을(를) 받는 이메일 채널 \"{channelName}\"로
 #: src/features/status/SettingsTab.tsx
 msgid "Mail is not signed with a key of the sender’s own domain, which Gmail and Yahoo expect."
 msgstr "Gmail과 Yahoo에서 요구하는 발신자 자체 도메인 키로 메일이 서명되지 않았습니다."
+
+#: src/features/broadcasts/Overview.tsx
+msgid "Mail leaves at each broadcast’s pace, so providers accept it."
+msgstr "메일은 각 발송의 속도에 맞춰 나가므로 메일 서비스가 받아줍니다."
 
 #: src/features/settings/SettingsColumn.tsx
 msgid "Mail only you read"
@@ -9757,7 +9924,8 @@ msgstr "메일링 리스트 (List-Id)"
 msgid "Mailing lists"
 msgstr "메일링 리스트"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
+#: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
 msgid "Maintenance"
 msgstr "점검"
@@ -9997,16 +10165,18 @@ msgstr "중앙값, 첫 메시지부터 종료까지"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Member"
 msgstr "멤버"
 
 #: src/app/Palette.tsx
+#: src/app/Sidebar.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/teams/TeamsPage.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Members"
 msgstr "멤버"
@@ -10032,7 +10202,7 @@ msgid "mentioned you"
 msgstr "회원님을 언급했습니다"
 
 #: src/app/Rail.tsx
-#: src/app/TopBar.tsx
+#: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
@@ -10040,7 +10210,6 @@ msgid "Mentions"
 msgstr "멘션"
 
 #: src/app/Rail.tsx
-#: src/app/TopBar.tsx
 msgid "Mentions, {unseen} unseen"
 msgstr "멘션, 확인하지 않음 {unseen}개"
 
@@ -10050,6 +10219,7 @@ msgstr "멘션: {names}"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
+#: src/app/TopBar.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Menu"
 msgstr "메뉴"
@@ -10259,7 +10429,9 @@ msgstr "모니터는 상태 페이지 구성 요소의 상태를 설정합니다
 msgid "Months"
 msgstr "월"
 
+#: src/components/common/OverflowTabs.tsx
 #: src/features/contact/ContactDetail.tsx
+#: src/features/inbox/ChatList.tsx
 msgid "More"
 msgstr "더 보기"
 
@@ -10301,7 +10473,7 @@ msgstr "\"도움 안 됨\" 평가가 많은 순"
 msgid "Most active"
 msgstr "가장 활발한 순"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "요청이 가장 많은 순"
 
@@ -10328,6 +10500,10 @@ msgstr "평가가 많은 순, 그다음 열린 의견, 열린 토론, 대기 중
 #: src/features/docs/DocsPage.tsx
 msgid "Most votes"
 msgstr "투표가 많은 순"
+
+#: src/features/home/HomePage.tsx
+msgid "move"
+msgstr "이동"
 
 #. placeholder {0}: ids.length
 #: src/features/inbox/ChatList.tsx
@@ -10391,6 +10567,10 @@ msgstr "일괄 발송 사이 이동"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the contacts"
 msgstr "연락처 사이 이동"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the conversations waiting longest"
+msgstr "가장 오래 기다린 대화 사이를 이동"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the designs"
@@ -10661,7 +10841,7 @@ msgstr "확인 필요"
 msgid "Needs the operator’s approval"
 msgstr "운영자의 승인 필요"
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Needs you"
 msgstr "확인이 필요한 항목"
 
@@ -10694,6 +10874,7 @@ msgid "new"
 msgstr "신규"
 
 #: src/features/broadcasts/Growth.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "New"
 msgstr "새로 만들기"
@@ -10756,10 +10937,15 @@ msgstr "실시간 받은 편지함의 새 대화"
 msgid "New conversation in an async inbox"
 msgstr "비동기 받은 편지함의 새 대화"
 
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "New conversations"
 msgstr "새 대화"
+
+#: src/features/home/HomePage.tsx
+msgid "new conversations against first replies, per day"
+msgstr "일별 새 대화와 첫 답장"
 
 #: src/features/home/HomePage.tsx
 msgid "New conversations and feedback show up here."
@@ -10791,13 +10977,17 @@ msgstr "새 디자인"
 msgid "New discussion"
 msgstr "새 토론"
 
-#: src/features/docs/DocsPage.tsx
+#: src/features/docs/PagesTab.tsx
 msgid "new discussions"
 msgstr "새 토론"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "New entry"
 msgstr "새 항목"
+
+#: src/features/home/HomePage.tsx
+msgid "New feedback"
+msgstr "새 피드백"
 
 #: src/features/settings/fields/FieldDialog.tsx
 #: src/features/settings/fields/FieldsPage.tsx
@@ -11002,6 +11192,10 @@ msgstr "다음 시도"
 msgid "next attempt {when}"
 msgstr "다음 시도 {when}"
 
+#: src/features/home/HomePage.tsx
+msgid "Next broadcast goes out {when}."
+msgstr "다음 발송은 {when}입니다."
+
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Next check {next}."
 msgstr "다음 확인: {next}."
@@ -11091,10 +11285,6 @@ msgstr "보관된 리스트 없음"
 msgid "No assistant is connected yet"
 msgstr "아직 연결된 어시스턴트가 없습니다"
 
-#: src/features/inbox/SidePanels.tsx
-msgid "No assistant is connected yet. Connect Claude, ChatGPT, Cursor or another MCP client to let it read and draft replies."
-msgstr "아직 연결된 어시스턴트가 없습니다. Claude, ChatGPT, Cursor 또는 다른 MCP 클라이언트를 연결하면 읽기와 답장 초안 작성을 맡길 수 있습니다."
-
 #: src/features/settings/webhooks/DeliverySheet.tsx
 msgid "No attempt yet."
 msgstr "아직 시도가 없습니다."
@@ -11103,11 +11293,8 @@ msgstr "아직 시도가 없습니다."
 msgid "No attempts yet."
 msgstr "아직 시도가 없습니다."
 
-#: src/features/home/HomePage.tsx
-msgid "No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here."
-msgstr "아직 나간 일괄 발송이 없습니다. 나가면 수신자, 클릭, 답장이 여기에 표시됩니다."
-
 #: src/features/broadcasts/Overview.tsx
+#: src/features/home/HomePage.tsx
 msgid "No broadcast is scheduled."
 msgstr "예약된 발송이 없습니다."
 
@@ -11164,10 +11351,6 @@ msgstr "지정된 구성 요소가 없습니다."
 #: src/features/status/ComponentsTab.tsx
 msgid "No components in this group."
 msgstr "이 그룹에는 구성 요소가 없습니다."
-
-#: src/features/home/HomePage.tsx
-msgid "No components yet."
-msgstr "아직 구성 요소가 없습니다."
 
 #: src/features/status/MonitorDialog.tsx
 msgid "No components yet. Add one to a status page first."
@@ -11273,10 +11456,6 @@ msgstr "No domain claimed"
 msgid "No drafts are waiting"
 msgstr "대기 중인 초안이 없습니다"
 
-#: src/features/inbox/SidePanels.tsx
-msgid "No drafts are waiting. Replies an assistant, a bot or a teammate drafts show up here until someone sends or discards them."
-msgstr "대기 중인 초안이 없습니다. 어시스턴트, 봇, 팀원이 작성한 답장은 누군가 보내거나 버릴 때까지 여기에 표시됩니다."
-
 #: src/features/broadcasts/Overview.tsx
 msgid "No drafts."
 msgstr "임시 저장본이 없습니다."
@@ -11345,10 +11524,6 @@ msgstr "그룹 없음"
 #: src/features/docs/DiscussionsTab.tsx
 msgid "No hidden discussions."
 msgstr "숨겨진 토론이 없습니다."
-
-#: src/features/home/HomePage.tsx
-msgid "No ideas yet. Customers’ votes show up here."
-msgstr "아직 아이디어가 없습니다. 고객의 투표가 여기에 표시됩니다."
 
 #: src/features/contact/ContactDetail.tsx
 msgid "No ids yet. This person has not been identified by an app or widget."
@@ -11429,6 +11604,7 @@ msgid "No mailing lists yet"
 msgstr "아직 메일링 리스트가 없습니다"
 
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "No maintenance is planned."
 msgstr "예정된 점검이 없습니다."
 
@@ -11480,6 +11656,10 @@ msgstr "다른 대화가 없습니다."
 #: src/features/settings/SettingsColumn.tsx
 msgid "No owner"
 msgstr "소유자 없음"
+
+#: src/features/home/HomePage.tsx
+msgid "no owner yet"
+msgstr "담당자 없음"
 
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
@@ -11662,10 +11842,6 @@ msgstr "아직 방문이 없습니다."
 msgid "No website chat or app is set up yet."
 msgstr "웹사이트 채팅이나 앱이 아직 설정되지 않았습니다."
 
-#: src/features/home/HomePage.tsx
-msgid "No website or app is counted yet. Add one to see its visitors here every day, without cookies."
-msgstr "집계 중인 웹사이트나 앱이 아직 없습니다. 추가하면 방문자가 매일 쿠키 없이 여기에 표시됩니다."
-
 #: src/features/broadcasts/Import.tsx
 msgid "No welcome mail is sent. Each new address waits for confirmation and joins after clicking the link in the mail."
 msgstr "환영 메일은 보내지 않습니다. 새 주소는 확인을 기다리다가 메일의 링크를 클릭하면 가입됩니다."
@@ -11702,13 +11878,25 @@ msgstr "이 기간에 답장하거나 종료한 사람이 없습니다."
 msgid "Nobody is on the list of recipients yet."
 msgstr "수신자 목록에 아직 아무도 없습니다."
 
+#: src/features/home/HomeSide.tsx
+msgid "Nobody is online right now."
+msgstr "지금 온라인인 사람이 없습니다."
+
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "아직 구독자가 없습니다. 새 주소는 리스트의 확인 메일을 일일 발송 한도에 따라 며칠에 걸쳐 받으며, 클릭해야 가입됩니다."
 
+#: src/features/home/HomePage.tsx
+msgid "nobody is waiting"
+msgstr "기다리는 사람 없음"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Nobody is waiting for a reply."
 msgstr "답변을 기다리는 사람이 없습니다."
+
+#: src/features/home/HomePage.tsx
+msgid "Nobody is waiting."
+msgstr "기다리는 사람이 없습니다."
 
 #: src/features/broadcasts/Growth.tsx
 msgid "Nobody joined or left in this window."
@@ -11947,7 +12135,6 @@ msgid "Not uploaded yet"
 msgstr "아직 업로드하지 않음"
 
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/inbox/SidePanels.tsx
 msgid "Not used yet"
 msgstr "아직 사용하지 않음"
 
@@ -11956,7 +12143,6 @@ msgid "Not verified: the mail did not pass the sender check, so this address may
 msgstr "확인되지 않음: 이 메일은 발신자 확인을 통과하지 못해 주소가 위조되었을 수 있습니다."
 
 #: src/features/conversation/composer/ReplyBox.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Note"
 msgstr "메모"
@@ -12081,10 +12267,6 @@ msgstr "아무것도 유실되지 않습니다. 재개되면 복사가 중단된
 msgid "Nothing is resolved yet."
 msgstr "아직 해결된 것이 없습니다."
 
-#: src/features/home/HomePage.tsx
-msgid "Nothing is scheduled."
-msgstr "예약된 항목이 없습니다."
-
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Nothing is snoozed."
@@ -12094,6 +12276,10 @@ msgstr "다시 알림으로 미룬 항목이 없습니다."
 #: src/features/docs/DiscussionsTab.tsx
 msgid "Nothing is waiting for approval."
 msgstr "승인을 기다리는 항목이 없습니다."
+
+#: src/features/home/HomePage.tsx
+msgid "Nothing is waiting."
+msgstr "기다리는 항목이 없습니다."
 
 #: src/features/status/IncidentsPage.tsx
 msgid "Nothing is wrong right now. Open an incident when something breaks."
@@ -12112,18 +12298,6 @@ msgstr "검색과 일치하는 항목이 여기에 없습니다."
 msgid "Nothing needs attention right now."
 msgstr "지금은 확인이 필요한 항목이 없습니다."
 
-#: src/features/home/HomePage.tsx
-msgid "Nothing needs you"
-msgstr "확인할 항목이 없습니다"
-
-#: src/features/home/HomePage.tsx
-msgid "Nothing needs you in {scoped}"
-msgstr "{scoped}에서 처리할 항목이 없습니다"
-
-#: src/features/home/HomePage.tsx
-msgid "Nothing needs you today."
-msgstr "오늘 처리할 일이 없습니다."
-
 #: src/features/status/MonitorDialog.tsx
 msgid "Nothing opens by itself. Open an incident from the monitor when you want one."
 msgstr "자동으로 열리는 것은 없습니다. 필요할 때 모니터에서 인시던트를 여세요."
@@ -12136,10 +12310,6 @@ msgstr "아직 선택할 항목이 없습니다."
 #: src/features/account/AccountPage.tsx
 msgid "Nothing unread."
 msgstr "읽지 않은 항목이 없습니다."
-
-#: src/features/home/HomePage.tsx
-msgid "nothing waiting"
-msgstr "대기 중인 항목 없음"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Nothing was measured in this period."
@@ -12254,8 +12424,13 @@ msgstr "구독 양식과 설정 페이지에 표시됩니다. 비공개 리스�
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/home/HomePage.tsx
 msgid "Offline"
 msgstr "오프라인"
+
+#: src/features/home/HomePage.tsx
+msgid "Offline · last updated {time}"
+msgstr "오프라인 · 마지막 업데이트 {time}"
 
 #: src/features/status/MonitorChecks.tsx
 #: src/features/status/ResponseChart.tsx
@@ -12283,16 +12458,12 @@ msgid "Older visits"
 msgstr "이전 방문"
 
 #: src/features/home/HomePage.tsx
-msgid "oldest {oldestFor}"
-msgstr "가장 오래된 {oldestFor}"
+msgid "oldest {waited}"
+msgstr "가장 오래 {waited}"
 
 #: src/features/home/HomePage.tsx
-msgid "oldest {oldestFor}, {oldestWho}"
-msgstr "가장 오래된 {oldestFor}, {oldestWho}"
-
-#: src/features/home/HomePage.tsx
-msgid "oldest {oldestFor}, in {oldestInbox}"
-msgstr "가장 오래된 {oldestFor}, {oldestInbox}"
+msgid "Oldest has waited {waited}."
+msgstr "가장 오래 기다린 대화는 {waited}째입니다."
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -12327,6 +12498,11 @@ msgstr "Team 및 Enterprise 요금제에서는 소유자가 <0>조직 설정 ›
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 msgid "On the web"
 msgstr "웹에서"
+
+#: src/features/settings/channels/Frame.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
+msgid "On this page"
+msgstr "이 페이지"
 
 #: src/components/common/SlaBadge.tsx
 msgid "On track"
@@ -12410,6 +12586,7 @@ msgstr "온라인"
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/Presence.tsx
 #: src/features/conversation/ConversationStatus.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Online now"
@@ -12566,10 +12743,6 @@ msgstr "팀원만 미리 볼 수 있습니다"
 msgid "Only your team sees it."
 msgstr "팀만 볼 수 있습니다."
 
-#: src/features/team/TeamPage.tsx
-msgid "open"
-msgstr "열림"
-
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -12629,10 +12802,6 @@ msgstr "인시던트 열기"
 msgid "Open an incident ({incidentKey})"
 msgstr "인시던트 열기 ({incidentKey})"
 
-#: src/features/home/HomePage.tsx
-msgid "Open analytics →"
-msgstr "분석 열기 →"
-
 #: src/features/migrations/text.ts
 msgid "Open App passwords"
 msgstr "앱 비밀번호 열기"
@@ -12649,10 +12818,6 @@ msgstr "앱 등록 열기"
 #: src/features/migrations/DoneStep.tsx
 msgid "Open Apps and services"
 msgstr "앱 및 서비스 열기"
-
-#: src/features/home/HomePage.tsx
-msgid "Open broadcasts →"
-msgstr "일괄 발송 열기 →"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -12732,12 +12897,16 @@ msgid "Open in Analytics"
 msgstr "분석에서 열기"
 
 #: src/features/home/HomePage.tsx
-msgid "Open inbox →"
-msgstr "받은 편지함 열기 →"
+msgid "Open inbox"
+msgstr "받은편지함 열기"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Open incident"
 msgstr "인시던트 열기"
+
+#: src/features/home/HomePage.tsx
+msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
+msgstr "열린 대화에는 고객 답장을 기다리는 대화도 포함됩니다. 제품 평가가 5개 이상일 때 좋음 비율이 85% 미만이면 주황색으로 표시됩니다."
 
 #: src/features/account/ConnectPage.tsx
 msgid "Open it from the sign-in button of a documentation page."
@@ -13072,6 +13241,7 @@ msgid "Own tenant"
 msgstr "전용 테넌트"
 
 #: src/components/common/text.ts
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Owner"
 msgstr "소유자"
 
@@ -13098,6 +13268,7 @@ msgstr "속도(초당 메일 수)"
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
+#: src/features/docs/PagesTab.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Page"
 msgstr "페이지"
@@ -13234,6 +13405,10 @@ msgstr "발송 일시 중지 또는 재개"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Pause or resume the monitor"
 msgstr "모니터 일시 중지 또는 재개"
+
+#: src/features/home/HomeSide.tsx
+msgid "paused"
+msgstr "일시 중지됨"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
@@ -13396,6 +13571,7 @@ msgid "Permission to send"
 msgstr "발송 권한"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Person"
 msgstr "사람"
 
@@ -13770,7 +13946,7 @@ msgstr "앱 사용자를 위한 의견 게시"
 msgid "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 msgstr "Post new conversations and mentions to a Slack channel, and answer from the thread. The <0>guide</0> shows how to set up the Slack app."
 
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Post status update"
 msgstr "상태 업데이트 게시"
 
@@ -13880,11 +14056,14 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
+#: src/features/settings/channels/ChannelPage.tsx
+#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/status/CreatePageDialog.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -13901,6 +14080,7 @@ msgstr "제품 이름"
 msgid "Product news"
 msgstr "제품 소식"
 
+#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Product settings"
@@ -13931,6 +14111,7 @@ msgstr "프로덕션 백엔드"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
 msgstr "제품"
@@ -14023,6 +14204,7 @@ msgstr "공개 키"
 msgid "Public pages that say whether your products work"
 msgstr "제품이 작동하는지 알려 주는 공개 페이지"
 
+#: src/features/home/HomeSide.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Publish"
@@ -14199,6 +14381,7 @@ msgstr "평가"
 msgid "Rating is the share of rated conversations a member answered that people marked good, across all products."
 msgstr "평점은 멤버가 응대한 평가된 대화 중 좋음으로 표시된 비율이며, 모든 제품 기준입니다."
 
+#: src/app/Sidebar.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -14429,10 +14612,6 @@ msgstr "수신자 (받는 사람)"
 #: src/features/mail/SearchOperators.tsx
 msgid "recipient address"
 msgstr "받는 사람 주소"
-
-#: src/features/home/HomePage.tsx
-msgid "recipients"
-msgstr "수신자"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
@@ -14845,7 +15024,7 @@ msgid "Replace the view’s filters, search and order with the ones on screen."
 msgstr "보기의 필터, 검색, 정렬을 화면에 있는 것으로 바꿉니다."
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 msgid "replied"
 msgstr "답장함"
 
@@ -14901,6 +15080,10 @@ msgstr "답장 계정을 추가하기 전에는 답장을 보낼 수 없습니�
 msgid "Replies go out through your own SMTP account. Leave the host empty to only receive mail."
 msgstr "답장은 내 SMTP 계정으로 나갑니다. 메일만 받으려면 호스트를 비워 두세요."
 
+#: src/features/broadcasts/Overview.tsx
+msgid "Replies land in the inbox"
+msgstr "답장은 받은편지함으로 도착합니다"
+
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Replies the assistant writes are drafts: you or a teammate review them in the conversation and send them. It shows as you, via the assistant."
 msgstr "어시스턴트가 쓴 답장은 초안입니다. 나 또는 팀원이 대화에서 검토하고 보냅니다. 어시스턴트를 통한 나로 표시됩니다."
@@ -14942,7 +15125,6 @@ msgstr "Replies you write in Slack threads no longer reach Yuva."
 #: src/features/docs/discussions/QueuePane.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Reply"
 msgstr "답장"
@@ -15329,16 +15511,17 @@ msgstr "API 키 {name}을(를) 폐기했습니다"
 msgid "Right after subscribing, people get a short mail that confirms it, with an unsubscribe link."
 msgstr "구독 직후 구독 취소 링크가 포함된 확인용 짧은 메일을 받습니다."
 
+#: src/features/home/HomePage.tsx
+msgid "Right now"
+msgstr "지금"
+
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/RoadmapCard.tsx
+#: src/features/home/HomeSide.tsx
 msgid "Roadmap"
 msgstr "로드맵"
-
-#: src/features/home/HomePage.tsx
-msgid "Roadmap →"
-msgstr "로드맵 →"
 
 #: src/features/team/TeamPage.tsx
 msgid "Role"
@@ -15481,6 +15664,7 @@ msgstr "샌드박스(개발 빌드)"
 msgid "Satisfaction"
 msgstr "만족도"
 
+#: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Satisfied"
 msgstr "만족"
@@ -15512,8 +15696,7 @@ msgstr "토요일"
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/ui.tsx
-#: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/RetentionForm.tsx
+#: src/features/settings/workspace/parts.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
@@ -15591,8 +15774,7 @@ msgstr "목록을 보기로 저장"
 #: src/features/settings/signature/SignaturePage.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/settings/workspace/FocusForm.tsx
-#: src/features/settings/workspace/RetentionForm.tsx
+#: src/features/settings/workspace/parts.tsx
 #: src/features/status/SettingsTab.tsx
 msgid "Saved"
 msgstr "저장됨"
@@ -15741,7 +15923,7 @@ msgid "Screenshots attached"
 msgstr "스크린샷 첨부됨"
 
 #: src/app/Palette.tsx
-#: src/app/TopBar.tsx
+#: src/features/broadcasts/Overview.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Search"
@@ -15818,6 +16000,10 @@ msgstr "이름, 이메일 또는 ID 검색…"
 msgid "Search operators"
 msgstr "검색 연산자"
 
+#: src/app/Sidebar.tsx
+msgid "Search or jump to…"
+msgstr "검색 또는 이동…"
+
 #: src/app/Palette.tsx
 msgid "Search people, actions or settings"
 msgstr "사람, 작업 또는 설정 검색"
@@ -15871,6 +16057,10 @@ msgstr "섹션"
 msgid "See all mentions"
 msgstr "모든 언급 보기"
 
+#: src/features/home/HomePage.tsx
+msgid "See paused broadcasts"
+msgstr "일시 중지된 발송 보기"
+
 #: src/features/contact/ContactCard.tsx
 msgid "Seen {seen}"
 msgstr "{seen}에 확인됨"
@@ -15923,7 +16113,6 @@ msgid "Select the previous or next block"
 msgstr "이전 또는 다음 블록 선택"
 
 #: src/components/common/Selection.tsx
-#: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
 msgid "Selected: {picked}"
 msgstr "선택됨: {picked}"
@@ -16193,7 +16382,6 @@ msgstr "발신자 ID"
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/webhooks/sections.tsx
-#: src/features/settings/workspace/BroadcastsSettings.tsx
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/status/Notices.tsx
 msgid "Sending"
@@ -16228,6 +16416,10 @@ msgstr "전송에 실패했습니다."
 #: src/components/common/text.ts
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "발송이 이미 시작되었습니다. 대신 일시 중지하거나 취소하세요."
+
+#: src/features/home/HomePage.tsx
+msgid "Sending is suspended."
+msgstr "발송이 정지되었습니다."
 
 #: src/components/common/Linked.tsx
 msgid "Sending kept failing, so Yuva gave up."
@@ -16308,7 +16500,7 @@ msgid "sends through {0}"
 msgstr "{0}을(를) 통해 발송"
 
 #: src/features/broadcasts/Report.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 msgid "sent"
 msgstr "발송됨"
 
@@ -16339,10 +16531,6 @@ msgstr "보낸 편지함"
 #: src/features/migrations/MapStep.tsx
 msgid "Sent {count} messages from this address"
 msgstr "이 주소에서 메시지 {count}개를 보냈습니다"
-
-#: src/features/home/HomePage.tsx
-msgid "Sent {sentAt}"
-msgstr "{sentAt}에 발송"
 
 #: src/features/migrations/SwitchStep.tsx
 msgid "Sent {sentAt}. Waiting for it to arrive…"
@@ -16466,6 +16654,7 @@ msgstr "우선순위 설정"
 msgid "Set the status"
 msgstr "상태 설정"
 
+#: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Set up"
 msgstr "설정"
@@ -16490,6 +16679,10 @@ msgstr "{protocol}(으)로 싱글 사인온을 설정했습니다"
 #: src/features/setup/SetupHub.tsx
 msgid "Set up Yuva"
 msgstr "Yuva 설정"
+
+#: src/features/settings/workspace/RetentionForm.tsx
+msgid "Set when the workspace was made"
+msgstr "워크스페이스를 만들 때 정해집니다"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Sets {cname} to {downState} while it is down"
@@ -16645,6 +16838,10 @@ msgstr "더 보기"
 msgid "Show on the page"
 msgstr "페이지에 표시"
 
+#: src/features/home/HomePage.tsx
+msgid "Show only {name}"
+msgstr "{name}만 보기"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show or hide quoted text"
 msgstr "인용문 표시 또는 숨기기"
@@ -16717,6 +16914,10 @@ msgstr "가동률 표시"
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Show who is online"
 msgstr "온라인 중인 사람 표시"
+
+#: src/features/home/HomePage.tsx
+msgid "Showing {product} only. Show all products"
+msgstr "{product}만 표시 중입니다. 모든 제품 보기"
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -17050,6 +17251,7 @@ msgstr "사이트 링크"
 msgid "Site name"
 msgstr "사이트 이름"
 
+#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
@@ -17261,10 +17463,6 @@ msgstr "올바르지 않은 값이 있습니다."
 msgid "Some parts of the file did not arrive. Pick the same file again to send them."
 msgstr "파일의 일부가 도착하지 않았습니다. 같은 파일을 다시 선택해 보내세요."
 
-#: src/features/home/HomePage.tsx
-msgid "Someone"
-msgstr "누군가"
-
 #: src/features/settings/notifications/events.ts
 msgid "Someone answers a forward"
 msgstr "누군가 전달에 답장함"
@@ -17422,6 +17620,7 @@ msgstr "시작"
 msgid "Start a discussion"
 msgstr "토론 시작"
 
+#: src/features/home/HomePage.tsx
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "Start a mailing list"
 msgstr "메일링 리스트 시작"
@@ -17512,12 +17711,12 @@ msgid "State while down"
 msgstr "다운 시 상태"
 
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
+#: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -17535,7 +17734,7 @@ msgstr "상태 페이지"
 msgid "Status page deleted"
 msgstr "상태 페이지를 삭제했습니다"
 
-#: src/app/Sidebar.tsx
+#: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -17607,6 +17806,10 @@ msgstr "Stored encrypted and never shown again."
 #: src/features/contact/MergePreview.tsx
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
 msgstr "취소선이 그어진 값은 가져오지 않습니다. 이 연락처는 해당 키에 대해 자신의 값을 유지합니다."
+
+#: src/app/Sidebar.tsx
+msgid "Sub-pages of {label}"
+msgstr "{label} 하위 페이지"
 
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -17713,6 +17916,7 @@ msgstr "일요일"
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 msgid "Support"
 msgstr "지원"
 
@@ -17795,6 +17999,10 @@ msgstr "탭"
 msgid "Tags"
 msgstr "태그"
 
+#: src/features/home/HomePage.tsx
+msgid "take"
+msgstr "맡기"
+
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Takes sign-ups again and brings the list back to the broadcast audience picker."
 msgstr "다시 가입을 받고 목록을 발송 대상 선택에 되돌립니다."
@@ -17826,7 +18034,7 @@ msgstr "TCP 확인"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/conversation/History.tsx
 #: src/features/docs/discussions/parts.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/views/ViewDialog.tsx
 #: src/features/reports/ReportPages.tsx
@@ -17858,6 +18066,7 @@ msgstr "팀 ID"
 #: src/components/common/PurposeChoice.tsx
 #: src/features/mail/MailPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/workspace/FocusForm.tsx
 #: src/features/setup/SetupHub.tsx
 msgid "Team mail"
 msgstr "팀 메일"
@@ -18894,6 +19103,10 @@ msgstr "서버 운영자는 워크스페이스의 발송을 허용하기 전에 
 msgid "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 msgstr "The server's operator registers the Slack app and sets its credentials. The guide explains how."
 
+#: src/features/home/HomePage.tsx
+msgid "The server’s operator suspended sending for this workspace. Scheduled broadcasts are paused and new schedules are refused."
+msgstr "서버 운영자가 이 워크스페이스의 발송을 정지했습니다. 예약된 발송은 일시 중지되며 새 예약은 거부됩니다."
+
 #: src/features/settings/audit/sentence.ts
 msgid "The server's operator vouched for the address {address}"
 msgstr "서버 운영자가 주소 {address}를 보증했습니다"
@@ -19586,6 +19799,10 @@ msgstr "이 서버는 운영자가 승인한 워크스페이스에만 일괄 발
 msgid "This server sends broadcasts for a workspace once its operator approves it. Tell them about your mail to ask. Until then you can build lists, designs and drafts and send tests."
 msgstr "이 서버는 운영자가 승인한 워크스페이스에만 일괄 발송을 보냅니다. 요청하려면 메일에 대해 알려 주세요. 그때까지 리스트, 디자인, 초안을 만들고 테스트를 보낼 수 있습니다."
 
+#: src/features/home/HomePage.tsx
+msgid "This server sends broadcasts only after its operator approves the workspace. Drafts are kept."
+msgstr "이 서버는 운영자가 워크스페이스를 승인한 후에만 대량 발송을 보냅니다. 초안은 보관됩니다."
+
 #: src/components/common/text.ts
 msgid "This server's limit for migrations is reached. Wait until a running one ends, or ask the server's operator."
 msgstr "이 서버의 이전 한도에 도달했습니다. 실행 중인 것이 끝날 때까지 기다리거나 서버 운영자에게 문의하세요."
@@ -19747,6 +19964,10 @@ msgstr "받는 사람"
 msgid "To let assistants send on their own, turn on <0>Bots may send</0>."
 msgstr "어시스턴트가 직접 보내게 하려면 <0>봇 발송 허용</0>을 켜세요."
 
+#: src/features/home/HomePage.tsx
+msgid "to triage"
+msgstr "분류 필요"
+
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "받는 사람: {emailTo}"
@@ -19756,8 +19977,8 @@ msgstr "받는 사람: {emailTo}"
 msgid "To: {who}"
 msgstr "받는 사람: {who}"
 
+#: src/app/Sidebar.tsx
 #: src/features/conversation/messages/Thread.tsx
-#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -19841,14 +20062,11 @@ msgstr "휴지통"
 msgid "Trash, never imported"
 msgstr "휴지통(가져오지 않음)"
 
+#: src/app/Sidebar.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "Trends"
 msgstr "추세"
-
-#: src/features/home/HomePage.tsx
-msgid "Triage"
-msgstr "분류"
 
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Trigger"
@@ -19860,8 +20078,13 @@ msgstr "이 서버의 인증서를 신뢰합니다. 내 서버이고 지문이 �
 
 #: src/app/Gate.tsx
 #: src/features/account/AccountLayout.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/home/HomePage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
 #: src/features/oauth/ConsentPage.tsx
+#: src/features/reports/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Try again"
 msgstr "다시 시도"
 
@@ -19954,6 +20177,7 @@ msgid "TXT record"
 msgstr "TXT 레코드"
 
 #: src/features/inbox/SourceFilter.tsx
+#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx
 msgid "Type"
 msgstr "유형"
@@ -20000,6 +20224,7 @@ msgid "Unassign"
 msgstr "배정 해제"
 
 #: src/features/conversation/ChatView.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
@@ -20013,6 +20238,7 @@ msgstr "자동으로 배정 해제됨"
 msgid "Unblock contact"
 msgstr "연락처 차단 해제"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Undeliverable"
@@ -20144,7 +20370,6 @@ msgstr "잠금을 해제했습니다"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/contact/MergeContactDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
-#: src/features/home/HomePage.tsx
 msgid "Unnamed contact"
 msgstr "이름 없는 연락처"
 
@@ -20202,6 +20427,7 @@ msgid "Unread only"
 msgstr "읽지 않은 것만"
 
 #: src/components/common/SaveBar.tsx
+#: src/features/settings/workspace/parts.tsx
 msgid "Unsaved changes"
 msgstr "저장하지 않은 변경 사항"
 
@@ -20230,6 +20456,7 @@ msgstr "구독 취소됨"
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/Growth.tsx
+#: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Unsubscribed"
@@ -20373,15 +20600,16 @@ msgstr "업로드 중…"
 msgid "Uptime"
 msgstr "가동률"
 
-#: src/features/home/HomePage.tsx
-msgid "uptime · {shown} days"
-msgstr "가동률 · {shown}일"
+#: src/features/home/HomeSide.tsx
+msgid "uptime {uptime} over {shown} days"
+msgstr "{shown}일 가동률 {uptime}"
 
 #: src/features/status/ComponentsTab.tsx
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "이 페이지에서는 가동률이 숨겨져 있습니다. 날마다의 가동률을 여기서 보려면 설정에서 켜세요."
 
 #: src/components/common/text.ts
+#: src/features/inbox/ChatList.tsx
 msgid "Urgent"
 msgstr "긴급"
 
@@ -20542,6 +20770,10 @@ msgstr "사용자 이름"
 msgid "Username"
 msgstr "사용자 이름"
 
+#: src/features/home/SiteCard.tsx
+msgid "users today"
+msgstr "오늘 사용자"
+
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Using the inbox default"
 msgstr "Using the inbox default"
@@ -20628,7 +20860,6 @@ msgstr "매우 큰 메일함인가요? Google Takeout 파일로 시작하세요"
 msgid "via {via}"
 msgstr "{via}를 통해"
 
-#: src/features/home/HomePage.tsx
 #: src/features/mail/Compose.tsx
 msgid "View"
 msgstr "보기"
@@ -20693,11 +20924,8 @@ msgid "Visitors subscribe on the page and get a mail when an incident or mainten
 msgstr "방문자가 페이지에서 구독하면 인시던트나 점검 상태가 바뀔 때 메일을 받습니다."
 
 #: src/features/home/PropertyCard.tsx
+#: src/features/home/SiteCard.tsx
 msgid "visitors today"
-msgstr "오늘 방문자"
-
-#: src/features/home/HomePage.tsx
-msgid "Visitors today"
 msgstr "오늘 방문자"
 
 #: src/features/setup/ChannelStep.tsx
@@ -20721,8 +20949,13 @@ msgstr "발송 시작 이후 utm_campaign={campaign}이 붙은 내 사이트 방
 msgid "Vouched for by the server's operator on {when}."
 msgstr "{when}에 서버 운영자가 보증했습니다."
 
+#: src/features/home/HomePage.tsx
+msgid "waiting"
+msgstr "대기 중"
+
 #: src/components/common/Linked.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/channels/ChannelPage.tsx
@@ -20744,7 +20977,6 @@ msgstr "가능한 팀원을 기다리는 중"
 msgid "Waiting for an available teammate since {since}"
 msgstr "{since}부터 가능한 팀원을 기다리는 중"
 
-#: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
 msgid "waiting for approval"
 msgstr "승인 대기 중"
@@ -20805,6 +21037,10 @@ msgstr "첫 결과를 기다리는 중"
 msgid "Waiting for the operator"
 msgstr "운영자를 기다리는 중"
 
+#: src/features/home/HomePage.tsx
+msgid "Waiting for the operator."
+msgstr "운영자를 기다리는 중입니다."
+
 #: src/features/migrations/parts.tsx
 msgid "Waiting for the provider's limit; continues at {time}."
 msgstr "제공업체의 한도를 기다리는 중입니다. {time}에 이어 갑니다."
@@ -20822,16 +21058,13 @@ msgid "Waiting for validation"
 msgstr "검증 대기 중"
 
 #: src/features/home/HomePage.tsx
-msgid "Waiting for you"
-msgstr "답변 대기 중"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "가장 오래 대기 중"
 
-#: src/features/home/HomePage.tsx
-msgid "waiting since {at}"
-msgstr "{at}부터 대기 중"
+#: src/features/home/HomeSide.tsx
+msgid "waits for approval"
+msgstr "승인 대기 중"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Warn about the certificate"
@@ -20893,6 +21126,7 @@ msgstr "Webhook secret for {revealName}"
 
 #: src/app/Palette.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
+#: src/features/settings/channels/Frame.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -20928,10 +21162,6 @@ msgstr "웹사이트 채팅"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Website chat channel"
 msgstr "웹사이트 채팅 채널"
-
-#: src/features/home/HomePage.tsx
-msgid "Websites and apps"
-msgstr "웹사이트와 앱"
 
 #: src/components/common/text.ts
 msgid "Wednesday"
@@ -21076,13 +21306,14 @@ msgstr "What your e-mailed replies end with, per inbox. Chat replies and notes c
 
 #: src/components/common/FocusChoice.tsx
 #: src/features/settings/workspace/FocusForm.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "What Yuva is for"
 msgstr "Yuva의 용도"
 
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
-#: src/features/home/HomePage.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 msgid "What’s new"
 msgstr "새 소식"
@@ -21274,10 +21505,6 @@ msgstr "접근 권한, 키, 데이터를 변경한 사람"
 msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
 msgstr "멤버, 접근 권한, 키, 웹훅, 메일 계정, 보관 기간, 내보내기를 누가 변경했는지 최신순으로 보여 줍니다. 소유자만 볼 수 있습니다."
 
-#: src/features/team/TeamPage.tsx
-msgid "Who is here"
-msgstr "여기 있는 사람"
-
 #: src/features/inbox/ChatList.tsx
 msgid "Who is it for?"
 msgstr "누구를 위한 것인가요?"
@@ -21398,6 +21625,7 @@ msgstr "처리 중…"
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
 msgstr "워크스페이스"
 
@@ -21420,10 +21648,6 @@ msgstr "워크스페이스: {name}"
 #: src/app/Sidebar.tsx
 msgid "Workspaces"
 msgstr "워크스페이스"
-
-#: src/features/home/HomePage.tsx
-msgid "Write a broadcast"
-msgstr "일괄 발송 작성"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx
@@ -21506,6 +21730,7 @@ msgid "Yes"
 msgstr "예"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/home/HomePage.tsx
 msgid "Yesterday"
 msgstr "어제"
 
@@ -21546,6 +21771,14 @@ msgstr "아직 워크스페이스에 속해 있지 않습니다"
 #: src/features/auth/DeleteAccountButton.tsx
 msgid "You are the only owner of a workspace. Make someone else an owner there, or delete that workspace, before you delete your account."
 msgstr "워크스페이스의 유일한 소유자입니다. 계정을 삭제하기 전에 다른 사람을 소유자로 지정하거나 그 워크스페이스를 삭제하세요."
+
+#: src/features/home/HomePage.tsx
+msgid "You asked on {asked} to send broadcasts. Drafts and schedules wait until the operator answers."
+msgstr "{asked}에 대량 발송을 요청했습니다. 운영자가 답할 때까지 초안과 예약은 대기합니다."
+
+#: src/features/home/HomePage.tsx
+msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
+msgstr "대량 발송을 요청했습니다. 운영자가 답할 때까지 초안과 예약은 대기합니다."
 
 #: src/features/account/ConnectPage.tsx
 msgid "You can close this window and go back to {host}."
@@ -21917,6 +22150,7 @@ msgstr "내 Yuva 계정"
 msgid "Yours"
 msgstr "내 것"
 
+#: src/app/UserMenu.tsx
 #: src/features/auth/AuthLayout.tsx
 msgid "Yuva {version}"
 msgstr "Yuva {version}"

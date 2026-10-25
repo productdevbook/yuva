@@ -17,8 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { ListHead, UnderlineTabs } from "@/features/inbox/ListHead"
-import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
+import { ListHead, ViewChips } from "@/features/inbox/ListHead"
 import {
   mailPath,
   useFilterAccess,
@@ -47,6 +46,8 @@ const handle = cn(
   "data-[separator=hover]:z-10 data-[separator=hover]:-mx-6 data-[separator=hover]:px-6 data-[separator=hover]:after:w-full"
 )
 
+const chrome = "h-8 rounded-[9px] border-input bg-card font-normal"
+
 function useFolderCounts(box: string): Partial<Record<Folder, number>> {
   const counts = useMailCounts()
   if (!counts) return {}
@@ -54,7 +55,7 @@ function useFolderCounts(box: string): Partial<Record<Folder, number>> {
   return { inbox: counts.inboxes.find((c) => c.id === box)?.count ?? 0 }
 }
 
-function BoxPicker({ box, folder }: { box: string; folder: Folder }) {
+function BoxPicker({ box, folder, compact }: { box: string; folder: Folder; compact?: boolean }) {
   const { t } = useLingui()
   const navigate = useNavigate()
   const inboxes = useMailInboxes()
@@ -90,12 +91,15 @@ function BoxPicker({ box, folder }: { box: string; folder: Folder }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<Button variant="outline" className={cn(look.btn, "max-w-64 gap-1.5")} />}
+        render={
+          <Button variant="outline" className={cn(chrome, compact ? "gap-0.5 px-2" : "max-w-40 gap-1.5 px-2.5")} />
+        }
         aria-label={t`Mailbox: ${name}`}
+        title={name}
         data-testid="mail-box-picker"
       >
         <MailIcon className="text-faint" />
-        <span className="min-w-0 truncate">{name}</span>
+        {!compact && <span className="min-w-0 truncate">{name}</span>}
         <ChevronDownIcon className="text-faint" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-56">
@@ -130,7 +134,7 @@ function FiltersLink({ box, compact }: { box: string; compact?: boolean }) {
       <Button
         variant="outline"
         size="icon"
-        className={cn(look.btn, "px-0")}
+        className={cn(chrome, "w-8 px-0")}
         render={<Link to={`/mail/${box}/filters`} />}
         aria-label={t`Filters`}
         data-testid="mail-filters-link"
@@ -141,7 +145,7 @@ function FiltersLink({ box, compact }: { box: string; compact?: boolean }) {
   return (
     <Button
       variant="outline"
-      className={cn(look.btn, "gap-1.5")}
+      className={cn(chrome, "gap-1.5 px-2.5")}
       render={<Link to={`/mail/${box}/filters`} />}
       data-testid="mail-filters-link"
     >
@@ -153,7 +157,11 @@ function FiltersLink({ box, compact }: { box: string; compact?: boolean }) {
 
 function ComposeButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button className={cn(look.btnInk, "gap-1.5")} onClick={onClick} data-testid="mail-compose">
+    <Button
+      className="h-8 gap-1.5 rounded-[9px] bg-foreground px-3 text-background hover:bg-foreground/90"
+      onClick={onClick}
+      data-testid="mail-compose"
+    >
       <PenSquareIcon />
       <Trans>New mail</Trans>
       <Kbd className="phone:hidden bg-background/15 text-background">{MAIL_KEYS.compose}</Kbd>
@@ -164,16 +172,16 @@ function ComposeButton({ onClick }: { onClick: () => void }) {
 function EmptyThread() {
   return (
     <div
-      className="flex min-h-0 flex-1 flex-col items-center justify-center bg-surface px-8 text-center"
+      className="flex min-h-0 flex-1 flex-col items-center justify-center bg-background px-8 text-center"
       data-testid="mail-empty"
     >
-      <div className="mb-5 grid size-16 place-items-center rounded-[20px] bg-brand-wash text-brand">
-        <MailOpenIcon className="size-7" />
+      <div className="mb-3 grid size-14 place-items-center rounded-[18px] bg-muted text-faint">
+        <MailOpenIcon className="size-6" />
       </div>
-      <h1 className="text-title">
+      <h1 className="text-[18px] leading-6 font-semibold">
         <Trans>Pick a mail</Trans>
       </h1>
-      <p className="mt-1.5 text-body text-muted-foreground">
+      <p className="mt-1 max-w-sm text-small text-faint">
         <Trans>Choose one from the list, or move with ↑ ↓ and open it with Enter.</Trans>
       </p>
     </div>
@@ -239,7 +247,7 @@ export function MailPage() {
   if (inboxes.length === 0) return <NoMailInboxes />
   if (pathname !== canonical) return <Navigate to={canonical} replace />
 
-  const list = (currentId: string | null) =>
+  const list = (currentId: string | null, head?: React.ReactNode) =>
     folder === "drafts" ? (
       <MailDrafts
         box={box}
@@ -247,19 +255,36 @@ export function MailPage() {
         onOpen={open}
         onCompose={(draft) => setComposing({ draft })}
         active={!composing}
+        head={head}
       />
     ) : (
-      <MailList box={box} folder={folder} currentId={currentId} onOpen={open} active />
+      <MailList box={box} folder={folder} currentId={currentId} onOpen={open} active head={head} />
     )
 
   const boxName = box === "all" ? t`All mail` : (inboxes.find((i) => i.id === box)?.name ?? "")
-  const tabs = folders.map((f) => ({
-    key: f,
+  const chips = folders.map((f) => ({
+    value: f,
     label: labels[f],
     count: counts[f],
-    to: mailPath(box, f),
     testId: `mail-folder-${f}`,
   }))
+
+  const head = (
+    <>
+      <header className="flex h-15 shrink-0 items-center gap-1.5 ps-4 pe-3" data-testid="list-head">
+        <div className="flex min-w-0 flex-1 flex-col leading-tight">
+          <h1 className="truncate text-[16px] font-semibold">
+            <Trans>Mail</Trans>
+          </h1>
+          <p className="truncate text-caption text-faint">{boxName}</p>
+        </div>
+        <BoxPicker box={box} folder={folder} compact />
+        <FiltersLink box={box} compact />
+        <ComposeButton onClick={() => setComposing({})} />
+      </header>
+      <ViewChips value={folder} onChange={(f) => navigate(mailPath(box, f))} label={t`Folders`} items={chips} />
+    </>
+  )
 
   if (phone) {
     if (id) {
@@ -282,16 +307,12 @@ export function MailPage() {
             </>
           }
         >
-          <UnderlineTabs
+          <ViewChips
             value={folder}
             onChange={(f) => navigate(mailPath(box, f))}
             label={t`Folders`}
-            items={folders.map((f) => ({
-              value: f,
-              label: labels[f],
-              count: counts[f],
-              testId: `mail-folder-${f}`,
-            }))}
+            className="-mx-4 mt-2.5 px-4"
+            items={chips}
           />
         </ListHead>
         {list(null)}
@@ -309,18 +330,6 @@ export function MailPage() {
 
   return (
     <main className="flex min-h-0 flex-1 flex-col" data-testid="mail">
-      <PageTop
-        title={<Trans>Mail</Trans>}
-        sub={boxName}
-        actions={
-          <>
-            <BoxPicker box={box} folder={folder} />
-            <FiltersLink box={box} />
-            <ComposeButton onClick={() => setComposing({})} />
-          </>
-        }
-        tabs={<FrameTabs label={t`Folders`} value={folder} items={tabs} />}
-      />
       <ResizablePanelGroup
         className="min-h-0 flex-1"
         disableCursor
@@ -336,7 +345,7 @@ export function MailPage() {
           maxSize={600}
           groupResizeBehavior="preserve-pixel-size"
         >
-          {list(id)}
+          {list(id, head)}
         </ResizablePanel>
         <ResizableHandle withHandle className={handle} />
         <ResizablePanel id="thread" className="flex flex-col" minSize={440}>

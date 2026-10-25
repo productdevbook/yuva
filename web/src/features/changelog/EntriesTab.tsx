@@ -67,7 +67,7 @@ function LocaleChips({ e, changelog }: { e: ChangelogEntrySummary; changelog: Ch
             title={label}
             aria-label={label}
             className={cn(
-              "rounded-md border px-1.5 py-0.5 text-caption leading-none font-medium uppercase outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "relative z-10 inline-flex h-5 items-center rounded-md border px-1.5 text-[11px] leading-none font-semibold tracking-[0.02em] uppercase outline-none focus-visible:ring-2 focus-visible:ring-ring",
               chipTone(tr?.state),
               tr?.outdated && "underline decoration-warning decoration-2 underline-offset-2"
             )}
@@ -201,14 +201,14 @@ function DateBlock({ iso }: { iso: string }) {
   return (
     <time
       dateTime={iso}
-      className="flex w-11 shrink-0 flex-col items-center rounded-lg border bg-background py-1 leading-[1.15]"
+      className="flex size-12 shrink-0 flex-col items-center justify-center rounded-xl border bg-surface leading-[1.15] @max-xl:size-11"
       title={formatDate(iso, i18n.locale)}
     >
       <span className="sr-only">{formatDate(iso, i18n.locale)}</span>
-      <span className="text-[10.5px] text-faint uppercase" aria-hidden>
+      <span className="text-[10.5px] tracking-[0.04em] text-faint uppercase" aria-hidden>
         {new Intl.DateTimeFormat(i18n.locale, { month: "short" }).format(d)}
       </span>
-      <span className="text-[15px] font-semibold tabular-nums" aria-hidden>
+      <span className="text-[18px] leading-5 font-semibold tabular-nums" aria-hidden>
         {new Intl.DateTimeFormat(i18n.locale, { day: "2-digit" }).format(d)}
       </span>
     </time>
@@ -239,34 +239,48 @@ export function EntryRow({
   const labelText = useLabelText()
   const failureText = useFailureText()
   const { title, body, loading } = useEntryText(changelog, e)
+  const when =
+    e.state === "published" && e.published_at ? (
+      formatShort(e.published_at, i18n.locale)
+    ) : e.state === "scheduled" && e.publish_at ? (
+      formatShort(e.publish_at, i18n.locale)
+    ) : (
+      <Trans>not published</Trans>
+    )
   return (
     <li
       className={cn(
-        "flex items-center gap-4 border-b px-6 py-3 transition-colors phone:px-4",
-        current && "bg-surface shadow-[inset_2px_0_0_var(--brand)]"
+        "relative flex items-start gap-3.5 rounded-[14px] border bg-card p-4 transition-colors hover:border-faint @max-xl:gap-3 @max-xl:p-3",
+        current &&
+          "border-brand shadow-[0_0_0_3px_color-mix(in_srgb,var(--brand)_16%,transparent)] before:absolute before:inset-y-4 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand"
       )}
       onClick={onPick}
       data-testid="entry-row"
     >
-      {check && <RowCheck checked={check.checked} name={title} onToggle={check.onToggle} />}
+      {check && <RowCheck checked={check.checked} name={title} onToggle={check.onToggle} className="mt-3.5" />}
       <DateBlock iso={e.published_at ?? e.publish_at ?? e.created_at} />
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="flex min-w-0 items-center gap-2">
-          <Link
-            to={entryLink(changelog.id, e.id, changelog.default_locale)}
-            className="truncate text-[14.5px] font-semibold outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {title}
-          </Link>
-          {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+          <Pill tone={pillOf[e.state]} data-testid="entry-state" data-state={e.state}>
+            {stateText[e.state]}
+          </Pill>
           {e.labels.map((l) => (
             <Chip key={l}>{labelText[l]}</Chip>
           ))}
+          {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
         </span>
+        <Link
+          to={entryLink(changelog.id, e.id, changelog.default_locale)}
+          className="line-clamp-2 text-[15px] leading-[21px] font-semibold break-words outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {title}
+        </Link>
         {loading ? (
-          <Skeleton className="my-1 h-3.5 w-72" />
+          <Skeleton className="my-1 h-3.5 w-72 max-w-full" />
         ) : (
-          <span className="truncate text-body text-muted-foreground">{body || title}</span>
+          <span className="line-clamp-2 text-body leading-[19px] break-words text-muted-foreground">
+            {body || title}
+          </span>
         )}
         {e.schedule_failed && (
           <span className="flex items-center gap-1.5 text-small text-warning" data-testid="entry-schedule-failed">
@@ -276,24 +290,11 @@ export function EntryRow({
             </span>
           </span>
         )}
-      </div>
-      {locales && changelog.locales.length > 1 && (
-        <span className="phone:hidden">
-          <LocaleChips e={e} changelog={changelog} />
+        <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-caption text-faint tabular-nums">
+          {locales && changelog.locales.length > 1 && <LocaleChips e={e} changelog={changelog} />}
+          <span>{when}</span>
         </span>
-      )}
-      <Pill tone={pillOf[e.state]} data-testid="entry-state" data-state={e.state}>
-        {stateText[e.state]}
-      </Pill>
-      <span className="w-24 shrink-0 text-end text-small text-faint tabular-nums phone:hidden">
-        {e.state === "published" && e.published_at ? (
-          formatShort(e.published_at, i18n.locale)
-        ) : e.state === "scheduled" && e.publish_at ? (
-          formatShort(e.publish_at, i18n.locale)
-        ) : (
-          <Trans>not published</Trans>
-        )}
-      </span>
+      </div>
     </li>
   )
 }
@@ -306,21 +307,21 @@ export function EntryPreview({ changelog, entry }: { changelog: Changelog; entry
   const host = changelog.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
   return (
     <aside
-      className="flex w-[448px] shrink-0 flex-col gap-3 overflow-y-auto border-s bg-surface px-6 py-7"
+      className="flex w-[320px] shrink-0 flex-col gap-3 rounded-[14px] border bg-card p-4"
       aria-label={title}
       data-testid="entry-preview"
     >
       <h3 className="text-[11px] font-semibold tracking-[0.06em] text-faint uppercase">
         {inbox ? <Trans>How it looks in {inbox.name}</Trans> : <Trans>How it looks</Trans>}
       </h3>
-      <div className="overflow-hidden rounded-xl border bg-card shadow-[0_8px_24px_-12px_rgb(0_0_0/0.18)]">
+      <div className="overflow-hidden rounded-xl border bg-surface">
         <div className="flex items-center gap-2 px-4 py-3">
           {inbox && <InboxMark name={inbox.name} color={inbox.branding.color} className="size-[22px] text-caption" />}
           <span className="flex-1 text-body font-semibold">
             <Trans>What’s new</Trans>
           </span>
         </div>
-        <div className="relative h-[178px]">
+        <div className="relative h-[84px]">
           {entry.image ? (
             <img src={entry.image.url} alt="" className="size-full object-cover" />
           ) : (
@@ -335,10 +336,10 @@ export function EntryPreview({ changelog, entry }: { changelog: Changelog; entry
             </span>
           )}
         </div>
-        <div className="flex flex-col gap-2 p-4">
-          <p className="text-[17px] leading-[1.35] font-semibold break-words">{title}</p>
+        <div className="flex flex-col gap-1 p-3">
+          <p className="text-[13.5px] leading-[18px] font-semibold break-words">{title}</p>
           {body ? (
-            <p className="line-clamp-6 text-body leading-[1.55] break-words text-muted-foreground">{body}</p>
+            <p className="line-clamp-4 text-[12.5px] leading-[18px] break-words text-muted-foreground">{body}</p>
           ) : (
             <p className="text-body text-faint">
               <Trans>No text yet.</Trans>
@@ -403,32 +404,36 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
     <div className="@container flex min-h-0 flex-1" data-testid="changelog-entries">
       <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
         <div className="flex flex-wrap items-center gap-2 border-b px-6 py-3 phone:px-4">
-          <ChoiceSelect
-            value={state}
-            onChange={(v) => {
-              setState(v)
-              setCursor(-1)
-            }}
-            options={states}
-            label={t`State`}
-            className="w-48"
-          />
-          <ChoiceSelect
-            value={label}
-            onChange={(v) => {
-              setLabel(v)
-              setCursor(-1)
-            }}
-            options={[["", t`All labels`] as const, ...LABELS.map((l) => [l, labelText[l]] as const)]}
-            label={t`Label`}
-            className="w-40"
-          />
-          <span className="flex-1" />
-          {items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
-          <FrameButton onClick={() => setCreating(true)} data-testid="new-entry">
-            <PlusIcon />
-            <Trans>New entry</Trans>
-          </FrameButton>
+          <div className="flex items-center gap-2 phone:w-full">
+            <ChoiceSelect
+              value={state}
+              onChange={(v) => {
+                setState(v)
+                setCursor(-1)
+              }}
+              options={states}
+              label={t`State`}
+              className="w-48 phone:min-w-0 phone:flex-1"
+            />
+            <ChoiceSelect
+              value={label}
+              onChange={(v) => {
+                setLabel(v)
+                setCursor(-1)
+              }}
+              options={[["", t`All labels`] as const, ...LABELS.map((l) => [l, labelText[l]] as const)]}
+              label={t`Label`}
+              className="w-40 phone:min-w-0 phone:flex-1"
+            />
+          </div>
+          <span className="flex-1 phone:hidden" />
+          <div className="flex items-center gap-2 phone:w-full">
+            {items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
+            <FrameButton className="phone:flex-1" onClick={() => setCreating(true)} data-testid="new-entry">
+              <PlusIcon />
+              <Trans>New entry</Trans>
+            </FrameButton>
+          </div>
         </div>
         <EntryBulkBar changelog={changelog} items={items} selection={selection} />
         {entries.isPending ? (
@@ -453,7 +458,7 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
             </p>
           </div>
         ) : (
-          <ul ref={list} className="flex flex-col">
+          <ul ref={list} className="flex flex-col gap-2.5 p-6 @max-xl:p-4">
             {items.map((e, i) => (
               <EntryRow
                 key={e.id}
@@ -487,7 +492,7 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
         )}
       </div>
       {shown && (
-        <div className="hidden min-h-0 @min-[1000px]:flex">
+        <div className="hidden min-h-0 pt-6 pe-6 @min-[1000px]:flex">
           <EntryPreview changelog={changelog} entry={shown} />
         </div>
       )}

@@ -37,7 +37,7 @@ function QueueItem({
   const hint = (label: string, key: string) => `${label} (${keyLabel(key).join("")})`
   return (
     <li
-      className={cn("flex flex-col gap-2.5 rounded-xl border bg-background px-4 py-3.5", cursor && "ring-2 ring-ring")}
+      className={cn("flex flex-col gap-2.5 rounded-[14px] border bg-card px-4 py-3.5", cursor && "ring-2 ring-ring")}
       data-testid="queue-item"
       data-post-id={post.id}
     >
@@ -169,7 +169,7 @@ export function QueueList({ hrefOf, keyboard }: { hrefOf: (d: Discussion) => str
         ) : queue.error ? (
           <ErrorLine error={queue.error} className="p-4" />
         ) : items.length === 0 ? (
-          <div className="rounded-xl border bg-background">
+          <div className="rounded-[14px] border bg-card">
             <EmptyRow>
               <Trans>Nothing is waiting for approval.</Trans>
             </EmptyRow>

@@ -1,9 +1,10 @@
-import { Trans, useLingui } from "@lingui/react/macro"
-import { FileTextIcon, LoaderIcon, PlusIcon } from "lucide-react"
+import { Plural, Trans, useLingui } from "@lingui/react/macro"
+import { FileTextIcon, FoldersIcon, LoaderIcon, PlusIcon, SearchIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
 import { RowCheck, SelectToggle } from "@/components/common/Selection"
+import { HELP_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,6 +25,7 @@ import {
   useHelpReport,
 } from "@/features/help/queries"
 import { ArticleBulkBar } from "@/features/help/Bulk"
+import { ICON_COMPONENTS } from "@/features/help/icons"
 import { articleTitle, collectionName, ErrorLine, useLocaleName, useStateText } from "@/features/help/text"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
 import { useDebounced } from "@/hooks/use-debounced"
@@ -32,7 +34,6 @@ import { useSelection } from "@/hooks/use-selection"
 import { formatDateTime, formatShort } from "@/components/common/text"
 import { look } from "@/features/inbox/PageFrame"
 import { ProductTag } from "@/features/inbox/ProductTag"
-import { useInboxes } from "@/lib/workspace"
 import type {
   HelpArticleSummary,
   HelpCenter,
@@ -153,12 +154,13 @@ function Stat({
   testId: string
 }) {
   return (
-    <div className="flex min-w-0 flex-col rounded-xl border bg-background px-4 pt-3.5 pb-3" data-testid={testId}>
-      <span className="truncate text-muted-foreground">{label}</span>
-      <span className={cn("mt-1.5 text-[26px] leading-8 font-semibold tracking-[-0.02em] tabular-nums", tone)}>
-        {value}
-      </span>
-      {detail && <span className="mt-1.5 truncate text-caption text-faint">{detail}</span>}
+    <div
+      className="flex min-w-0 flex-col gap-0.5 border-e px-4 py-3 last:border-e-0 @max-3xl:border-b @max-3xl:border-e-0 @max-3xl:odd:border-e @max-3xl:last:border-b-0 @max-3xl:nth-last-2:border-b-0 @min-[1241px]:border-b @min-[1241px]:border-e-0 @min-[1241px]:odd:border-e @min-[1241px]:last:border-b-0 @min-[1241px]:nth-last-2:border-b-0"
+      data-testid={testId}
+    >
+      <span className="truncate text-caption text-faint">{label}</span>
+      <span className={cn("text-[18px] leading-6 font-semibold tabular-nums", tone)}>{value}</span>
+      {detail && <span className="truncate text-caption text-faint">{detail}</span>}
     </div>
   )
 }
@@ -175,21 +177,28 @@ function rated(report?: HelpReport) {
   return { up, all }
 }
 
-function Stats({ center, report }: { center: HelpCenter; report?: HelpReport }) {
+function Stats({ center, report, className }: { center: HelpCenter; report?: HelpReport; className?: string }) {
   const { i18n } = useLingui()
   const n = new Intl.NumberFormat(i18n.locale)
   const percent = new Intl.NumberFormat(i18n.locale, { style: "percent", maximumFractionDigits: 0 })
-  const drafts = n.format(Math.max(0, center.counts.articles - center.counts.published_articles))
+  const drafts = Math.max(0, center.counts.articles - center.counts.published_articles)
   const missed = report?.no_result_searches ?? 0
   const searches = report ? n.format(report.searches) : ""
   const { up, all } = rated(report)
   const answers = n.format(all)
   return (
-    <div className="grid grid-cols-4 gap-4 max-[900px]:grid-cols-2" data-testid="help-stats">
+    <div
+      className={cn(
+        look.card,
+        "grid grid-cols-4 rounded-[14px] @max-3xl:grid-cols-2 @min-[1241px]:grid-cols-2",
+        className
+      )}
+      data-testid="help-stats"
+    >
       <Stat
         label={<Trans>Articles</Trans>}
         value={n.format(center.counts.articles)}
-        detail={<Trans>{drafts} drafts</Trans>}
+        detail={<Plural value={drafts} one="# draft" other="# drafts" />}
         testId="help-stat-articles"
       />
       <Stat
@@ -216,32 +225,41 @@ function Stats({ center, report }: { center: HelpCenter; report?: HelpReport }) 
   )
 }
 
-function Misses({ report, onWrite }: { report?: HelpReport; onWrite: (query: string) => void }) {
+function Misses({
+  report,
+  onWrite,
+  className,
+}: {
+  report?: HelpReport
+  onWrite: (query: string) => void
+  className?: string
+}) {
   const { i18n } = useLingui()
   const n = new Intl.NumberFormat(i18n.locale)
   const items = (report?.no_result_queries ?? []).filter((q) => q.query !== "(scrubbed)").slice(0, 8)
   if (items.length === 0) return null
   return (
-    <section className={look.card} data-testid="help-misses">
-      <h2 className="flex items-baseline justify-between gap-2 border-b px-4 py-3 font-semibold">
+    <section className={cn(look.card, "rounded-[14px]", className)} data-testid="help-misses">
+      <h2 className="flex items-baseline justify-between gap-2 px-4 pt-3.5 pb-2.5 text-body font-semibold">
         <Trans>Searched for, found nothing</Trans>
         <span className="text-caption font-normal text-faint">
           <Trans>last 7 days</Trans>
         </span>
       </h2>
-      <ul className="flex flex-wrap gap-2 p-4">
+      <ul>
         {items.map((q) => (
           <li
             key={`${q.locale}:${q.query}`}
-            className="inline-flex h-[34px] items-center gap-2 rounded-full border border-input ps-3 pe-1"
+            className="flex items-center gap-2.5 border-t px-4 py-2.5"
+            data-testid="help-miss"
           >
-            <span dir="auto" className="max-w-48 truncate">
+            <span dir="auto" className="min-w-0 flex-1 truncate text-body">
               “{q.query}”
             </span>
             <span className="text-caption text-faint tabular-nums">{n.format(q.searches)}×</span>
             <Button
-              size="sm"
-              className="h-[26px] rounded-full px-2.5 text-caption"
+              variant="ghost"
+              className="h-7 rounded-[7px] px-2 text-small font-medium"
               onClick={() => onWrite(q.query)}
               data-testid="help-miss-write"
             >
@@ -255,132 +273,168 @@ function Misses({ report, onWrite }: { report?: HelpReport; onWrite: (query: str
 }
 
 const STATE_TONE: Record<HelpTranslationState | "missing", string> = {
-  published: "border-success/40 text-success",
-  changed: "border-warning/50 text-warning",
-  draft: "border-input text-muted-foreground",
-  missing: "border-dashed border-input text-faint",
+  published: "text-success before:bg-current",
+  changed: "text-warning before:bg-[linear-gradient(90deg,currentColor_50%,transparent_50%)]",
+  draft: "text-faint",
+  missing: "text-faint",
 }
 
 function StatePill({ state }: { state?: HelpTranslationState }) {
   const { t } = useLingui()
   const text = useStateText()
   return (
-    <span className={cn(look.pill, STATE_TONE[state ?? "missing"])} data-testid="help-article-state">
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 text-caption font-medium whitespace-nowrap before:size-[7px] before:shrink-0 before:rounded-full before:border-[1.5px] before:border-current before:content-['']",
+        STATE_TONE[state ?? "missing"]
+      )}
+      data-testid="help-article-state"
+    >
       {state === "changed" ? t`Changed` : state ? text[state] : t`Not written`}
     </span>
   )
 }
 
+const LANG_CHIP =
+  "inline-flex h-5 items-center rounded-md px-1.5 text-[11px] font-semibold tracking-[0.02em] uppercase outline-none focus-visible:ring-2 focus-visible:ring-ring"
+
 function Locales({ a, center }: { a: HelpArticleSummary; center: HelpCenter }) {
   const { t } = useLingui()
   const name = useLocaleName()
   const stateText = useStateText()
-  const written = center.locales.filter((l) => a.translations.some((x) => x.locale === l))
   return (
-    <span className="flex min-w-0 items-center text-caption text-faint" data-testid="help-article-locales">
-      {written.map((l, i) => {
-        const tr = a.translations.find((x) => x.locale === l)!
-        const label = `${name(l)}: ${stateText[tr.state]}${tr.outdated ? `, ${t`out of date`}` : ""}`
-        return (
-          <span key={l} className="flex items-center">
-            {i > 0 && (
-              <span className="px-1" aria-hidden>
-                ·
-              </span>
-            )}
-            <Link
-              to={articleLink(center.id, a.id, l)}
-              title={label}
-              aria-label={label}
-              className={cn(
-                "uppercase outline-none hover:text-foreground focus-visible:underline",
-                tr.outdated && "text-warning"
-              )}
-              data-testid={`help-locale-${l}`}
+    <span className="flex min-w-0 flex-wrap items-center gap-1" data-testid="help-article-locales">
+      {center.locales.map((l) => {
+        const tr = a.translations.find((x) => x.locale === l)
+        if (!tr) {
+          return (
+            <span
+              key={l}
+              className={cn(LANG_CHIP, "border border-dashed border-input text-faint")}
+              title={`${name(l)}: ${t`Not written`}`}
             >
               {l}
-            </Link>
-          </span>
+            </span>
+          )
+        }
+        const label = `${name(l)}: ${stateText[tr.state]}${tr.outdated ? `, ${t`out of date`}` : ""}`
+        return (
+          <Link
+            key={l}
+            to={articleLink(center.id, a.id, l)}
+            title={label}
+            aria-label={label}
+            className={cn(
+              LANG_CHIP,
+              tr.outdated ? "bg-warning/15 text-warning" : "bg-surface text-muted-foreground hover:text-foreground"
+            )}
+            data-testid={`help-locale-${l}`}
+          >
+            {l}
+          </Link>
         )
       })}
     </span>
   )
 }
 
+const NODE =
+  "flex h-8 w-full items-center gap-2 rounded-lg px-2.5 text-start text-small text-muted-foreground outline-none transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring aria-pressed:bg-card aria-pressed:font-semibold aria-pressed:text-foreground aria-pressed:shadow-[0_0_0_1px_var(--border)]"
+
 function CollectionsCard({
+  className,
   center,
   cols,
   value,
   onChange,
 }: {
+  className?: string
   center: HelpCenter
   cols: HelpCollection[]
   value: string
   onChange: (id: string) => void
 }) {
   const { t, i18n } = useLingui()
-  const color = useInboxes().data?.find((i) => i.id === center.inbox_id)?.branding.color
   const fmt = new Intl.NumberFormat(i18n.locale)
   const prefer = [i18n.locale, center.default_locale]
+  const ordered = cols
+    .filter((c) => !c.parent_id)
+    .sort((a, b) => a.position - b.position || a.number - b.number)
+    .flatMap((top) => [
+      top,
+      ...cols.filter((c) => c.parent_id === top.id).sort((a, b) => a.position - b.position || a.number - b.number),
+    ])
   return (
-    <section className={look.card} aria-label={t`Collections`} data-testid="help-collections">
-      <h2 className="border-b px-4 py-3 font-semibold">
+    <nav
+      className={cn("flex flex-col gap-px @3xl:sticky @3xl:top-4", className)}
+      aria-label={t`Collections`}
+      data-testid="help-collections"
+    >
+      <h2 className="px-2.5 pt-1 pb-1.5 text-[11px] leading-4 font-semibold tracking-[0.05em] text-faint uppercase @max-3xl:hidden">
         <Trans>Collections</Trans>
       </h2>
-      <ul className="flex flex-col">
-        {cols.map((c) => {
+      <div className="flex flex-col gap-px @max-3xl:flex-row @max-3xl:gap-1 @max-3xl:overflow-x-auto @max-3xl:[scrollbar-width:none]">
+        <button
+          type="button"
+          aria-pressed={value === ""}
+          onClick={() => onChange("")}
+          className={cn(NODE, "@max-3xl:w-auto @max-3xl:shrink-0")}
+        >
+          <span className="min-w-0 flex-1 truncate">
+            <Trans>All</Trans>
+          </span>
+          <span className="text-caption font-normal text-faint tabular-nums">{fmt.format(center.counts.articles)}</span>
+        </button>
+        {ordered.map((c) => {
           const on = value === c.id
+          const Icon = c.icon ? ICON_COMPONENTS[c.icon] : FoldersIcon
           return (
-            <li key={c.id} className="border-b">
-              <button
-                type="button"
-                aria-pressed={on}
-                onClick={() => onChange(on ? "" : c.id)}
-                className={cn(
-                  "flex w-full items-center gap-2.5 px-4 py-2.5 text-start outline-none transition-colors hover:bg-surface focus-visible:bg-surface",
-                  on && "bg-surface font-medium shadow-[inset_2px_0_0_var(--brand)]"
-                )}
-                data-testid="help-collection"
-              >
-                <span
-                  className="size-2 shrink-0 rounded-[2px] bg-brand"
-                  style={color ? { backgroundColor: color } : undefined}
-                  aria-hidden
-                />
-                <span className="min-w-0 flex-1 truncate">{collectionName(c, ...prefer)}</span>
-                <span className="text-caption text-faint tabular-nums">{fmt.format(c.article_count)}</span>
-              </button>
-            </li>
+            <button
+              key={c.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => onChange(on ? "" : c.id)}
+              className={cn(NODE, c.parent_id && "ps-7 @max-3xl:hidden", "@max-3xl:w-auto @max-3xl:shrink-0")}
+              data-testid="help-collection"
+            >
+              <Icon className="size-3.5 shrink-0 text-faint" aria-hidden />
+              <span className="min-w-0 flex-1 truncate">{collectionName(c, ...prefer)}</span>
+              <span className="text-caption font-normal text-faint tabular-nums">{fmt.format(c.article_count)}</span>
+            </button>
           )
         })}
-      </ul>
-      <Link
-        to={`${centerLink(center.id, "collections")}&new=1`}
-        className="flex items-center gap-1 px-4 py-3 text-muted-foreground outline-none hover:text-foreground focus-visible:underline"
-        data-testid="help-new-collection"
-      >
-        <PlusIcon className="size-3.5" />
-        <Trans>New collection</Trans>
-      </Link>
-    </section>
+        <Link
+          to={`${centerLink(center.id, "collections")}&new=1`}
+          className={cn(NODE, "text-faint hover:text-foreground @max-3xl:w-auto @max-3xl:shrink-0")}
+          data-testid="help-new-collection"
+        >
+          <PlusIcon className="size-3.5" aria-hidden />
+          <Trans>New collection</Trans>
+        </Link>
+      </div>
+    </nav>
   )
 }
 
 const grid =
-  "grid grid-cols-[minmax(0,1fr)_120px_100px_130px_70px_70px] items-center gap-3 px-4 phone:grid-cols-[minmax(0,1fr)_auto]"
+  "grid grid-cols-[var(--cb,0px)_minmax(0,1fr)_96px_80px_52px_80px_68px] items-center gap-3 px-4 @max-3xl:grid-cols-[minmax(0,1fr)_auto]"
 
 export function ArticlesTab({
   center,
   drafts,
   q,
+  onQ,
+  search,
   onWrite,
 }: {
   center: HelpCenter
   drafts?: boolean
   q: string
+  onQ: (q: string) => void
+  search: React.RefObject<HTMLInputElement | null>
   onWrite: (title: string, collectionId: string) => void
 }) {
-  const { i18n } = useLingui()
+  const { t, i18n } = useLingui()
   const navigate = useNavigate()
   const [collection, setCollection] = useState("")
   const [cursor, setCursor] = useState(-1)
@@ -389,7 +443,6 @@ export function ArticlesTab({
   const debounced = useDebounced(q.trim(), 300)
   const collections = useHelpCollections(center.id)
   const cols = collections.data ?? []
-  const color = useInboxes().data?.find((i) => i.id === center.inbox_id)?.branding.color
   const filters: HelpArticleFilters = {
     q: debounced || undefined,
     collection_id: collection || undefined,
@@ -403,6 +456,7 @@ export function ArticlesTab({
     items.map((a) => a.id),
     JSON.stringify(filters)
   )
+  const findKey = keyLabel(HELP_KEYS.search).join("")
 
   useHotkeys({
     j: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
@@ -422,171 +476,212 @@ export function ArticlesTab({
   const stats = new Map<string, HelpReportArticle>()
   for (const r of [...(report?.most_down ?? []), ...(report?.top_articles ?? [])]) stats.set(r.article_id, r)
   const complete = !!report && report.top_articles.length < 20
-  const maxViews = Math.max(0, ...(report?.top_articles ?? []).map((r) => r.views))
   const collectionOf = (a: HelpArticleSummary) => {
     const c = cols.find((x) => x.id === a.collection_id)
     return c ? collectionName(c, ...prefer) : undefined
   }
 
   return (
-    <div className="flex flex-col gap-4" data-testid="help-articles">
-      <Stats center={center} report={report} />
-      <div className="grid grid-cols-[240px_minmax(0,1fr)] items-start gap-4 max-[1100px]:grid-cols-1">
-        <CollectionsCard
-          center={center}
-          cols={cols}
-          value={collection}
-          onChange={(id) => {
-            setCollection(id)
-            setCursor(-1)
-          }}
-        />
-        <div className="flex min-w-0 flex-col gap-4">
+    <div
+      className="grid grid-cols-[200px_minmax(0,1fr)] items-start gap-4 @max-3xl:grid-cols-1 @min-[1241px]:grid-cols-[220px_minmax(0,1fr)_290px]"
+      data-testid="help-articles"
+    >
+      <CollectionsCard
+        className="row-span-3 @max-3xl:row-span-1 @min-[1241px]:row-span-2 @min-[1241px]:row-start-1"
+        center={center}
+        cols={cols}
+        value={collection}
+        onChange={(id) => {
+          setCollection(id)
+          setCursor(-1)
+        }}
+      />
+      <Stats
+        center={center}
+        report={report}
+        className="col-start-2 @max-3xl:col-start-1 @min-[1241px]:col-start-3 @min-[1241px]:row-start-1"
+      />
+      <div className="flex min-w-0 flex-col gap-4 col-start-2 @max-3xl:col-start-1 @min-[1241px]:row-span-2 @min-[1241px]:row-start-1">
+        <div
+          className={cn(look.card, "rounded-[14px]")}
+          style={selection.selecting ? { ["--cb" as string]: "20px" } : undefined}
+        >
           <ArticleBulkBar center={center} items={items} cols={cols} selection={selection} />
-          {!selection.selecting && items.length > 0 && (
-            <div className="flex justify-end">
-              <SelectToggle selection={selection} />
+          <div className="flex flex-wrap items-center gap-2 px-4 py-3">
+            <label className="flex h-[34px] min-w-0 max-w-sm flex-1 basis-52 items-center gap-2 rounded-[9px] border border-input bg-card px-2.5 focus-within:border-brand focus-within:ring-[3px] focus-within:ring-brand/20">
+              <SearchIcon className="size-3.5 shrink-0 text-faint" aria-hidden />
+              <input
+                ref={search}
+                value={q}
+                onChange={(e) => onQ(e.target.value)}
+                onKeyDown={(e) => e.key === "Escape" && e.currentTarget.blur()}
+                placeholder={t`Search titles (${findKey})`}
+                aria-label={t`Search titles`}
+                className="min-w-0 flex-1 bg-transparent text-small outline-none placeholder:text-faint"
+                data-testid="help-article-search"
+              />
+            </label>
+            <span className="flex-1" />
+            {!selection.selecting && items.length > 0 && <SelectToggle selection={selection} />}
+          </div>
+          <div className={cn(grid, "h-9 border-y bg-surface/50", look.over, "@max-3xl:hidden")} aria-hidden>
+            <span />
+            <span>
+              <Trans>Article</Trans>
+            </span>
+            <span>
+              <Trans>Status</Trans>
+            </span>
+            <span>
+              <Trans>Languages</Trans>
+            </span>
+            <span className="text-end">
+              <Trans>Views</Trans>
+            </span>
+            <span>
+              <Trans>Helpful</Trans>
+            </span>
+            <span>
+              <Trans>Updated</Trans>
+            </span>
+          </div>
+          {articles.isPending ? (
+            <div className="flex flex-col gap-3 p-4" aria-busy="true">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className="h-10 w-full rounded-lg" />
+              ))}
             </div>
-          )}
-          <div className={look.card}>
-            <div className={cn(grid, "h-[38px]", look.th)} aria-hidden>
-              <span>
-                <Trans>Article</Trans>
+          ) : articles.error ? (
+            <ErrorLine error={articles.error} className="p-4" />
+          ) : items.length === 0 ? (
+            <div className="flex flex-col items-center gap-2 px-6 py-12 text-center" data-testid="help-articles-empty">
+              <span className="mb-1 grid size-12 place-items-center rounded-2xl bg-muted text-faint">
+                <FileTextIcon className="size-5" />
               </span>
-              <span className="phone:hidden">
-                <Trans>Collection</Trans>
-              </span>
-              <span>
-                <Trans>Status</Trans>
-              </span>
-              <span className="phone:hidden">
-                <Trans>Views · 7 days</Trans>
-              </span>
-              <span className="phone:hidden">
-                <Trans>Helpful</Trans>
-              </span>
-              <span className="phone:hidden">
-                <Trans>Updated</Trans>
-              </span>
+              <p className="max-w-sm text-body text-muted-foreground">
+                {debounced || collection ? (
+                  <Trans>No article matches.</Trans>
+                ) : drafts ? (
+                  <Trans>No drafts. Everything written is published.</Trans>
+                ) : (
+                  <Trans>No articles yet. Write the first answer your customers keep asking for.</Trans>
+                )}
+              </p>
             </div>
-            {articles.isPending ? (
-              <div className="flex flex-col gap-2 border-t p-3">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-              </div>
-            ) : articles.error ? (
-              <ErrorLine error={articles.error} className="border-t p-4" />
-            ) : items.length === 0 ? (
-              <div
-                className="flex flex-col items-center gap-2 border-t px-6 py-10 text-center"
-                data-testid="help-articles-empty"
-              >
-                <FileTextIcon className="size-6 text-faint" />
-                <p className="text-muted-foreground">
-                  {debounced || collection ? (
-                    <Trans>No article matches.</Trans>
-                  ) : drafts ? (
-                    <Trans>No drafts. Everything written is published.</Trans>
-                  ) : (
-                    <Trans>No articles yet. Write the first answer your customers keep asking for.</Trans>
-                  )}
-                </p>
-              </div>
-            ) : (
-              <ul ref={list} className="flex flex-col">
-                {items.map((a, i) => {
-                  const r = stats.get(a.id)
-                  const votes = r ? r.helpful_up + r.helpful_down : 0
-                  const views = r ? r.views : complete ? 0 : undefined
-                  const state = a.translations.find((x) => x.locale === center.default_locale)?.state
-                  return (
-                    <li
-                      key={a.id}
-                      className={cn(grid, "border-t py-2.5", i === cursor && "bg-surface")}
-                      data-testid="help-article-row"
-                    >
-                      <div className="flex min-w-0 items-center gap-3">
-                        {selection.selecting && (
+          ) : (
+            <ul ref={list} className="flex flex-col">
+              {items.map((a, i) => {
+                const r = stats.get(a.id)
+                const votes = r ? r.helpful_up + r.helpful_down : 0
+                const views = r ? r.views : complete ? 0 : undefined
+                const state = a.translations.find((x) => x.locale === center.default_locale)?.state
+                const col = collectionOf(a)
+                return (
+                  <li
+                    key={a.id}
+                    className={cn(
+                      grid,
+                      "min-h-[58px] border-b py-2 last:border-b-0 hover:bg-surface/60",
+                      i === cursor && "bg-surface",
+                      selection.has(a.id) && "bg-brand/5"
+                    )}
+                    data-testid="help-article-row"
+                  >
+                    <span className="@max-3xl:hidden">
+                      {selection.selecting && (
+                        <RowCheck
+                          checked={selection.has(a.id)}
+                          name={articleTitle(a, ...prefer)}
+                          onToggle={(range) => selection.toggle(a.id, range)}
+                        />
+                      )}
+                    </span>
+                    <div className="flex min-w-0 items-center gap-3">
+                      {selection.selecting && (
+                        <span className="hidden @max-3xl:block">
                           <RowCheck
                             checked={selection.has(a.id)}
                             name={articleTitle(a, ...prefer)}
                             onToggle={(range) => selection.toggle(a.id, range)}
                           />
-                        )}
-                        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                          <Link
-                            to={articleLink(center.id, a.id, center.default_locale)}
-                            className="block truncate font-medium outline-none hover:underline focus-visible:underline"
-                          >
-                            {articleTitle(a, ...prefer)}
-                          </Link>
-                          <span className="flex min-w-0 items-center gap-1.5">
-                            <ProductTag id={center.inbox_id} always />
-                            <Locales a={a} center={center} />
-                          </span>
-                        </div>
+                        </span>
+                      )}
+                      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                        <Link
+                          to={articleLink(center.id, a.id, center.default_locale)}
+                          className="block truncate font-semibold outline-none hover:underline focus-visible:underline"
+                        >
+                          {articleTitle(a, ...prefer)}
+                        </Link>
+                        <span className="flex min-w-0 items-center gap-1.5 text-caption text-faint">
+                          <ProductTag id={center.inbox_id} always />
+                          <span className="truncate">{col ?? "–"}</span>
+                        </span>
                       </div>
-                      <span className="truncate phone:hidden">
-                        {collectionOf(a) ?? <span className="text-faint">–</span>}
-                      </span>
-                      <span>
-                        <StatePill state={state} />
-                      </span>
-                      <span className="flex items-center gap-2 tabular-nums phone:hidden">
-                        <span className="h-1.5 w-[70px] shrink-0 overflow-hidden rounded-full bg-muted" aria-hidden>
-                          {views !== undefined && maxViews > 0 && (
+                    </div>
+                    <span>
+                      <StatePill state={state} />
+                    </span>
+                    <span className="@max-3xl:hidden">
+                      <Locales a={a} center={center} />
+                    </span>
+                    <span className="text-end text-small text-muted-foreground tabular-nums @max-3xl:hidden">
+                      {views !== undefined && views > 0 ? fmt.format(views) : "–"}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-small tabular-nums @max-3xl:hidden">
+                      {votes > 0 && r ? (
+                        <>
+                          <span className="h-1.5 w-[30px] shrink-0 overflow-hidden rounded-full bg-muted" aria-hidden>
                             <span
-                              className="block h-full rounded-full bg-brand"
-                              style={{
-                                width: `${(views / maxViews) * 100}%`,
-                                ...(color ? { backgroundColor: color } : {}),
-                              }}
+                              className={cn(
+                                "block h-full rounded-full",
+                                r.helpful_up / votes < 0.7 ? "bg-warning" : "bg-success"
+                              )}
+                              style={{ width: `${(r.helpful_up / votes) * 100}%` }}
                             />
-                          )}
-                        </span>
-                        <span className="min-w-0 flex-1 truncate text-end text-caption text-muted-foreground">
-                          {views !== undefined && views > 0 ? fmt.format(views) : "–"}
-                        </span>
-                      </span>
-                      <span className="tabular-nums phone:hidden">
-                        {votes > 0 && r ? (
+                          </span>
                           <span
                             className={cn(r.helpful_up / votes < 0.7 && "font-medium text-warning")}
                             title={`${fmt.format(r.helpful_up)} / ${fmt.format(votes)}`}
                           >
                             {percent.format(r.helpful_up / votes)}
                           </span>
-                        ) : (
-                          <span className="text-faint">–</span>
-                        )}
-                      </span>
-                      <time
-                        className="text-caption text-muted-foreground phone:hidden"
-                        dateTime={a.updated_at}
-                        title={formatDateTime(a.updated_at, i18n.locale)}
-                      >
-                        {formatShort(a.updated_at, i18n.locale)}
-                      </time>
-                    </li>
-                  )
-                })}
-              </ul>
-            )}
-          </div>
-          {articles.hasNextPage && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="self-center"
-              disabled={articles.isFetchingNextPage}
-              onClick={() => articles.fetchNextPage()}
-            >
-              <Trans>Load more</Trans>
-            </Button>
+                        </>
+                      ) : (
+                        <span className="text-faint">–</span>
+                      )}
+                    </span>
+                    <time
+                      className="text-caption text-muted-foreground @max-3xl:hidden"
+                      dateTime={a.updated_at}
+                      title={formatDateTime(a.updated_at, i18n.locale)}
+                    >
+                      {formatShort(a.updated_at, i18n.locale)}
+                    </time>
+                  </li>
+                )
+              })}
+            </ul>
           )}
-          <Misses report={report} onWrite={(query) => onWrite(query, collection)} />
+          {articles.hasNextPage && (
+            <div className="flex justify-center border-t p-3">
+              <Button
+                variant="outline"
+                className={look.btnSm}
+                disabled={articles.isFetchingNextPage}
+                onClick={() => articles.fetchNextPage()}
+              >
+                <Trans>Load more</Trans>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
+      <Misses
+        report={report}
+        onWrite={(query) => onWrite(query, collection)}
+        className="col-start-2 @max-3xl:col-start-1 @min-[1241px]:col-start-3 @min-[1241px]:row-start-2"
+      />
     </div>
   )
 }

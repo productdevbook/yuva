@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, MessagesSquareIcon } from "lucide-react"
+import { CheckIcon, MessagesSquareIcon, PlusIcon } from "lucide-react"
 import { useCallback, useState } from "react"
 import { useDefaultLayout } from "react-resizable-panels"
 import { useLocation, useNavigate, useParams } from "react-router"
@@ -22,7 +22,7 @@ import {
   type Chip,
 } from "@/features/inbox/ChatList"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
+import { ViewChips } from "@/features/inbox/ListHead"
 import { AssistantsPage } from "@/features/inbox/AssistantsPage"
 import { MentionsPage } from "@/features/inbox/SidePanels"
 import { useCounts, useLoadedCount, useStats } from "@/features/inbox/queries"
@@ -84,7 +84,7 @@ function DayStats() {
   }
   return (
     <div
-      className="mx-auto mt-7 grid max-w-[560px] auto-cols-fr grid-flow-col rounded-2xl border bg-card [&>div+div]:border-s"
+      className="mx-auto mt-7 grid max-w-[560px] auto-cols-fr grid-flow-col rounded-xl border bg-card [&>div+div]:border-s"
       data-testid="day-stats"
     >
       {tiles.map(([value, label], i) => (
@@ -102,16 +102,16 @@ function EmptyChat() {
   const answered = counts !== undefined && counts.mine + counts.unassigned === 0
   return (
     <div
-      className="flex min-h-0 flex-1 flex-col items-center justify-center bg-surface px-8 text-center"
+      className="flex min-h-0 flex-1 flex-col items-center justify-center bg-background px-8 text-center"
       data-testid="chat-empty"
     >
-      <div className="mb-5 grid size-16 place-items-center rounded-[20px] bg-brand-wash text-brand">
-        {answered ? <CheckIcon className="size-7" /> : <MessagesSquareIcon className="size-7" />}
+      <div className="mb-4 grid size-14 place-items-center rounded-[18px] bg-muted text-faint">
+        {answered ? <CheckIcon className="size-6" /> : <MessagesSquareIcon className="size-6" />}
       </div>
-      <h1 className="text-title">
+      <h1 className="text-[18px] leading-6 font-semibold">
         {answered ? <Trans>Everyone has been answered.</Trans> : <Trans>Pick a conversation</Trans>}
       </h1>
-      <p className="mt-1.5 text-body text-muted-foreground">
+      <p className="mt-2 max-w-sm text-small text-faint">
         {answered ? (
           <Trans>When a new message arrives, it will be in the list.</Trans>
         ) : (
@@ -178,32 +178,6 @@ function InboxPage({ id }: { id: string | null }) {
   })
   return (
     <main className="flex min-h-0 flex-1 flex-col" data-testid={id ? "chats" : "inbox-page"}>
-      <PageTop
-        title={<Trans>Inbox</Trans>}
-        sub={product ? <Trans>{product}’s conversations</Trans> : <Trans>Conversations from every product</Trans>}
-        actions={
-          <Button
-            className={look.btnInk}
-            onClick={() => setStarting(true)}
-            title={t`New conversation`}
-            data-testid="new-conversation"
-          >
-            <Trans>New conversation</Trans>
-          </Button>
-        }
-        tabs={
-          <FrameTabs
-            label={t`Filter`}
-            value={view.id ? null : chip}
-            onChange={(k) => {
-              view.clear()
-              rememberChip(k)
-              setChip(k)
-            }}
-            items={tabs.map((k) => ({ key: k, label: labels[k], count: count(k), testId: `chip-${k}` }))}
-          />
-        }
-      />
       <ResizablePanelGroup
         className="min-h-0 flex-1"
         disableCursor
@@ -228,6 +202,45 @@ function InboxPage({ id }: { id: string | null }) {
             inbox={chipInbox}
             onInbox={setChipInbox}
             embedded
+            head={
+              <>
+                <header className="flex h-15 shrink-0 items-center gap-2 ps-4 pe-3" data-testid="list-head">
+                  <div className="flex min-w-0 flex-1 flex-col leading-tight">
+                    <h1 className="truncate text-[16px] font-semibold">
+                      <Trans>Inbox</Trans>
+                    </h1>
+                    <p className="truncate text-caption text-faint">
+                      {product ? (
+                        <Trans>{product}’s conversations</Trans>
+                      ) : (
+                        <Trans>Conversations from every product</Trans>
+                      )}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-lg text-muted-foreground"
+                    onClick={() => setStarting(true)}
+                    aria-label={t`New conversation`}
+                    title={t`New conversation`}
+                    data-testid="new-conversation"
+                  >
+                    <PlusIcon />
+                  </Button>
+                </header>
+                <ViewChips
+                  label={t`Filter`}
+                  value={view.id ? null : chip}
+                  onChange={(k) => {
+                    view.clear()
+                    rememberChip(k)
+                    setChip(k)
+                  }}
+                  items={tabs.map((k) => ({ value: k, label: labels[k], count: count(k), testId: `chip-${k}` }))}
+                />
+              </>
+            }
           />
         </ResizablePanel>
         <ResizableHandle withHandle className={handle} />
@@ -264,14 +277,15 @@ export function ChatsPage({ section = "conversations" }: { section?: "conversati
   const [panel, setPanel] = usePanel()
   const { apart } = useSession()
   const rail = useRailView()
-  const back = section === "feedback" ? "/feedback" : rail === "mentions" ? "/mentions" : inboxRoot(apart)
+  const back =
+    section === "feedback" ? "/feedback" : rail === "mentions" || rail === "assistants" ? `/${rail}` : inboxRoot(apart)
   const id = conversationId ?? null
   useViewing(id ?? undefined)
 
   if (!phone) {
     if (section === "feedback") return <FeedbackPage id={id} />
     if (pathname === "/mentions") return <MentionsPage />
-    if (!id && rail === "assistants") return <AssistantsPage />
+    if (pathname === "/assistants") return <AssistantsPage />
     return <InboxPage id={id} />
   }
   if (!id) return section === "feedback" ? <EmptyFeedback /> : <EmptyChat />

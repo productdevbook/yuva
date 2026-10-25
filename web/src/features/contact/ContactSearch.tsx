@@ -31,7 +31,7 @@ export function ContactSearch({ exclude, onPick }: { exclude: string; onPick: (c
           onChange={(e) => setQ(e.target.value)}
           placeholder={t`Search by name, e-mail or external id`}
           aria-label={t`Search contacts`}
-          className="ps-9"
+          className="h-[34px] rounded-[9px] ps-9"
           autoFocus
           data-testid="merge-search"
         />
@@ -55,7 +55,7 @@ export function ContactSearch({ exclude, onPick }: { exclude: string; onPick: (c
                 <Item
                   render={<button type="button" />}
                   size="xs"
-                  className="flex-nowrap"
+                  className="min-h-11 flex-nowrap rounded-lg"
                   onClick={() => onPick(c)}
                   data-testid="merge-candidate"
                 >

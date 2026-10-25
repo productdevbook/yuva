@@ -63,8 +63,8 @@ msgid "{0, plural, one {The help center does not offer this language, so its tra
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{drafts} drafts"
-msgstr "{drafts} ಡ್ರಾಫ್ಟ್‌ಗಳು"
+msgid "{drafts, plural, one {# draft} other {# drafts}}"
+msgstr "{drafts, plural, one {# ಕರಡು} other {# ಕರಡುಗಳು}}"
 
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
@@ -122,6 +122,10 @@ msgstr "ವಿಳಾಸದ ಕೊನೆ"
 #: src/features/help/SettingsTab.tsx
 msgid "Agents may publish"
 msgstr "ಏಜೆಂಟ್‌ಗಳು ಪ್ರಕಟಿಸಬಹುದು"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "All"
+msgstr "ಎಲ್ಲಾ"
 
 #: src/features/help/Revisions.tsx
 msgid "An API key"
@@ -553,6 +557,7 @@ msgstr "ಭಾಷೆ"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "ಭಾಷೆಗಳು"
@@ -935,11 +940,11 @@ msgstr "ಉಳಿಸಲಾಗಿದೆ"
 msgid "Saving…"
 msgstr "ಉಳಿಸಲಾಗುತ್ತಿದೆ…"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles"
 msgstr "ಶೀರ್ಷಿಕೆಗಳಲ್ಲಿ ಹುಡುಕಿ"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles ({findKey})"
 msgstr "ಶೀರ್ಷಿಕೆಗಳಲ್ಲಿ ಹುಡುಕಿ ({findKey})"
 
@@ -1217,6 +1222,7 @@ msgstr "ಸೈಟ್ ನೋಡಿ"
 msgid "View site ({openKey})"
 msgstr "ಸೈಟ್ ನೋಡಿ ({openKey})"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "ವೀಕ್ಷಣೆಗಳು"

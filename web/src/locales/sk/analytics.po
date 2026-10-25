@@ -21,20 +21,10 @@ msgstr "{0, plural, one {# riadok} few {# riadky} many {# riadku} other {# riadk
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {návštevník dnes} few {návštevníci dnes} many {návštevníka dnes} other {návštevníkov dnes}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "Konverzácií: {0}"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "{0} návštevníkov"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "Návštevníkov: {0}"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "Podrobné záznamy sa uchovávajú od {rawDay}."
 msgid "Detailed records kept since"
 msgstr "Podrobné záznamy uchovávané od"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "Podrobnosti"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "Zariadenie"
@@ -1417,10 +1411,6 @@ msgstr "Mesačný limit"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "Mesiace"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "Ďalšie zobrazenia"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

@@ -206,7 +206,7 @@ export function SourceFilter({
             type="button"
             className={
               placeholder
-                ? cn(active ? look.chipOn : look.chip, "min-w-0 max-w-44")
+                ? cn(active ? look.listChipOn : look.listChip, "min-w-0 max-w-44")
                 : cn(
                     "inline-flex h-8 max-w-40 min-w-0 shrink items-center gap-1.5 rounded-lg border px-2.5 text-small transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     active

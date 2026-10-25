@@ -58,18 +58,18 @@ function EventTable({
         <CsvButton testId="analytics-csv" run={() => downloadCsv(property.id, body, csvName)} />
       </div>
       <QueryProblem error={table.error} />
-      <div className="overflow-hidden rounded-2xl border bg-card">
+      <div className="overflow-hidden rounded-[14px] border bg-card">
         <table className="w-full table-fixed text-body" data-testid={testId}>
           <thead>
             <tr className="border-b text-caption text-faint">
               <th className="px-4 py-2.5 text-start font-medium">{head}</th>
-              <th className="w-28 px-2 py-2.5 text-end font-medium phone:hidden" title={text.metricHelp.visitors}>
+              <th className="w-28 px-2 py-2.5 text-end font-medium @max-2xl:hidden" title={text.metricHelp.visitors}>
                 {text.metric.visitors}
               </th>
               <th className="w-24 px-2 py-2.5 text-end font-medium" title={text.metricHelp.events}>
                 {text.metric.events}
               </th>
-              <th className="w-40 px-4 py-2.5 text-end font-medium phone:hidden" title={text.metricHelp.revenue}>
+              <th className="w-40 px-4 py-2.5 text-end font-medium @max-2xl:hidden" title={text.metricHelp.revenue}>
                 {text.metric.revenue}
               </th>
             </tr>
@@ -107,7 +107,7 @@ function EventTable({
                         label(r)
                       )}
                     </td>
-                    <td className="px-2 py-2 text-end tabular-nums phone:hidden">
+                    <td className="px-2 py-2 text-end tabular-nums @max-2xl:hidden">
                       {formatMetric("visitors", num(r.metrics, "visitors"), i18n.locale)}
                     </td>
                     <td className="px-2 py-2 text-end tabular-nums">
@@ -115,7 +115,7 @@ function EventTable({
                     </td>
                     <td
                       className={cn(
-                        "px-4 py-2 text-end tabular-nums phone:hidden",
+                        "px-4 py-2 text-end tabular-nums @max-2xl:hidden",
                         !r.metrics.revenue?.length && "text-faint"
                       )}
                     >
@@ -165,7 +165,7 @@ export function RevenueTiles({ revenue }: { revenue?: AnalyticsRevenue[] }) {
         return (
           <div
             key={r.currency}
-            className="flex min-w-0 flex-col rounded-2xl border bg-card px-4 py-3 phone:px-3"
+            className="flex min-w-0 flex-col rounded-[14px] border bg-card px-4 py-3 @max-2xl:px-3"
             data-testid="revenue-tile"
           >
             <span className="max-w-full truncate text-small text-faint">
@@ -186,7 +186,7 @@ export function RevenueTiles({ revenue }: { revenue?: AnalyticsRevenue[] }) {
 
 export function Tile({ label, value, help }: { label: string; value: React.ReactNode; help?: string }) {
   return (
-    <div className="flex min-w-0 flex-col rounded-2xl border bg-card px-4 py-3 phone:px-3" title={help}>
+    <div className="flex min-w-0 flex-col rounded-[14px] border bg-card px-4 py-3 @max-2xl:px-3" title={help}>
       <span className="max-w-full truncate text-small text-faint">{label}</span>
       <b className="text-page tabular-nums">{value}</b>
     </div>
@@ -246,11 +246,11 @@ function EventDetail({ name }: { name: string }) {
         </h2>
       </div>
       <QueryProblem error={totals.error} />
-      <div className="grid grid-cols-3 gap-2 phone:grid-cols-2" data-testid="event-totals">
+      <div className="grid grid-cols-3 gap-2 @max-2xl:grid-cols-2" data-testid="event-totals">
         {totals.isPending ? (
           <>
-            <Skeleton className="h-[74px] rounded-2xl" />
-            <Skeleton className="h-[74px] rounded-2xl" />
+            <Skeleton className="h-[74px] rounded-[14px]" />
+            <Skeleton className="h-[74px] rounded-[14px]" />
           </>
         ) : (
           <>
@@ -330,7 +330,7 @@ function EventDetail({ name }: { name: string }) {
           testId="analytics-props"
         />
       ) : (
-        <p className="rounded-2xl border border-dashed px-4 py-6 text-center text-body text-faint">
+        <p className="rounded-[14px] border border-dashed px-4 py-6 text-center text-body text-faint">
           <Trans>Pick a prop to see the values this event carried.</Trans>
         </p>
       )}

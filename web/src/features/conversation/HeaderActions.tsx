@@ -415,7 +415,7 @@ export function CloseButton({ c, actions }: { c: Conversation; actions: Conversa
   const closed = c.status === "closed"
   return (
     <Button
-      className={look.btnInkSm}
+      className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
       onClick={closed ? actions.reopen : actions.close}
       title={closed ? undefined : feedback ? t`Resolve (E)` : t`Close (E)`}
       data-testid={closed ? "reopen-conversation" : "close-conversation"}

@@ -1,24 +1,16 @@
-import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { ArrowUpRightIcon, PlugIcon } from "lucide-react"
+import { Trans, useLingui } from "@lingui/react/macro"
 import { useState } from "react"
-import { Link, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 
 import { BotAvatar, ContactAvatar, ErrorLine, PersonAvatar } from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
-import { ColumnHeading } from "@/components/common/Column"
-import { formatRelative } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
-import { Item } from "@/components/ui/item"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { InboxPicker } from "@/features/inbox/InboxPicker"
-import { FilterChip, ListHead, UnderlineTabs } from "@/features/inbox/ListHead"
+import { ListHead, UnderlineTabs } from "@/features/inbox/ListHead"
 import { Ago, FrameTabs, look, PageBody, PageTop } from "@/features/inbox/PageFrame"
 import { ProductTag } from "@/features/inbox/ProductTag"
-import { useDrafts, useMarkAllMentionsSeen, useMarkMentionSeen, useMentions } from "@/features/inbox/queries"
-import { ASSISTANTS } from "@/features/settings/connected-apps/assistants"
-import { useGrants } from "@/features/settings/connected-apps/queries"
-import type { DraftAuthorKind, DraftItem, Member, Mention, MessageAuthor } from "@/lib/api"
+import { useMarkAllMentionsSeen, useMarkMentionSeen, useMentions } from "@/features/inbox/queries"
+import type { Member, Mention, MessageAuthor } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useMemberMap } from "@/lib/workspace"
 
@@ -175,164 +167,6 @@ export function MentionsPanel() {
       </ListHead>
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 pb-4">
         <MentionsList view={view} />
-      </div>
-    </section>
-  )
-}
-
-function DraftRow({ item }: { item: DraftItem }) {
-  const { i18n } = useLingui()
-  const label = useAuthorLabel()
-  const d = item.draft
-  const author = label(d.author)
-  const contact = item.conversation.contact.name || item.conversation.contact.email || ""
-  return (
-    <li data-testid="draft-row">
-      <Item
-        render={<Link to={messageLink(item.conversation.id, d.id)} />}
-
-        className="flex-nowrap items-start gap-3"
-      >
-        <ContactAvatar id={item.conversation.contact.id} name={contact} className="size-9" />
-        <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-2">
-            <span className="min-w-0 flex-1 truncate text-body">{contact}</span>
-            <time className="shrink-0 text-caption text-faint" dateTime={d.created_at}>
-              {formatRelative(d.created_at, i18n.locale)}
-            </time>
-          </span>
-          <small className="block truncate text-caption text-faint">
-            {d.kind === "forward" ? <Trans>Forward draft by {author}</Trans> : <Trans>Draft by {author}</Trans>}
-            {item.conversation.subject && ` · ${item.conversation.subject}`}
-          </small>
-          <span className="line-clamp-2 text-small text-muted-foreground">
-            {d.kind === "forward" ? [d.forward?.to.join(", "), d.body].filter(Boolean).join(" · ") : d.body}
-          </span>
-        </span>
-      </Item>
-    </li>
-  )
-}
-
-type AuthorChip = "all" | DraftAuthorKind
-
-function Drafts() {
-  const { t } = useLingui()
-  const [inboxId] = useInboxFilter()
-  const [author, setAuthor] = useState<AuthorChip>("all")
-  const drafts = useDrafts({ inbox_id: inboxId || undefined, author: author === "all" ? undefined : author })
-  const items = drafts.data?.pages.flatMap((p) => p.items) ?? []
-  const total = Number(drafts.data?.pages[0]?.total ?? 0)
-  const chips: [AuthorChip, string][] = [
-    ["all", t`All`],
-    ["bot", t`Bots`],
-    ["assistant", t`Assistants`],
-    ["member", t`Members`],
-  ]
-  return (
-    <>
-      <div className="flex items-center gap-2 pe-1">
-        <ColumnHeading>
-          <Trans>Drafts waiting</Trans>
-          {total > 0 && (
-            <span className="ms-1.5 tabular-nums" data-testid="drafts-total">
-              {total}
-            </span>
-          )}
-        </ColumnHeading>
-        <span className="flex-1" />
-        <InboxPicker className="max-w-40" />
-      </div>
-      <div
-        className="flex flex-wrap gap-1.5 px-2.5 pb-2"
-        role="toolbar"
-        aria-label={t`Draft author`}
-        data-testid="draft-chips"
-      >
-        {chips.map(([k, label]) => (
-          <FilterChip key={k} active={author === k} onClick={() => setAuthor(k)} testId={`draft-chip-${k}`}>
-            {label}
-          </FilterChip>
-        ))}
-      </div>
-      {drafts.isPending && <Skeleton className="mx-2 h-14" />}
-      <ErrorLine error={drafts.error} className="px-2.5" />
-      {drafts.data && items.length === 0 && (
-        <p className="px-2.5 text-body text-faint">
-          <Trans>
-            No drafts are waiting. Replies an assistant, a bot or a teammate drafts show up here until someone sends or
-            discards them.
-          </Trans>
-        </p>
-      )}
-      <ul className="flex flex-col" data-testid="draft-list">
-        {items.map((x) => (
-          <DraftRow key={x.draft.id} item={x} />
-        ))}
-      </ul>
-      <MoreButton query={drafts} />
-    </>
-  )
-}
-
-export function AssistantsPanel() {
-  const { t, i18n } = useLingui()
-  const grants = useGrants()
-  const items = grants.data ?? []
-  return (
-    <section className="flex h-full min-h-0 flex-col bg-background" data-testid="assistants-panel">
-      <ListHead
-        title={<Trans>Assistants</Trans>}
-        sub={<Trans>Drafts waiting for review and the assistants you connected</Trans>}
-        action={
-          <Button variant="outline" size="sm" render={<Link to="/settings/connected-apps" />}>
-            <Trans>Connect</Trans>
-            <ArrowUpRightIcon />
-          </Button>
-        }
-      />
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
-        <Drafts />
-        <ColumnHeading>
-          <Trans>Connected apps</Trans>
-        </ColumnHeading>
-        {grants.isPending && <Skeleton className="mx-2 h-10" />}
-        <ErrorLine error={grants.error} className="px-2.5" />
-        {grants.data && items.length === 0 && (
-          <p className="px-2.5 text-body text-faint">
-            <Trans>
-              No assistant is connected yet. Connect Claude, ChatGPT, Cursor or another MCP client to let it read and
-              draft replies.
-            </Trans>
-          </p>
-        )}
-        <ul className="flex flex-col" data-testid="assistant-grants">
-          {items.map((g) => {
-            const a = ASSISTANTS.find((x) => x.matches(g))
-            const Icon = a?.icon ?? PlugIcon
-            const used = g.last_used_at ? formatRelative(g.last_used_at, i18n.locale) : null
-            return (
-              <li key={g.id}>
-                <Item
-                  render={<Link to={a ? `/settings/connected-apps/${a.id}` : "/settings/connected-apps"} />}
-
-                  className="flex-nowrap gap-3"
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full border text-faint">
-                    <Icon className="size-4" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-body">{g.client.name}</span>
-                    <small className="block truncate text-caption text-faint">
-                      {used ? t`Last used ${used}` : t`Not used yet`} ·{" "}
-                      <Plural value={g.requests_this_month} one="# request this month" other="# requests this month" />
-                    </small>
-                  </span>
-                </Item>
-              </li>
-            )
-          })}
-        </ul>
       </div>
     </section>
   )

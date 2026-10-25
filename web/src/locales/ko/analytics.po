@@ -21,20 +21,10 @@ msgstr "{0, plural, other {#행}}"
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, other {오늘 방문자}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "대화 {0}개"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "방문자의 {0}"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "방문자 {0}명"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "상세 기록은 {rawDay}부터 보관됩니다."
 msgid "Detailed records kept since"
 msgstr "상세 기록 보관 시작일"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "상세"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "기기"
@@ -1417,10 +1411,6 @@ msgstr "월 한도"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "월"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "더 많은 보기"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

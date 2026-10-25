@@ -1,9 +1,8 @@
-import { useLingui } from "@lingui/react/macro"
-import { Link, type To } from "react-router"
+import { type To } from "react-router"
 
 import { PaneBack } from "@/components/common/Column"
+import { OverflowTabs } from "@/components/common/OverflowTabs"
 import { Button } from "@/components/ui/button"
-import { pageTabClass } from "@/features/settings/ui"
 import { cn } from "@/lib/utils"
 
 export type FrameTab = {
@@ -14,30 +13,18 @@ export type FrameTab = {
   testId?: string
 }
 
-export function FrameTabs({ items, current, label }: { items: FrameTab[]; current: string; label: string }) {
-  const { i18n } = useLingui()
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  return (
-    <nav aria-label={label} className="-mx-1 overflow-x-auto px-1 [scrollbar-width:none]" data-testid="page-tabs">
-      <ul className="flex gap-5">
-        {items.map((tab) => (
-          <li key={tab.key} className="shrink-0">
-            <Link
-              to={tab.to}
-              aria-current={tab.key === current ? "page" : undefined}
-              className={pageTabClass}
-              data-testid={tab.testId}
-            >
-              {tab.label}
-              {tab.count !== undefined && (
-                <span className="text-caption font-normal text-faint tabular-nums">{fmt.format(tab.count)}</span>
-              )}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  )
+export function FrameTabs({
+  items,
+  current,
+  label,
+  moreTestId,
+}: {
+  items: FrameTab[]
+  current: string
+  label: string
+  moreTestId?: string
+}) {
+  return <OverflowTabs label={label} current={current} items={items} moreTestId={moreTestId} />
 }
 
 export function FrameButton({ ink, className, ...props }: React.ComponentProps<typeof Button> & { ink?: boolean }) {

@@ -18,7 +18,7 @@ export function PageBar({
   return (
     <header
       className={cn(
-        "sticky top-11 z-10 flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b bg-background px-6 py-3 in-data-frame:static phone:px-4",
+        "sticky top-0 z-10 flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b bg-background px-6 py-3 in-data-frame:static phone:px-4",
         className
       )}
       data-testid="page-bar"

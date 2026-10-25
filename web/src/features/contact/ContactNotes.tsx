@@ -29,7 +29,7 @@ function Note({ note, onDelete, pending }: { note: ContactNote; onDelete?: () =>
   const who = a.type === "bot" ? a.name || t`Bot` : m ? m.name || m.email : t`A former teammate`
   return (
     <li
-      className="group/note flex flex-col gap-1 rounded-xl border border-note-border bg-note px-3 py-2.5"
+      className="group/note flex flex-col gap-1.5 rounded-[10px] border border-note-border bg-note px-3 py-2.5 text-small leading-[19px]"
       data-testid="contact-note"
     >
       <span className="flex items-center gap-2 text-caption font-medium text-note-ink">
@@ -116,17 +116,16 @@ export function ContactNotes({ contactId, form = "bottom" }: { contactId: string
         data-testid="contact-note-input"
       />
       <ErrorLine error={add.error} />
-      <span className="flex items-center gap-2">
+      <span className="flex items-center justify-between gap-2">
+        <span className="text-caption text-faint">{mod} ↵</span>
         <Button
           type="submit"
-          variant="outline"
-          size="sm"
+          className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
           disabled={!text || add.isPending}
           data-testid="contact-note-add"
         >
           <Trans>Add note</Trans>
         </Button>
-        <span className="text-caption text-faint">{mod} ↵</span>
       </span>
     </form>
   )

@@ -21,20 +21,10 @@ msgstr "{0, plural, other {# 行}}"
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, other {本日の訪問者}}"
 
-#. placeholder {0}: fmt.format(r.conversations)
-#: src/features/analytics/Overview.tsx
-msgid "{0} conversations"
-msgstr "会話 {0} 件"
-
 #. placeholder {0}: share1.format(conversations / visitors)
 #: src/features/analytics/Overview.tsx
 msgid "{0} of visitors"
 msgstr "訪問者の {0}"
-
-#. placeholder {0}: fmt.format(r.visitors)
-#: src/features/analytics/Overview.tsx
-msgid "{0} visitors"
-msgstr "訪問者 {0} 人"
 
 #: src/features/analytics/Pages.tsx
 msgid "{asked, plural, one {# conversation} other {# conversations}}"
@@ -798,6 +788,10 @@ msgstr "詳細レコードは {rawDay} 以降が保持されています。"
 msgid "Detailed records kept since"
 msgstr "詳細レコードの保持開始日"
 
+#: src/features/analytics/Overview.tsx
+msgid "Details"
+msgstr "詳細"
+
 #: src/features/analytics/text.ts
 msgid "Device"
 msgstr "デバイス"
@@ -1417,10 +1411,6 @@ msgstr "月間上限"
 #: src/features/analytics/Retention.tsx
 msgid "Months"
 msgstr "月"
-
-#: src/features/analytics/AnalyticsRoutes.tsx
-msgid "More views"
-msgstr "その他のビュー"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Move down"

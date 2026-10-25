@@ -63,8 +63,8 @@ msgid "{0, plural, one {The help center does not offer this language, so its tra
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{drafts} drafts"
-msgstr "{drafts} concepten"
+msgid "{drafts, plural, one {# draft} other {# drafts}}"
+msgstr "{drafts, plural, one {# concept} other {# concepten}}"
 
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
@@ -122,6 +122,10 @@ msgstr "Einde van het adres"
 #: src/features/help/SettingsTab.tsx
 msgid "Agents may publish"
 msgstr "Agenten mogen publiceren"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "All"
+msgstr "Alle"
 
 #: src/features/help/Revisions.tsx
 msgid "An API key"
@@ -553,6 +557,7 @@ msgstr "Taal"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "Talen"
@@ -935,11 +940,11 @@ msgstr "Opgeslagen"
 msgid "Saving…"
 msgstr "Opslaan…"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles"
 msgstr "Titels doorzoeken"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles ({findKey})"
 msgstr "Titels doorzoeken ({findKey})"
 
@@ -1217,6 +1222,7 @@ msgstr "Site bekijken"
 msgid "View site ({openKey})"
 msgstr "Site bekijken ({openKey})"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "Weergaven"

@@ -12,7 +12,7 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "
 import { Skeleton } from "@/components/ui/skeleton"
 import { useContactDirectory, type DirectoryFilter } from "@/features/contact/queries"
 import { InboxPicker } from "@/features/inbox/InboxPicker"
-import { ListHead, UnderlineTabs } from "@/features/inbox/ListHead"
+import { ListHead, ViewChips } from "@/features/inbox/ListHead"
 import { ContactBulkBar } from "@/features/contact/ContactBulk"
 import { ContactsPage } from "@/features/contact/ContactsPage"
 import { contactName } from "@/features/contact/Section"
@@ -42,7 +42,7 @@ function Row({
   const known = c.emails.length > 0 || c.external_ids.length > 0
   const last = c.activity?.last_conversation_at
   return (
-    <li className="flex items-start border-b">
+    <li className="flex items-start">
       {check && <RowCheck className="mt-3.5 ms-4" checked={check.checked} name={name} onToggle={check.onToggle} />}
       <Link
         to={`/contacts/${c.id}`}
@@ -55,20 +55,22 @@ function Row({
             : undefined
         }
         className={cn(
-          "min-w-0 flex-1 flex items-start gap-3 px-4 py-3 outline-none transition-colors hover:bg-muted/60 focus-visible:bg-muted/60",
-          current && "bg-muted hover:bg-muted",
-          cursor && "shadow-[inset_3px_0_0_var(--brand)] rtl:shadow-[inset_-3px_0_0_var(--brand)]"
+          "relative mx-2 flex min-w-0 flex-1 items-start gap-3 rounded-xl px-2.5 py-2.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+          current ? "bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05),0_0_0_1px_var(--border)]" : "hover:bg-muted/60",
+          cursor && !current && "bg-muted/60",
+          (current || cursor) &&
+            "before:absolute before:inset-y-3 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand"
         )}
         aria-current={current ? "page" : undefined}
         data-testid="contact-row"
       >
-        <ContactAvatar id={c.id} name={name} className="size-9 shrink-0" />
+        <ContactAvatar id={c.id} name={name} className="size-[38px] shrink-0 font-semibold" />
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="flex items-baseline gap-2">
-            <span className="min-w-0 flex-1 truncate text-body font-medium">{name}</span>
+            <span className="min-w-0 flex-1 truncate text-body font-semibold">{name}</span>
             {last && (
               <time
-                className="shrink-0 text-caption text-faint"
+                className="shrink-0 font-mono text-caption text-faint tabular-nums"
                 dateTime={last}
                 title={formatDateTime(last, i18n.locale)}
               >
@@ -76,7 +78,7 @@ function Row({
               </time>
             )}
           </span>
-          <span className="truncate text-small text-muted-foreground">
+          <span className="truncate text-body text-muted-foreground">
             {c.emails[0] && c.emails[0] !== name ? (
               c.emails[0]
             ) : known ? (
@@ -89,7 +91,7 @@ function Row({
             <span className="mt-1 flex min-w-0 items-center gap-2">
               <InboxBadges inboxes={c.inboxes} max={2} className="min-w-0 flex-1" />
               {c.activity && c.activity.open_conversations > 0 && (
-                <span className="shrink-0 text-caption text-brand">
+                <span className="shrink-0 text-caption font-medium text-brand">
                   <Plural value={c.activity.open_conversations} one="# open" other="# open" />
                 </span>
               )}
@@ -154,17 +156,18 @@ export function ContactsColumn() {
   }
 
   return (
-    <nav aria-label={t`Contacts`} className="flex h-full min-h-0 flex-col bg-background" data-testid="contacts-page">
+    <nav aria-label={t`Contacts`} className="flex h-full min-h-0 flex-col bg-surface" data-testid="contacts-page">
       <ListHead title={<Trans>Contacts</Trans>} sub={<Trans>Everyone who has written to your products</Trans>}>
-        <UnderlineTabs
+        <ViewChips
           value={filter}
           onChange={setFilter}
           label={t`Show`}
+          className="-mx-4 mt-2.5 px-4"
           items={FILTERS.map((k) => ({ value: k, label: labels[k], title: titles[k], testId: `contacts-filter-${k}` }))}
         />
       </ListHead>
-      <div className="flex shrink-0 items-center gap-1.5 border-b px-3 py-2">
-        <InputGroup className="h-8 min-w-0 flex-1 rounded-lg border-transparent bg-muted shadow-none focus-within:border-border focus-within:bg-card dark:bg-muted">
+      <div className="flex shrink-0 items-center gap-1.5 px-3 py-2">
+        <InputGroup className="h-8 min-w-0 flex-1 rounded-[9px] border-input bg-card shadow-none focus-within:border-faint">
           <InputGroupAddon>
             <SearchIcon className="size-[15px] text-faint" />
           </InputGroupAddon>
@@ -218,9 +221,16 @@ export function ContactsColumn() {
       {canManage && <ContactBulkBar items={items} selection={selection} />}
       <div className="min-h-0 flex-1 overflow-y-auto pb-4">
         {directory.isPending ? (
-          <div className="flex flex-col gap-2 p-2">
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
+          <div className="flex flex-col" aria-busy="true">
+            {[60, 45, 68, 52, 62].map((w, i) => (
+              <div key={i} className="flex items-center gap-3 px-4 py-2.5">
+                <Skeleton className="size-[38px] shrink-0 rounded-full" />
+                <div className="flex flex-1 flex-col gap-1.5">
+                  <Skeleton className="h-3" style={{ width: `${w}%` }} />
+                  <Skeleton className="h-2.5 w-28" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : directory.error ? (
           <ErrorLine error={directory.error} className="p-3" />
@@ -235,7 +245,7 @@ export function ContactsColumn() {
             )}
           </p>
         ) : (
-          <ul ref={list} className="flex flex-col">
+          <ul ref={list} className="flex flex-col gap-0.5">
             {items.map((c, i) => (
               <Row
                 key={c.id}
@@ -254,8 +264,8 @@ export function ContactsColumn() {
         {directory.hasNextPage && (
           <div className="mt-2 flex justify-center">
             <Button
-              variant="ghost"
-              size="sm"
+              variant="outline"
+              className="h-8 rounded-[9px] border-input bg-card px-3 font-normal"
               onClick={() => void directory.fetchNextPage()}
               disabled={directory.isFetchingNextPage}
             >

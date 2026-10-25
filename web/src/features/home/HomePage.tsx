@@ -1,36 +1,38 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { AtSignIcon, CheckIcon, MessageSquareWarningIcon, PlusIcon, TriangleIcon } from "lucide-react"
+import { CheckIcon, XIcon } from "lucide-react"
+import { useRef } from "react"
 import { Link, useSearchParams } from "react-router"
 
-import { byPresence, useMemberStatus } from "@/app/TeamMenu"
-import { ContactAvatar, ErrorLine, Segmented } from "@/components/common"
-import { formatDateTime, formatDuration, useEnumText } from "@/components/common/text"
+import { ContactAvatar, isVisitor, Kbd, toast, useContactName, VisitorAvatar } from "@/components/common"
+import { HOME_KEYS } from "@/components/common/ShortcutSheet"
+import { formatDuration, useEnumText, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { entryLink } from "@/features/changelog/queries"
-import { PropertyCard } from "@/features/home/PropertyCard"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useBroadcastsStatus } from "@/features/broadcasts/BroadcastParts"
+import {
+  cardClass,
+  ComingUp,
+  eyebrowClass,
+  NeedsYou,
+  OnlineNow,
+  Publish,
+  Status,
+  TextLink,
+} from "@/features/home/HomeSide"
+import { SiteCard } from "@/features/home/SiteCard"
 import { useHome } from "@/features/home/queries"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { useMentions } from "@/features/inbox/queries"
+import { useBulkUpdateConversations } from "@/features/inbox/queries"
 import { share } from "@/features/reports/data"
-import {
-  Card,
-  CardHead,
-  Face,
-  HeadLink,
-  HeadNote,
-  headButton,
-  Meter,
-  Page,
-  PageHeader,
-  ProductTag,
-} from "@/features/settings/ui"
-import { hubTarget, useHubPlaces, useHubText } from "@/features/setup/SetupHub"
-import { orderByFocus, type SetupState } from "@/features/setup/setup"
-import { incidentLink, statusLink } from "@/features/status/queries"
-import { useStatusText } from "@/features/status/text"
+import { Page } from "@/features/settings/ui"
+import { hubTarget, useHubPlaces } from "@/features/setup/SetupHub"
+import { orderByFocus, type HubId, type SetupState } from "@/features/setup/setup"
+import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useNow } from "@/hooks/use-now"
-import type { Home, HomeProperty, HomeStatusPage, HomeUpcoming, Inbox, StatusComponentStateValue } from "@/lib/api"
+import type { Home } from "@/lib/api"
+import { useRealtimeStatus } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useInboxes, useMembers } from "@/lib/workspace"
@@ -55,44 +57,635 @@ function usePeriod(): [Period, (p: Period) => void] {
   return [days, set]
 }
 
-function PeriodBar({ h, product }: { h: Home; product?: string }) {
-  const { t, i18n } = useLingui()
-  const [, setDays] = usePeriod()
-  const days = h.period.days
-  const from = new Intl.DateTimeFormat(i18n.locale, {
-    day: "numeric",
-    month: "short",
-    timeZone: h.period.timezone,
-  }).format(new Date(h.period.since))
-  const scope = product ?? t`all products`
+function isFresh(h: Home, mailOnly: boolean) {
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <span className="flex min-w-48 flex-1 flex-col leading-[1.3]">
-        <span className="font-semibold">
-          <Trans>Key figures</Trans>
-        </span>
-        <span className="text-caption text-faint">
-          <Trans>
-            {from} – today, {scope}
-          </Trans>
-        </span>
-      </span>
-      <Segmented
-        value={String(days)}
-        onChange={(v) => setDays(Number(v) as Period)}
-        label={t`Period`}
-        items={[
-          { value: "7", label: t`Last 7 days`, testId: "home-period-7" },
-          { value: "14", label: t`Last 14 days`, testId: "home-period-14" },
-          { value: "30", label: t`Last 30 days`, testId: "home-period-30" },
-        ]}
+    !mailOnly &&
+    !!h.setup &&
+    h.inbox.open === 0 &&
+    h.activity.conversations === 0 &&
+    h.activity.previous.conversations === 0
+  )
+}
+
+function useAgo() {
+  const { i18n } = useLingui()
+  const now = useNow(60_000)
+  return (iso: string) => formatDuration(Math.max(0, (now - Date.parse(iso)) / 1000), i18n.locale)
+}
+
+function LiveState({ failed, updatedAt }: { failed: boolean; updatedAt: number }) {
+  const { i18n } = useLingui()
+  const status = useRealtimeStatus()
+  const time = updatedAt
+    ? new Intl.DateTimeFormat(i18n.locale, { hour: "2-digit", minute: "2-digit" }).format(new Date(updatedAt))
+    : ""
+  const offline = failed || status === "offline"
+  return (
+    <span role="status" className="inline-flex items-center gap-2 text-caption text-faint" data-testid="home-live">
+      <span
+        aria-hidden
+        className={cn(
+          "size-[7px] rounded-full",
+          offline ? "bg-warning" : status === "connecting" ? "bg-faint/60" : "bg-success"
+        )}
       />
+      {offline ? (
+        time ? (
+          <Trans>Offline · last updated {time}</Trans>
+        ) : (
+          <Trans>Offline</Trans>
+        )
+      ) : status === "connecting" ? (
+        <Trans>Connecting</Trans>
+      ) : (
+        <Trans>Live</Trans>
+      )}
+    </span>
+  )
+}
+
+function Tail({ h, mailOnly, fresh }: { h?: Home; mailOnly: boolean; fresh: boolean }) {
+  const { i18n } = useLingui()
+  const ago = useAgo()
+  const s = useBroadcastsStatus()
+  if (!h) return <Trans>Loading your day…</Trans>
+  if (mailOnly) {
+    if (!s || s.mode === "off") return null
+    if (s.status === "suspended") return <Trans>Sending is suspended.</Trans>
+    if (s.status !== "allowed") return <Trans>Broadcasts wait for the operator’s approval.</Trans>
+    const next = h.upcoming.find((u) => u.kind === "broadcast")
+    if (!next) return <Trans>No broadcast is scheduled.</Trans>
+    const when = new Intl.DateTimeFormat(i18n.locale, { weekday: "long", day: "numeric", month: "long" }).format(
+      new Date(next.at)
+    )
+    return <Trans>Next broadcast goes out {when}.</Trans>
+  }
+  if (fresh) {
+    const left = (h.setup?.items ?? []).filter((i) => !i.done).length
+    return <Plural value={left} one="# setup step left." other="# setup steps left." />
+  }
+  const oldest = h.inbox.oldest_waiting
+  if (h.inbox.waiting === 0 || !oldest) return <Trans>Nobody is waiting.</Trans>
+  const waited = ago(oldest.since)
+  return <Trans>Oldest has waited {waited}.</Trans>
+}
+
+function Yesterday({ h }: { h: Home }) {
+  const { t } = useLingui()
+  const y = h.activity.days.at(-2)
+  if (!y) return null
+  const created = y.conversations
+  const bad = y.bad
+  return (
+    <p className="text-small text-muted-foreground" data-testid="home-yesterday">
+      <span className="text-faint">{t`Yesterday`}:</span>{" "}
+      <Link to="/reports/today" className="whitespace-nowrap hover:text-foreground hover:underline">
+        <Plural value={created} one="# new" other="# new" />
+      </Link>
+      {bad > 0 && (
+        <>
+          {" · "}
+          <Link to="/reports/ratings" className="whitespace-nowrap text-warning hover:underline">
+            <Plural value={bad} one="# bad rating" other="# bad ratings" />
+          </Link>
+        </>
+      )}
+    </p>
+  )
+}
+
+function HomeHeader({
+  h,
+  mailOnly,
+  fresh,
+  failed,
+  updatedAt,
+}: {
+  h?: Home
+  mailOnly: boolean
+  fresh: boolean
+  failed: boolean
+  updatedAt: number
+}) {
+  const { t, i18n } = useLingui()
+  const { me } = useSession()
+  const [inboxId, setInboxId] = useInboxFilter()
+  const product = (useInboxes().data ?? []).find((i) => i.id === inboxId)?.name
+  const now = useNow(60_000)
+  const first = (me.person.name || me.person.email).split(/[\s@]/)[0]
+  const hour = new Date(now).getHours()
+  const greeting =
+    hour < 12 ? t`Good morning, ${first}.` : hour < 18 ? t`Good afternoon, ${first}.` : t`Good evening, ${first}.`
+  const date = new Intl.DateTimeFormat(i18n.locale, { weekday: "long", day: "numeric", month: "long" }).format(now)
+  return (
+    <header className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
+      <div className="flex min-w-0 flex-[1_1_260px] flex-col gap-1">
+        <span className="font-mono text-caption tracking-[0.04em] text-faint uppercase">{date}</span>
+        {product && !mailOnly && (
+          <button
+            type="button"
+            onClick={() => setInboxId("")}
+            aria-label={t`Showing ${product} only. Show all products`}
+            className="inline-flex max-w-full items-center gap-2 self-start rounded-full bg-foreground py-1 ps-3 pe-1.5 text-small font-medium text-background outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            data-testid="home-scope"
+          >
+            <span className="truncate">
+              <Trans>{product} only</Trans>
+            </span>
+            <span aria-hidden className="grid size-5 shrink-0 place-items-center rounded-full bg-background/20">
+              <XIcon className="size-3" />
+            </span>
+          </button>
+        )}
+        <h1 className="m-0 text-[30px] leading-9 font-semibold tracking-[-0.02em] phone:text-2xl phone:leading-[30px]">
+          {greeting}{" "}
+          <span className="text-faint">
+            <Tail h={h} mailOnly={mailOnly} fresh={fresh} />
+          </span>
+        </h1>
+        {h && !mailOnly && !fresh && <Yesterday h={h} />}
+      </div>
+      <LiveState failed={failed} updatedAt={updatedAt} />
+    </header>
+  )
+}
+
+function RefreshAlert({ h, updatedAt, retry }: { h?: Home; updatedAt: number; retry: () => void }) {
+  const { i18n } = useLingui()
+  const time = updatedAt
+    ? new Intl.DateTimeFormat(i18n.locale, { hour: "2-digit", minute: "2-digit" }).format(new Date(updatedAt))
+    : ""
+  return (
+    <div
+      role="alert"
+      className="flex flex-wrap items-center gap-3 rounded-xl border border-note-border bg-note px-4 py-3.5 text-small text-note-ink"
+      data-testid="home-error"
+    >
+      <span className="flex-[1_1_240px]">
+        {h && time ? (
+          <Trans>Couldn’t refresh since {time}. The figures below may be out of date; your inbox still works.</Trans>
+        ) : (
+          <Trans>Couldn’t load Home. Your inbox still works.</Trans>
+        )}
+      </span>
+      <Button size="sm" variant="outline" className="h-[34px] rounded-lg border-input bg-card" onClick={retry}>
+        <Trans>Try again</Trans>
+      </Button>
+      <TextLink to="/conversations">
+        <Trans>Open inbox</Trans>
+      </TextLink>
     </div>
   )
 }
 
-function waitingOf(h: Home) {
-  return { waiting: h.inbox.waiting_conversations, total: h.inbox.waiting }
+function HomeSkeleton() {
+  return (
+    <div aria-hidden className="flex flex-col gap-4" data-testid="home-loading">
+      <Skeleton className="h-14 rounded-xl" />
+      <Skeleton className="h-[92px] rounded-2xl" />
+      <div className="flex flex-wrap gap-6">
+        <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-2.5">
+          <Skeleton className="h-[120px] rounded-2xl" />
+          <Skeleton className="h-[52px] rounded-lg" />
+          <Skeleton className="h-[52px] rounded-lg" />
+          <Skeleton className="h-[52px] rounded-lg" />
+        </div>
+        <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-4">
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-[120px] rounded-2xl" />
+          <Skeleton className="h-[120px] rounded-2xl" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function BroadcastBanner({ h, mailOnly }: { h: Home; mailOnly: boolean }) {
+  const { i18n } = useLingui()
+  const s = useBroadcastsStatus()
+  const { isOwner } = useSession()
+  if (!s || s.mode === "off" || s.status === "allowed") return null
+  const relevant =
+    mailOnly || s.status === "suspended" || h.upcoming.some((u) => u.kind === "broadcast") || !!h.broadcasts?.last_sent
+  if (!relevant) return null
+  const asked = s.status_at
+    ? new Intl.DateTimeFormat(i18n.locale, { day: "numeric", month: "long" }).format(new Date(s.status_at))
+    : ""
+  return (
+    <div
+      role="alert"
+      className={cn(
+        "flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3.5 text-small",
+        s.status === "suspended"
+          ? "border-destructive/25 bg-destructive/8 text-destructive"
+          : s.status === "approval_requested"
+            ? "bg-card text-muted-foreground"
+            : "border-note-border bg-note text-note-ink"
+      )}
+      data-testid="home-broadcasts-status"
+    >
+      <span className="flex-[1_1_280px]">
+        {s.status === "suspended" ? (
+          <>
+            <b className="font-semibold">
+              <Trans>Broadcasts are suspended.</Trans>
+            </b>{" "}
+            <Trans>
+              The server’s operator suspended sending for this workspace. Scheduled broadcasts are paused and new
+              schedules are refused.
+            </Trans>
+            {s.reason && <> {s.reason}</>}
+          </>
+        ) : s.status === "approval_requested" ? (
+          <>
+            <b className="font-semibold">
+              <Trans>Waiting for the operator.</Trans>
+            </b>{" "}
+            {asked ? (
+              <Trans>
+                You asked on {asked} to send broadcasts. Drafts and schedules wait until the operator answers.
+              </Trans>
+            ) : (
+              <Trans>You asked to send broadcasts. Drafts and schedules wait until the operator answers.</Trans>
+            )}
+          </>
+        ) : (
+          <>
+            <b className="font-semibold">
+              <Trans>Broadcasts can’t go out yet.</Trans>
+            </b>{" "}
+            <Trans>This server sends broadcasts only after its operator approves the workspace. Drafts are kept.</Trans>
+          </>
+        )}
+      </span>
+      {s.status === "approval_required" && isOwner && (
+        <Button
+          size="sm"
+          className="h-[34px] rounded-lg bg-foreground px-3 text-background hover:bg-foreground/85"
+          render={<Link to="/settings/workspace" />}
+        >
+          <Trans>Ask the operator</Trans>
+        </Button>
+      )}
+      {s.status === "suspended" && (
+        <Link to="/broadcasts" className="text-small text-inherit underline">
+          <Trans>See paused broadcasts</Trans>
+        </Link>
+      )}
+    </div>
+  )
+}
+
+function useStepText() {
+  const { t } = useLingui()
+  return {
+    title: {
+      chat: t`Add live chat to your site`,
+      email: t`Connect a support address`,
+      mail: t`Give the team a shared mailbox`,
+      app: t`Connect your iOS or Android app`,
+      docs: t`Collect ratings on your docs pages`,
+      analytics: t`Count visitors on your site`,
+      newsletter: t`Start a mailing list`,
+    } satisfies Record<HubId, string>,
+    action: {
+      chat: t`Get the snippet`,
+      email: t`Connect`,
+      mail: t`Set up`,
+      app: t`Connect`,
+      docs: t`Get the snippet`,
+      analytics: t`Add analytics`,
+      newsletter: t`Create`,
+    } satisfies Record<HubId, string>,
+  }
+}
+
+function SetupCard({ setup }: { setup: NonNullable<Home["setup"]> }) {
+  const { t, i18n } = useLingui()
+  const { homePath, membership } = useSession()
+  const text = useStepText()
+  const places = useHubPlaces()
+  const count = setup.items.length
+  const done = setup.items.filter((i) => i.done).length
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const doneText = fmt.format(done)
+  const total = fmt.format(count)
+  const percent = count ? Math.round((done / count) * 100) : 0
+  return (
+    <section
+      aria-label={t`Finish setup`}
+      className={cn(cardClass, "flex flex-col gap-3 px-5 py-[18px]")}
+      data-testid="home-setup-card"
+    >
+      <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1">
+        <h2 className="m-0 min-w-0 flex-1 text-body font-semibold">
+          <Trans>Finish setting up</Trans>
+        </h2>
+        <Link to="/setup" className="text-caption text-faint hover:text-foreground" data-testid="home-setup-open">
+          {t`${doneText} of ${total} done`}
+        </Link>
+        <span
+          className="flex h-1.5 w-[140px] overflow-hidden rounded-full bg-muted"
+          role="progressbar"
+          aria-label={t`Setup`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={percent}
+          data-testid="home-setup-progress"
+        >
+          <span className="rounded-full bg-success" style={{ width: `${percent}%` }} />
+        </span>
+      </div>
+      <ul data-testid="home-setup">
+        {orderByFocus(setup.items, membership.workspace.focus).map((item) => (
+          <li
+            key={item.id}
+            className="flex min-h-11 items-center gap-3 border-t pt-2.5 pb-0.5 first:border-t"
+            data-testid={`home-setup-${item.id}`}
+          >
+            <span
+              aria-hidden
+              className={cn(
+                "grid size-[22px] shrink-0 place-items-center rounded-full",
+                item.done ? "bg-success text-white dark:text-background" : "border-2 border-input"
+              )}
+            >
+              {item.done && <CheckIcon className="size-3" strokeWidth={3} />}
+            </span>
+            <span className={cn("min-w-0 flex-1", item.done ? "text-faint line-through" : "font-medium")}>
+              {text.title[item.id]}
+            </span>
+            {!item.done && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-[34px] rounded-lg border-input px-3 font-normal"
+                render={<Link to={hubTarget(item, places)} state={{ back: homePath } satisfies SetupState} />}
+              >
+                {text.action[item.id]}
+              </Button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function NowStrip({ h, solo }: { h: Home; solo: boolean }) {
+  const { t, i18n } = useLingui()
+  const ago = useAgo()
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const oldest = h.inbox.oldest_waiting
+  const waited = oldest ? ago(oldest.since) : ""
+  const tiles = [
+    {
+      key: "waiting",
+      to: "/conversations",
+      name: t`Waiting`,
+      value: h.inbox.waiting,
+      hint: oldest && h.inbox.waiting > 0 ? t`oldest ${waited}` : t`nobody is waiting`,
+      testId: "home-inbox-waiting",
+    },
+    ...(solo
+      ? []
+      : [
+          {
+            key: "unassigned",
+            to: "/conversations",
+            name: t`Unassigned`,
+            value: h.inbox.unassigned,
+            hint: t`no owner yet`,
+            testId: "home-unassigned",
+          },
+        ]),
+    {
+      key: "feedback",
+      to: "/feedback",
+      name: t`New feedback`,
+      value: h.inbox.feedback,
+      hint: t`to triage`,
+      testId: "home-feedback",
+    },
+  ]
+  return (
+    <section
+      aria-label={t`Right now`}
+      className={cn(cardClass, "grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] overflow-hidden phone:grid-cols-2")}
+      data-testid="home-inbox"
+    >
+      {tiles.map((k) => (
+        <Link
+          key={k.key}
+          to={k.to}
+          className="-me-px flex min-w-0 flex-col gap-1.5 border-e px-5 py-4 outline-none transition-colors hover:bg-surface focus-visible:bg-surface phone:-mb-px phone:border-b phone:last:odd:col-span-2"
+          data-testid={k.testId}
+        >
+          <span className="truncate text-small text-muted-foreground">{k.name}</span>
+          <b
+            className={cn(
+              "text-[28px] leading-[34px] font-semibold tracking-[-0.02em] tabular-nums",
+              k.value === 0 && "text-faint"
+            )}
+          >
+            {fmt.format(k.value)}
+          </b>
+          <span className="truncate text-caption text-faint">{k.hint}</span>
+        </Link>
+      ))}
+    </section>
+  )
+}
+
+function ProductMark({ color, name }: { color?: string; name: string }) {
+  return (
+    <>
+      <span
+        aria-hidden
+        className="size-2 shrink-0 rounded-[2px]"
+        style={{ backgroundColor: color || "var(--faint)" }}
+      />
+      <span className="truncate">{name}</span>
+    </>
+  )
+}
+
+function Waiting({ h, className }: { h: Home; className?: string }) {
+  const { t, i18n } = useLingui()
+  const text = useEnumText()
+  const ago = useAgo()
+  const errorText = useErrorText()
+  const { membership } = useSession()
+  const inboxes = useInboxes().data ?? []
+  const byId = new Map(inboxes.map((i) => [i.id, i]))
+  const many = inboxes.length > 1
+  const bulk = useBulkUpdateConversations()
+  const list = useRef<HTMLElement>(null)
+  const rows = h.inbox.waiting_conversations
+  const [top, ...queue] = rows
+  const links = () => Array.from(list.current?.querySelectorAll<HTMLAnchorElement>("a[data-waiting]") ?? [])
+  const move = (step: number) => {
+    const all = links()
+    if (all.length === 0) return
+    const i = all.indexOf(document.activeElement as HTMLAnchorElement)
+    const next = i < 0 ? (step > 0 ? 0 : all.length - 1) : Math.min(all.length - 1, Math.max(0, i + step))
+    all[next]?.focus()
+    all[next]?.scrollIntoView({ block: "nearest" })
+  }
+  const take = () => {
+    const all = links()
+    const id = (all.find((a) => a === document.activeElement) ?? all[0])?.dataset.waiting
+    if (!id) return
+    bulk.mutate(
+      { conversation_ids: [id], assignee_id: membership.member_id },
+      { onSuccess: () => toast(t`Assigned to you`), onError: (e) => toast(errorText(e)) }
+    )
+  }
+  useHotkeys({ [HOME_KEYS.next]: () => move(1), [HOME_KEYS.previous]: () => move(-1), [HOME_KEYS.take]: take })
+  const waiting = h.inbox.waiting
+  const total = new Intl.NumberFormat(i18n.locale).format(waiting)
+  const contactName = useContactName()
+  const who = (c: (typeof rows)[number]) => contactName({}, undefined, c.contact.name, c.contact.email)
+  const avatar = (c: (typeof rows)[number], className: string) =>
+    isVisitor(c.contact.name, c.contact.email) ? (
+      <VisitorAvatar className={className} />
+    ) : (
+      <ContactAvatar id={c.contact.id} name={who(c)} className={className} />
+    )
+  const product = (id: string) => {
+    const inbox = many ? byId.get(id) : undefined
+    return inbox ? <ProductMark color={inbox.branding.color} name={inbox.name} /> : null
+  }
+  if (!top) return null
+  const topChannel = top.channel_kind ? text.channel[top.channel_kind] : ""
+  const topMeta = [topChannel, top.contact.email].filter(Boolean).join(" · ")
+  return (
+    <section
+      ref={list}
+      aria-label={t`Waiting longest`}
+      className={cn(cardClass, "overflow-hidden rounded-2xl", className)}
+      data-testid="home-needs-card"
+    >
+      <div className="flex items-baseline justify-between gap-3 border-b px-[18px] py-3.5">
+        <h2 className={eyebrowClass}>
+          <Trans>Waiting longest</Trans>
+        </h2>
+        <span className="flex items-baseline gap-3.5">
+          <span
+            aria-hidden
+            className="inline-flex items-center gap-1 text-caption text-faint phone:hidden [@media(hover:none)]:hidden"
+          >
+            <Kbd>{HOME_KEYS.next}</Kbd>
+            <Kbd>{HOME_KEYS.previous}</Kbd>
+            <Trans>move</Trans> · <Kbd>{HOME_KEYS.take}</Kbd>
+            <Trans>take</Trans>
+          </span>
+          <TextLink to="/conversations" testId="home-inbox-link">
+            <Plural value={waiting} one="Open in Inbox" other={`All ${total} in Inbox`} />
+          </TextLink>
+        </span>
+      </div>
+      <ul data-testid="home-needs">
+        <li className="border-b bg-surface/40">
+          <Link
+            to={`/conversations/${top.id}`}
+            data-waiting={top.id}
+            className="flex flex-col gap-2.5 px-[18px] pt-5 pb-[18px] outline-none transition-colors hover:bg-surface focus-visible:bg-surface"
+            data-testid="home-oldest-waiting"
+          >
+            <span className="flex items-center gap-3">
+              {avatar(top, "size-10 text-caption font-semibold")}
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate font-semibold">{who(top)}</span>
+                <span className="flex min-w-0 items-center gap-1.5 text-caption text-faint">
+                  {product(top.inbox_id)}
+                  {topMeta && (
+                    <span className="truncate">
+                      {many && byId.has(top.inbox_id) ? " · " : ""}
+                      {topMeta}
+                    </span>
+                  )}
+                </span>
+              </span>
+              <span className="flex shrink-0 flex-col items-end">
+                <span className="font-mono text-xl font-medium">{ago(top.since)}</span>
+                <span className="text-caption text-faint">
+                  <Trans>waiting</Trans>
+                </span>
+              </span>
+            </span>
+            {top.subject && (
+              <span className="text-[17px] leading-6 font-semibold tracking-[-0.01em] break-words">{top.subject}</span>
+            )}
+            {top.preview && (
+              <span className="line-clamp-3 max-w-[72ch] text-body leading-[22px] text-muted-foreground">
+                {top.preview}
+              </span>
+            )}
+          </Link>
+        </li>
+        {queue.map((c) => {
+          const channel = c.channel_kind ? text.channel[c.channel_kind] : ""
+          return (
+            <li key={c.id} className="border-b last:border-b-0">
+              <Link
+                to={`/conversations/${c.id}`}
+                data-waiting={c.id}
+                className="grid grid-cols-[32px_minmax(0,1fr)_minmax(0,0.9fr)_64px] items-center gap-3.5 px-[18px] py-[11px] outline-none transition-colors hover:bg-surface focus-visible:bg-surface phone:grid-cols-[32px_minmax(0,1fr)_64px]"
+                data-testid={`home-waiting-${c.id}`}
+              >
+                {avatar(c, "size-8 text-caption font-semibold")}
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate font-medium">{who(c)}</span>
+                  <span className="flex min-w-0 items-center gap-1.5 text-caption whitespace-nowrap text-faint">
+                    {product(c.inbox_id)}
+                    {channel && (
+                      <span className="truncate">
+                        {many && byId.has(c.inbox_id) ? " · " : ""}
+                        {channel}
+                      </span>
+                    )}
+                  </span>
+                </span>
+                <span className="truncate text-small text-muted-foreground phone:hidden">{c.subject || c.preview}</span>
+                <span className="text-end font-mono text-small text-faint">{ago(c.since)}</span>
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}
+
+function NothingWaiting({ h, fresh, className }: { h: Home; fresh: boolean; className?: string }) {
+  const { i18n } = useLingui()
+  const median = h.activity.days.at(-1)?.median_first_reply_seconds
+  const took = median !== undefined ? formatDuration(median, i18n.locale) : ""
+  return (
+    <section
+      className={cn(cardClass, "flex flex-wrap items-center gap-3 px-6 py-[22px]", className)}
+      data-testid="home-needs-empty"
+    >
+      <span className="flex min-w-0 flex-[1_1_260px] flex-col gap-0.5">
+        <h2 className="m-0 text-base leading-[22px] font-semibold">
+          <Trans>Nothing is waiting.</Trans>
+        </h2>
+        <span className="text-small text-faint">
+          {fresh ? (
+            <Trans>Conversations show up here as soon as the first customer writes.</Trans>
+          ) : took ? (
+            <Trans>First replies today took {took} at the median.</Trans>
+          ) : (
+            <Trans>New conversations and feedback show up here.</Trans>
+          )}
+        </span>
+      </span>
+      <TextLink to="/conversations" testId="home-inbox-link">
+        <Trans>Open inbox</Trans>
+      </TextLink>
+    </section>
+  )
 }
 
 function Delta({ children, good }: { children: React.ReactNode; good: boolean }) {
@@ -100,7 +693,7 @@ function Delta({ children, good }: { children: React.ReactNode; good: boolean })
     <span
       className={cn(
         "rounded-full px-1.5 text-caption font-medium tabular-nums",
-        good ? "bg-success/8 text-success" : "bg-warning/8 text-warning"
+        good ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
       )}
     >
       {children}
@@ -108,983 +701,323 @@ function Delta({ children, good }: { children: React.ReactNode; good: boolean })
   )
 }
 
-function Spark({ values, color }: { values: number[]; color: string }) {
-  const max = Math.max(1, ...values)
-  return (
-    <span className="flex h-8 shrink-0 items-end gap-0.5" aria-hidden>
-      {values.map((v, i) => (
-        <span
-          key={i}
-          className="w-1 rounded-[1px]"
-          style={{
-            height: Math.max(3, Math.round((32 * v) / max)),
-            backgroundColor: color,
-            opacity: i === values.length - 1 ? 1 : 0.35,
-          }}
-        />
-      ))}
-    </span>
-  )
-}
-
-function Kpi({
-  to,
-  name,
-  value,
-  hint,
-  delta,
-  spark,
-  color,
-  dashed,
-  testId,
-}: {
-  to: string
-  name: React.ReactNode
-  value: string
-  hint: React.ReactNode
-  delta?: React.ReactNode
-  spark?: React.ReactNode
-  color?: string
-  dashed?: boolean
-  testId: string
-}) {
-  return (
-    <Link
-      to={to}
-      className={cn(
-        "flex min-w-0 flex-col gap-2.5 rounded-xl border bg-card p-4 outline-none transition-colors hover:border-faint focus-visible:ring-2 focus-visible:ring-ring",
-        dashed && "border-dashed bg-transparent"
-      )}
-      data-testid={testId}
-    >
-      <span className="flex items-center justify-between gap-2">
-        <span className="truncate text-body text-muted-foreground">{name}</span>
-        {delta}
-      </span>
-      <span className="flex items-end justify-between gap-3">
-        <span className="flex min-w-0 flex-col leading-[1.2]">
-          <b
-            className="text-[28px] leading-[1.2] font-semibold tracking-[-0.02em] tabular-nums"
-            style={color ? { color } : undefined}
-          >
-            {value}
-          </b>
-          <span className="mt-1 truncate text-caption text-faint">{hint}</span>
-        </span>
-        {spark}
-      </span>
-    </Link>
-  )
-}
-
-function Kpis({ h, waiting }: { h: Home; waiting: ReturnType<typeof waitingOf> }) {
+function KeepingUp({ h, className }: { h: Home; className?: string }) {
   const { t, i18n } = useLingui()
-  const [inboxId] = useInboxFilter()
-  const inboxes = useInboxes().data ?? []
-  const days = h.period.days
-  const now = useNow(60_000)
+  const [days, setDays] = usePeriod()
+  const slots = h.activity.days
+  const n = slots.length
+  const peak = Math.max(1, ...slots.map((d) => Math.max(d.conversations, d.first_replies)))
+  const every = n <= 7 ? 1 : n <= 14 ? 2 : 5
+  const dayNum = new Intl.DateTimeFormat(i18n.locale, { day: "numeric", timeZone: "UTC" })
+  const dayFull = new Intl.DateTimeFormat(i18n.locale, { day: "numeric", month: "short", timeZone: "UTC" })
   const fmt = new Intl.NumberFormat(i18n.locale)
   const pct = new Intl.NumberFormat(i18n.locale, { style: "percent" })
-  const oldest = h.inbox.oldest_waiting
-  const oldestInbox = inboxes.find((i) => i.id === oldest?.inbox_id)?.name
-  const oldestWho = oldest?.contact.name || oldest?.contact.email || ""
-  const oldestFor = oldest ? formatDuration(Math.max(0, (now - Date.parse(oldest.since)) / 1000), i18n.locale) : ""
+  const signed = new Intl.NumberFormat(i18n.locale, { style: "percent", signDisplay: "exceptZero" })
+  const points = new Intl.NumberFormat(i18n.locale, { signDisplay: "exceptZero" })
   const median = h.activity.median_first_reply_seconds
+  const before = h.activity.previous.median_first_reply_seconds
+  const change = median !== undefined && before ? (median - before) / before : undefined
   const rated = h.activity.good + h.activity.bad
   const good = share(h.activity.good, h.activity.bad)
-  const props = h.analytics?.properties ?? []
-  const today = props.reduce((n, p) => n + p.visitors_today, 0)
-  const perDay = Array.from({ length: 7 }, (_, i) => props.reduce((n, p) => n + (p.days[i]?.visitors ?? 0), 0))
-  const yesterday = perDay[5] ?? 0
-  const change = yesterday > 0 ? (today - yesterday) / yesterday : undefined
-  const signed = new Intl.NumberFormat(i18n.locale, { style: "percent", signDisplay: "exceptZero" })
+  const ratedBefore = h.activity.previous.good + h.activity.previous.bad
+  const goodBefore = share(h.activity.previous.good, h.activity.previous.bad)
+  const pts =
+    rated >= 5 && ratedBefore >= 5 && good !== undefined && goodBefore !== undefined
+      ? Math.round(good * 100) - Math.round(goodBefore * 100)
+      : 0
+  const ptsText = points.format(pts)
+  const ratedText = fmt.format(rated)
+  const goodText = good !== undefined ? pct.format(good) : ""
+  const created = fmt.format(h.activity.conversations)
+  const replied = fmt.format(h.activity.first_replies)
+  const labels: Record<Period, string> = { 7: t`Last 7 days`, 14: t`Last 14 days`, 30: t`Last 30 days` }
   return (
-    <div className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 phone:gap-3" data-testid="home-inbox">
-      <Kpi
-        to="/conversations"
-        name={<Trans>Waiting for you</Trans>}
-        value={fmt.format(waiting.total)}
-        color={waiting.total > 0 ? "var(--brand)" : "var(--success)"}
-        hint={
-          oldest ? (
-            inboxId && oldestWho ? (
-              <Trans>
-                oldest {oldestFor}, {oldestWho}
-              </Trans>
-            ) : !inboxId && oldestInbox && inboxes.length > 1 ? (
-              <Trans>
-                oldest {oldestFor}, in {oldestInbox}
-              </Trans>
-            ) : (
-              <Trans>oldest {oldestFor}</Trans>
-            )
-          ) : (
-            <Trans>nothing waiting</Trans>
-          )
-        }
-        testId="home-inbox-waiting"
-      />
-      <Kpi
-        to="/reports/today"
-        name={<Trans>First reply</Trans>}
-        value={median !== undefined ? formatDuration(median, i18n.locale) : "–"}
-        hint={<Plural value={days} one="median, last # day" other="median, last # days" />}
-        testId="home-first-reply"
-      />
-      <Kpi
-        to="/reports/ratings"
-        name={<Trans>Rating</Trans>}
-        value={good !== undefined ? t`${pct.format(good)} good` : "–"}
-        hint={<Plural value={rated} _0="no ratings yet" one="# rating" other="# ratings" />}
-        testId="home-rating"
-      />
-      <Kpi
-        to="/analytics"
-        name={<Trans>Visitors today</Trans>}
-        value={h.analytics && props.length > 0 ? fmt.format(today) : "–"}
-        color={h.analytics && props.length > 0 ? undefined : "var(--faint)"}
-        dashed={!h.analytics || props.length === 0}
-        hint={
-          props.length > 0 ? (
-            props.length === 1 ? (
-              props[0].name
-            ) : (
-              <Trans>all sites and apps</Trans>
-            )
-          ) : (
-            <Trans>analytics not set up</Trans>
-          )
-        }
-        delta={change !== undefined && <Delta good={change >= 0}>{signed.format(change)}</Delta>}
-        spark={props.length > 0 && <Spark values={perDay} color="var(--success)" />}
-        testId="home-visitors"
-      />
-    </div>
-  )
-}
-
-function IconBox({ children, tone }: { children: React.ReactNode; tone?: "warning" }) {
-  return (
-    <span
-      className={cn(
-        "grid size-8 shrink-0 place-items-center rounded-lg text-caption font-semibold [&_svg]:size-4",
-        tone === "warning" ? "bg-warning/10 text-warning" : "bg-surface text-foreground"
-      )}
+    <section
+      aria-label={t`Keeping up`}
+      className={cn(cardClass, "flex flex-col gap-3.5 p-[18px]", className)}
+      data-testid="home-chart"
     >
-      {children}
-    </span>
-  )
-}
-
-function NeedRow({
-  icon,
-  title,
-  tag,
-  meta,
-  when,
-  late,
-  to,
-  act,
-  primary,
-  testId,
-}: {
-  icon: React.ReactNode
-  title: React.ReactNode
-  tag?: Inbox
-  meta: React.ReactNode
-  when?: string
-  late?: boolean
-  to: string
-  act: React.ReactNode
-  primary?: boolean
-  testId?: string
-}) {
-  return (
-    <li className="flex items-center gap-3 border-b px-4 py-[11px] last:border-b-0" data-testid={testId}>
-      {icon}
-      <span className="flex min-w-0 flex-1 flex-col leading-[1.35]">
-        <span className="truncate font-medium">{title}</span>
-        <span className="flex min-w-0 items-center gap-1.5 text-caption text-faint">
-          {tag && <ProductTag name={tag.name} color={tag.branding.color} />}
-          <span className="truncate">{meta}</span>
-        </span>
-      </span>
-      {when !== undefined && (
-        <span
-          className={cn(
-            "w-14 shrink-0 text-end text-caption tabular-nums",
-            late ? "font-medium text-brand" : "text-faint"
-          )}
-        >
-          {when}
-        </span>
-      )}
-      <Button
-        size="sm"
-        variant={primary ? "default" : "outline"}
-        className={cn(
-          "h-[30px] rounded-lg px-2.5",
-          primary ? "bg-brand px-3 hover:bg-brand/90" : "border-input font-normal"
-        )}
-        render={<Link to={to} />}
-      >
-        {act}
-      </Button>
-    </li>
-  )
-}
-
-function NeedsYou({ h, waiting }: { h: Home; waiting: ReturnType<typeof waitingOf> }) {
-  const { t, i18n } = useLingui()
-  const text = useEnumText()
-  const now = useNow(60_000)
-  const [inboxId] = useInboxFilter()
-  const inboxes = useInboxes().data ?? []
-  const scoped = inboxes.find((i) => i.id === inboxId)?.name
-  const byId = new Map(inboxes.map((i) => [i.id, i]))
-  const many = inboxes.length > 1 && !inboxId
-  const mentions = (useMentions().data?.pages[0]?.items ?? []).filter(
-    (m) => !m.seen && (!inboxId || m.conversation.inbox_id === inboxId)
-  )
-  const feedback = h.inbox.feedback
-  const time = new Intl.DateTimeFormat(i18n.locale, { hour: "2-digit", minute: "2-digit" })
-  const ago = (iso: string) => formatDuration(Math.max(0, (now - Date.parse(iso)) / 1000), i18n.locale)
-  const shown = waiting.waiting.slice(0, 5)
-  const notes = mentions.slice(0, 2)
-  const count = waiting.total + mentions.length + (feedback > 0 ? 1 : 0)
-  return (
-    <Card flush data-testid="home-needs-card">
-      <CardHead action={<HeadLink to="/conversations" testId="home-inbox-link">{t`Open inbox →`}</HeadLink>}>
-        <Trans>Needs you</Trans>
-        <span
-          className={cn(
-            "inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-full px-1.5 text-caption font-semibold text-white tabular-nums dark:text-background",
-            count > 0 ? "bg-brand" : "bg-success"
-          )}
-        >
-          {count}
-        </span>
-      </CardHead>
-      {count === 0 ? (
-        <div className="flex flex-col items-center gap-1 px-4 py-9 text-center" data-testid="home-needs-empty">
-          <span className="grid size-9 place-items-center rounded-full bg-success text-white dark:text-background">
-            <CheckIcon className="size-4" />
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <span className="flex min-w-0 flex-col">
+          <h2 className="m-0 text-body font-semibold">
+            <Trans>Keeping up</Trans>
+          </h2>
+          <span className="text-caption text-faint">
+            <Trans>new conversations against first replies, per day</Trans>
           </span>
-          <p className="mt-1.5 font-semibold">
-            {scoped ? <Trans>Nothing needs you in {scoped}</Trans> : <Trans>Nothing needs you</Trans>}
-          </p>
-          <p className="text-faint">
-            <Trans>New conversations and feedback show up here.</Trans>
-          </p>
-        </div>
-      ) : (
-        <ul data-testid="home-needs">
-          {shown.map((c, i) => {
-            const name = c.contact.name || c.contact.email || t`Unnamed contact`
-            const about = c.subject || c.preview
-            const at = time.format(new Date(c.since))
-            const channel = c.channel_kind ? text.channel[c.channel_kind] : ""
-            return (
-              <NeedRow
-                key={c.id}
-                icon={<ContactAvatar id={c.contact.id} name={name} className="size-8 text-caption font-semibold" />}
-                title={about ? `${name}: “${about}”` : name}
-                tag={many ? byId.get(c.inbox_id) : undefined}
-                meta={
-                  channel ? (
-                    <Trans>
-                      {channel} · waiting since {at}
-                    </Trans>
-                  ) : (
-                    <Trans>waiting since {at}</Trans>
-                  )
-                }
-                when={ago(c.since)}
-                late={now - Date.parse(c.since) > 3_600_000}
-                to={`/conversations/${c.id}`}
-                act={i === 0 ? <Trans>Reply</Trans> : <Trans>Open</Trans>}
-                primary={i === 0}
-                testId={i === 0 ? "home-oldest-waiting" : `home-waiting-${c.id}`}
-              />
-            )
-          })}
-          {notes.map((m) => {
-            const who = m.note.author.name || t`Someone`
-            return (
-              <NeedRow
-                key={m.note.id}
-                icon={
-                  <IconBox>
-                    <AtSignIcon />
-                  </IconBox>
-                }
-                title={
-                  <Trans>
-                    {who} mentioned you: “{m.note.text}”
-                  </Trans>
-                }
-                tag={many ? byId.get(m.conversation.inbox_id) : undefined}
-                meta={<Trans>Note</Trans>}
-                when={ago(m.note.created_at)}
-                to={`/conversations/${m.conversation.id}?m=${m.note.id}`}
-                act={<Trans>View</Trans>}
-                testId="home-mention"
-              />
-            )
-          })}
-          {feedback > 0 && (
-            <NeedRow
-              icon={
-                <IconBox tone="warning">
-                  <MessageSquareWarningIcon />
-                </IconBox>
-              }
-              title={
-                <Plural value={feedback} one="# feedback is not resolved yet" other="# feedback are not resolved yet" />
-              }
-              meta={<Trans>Feedback from your apps and pages</Trans>}
-              to="/feedback"
-              act={<Trans>Triage</Trans>}
-              testId="home-feedback"
-            />
-          )}
-        </ul>
-      )}
-    </Card>
-  )
-}
-
-const stateTone: Record<StatusComponentStateValue, string> = {
-  operational: "var(--success)",
-  degraded: "var(--warning)",
-  partial_outage: "var(--warning)",
-  major_outage: "var(--destructive)",
-  maintenance: "#2563eb",
-}
-
-type Day = { date: string; state: StatusComponentStateValue }
-
-function Strip({ days, length }: { days: Day[]; length: number }) {
-  const slots = [...days].sort((a, b) => a.date.localeCompare(b.date)).slice(-length)
-  return (
-    <span className="flex h-4 w-full gap-0.5" aria-hidden>
-      {Array.from({ length }, (_, i) => {
-        const s = slots[i - (length - slots.length)]
-        return (
-          <span
-            key={i}
-            className={cn("flex-1 rounded-[2px]", !s && "bg-muted")}
-            style={
-              s ? { backgroundColor: stateTone[s.state], opacity: s.state === "operational" ? 0.55 : 1 } : undefined
-            }
-          />
-        )
-      })}
-    </span>
-  )
-}
-
-function Uptime({ page, length }: { page?: HomeStatusPage; length: number }) {
-  return <Strip days={page?.days ?? []} length={length} />
-}
-
-function StatusComponents({ page, length }: { page: HomeStatusPage; length: number }) {
-  const { t } = useLingui()
-  const statusText = useStatusText()
-  const components = page.components
-  return (
-    <Card flush data-testid="home-status">
-      <CardHead action={<HeadLink to={statusLink(page.id)}>{`${page.name} →`}</HeadLink>}>
-        <Trans>Status</Trans>
-      </CardHead>
-      <ul>
-        {components.map((c) => (
-          <li key={c.id} className="flex flex-col gap-2 border-b px-4 py-3 last:border-b-0">
-            <span className="flex items-center gap-2">
-              <span className="min-w-0 flex-1 truncate font-medium">{c.name}</span>
-              <span className="shrink-0 text-caption font-medium" style={{ color: stateTone[c.state] }}>
-                {statusText.component[c.state]}
+        </span>
+        <span className="inline-flex items-center gap-2 text-small text-muted-foreground">
+          <span aria-hidden>
+            <Trans>Period</Trans>
+          </span>
+          <Select value={String(days)} items={labels} onValueChange={(v) => v && setDays(Number(v) as Period)}>
+            <SelectTrigger size="sm" className="rounded-lg" aria-label={t`Period`} data-testid="home-period">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PERIODS.map((p) => (
+                <SelectItem key={p} value={String(p)} data-testid={`home-period-${p}`}>
+                  {labels[p]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-caption text-faint phone:hidden">
+        <span className="inline-flex items-center gap-1.5">
+          <span aria-hidden className="size-2.5 rounded-[2px] bg-faint/60" />
+          <Trans>New conversations</Trans>
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span aria-hidden className="h-[3px] w-3 rounded-[2px] bg-foreground" />
+          <Trans>First replies</Trans>
+        </span>
+      </div>
+      <div
+        className="grid h-[150px] items-end phone:hidden"
+        style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, gap: n > 14 ? 3 : 8 }}
+        role="img"
+        aria-label={t`${created} new conversations and ${replied} first replies in the period`}
+      >
+        {slots.map((d, i) => {
+          const at = new Date(`${d.day}T00:00:00Z`)
+          const date = dayFull.format(at)
+          const newCount = fmt.format(d.conversations)
+          const replyCount = fmt.format(d.first_replies)
+          return (
+            <span
+              key={d.day}
+              title={t`${date}: ${newCount} new, ${replyCount} first replies`}
+              className="flex h-full flex-col justify-end gap-1.5"
+            >
+              <span className="relative block h-[126px]">
+                <span
+                  className="absolute inset-x-0 bottom-0 rounded-t-[4px] rounded-b-[1px] bg-faint/60"
+                  style={{ height: Math.round((126 * d.conversations) / peak) }}
+                />
+                {d.first_replies > 0 && (
+                  <span
+                    className="absolute -inset-x-0.5 h-[3px] rounded-[2px] bg-foreground"
+                    style={{ bottom: Math.max(0, Math.round((126 * d.first_replies) / peak) - 1) }}
+                  />
+                )}
+              </span>
+              <span
+                className={cn(
+                  "h-3.5 text-center font-mono text-[11px]",
+                  i === n - 1 ? "text-foreground" : "text-faint"
+                )}
+              >
+                {(n - 1 - i) % every === 0 ? dayNum.format(at) : ""}
               </span>
             </span>
-            <Strip days={c.days} length={length} />
-          </li>
-        ))}
-      </ul>
-      {components.length === 0 && <p className="px-4 py-5 text-faint">{t`No components yet.`}</p>}
-    </Card>
+          )
+        })}
+      </div>
+      <div className="flex flex-wrap gap-x-6 gap-y-2 border-t pt-3 text-small text-muted-foreground">
+        <span className="inline-flex items-center gap-2" data-testid="home-first-reply">
+          <Trans>First reply, median</Trans>
+          <b className="font-mono font-medium text-foreground">
+            {median !== undefined ? formatDuration(median, i18n.locale) : "–"}
+          </b>
+          {change !== undefined && change !== 0 && <Delta good={change < 0}>{signed.format(change)}</Delta>}
+        </span>
+        <span className="inline-flex items-center gap-2" data-testid="home-rating">
+          <Trans>Rating</Trans>
+          <b className="font-mono font-medium text-foreground">
+            {rated < 5 ? (
+              <Plural value={rated} _0="no ratings" one="# rating" other="# ratings" />
+            ) : (
+              t`${goodText} good of ${ratedText}`
+            )}
+          </b>
+          {pts !== 0 && <Delta good={pts > 0}>{t`${ptsText} pts`}</Delta>}
+        </span>
+      </div>
+    </section>
   )
 }
 
-function Products({ h }: { h: Home }) {
-  const { i18n } = useLingui()
-  const days = h.period.days
+function Products({ h, className }: { h: Home; className?: string }) {
+  const { t, i18n } = useLingui()
+  const [, setInboxId] = useInboxFilter()
   const byInbox = new Map((useInboxes().data ?? []).map((i) => [i.id, i]))
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const pct = new Intl.NumberFormat(i18n.locale, { style: "percent" })
   const rows = h.products
     .flatMap((p) => {
       const inbox = byInbox.get(p.inbox_id)
       return inbox ? [{ p, inbox }] : []
     })
     .sort((a, b) => b.p.open - a.p.open)
-  const statusText = useStatusText()
-  const pct = new Intl.NumberFormat(i18n.locale, { style: "percent" })
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const shown = fmt.format(days)
+  const shown = fmt.format(h.period.days)
   return (
-    <Card flush data-testid="home-products">
-      <CardHead
-        action={
-          <HeadNote>
-            <Trans>uptime · {shown} days</Trans>
-          </HeadNote>
-        }
-      >
-        <Trans>Products</Trans>
-      </CardHead>
-      <ul>
-        {rows.map(({ p, inbox }) => {
-          const page = h.status_pages.find((x) => x.inbox_id === inbox.id)
-          const open = fmt.format(p.open)
-          const good = share(p.good, p.bad)
-          const rate = good !== undefined ? pct.format(good) : "–"
-          return (
-            <li key={inbox.id} className="border-b last:border-b-0">
-              <Link
-                to={`/settings/inboxes/${inbox.id}`}
-                className="flex w-full flex-col gap-2 px-4 py-3 text-start outline-none transition-colors hover:bg-surface focus-visible:bg-surface"
+    <section
+      aria-label={t`Products`}
+      className={cn(cardClass, "overflow-hidden", className)}
+      data-testid="home-products"
+    >
+      <div className="flex items-baseline justify-between gap-3 border-b px-[18px] py-3.5">
+        <h2 className={eyebrowClass}>
+          <Trans>Products</Trans>
+        </h2>
+        <span className="text-caption text-faint">
+          <Trans>last {shown} days</Trans>
+        </span>
+      </div>
+      <Table className="text-body">
+        <TableHeader>
+          <TableRow className="border-b-0 text-caption text-faint hover:bg-transparent">
+            <TableHead className="h-auto px-[18px] py-2 font-medium text-faint">
+              <Trans>Product</Trans>
+            </TableHead>
+            <TableHead className="h-auto px-2.5 py-2 text-end font-medium text-faint phone:hidden">
+              <Trans>New</Trans>
+            </TableHead>
+            <TableHead className="h-auto px-2.5 py-2 text-end font-medium text-faint">
+              <Trans>Rating</Trans>
+            </TableHead>
+            <TableHead className="h-auto py-2 ps-2.5 pe-[18px] text-end font-medium text-faint">
+              <Trans>Open</Trans>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map(({ p, inbox }) => {
+            const name = inbox.name
+            const rated = p.good + p.bad
+            const good = share(p.good, p.bad)
+            return (
+              <TableRow
+                key={inbox.id}
+                className="border-t border-b-0 tabular-nums hover:bg-transparent"
                 data-testid={`home-product-${inbox.id}`}
               >
-                <span className="flex w-full items-center gap-2">
-                  <span
-                    className="grid size-[22px] shrink-0 place-items-center rounded-md text-[11px] font-semibold text-white"
-                    style={{ backgroundColor: inbox.branding.color || "var(--faint)" }}
+                <TableHead scope="row" className="h-auto px-[18px] py-2.5 text-start font-medium text-foreground">
+                  <button
+                    type="button"
+                    onClick={() => setInboxId(inbox.id)}
+                    title={inbox.name}
+                    aria-label={t`Show only ${name}`}
+                    className="inline-flex max-w-[260px] items-center gap-2.5 rounded-md outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring phone:max-w-[150px]"
                   >
-                    {Array.from(inbox.name.trim())[0]?.toLocaleUpperCase()}
-                  </span>
-                  <span className="min-w-0 flex-1 truncate font-medium">{inbox.name}</span>
-                  <span className="shrink-0 text-caption text-faint tabular-nums">
-                    <Trans>
-                      {open} open · {rate} good
-                    </Trans>
-                  </span>
+                    <span
+                      aria-hidden
+                      className="size-[9px] shrink-0 rounded-[3px]"
+                      style={{ backgroundColor: inbox.branding.color || "var(--faint)" }}
+                    />
+                    <span className="min-w-0 truncate">{inbox.name}</span>
+                  </button>
+                </TableHead>
+                <TableCell className="px-2.5 py-2.5 text-end font-mono phone:hidden">
+                  {fmt.format(p.conversations)}
+                </TableCell>
+                <TableCell className="px-2.5 py-2.5 text-end">
                   <span
-                    className="w-[76px] shrink-0 truncate text-end text-caption font-medium"
-                    style={page ? { color: stateTone[page.state] } : undefined}
+                    className={cn(
+                      "text-small",
+                      rated < 5 ? "text-faint" : good !== undefined && good < 0.85 ? "font-medium text-warning" : ""
+                    )}
                   >
-                    {page && statusText.component[page.state]}
+                    {rated < 5 ? (
+                      <Plural value={rated} _0="no ratings" one="# rating" other="# ratings" />
+                    ) : (
+                      t`${pct.format(good ?? 0)} good`
+                    )}
                   </span>
-                </span>
-                <Uptime page={page} length={days} />
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    </Card>
-  )
-}
-
-function ProductsOrStatus({ h }: { h: Home }) {
-  const [inboxId] = useInboxFilter()
-  const page = h.status_pages.find((p) => p.inbox_id === inboxId)
-  if (inboxId && page && page.components.length > 0) return <StatusComponents page={page} length={h.period.days} />
-  return <Products h={h} />
-}
-
-function ConversationsChart({ h }: { h: Home }) {
-  const { i18n } = useLingui()
-  const [inboxId] = useInboxFilter()
-  const all = useInboxes().data ?? []
-  const days = h.period.days
-  const slots = h.activity.days
-  const volume = (id: string) =>
-    slots.reduce((n, d) => n + (d.inboxes.find((x) => x.inbox_id === id)?.conversations ?? 0), 0)
-  const inboxes = (inboxId ? all.filter((i) => i.id === inboxId) : all).sort((a, b) => volume(b.id) - volume(a.id))
-  const series = slots.map((d) =>
-    inboxes.map((inbox) => d.inboxes.find((x) => x.inbox_id === inbox.id)?.conversations ?? 0)
-  )
-  const top = Math.max(1, ...series.map((s) => s.reduce((a, b) => a + b, 0)))
-  const total = h.activity.conversations
-  const label = new Intl.DateTimeFormat(i18n.locale, { day: "numeric", month: "short", timeZone: "UTC" })
-  const at = (i: number) => (slots[i] ? label.format(new Date(`${slots[i].day}T00:00:00Z`)) : "")
-  const first = at(0)
-  const middle = at(Math.floor((slots.length - 1) / 2))
-  const shown = new Intl.NumberFormat(i18n.locale).format(total)
-  return (
-    <Card flush data-testid="home-chart">
-      <div className="flex flex-col gap-3.5 p-4">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span className="flex min-w-0 flex-1 flex-col leading-[1.3]">
-            <span className="font-semibold">
-              <Trans>Conversations</Trans>
-            </span>
-            <span className="text-caption text-faint">
-              <Plural value={days} one={`${shown} in # day · by product`} other={`${shown} in # days · by product`} />
-            </span>
-          </span>
-          {inboxes.map((inbox) => (
-            <span key={inbox.id} className="flex items-center gap-1.5 text-caption text-muted-foreground">
-              <span
-                className="size-2 rounded-[2px]"
-                style={{ backgroundColor: inbox.branding.color || "var(--faint)" }}
-              />
-              {inbox.name}
-            </span>
-          ))}
-        </div>
-        <div className="flex h-[150px] items-end gap-2 border-b" role="img" aria-label={shown}>
-          {series.map((segs, di) => (
-            <span key={slots[di].day} className="flex flex-1 flex-col-reverse gap-px">
-              {segs.map((v, i) =>
-                v === 0 ? null : (
-                  <span
-                    key={inboxes[i].id}
-                    className="last:rounded-t-[3px]"
-                    style={{
-                      height: Math.round((146 * v) / top),
-                      backgroundColor: inboxes[i].branding.color || "var(--faint)",
-                      opacity: di === series.length - 1 ? 1 : 0.85,
-                    }}
-                  />
-                )
-              )}
-            </span>
-          ))}
-        </div>
-        <div className="flex justify-between text-caption text-faint">
-          <span>{first}</span>
-          <span>{middle}</span>
-          <span>
-            <Trans>Today</Trans>
-          </span>
-        </div>
-      </div>
-    </Card>
-  )
-}
-
-function TeamCard({ h }: { h: Home }) {
-  const { t, i18n } = useLingui()
-  const members = useMembers().data ?? []
-  const status = useMemberStatus()
-  const load = new Map(h.team.members.map((m) => [m.member_id, m.open]))
-  const order = [...members].sort(byPresence).slice(0, 6)
-  const online = members.filter((m) => m.online && m.availability === "auto").length
-  const most = Math.max(6, ...load.values())
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const on = fmt.format(online)
-  const of = fmt.format(members.length)
-  return (
-    <Card flush data-testid="home-team">
-      <CardHead action={<HeadNote>{t`${on} of ${of} online`}</HeadNote>}>
-        <Link to="/team" className="hover:underline">
-          <Trans>Team</Trans>
-        </Link>
-      </CardHead>
-      <ul>
-        {order.map((m) => {
-          const name = m.name || m.email
-          const open = load.get(m.id) ?? 0
-          return (
-            <li key={m.id} className="border-b last:border-b-0">
-              <Link
-                to={`/team/${m.id}`}
-                className="flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-surface"
-                data-testid={`home-member-${m.id}`}
-              >
-                <Face
-                  id={m.id}
-                  name={name}
-                  online={m.online}
-                  away={m.availability === "away"}
-                  className="size-[30px]"
-                />
-                <span className="flex min-w-0 flex-1 flex-col leading-[1.3]">
-                  <span className="truncate font-medium">{name}</span>
-                  <span className="truncate text-caption text-faint">{status(m).text}</span>
-                </span>
-                <span className="flex w-16 shrink-0 flex-col items-end gap-1">
-                  <span className="text-caption whitespace-nowrap text-muted-foreground tabular-nums">
-                    <Plural value={open} one="# open" other="# open" />
-                  </span>
-                  <Meter
-                    value={open}
-                    max={most}
-                    className="h-1 w-16"
-                    color={open >= 4 ? "var(--warning)" : "var(--success)"}
-                  />
-                </span>
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    </Card>
-  )
-}
-
-function SmallBox({ top, bottom, brand }: { top: React.ReactNode; bottom: React.ReactNode; brand?: boolean }) {
-  return (
-    <span className="flex w-10 shrink-0 flex-col items-center rounded-lg border bg-card py-1 leading-[1.1]">
-      <span className={cn("text-[10px]", brand ? "font-semibold text-brand uppercase" : "text-faint")}>{top}</span>
-      <span className="font-semibold tabular-nums">{bottom}</span>
-    </span>
-  )
-}
-
-function Asks({ ideas }: { ideas: NonNullable<Home["ideas"]> }) {
-  const { t } = useLingui()
-  const text = useEnumText()
-  const inboxes = new Map((useInboxes().data ?? []).map((i) => [i.id, i]))
-  const top = ideas
-  return (
-    <Card flush data-testid="home-asks">
-      <CardHead action={<HeadLink to="/board">{t`Roadmap →`}</HeadLink>}>
-        <Trans>Most asked for</Trans>
-      </CardHead>
-      {top.length === 0 ? (
-        <p className="px-4 py-5 text-faint">
-          <Trans>No ideas yet. Customers’ votes show up here.</Trans>
-        </p>
-      ) : (
-        <ul>
-          {top.slice(0, 3).map((idea) => {
-            const product = inboxes.get(idea.inbox_id)?.name
-            const stage = text.stage[idea.stage]
-            return (
-              <li key={idea.id} className="flex items-center gap-2.5 border-b px-4 py-2.5 last:border-b-0">
-                <SmallBox top={<TriangleIcon className="size-2 fill-current" />} bottom={idea.votes} />
-                <span className="flex min-w-0 flex-1 flex-col leading-[1.3]">
-                  <span className="truncate font-medium">{idea.title}</span>
-                  <span className="truncate text-caption text-faint">
-                    {[product, stage].filter(Boolean).join(" · ")}
-                  </span>
-                </span>
-              </li>
+                </TableCell>
+                <TableCell className="py-2.5 ps-2.5 pe-[18px] text-end font-mono text-faint">
+                  {fmt.format(p.open)}
+                </TableCell>
+              </TableRow>
             )
           })}
-        </ul>
-      )}
-    </Card>
-  )
-}
-
-function upcomingLink(u: HomeUpcoming) {
-  if (u.kind === "broadcast") return `/broadcasts/${u.id}`
-  if (u.kind === "whats_new") return entryLink(u.changelog_id ?? "", u.id, u.locale)
-  return incidentLink(u.status_page_id ?? "", u.id)
-}
-
-function ComingUp({ upcoming }: { upcoming: HomeUpcoming[] }) {
-  const { t, i18n } = useLingui()
-  const mon = new Intl.DateTimeFormat(i18n.locale, { month: "short" })
-  const day = new Intl.DateTimeFormat(i18n.locale, { day: "2-digit" })
-  const time = new Intl.DateTimeFormat(i18n.locale, { hour: "2-digit", minute: "2-digit" })
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const meta = (u: HomeUpcoming, at: Date) => {
-    const when = time.format(at)
-    if (u.kind === "broadcast") {
-      const people = fmt.format(u.recipients ?? 0)
-      return (
+        </TableBody>
+      </Table>
+      <p className="m-0 border-t px-[18px] pt-2.5 pb-3 text-caption text-faint">
         <Trans>
-          Broadcast · {people} people · {when}
+          Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5
+          ratings.
         </Trans>
-      )
-    }
-    const label = u.kind === "maintenance" ? t`Maintenance` : u.kind === "incident" ? t`Incident` : t`What’s new`
-    return [label, when].join(" · ")
-  }
-  return (
-    <Card flush data-testid="home-upcoming">
-      <CardHead>
-        <Trans>Coming up</Trans>
-      </CardHead>
-      {upcoming.length === 0 ? (
-        <p className="px-4 py-5 text-faint">
-          <Trans>Nothing is scheduled.</Trans>
-        </p>
-      ) : (
-        <ul>
-          {upcoming.map((u) => {
-            const at = new Date(u.at)
-            return (
-              <li key={u.id} className="border-b last:border-b-0">
-                <Link
-                  to={upcomingLink(u)}
-                  className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-surface"
-                  data-testid={`home-upcoming-${u.id}`}
-                >
-                  <SmallBox brand top={mon.format(at)} bottom={day.format(at)} />
-                  <span className="flex min-w-0 flex-1 flex-col leading-[1.3]">
-                    <span className="truncate font-medium">{u.title || "–"}</span>
-                    <span className="truncate text-caption text-faint">{meta(u, at)}</span>
-                  </span>
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-      )}
-    </Card>
-  )
-}
-
-function Sites({ properties }: { properties: HomeProperty[] }) {
-  const { t } = useLingui()
-  return (
-    <section className="flex flex-col gap-3" data-testid="home-analytics">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="min-w-48 flex-1 font-semibold">
-          <Trans>Websites and apps</Trans>
-        </span>
-        {properties.length > 0 && <HeadLink to="/analytics">{t`Open analytics →`}</HeadLink>}
-      </div>
-      {properties.length === 0 ? (
-        <div
-          className="flex flex-col items-start gap-3 rounded-xl border border-dashed p-4"
-          data-testid="home-analytics-empty"
-        >
-          <p className="text-muted-foreground">
-            <Trans>
-              No website or app is counted yet. Add one to see its visitors here every day, without cookies.
-            </Trans>
-          </p>
-          <Button
-            size="sm"
-            variant="outline"
-            render={<Link to="/setup/analytics" state={{ back: "/" } satisfies SetupState} />}
-          >
-            <PlusIcon />
-            <Trans>Add a website or app</Trans>
-          </Button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 phone:grid-cols-1 phone:gap-3">
-          {properties.map((p) => (
-            <Link
-              key={p.id}
-              to={`/analytics/${p.id}`}
-              className="flex min-w-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring [&>div]:transition-colors [&>div]:hover:border-faint"
-              data-testid={`home-property-${p.id}`}
-            >
-              <PropertyCard property={p} className="rounded-xl" />
-            </Link>
-          ))}
-        </div>
-      )}
+      </p>
     </section>
   )
 }
 
-function LastBroadcast({ broadcasts }: { broadcasts: NonNullable<Home["broadcasts"]> }) {
-  const { t, i18n } = useLingui()
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const b = broadcasts.last_sent
-  const sentAt = b ? formatDateTime(b.sent_at, i18n.locale) : ""
+function Sites({ h, className }: { h: Home; className?: string }) {
+  const properties = h.analytics?.properties ?? []
+  if (properties.length === 0) return null
   return (
-    <Card flush data-testid="home-broadcast-card">
-      <CardHead action={<HeadLink to="/broadcasts">{t`Open broadcasts →`}</HeadLink>}>
-        <Trans>Last broadcast</Trans>
-      </CardHead>
-      {!b ? (
-        <div className="flex flex-col items-start gap-3 p-4" data-testid="home-broadcast-empty">
-          <p className="text-muted-foreground">
-            <Trans>No broadcast has gone out yet. When one has, its recipients, clicks and replies show up here.</Trans>
-          </p>
-          <Button size="sm" variant="outline" render={<Link to="/broadcasts" />}>
-            <Trans>Write a broadcast</Trans>
-          </Button>
-        </div>
-      ) : (
-        <Link
-          to={`/broadcasts/${b.id}`}
-          className="flex flex-col gap-4 p-4 outline-none transition-colors hover:bg-surface focus-visible:bg-surface"
-          data-testid="home-broadcast"
-        >
-          <div className="min-w-0">
-            <p className="truncate font-medium">{b.name || b.subject}</p>
-            <p className="truncate text-caption text-faint">
-              {b.name && b.subject ? <>{b.subject} · </> : null}
-              <Trans>Sent {sentAt}</Trans>
-            </p>
-          </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-3 phone:grid-cols-2">
-            {(
-              [
-                [fmt.format(b.recipients), t`recipients`],
-                [fmt.format(b.sent), t`sent`],
-                [b.click_tracking ? fmt.format(b.clicked) : "–", b.click_tracking ? t`clicked` : t`clicks not tracked`],
-                [fmt.format(b.replied), t`replied`],
-              ] as const
-            ).map(([value, label]) => (
-              <div key={label} className="min-w-0">
-                <b className="block text-[22px] leading-[1.2] font-semibold tracking-[-0.02em] tabular-nums">{value}</b>
-                <span className="block truncate text-caption text-faint">{label}</span>
-              </div>
-            ))}
-          </div>
-        </Link>
-      )}
-    </Card>
+    <section className={cn("flex flex-col gap-3", className)} data-testid="home-analytics">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 className={eyebrowClass}>
+          <Trans>Sites</Trans>
+        </h2>
+        <TextLink to="/analytics">
+          <Trans>Analytics</Trans>
+        </TextLink>
+      </div>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3">
+        {properties.map((p) => (
+          <SiteCard key={p.id} property={p} />
+        ))}
+      </div>
+    </section>
   )
 }
 
-function Setup({ setup }: { setup: NonNullable<Home["setup"]> }) {
-  const { t, i18n } = useLingui()
-  const { homePath, membership } = useSession()
-  const text = useHubText()
-  const places = useHubPlaces()
-  const count = setup.items.length
-  const done = setup.items.filter((i) => i.done).length
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const doneText = fmt.format(done)
-  const total = fmt.format(count)
+function HomeBlocks({ h, mailOnly, fresh }: { h: Home; mailOnly: boolean; fresh: boolean }) {
+  const members = useMembers().data ?? []
+  const [inboxId] = useInboxFilter()
+  const solo = members.length <= 1
+  const support = !mailOnly
+  const showSetup = !!h.setup && (fresh || (mailOnly && h.setup.items.some((i) => !i.done)))
   return (
-    <Card flush className="pb-1" data-testid="home-setup-card">
-      <CardHead
-        action={
-          <Link to="/setup" className="text-caption text-faint hover:text-foreground" data-testid="home-setup-open">
-            {t`${doneText} of ${total}`}
-          </Link>
-        }
-      >
-        <Trans>Finish setup</Trans>
-      </CardHead>
-      <span
-        className="mx-4 mt-3 mb-1.5 flex h-1.5 overflow-hidden rounded-full bg-border"
-        role="progressbar"
-        aria-label={t`Setup`}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={count ? Math.round((done / count) * 100) : 0}
-        data-testid="home-setup-progress"
-      >
-        <span className="rounded-full bg-success" style={{ width: `${count ? (done / count) * 100 : 0}%` }} />
-      </span>
-      <ul data-testid="home-setup">
-        {orderByFocus(setup.items, membership.workspace.focus).map((item) => (
-          <li key={item.id}>
-            <Link
-              to={hubTarget(item, places)}
-              state={item.done ? undefined : ({ back: homePath } satisfies SetupState)}
-              className="flex items-center gap-2.5 px-4 py-[7px] transition-colors hover:bg-surface"
-              data-testid={`home-setup-${item.id}`}
-            >
-              <span
-                className={cn(
-                  "grid size-[18px] shrink-0 place-items-center rounded-full",
-                  item.done ? "bg-success text-white dark:text-background" : "border-[1.5px] border-input"
-                )}
-              >
-                {item.done && <CheckIcon className="size-3" strokeWidth={3} />}
-              </span>
-              <span className={cn("truncate", item.done ? "text-faint line-through" : "font-medium")}>
-                {text.title[item.id]}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </Card>
+    <div className="flex flex-col gap-6 phone:gap-5">
+      <BroadcastBanner h={h} mailOnly={mailOnly} />
+      {showSetup && h.setup && <SetupCard setup={h.setup} />}
+      {support && !fresh && <NowStrip h={h} solo={solo} />}
+      <div className="flex flex-wrap items-start gap-6 phone:flex-col phone:flex-nowrap phone:items-stretch phone:gap-5">
+        <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-4 phone:contents">
+          {support &&
+            (h.inbox.waiting > 0 && h.inbox.waiting_conversations.length > 0 ? (
+              <Waiting h={h} className="phone:order-1" />
+            ) : (
+              <NothingWaiting h={h} fresh={fresh} className="phone:order-1" />
+            ))}
+          {support && !fresh && <KeepingUp h={h} className="phone:order-5" />}
+          {support && !fresh && !inboxId && h.products.length > 1 && <Products h={h} className="phone:order-6" />}
+          {!fresh && <Sites h={h} className="phone:order-7" />}
+        </div>
+        <aside className="flex min-w-0 flex-[1_1_300px] flex-col gap-4 empty:hidden phone:contents">
+          {support && !fresh && <NeedsYou className="phone:order-2" />}
+          {support && !fresh && <Status h={h} className="phone:order-3" />}
+          {!fresh && <ComingUp h={h} mailOnly={mailOnly} className="phone:order-4" />}
+          {!fresh && <Publish h={h} mailOnly={mailOnly} className="phone:order-8" />}
+          {support && !solo && <OnlineNow h={h} className="phone:order-9" />}
+        </aside>
+      </div>
+    </div>
   )
 }
 
 export function HomePage() {
-  const { t } = useLingui()
-  const { me, membership } = useSession()
+  const { membership } = useSession()
   const mailOnly = membership.workspace.focus === "mail"
   const [days] = usePeriod()
   const [inboxId] = useInboxFilter()
   const home = useHome(true, { days, inboxId })
   const h = home.data
-  const inboxes = useInboxes().data ?? []
-  const product = inboxes.find((i) => i.id === inboxId)?.name
-  const mentions = (useMentions().data?.pages[0]?.items ?? []).filter((m) => !m.seen).length
-  const first = (me.person.name || me.person.email).split(/[\s@]/)[0]
-  const hour = new Date(useNow(60_000)).getHours()
-  const greeting =
-    hour < 12 ? t`Good morning, ${first}` : hour < 18 ? t`Good afternoon, ${first}` : t`Good evening, ${first}`
-  const needs = h && !mailOnly ? h.inbox.waiting + mentions : 0
+  const fresh = h ? isFresh(h, mailOnly) : false
+  const failed = !!home.error
   return (
     <Page testId="home">
-      <PageHeader
-        back={false}
-        title={product ?? greeting}
-        description={
-          !h || mailOnly ? undefined : needs > 0 ? (
-            <Plural value={needs} one="# thing needs you today." other="# things need you today." />
-          ) : (
-            <Trans>Nothing needs you today.</Trans>
-          )
-        }
-        action={
-          h &&
-          !mailOnly &&
-          h.status_pages.length > 0 && (
-            <Button className={headButton.primary} render={<Link to="/status" />} data-testid="home-status-update">
-              <Trans>Post status update</Trans>
-            </Button>
-          )
-        }
-      />
-      <ErrorLine error={home.error} />
-      {!h ? (
-        !home.error && (
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-4 gap-4 max-lg:grid-cols-2">
-              {[0, 1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-28 rounded-xl" />
-              ))}
-            </div>
-            <Skeleton className="h-64 rounded-xl" />
-          </div>
-        )
-      ) : (
-        <HomeBlocks h={h} product={product} mailOnly={mailOnly} />
-      )}
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6 pt-8 phone:gap-5 phone:pt-4">
+        <HomeHeader h={h} mailOnly={mailOnly} fresh={fresh} failed={failed} updatedAt={home.dataUpdatedAt} />
+        {failed && <RefreshAlert h={h} updatedAt={home.dataUpdatedAt} retry={() => void home.refetch()} />}
+        {!h ? !failed && <HomeSkeleton /> : <HomeBlocks h={h} mailOnly={mailOnly} fresh={fresh} />}
+      </div>
     </Page>
-  )
-}
-
-function HomeBlocks({ h, product, mailOnly }: { h: Home; product?: string; mailOnly: boolean }) {
-  const waiting = waitingOf(h)
-  if (mailOnly)
-    return (
-      <>
-        {h.analytics && <Sites properties={h.analytics.properties} />}
-        <div className="grid grid-cols-2 items-start gap-4 max-lg:grid-cols-1">
-          <ComingUp upcoming={h.upcoming.filter((u) => u.kind === "broadcast")} />
-          {(h.broadcasts || h.setup) && (
-            <div className="flex min-w-0 flex-col gap-4">
-              {h.broadcasts && <LastBroadcast broadcasts={h.broadcasts} />}
-              {h.setup && <Setup setup={h.setup} />}
-            </div>
-          )}
-        </div>
-      </>
-    )
-  return (
-    <>
-      <PeriodBar h={h} product={product} />
-      <Kpis h={h} waiting={waiting} />
-      <div className="grid grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] items-start gap-4 max-lg:grid-cols-1">
-        <NeedsYou h={h} waiting={waiting} />
-        <ProductsOrStatus h={h} />
-      </div>
-      <div className="grid grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] items-start gap-4 max-lg:grid-cols-1">
-        <ConversationsChart h={h} />
-        <TeamCard h={h} />
-      </div>
-      {h.analytics && <Sites properties={h.analytics.properties} />}
-      <div className="grid grid-cols-3 items-start gap-4 max-lg:grid-cols-1">
-        {h.ideas && <Asks ideas={h.ideas.slice(0, 3)} />}
-        <ComingUp upcoming={h.upcoming} />
-        {(h.broadcasts || h.setup) && (
-          <div className="flex min-w-0 flex-col gap-4">
-            {h.broadcasts && <LastBroadcast broadcasts={h.broadcasts} />}
-            {h.setup && <Setup setup={h.setup} />}
-          </div>
-        )}
-      </div>
-    </>
   )
 }

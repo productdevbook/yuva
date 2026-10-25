@@ -490,8 +490,8 @@ function Editor({
           <span className="text-small text-faint" role="status" data-testid="entry-editor-saving">
             {status}
           </span>
-          <span className="flex-1" />
-          <div className="flex flex-wrap items-center gap-2">
+          <span className="flex-1 phone:hidden" />
+          <div className="flex flex-wrap items-center gap-2 phone:w-full">
             <Button
               variant={showPreview ? "secondary" : "outline"}
               size="sm"
@@ -599,14 +599,13 @@ function Editor({
             {canPublish && entry.state !== "published" && (
               <Button variant="outline" size="sm" onClick={() => setScheduling(true)} data-testid="entry-schedule">
                 <CalendarClockIcon />
-                <span className="phone:sr-only">
-                  <Trans>Schedule</Trans>
-                </span>
+                <Trans>Schedule</Trans>
               </Button>
             )}
             {!readOnly && (
               <Button
                 size="sm"
+                className="phone:flex-1"
                 disabled={
                   !titleOk || m.publish.isPending || (canPublish && isPublic && tr?.state === "published" && !dirty)
                 }

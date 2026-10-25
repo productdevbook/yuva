@@ -1,6 +1,7 @@
 import "@/features/changelog/i18n"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowUpRightIcon, EyeIcon, PlusIcon, SparklesIcon, TriangleAlertIcon } from "lucide-react"
+import { useQueryClient } from "@tanstack/react-query"
+import { ArrowUpRightIcon, CircleAlertIcon, EyeIcon, PlusIcon, SparklesIcon, TriangleAlertIcon } from "lucide-react"
 import { cloneElement, useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router"
 
@@ -26,10 +27,12 @@ import { SettingsTab } from "@/features/changelog/SettingsTab"
 import { entryTitle, ErrorLine, LABELS, useFailureText, useLabelText } from "@/features/changelog/text"
 import { useLocaleName } from "@/features/help/text"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { ViewChips } from "@/features/inbox/ListHead"
 import { FrameTabs as ViewTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import { ChoiceSelect } from "@/features/settings/ui"
 import { FrameButton, FrameTabs, framePad, PageFrame } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { keys } from "@/lib/keys"
 import type { Changelog, ChangelogEntrySummary, ChangelogLabel, Inbox } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
@@ -76,7 +79,8 @@ function ChangelogPicker({
 }
 
 export function ChangelogHome() {
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
+  const queryClient = useQueryClient()
   const [inboxId] = useInboxFilter()
   const [params] = useSearchParams()
   const inboxes = useInboxes().data ?? []
@@ -89,7 +93,7 @@ export function ChangelogHome() {
   const localeName = useLocaleName()
   const labelText = useLabelText()
   const failureText = useFailureText()
-  const { canManage } = useSession()
+  const { canManage, workspaceId } = useSession()
   const [creating, setCreating] = useState<Inbox | null>(null)
   const [writing, setWriting] = useState<Changelog | null>(null)
   const [cursor, setCursor] = useState(-1)
@@ -97,7 +101,7 @@ export function ChangelogHome() {
   const [query, setQuery] = useState("")
   const [label, setLabel] = useState<ChangelogLabel | "">("")
   const [locale, setLocale] = useState("")
-  const list = useRef<HTMLUListElement>(null)
+  const list = useRef<HTMLDivElement>(null)
   const raw = params.get("state") as View | null
   const view: View = raw && VIEWS.includes(raw) ? raw : "all"
   const entries = useAllEntries(
@@ -111,6 +115,22 @@ export function ChangelogHome() {
     .filter((e) => !locale || e.translations.some((x) => x.locale === locale))
     .filter((e) => !needle || e.translations.some((x) => x.title.toLowerCase().includes(needle)))
     .sort((a, b) => when(b).localeCompare(when(a)))
+  const months = rows.reduce<{ key: string; name: string; rows: { e: ChangelogEntrySummary; i: number }[] }[]>(
+    (groups, e, i) => {
+      const d = new Date(when(e))
+      const key = `${d.getFullYear()}-${d.getMonth()}`
+      const last = groups[groups.length - 1]
+      if (last?.key === key) last.rows.push({ e, i })
+      else
+        groups.push({
+          key,
+          name: new Intl.DateTimeFormat(i18n.locale, { month: "long", year: "numeric" }).format(d),
+          rows: [{ e, i }],
+        })
+      return groups
+    },
+    []
+  )
   const filtering = !!needle || !!label || !!locale
   const failed = rows.filter((e) => e.schedule_failed)
   const shown = rows[cursor] ?? rows.find((e) => e.id === picked) ?? rows[0]
@@ -167,7 +187,8 @@ export function ChangelogHome() {
     open
   )
   useEffect(() => {
-    if (cursor >= 0) list.current?.children[cursor]?.scrollIntoView({ block: "nearest" })
+    if (cursor >= 0)
+      list.current?.querySelectorAll("[data-testid=entry-row]")[cursor]?.scrollIntoView({ block: "nearest" })
   }, [cursor])
   const tabs = VIEWS.map((v) => ({
     key: v,
@@ -185,8 +206,9 @@ export function ChangelogHome() {
   const firstFailed = failed[0]
   const firstFailedLog = firstFailed && byId.get(firstFailed.changelog_id)
   return (
-    <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="changelog-home">
+    <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="changelog-home">
       <PageTop
+        className="bg-surface"
         title={<Trans>What’s new</Trans>}
         sub={<Trans>Release notes shown in your products and on the web</Trans>}
         actions={
@@ -217,7 +239,7 @@ export function ChangelogHome() {
         tabs={<ViewTabs label={t`What’s new`} value={view} items={tabs} />}
       />
       {items.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 border-b px-6 py-3 phone:px-4">
+        <div className="flex shrink-0 flex-wrap items-center gap-2 border-b bg-surface px-6 py-3 phone:px-4">
           <Input
             type="search"
             value={query}
@@ -227,18 +249,18 @@ export function ChangelogHome() {
             }}
             placeholder={t`Search entries`}
             aria-label={t`Search entries`}
-            className="h-[30px] w-56 rounded-lg phone:w-full"
+            className="h-[34px] w-64 rounded-[9px] bg-card phone:w-full"
             data-testid="changelog-search"
           />
-          <ChoiceSelect
+          <ViewChips<ChangelogLabel | "">
+            label={t`Label`}
             value={label}
             onChange={(v) => {
               setLabel(v)
               setCursor(-1)
             }}
-            options={[["", t`All labels`] as const, ...LABELS.map((l) => [l, labelText[l]] as const)]}
-            label={t`Label`}
-            className="w-40"
+            className="p-0"
+            items={[{ value: "", label: t`All labels` }, ...LABELS.map((l) => ({ value: l, label: labelText[l] }))]}
           />
           {locales.length > 1 && (
             <ChoiceSelect
@@ -249,118 +271,148 @@ export function ChangelogHome() {
               }}
               options={[["", t`All languages`] as const, ...locales.map((l) => [l, localeName(l)] as const)]}
               label={t`Language`}
-              className="w-44"
+              className="w-44 rounded-lg bg-card"
             />
           )}
         </div>
       )}
-      <div className="@container flex min-h-0 flex-1 overflow-hidden">
-        <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-          <ErrorLine error={changelogs.error ?? entries.error} className="m-6" />
-          {changelogs.isPending || (items.length > 0 && entries.isPending) ? (
-            <div className="flex flex-col gap-2 p-6">
-              <Skeleton className="h-14 w-full rounded-xl" />
-              <Skeleton className="h-14 w-full rounded-xl" />
-              <Skeleton className="h-14 w-full rounded-xl" />
-            </div>
-          ) : items.length === 0 ? (
-            <div className="m-6 flex flex-col items-center gap-3 rounded-xl border border-dashed px-6 py-12 text-center phone:m-4">
-              <SparklesIcon className="size-6 text-faint" />
-              <p className="max-w-md text-body text-muted-foreground">
-                <Trans>
-                  Tell your customers what is new, improved and fixed, on a public page, in the chat widget and by mail.
-                </Trans>
-              </p>
-              {missing && (
+      <div className="@container flex min-h-0 flex-1 overflow-y-auto bg-surface">
+        <div className="mx-auto flex w-full max-w-[1320px] items-start gap-4 p-6 @max-xl:p-4">
+          <div className="flex min-w-0 flex-1 flex-col gap-3">
+            {changelogs.isPending || (items.length > 0 && entries.isPending) ? (
+              <div className="flex flex-col gap-2.5" aria-busy data-testid="changelog-loading">
+                {[104, 104, 88, 104].map((h, n) => (
+                  <Skeleton key={n} className="w-full rounded-[14px]" style={{ height: h }} />
+                ))}
+              </div>
+            ) : changelogs.error || entries.error ? (
+              <div className="mx-auto my-12 flex max-w-sm flex-col items-center gap-3 px-4 text-center">
+                <span className="grid size-8 place-items-center rounded-full bg-destructive/10 text-destructive">
+                  <CircleAlertIcon className="size-4" aria-hidden />
+                </span>
+                <ErrorLine error={changelogs.error ?? entries.error} />
                 <Button
-                  className={look.btnInk}
-                  onClick={() => setCreating(missing)}
-                  title={t`Create changelog (${createKey})`}
+                  variant="outline"
+                  className={look.btn}
+                  onClick={() => void queryClient.invalidateQueries({ queryKey: keys.changelog(workspaceId) })}
                 >
-                  <PlusIcon />
-                  <Trans>Create changelog</Trans>
+                  <Trans>Try again</Trans>
                 </Button>
-              )}
-            </div>
-          ) : (
-            <>
-              {failed.length > 0 && firstFailed && firstFailedLog && (
-                <div
-                  role="alert"
-                  className="mx-6 mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 phone:mx-4"
-                  data-testid="changelog-failed-banner"
-                >
-                  <TriangleAlertIcon className="size-[18px] shrink-0 text-warning" />
-                  <p className="min-w-48 flex-1 leading-[1.4]">
-                    <span className="font-semibold">
-                      <Trans>Publishing on schedule failed.</Trans>
-                    </span>
-                    <br />
-                    <span className="text-muted-foreground">
-                      {entryTitle(firstFailed.translations, firstFailedLog.default_locale)}
-                      {": "}
-                      {firstFailed.schedule_failed && failureText[firstFailed.schedule_failed.reason]}{" "}
-                      <Trans>Publish it now or schedule it again.</Trans>
-                    </span>
-                  </p>
+              </div>
+            ) : items.length === 0 ? (
+              <div className="mx-auto my-8 flex w-[min(560px,100%)] flex-col items-center gap-3 rounded-[14px] border bg-card px-6 py-10 text-center">
+                <span className="grid size-10 place-items-center rounded-xl bg-brand-wash text-brand">
+                  <SparklesIcon className="size-5" aria-hidden />
+                </span>
+                <p className="max-w-md text-body text-muted-foreground">
+                  <Trans>
+                    Tell your customers what is new, improved and fixed, on a public page, in the chat widget and by
+                    mail.
+                  </Trans>
+                </p>
+                {missing && (
                   <Button
-                    variant="outline"
-                    className={look.btnSm}
-                    onClick={() =>
-                      navigate(entryLink(firstFailed.changelog_id, firstFailed.id, firstFailedLog.default_locale))
-                    }
+                    className={look.btnInk}
+                    onClick={() => setCreating(missing)}
+                    title={t`Create changelog (${createKey})`}
                   >
-                    <Trans>Review</Trans>
+                    <PlusIcon />
+                    <Trans>Create changelog</Trans>
                   </Button>
-                </div>
-              )}
-              {rows.length === 0 ? (
-                <div
-                  className="m-6 flex flex-col items-center gap-2 rounded-xl border border-dashed px-6 py-12 text-center phone:m-4"
-                  data-testid="changelog-entries-empty"
-                >
-                  <p className="font-semibold">
-                    {filtering ? <Trans>No entry matches.</Trans> : <Trans>Nothing here.</Trans>}
-                  </p>
-                  <p className="text-body text-faint">
-                    {filtering ? <Trans>Try another word, label or language.</Trans> : emptyText}
-                  </p>
-                  {filtering && (
-                    <Button variant="outline" className={look.btnSm} onClick={reset}>
-                      <Trans>Clear filters</Trans>
+                )}
+              </div>
+            ) : (
+              <>
+                {failed.length > 0 && firstFailed && firstFailedLog && (
+                  <div
+                    role="alert"
+                    className="flex flex-wrap items-center gap-3 rounded-[14px] border border-warning/40 bg-warning/10 px-4 py-3"
+                    data-testid="changelog-failed-banner"
+                  >
+                    <TriangleAlertIcon className="size-[18px] shrink-0 text-warning" />
+                    <p className="min-w-48 flex-1 leading-[1.4]">
+                      <span className="font-semibold">
+                        <Trans>Publishing on schedule failed.</Trans>
+                      </span>
+                      <br />
+                      <span className="text-muted-foreground">
+                        {entryTitle(firstFailed.translations, firstFailedLog.default_locale)}
+                        {": "}
+                        {firstFailed.schedule_failed && failureText[firstFailed.schedule_failed.reason]}{" "}
+                        <Trans>Publish it now or schedule it again.</Trans>
+                      </span>
+                    </p>
+                    <Button
+                      variant="outline"
+                      className={look.btnSm}
+                      onClick={() =>
+                        navigate(entryLink(firstFailed.changelog_id, firstFailed.id, firstFailedLog.default_locale))
+                      }
+                    >
+                      <Trans>Review</Trans>
                     </Button>
-                  )}
-                </div>
-              ) : (
-                <ul ref={list} className="flex flex-col" aria-label={t`Entries`}>
-                  {rows.map((e, i) => {
-                    const c = byId.get(e.changelog_id)
-                    if (!c) return null
-                    return (
-                      <EntryRow
-                        key={e.id}
-                        e={e}
-                        changelog={c}
-                        inbox={items.length > 1 ? inboxOf(c) : undefined}
-                        locales
-                        current={i === cursor || (cursor < 0 && e.id === shown?.id)}
-                        onPick={() => {
-                          setPicked(e.id)
-                          setCursor(-1)
-                        }}
-                      />
-                    )
-                  })}
-                </ul>
-              )}
-            </>
+                  </div>
+                )}
+                {rows.length === 0 ? (
+                  <div
+                    className="flex flex-col items-center gap-2 rounded-[14px] border bg-card px-6 py-10 text-center"
+                    data-testid="changelog-entries-empty"
+                  >
+                    <span className="mb-1 grid size-10 place-items-center rounded-xl bg-brand-wash text-brand">
+                      <SparklesIcon className="size-5" aria-hidden />
+                    </span>
+                    <p className="font-semibold">
+                      {filtering ? <Trans>No entry matches.</Trans> : <Trans>Nothing here.</Trans>}
+                    </p>
+                    <p className="max-w-sm text-body text-faint">
+                      {filtering ? <Trans>Try another word, label or language.</Trans> : emptyText}
+                    </p>
+                    {filtering && (
+                      <Button variant="outline" className={look.btnSm} onClick={reset}>
+                        <Trans>Clear filters</Trans>
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <div ref={list} className="flex flex-col gap-3">
+                    {months.map((m) => (
+                      <section key={m.key} className="flex flex-col gap-2.5">
+                        <h2 className="px-0.5 pt-2 text-[11px] font-semibold tracking-[0.05em] text-faint uppercase">
+                          {m.name}
+                        </h2>
+                        <ul className="flex flex-col gap-2.5" aria-label={m.name}>
+                          {m.rows.map(({ e, i }) => {
+                            const c = byId.get(e.changelog_id)
+                            if (!c) return null
+                            return (
+                              <EntryRow
+                                key={e.id}
+                                e={e}
+                                changelog={c}
+                                inbox={items.length > 1 ? inboxOf(c) : undefined}
+                                locales
+                                current={i === cursor || (cursor < 0 && e.id === shown?.id)}
+                                onPick={() => {
+                                  setPicked(e.id)
+                                  setCursor(-1)
+                                }}
+                              />
+                            )
+                          })}
+                        </ul>
+                      </section>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+          {shown && shownLog && (
+            <div className="sticky top-6 hidden self-start @min-[1000px]:flex">
+              <EntryPreview changelog={shownLog} entry={shown} />
+            </div>
           )}
         </div>
-        {shown && shownLog && (
-          <div className="hidden min-h-0 @min-[1000px]:flex">
-            <EntryPreview changelog={shownLog} entry={shown} />
-          </div>
-        )}
       </div>
       {writing && <NewEntryDialog changelog={writing} onClose={() => setWriting(null)} />}
       {creating && (

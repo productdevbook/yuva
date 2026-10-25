@@ -4,6 +4,7 @@ import { createContext, useContext } from "react"
 import { Link, type To } from "react-router"
 
 import { colorFor, ErrorLine } from "@/components/common"
+import { OverflowTabs, pageTabClass } from "@/components/common/OverflowTabs"
 import { useSaveBarEntry } from "@/components/common/SaveBar"
 import { initials } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -72,7 +73,7 @@ export function PageHeader({
       className={cn(
         "flex flex-col",
         band &&
-          "sticky top-11 z-10 -mx-6 mb-2 gap-3 border-b bg-background px-6 pt-5 in-data-frame:top-0 phone:static phone:-mx-4 phone:px-4 phone:pt-3"
+          "sticky top-0 z-10 -mx-6 mb-2 gap-3 border-b bg-background px-6 pt-5 phone:static phone:-mx-4 phone:px-4 phone:pt-3"
       )}
     >
       {to && (
@@ -111,49 +112,11 @@ export type PageTab = {
   testId?: string
 }
 
-export const pageTabClass =
-  "flex shrink-0 items-center gap-1.5 pt-1.5 pb-2.5 text-body whitespace-nowrap text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:underline aria-[current=page]:font-medium aria-[current=page]:text-foreground aria-[current=page]:shadow-[inset_0_-2px_0_currentColor]"
+export { pageTabClass }
 
-export function PageTabs({
-  items,
-  current,
-  label,
-  extra,
-}: {
-  items: PageTab[]
-  current: string
-  label: string
-  extra?: React.ReactNode
-}) {
-  const { i18n } = useLingui()
+export function PageTabs({ items, current, label }: { items: PageTab[]; current: string; label: string }) {
   const band = useContext(Band)
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  return (
-    <nav
-      aria-label={label}
-      className={cn("-mx-1 overflow-x-auto px-1 [scrollbar-width:none]", !band && "border-b")}
-      data-testid="page-tabs"
-    >
-      <ul className="flex gap-5">
-        {items.map((tab) => (
-          <li key={tab.key} className="shrink-0">
-            <Link
-              to={tab.to}
-              aria-current={tab.key === current ? "page" : undefined}
-              className={pageTabClass}
-              data-testid={tab.testId}
-            >
-              {tab.label}
-              {tab.count !== undefined && (
-                <span className="text-caption font-normal text-faint tabular-nums">{fmt.format(tab.count)}</span>
-              )}
-            </Link>
-          </li>
-        ))}
-        {extra && <li className="shrink-0">{extra}</li>}
-      </ul>
-    </nav>
-  )
+  return <OverflowTabs label={label} current={current} items={items} className={cn(!band && "border-b")} />
 }
 
 export function StatTile({

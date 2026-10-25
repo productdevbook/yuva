@@ -7,6 +7,7 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { Segmented } from "@/components/common"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
+import { look } from "@/features/inbox/PageFrame"
 import { AddNoteButton, annotationMarks, AnnotationList } from "@/features/analytics/Annotations"
 import { deviceCard, groupDimensions, RowLabel, type Group } from "@/features/analytics/Breakdown"
 import { OverviewInsights } from "@/features/analytics/Insights"
@@ -31,7 +32,6 @@ import {
   useAnalyticsText,
   type NumMetric,
 } from "@/features/analytics/text"
-import { StatTile } from "@/features/settings/ui"
 import type { AnalyticsFilterDimension, AnalyticsMetric } from "@/lib/api"
 import { cn } from "@/lib/utils"
 
@@ -56,6 +56,41 @@ export function Change({ now, before, metric }: { now?: number; before?: number;
         change
       )}
     </span>
+  )
+}
+
+export function KpiTile({
+  label,
+  value,
+  hint,
+  live,
+  testId,
+  className,
+  wrapLabel,
+}: {
+  label: React.ReactNode
+  value: React.ReactNode
+  hint?: React.ReactNode
+  live?: boolean
+  wrapLabel?: boolean
+  testId?: string
+  className?: string
+}) {
+  return (
+    <div
+      className={cn(
+        "flex min-w-0 flex-1 basis-0 flex-col gap-0.5 rounded-[14px] border bg-card px-4 py-3.5 @max-[900px]:basis-[calc(50%-5px)]",
+        className
+      )}
+      data-testid={testId}
+    >
+      <span className="flex min-w-0 items-center gap-1.5 text-small text-faint">
+        {live && <span className="size-2 shrink-0 rounded-full bg-success" aria-hidden />}
+        <span className={wrapLabel ? "line-clamp-2" : "truncate"}>{label}</span>
+      </span>
+      <b className="text-[22px] leading-7 font-semibold tracking-[-0.01em] whitespace-nowrap tabular-nums">{value}</b>
+      <span className="min-h-4 text-caption text-faint">{hint}</span>
+    </div>
   )
 }
 
@@ -88,9 +123,9 @@ function Kpis() {
   return (
     <>
       <QueryProblem error={traffic.error} />
-      <div className="grid grid-cols-5 gap-4 max-xl:grid-cols-3 phone:grid-cols-2" data-testid="analytics-kpis">
+      <div className="flex flex-wrap gap-2.5" data-testid="analytics-kpis">
         {(!share || share.views.includes("realtime")) && (
-          <StatTile
+          <KpiTile
             live
             label={<Trans>Visitors now</Trans>}
             value={live.data ? fmt.format(live.data.visitors) : <Skeleton className="mt-1 h-7 w-10" />}
@@ -98,26 +133,26 @@ function Kpis() {
             testId="kpi-realtime"
           />
         )}
-        <StatTile
+        <KpiTile
           label={<Trans>Visitors</Trans>}
           value={value("visitors")}
           hint={<Delta now={num(totals, "visitors")} before={num(before, "visitors")} metric="visitors" />}
           testId="kpi-visitors"
         />
-        <StatTile
+        <KpiTile
           label={<Trans>Page views</Trans>}
           value={value("pageviews")}
           hint={<Delta now={num(totals, "pageviews")} before={num(before, "pageviews")} metric="pageviews" />}
           testId="kpi-pageviews"
         />
-        <StatTile
+        <KpiTile
           label={<Trans>Bounce</Trans>}
           value={value("bounce_rate")}
           hint={<Delta now={num(totals, "bounce_rate")} before={num(before, "bounce_rate")} metric="bounce_rate" />}
           testId="kpi-bounce_rate"
         />
         {!share && (
-          <StatTile
+          <KpiTile
             label={<Trans>Started a conversation</Trans>}
             value={
               !property.inbox_id ? (
@@ -228,7 +263,19 @@ export function TimeChart({ metric: fixed, goalId }: { metric?: NumMetric; goalI
           </span>
         </>
       }
-      action={!share && <AddNoteButton propertyId={property.id} />}
+      action={
+        <>
+          {view.compare && (
+            <Legend
+              items={[
+                { color: "var(--brand)", label: text.metric[metric] },
+                { color: "var(--muted-foreground)", label: t`Compared days`, dashed: true },
+              ]}
+            />
+          )}
+          {!share && <AddNoteButton propertyId={property.id} />}
+        </>
+      }
       testId="analytics-chart"
     >
       {q.isPending ? (
@@ -314,6 +361,23 @@ export function TimeChart({ metric: fixed, goalId }: { metric?: NumMetric; goalI
   )
 }
 
+export function Legend({ items }: { items: { color: string; label: React.ReactNode; dashed?: boolean }[] }) {
+  return (
+    <ul className="flex flex-wrap items-center gap-x-3.5 gap-y-1 text-small text-muted-foreground">
+      {items.map((it, i) => (
+        <li key={i} className="flex items-center gap-1.5">
+          <span
+            className={cn("h-0 w-3.5 border-t-2", it.dashed && "border-dashed")}
+            style={{ borderColor: it.color }}
+            aria-hidden
+          />
+          {it.label}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function VisitorsChart() {
   const { t, i18n } = useLingui()
   const text = useAnalyticsText()
@@ -343,6 +407,11 @@ function VisitorsChart() {
     i18n.locale,
     hour ? { timeStyle: "short", timeZone: "UTC" } : { day: "numeric", month: "short", timeZone: "UTC" }
   )
+  const long = new Intl.DateTimeFormat(i18n.locale, {
+    dateStyle: "medium",
+    ...(hour ? { timeStyle: "short" } : {}),
+    timeZone: "UTC",
+  })
   const asked = new Map(
     (support.data?.rows ?? []).map((r) => [r.dimensions[0] ?? "", num(r.metrics, "conversations") ?? 0])
   )
@@ -351,62 +420,103 @@ function VisitorsChart() {
     visitors: num(r.metrics, "visitors") ?? 0,
     conversations: asked.get(r.dimensions[0] ?? "") ?? 0,
   }))
-  const top = Math.max(1, ...rows.map((r) => r.visitors + r.conversations))
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const middle = rows[Math.floor((rows.length - 1) / 2)]
-  const end = rows[rows.length - 1]
   const showConversations = !!property.inbox_id && !share && !hour
+  const config: ChartConfig = {
+    visitors: { label: text.metric.visitors, color: "var(--brand)" },
+    conversations: { label: t`Started a conversation`, color: "var(--foreground)" },
+  }
   return (
-    <section className="flex flex-col gap-3 rounded-xl border bg-card p-4" data-testid="analytics-chart">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <h2 className="min-w-0 flex-1 font-semibold">{text.metric.visitors}</h2>
-        <span className="flex items-center gap-1.5 text-caption text-faint">
-          <span className="size-2.5 rounded-[2px] bg-brand" aria-hidden />
-          {text.metric.visitors}
-        </span>
+    <section className="flex flex-col gap-2 rounded-[14px] border bg-card pb-3" data-testid="analytics-chart">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 pt-3.5">
+        <h2 className="min-w-0 flex-1 text-[14px] leading-5 font-semibold">{text.metric.visitors}</h2>
         {showConversations && (
-          <span className="flex items-center gap-1.5 text-caption text-faint">
-            <span className="size-2.5 rounded-[2px] bg-foreground" aria-hidden />
-            <Trans>Started a conversation</Trans>
-          </span>
+          <Legend
+            items={[
+              { color: "var(--brand)", label: text.metric.visitors },
+              { color: "var(--foreground)", label: t`Started a conversation` },
+            ]}
+          />
         )}
       </div>
       {q.isPending ? (
-        <Skeleton className="h-[180px] w-full" />
+        <Skeleton className="mx-4 h-[200px]" />
       ) : q.error ? (
         <PanelProblem error={q.error} />
+      ) : rows.length === 0 ? (
+        <p className="px-4 py-12 text-center text-body text-faint">
+          <Trans>Nothing counted in this range.</Trans>
+        </p>
       ) : (
-        <div className="flex h-[180px] items-end gap-1 border-b" role="img" aria-label={text.metric.visitors}>
-          {rows.map((r, i) => (
-            <span
-              key={r.at}
-              className="flex h-full flex-1 flex-col-reverse gap-px"
-              title={`${bucketLabel(tick, r.at)} · ${t`${fmt.format(r.visitors)} visitors`}${
-                showConversations ? ` · ${t`${fmt.format(r.conversations)} conversations`}` : ""
-              }`}
-            >
-              {r.conversations > 0 && (
-                <span className="bg-foreground" style={{ height: `max(2px, ${(r.conversations / top) * 100}%)` }} />
-              )}
-              <span
-                className="rounded-t-[3px] bg-brand"
-                style={{
-                  height: r.visitors ? `max(2px, ${(r.visitors / top) * 100}%)` : 0,
-                  opacity: i === rows.length - 1 ? 1 : 0.8,
-                }}
+        <ChartContainer
+          config={config}
+          className="aspect-auto h-[200px] w-full px-2"
+          role="img"
+          aria-label={text.metric.visitors}
+        >
+          <AreaChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -4 }}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="at"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={32}
+              interval="preserveStartEnd"
+              tickFormatter={(v) =>
+                !hour && String(v).slice(0, 10) === todayIso() ? t`Today` : bucketLabel(tick, String(v))
+              }
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              width={44}
+              allowDecimals={false}
+              tickFormatter={(v) => formatCompact(Number(v), i18n.locale)}
+            />
+            <ChartTooltip
+              cursor={{ stroke: "var(--faint)", strokeWidth: 1 }}
+              content={
+                <ChartTooltipContent
+                  indicator="line"
+                  labelFormatter={(_, p) => (p?.[0] ? bucketLabel(long, String(p[0].payload.at)) : "")}
+                  formatter={(value, name) => (
+                    <div className="flex w-full items-center gap-2">
+                      <span
+                        className="h-0 w-3 shrink-0 border-t-2"
+                        style={{ borderColor: `var(--color-${String(name)})` }}
+                      />
+                      <span className="flex-1 text-muted-foreground">{config[String(name)]?.label}</span>
+                      <span className="font-mono font-medium text-foreground tabular-nums">
+                        {new Intl.NumberFormat(i18n.locale).format(Number(value))}
+                      </span>
+                    </div>
+                  )}
+                />
+              }
+            />
+            <Area
+              dataKey="visitors"
+              type="monotone"
+              stroke="var(--color-visitors)"
+              strokeWidth={2}
+              fill="var(--color-visitors)"
+              fillOpacity={0.08}
+              activeDot={{ r: 4 }}
+              isAnimationActive={false}
+            />
+            {showConversations && (
+              <Area
+                dataKey="conversations"
+                type="monotone"
+                stroke="var(--color-conversations)"
+                strokeWidth={2}
+                fill="none"
+                activeDot={{ r: 4 }}
+                isAnimationActive={false}
               />
-            </span>
-          ))}
-        </div>
-      )}
-      {rows.length > 0 && (
-        <div className="flex justify-between text-caption text-faint">
-          <span>{bucketLabel(tick, rows[0].at)}</span>
-          {middle && rows.length > 2 && <span>{bucketLabel(tick, middle.at)}</span>}
-          <span>
-            {end && end.at.slice(0, 10) === todayIso() && !hour ? <Trans>Today</Trans> : bucketLabel(tick, end.at)}
-          </span>
-        </div>
+            )}
+          </AreaChart>
+        </ChartContainer>
       )}
     </section>
   )
@@ -445,14 +555,14 @@ function Box({
   const join = search ? `${search}&by=${dim}` : `?by=${dim}`
   const details = share ? `/share/${share.token}/${group}${join}` : `/analytics/${property.id}/${group}${join}`
   return (
-    <section className="flex min-w-0 flex-col overflow-hidden rounded-xl border bg-card" data-testid={testId}>
-      <div className="flex min-h-11 items-center gap-2 border-b px-4 py-2.5">
-        <h2 className="min-w-0 flex-1 truncate font-semibold">
+    <section className="flex min-w-0 flex-col overflow-hidden rounded-[14px] border bg-card" data-testid={testId}>
+      <div className="flex min-h-11 items-center gap-2 px-4 pt-3 pb-2">
+        <h2 className="min-w-0 flex-1 truncate text-[14px] leading-5 font-semibold">
           <Link to={details} className="hover:underline">
             {title}
           </Link>
         </h2>
-        {dims.length > 1 ? (
+        {dims.length > 1 && (
           <Segmented
             value={dim}
             onChange={setPicked}
@@ -460,12 +570,14 @@ function Box({
             itemClassName="h-6 px-2 text-small"
             items={dims.map((d) => ({ value: d, label: text.dimension[d] }))}
           />
-        ) : (
-          <span className="text-caption text-faint">{text.metric.visitors.toLocaleLowerCase(i18n.locale)}</span>
         )}
       </div>
+      <div className={cn(look.over, "flex justify-between px-4 pb-1.5")}>
+        <span className="truncate">{text.dimension[dim]}</span>
+        <span>{text.metric.visitors}</span>
+      </div>
       {q.isPending ? (
-        <Skeleton className="m-4 h-36" />
+        <Skeleton className="m-4 mt-1 h-36" />
       ) : q.error ? (
         <PanelProblem error={q.error} />
       ) : rows.length === 0 ? (
@@ -473,7 +585,7 @@ function Box({
           <Trans>Nothing counted in this range.</Trans>
         </p>
       ) : (
-        <ul className="py-px">
+        <ul className="pb-1">
           {rows.map((r, i) => {
             const value = r.dimensions[0] ?? ""
             const v = num(r.metrics, "visitors") ?? 0
@@ -482,25 +594,26 @@ function Box({
               <>
                 <span
                   aria-hidden
-                  className="absolute inset-y-[3px] start-0 rounded-e-md bg-brand/8"
+                  className="absolute inset-y-[3px] start-0 rounded-md bg-brand/10"
                   style={{ width: `${Math.max(1.5, (v / max) * 100)}%` }}
                 />
                 <span className={cn("relative min-w-0 flex-1 truncate text-start", mono && "font-mono text-[13px]")}>
                   <RowLabel dim={dim} row={r} value={value} text={text} />
                 </span>
-                <span className="relative shrink-0 text-muted-foreground tabular-nums">
-                  {formatCompact(v, i18n.locale)}
-                </span>
+                <span className="relative shrink-0 font-semibold tabular-nums">{formatCompact(v, i18n.locale)}</span>
               </>
             )
-            const cls = "relative flex w-full items-center gap-3 px-4 py-[9px] outline-none"
+            const cls = "relative mx-2 flex h-[34px] items-center gap-3 rounded-md px-2 outline-none"
             return (
               <li key={`${value}${i}`}>
                 {click ? (
                   <button
                     type="button"
                     onClick={click}
-                    className={cn(cls, "transition-colors hover:bg-surface focus-visible:bg-surface")}
+                    className={cn(
+                      cls,
+                      "w-[calc(100%-1rem)] transition-colors hover:bg-surface focus-visible:bg-surface"
+                    )}
                     data-testid="analytics-bar"
                   >
                     {inner}
@@ -515,7 +628,16 @@ function Box({
           })}
         </ul>
       )}
-      {group === "locations" && <Attribution propertyId={property.id} className="mt-auto border-t px-4 py-2" />}
+      <Link
+        to={details}
+        className="mx-4 mt-auto mb-3 w-fit pt-1 text-small text-muted-foreground outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <Trans>Details</Trans>
+        <span aria-hidden className="ms-1 inline-block rtl:-scale-x-100">
+          →
+        </span>
+      </Link>
+      {group === "locations" && <Attribution propertyId={property.id} className="border-t px-4 py-2" />}
     </section>
   )
 }
@@ -585,7 +707,7 @@ export function Overview() {
       <Kpis />
       {!share && <OverviewInsights property={property} view={view} />}
       <VisitorsChart />
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 @3xl:grid-cols-2">
         {shown("pages") && (
           <Box
             group="pages"

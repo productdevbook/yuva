@@ -3,7 +3,7 @@ import { MailIcon, SmartphoneIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 
-import { ChannelIcon, Dot, ErrorLine, Segmented, toast } from "@/components/common"
+import { ChannelIcon, Dot, ErrorLine, toast } from "@/components/common"
 import { formatDate, formatDateTime, formatShort, useEnumText, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useClearUndeliverable, useCreateConversation, useUpdateContact } from "@/features/contact/queries"
 import { useContactEntries } from "@/features/contact/entries"
 import { currentRating, RatingMark } from "@/features/conversation/rating"
+import { ViewChips } from "@/features/inbox/ListHead"
 import { useConversations } from "@/features/inbox/queries"
 import type { Contact, ContactSummary, ConversationListItem, ConversationStatus, UndeliverableEmail } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -147,18 +148,24 @@ export function Identities({
   return (
     <div className={cn("flex flex-col gap-2", className)} data-testid="identities">
       {rows > 0 && (
-        <ul className="flex flex-col divide-y rounded-xl border">
+        <ul className="flex flex-col gap-1.5">
           {contact.emails.map((e) => {
             const u = contact.undeliverable.find((x) => x.email === e)
             return (
-              <li key={e} className="flex flex-col gap-1.5 px-3 py-2.5">
-                <span className="flex items-center gap-2.5">
+              <li
+                key={e}
+                className={cn(
+                  "flex flex-col gap-1.5 rounded-[9px] border px-2.5 py-2",
+                  u && "border-destructive/30 bg-destructive/10"
+                )}
+              >
+                <span className="flex min-h-5 items-center gap-2.5 text-small">
                   <MailIcon className="size-[15px] shrink-0 text-faint" aria-hidden />
                   <span className="min-w-0 flex-1 truncate" title={e}>
                     {e}
                   </span>
                   {u && (
-                    <span className="shrink-0 text-caption text-destructive">
+                    <span className="inline-flex h-5 shrink-0 items-center rounded-md bg-destructive/10 px-[7px] text-[11px] font-semibold text-destructive">
                       <Trans>Undeliverable</Trans>
                     </span>
                   )}
@@ -168,7 +175,10 @@ export function Identities({
             )
           })}
           {contact.external_ids.map((x) => (
-            <li key={`${x.inbox_id}:${x.external_id}`} className="flex items-center gap-2.5 px-3 py-2.5">
+            <li
+              key={`${x.inbox_id}:${x.external_id}`}
+              className="flex min-h-9 items-center gap-2.5 rounded-[9px] border px-2.5 py-1.5 text-small"
+            >
               <SmartphoneIcon className="size-[15px] shrink-0 text-faint" aria-hidden />
               <span className="min-w-0 flex-1 truncate">{inboxes.find((i) => i.id === x.inbox_id)?.name ?? "?"}</span>
               <span className="truncate font-mono text-caption text-muted-foreground" title={x.external_id}>
@@ -192,13 +202,13 @@ export function Attributes({ contact }: { contact: Contact }) {
   if (contact.locale) entries.unshift([t`Language`, languageName(contact.locale, i18n.locale)])
   if (entries.length === 0) return null
   return (
-    <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5" data-testid="attributes">
+    <dl className="grid grid-cols-[minmax(0,120px)_minmax(0,1fr)] gap-x-3 gap-y-2 text-small" data-testid="attributes">
       {entries.map(([k, v]) => (
-        <div key={k} className="min-w-0">
-          <dt className="truncate text-caption text-faint" lang="">
+        <div key={k} className="contents">
+          <dt className="truncate text-faint" lang="" title={k}>
             {k}
           </dt>
-          <dd className="mt-0.5 break-words" title={v}>
+          <dd className="break-words" title={v}>
             {v}
           </dd>
         </div>
@@ -245,38 +255,19 @@ export function ConversationFilters({
   onChange: (f: ConversationFilter) => void
   contact: Contact
 }) {
-  const { t, i18n } = useLingui()
-  const fmt = new Intl.NumberFormat(i18n.locale)
+  const { t } = useLingui()
   const a = contact.activity
-  const count = (n?: number) => n !== undefined && <span className="text-faint tabular-nums">{fmt.format(n)}</span>
   return (
-    <Segmented<ConversationFilter>
+    <ViewChips<ConversationFilter>
       label={t`Conversations`}
       value={value}
       onChange={onChange}
+      className="p-0"
       items={[
-        {
-          value: "all",
-          testId: "contact-filter-all",
-          label: (
-            <>
-              {t`All`} {count(a?.conversations)}
-            </>
-          ),
-        },
-        {
-          value: "open",
-          testId: "contact-filter-open",
-          label: (
-            <>
-              {t`Open`} {count(a?.open_conversations)}
-            </>
-          ),
-        },
+        { value: "all", testId: "contact-filter-all", label: t`All`, count: a?.conversations },
+        { value: "open", testId: "contact-filter-open", label: t`Open`, count: a?.open_conversations },
         { value: "done", testId: "contact-filter-done", label: t`Done` },
       ]}
-      itemClassName="gap-1.5"
-      className="self-start"
     />
   )
 }
@@ -321,7 +312,7 @@ export function ConversationRows({
               to={`/conversations/${c.id}`}
               className={cn(
                 "flex gap-3 transition-colors hover:bg-muted",
-                roomy ? "px-4 py-3.5" : "rounded-xl border p-3",
+                roomy ? "px-4 py-3.5" : "rounded-[10px] border bg-card p-3 hover:border-input hover:bg-card",
                 c.id === currentId && "bg-brand-wash hover:bg-brand-wash"
               )}
               data-testid="contact-conversation"
@@ -339,7 +330,18 @@ export function ConversationRows({
                   <span
                     className={cn(
                       "inline-flex shrink-0 items-center gap-1 text-caption",
-                      open ? "text-brand" : "text-faint"
+                      roomy
+                        ? open
+                          ? "text-brand"
+                          : "text-faint"
+                        : cn(
+                            "h-[22px] gap-1.5 rounded-full px-2 font-medium before:size-1.5 before:rounded-full before:bg-current",
+                            c.status === "open"
+                              ? "bg-success/10 text-success"
+                              : c.status === "snoozed"
+                                ? "bg-warning/10 text-warning"
+                                : "bg-muted text-muted-foreground"
+                          )
                     )}
                   >
                     {text.statusOf(c.status, c.kind)}

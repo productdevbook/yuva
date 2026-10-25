@@ -6,14 +6,13 @@ import {
   DownloadIcon,
   LanguagesIcon,
   LogOutIcon,
-  MonitorIcon,
-  MoonIcon,
+  KeyboardIcon,
   PlusIcon,
-  SunIcon,
   UserIcon,
 } from "lucide-react"
 import { useNavigate } from "react-router"
 
+import { useShell } from "@/app/shell"
 import { PersonAvatar } from "@/components/common"
 import { useChangeLocale } from "@/components/common/LanguageMenu"
 import {
@@ -25,6 +24,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -41,23 +41,27 @@ import { setTheme, useTheme, type Theme } from "@/lib/theme"
 import { Button } from "@/components/ui/button"
 
 function statusClass(a: Availability, live: boolean) {
-  if (a === "away") return "bg-faint"
+  if (a === "away") return "bg-warning"
   return live ? "bg-success" : "bg-faint"
+}
+
+function statusTone(a: Availability, live: boolean) {
+  if (a === "away") return "text-warning"
+  return live ? "text-success" : "text-sidebar-muted"
 }
 
 export function UserMenu({
   align = "end",
   side = "bottom",
   row,
-  bar,
 }: {
   align?: "start" | "end"
   side?: "bottom" | "inline-end" | "top"
   row?: boolean
-  bar?: boolean
 }) {
   const { t, i18n } = useLingui()
   const { me, membership, switchWorkspace } = useSession()
+  const { openShortcuts } = useShell()
   const theme = useTheme()
   const navigate = useNavigate()
   const signOut = useSignOut()
@@ -74,49 +78,45 @@ export function UserMenu({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          bar ? (
+          row ? (
             <button
               type="button"
-              className="flex h-11 min-w-0 items-center gap-2 px-2.5 text-start text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:bg-sidebar-accent data-popup-open:bg-sidebar-accent"
-            />
-          ) : row ? (
-            <button
-              type="button"
-              className="flex h-11 w-full min-w-0 items-center gap-2.5 rounded-md px-1.5 text-start text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+              className="flex h-11 w-full min-w-0 items-center gap-2.5 rounded-[10px] px-1.5 text-start text-sidebar-accent-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
             />
           ) : (
             <Button variant="ghost" size="icon" className="relative" />
           )
         }
         aria-label={t`${name} · ${statusText}`}
-        title={statusText}
+        title={row ? undefined : statusText}
         data-testid="user-menu"
       >
-        <span className={row || bar ? "relative flex shrink-0" : "contents"}>
+        <span className={row ? "relative flex shrink-0" : "contents"}>
           <PersonAvatar
             name={name}
             className={cn(
-              bar ? "size-7 text-caption" : "size-[30px]",
-              row || bar ? "bg-sidebar-muted text-sidebar" : "bg-muted-foreground text-background"
+              "size-8",
+              row ? "bg-brand-wash text-brand-ink" : "size-[30px] bg-muted-foreground text-background"
             )}
           />
           <span
             className={cn(
-              "absolute rounded-full ring-2",
-              bar ? "end-[-2px] bottom-[-2px] size-[7px]" : "size-[9px]",
-              row || bar ? "ring-sidebar" : "ring-background",
-              !bar && (row ? "end-[-1px] bottom-[-1px]" : "end-px bottom-px"),
+              "absolute rounded-full",
+              row
+                ? "end-[-1px] bottom-[-1px] size-2.5 ring-2 ring-sidebar"
+                : "end-px bottom-px size-[9px] ring-2 ring-background",
               statusClass(availability, live)
             )}
             data-testid="availability-dot"
             data-availability={availability}
           />
         </span>
-        {bar && <span className="max-w-48 truncate text-body font-medium">{name}</span>}
         {row && (
-          <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-            <span className="block truncate text-body font-medium text-sidebar-accent-foreground">{name}</span>
-            <span className="block truncate text-caption text-sidebar-muted">{statusText}</span>
+          <span className="flex min-w-0 flex-1 flex-col leading-4 group-data-[collapsible=icon]:hidden">
+            <span className="truncate text-body font-medium">{name}</span>
+            <span aria-live="polite" className={cn("truncate text-caption", statusTone(availability, live))}>
+              {statusText}
+            </span>
           </span>
         )}
       </DropdownMenuTrigger>
@@ -132,6 +132,9 @@ export function UserMenu({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <Trans>Status</Trans>
+          </DropdownMenuLabel>
           <DropdownMenuRadioGroup
             value={availability}
             onValueChange={(v) => {
@@ -162,32 +165,41 @@ export function UserMenu({
           <BellIcon />
           <Trans>Notifications</Trans>
         </DropdownMenuItem>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            {theme === "dark" ? <MoonIcon /> : theme === "light" ? <SunIcon /> : <MonitorIcon />}
+        <DropdownMenuGroup className="flex items-center gap-2 py-1 ps-2.5 pe-1.5" aria-label={t`Appearance`}>
+          <span className="flex-1 text-body text-muted-foreground">
             <Trans>Appearance</Trans>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent className="min-w-40">
-            <DropdownMenuRadioGroup value={theme} onValueChange={(v) => setTheme(v as Theme)}>
-              <DropdownMenuRadioItem value="system" data-testid="theme-system">
-                <Trans>System</Trans>
+          </span>
+          <DropdownMenuRadioGroup
+            value={theme}
+            onValueChange={(v) => setTheme(v as Theme)}
+            className="inline-flex rounded-lg bg-muted p-0.5"
+          >
+            {(
+              [
+                ["system", t`System`],
+                ["light", t`Light`],
+                ["dark", t`Dark`],
+              ] as const
+            ).map(([value, label]) => (
+              <DropdownMenuRadioItem
+                key={value}
+                value={value}
+                closeOnClick={false}
+                className="h-[26px] rounded-md px-2 pe-2 text-caption text-muted-foreground data-checked:bg-card data-checked:font-semibold data-checked:text-foreground data-checked:shadow-[0_0_0_1px_var(--border)] [&>span]:hidden"
+                data-testid={`theme-${value}`}
+              >
+                {label}
               </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="light" data-testid="theme-light">
-                <Trans>Light</Trans>
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark" data-testid="theme-dark">
-                <Trans>Dark</Trans>
-              </DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
+            ))}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
             <LanguagesIcon />
             <span className="flex-1">
               <Trans>Language</Trans>
             </span>
-            <span className="text-caption text-muted-foreground">{Object.keys(locales).length}</span>
+            <span className="text-caption text-muted-foreground">{locales[i18n.locale as Locale]}</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="max-h-80 min-w-44 overflow-y-auto">
             <DropdownMenuRadioGroup value={i18n.locale} onValueChange={(v) => changeLocale(v as Locale)}>
@@ -201,7 +213,12 @@ export function UserMenu({
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-        {!bar && (me.memberships.length > 1 || signup === "open") && (
+        <DropdownMenuItem onClick={openShortcuts} data-testid="menu-shortcuts">
+          <KeyboardIcon />
+          <Trans>Keyboard shortcuts</Trans>
+          <DropdownMenuShortcut>?</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        {!row && (me.memberships.length > 1 || signup === "open") && (
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <BuildingIcon />
@@ -230,7 +247,7 @@ export function UserMenu({
             </DropdownMenuSubContent>
           </DropdownMenuSub>
         )}
-        {!bar && (
+        {!row && (
           <DropdownMenuItem
             onClick={() => navigate("/contacts")}
             className="hidden phone:flex"
@@ -255,8 +272,12 @@ export function UserMenu({
         >
           <LogOutIcon />
           <Trans>Sign out</Trans>
-          {version && <span className="ms-auto text-caption text-faint">{version}</span>}
         </DropdownMenuItem>
+        {version && (
+          <p className="px-2.5 pt-1 pb-1.5 text-[11px] text-faint">
+            <Trans>Yuva {version}</Trans>
+          </p>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -50,7 +50,7 @@ export function EditorToolbar({
     <div
       role="toolbar"
       aria-label={t`Formatting`}
-      className="flex items-center gap-0.5 overflow-x-auto rounded-xl border bg-card p-1"
+      className="flex flex-wrap items-center gap-0.5 rounded-xl border bg-card p-1"
       data-testid="help-toolbar"
     >
       {tools.map((tool, i) =>

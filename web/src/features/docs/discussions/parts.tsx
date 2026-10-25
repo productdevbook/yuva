@@ -195,9 +195,9 @@ export function ThreadRow({
         state={from ? { from } : undefined}
         aria-current={current ? "page" : undefined}
         className={cn(
-          "flex min-w-0 flex-1 items-start gap-3 px-4 py-3 outline-none transition-colors hover:bg-muted focus-visible:bg-muted",
-          current && "bg-muted",
-          cursor && "bg-muted ring-2 ring-ring ring-inset"
+          "relative flex min-w-0 flex-1 items-start gap-3 px-4 py-3 outline-none transition-colors hover:bg-surface/60 focus-visible:bg-surface",
+          current && "bg-brand/5 before:absolute before:inset-y-0 before:start-0 before:w-[3px] before:bg-brand",
+          cursor && "bg-surface ring-2 ring-ring ring-inset"
         )}
         data-testid="thread-row"
       >
@@ -246,8 +246,9 @@ export function ThreadRow({
 export function ListSkeleton() {
   return (
     <div className="flex flex-col gap-2 p-4">
-      <Skeleton className="h-10 w-full" />
-      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-12 w-full rounded-lg" />
+      <Skeleton className="h-12 w-full rounded-lg" />
+      <Skeleton className="h-12 w-full rounded-lg" />
     </div>
   )
 }

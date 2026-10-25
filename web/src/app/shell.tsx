@@ -45,6 +45,7 @@ export type Section =
 const routed = [
   "mail",
   "mentions",
+  "assistants",
   "feedback",
   "contacts",
   "team",
@@ -66,7 +67,7 @@ export function sectionOf(pathname: string, view: Section, apart: boolean, manag
     return "status"
   const routedSection = routed.find((s) => pathname === `/${s}` || pathname.startsWith(`/${s}/`))
   if (routedSection) return routedSection
-  return isInboxRoot(pathname, apart) && view === "mentions" ? "conversations" : view
+  return isInboxRoot(pathname, apart) && (view === "mentions" || view === "assistants") ? "conversations" : view
 }
 
 const fullPage: Section[] = ["team", "reports", "docs", "broadcasts", "status", "updates", "analytics", "settings"]

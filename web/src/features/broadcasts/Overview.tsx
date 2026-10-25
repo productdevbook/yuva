@@ -1,4 +1,6 @@
+import { plural } from "@lingui/core/macro"
 import { Trans, useLingui } from "@lingui/react/macro"
+import { ChevronRightIcon, CircleAlertIcon, MailIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
@@ -7,6 +9,7 @@ import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDateTime, formatRelative, formatShort, useEnumText } from "@/components/common/text"
 import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   broadcastLink,
@@ -28,10 +31,11 @@ import {
   usePercent,
 } from "@/features/broadcasts/BroadcastParts"
 import { NewBroadcastDialog } from "@/features/broadcasts/NewBroadcastDialog"
-import { useLists, useSender } from "@/features/broadcasts/queries"
+import { listLink, useLists, useSender } from "@/features/broadcasts/queries"
 import { TestSendDialog, useTestSend } from "@/features/broadcasts/TestSend"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { FrameButton, FrameTabs, framePad, PageFrame, ProductTag } from "@/features/status/PageFrame"
+import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
+import { FrameButton, ProductTag } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useNow } from "@/hooks/use-now"
 import { useRowFocus } from "@/hooks/use-row-focus"
@@ -52,7 +56,105 @@ function matches(f: Filter, b: Broadcast) {
 }
 
 const cols =
-  "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 @2xl:grid-cols-[minmax(0,1.4fr)_100px_90px_140px_64px_72px] @4xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_100px_90px_140px_64px_72px]"
+  "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 @2xl:grid-cols-[minmax(0,1fr)_92px_76px_96px_56px_64px] @4xl:grid-cols-[minmax(128px,1fr)_minmax(88px,140px)_92px_76px_96px_56px_64px]"
+
+const DAY = 86400_000
+
+function Tile({ label, value, sub }: { label: string; value: string; sub?: React.ReactNode }) {
+  return (
+    <div className="flex min-w-0 flex-col gap-0.5 rounded-[14px] border bg-card px-3.5 py-3">
+      <span className="truncate text-small text-faint">{label}</span>
+      <b className="block text-[20px] leading-7 font-semibold tracking-[-0.01em] tabular-nums">{value}</b>
+      <span className="min-h-4 truncate text-caption text-faint tabular-nums">{sub}</span>
+    </div>
+  )
+}
+
+function Tiles({ items }: { items: Broadcast[] }) {
+  const { t } = useLingui()
+  const num = useNumber()
+  const percent = usePercent()
+  const sum = (pick: (b: Broadcast) => number) => items.reduce((n, b) => n + pick(b), 0)
+  const sent = sum((b) => b.counts.sent)
+  const clicked = sum((b) => b.counts.clicked)
+  const people = num(clicked)
+  const share = (n: number) => (sent > 0 ? percent(n / sent) : "–")
+  const unsubscribed = sum((b) => b.counts.unsubscribed)
+  const bounced = sum((b) => b.counts.bounced)
+  const unsubscribedShare = share(unsubscribed)
+  const spam = num(sum((b) => b.counts.complained))
+  const total = items.length
+  return (
+    <div
+      className="grid grid-cols-2 gap-2.5 @3xl:grid-cols-5 [&>*:last-child]:col-span-2 @3xl:[&>*:last-child]:col-span-1"
+      data-testid="broadcasts-tiles"
+    >
+      <Tile
+        label={t`Sent`}
+        value={num(sent)}
+        sub={plural(total, {
+          one: "Last 30 days · # broadcast",
+          other: "Last 30 days · # broadcasts",
+        })}
+      />
+      <Tile label={t`Clicked`} value={share(clicked)} sub={t`${people} people`} />
+      <Tile label={t`Replied`} value={num(sum((b) => b.counts.replied))} sub={t`Replies land in the inbox`} />
+      <Tile
+        label={t`Unsubscribed`}
+        value={num(unsubscribed)}
+        sub={sent > 0 ? t`${unsubscribedShare} of sent` : undefined}
+      />
+      <Tile label={t`Bounced`} value={num(bounced)} sub={t`${spam} marked as spam`} />
+    </div>
+  )
+}
+
+function ListsCard({ lists, pending }: { lists: MailingList[]; pending: boolean }) {
+  const num = useNumber()
+  const inboxes = useInboxes().data ?? []
+  const top = [...lists].sort((a, b) => b.counts.subscribed - a.counts.subscribed).slice(0, 6)
+  if (!pending && top.length === 0) return null
+  return (
+    <aside className="flex flex-col overflow-hidden rounded-[14px] border bg-card" data-testid="broadcasts-lists">
+      <Link
+        to="/broadcasts/lists"
+        className="flex items-center gap-1 px-4 py-3 text-[15px] font-semibold outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <Trans>Lists</Trans>
+        <ChevronRightIcon className="size-4 text-faint rtl:rotate-180" aria-hidden />
+      </Link>
+      {pending ? (
+        <div className="flex flex-col gap-2 border-t p-4">
+          <Skeleton className="h-5 w-full" />
+          <Skeleton className="h-5 w-4/5" />
+          <Skeleton className="h-5 w-3/5" />
+        </div>
+      ) : (
+        <ul>
+          {top.map((l) => {
+            const inbox = inboxes.find((i) => i.id === l.inbox_id)
+            return (
+              <li key={l.id} className="border-t">
+                <Link
+                  to={listLink(l.id)}
+                  className="flex items-center gap-2 px-4 py-2.5 text-body outline-none transition-colors hover:bg-surface focus-visible:bg-surface"
+                >
+                  <span
+                    className="size-2 shrink-0 rounded-[3px] bg-brand"
+                    style={inbox?.branding.color ? { background: inbox.branding.color } : undefined}
+                    aria-hidden
+                  />
+                  <span className="min-w-0 flex-1 truncate">{l.name}</span>
+                  <span className="shrink-0 font-semibold tabular-nums">{num(l.counts.subscribed)}</span>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </aside>
+  )
+}
 
 function NextSend({ b, lists }: { b: Broadcast; lists: Map<string, MailingList> }) {
   const { t, i18n } = useLingui()
@@ -80,18 +182,18 @@ function NextSend({ b, lists }: { b: Broadcast; lists: Map<string, MailingList> 
   ]
   return (
     <div
-      className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl border bg-card px-4 py-4"
+      className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-[14px] border bg-card px-4 py-3.5"
       data-testid="broadcasts-next"
     >
       <time
         dateTime={at}
-        className="flex w-[54px] shrink-0 flex-col items-center rounded-lg border bg-background py-1.5 leading-[1.1]"
+        className="flex h-12 w-11 shrink-0 flex-col items-center justify-center rounded-[10px] border bg-surface leading-none"
         aria-hidden
       >
-        <span className="text-[11px] font-semibold text-brand uppercase">
+        <span className="text-[10px] font-semibold tracking-[0.06em] text-brand uppercase">
           {new Intl.DateTimeFormat(i18n.locale, { month: "short" }).format(d)}
         </span>
-        <span className="text-[20px] font-semibold tabular-nums">
+        <span className="mt-[3px] text-[18px] font-semibold tabular-nums">
           {new Intl.DateTimeFormat(i18n.locale, { day: "numeric" }).format(d)}
         </span>
       </time>
@@ -99,7 +201,7 @@ function NextSend({ b, lists }: { b: Broadcast; lists: Map<string, MailingList> 
         <span className="flex min-w-0 items-center gap-2">
           <Link
             to={broadcastLink(b.id)}
-            className="truncate text-[16.5px] font-semibold outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+            className="truncate text-[15px] font-semibold outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
           >
             {b.name}
           </Link>
@@ -139,7 +241,13 @@ function BroadcastRow({
   const listed = b.audience.list_ids.reduce((n, id) => n + (lists.get(id)?.counts.subscribed ?? 0), 0)
   const share = c.sent > 0 ? c.clicked / c.sent : 0
   return (
-    <li className="flex items-center border-t first:border-t-0">
+    <li
+      className={cn(
+        "relative flex items-center border-t first:border-t-0",
+        isActive(b) &&
+          "before:absolute before:inset-y-3 before:start-1 before:z-10 before:w-[3px] before:rounded-[3px] before:bg-brand"
+      )}
+    >
       {check === "none" && <span className="ms-4 size-5 shrink-0" aria-hidden />}
       {check && check !== "none" && (
         <RowCheck className="ms-4" checked={check.checked} name={b.name} onToggle={check.onToggle} />
@@ -148,7 +256,7 @@ function BroadcastRow({
         to={broadcastLink(b.id)}
         className={cn(
           cols,
-          "min-h-[58px] min-w-0 flex-1 px-4 py-2.5 outline-none transition-colors first:border-t-0 hover:bg-surface focus-visible:bg-surface"
+          "min-h-14 min-w-0 flex-1 px-4 py-2.5 text-[13px] outline-none transition-colors hover:bg-surface focus-visible:bg-surface"
         )}
         data-testid="broadcasts-table-row"
       >
@@ -157,9 +265,19 @@ function BroadcastRow({
           <span className="truncate text-small text-muted-foreground">{b.subject || t`No subject yet`}</span>
           {isActive(b) && <ProgressBar b={b} className="mt-1" />}
         </span>
-        <span className="hidden min-w-0 items-center gap-1.5 text-body @4xl:flex">
-          {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
-          <span className="truncate">{names.join(", ") || "–"}</span>
+        <span className="hidden min-w-0 @4xl:flex">
+          {names.length > 0 ? (
+            <span className={cn(look.listChip, "min-w-0 shrink")} title={inbox?.name}>
+              <span
+                className="size-2 shrink-0 rounded-[3px] bg-brand"
+                style={inbox?.branding.color ? { background: inbox.branding.color } : undefined}
+                aria-hidden
+              />
+              <span className="min-w-0 truncate">{names.join(", ")}</span>
+            </span>
+          ) : (
+            <span className="text-body text-faint">–</span>
+          )}
         </span>
         <span className="justify-self-end @2xl:justify-self-start">
           <StateBadge state={b.state} />
@@ -176,22 +294,31 @@ function BroadcastRow({
           )}
         </span>
         <span className="hidden items-center gap-2 @2xl:flex">
-          <span className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+          <span className="relative h-1.5 w-8 flex-none overflow-hidden rounded-full bg-muted">
             {b.click_tracking && c.sent > 0 && (
               <span
-                className="absolute inset-y-0 start-0 rounded-full bg-success"
+                className="absolute inset-y-0 start-0 rounded-full bg-brand"
                 style={{ width: `${top > 0 ? Math.round((share / top) * 85) : 0}%` }}
               />
             )}
           </span>
           <span
-            className="w-11 text-end text-caption text-muted-foreground tabular-nums"
+            className="min-w-9 text-caption text-muted-foreground tabular-nums"
             title={b.click_tracking ? undefined : t`Clicks not tracked`}
           >
             {b.click_tracking && c.sent > 0 ? percent(share) : "–"}
           </span>
         </span>
         <span className="hidden text-body tabular-nums @2xl:block">{c.sent > 0 ? num(c.replied) : "–"}</span>
+        <span className="col-span-2 flex flex-wrap items-center gap-x-3 text-caption text-faint tabular-nums @2xl:hidden">
+          {at && <time dateTime={at}>{formatShort(at, i18n.locale)}</time>}
+          {c.recipients > 0 && <span>{num(c.recipients)}</span>}
+          {b.click_tracking && c.sent > 0 && (
+            <span>
+              {t`Clicked`} {percent(share)}
+            </span>
+          )}
+        </span>
         <span className="hidden text-small text-muted-foreground @2xl:block">
           {at ? (
             <time dateTime={at} title={formatRelative(at, i18n.locale)}>
@@ -218,12 +345,23 @@ function SendingNow({ b }: { b: Broadcast }) {
   const all = num(total)
   const paused = b.state === "paused"
   return (
-    <div className="flex flex-col gap-3 rounded-xl border bg-card p-4" data-testid="broadcasts-sending">
+    <div
+      className="relative flex flex-col gap-3 rounded-[14px] border bg-card p-4 before:absolute before:inset-y-4 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand"
+      data-testid="broadcasts-sending"
+    >
+      <span className="flex flex-col">
+        <h2 className="text-[15px] font-semibold">
+          <Trans>Going out now</Trans>
+        </h2>
+        <p className="text-small text-faint">
+          <Trans>Mail leaves at each broadcast’s pace, so providers accept it.</Trans>
+        </p>
+      </span>
       <span className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
         <StateBadge state={b.state} />
         <Link
           to={broadcastLink(b.id)}
-          className="min-w-0 truncate text-[16.5px] font-semibold outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+          className="min-w-0 truncate text-[15px] font-semibold outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
         >
           {b.name}
         </Link>
@@ -275,9 +413,12 @@ function Empty({
   const first = filter === "all"
   return (
     <div
-      className="flex flex-col items-center gap-3 rounded-xl border border-dashed px-6 py-10 text-center text-body text-muted-foreground"
+      className="mx-auto flex w-[min(560px,100%)] flex-col items-center gap-3 rounded-[14px] border bg-card px-6 py-10 text-center text-body text-muted-foreground"
       data-testid={first ? "broadcasts-home-empty" : "broadcasts-tab-empty"}
     >
+      <span className="grid size-10 place-items-center rounded-xl bg-brand-wash text-brand">
+        <MailIcon className="size-5" aria-hidden />
+      </span>
       <p className="font-semibold text-foreground">
         {first ? <Trans>No broadcasts yet</Trans> : <Trans>Nothing here.</Trans>}
       </p>
@@ -302,9 +443,9 @@ function Empty({
         </p>
       )}
       {canCreate && (
-        <FrameButton ink onClick={onNew} data-testid="broadcasts-empty-new">
+        <Button className={look.btnInk} onClick={onNew} data-testid="broadcasts-empty-new">
           <Trans>New broadcast</Trans>
-        </FrameButton>
+        </Button>
       )}
     </div>
   )
@@ -325,14 +466,24 @@ export function BroadcastsOverview() {
   const raw = params.get("tab") as Filter | null
   const filter: Filter = raw && FILTERS.includes(raw) ? raw : "all"
   const items = broadcasts.data?.pages.flatMap((p) => p.items) ?? []
+  const [query, setQuery] = useState("")
   const byId = new Map(
     [...(lists.data?.pages ?? []), ...(archived.data?.pages ?? [])].flatMap((p) => p.items).map((l) => [l.id, l])
   )
+  const now = useNow(60_000)
   const next = items
     .filter((b) => b.state === "scheduled" && b.scheduled_at)
     .sort((a, b) => a.scheduled_at!.localeCompare(b.scheduled_at!))[0]
   const sending = items.find(isActive)
-  const rows = items.filter((b) => matches(filter, b))
+  const q = query.trim().toLowerCase()
+  const rows = items.filter(
+    (b) => matches(filter, b) && (!q || b.name.toLowerCase().includes(q) || b.subject.toLowerCase().includes(q))
+  )
+  const recent = items.filter((b) => {
+    const at = b.state === "sent" || b.state === "failed" ? (b.finished_at ?? b.started_at) : undefined
+    return !!at && b.counts.sent > 0 && now - Date.parse(at) <= 30 * DAY
+  })
+  const count = (f: Filter) => items.filter((b) => matches(f, b)).length
   const selection = useSelection(
     rows.filter((b) => b.state === "draft").map((b) => b.id),
     `${filter}|${inboxId}`
@@ -348,6 +499,7 @@ export function BroadcastsOverview() {
     key: f,
     to: f === "all" ? { search: "" } : { search: `?tab=${f}` },
     label: names[f],
+    count: f !== "all" && !broadcasts.hasNextPage && count(f) > 0 ? count(f) : undefined,
     testId: `broadcasts-filter-${f}`,
   }))
   const mayCreate = canManage && status?.mode !== "off"
@@ -363,112 +515,146 @@ export function BroadcastsOverview() {
     !creating
   )
   return (
-    <PageFrame
-      testId="broadcasts-home"
-      title={<Trans>Broadcasts</Trans>}
-      description={<Trans>E-mails to the people who signed up</Trans>}
-      actions={
-        mayCreate && (
-          <FrameButton
-            ink
-            onClick={() => setCreating(true)}
-            title={keyHint(t`New broadcast`, BROADCAST_KEYS.create)}
-            data-testid="broadcasts-home-new"
-          >
-            <Trans>New broadcast</Trans>
-          </FrameButton>
-        )
-      }
-      tabs={<FrameTabs label={t`Broadcasts`} items={tabs} current={filter} />}
-      bodyClassName="@container"
-    >
-      <div className={framePad}>
-        <StatusNotice />
-        <ErrorLine error={broadcasts.error} />
-        <BroadcastBulkBar items={items} selection={selection} />
-        {broadcasts.isPending ? (
-          <Skeleton className="h-48 rounded-xl" />
-        ) : items.length === 0 ? (
-          <Empty filter="all" scope={scope} canCreate={mayCreate} onNew={() => setCreating(true)} />
-        ) : (
-          <>
-            {sending && filter === "all" && <SendingNow b={sending} />}
-            {next && (filter === "all" || filter === "scheduled") && <NextSend b={next} lists={byId} />}
-            {rows.length === 0 ? (
-              <Empty filter={filter} scope={scope} canCreate={mayCreate} onNew={() => setCreating(true)} />
+    <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="broadcasts-home">
+      <PageTop
+        title={<Trans>Broadcasts</Trans>}
+        sub={<Trans>E-mails to the people who signed up</Trans>}
+        actions={
+          mayCreate && (
+            <Button
+              className={look.btnInk}
+              onClick={() => setCreating(true)}
+              title={keyHint(t`New broadcast`, BROADCAST_KEYS.create)}
+              data-testid="broadcasts-home-new"
+            >
+              <Trans>New broadcast</Trans>
+            </Button>
+          )
+        }
+        tabs={<FrameTabs label={t`Broadcasts`} value={filter} items={tabs} />}
+      />
+      <div className="@container min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto grid w-full max-w-[1360px] items-start gap-4 p-6 pb-16 @max-xl:p-4 @min-[1100px]:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="flex min-w-0 flex-col gap-4">
+            <StatusNotice />
+            <BroadcastBulkBar items={items} selection={selection} />
+            {broadcasts.isPending ? (
+              <div className="flex flex-col gap-4" aria-busy data-testid="broadcasts-loading">
+                <Skeleton className="h-24 rounded-[14px]" />
+                <div className="grid grid-cols-2 gap-2.5 @3xl:grid-cols-5">
+                  {[0, 1, 2, 3, 4].map((n) => (
+                    <Skeleton key={n} className="h-[84px] rounded-[14px]" />
+                  ))}
+                </div>
+                <Skeleton className="h-80 rounded-[14px]" />
+              </div>
+            ) : broadcasts.error && items.length === 0 ? (
+              <div className="mx-auto my-12 flex max-w-sm flex-col items-center gap-3 px-4 text-center">
+                <span className="grid size-8 place-items-center rounded-full bg-destructive/10 text-destructive">
+                  <CircleAlertIcon className="size-4" aria-hidden />
+                </span>
+                <ErrorLine error={broadcasts.error} />
+                <Button variant="outline" className={look.btn} onClick={() => void broadcasts.refetch()}>
+                  <Trans>Try again</Trans>
+                </Button>
+              </div>
+            ) : items.length === 0 ? (
+              <Empty filter="all" scope={scope} canCreate={mayCreate} onNew={() => setCreating(true)} />
             ) : (
               <>
-                {canManage && !selection.selecting && rows.some((b) => b.state === "draft") && (
-                  <div className="flex justify-end">
-                    <SelectToggle selection={selection} />
+                <ErrorLine error={broadcasts.error} />
+                {sending && filter === "all" && <SendingNow b={sending} />}
+                {next && (filter === "all" || filter === "scheduled") && <NextSend b={next} lists={byId} />}
+                {filter === "all" && !broadcasts.hasNextPage && recent.length > 0 && <Tiles items={recent} />}
+                {rows.length === 0 && !q ? (
+                  <Empty filter={filter} scope={scope} canCreate={mayCreate} onNew={() => setCreating(true)} />
+                ) : (
+                  <div className="overflow-hidden rounded-[14px] border bg-card" data-testid="broadcasts-table">
+                    <div className="flex items-center gap-2 border-b px-4 py-3">
+                      <Input
+                        type="search"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder={t`Search`}
+                        aria-label={t`Search`}
+                        className="h-[34px] w-64 rounded-[9px] bg-card phone:w-full"
+                      />
+                      <span className="flex-1" />
+                      {canManage && !selection.selecting && rows.some((b) => b.state === "draft") && (
+                        <SelectToggle selection={selection} />
+                      )}
+                    </div>
+                    <div className={cn(cols, look.over, "hidden h-9 border-b px-4 @2xl:grid")} aria-hidden>
+                      <span>
+                        <Trans>Broadcast</Trans>
+                      </span>
+                      <span className="hidden @4xl:block">
+                        <Trans>List</Trans>
+                      </span>
+                      <span>
+                        <Trans>Status</Trans>
+                      </span>
+                      <span>
+                        <Trans>Recipients</Trans>
+                      </span>
+                      <span>
+                        <Trans>Clicked</Trans>
+                      </span>
+                      <span>
+                        <Trans>Replied</Trans>
+                      </span>
+                      <span>
+                        <Trans>Date</Trans>
+                      </span>
+                    </div>
+                    {rows.length === 0 ? (
+                      <p className="px-4 py-8 text-center text-body text-muted-foreground">
+                        <Trans>Nothing here.</Trans>
+                      </p>
+                    ) : (
+                      <ul ref={table}>
+                        {rows.map((b) => (
+                          <BroadcastRow
+                            key={b.id}
+                            b={b}
+                            lists={byId}
+                            top={top}
+                            check={
+                              selection.selecting
+                                ? b.state === "draft"
+                                  ? {
+                                      checked: selection.has(b.id),
+                                      onToggle: (range) => selection.toggle(b.id, range),
+                                    }
+                                  : "none"
+                                : undefined
+                            }
+                          />
+                        ))}
+                      </ul>
+                    )}
+                    {broadcasts.hasNextPage && (
+                      <div className="flex justify-center border-t p-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => void broadcasts.fetchNextPage()}
+                          disabled={broadcasts.isFetchingNextPage}
+                        >
+                          <Trans>Load more</Trans>
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
-                <div className="overflow-hidden rounded-xl border bg-card" data-testid="broadcasts-table">
-                  <div
-                    className={cn(
-                      cols,
-                      "hidden border-b bg-surface px-4 py-3 text-small font-medium text-muted-foreground @2xl:grid"
-                    )}
-                    aria-hidden
-                  >
-                    <span>
-                      <Trans>Broadcast</Trans>
-                    </span>
-                    <span className="hidden @4xl:block">
-                      <Trans>List</Trans>
-                    </span>
-                    <span>
-                      <Trans>Status</Trans>
-                    </span>
-                    <span>
-                      <Trans>Recipients</Trans>
-                    </span>
-                    <span>
-                      <Trans>Clicked</Trans>
-                    </span>
-                    <span>
-                      <Trans>Replied</Trans>
-                    </span>
-                    <span>
-                      <Trans>Date</Trans>
-                    </span>
-                  </div>
-                  <ul ref={table}>
-                    {rows.map((b) => (
-                      <BroadcastRow
-                        key={b.id}
-                        b={b}
-                        lists={byId}
-                        top={top}
-                        check={
-                          selection.selecting
-                            ? b.state === "draft"
-                              ? { checked: selection.has(b.id), onToggle: (range) => selection.toggle(b.id, range) }
-                              : "none"
-                            : undefined
-                        }
-                      />
-                    ))}
-                  </ul>
-                </div>
+                <p className="text-small text-faint">
+                  <Trans>Yuva counts clicks and replies. It does not track opens.</Trans>
+                </p>
               </>
             )}
-            {broadcasts.hasNextPage && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="self-center"
-                onClick={() => void broadcasts.fetchNextPage()}
-                disabled={broadcasts.isFetchingNextPage}
-              >
-                <Trans>Load more</Trans>
-              </Button>
-            )}
-            <p className="text-small text-faint">
-              <Trans>Yuva counts clicks and replies. It does not track opens.</Trans>
-            </p>
-          </>
-        )}
+          </div>
+          <ListsCard lists={lists.data?.pages.flatMap((p) => p.items) ?? []} pending={lists.isPending} />
+        </div>
       </div>
       {creating && (
         <NewBroadcastDialog
@@ -480,6 +666,6 @@ export function BroadcastsOverview() {
           }}
         />
       )}
-    </PageFrame>
+    </main>
   )
 }

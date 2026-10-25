@@ -9,8 +9,9 @@ import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { ContactsColumn } from "@/features/contact/ContactsColumn"
 import { FeedbackList } from "@/features/feedback/FeedbackList"
 import { ChatList } from "@/features/inbox/ChatList"
-import { setRailView, useRailView } from "@/features/inbox/railView"
-import { AssistantsPanel, MentionsPanel } from "@/features/inbox/SidePanels"
+import { setRailView } from "@/features/inbox/railView"
+import { AssistantsPanel } from "@/features/inbox/AssistantsPage"
+import { MentionsPanel } from "@/features/inbox/SidePanels"
 import { ReportsColumn } from "@/features/reports/ReportsColumn"
 import { SettingsColumn } from "@/features/settings/SettingsColumn"
 import { useIsPhone } from "@/hooks/use-media-query"
@@ -67,11 +68,11 @@ function SectionColumn() {
 }
 
 function useMentionsView(pathname: string, manager: boolean) {
-  const view = useRailView()
   useEffect(() => {
     if (pathname === "/mentions") setRailView("mentions")
-    else if (isInboxRoot(pathname, manager) && view === "mentions") setRailView("conversations")
-  }, [pathname, view, manager])
+    else if (pathname === "/assistants") setRailView("assistants")
+    else if (isInboxRoot(pathname, manager)) setRailView("conversations")
+  }, [pathname, manager])
 }
 
 function sidebarOpenAtStart() {
@@ -79,19 +80,27 @@ function sidebarOpenAtStart() {
   return saved ? saved === "true" : window.matchMedia("(min-width: 1100px)").matches
 }
 
+const widths = { "--sidebar-width": "15.5rem", "--sidebar-width-icon": "4rem" } as React.CSSProperties
+
 function Desktop({ frame, children }: { frame: boolean; children: React.ReactNode }) {
   const [open] = useState(sidebarOpenAtStart)
   return (
-    <SidebarProvider defaultOpen={open} className="flex-col" data-testid="shell">
+    <SidebarProvider
+      defaultOpen={open}
+      style={widths}
+      className="*:data-[slot=sidebar]:bg-sidebar max-md:flex-col"
+      data-testid="shell"
+    >
       <TopBar />
-      <div className="flex min-w-0 flex-1 *:data-[slot=sidebar]:bg-sidebar">
-        <AppSidebar />
-        <div
-          className={cn("flex min-w-0 flex-1 flex-col", frame && "sticky top-11 h-[calc(100svh-2.75rem)]")}
-          data-frame={frame || undefined}
-        >
-          {children}
-        </div>
+      <AppSidebar />
+      <div
+        className={cn(
+          "flex min-w-0 flex-1 flex-col",
+          frame && "sticky top-0 h-svh max-md:static max-md:h-[calc(100svh-49px)]"
+        )}
+        data-frame={frame || undefined}
+      >
+        {children}
       </div>
     </SidebarProvider>
   )
@@ -128,6 +137,7 @@ export function Layout() {
       pathname === "/feedback" ||
       pathname.startsWith("/feedback/") ||
       section === "mail" ||
+      section === "assistants" ||
       section === "board" ||
       section === "docs" ||
       section === "status"

@@ -63,8 +63,8 @@ msgid "{0, plural, one {The help center does not offer this language, so its tra
 msgstr "{0, plural, one {The help center does not offer this language, so its translations were not imported.} other {The help center does not offer these languages, so their translations were not imported.}}"
 
 #: src/features/help/ArticlesTab.tsx
-msgid "{drafts} drafts"
-msgstr "{drafts} ਡਰਾਫਟ"
+msgid "{drafts, plural, one {# draft} other {# drafts}}"
+msgstr "{drafts, plural, one {# ਖਰੜਾ} other {# ਖਰੜੇ}}"
 
 #: src/features/help/HelpColumn.tsx
 msgid "{published} of {total} articles published"
@@ -122,6 +122,10 @@ msgstr "ਪਤੇ ਦਾ ਅੰਤ"
 #: src/features/help/SettingsTab.tsx
 msgid "Agents may publish"
 msgstr "ਏਜੰਟ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰ ਸਕਦੇ ਹਨ"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "All"
+msgstr "ਸਾਰੇ"
 
 #: src/features/help/Revisions.tsx
 msgid "An API key"
@@ -553,6 +557,7 @@ msgstr "ਭਾਸ਼ਾ"
 msgid "Language of the articles"
 msgstr "Language of the articles"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Languages"
 msgstr "ਭਾਸ਼ਾਵਾਂ"
@@ -935,11 +940,11 @@ msgstr "ਸੰਭਾਲਿਆ ਗਿਆ"
 msgid "Saving…"
 msgstr "ਸੰਭਾਲਿਆ ਜਾ ਰਿਹਾ ਹੈ…"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles"
 msgstr "ਸਿਰਲੇਖਾਂ ਵਿੱਚ ਖੋਜੋ"
 
-#: src/features/help/pages.tsx
+#: src/features/help/ArticlesTab.tsx
 msgid "Search titles ({findKey})"
 msgstr "ਸਿਰਲੇਖਾਂ ਵਿੱਚ ਖੋਜੋ ({findKey})"
 
@@ -1217,6 +1222,7 @@ msgstr "ਸਾਈਟ ਦੇਖੋ"
 msgid "View site ({openKey})"
 msgstr "ਸਾਈਟ ਦੇਖੋ ({openKey})"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Views"
 msgstr "ਦ੍ਰਿਸ਼"

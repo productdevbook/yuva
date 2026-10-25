@@ -19,6 +19,7 @@ import { Link, useSearchParams } from "react-router"
 
 import { ErrorLine, toast } from "@/components/common"
 import { InitialsAvatar, useAuthorName } from "@/components/common/DiscussionAuthor"
+import { OverflowTabs } from "@/components/common/OverflowTabs"
 import { formatRelative, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -38,7 +39,7 @@ import { DeleteAccountButton } from "@/features/auth/DeleteAccountButton"
 import { AuthLayout } from "@/features/auth/AuthLayout"
 import { SignInForm } from "@/features/auth/SignInForm"
 import { pageLabel } from "@/features/docs/PageContext"
-import { Card, EmptyRow, Field, pageTabClass, Section, ToggleRow } from "@/features/settings/ui"
+import { Card, EmptyRow, Field, Section, ToggleRow } from "@/features/settings/ui"
 import type { ReaderAccount, ReaderDiscussion, ReaderNotification } from "@/lib/api"
 import { useMe, useSignOut } from "@/lib/session"
 import { cn } from "@/lib/utils"
@@ -433,32 +434,27 @@ function AccountHome() {
               </Button>
             </div>
           </header>
-          <nav
-            className="-mx-4 -mt-2 flex gap-5 overflow-x-auto border-b px-4 sm:mx-0 sm:px-1"
-            aria-label={t`Account`}
-            data-testid="account-tabs"
-          >
-            {TABS.map((k) => (
-              <button
-                key={k}
-                type="button"
-                aria-pressed={tab === k}
-                onClick={() => setParams(k === "notifications" ? {} : { tab: k }, { replace: true })}
-                className={cn(
-                  pageTabClass,
-                  "aria-pressed:font-medium aria-pressed:text-foreground aria-pressed:shadow-[inset_0_-2px_0_currentColor]"
-                )}
-                data-testid={`account-tab-${k}`}
-              >
-                {labels[k]}
-                {k === "notifications" && unread > 0 && (
-                  <span className="min-w-5 rounded-full bg-brand px-1.5 text-center text-caption font-medium text-white tabular-nums">
-                    {unread}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
+          <OverflowTabs
+            label={t`Account`}
+            current={tab}
+            testId="account-tabs"
+            className="-mx-4 -mt-2 border-b px-4 sm:mx-0 sm:px-1"
+            items={TABS.map((k) => ({
+              key: k,
+              label: (
+                <>
+                  {labels[k]}
+                  {k === "notifications" && unread > 0 && (
+                    <span className="min-w-5 rounded-full bg-brand px-1.5 text-center text-caption font-medium text-white tabular-nums">
+                      {unread}
+                    </span>
+                  )}
+                </>
+              ),
+              testId: `account-tab-${k}`,
+              onSelect: () => setParams(k === "notifications" ? {} : { tab: k }, { replace: true }),
+            }))}
+          />
           {tab === "notifications" && <Notifications />}
           {tab === "discussions" && <Discussions kind="discussions" />}
           {tab === "following" && <Discussions kind="following" />}

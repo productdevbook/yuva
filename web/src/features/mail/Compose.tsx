@@ -17,7 +17,6 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { Textarea } from "@/components/ui/textarea"
 import { FileThumb, MAX_FILES } from "@/features/conversation/composer/ReplyBox"
 import { useSuggestions } from "@/features/conversation/composer/Recipients"
-import { look } from "@/features/inbox/PageFrame"
 import { mailPath } from "@/features/mail/folders"
 import { useMySignatures } from "@/features/settings/signature/queries"
 import { useLatest } from "@/hooks/use-latest"
@@ -105,8 +104,8 @@ const toggleClass =
 
 function Row({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-2 px-3">
-      <span className="w-14 shrink-0 pt-1.5 text-caption text-faint">{label}</span>
+    <div className="mx-4 flex items-start gap-2 border-b border-border/60 pb-1.5">
+      <span className="w-14 shrink-0 pt-1.5 text-small text-faint">{label}</span>
       <div className="min-w-0 flex-1">{children}</div>
     </div>
   )
@@ -358,10 +357,10 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
       role="dialog"
       aria-label={t`New mail`}
       className={cn(
-        "fixed z-40 flex flex-col overflow-hidden border bg-card shadow-xl",
+        "fixed z-40 flex flex-col overflow-hidden border bg-card shadow-[0_24px_60px_rgb(0_0_0/0.25)]",
         phone
           ? "inset-0 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
-          : "end-6 bottom-0 max-h-[min(720px,calc(100svh-96px))] w-[min(600px,calc(100vw-48px))] rounded-t-xl"
+          : "end-6 bottom-0 max-h-[min(720px,calc(100svh-96px))] w-[min(600px,calc(100vw-48px))] rounded-t-2xl"
       )}
       data-testid="compose"
       onKeyDown={(e) => {
@@ -377,8 +376,10 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
         }
       }}
     >
-      <div className="flex items-center gap-2 border-b bg-surface px-3 py-2">
-        <h2 className="flex-1 text-body font-medium">{reopened ? <Trans>Draft</Trans> : <Trans>New mail</Trans>}</h2>
+      <div className="flex min-h-14 items-center gap-2 border-b border-border/60 bg-card ps-5 pe-3">
+        <h2 className="flex-1 text-[16px] font-semibold">
+          {reopened ? <Trans>Draft</Trans> : <Trans>New mail</Trans>}
+        </h2>
         {state !== "idle" && (
           <span
             className={cn("text-caption", state === "failed" ? "text-destructive" : "text-faint")}
@@ -584,7 +585,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
           </ul>
         )}
       </div>
-      <div className="flex flex-col gap-1.5 border-t px-3 py-2">
+      <div className="flex flex-col gap-1.5 border-t border-border/60 px-4 py-3">
         <ComposeError error={error} />
         {asking ? (
           <div className="flex flex-wrap items-center gap-2" data-testid="compose-ask">
@@ -625,7 +626,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             )}
             <Button
               variant="ghost"
-              className={cn(look.btn, "text-faint hover:bg-muted")}
+              className="h-8 rounded-[9px] px-3 font-normal text-faint hover:bg-muted"
               disabled={busy || !hasContent}
               onClick={() => void discard()}
               data-testid="compose-discard"
@@ -639,7 +640,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
               trigger={
                 <Button
                   variant="outline"
-                  className={cn(look.btn, "w-[34px] px-0")}
+                  className="h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal"
                   disabled={!canSend}
                   aria-label={t`Send later`}
                   title={t`Send later (${laterKey})`}
@@ -650,7 +651,12 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             >
               <ClockIcon />
             </SendLaterMenu>
-            <Button className={look.btnInk} disabled={!canSend} onClick={() => void go()} data-testid="compose-send">
+            <Button
+              className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
+              disabled={!canSend}
+              onClick={() => void go()}
+              data-testid="compose-send"
+            >
               <Trans>Send</Trans>
               <Kbd className="phone:hidden bg-background/15 text-background">{sendKey}</Kbd>
             </Button>

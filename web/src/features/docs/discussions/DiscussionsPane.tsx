@@ -8,13 +8,13 @@ import { SelectToggle } from "@/components/common/Selection"
 import { DiscussionBulkBar } from "@/features/docs/discussions/Bulk"
 import { ListSkeleton, LoadMore, ThreadRow } from "@/features/docs/discussions/parts"
 import { threadLink, useDiscussions, type ThreadView } from "@/features/docs/discussions/queries"
+import { look } from "@/features/inbox/PageFrame"
 import { Card, EmptyRow } from "@/features/settings/ui"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useResetState } from "@/hooks/use-reset-state"
 import { useSelection } from "@/hooks/use-selection"
 import type { Discussion } from "@/lib/api"
 import type { DiscussionFilters } from "@/lib/keys"
-import { cn } from "@/lib/utils"
 
 export function ThreadList({
   filters,
@@ -132,10 +132,7 @@ export function Chips<T extends string>({
           aria-pressed={value === it.value}
           title={it.title}
           onClick={() => onChange(it.value)}
-          className={cn(
-            "h-7 shrink-0 rounded-full px-3 text-small font-medium transition-colors",
-            value === it.value ? "bg-brand-wash text-brand" : "bg-muted text-muted-foreground hover:text-foreground"
-          )}
+          className={value === it.value ? look.listChipOn : look.listChip}
           data-testid={`${testId}-${it.value}`}
         >
           {it.label}

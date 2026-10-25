@@ -156,7 +156,7 @@ export function RangePicker({ className, plain }: { className?: string; plain?: 
   )
 }
 
-export function ComparePicker() {
+export function ComparePicker({ className }: { className?: string } = {}) {
   const { t, i18n } = useLingui()
   const { view, setCompare } = useView()
   const [custom, setCustom] = useState(false)
@@ -180,7 +180,11 @@ export function ComparePicker() {
           else setCompare(v === "previous" || v === "year" ? { with: v } : undefined)
         }}
       >
-        <SelectTrigger aria-label={t`Comparison`} className="max-w-full min-w-0" data-testid="analytics-compare">
+        <SelectTrigger
+          aria-label={t`Comparison`}
+          className={cn("max-w-full min-w-0", className)}
+          data-testid="analytics-compare"
+        >
           <GitCompareArrowsIcon className="text-faint" />
           <SelectValue />
         </SelectTrigger>
@@ -223,18 +227,18 @@ function FilterChip({ f, i }: { f: AnalyticsFilter; i: number }) {
   const label = filterLabel(text, f, i18n.locale)
   return (
     <li
-      className="flex h-7 shrink-0 items-center rounded-full border bg-card ps-1 text-small"
+      className="flex h-[30px] shrink-0 items-center rounded-lg border border-brand/30 bg-brand-wash ps-1 text-small"
       data-testid="analytics-filter"
     >
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="flex h-full max-w-72 items-center gap-1 rounded-full ps-2 pe-1 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex h-full max-w-72 items-center gap-1 rounded-lg ps-2 pe-1 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={t`Change filter: ${label}`}
         >
-          <span className="truncate text-faint" dir="auto">
+          <span className="truncate text-muted-foreground" dir="auto">
             {filterName(text, f)}
           </span>
-          <span className="text-faint">{text.op[f.op]}</span>
+          <span className="text-muted-foreground">{text.op[f.op]}</span>
           <span className="truncate font-medium" dir="auto">
             {f.dimension === "country" && flag(value)} {shown}
           </span>
@@ -258,7 +262,7 @@ function FilterChip({ f, i }: { f: AnalyticsFilter; i: number }) {
       <button
         type="button"
         onClick={() => removeFilter(i)}
-        className="grid size-6 place-items-center rounded-full text-faint outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+        className="grid size-[22px] place-items-center rounded-md text-faint outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={t`Remove filter: ${label}`}
       >
         <XIcon className="size-3.5" />
@@ -272,8 +276,8 @@ export function FilterBar() {
   const { view, clearFilters } = useView()
   if (view.filters.length === 0) return null
   return (
-    <div className="-mx-1 flex items-center gap-2 overflow-x-auto px-1 py-0.5" aria-label={t`Filters`} role="group">
-      <ul className="flex items-center gap-1.5">
+    <div className="flex min-w-0 flex-wrap items-center gap-2" aria-label={t`Filters`} role="group">
+      <ul className="flex flex-wrap items-center gap-1.5">
         {view.filters.map((f, i) => (
           <FilterChip key={`${f.dimension}${i}`} f={f} i={i} />
         ))}
@@ -373,7 +377,7 @@ function SegmentDialog({
   )
 }
 
-export function SegmentPicker({ propertyId }: { propertyId: string }) {
+export function SegmentPicker({ propertyId, className }: { propertyId: string; className?: string }) {
   const { t, i18n } = useLingui()
   const text = useAnalyticsText()
   const { canManage, membership } = useSession()
@@ -393,7 +397,10 @@ export function SegmentPicker({ propertyId }: { propertyId: string }) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="flex h-9 max-w-full min-w-0 items-center gap-2 rounded-xl border border-input bg-background ps-3 pe-2.5 text-body whitespace-nowrap transition-colors outline-none hover:border-foreground/25 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/25"
+          className={cn(
+            "flex h-[30px] max-w-full min-w-0 items-center gap-2 rounded-lg border border-input bg-background ps-3 pe-2.5 text-body whitespace-nowrap transition-colors outline-none hover:border-faint focus-visible:ring-2 focus-visible:ring-ring",
+            className
+          )}
           aria-label={t`Segment`}
           data-testid="analytics-segment"
         >
@@ -489,28 +496,5 @@ export function SegmentPicker({ propertyId }: { propertyId: string }) {
       )}
       {confirm}
     </>
-  )
-}
-
-export function Controls({
-  propertyId,
-  compare = true,
-  filters = true,
-  range = true,
-}: {
-  propertyId: string
-  compare?: boolean
-  filters?: boolean
-  range?: boolean
-}) {
-  return (
-    <div className="flex flex-col gap-2.5">
-      <div className="flex flex-wrap items-center gap-2 empty:hidden">
-        {range && <RangePicker />}
-        {compare && <ComparePicker />}
-        {filters && <SegmentPicker propertyId={propertyId} />}
-      </div>
-      {filters && <FilterBar />}
-    </div>
   )
 }

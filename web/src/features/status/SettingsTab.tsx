@@ -517,16 +517,18 @@ export function SettingsTab({ page }: { page: StatusPage }) {
   }, [shown, seen])
   return (
     <div className="flex flex-col gap-6" data-testid="status-settings">
-      <div className="flex min-h-5 items-center">
-        {auto.patch.error ? (
-          <ErrorLine error={auto.patch.error} />
-        ) : (
-          shown && (
-            <span className="text-body text-muted-foreground" role="status" data-testid="status-saved">
-              <Trans>Saved</Trans>
-            </span>
-          )
-        )}
+      <div className="relative -mb-6 h-0">
+        <div className="absolute inset-x-0 bottom-1 flex items-center justify-end">
+          {auto.patch.error ? (
+            <ErrorLine error={auto.patch.error} />
+          ) : (
+            shown && (
+              <span className="text-body text-muted-foreground" role="status" data-testid="status-saved">
+                <Trans>Saved</Trans>
+              </span>
+            )
+          )}
+        </div>
       </div>
       <PageCard page={page} auto={auto} />
       <DisplayCard page={page} auto={auto} />

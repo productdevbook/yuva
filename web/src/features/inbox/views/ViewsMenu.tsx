@@ -42,7 +42,7 @@ export function ViewsMenu({ filters, active }: { filters: ConversationFilters; a
     <>
       <DropdownMenu>
         <DropdownMenuTrigger
-          render={<button type="button" className={id ? look.chipOn : look.chip} />}
+          render={<button type="button" className={id ? look.listChipOn : look.listChip} />}
           aria-label={t`Saved views`}
           title={t`Saved views`}
           data-testid="views-menu"

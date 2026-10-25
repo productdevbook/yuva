@@ -1,6 +1,7 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts"
 import { Outlet, useLocation, useSearchParams } from "react-router"
 
 import { ErrorLine, InboxMark } from "@/components/common"
@@ -9,6 +10,7 @@ import { EmptyBox } from "@/components/common/EmptyBox"
 import { Segmented } from "@/components/common/Segmented"
 import { formatDuration } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import {
   Dialog,
   DialogContent,
@@ -18,7 +20,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
+import { KpiTile } from "@/features/analytics/Overview"
+import { Panel } from "@/features/analytics/parts"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import {
   createdSince,
   dayKey,
@@ -30,18 +35,15 @@ import {
   useWindowStats,
 } from "@/features/reports/data"
 import {
-  Card,
-  CardHead,
-  EmptyRow,
-  Face,
-  headButton,
-  Page,
-  PageHeader,
-  PageTabs,
-  ProductTag,
-  StatTile,
-  tableHeadClass,
-} from "@/features/settings/ui"
+  headClass,
+  LoadProblem,
+  ReportSkeleton,
+  SlaBar,
+  SlotsContext,
+  Tiles,
+  ToolbarPortal,
+} from "@/features/reports/parts"
+import { Face, headButton, ProductTag } from "@/features/settings/ui"
 import { useNow } from "@/hooks/use-now"
 import type { ConversationListItem, Stats } from "@/lib/api"
 import { cn } from "@/lib/utils"
@@ -225,13 +227,7 @@ function PeriodBar() {
       ? new Intl.DateTimeFormat(i18n.locale, { weekday: "long", month: "short", day: "numeric" }).format(now)
       : `${day.format(startOf(range))} – ${day.format(now)}`
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-      <span className="flex min-w-48 flex-1 flex-col leading-[1.3]">
-        <span className="font-semibold">{names[range]}</span>
-        <span className="text-caption text-faint" data-testid="report-range-note">
-          {note} · {scope}
-        </span>
-      </span>
+    <>
       <Segmented
         value={range}
         label={t`Period`}
@@ -248,7 +244,10 @@ function PeriodBar() {
         }
         items={RANGES.map((r) => ({ value: r, label: names[r], testId: `report-range-${r}` }))}
       />
-    </div>
+      <span className="shrink-0 text-small whitespace-nowrap text-faint" data-testid="report-range-note">
+        {note} · {scope}
+      </span>
+    </>
   )
 }
 
@@ -259,6 +258,9 @@ export function ReportsPane() {
   const trends = current === "trends"
   const csv = useCsv()
   const [csvOpen, setCsvOpen] = useState(false)
+  const [toolbar, setToolbar] = useState<HTMLElement | null>(null)
+  const [actions, setActions] = useState<HTMLElement | null>(null)
+  const slots = useMemo(() => ({ toolbar, actions }), [toolbar, actions])
   const tabs = [
     { key: "today", to: { pathname: "/reports/today", search }, label: t`Overview`, testId: "report-tab-today" },
     { key: "trends", to: { pathname: "/reports/trends", search: "" }, label: t`Trends`, testId: "report-tab-trends" },
@@ -266,38 +268,59 @@ export function ReportsPane() {
     { key: "members", to: { pathname: "/reports/members", search }, label: t`Team`, testId: "report-tab-members" },
   ]
   return (
-    <Page testId="reports">
-      <PageHeader
-        back={false}
-        title={<Trans>Reports</Trans>}
-        description={<Trans>How fast and how well your team answers</Trans>}
-        action={
-          !trends && (
-            <Button
-              className={headButton.primary}
-              disabled={!csv.ready}
-              onClick={() => setCsvOpen(true)}
-              data-testid="report-export"
-            >
-              <Trans>Download CSV</Trans>
-            </Button>
-          )
-        }
-        tabs={<PageTabs label={t`Reports`} items={tabs} current={current} />}
-      />
-      {!trends && <PeriodBar />}
-      <Outlet />
-      {csvOpen && <CsvDialog csv={csv} onClose={() => setCsvOpen(false)} />}
-    </Page>
+    <SlotsContext.Provider value={slots}>
+      <main className="@container flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="reports">
+        <PageTop
+          title={<Trans>Reports</Trans>}
+          sub={<Trans>How fast and how well your team answers</Trans>}
+          actions={
+            <>
+              {!trends && (
+                <Button
+                  className={look.btnInk}
+                  disabled={!csv.ready}
+                  onClick={() => setCsvOpen(true)}
+                  data-testid="report-export"
+                >
+                  <Trans>Download CSV</Trans>
+                </Button>
+              )}
+              <span ref={setActions} className="contents" />
+            </>
+          }
+          tabs={<FrameTabs label={t`Reports`} value={current} items={tabs} />}
+        />
+        <div
+          ref={setToolbar}
+          className="flex flex-wrap items-center gap-2 border-b px-6 py-3 empty:hidden phone:px-4"
+          data-testid="reports-toolbar"
+        />
+        {!trends && (
+          <ToolbarPortal>
+            <PeriodBar />
+          </ToolbarPortal>
+        )}
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-4 p-6 pb-16 @max-xl:p-4 @max-xl:pb-16">
+            <Outlet />
+          </div>
+        </div>
+        {csvOpen && <CsvDialog csv={csv} onClose={() => setCsvOpen(false)} />}
+      </main>
+    </SlotsContext.Provider>
   )
 }
 
-function Report({ children }: { children: (s: Stats) => React.ReactNode }) {
+function Report({ children, tiles }: { children: (s: Stats) => React.ReactNode; tiles?: number }) {
   const stats = useReportStats()
   return (
     <>
-      {stats.isPending && <Skeleton className="h-28 rounded-xl" />}
-      <ErrorLine error={stats.error} />
+      {stats.isPending && <ReportSkeleton tiles={tiles} testId="report-loading" />}
+      {stats.error && !stats.data ? (
+        <LoadProblem error={stats.error} onRetry={() => void stats.refetch()} testId="report-error" />
+      ) : (
+        <ErrorLine error={stats.error} />
+      )}
       {stats.data && children(stats.data)}
     </>
   )
@@ -330,40 +353,58 @@ function NewChart({ items, more }: { items: ConversationListItem[]; more: boolea
     })
   }
   const total = `${fmt.format(items.length)}${more ? "+" : ""}`
-  const top = Math.max(1, ...slots.map((s) => s.n))
   const last = hourly ? slots.findIndex((s) => Number(s.key) === now.getHours()) : slots.length - 1
-  const ticks = [0, Math.round((slots.length - 1) / 3), Math.round(((slots.length - 1) * 2) / 3), slots.length - 1]
+  const config: ChartConfig = { n: { label: t`New conversations`, color: "var(--brand)" } }
   return (
-    <section className="flex min-w-0 flex-col gap-3 rounded-xl border bg-card p-4" data-testid="report-chart">
-      <div className="flex items-baseline gap-2">
-        <h2 className="flex-1 font-semibold">
-          {hourly ? <Trans>New conversations by hour</Trans> : <Trans>New conversations by day</Trans>}
-        </h2>
+    <Panel
+      title={hourly ? <Trans>New conversations by hour</Trans> : <Trans>New conversations by day</Trans>}
+      action={
         <span className="text-caption text-faint tabular-nums">
           <Trans>{total} in total</Trans>
         </span>
-      </div>
-      <div className="flex h-40 items-end gap-1.5 border-b" role="img" aria-label={t`New conversations`}>
-        {slots.map((s, i) => (
-          <span
-            key={s.key}
-            className="flex-1 rounded-t bg-brand"
-            title={`${s.label} · ${fmt.format(s.n)}`}
-            style={{ height: s.n ? `${(s.n / top) * 100}%` : 2, opacity: s.n ? (i === last ? 1 : 0.7) : 0.25 }}
+      }
+      testId="report-chart"
+    >
+      <ChartContainer
+        config={config}
+        className="aspect-auto h-44 w-full px-1"
+        role="img"
+        aria-label={t`New conversations`}
+      >
+        <BarChart data={slots} margin={{ top: 8, right: 8, bottom: 0, left: -4 }} barCategoryGap="22%">
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="label"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            minTickGap={28}
+            interval="preserveStartEnd"
           />
-        ))}
-      </div>
-      <div className="flex justify-between text-caption text-faint">
-        {[...new Set(ticks)].map((i) => (
-          <span key={i}>{slots[i]?.label}</span>
-        ))}
-      </div>
-    </section>
+          <YAxis tickLine={false} axisLine={false} width={36} allowDecimals={false} />
+          <ChartTooltip
+            cursor={{ fill: "var(--muted)", fillOpacity: 0.6 }}
+            content={
+              <ChartTooltipContent
+                indicator="line"
+                hideLabel={false}
+                labelFormatter={(_, p) => p?.[0]?.payload.label}
+              />
+            }
+          />
+          <Bar dataKey="n" fill="var(--color-n)" radius={[3, 3, 0, 0]} maxBarSize={22} isAnimationActive={false}>
+            {slots.map((s, i) => (
+              <Cell key={s.key} fillOpacity={i === last ? 1 : 0.5} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ChartContainer>
+    </Panel>
   )
 }
 
 const PRODUCT_GRID =
-  "grid grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] items-center gap-3 px-4"
+  "grid grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.3fr)] items-center gap-3 px-4"
 
 function SlaCounts({ met, breached }: { met: number; breached: number }) {
   const { i18n } = useLingui()
@@ -375,6 +416,17 @@ function SlaCounts({ met, breached }: { met: number; breached: number }) {
       <span className="text-faint"> / </span>
       <span className={breached ? "text-destructive" : "text-muted-foreground"}>{fmt.format(breached)}</span>
     </>
+  )
+}
+
+function SlaCell({ met, breached, testId }: { met: number; breached: number; testId: string }) {
+  return (
+    <span className="flex items-center gap-2 tabular-nums" data-testid={testId}>
+      <SlaBar met={met} breached={breached} />
+      <span className="min-w-0">
+        <SlaCounts met={met} breached={breached} />
+      </span>
+    </span>
   )
 }
 
@@ -392,9 +444,9 @@ function ByProduct({ items }: { items: ConversationListItem[] }) {
     .map((inbox, i) => ({ inbox, s: stats[i]?.data, n: items.filter((c) => c.inbox_id === inbox.id).length }))
     .sort((a, b) => b.n - a.n)
   return (
-    <section className="overflow-x-auto rounded-xl border bg-card" data-testid="report-inboxes">
-      <div className="min-w-[520px]">
-        <div className={cn(PRODUCT_GRID, tableHeadClass, "py-2.5")}>
+    <section className="overflow-x-auto rounded-[14px] border bg-card" data-testid="report-inboxes">
+      <div className="min-w-[560px]">
+        <div className={cn(PRODUCT_GRID, headClass, "h-9 border-b")}>
           <span>
             <Trans>Product</Trans>
           </span>
@@ -415,7 +467,11 @@ function ByProduct({ items }: { items: ConversationListItem[] }) {
           const cell = (v: number | undefined) =>
             !s ? <Skeleton className="h-4 w-10" /> : v !== undefined ? formatDuration(v, i18n.locale) : "–"
           return (
-            <div key={inbox.id} className={cn(PRODUCT_GRID, "border-t py-[11px]")} data-testid="report-inbox">
+            <div
+              key={inbox.id}
+              className={cn(PRODUCT_GRID, "min-h-[46px] border-b text-body last:border-b-0")}
+              data-testid="report-inbox"
+            >
               <span className="flex min-w-0 items-center gap-2.5">
                 <InboxMark name={inbox.name} color={inbox.branding.color} className="size-[22px]" />
                 <span className="truncate font-medium">{inbox.name}</span>
@@ -423,9 +479,11 @@ function ByProduct({ items }: { items: ConversationListItem[] }) {
               <span className="text-muted-foreground tabular-nums">{fmt.format(n)}</span>
               <span className="text-muted-foreground tabular-nums">{cell(s?.median_first_reply_seconds)}</span>
               <span className="text-muted-foreground tabular-nums">{cell(s?.median_resolution_seconds)}</span>
-              <span className="tabular-nums" data-testid="report-inbox-sla">
-                {s ? <SlaCounts met={s.sla.met} breached={s.sla.breached} /> : <Skeleton className="h-4 w-10" />}
-              </span>
+              {s ? (
+                <SlaCell met={s.sla.met} breached={s.sla.breached} testId="report-inbox-sla" />
+              ) : (
+                <Skeleton className="h-4 w-10" />
+              )}
             </div>
           )
         })}
@@ -447,15 +505,15 @@ export function TodayReport() {
         const breached = fmt.format(s.sla.breached)
         return (
           <>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4" data-testid="report-tiles">
-              <StatTile
+            <Tiles testId="report-tiles">
+              <KpiTile
                 label={t`New`}
                 value={recent.data ? `${fmt.format(fresh.length)}${recent.data.complete ? "" : "+"}` : "–"}
                 hint={t`conversations started`}
                 testId="report-new"
               />
               {s.sla.met + s.sla.breached > 0 && (
-                <StatTile
+                <KpiTile
                   label={t`SLA met`}
                   value={new Intl.NumberFormat(i18n.locale, { style: "percent" }).format(
                     s.sla.met / (s.sla.met + s.sla.breached)
@@ -464,9 +522,9 @@ export function TodayReport() {
                   testId="report-sla"
                 />
               )}
-              <StatTile label={t`Replied`} value={fmt.format(s.replies)} hint={t`messages sent`} />
-              <StatTile label={t`Closed`} value={fmt.format(s.closed)} hint={t`conversations`} />
-              <StatTile
+              <KpiTile label={t`Replied`} value={fmt.format(s.replies)} hint={t`messages sent`} />
+              <KpiTile label={t`Closed`} value={fmt.format(s.closed)} hint={t`conversations`} />
+              <KpiTile
                 label={t`First reply`}
                 value={
                   s.median_first_reply_seconds !== undefined
@@ -475,7 +533,7 @@ export function TodayReport() {
                 }
                 hint={range === "today" ? t`median today` : t`median`}
               />
-              <StatTile
+              <KpiTile
                 label={t`Resolved in`}
                 value={
                   s.median_resolution_seconds !== undefined
@@ -483,18 +541,15 @@ export function TodayReport() {
                     : "–"
                 }
                 hint={t`median, first message to closed`}
-                hintClassName="whitespace-normal"
                 testId="report-resolved"
               />
-            </div>
-            <div className="grid grid-cols-1 gap-4">
-              {recent.isPending ? (
-                <Skeleton className="h-60 rounded-xl" />
-              ) : (
-                <NewChart items={fresh} more={!recent.data?.complete} />
-              )}
-              <ByProduct items={fresh} />
-            </div>
+            </Tiles>
+            {recent.isPending ? (
+              <Skeleton className="h-60 rounded-[14px]" />
+            ) : (
+              <NewChart items={fresh} more={!recent.data?.complete} />
+            )}
+            <ByProduct items={fresh} />
           </>
         )
       }}
@@ -531,20 +586,21 @@ export function RatingsReport() {
   const written = ratedSince(recent.data?.items ?? [], since).filter((c) => c.rating?.comment)
   const shown = written.filter((c) => filter === "all" || (filter === "good") === (c.rating!.rating === "good"))
   return (
-    <Report>
+    <Report tiles={1}>
       {(s) => {
         const rated = s.ratings.good + s.ratings.bad
         if (rated === 0) {
           return (
             <EmptyBox
+              icon={ThumbsUpIcon}
               title={<Trans>No ratings in this period</Trans>}
-              className="border-solid bg-card"
+              className="rounded-[14px] border-solid bg-card"
               testId="report-no-ratings"
               actions={
                 range !== "30d" && (
                   <Button
                     variant="outline"
-                    className={headButton.secondary}
+                    className={look.btnSm}
                     onClick={() =>
                       setParams((prev) => new URLSearchParams({ ...Object.fromEntries(prev), range: "30d" }), {
                         replace: true,
@@ -561,95 +617,112 @@ export function RatingsReport() {
             </EmptyBox>
           )
         }
-        const most = Math.max(s.ratings.good, s.ratings.bad, 1)
-        const rows: [boolean, number][] = [
-          [true, s.ratings.good],
-          [false, s.ratings.bad],
-        ]
         return (
-          <div className="grid items-start gap-4 lg:grid-cols-[340px_minmax(0,1fr)]" data-testid="report-ratings">
-            <section className="flex flex-col gap-3.5 rounded-xl border bg-card p-5">
+          <div
+            className="grid items-start gap-4 grid-cols-[340px_minmax(0,1fr)] @max-[1000px]:grid-cols-1"
+            data-testid="report-ratings"
+          >
+            <section className="flex flex-col gap-3.5 rounded-[14px] border bg-card p-5">
+              <span className="text-small text-faint">
+                <Trans>Satisfied</Trans>
+              </span>
               <span className="flex flex-wrap items-baseline gap-x-2.5">
-                <b className="text-[44px] leading-none font-semibold tracking-[-0.03em] tabular-nums">
+                <b className="text-[40px] leading-[44px] font-semibold tracking-[-0.02em] tabular-nums">
                   {pct.format(share(s.ratings.good, s.ratings.bad) ?? 0)}
                 </b>
-                <span className="text-muted-foreground">
+                <span className="text-small text-muted-foreground">
                   <Trans>good</Trans> · <Plural value={rated} one="# rating" other="# ratings" />
                 </span>
               </span>
-              {rows.map(([good, n]) => (
-                <span key={String(good)} className="flex items-center gap-2.5">
-                  <span className="w-7">
-                    <Score good={good} />
-                  </span>
-                  <span className="flex h-2 flex-1 overflow-hidden rounded-full bg-border">
-                    <span
-                      className={cn("rounded-full", good ? "bg-success" : "bg-destructive")}
-                      style={{ width: `${(n / most) * 100}%` }}
-                    />
-                  </span>
-                  <span className="w-7 text-end text-caption text-faint tabular-nums">{fmt.format(n)}</span>
-                </span>
-              ))}
-            </section>
-            <Card flush>
-              <CardHead
-                action={
-                  <ChipGroup
-                    value={filter}
-                    onChange={setFilter}
-                    label={t`Show`}
-                    options={[
-                      ["all", t`All`],
-                      ["bad", t`Bad only`],
-                      ["good", t`Good only`],
-                    ]}
-                    className="shrink-0 flex-nowrap"
+              <span className="flex h-2.5 gap-0.5" role="img" aria-label={t`Satisfied`}>
+                {s.ratings.good > 0 && (
+                  <i
+                    className="block h-full rounded-s-full bg-success"
+                    style={{ flexGrow: s.ratings.good, flexBasis: 0 }}
                   />
-                }
-              >
-                <Trans>What people wrote</Trans>
-              </CardHead>
-              {recent.isPending ? (
-                <Skeleton className="m-4 h-24" />
-              ) : shown.length === 0 ? (
-                <EmptyRow>
-                  <Trans>Nobody left a comment with a rating in this period.</Trans>
-                </EmptyRow>
-              ) : (
-                <ul data-testid="report-comments">
-                  {shown.slice(0, 20).map((c) => {
-                    const inbox = inboxes.get(c.inbox_id)
-                    const by = c.assignee_id ? members.get(c.assignee_id) : undefined
-                    const name = by ? by.name || by.email : ""
-                    const who = c.contact.name || c.contact.email || ""
-                    return (
-                      <li key={c.id} className="flex items-start gap-3 border-b px-4 py-[11px] last:border-b-0">
-                        <span className="w-7 shrink-0 pt-0.5">
-                          <Score good={c.rating!.rating === "good"} />
-                        </span>
-                        <span className="flex min-w-0 flex-1 flex-col gap-0.5 leading-[1.4]">
-                          <span className="break-words">“{c.rating!.comment}”</span>
-                          <span className="flex min-w-0 flex-wrap items-center gap-1.5 text-caption text-faint">
-                            {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
-                            <span>
-                              {name ? (
-                                <Trans>
-                                  {who} · answered by {name}
-                                </Trans>
-                              ) : (
-                                who
-                              )}{" "}
-                              · {daysAgo(c.rating!.rated_at, i18n.locale)}
+                )}
+                {s.ratings.bad > 0 && (
+                  <i
+                    className="block h-full min-w-1 rounded-e-full bg-destructive"
+                    style={{ flexGrow: s.ratings.bad, flexBasis: 0 }}
+                  />
+                )}
+              </span>
+              <span className="flex justify-between text-small text-muted-foreground tabular-nums">
+                <span className="inline-flex items-center gap-1.5">
+                  <Score good />
+                  {fmt.format(s.ratings.good)}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Score good={false} />
+                  {fmt.format(s.ratings.bad)}
+                </span>
+              </span>
+            </section>
+            <Panel
+              title={<Trans>What people wrote</Trans>}
+              action={
+                <ChipGroup
+                  value={filter}
+                  onChange={setFilter}
+                  label={t`Show`}
+                  options={[
+                    ["all", t`All`],
+                    ["bad", t`Bad only`],
+                    ["good", t`Good only`],
+                  ]}
+                  className="shrink-0 flex-nowrap"
+                />
+              }
+            >
+              <div className="-mx-3 -mb-3 border-t">
+                {recent.isPending ? (
+                  <Skeleton className="m-4 h-24" />
+                ) : shown.length === 0 ? (
+                  <p className="px-4 py-10 text-center text-body text-faint">
+                    <Trans>Nobody left a comment with a rating in this period.</Trans>
+                  </p>
+                ) : (
+                  <ul data-testid="report-comments">
+                    {shown.slice(0, 20).map((c) => {
+                      const inbox = inboxes.get(c.inbox_id)
+                      const by = c.assignee_id ? members.get(c.assignee_id) : undefined
+                      const name = by ? by.name || by.email : ""
+                      const who = c.contact.name || c.contact.email || ""
+                      const good = c.rating!.rating === "good"
+                      return (
+                        <li key={c.id} className="flex items-start gap-3 border-b px-4 py-3.5 last:border-b-0">
+                          <span
+                            className={cn(
+                              "grid size-7 shrink-0 place-items-center rounded-full",
+                              good ? "bg-success/15" : "bg-destructive/15"
+                            )}
+                          >
+                            <Score good={good} />
+                          </span>
+                          <span className="flex min-w-0 flex-1 flex-col gap-1 leading-[1.45]">
+                            <span className="text-body break-words">“{c.rating!.comment}”</span>
+                            <span className="flex min-w-0 flex-wrap items-center gap-1.5 text-caption text-faint">
+                              {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
+                              <span>
+                                {name ? (
+                                  <Trans>
+                                    {who} · answered by {name}
+                                  </Trans>
+                                ) : (
+                                  who
+                                )}{" "}
+                                · {daysAgo(c.rating!.rated_at, i18n.locale)}
+                              </span>
                             </span>
                           </span>
-                        </span>
-                      </li>
-                    )
-                  })}
-                </ul>
-              )}
-            </Card>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                )}
+              </div>
+            </Panel>
           </div>
         )
       }}
@@ -658,7 +731,7 @@ export function RatingsReport() {
 }
 
 const MEMBER_GRID =
-  "grid grid-cols-[minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.1fr)_minmax(0,1fr)] items-center gap-4 px-4"
+  "grid grid-cols-[minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.1fr)_minmax(0,1.3fr)] items-center gap-4 px-4"
 
 type MemberSort = "replies" | "closed" | "rating"
 
@@ -671,7 +744,7 @@ export function MembersReport() {
   const pct = new Intl.NumberFormat(i18n.locale, { style: "percent" })
   const rated = ratedSince(recent.data?.items ?? [], since)
   return (
-    <Report>
+    <Report tiles={1}>
       {(s) => {
         const people = s.members.map((p) => {
           const mine = rated.filter((c) => c.assignee_id === p.member_id)
@@ -687,11 +760,11 @@ export function MembersReport() {
         )
         if (people.length === 0) {
           return (
-            <Card flush>
-              <EmptyRow>
+            <div className="rounded-[14px] border bg-card">
+              <p className="px-4 py-12 text-center text-body text-faint">
                 <Trans>Nobody has replied or closed anything in this period.</Trans>
-              </EmptyRow>
-            </Card>
+              </p>
+            </div>
           )
         }
         const most = Math.max(1, ...people.map((p) => p.replies))
@@ -699,7 +772,7 @@ export function MembersReport() {
           <button
             type="button"
             className={cn(
-              "w-fit text-start outline-none focus-visible:underline",
+              "w-fit text-start tracking-[inherit] uppercase outline-none focus-visible:underline",
               sort === key ? "text-foreground" : "hover:text-foreground"
             )}
             aria-sort={sort === key ? "descending" : undefined}
@@ -712,9 +785,9 @@ export function MembersReport() {
         )
         return (
           <>
-            <section className="overflow-x-auto rounded-xl border bg-card" data-testid="report-members">
+            <section className="overflow-x-auto rounded-[14px] border bg-card" data-testid="report-members">
               <div className="min-w-[680px]">
-                <div className={cn(MEMBER_GRID, tableHeadClass, "py-2.5")}>
+                <div className={cn(MEMBER_GRID, headClass, "h-9 border-b")}>
                   <span>
                     <Trans>Member</Trans>
                   </span>
@@ -731,13 +804,16 @@ export function MembersReport() {
                   const ratedText = fmt.format(p.rated)
                   const sla = s.sla.members.find((x) => x.member_id === p.member_id)
                   return (
-                    <div key={p.member_id} className={cn(MEMBER_GRID, "border-t py-3")}>
+                    <div
+                      key={p.member_id}
+                      className={cn(MEMBER_GRID, "min-h-[50px] border-b text-body last:border-b-0")}
+                    >
                       <span className="flex min-w-0 items-center gap-2.5">
                         <Face id={p.member_id} name={name} className="size-7" />
                         <span className="truncate font-medium">{name}</span>
                       </span>
                       <span className="flex items-center gap-2">
-                        <span className="flex h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-border">
+                        <span className="flex h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-muted">
                           <span className="rounded-full bg-brand" style={{ width: `${(p.replies / most) * 100}%` }} />
                         </span>
                         <span className="w-7 shrink-0 text-muted-foreground tabular-nums">{fmt.format(p.replies)}</span>
@@ -756,9 +832,7 @@ export function MembersReport() {
                           "–"
                         )}
                       </span>
-                      <span className="tabular-nums" data-testid="report-member-sla">
-                        <SlaCounts met={sla?.met ?? 0} breached={sla?.breached ?? 0} />
-                      </span>
+                      <SlaCell met={sla?.met ?? 0} breached={sla?.breached ?? 0} testId="report-member-sla" />
                     </div>
                   )
                 })}

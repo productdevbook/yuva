@@ -14,9 +14,11 @@ const WINDOWS = [7, 30, 90] as const
 function Tile({ label, value, testId }: { label: string; value: number; testId: string }) {
   const { i18n } = useLingui()
   return (
-    <div className="flex flex-col gap-1 rounded-2xl border bg-card px-4 py-3" data-testid={testId}>
+    <div className="flex flex-col gap-1 rounded-[14px] border bg-card px-4 py-3.5" data-testid={testId}>
       <span className="text-small text-faint">{label}</span>
-      <span className="text-title tabular-nums">{new Intl.NumberFormat(i18n.locale).format(value)}</span>
+      <span className="text-[24px] leading-[30px] font-semibold tracking-[-0.01em] tabular-nums">
+        {new Intl.NumberFormat(i18n.locale).format(value)}
+      </span>
     </div>
   )
 }
@@ -29,7 +31,7 @@ function ArticleTable({ center, items }: { center: HelpCenter; items: HelpReport
     <div className="overflow-x-auto">
       <table className="w-full min-w-[34rem] text-body">
         <thead>
-          <tr className="border-b text-start text-small text-faint">
+          <tr className="border-b text-start text-[11px] tracking-[0.05em] text-faint uppercase">
             <th className="px-4 py-2 text-start font-medium">
               <Trans>Article</Trans>
             </th>
@@ -104,7 +106,7 @@ export function ReportTab({ center }: { center: HelpCenter }) {
         />
       </div>
       {report.isPending ? (
-        <Skeleton className="h-40 w-full rounded-2xl" />
+        <Skeleton className="h-40 w-full rounded-[14px]" />
       ) : report.error || !r ? (
         <ErrorLine error={report.error} />
       ) : (

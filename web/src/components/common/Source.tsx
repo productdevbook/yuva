@@ -32,7 +32,7 @@ export function sourceOf(c: Conversation, channel?: Channel): Source | undefined
   return c.channel_kind ?? channel?.kind
 }
 
-export function pageOf(c: Conversation) {
+export function pageOf(c: Pick<Conversation, "page" | "feedback">) {
   return c.page?.page_url ?? c.feedback?.page_url
 }
 
@@ -73,7 +73,7 @@ export function isVisitor(name?: string, email?: string) {
 
 export function useContactName() {
   const { t } = useLingui()
-  return (c: Conversation, channel: Channel | undefined, name?: string, email?: string) => {
+  return (c: Pick<Conversation, "page" | "feedback">, channel: Channel | undefined, name?: string, email?: string) => {
     if (!isVisitor(name, email)) return name?.trim() || email || ""
     const page = pageOf(c)
     const where = page ? hostOf(page) : channel?.kind === "chat" ? channel.name : undefined

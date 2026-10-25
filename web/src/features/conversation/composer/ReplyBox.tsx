@@ -103,10 +103,10 @@ function Suggestion({
   const author = useAuthorName(m, ctx)
   return (
     <div
-      className="mx-2.5 mb-2 flex flex-col gap-2 rounded-xl border border-dashed border-brand/50 bg-brand-wash/60 px-3 py-2.5 text-small"
+      className="mx-2.5 mb-2 flex flex-col gap-2 rounded-xl border border-dashed border-input bg-surface px-3.5 py-3 text-small"
       data-testid="suggestion"
     >
-      <span className="flex items-center gap-1.5 text-caption font-semibold text-brand">
+      <span className="flex items-center gap-1.5 text-caption font-semibold text-muted-foreground">
         {m.author.type === "bot" ? (
           <BotAvatar name={author} url={m.author.avatar_url} className="size-4" />
         ) : (
@@ -551,7 +551,7 @@ export const ReplyBox = forwardRef<
   return (
     <div
       className={cn(
-        "@container/composer relative rounded-xl border bg-card transition-colors focus-within:border-brand/45",
+        "@container/composer relative rounded-[14px] border border-input bg-card shadow-[0_1px_2px_rgb(0_0_0/0.04)] transition-colors focus-within:border-faint",
         note && "border-note-border bg-note focus-within:border-note-ink/40",
         className
       )}
