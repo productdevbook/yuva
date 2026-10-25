@@ -418,6 +418,7 @@ function applyProgress(qc: QueryClient, ws: string, p: BroadcastProgress) {
     state: p.state,
     counts: p.counts,
     waiting_until: p.waiting_until,
+    window_opens_at: p.window_opens_at,
   })
   qc.setQueryData<Broadcast>(keys.broadcast(ws, p.id), (old) => (old ? patch(old) : old))
   patchBroadcastPages(qc, ws, p.id, patch)

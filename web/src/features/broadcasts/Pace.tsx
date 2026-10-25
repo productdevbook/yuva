@@ -87,12 +87,14 @@ export function PaceFields({
   onChange,
   disabled,
   rate,
+  windowed,
   idPrefix = "broadcast-pace",
 }: {
   value: PaceText
   onChange: (v: PaceText) => void
   disabled?: boolean
   rate?: number
+  windowed?: boolean
   idPrefix?: string
 }) {
   const { t, i18n } = useLingui()
@@ -113,6 +115,7 @@ export function PaceFields({
               key={f.key}
               label={f.label}
               htmlFor={`${idPrefix}-${f.name}`}
+              hint={f.key === "per_day" && windowed ? <Trans>per day, within the sending hours</Trans> : undefined}
               error={bad ? <Trans>A whole number from 1 to 10,000,000</Trans> : undefined}
             >
               <Input
@@ -178,7 +181,15 @@ export function PaceDialog({ b, rate, onClose }: { b: Broadcast; rate?: number; 
             <Trans>No limit</Trans>
             <Switch checked={none} onCheckedChange={setNone} data-testid="broadcast-pace-dialog-none" />
           </label>
-          {!none && <PaceFields value={text} onChange={setText} rate={rate} idPrefix="broadcast-pace-dialog" />}
+          {!none && (
+            <PaceFields
+              value={text}
+              onChange={setText}
+              rate={rate}
+              windowed={!!b.send_window}
+              idPrefix="broadcast-pace-dialog"
+            />
+          )}
           <ErrorLine error={update.error} />
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={onClose}>

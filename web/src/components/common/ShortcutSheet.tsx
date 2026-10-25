@@ -123,6 +123,7 @@ export const BROADCAST_KEYS = {
   deliveries: "d",
   summary: "b",
   pace: "e",
+  hours: "h",
 } as const
 
 export const LIST_KEYS = {
@@ -437,6 +438,7 @@ export function ShortcutSheet({
         [k(BROADCAST_KEYS.deliveries), t`Recipients`],
         [k(BROADCAST_KEYS.summary), t`Broadcast`],
         [k(BROADCAST_KEYS.pace), t`Change pace`],
+        [k(BROADCAST_KEYS.hours), t`Change the sending hours`],
       ],
     },
     {

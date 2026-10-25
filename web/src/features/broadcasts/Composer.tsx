@@ -22,6 +22,7 @@ import { keyHint, senderState, StatusNotice, useNumber, type SenderState } from 
 import { DesignPicker } from "@/features/broadcasts/DesignPicker"
 import { useInboxChannels, useLists } from "@/features/broadcasts/queries"
 import { hasPace, PaceFields, paceInvalid, paceOf, paceTextOf, type PaceText } from "@/features/broadcasts/Pace"
+import { hoursInvalid, hoursOf, SendTimeFields, windowOf, type HoursText } from "@/features/broadcasts/SendTime"
 import {
   CheckState,
   PART_OF,
@@ -58,6 +59,8 @@ type Draft = {
   utm_campaign: string
   pace_on: boolean
   pace: PaceText
+  timezone: string
+  hours: HoursText
 }
 
 function draftOf(b: Broadcast): Draft {
@@ -73,6 +76,8 @@ function draftOf(b: Broadcast): Draft {
     utm_campaign: b.utm_campaign,
     pace_on: hasPace(b.pace),
     pace: paceTextOf(b.pace),
+    timezone: b.timezone,
+    hours: hoursOf(b.send_window),
   }
 }
 
@@ -412,6 +417,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   const { t, i18n } = useLingui()
   const navigate = useNavigate()
   const [d, setD] = useState<Draft>(() => draftOf(b))
+  const inboxZone = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)?.timezone
   const auto = useAutosave(b.id)
   const count = useAudienceCount(b, true)
   const review = useReview(b, true)
@@ -504,7 +510,10 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
         <div className={cn(framePad, "max-w-[1200px]")}>
           <StatusNotice />
           <ErrorLine error={remove.error} />
-          <div className="grid items-start gap-6 @4xl:grid-cols-[minmax(0,1fr)_21rem]" data-testid="broadcast-composer">
+          <div
+            className="grid grid-cols-[minmax(0,1fr)] items-start gap-6 @4xl:grid-cols-[minmax(0,1fr)_21rem]"
+            data-testid="broadcast-composer"
+          >
             <div className="flex min-w-0 flex-col gap-6">
               <Section title={<Trans>Sender</Trans>}>
                 <Card id="broadcast-sender">
@@ -683,6 +692,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                         <PaceFields
                           value={d.pace}
                           disabled={readOnly}
+                          windowed={d.hours.on}
                           rate={channel?.email?.broadcast_rate}
                           onChange={(pace) =>
                             set({ pace }, paceInvalid(pace) || !hasPace(paceOf(pace)) ? {} : { pace: paceOf(pace) })
@@ -695,6 +705,19 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                         )}
                       </>
                     )}
+                  </div>
+                  <div id="broadcast-hours" className="flex flex-col gap-4 border-t pt-4">
+                    <SendTimeFields
+                      zone={d.timezone}
+                      onZone={(timezone) => set({ timezone }, { timezone })}
+                      hours={d.hours}
+                      onHours={(hours) =>
+                        set({ hours }, hoursInvalid(hours) ? {} : { send_window: hours.on ? windowOf(hours) : null })
+                      }
+                      disabled={readOnly}
+                      inboxZone={inboxZone}
+                      days={Math.ceil((review.data?.days ?? 1) + 7)}
+                    />
                   </div>
                 </Card>
               </Section>

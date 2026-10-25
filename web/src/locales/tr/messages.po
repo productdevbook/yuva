@@ -1044,6 +1044,10 @@ msgstr "{up} yararlı"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# güncelleme} other {# güncelleme}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Alıcılar o anda belirlenir; başlayana kadar taslağa dönebilirsiniz."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# adresi içe aktar} other {# adresi içe aktar}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} sizden {contact} görüşmesinde bahsetti. Görüşmeyi aç"
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who}, <0>{title}</0> tartışmasına yanıt verdi"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. Alıcılar o anda belirlenir; gönderim başlayana kadar taslağa dönebilirsiniz."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "Bu çalışma alanında <0>Botlar gönderebilir</0> açık; mesaj yazma 
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> Yuva deposunu Swift paketi olarak ekleyip <1>YuvaKit</1> kütüphanesini kullanın; istemciyi sunucu adresi ve bu anahtarla oluşturun."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} sizin saatinizle ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Her durum"
 msgid "Any team"
 msgstr "Herhangi bir ekip"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "Her saat"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Sitenizdeki herkes yazabilir. Yalnızca oturum açmış kullanıcılar yazacaksa kapatın."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Uygulandığı yer"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "Bir sonraki postadan itibaren geçerli olur."
 
@@ -3223,6 +3236,10 @@ msgstr "Asistanlar, bekleyen {drafts} taslak"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Eşzamansız"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "Saat"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Kampanya adı"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Bu yönlendirmeyi aşağıdaki adrese çevirin; böylece {address} adres
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Seçimi değiştir"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Gönderim saatlerini değiştir"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "İstemci kimliği"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "İstemci gizli anahtarı"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Saatler {date} tarihinde değişiyor; gönderim saatleri yerel saatle {start}–{end} olarak kalır."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Müşteriler sohbet, uygulama ya da e-postayla yazar; puanlama, atama ve
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Günlük sınır"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Günlük sınıra ulaşıldı · {city} saatiyle {time} saatinde devam eder"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Açık: {name}"
 msgid "Encryption"
 msgstr "Şifreleme"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "Günün sonu (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Bitti: {finished}"
@@ -7613,6 +7648,7 @@ msgstr "Gönderilenler klasörlerinizde bulunan adresler"
 msgid "Friday"
 msgstr "Cuma"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Posta listesi (List-Id)"
 msgid "Mailing lists"
 msgstr "E-posta listeleri"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "E-postalar {city} saatiyle {start} ile {end} arasında gider ({utcStart}–{utcEnd} UTC) ve ertesi gün devam eder."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Hoş geldin e-postası gönderilmez. Her yeni adres onay bekler ve e-pos
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Hoş geldin ya da onay e-postası gönderilmez. Her abonelik, beyan ettiğiniz onayı ve geldiği içe aktarmayı saklar."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Eşleşen saat dilimi yok"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Bu gelen kutusunu henüz başka kimse göremiyor."
@@ -12698,6 +12742,10 @@ msgstr "Şimdilik yalnızca al"
 msgid "Only receives"
 msgstr "Yalnızca alır"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Yalnızca belirli saatlerde gönder"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "Yalnızca o üye okur. Siz yalnızca var olduğunu görürsünüz."
@@ -13213,6 +13261,10 @@ msgstr "Outlook'un .pst dosyaları okunmaz; önce .mbox'a dönüştürün."
 msgid "Outside business hours"
 msgstr "Çalışma saatleri dışında"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "Bu saatlerin dışında gönderim bekler, saatler yeniden açılınca devam eder."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Bunların dışında ürün kapalı sayılır."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Günde"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "günde, gönderim saatleri içinde"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Saatte"
 
@@ -13691,13 +13747,17 @@ msgstr "Ayarlardan bir gönderen seçin"
 msgid "Pick a team"
 msgstr "Bir ekip seçin"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Bir saat seçin"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Şu andan en az bir dakika sonrasını seçin."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Önümüzdeki 90 gün içinde, kendi saat diliminizde ({zone}) bir zaman seçin."
+msgid "Pick a time in the next 90 days."
+msgstr "Önümüzdeki 90 gün içinde bir zaman seçin."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Okumak için bir olay seçin."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Açık bir olay ya da bakım seçin"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "En az 30 dakika seçin"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Cumartesi"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Abonelerde ara"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Makalelerde ara"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Saat dilimi ara"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "Gönderilemedi."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Gönderim çoktan başladı. Bunun yerine duraklatın ya da iptal edin."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Gönderim saatleri"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "“{name}” gönderim saatleri"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "Gönderim askıya alındı."
@@ -16485,6 +16563,10 @@ msgstr "E-postalarını gönderen kanal"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local} tarihinde gönderilecek"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "{sendDate} günü {city} saatiyle {sendTime} saatinde gönderilir ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Yazdığınız için teşekkürler"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Yazdığınız için teşekkürler. Genellikle bir gün içinde yanıt veririz."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "Bu, sizin saatinizle {mineStart}–{mineEnd} ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "Bu Slack çalışma alanı başka bir Yuva çalışma alanına bağlı. Önce oradaki bağlantıyı kesin."
@@ -18973,6 +19059,10 @@ msgstr "Sessiz dönem bitti; taşıma bir sonraki eşitlemede biter."
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "Alan sunucu SPF'yi doğrulamadı. Kaydın SMTP sağlayıcınızı içerdiğini denetleyin."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "Alıcılar o anda belirlenir; başlayana kadar taslağa dönebilirsiniz."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "Alıcılar gönderim başladığında belirlenir: sonradan abone olanlar almaz, e-postası gitmeden ayrılan atlanır. Gönderim sürerken duraklatabilir ya da iptal edebilirsiniz."
@@ -19062,6 +19152,14 @@ msgstr "Gönderen alan adının DMARC kaydı yok."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "Gönderen alan adı henüz SPF, DKIM ve DMARC denetiminden geçmedi. Bildirimler spam klasörüne düşebilir."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "Gönderim saatleri şu anda kapalı; gönderim {date} günü {time} saatinde başlar."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "O zaman gönderim saatleri kapalı; gönderim {openDate} günü {openTime} saatinde başlar."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "Çalışma alanı şimdilik bülten gönderemez."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Çalışma alanı şu an toplu e-posta gönderemez"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "Çalışma alanı bugünkü gönderim sınırına ulaştı. Gönderim {local} tarihinde ({utc} UTC) sürecek."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "Talepler yanıtları, notları, etiketleri, durumu ve atanan kişiyle bi
 msgid "Time"
 msgstr "Zaman"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "son {days} günde abonelikten çıkan"
 msgid "unsubscribed now"
 msgstr "şu an abonelikten çıkmış"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Bitiş"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "{expires} tarihine kadar"
@@ -21012,6 +21113,10 @@ msgstr "Google'ın onay kodu bekleniyor…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Gelmesi bekleniyor"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Gönderim saatlerini bekliyor · {city} saatiyle {time} saatinde açılır ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "Ekibiniz"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "Ekibiniz hello@ veya billing@ gibi posta kutularını paylaşır; bunlar destek görünümlerinin ve istatistiklerinin dışında tutulur."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Saat diliminiz: {zone}. Bu, {utc} UTC demek."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

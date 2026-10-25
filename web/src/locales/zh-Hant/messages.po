@@ -1044,6 +1044,10 @@ msgstr "有幫助 {up}"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, other {# 則更新}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC。屆時才會確定收件者；開始之前可以退回草稿。"
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {匯入 # 個地址}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} 在 {contact} 中提到了你。開啟對話"
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} 在 <0>{title}</0> 中回覆了"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC。屆時會確定收件人;開始前你可以退回草稿。"
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "此工作區已開啟<0>允許機器人傳送</0>,因此具有寫入訊�
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0>將 Yuva 儲存庫新增為 Swift 包並使用 <1>YuvaKit</1> 庫;用伺服器 URL 和此金鑰建立用戶端。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= 您的時間 {mineTime}（{mineName}）"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "任何狀態"
 msgid "Any team"
 msgstr "任何團隊"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "任何時間"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "你網站上的任何人都可以發言。如果只允許已登入使用者聊天,請關閉。"
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "適用於"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "對下一封郵件生效。"
 
@@ -3223,6 +3236,10 @@ msgstr "助手,{drafts} 份草稿等待中"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "非同步"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "時間"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "活動名稱"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "把該轉發改為下面的地址,讓 {address} 的郵件到達 Yuva 而
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "更改選擇"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "變更寄送時段"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "用戶端識別符號"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "用戶端金鑰"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "時鐘將於 {date} 調整；寄送時段仍為當地時間 {start}–{end}。"
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "客戶透過聊天、App 或郵件來信；評分、指派與 SLA 在這
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "每日上限"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "已達每日上限 · 將於{city}時間 {time} 繼續"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "已開啟:{name}"
 msgid "Encryption"
 msgstr "加密"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "一天結束（24:00）"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "{finished} 結束"
@@ -7613,6 +7648,7 @@ msgstr "在你的已傳送資料夾中找到"
 msgid "Friday"
 msgstr "星期五"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "郵寄清單 (List-Id)"
 msgid "Mailing lists"
 msgstr "郵件列表"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "郵件在{city}時間 {start} 至 {end}（{utcStart}–{utcEnd} UTC）寄出，並於隔天繼續。"
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "不會傳送歡迎郵件。每個新地址都等待確認,點選郵件�
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "不會傳送歡迎或確認郵件。每個訂閱都會保留你宣告的同意以及它來自的匯入。"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "沒有符合的時區"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "還沒有其他人能看到此收件匣。"
@@ -12698,6 +12742,10 @@ msgstr "暫時只接收"
 msgid "Only receives"
 msgstr "僅接收"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "僅在設定時段寄送"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "只有該成員能閱讀。你只能看到它存在。"
@@ -13213,6 +13261,10 @@ msgstr "不會讀取 Outlook 的 .pst 檔案;請先將其轉換為 .mbox。"
 msgid "Outside business hours"
 msgstr "營業時間外"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "時段之外寄送會等待，時段再次開始後繼續。"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "除此之外，產品視為關閉。"
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "每天"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "每天，在寄送時段內"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "每小時"
 
@@ -13691,13 +13747,17 @@ msgstr "在設定中選擇發件人"
 msgid "Pick a team"
 msgstr "選擇一個團隊"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "選擇時間"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "請選擇至少一分鐘之後的時間。"
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "請在未來 90 天內選擇一個時間,按你的時區 {zone}。"
+msgid "Pick a time in the next 90 days."
+msgstr "請選擇未來 90 天內的時間。"
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "選擇一個事件以查看內容。"
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "選擇一個進行中的事件或維護"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "請至少選擇 30 分鐘"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "星期六"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "搜尋訂閱者"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "搜尋文章"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "搜尋時區"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "傳送失敗。"
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "傳送已經開始。請改為暫停或取消。"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "寄送時段"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "「{name}」的寄送時段"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "傳送已遭停權。"
@@ -16485,6 +16563,10 @@ msgstr "郵件傳送自"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "在 {local} 傳送"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "將於 {sendDate} {city}時間 {sendTime} 寄出（{offset}）"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "感謝來信"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "感謝來信。我們通常會在一天內回覆。"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "即您的時間 {mineStart}–{mineEnd}（{mineName}）。"
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "靜默期已結束;遷移會在下次同步時完成。"
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "接收伺服器沒有確認 SPF。請檢查記錄中是否包含你的 SMTP 供應商。"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "屆時才會確定收件者；開始之前可以退回草稿。"
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "收件人在開始傳送時確定:之後訂閱的人不會收到,在郵件發出之前退訂的人會被跳過。傳送期間你可以暫停或取消。"
@@ -19062,6 +19152,14 @@ msgstr "傳送域名沒有 DMARC 記錄。"
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "傳送網域尚未通過 SPF、DKIM 和 DMARC 檢查。通知可能會被歸入垃圾郵件。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "寄送時段目前已關閉；寄送將於 {date} {time} 開始。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "屆時寄送時段已關閉；寄送將於 {openDate} {openTime} 開始。"
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "工作區暫時不能傳送群發。"
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "工作區目前不可傳送大量郵件"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "工作區已達到今日傳送上限。傳送將在 {local}({utc} UTC)繼續。"
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "工單會連同其回覆、備註、標籤、狀態和負責人一起匯
 msgid "Time"
 msgstr "時間"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "最近 {days} 天內退訂"
 msgid "unsubscribed now"
 msgstr "剛剛退訂"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "至"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "直到 {expires}"
@@ -21012,6 +21113,10 @@ msgstr "正在等待 Google 的確認碼…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "等待送達"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "等待寄送時段 · 將於{city}時間 {time} 開啟（{relative}）"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "你的團隊"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "你的團隊共用 hello@ 或 billing@ 這樣的信箱，它們不計入支援檢視和統計。"
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "你的時區 {zone}。即 UTC {utc}。"
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

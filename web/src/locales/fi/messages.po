@@ -1044,6 +1044,10 @@ msgstr "{up} hyödyllinen"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# päivitys} other {# päivitystä}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Vastaanottajat poimitaan silloin; voit palata luonnokseen aloitukseen asti."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Tuo # osoite} other {Tuo # osoitetta}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} mainitsi sinut keskustelussa {contact}. Avaa keskustelu"
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} vastasi keskustelussa <0>{title}</0>"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. Vastaanottajat poimitaan silloin; voit palata luonnokseen, kunnes lähetys alkaa."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "<0>Botit saavat lähettää</0> on päällä tässä työtilassa, joten 
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> lisää Yuva-repositorio Swift-pakettina ja käytä <1>YuvaKit</1>-kirjastoa; luo asiakas palvelimen URL-osoitteella ja tällä avaimella."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} sinun aikasi ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Mikä tahansa tila"
 msgid "Any team"
 msgstr "Mikä tahansa tiimi"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "Milloin tahansa"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Kuka tahansa sivustollasi voi kirjoittaa. Poista käytöstä, kun vain kirjautuneet käyttäjät saavat keskustella."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Koskee"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "Koskee seuraavaa viestiä."
 
@@ -3223,6 +3236,10 @@ msgstr "Avustajat, {drafts} luonnosta odottaa"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Asynkroninen"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "Klo"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Kampanjan nimi"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Muuta se ohjaus alla olevaan osoitteeseen, jotta osoitteen {address} pos
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Muuta valintaa"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Muuta lähetysaikoja"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "Asiakastunniste"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Asiakkaan salaisuus"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Kellot siirtyvät {date}; ajat pysyvät {start}–{end} paikallista aikaa."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Asiakkaat kirjoittavat chatissa, sovelluksessa tai sähköpostilla; arvi
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Päiväraja"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Päiväraja saavutettu · jatkuu klo {time} {city}n aikaa"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Käytössä: {name}"
 msgid "Encryption"
 msgstr "Salaus"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "Päivän loppu (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Päättyi {finished}"
@@ -7613,6 +7648,7 @@ msgstr "Löytyi Lähetetyt-kansioistasi"
 msgid "Friday"
 msgstr "Perjantai"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Postituslista (List-Id)"
 msgid "Mailing lists"
 msgstr "Postituslistat"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "Viestit lähtevät klo {start}–{end} {city}n aikaa ({utcStart}–{utcEnd} UTC) ja jatkuvat seuraavana päivänä."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Tervetuloviestiä ei lähetetä. Jokainen uusi osoite odottaa vahvistust
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Tervetulo- tai vahvistusviestiä ei lähetetä. Jokainen tilaus säilyttää ilmoittamasi suostumuksen ja tuonnin, josta se tuli."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Ei vastaavaa aikavyöhykettä"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Kukaan muu ei vielä näe tätä postilaatikkoa."
@@ -12698,6 +12742,10 @@ msgstr "Vain vastaanota toistaiseksi"
 msgid "Only receives"
 msgstr "Vain vastaanottaa"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Lähetä vain tiettyinä aikoina"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "Vain kyseinen jäsen lukee sen. Näet vain, että se on olemassa."
@@ -13213,6 +13261,10 @@ msgstr "Outlookin .pst-tiedostoja ei lueta; muunna ne ensin .mbox-muotoon."
 msgid "Outside business hours"
 msgstr "Aukioloaikojen ulkopuolella"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "Niiden ulkopuolella lähetys odottaa ja jatkuu, kun ajat alkavat uudelleen."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Niiden ulkopuolella tuote on suljettu."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Päivää kohden"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "päivässä, lähetysaikojen sisällä"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Tuntia kohden"
 
@@ -13691,13 +13747,17 @@ msgstr "Valitse lähettäjä asetuksissa"
 msgid "Pick a team"
 msgstr "Valitse tiimi"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Valitse aika"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Valitse aika, joka on vähintään minuutin päässä."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Valitse aika seuraavan 90 päivän ajalta aikavyöhykkeessäsi, {zone}."
+msgid "Pick a time in the next 90 days."
+msgstr "Valitse ajankohta seuraavan 90 päivän sisällä."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Valitse häiriö lukeaksesi sen."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Valitse avoin häiriö tai huolto"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "Valitse vähintään 30 minuuttia"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Lauantai"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Hae tilaajia"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Hae artikkeleista"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Hae aikavyöhykkeitä"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "Lähetys epäonnistui."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Lähetys on jo alkanut. Keskeytä tai peruuta se sen sijaan."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Lähetysajat"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "Lähetysajat: “{name}”"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "Lähettäminen on keskeytetty."
@@ -16485,6 +16563,10 @@ msgstr "Lähettää viestinsä osoitteesta"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Lähtee {local}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "Lähtee {sendDate} klo {sendTime} {city}n aikaa ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Kiitos viestistäsi"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Kiitos viestistäsi. Vastaamme yleensä päivässä."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "Se on {mineStart}–{mineEnd} sinun aikasi ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "Hiljainen jakso on ohi; siirto päättyy seuraavassa synkronoinnissa."
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "Vastaanottava palvelin ei vahvistanut SPF:ää. Tarkista, että tietue sisältää SMTP-palveluntarjoajasi."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "Vastaanottajat poimitaan silloin; voit palata luonnokseen aloitukseen asti."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "Vastaanottajat poimitaan, kun lähetys alkaa: myöhemmin tilaavat eivät saa sitä, ja ennen viestinsä lähtöä tilauksen perineet ohitetaan. Voit keskeyttää tai peruuttaa lähetyksen aikana."
@@ -19062,6 +19152,14 @@ msgstr "Lähetysverkkotunnuksella ei ole DMARC-tietuetta."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "Lähettävä verkkotunnus ei ole vielä läpäissyt SPF-, DKIM- ja DMARC-tarkistusta. Ilmoitukset voivat päätyä roskapostiin."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "Lähetysajat ovat nyt kiinni; lähetys alkaa {date} klo {time}."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "Lähetysajat ovat silloin kiinni; lähetys alkaa {openDate} klo {openTime}."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "Työtila ei saa toistaiseksi lähettää joukkolähetyksiä."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Työtila ei saa lähettää massapostia juuri nyt"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "Työtila saavutti tämän päivän lähetysrajan. Lähetys jatkuu {local} ({utc} UTC)."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "Tiketit tulevat mukaan vastauksineen, muistiinpanoineen, tunnisteineen, 
 msgid "Time"
 msgstr "Aika"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "perui tilauksen viimeisen {days} päivän aikana"
 msgid "unsubscribed now"
 msgstr "perui tilauksen nyt"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Asti"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "{expires} asti"
@@ -21012,6 +21113,10 @@ msgstr "Odotetaan Googlen vahvistuskoodia …"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Odotetaan sen saapumista"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Odottaa lähetysaikoja · avautuu klo {time} {city}n aikaa ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "Tiimisi"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "Tiimisi jakaa postilaatikoita kuten hello@ tai billing@, erillään tukinäkymistä ja tilastoista."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Aikavyöhykkeesi, {zone}. Se on {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

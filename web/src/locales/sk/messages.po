@@ -1044,6 +1044,10 @@ msgstr "{up} užitočných"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# aktualizácia} few {# aktualizácie} many {# aktualizácie} other {# aktualizácií}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Príjemcovia sa určia vtedy; do spustenia sa môžete vrátiť k návrhu."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importovať # adresu} few {Importovať # adresy} many {Importovať # adresy} other {Importovať # adries}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} vás spomenul(a) v konverzácii {contact}. Otvoriť konverzáciu"
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} odpovedal(a) v <0>{title}</0>"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. Príjemcovia sa určia vtedy; do tej doby sa môžete vrátiť k návrhu."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "<0>Boti smú odosielať</0> je v tomto pracovnom priestore zapnuté, tak
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> pridajte repozitár Yuvy ako balík Swift a použite knižnicu <1>YuvaKit</1>; klienta vytvorte s URL servera a týmto kľúčom."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} vo vašom čase ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Akýkoľvek stav"
 msgid "Any team"
 msgstr "Ľubovoľný tím"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "Kedykoľvek"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Na vašom webe môže písať ktokoľvek. Vypnite, keď smú chatovať len prihlásení používatelia."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Platí pre"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "Platí pre ďalšiu správu."
 
@@ -3223,6 +3236,10 @@ msgstr "Asistenti, čaká {drafts} konceptov"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Asynchrónne"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "O"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Názov kampane"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Zmeňte presmerovanie na nižšie uvedenú adresu, aby pošta {address} 
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Zmeniť voľbu"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Zmeniť hodiny odosielania"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "Identifikátor klienta"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Tajný kľúč klienta"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Hodiny sa menia {date}; hodiny zostávajú {start}–{end} miestneho času."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Zákazníci píšu cez chat, aplikáciu alebo e-mail; hodnotenia, pride�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Denný limit"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Denný limit dosiahnutý · pokračuje o {time} času {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Zapnuté: {name}"
 msgid "Encryption"
 msgstr "Šifrovanie"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "Koniec dňa (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Skončilo {finished}"
@@ -7613,6 +7648,7 @@ msgstr "Nájdené vo vašich priečinkoch Odoslané"
 msgid "Friday"
 msgstr "Piatok"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Mailing list (List-Id)"
 msgid "Mailing lists"
 msgstr "E-mailové zoznamy"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "E-maily odchádzajú medzi {start} a {end} času {city} ({utcStart}–{utcEnd} UTC) a pokračujú nasledujúci deň."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Žiadna uvítacia správa sa neposiela. Každá nová adresa čaká na p
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Žiadna uvítacia ani potvrdzovacia správa sa neposiela. Každý odber si zachová súhlas, ktorý ste uviedli, a import, z ktorého pochádza."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Žiadne pásmo nezodpovedá"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Túto schránku zatiaľ nikto iný nevidí."
@@ -12698,6 +12742,10 @@ msgstr "Zatiaľ len prijímať"
 msgid "Only receives"
 msgstr "Iba prijíma"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Odosielať len v určených hodinách"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "Číta ju iba tento člen. Vy vidíte iba to, že existuje."
@@ -13213,6 +13261,10 @@ msgstr "Súbory .pst z Outlooku sa nečítajú; najprv ich skonvertujte na .mbox
 msgid "Outside business hours"
 msgstr "Mimo pracovného času"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "Mimo nich odosielanie čaká a pokračuje, keď sa hodiny znova otvoria."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Mimo nej sa produkt považuje za zatvorený."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Za deň"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "denne, v hodinách odosielania"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Za hodinu"
 
@@ -13691,13 +13747,17 @@ msgstr "Vyberte odosielateľa v nastaveniach"
 msgid "Pick a team"
 msgstr "Vyberte tím"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Vyberte čas"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Vyberte čas aspoň minútu od teraz."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Vyberte čas v nasledujúcich 90 dňoch vo svojom časovom pásme, {zone}."
+msgid "Pick a time in the next 90 days."
+msgstr "Vyberte čas v nasledujúcich 90 dňoch."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Vyberte incident, aby ste si ho prečítali."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Vyberte otvorený incident alebo údržbu"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "Vyberte aspoň 30 minút"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Sobota"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Hľadať odberateľov"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Hľadať v článkoch"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Hľadať časové pásma"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "Odoslanie zlyhalo."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Odosielanie sa už začalo. Namiesto toho ho pozastavte alebo zrušte."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Hodiny odosielania"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "Hodiny odosielania „{name}“"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "Odosielanie je pozastavené."
@@ -16485,6 +16563,10 @@ msgstr "Odosiela svoju poštu z"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Odošle sa {local}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "Odošle sa {sendDate} o {sendTime} času {city} ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Ďakujeme, že ste napísali"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Ďakujeme, že ste napísali. Zvyčajne odpovedáme do jedného dňa."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "To je {mineStart}–{mineEnd} vo vašom čase ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "Pokojné obdobie skončilo; migrácia sa dokončí pri ďalšej synchron
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "Prijímajúci server nepotvrdil SPF. Skontrolujte, že záznam zahŕňa vášho poskytovateľa SMTP."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "Príjemcovia sa určia vtedy; do spustenia sa môžete vrátiť k návrhu."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "Príjemcovia sa určia pri začatí odosielania: tí, ktorí sa prihlásia neskôr, ju nedostanú, a kto sa odhlási, kým jeho správa odíde, je preskočený. Počas odosielania môžete pozastaviť alebo zrušiť."
@@ -19062,6 +19152,14 @@ msgstr "Odosielacia doména nemá záznam DMARC."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "Odosielacia doména zatiaľ neprešla kontrolou SPF, DKIM a DMARC. Upozornenia môžu skončiť v spame."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "Hodiny odosielania sú teraz zatvorené; odosielanie sa začne {date} o {time}."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "Vtedy budú hodiny odosielania zatvorené; odosielanie sa začne {openDate} o {openTime}."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "Pracovný priestor zatiaľ nesmie odosielať hromadné správy."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Pracovný priestor teraz nesmie odosielať hromadnú poštu"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "Pracovný priestor dosiahol dnešný limit odosielania. Odosielanie pokračuje {local} ({utc} UTC)."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "Tikety prídu s odpoveďami, poznámkami, tagmi, stavom a pridelenou oso
 msgid "Time"
 msgstr "Čas"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "odhlásené za posledných {days} dní"
 msgid "unsubscribed now"
 msgstr "odhlásené teraz"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Do"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "do {expires}"
@@ -21012,6 +21113,10 @@ msgstr "Čaká sa na potvrdzovací kód od Googlu…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Čaká sa na doručenie"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Čaká na hodiny odosielania · otvorí sa o {time} času {city} ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "Váš tím"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "Váš tím zdieľa schránky ako hello@ alebo billing@, mimo zobrazení a štatistík podpory."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Vaše časové pásmo, {zone}. To je {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

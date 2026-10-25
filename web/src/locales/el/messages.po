@@ -1044,6 +1044,10 @@ msgstr "χρήσιμα: {up}"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# ενημέρωση} other {# ενημερώσεις}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Οι παραλήπτες καθορίζονται τότε· μπορείτε να επιστρέψετε στο πρόχειρο μέχρι να ξεκινήσει."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Εισαγωγή # διεύθυνσης} other {Εισαγωγή # διευθύνσεων}}"
@@ -1087,10 +1091,6 @@ msgstr "Ο/Η {who} σας ανέφερε στη συνομιλία {contact}. �
 msgid "{who} replied in <0>{title}</0>"
 msgstr "Ο/Η {who} απάντησε στο <0>{title}</0>"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. Οι παραλήπτες καθορίζονται τότε· μπορείτε να γυρίσετε στο πρόχειρο μέχρι να ξεκινήσει."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "Η επιλογή <0>Επιτρέπεται η αποστολή από b
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> προσθέστε το αποθετήριο του Yuva ως πακέτο Swift και χρησιμοποιήστε τη βιβλιοθήκη <1>YuvaKit</1>· δημιουργήστε τον πελάτη με τη διεύθυνση του διακομιστή και αυτό το κλειδί."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} στην ώρα σας ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Οποιαδήποτε κατάσταση"
 msgid "Any team"
 msgstr "Οποιαδήποτε ομάδα"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "Οποιαδήποτε ώρα"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Οποιοσδήποτε στον ιστότοπό σας μπορεί να γράψει. Απενεργοποιήστε το όταν μπορούν να συνομιλούν μόνο συνδεδεμένοι χρήστες."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Ισχύει για"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "Ισχύει για το επόμενο μήνυμα."
 
@@ -3223,6 +3236,10 @@ msgstr "Βοηθοί, πρόχειρα σε αναμονή: {drafts}"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Ασύγχρονα"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "Στις"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Όνομα καμπάνιας"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Αλλάξτε αυτή την προώθηση στη διεύθυνσ�
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Αλλαγή επιλογής"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Αλλαγή των ωρών αποστολής"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "Αναγνωριστικό πελάτη"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Μυστικό πελάτη"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Η ώρα αλλάζει στις {date}· οι ώρες παραμένουν {start}–{end} τοπική ώρα."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Οι πελάτες γράφουν μέσω chat, εφαρμογής ή 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Ημερήσιο όριο"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Συμπληρώθηκε το ημερήσιο όριο · συνεχίζεται στις {time} ώρα {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Ενεργός: {name}"
 msgid "Encryption"
 msgstr "Κρυπτογράφηση"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "Τέλος της ημέρας (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Τελείωσε {finished}"
@@ -7613,6 +7648,7 @@ msgstr "Βρέθηκε στους φακέλους Απεσταλμένων σα
 msgid "Friday"
 msgstr "Παρασκευή"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Λίστα αλληλογραφίας (List-Id)"
 msgid "Mailing lists"
 msgstr "Λίστες αλληλογραφίας"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "Τα μηνύματα φεύγουν μεταξύ {start} και {end} ώρα {city} ({utcStart}–{utcEnd} UTC) και συνεχίζονται την επόμενη μέρα."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Δεν στέλνεται e-mail καλωσορίσματος. Κάθε 
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Δεν στέλνεται e-mail καλωσορίσματος ή επιβεβαίωσης. Κάθε συνδρομή κρατά τη συναίνεση που δηλώσατε και την εισαγωγή από την οποία προήλθε."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Καμία ζώνη ώρας δεν ταιριάζει"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Κανείς άλλος δεν βλέπει ακόμη αυτά τα εισερχόμενα."
@@ -12698,6 +12742,10 @@ msgstr "Μόνο λήψη προς το παρόν"
 msgid "Only receives"
 msgstr "Μόνο λαμβάνει"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Αποστολή μόνο σε ορισμένες ώρες"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "Το διαβάζει μόνο αυτό το μέλος. Εσείς βλέπετε μόνο ότι υπάρχει."
@@ -13213,6 +13261,10 @@ msgstr "Τα αρχεία .pst του Outlook δεν διαβάζονται· μ
 msgid "Outside business hours"
 msgstr "Εκτός ωραρίου"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "Εκτός αυτών η αποστολή περιμένει και συνεχίζεται όταν ανοίξουν ξανά."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Εκτός αυτού, το προϊόν θεωρείται κλειστό."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Ανά ημέρα"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "ανά ημέρα, μέσα στις ώρες αποστολής"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Ανά ώρα"
 
@@ -13691,13 +13747,17 @@ msgstr "Επιλέξτε αποστολέα στις ρυθμίσεις"
 msgid "Pick a team"
 msgstr "Επιλέξτε μια ομάδα"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Επιλέξτε ώρα"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Επιλέξτε ώρα τουλάχιστον ένα λεπτό από τώρα."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Επιλέξτε ώρα στις επόμενες 90 ημέρες, στη ζώνη ώρας σας, {zone}."
+msgid "Pick a time in the next 90 days."
+msgstr "Επιλέξτε χρόνο στις επόμενες 90 ημέρες."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Επιλέξτε ένα περιστατικό για να το διαβ
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Επιλέξτε ένα ανοιχτό περιστατικό ή μια συντήρηση"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "Επιλέξτε τουλάχιστον 30 λεπτά"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Σάββατο"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Αναζήτηση συνδρομητών"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Αναζήτηση στα άρθρα"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Αναζήτηση ζωνών ώρας"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "Η αποστολή απέτυχε."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Η αποστολή έχει ήδη ξεκινήσει. Κάντε αντί γι' αυτό παύση ή ακύρωση."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Ώρες αποστολής"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "Ώρες αποστολής του «{name}»"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "Η αποστολή έχει ανασταλεί."
@@ -16485,6 +16563,10 @@ msgstr "Στέλνει την αλληλογραφία του από"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Στέλνεται στις {local}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "Αποστέλλεται στις {sendDate} στις {sendTime} ώρα {city} ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Ευχαριστούμε που γράψατε"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Ευχαριστούμε που γράψατε. Συνήθως απαντάμε μέσα σε μία ημέρα."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "Αυτό είναι {mineStart}–{mineEnd} στην ώρα σας ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "Η περίοδος αναμονής τελείωσε· η μεταφο�
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "Ο διακομιστής παραλαβής δεν επιβεβαίωσε το SPF. Ελέγξτε ότι η εγγραφή περιλαμβάνει τον πάροχο SMTP σας."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "Οι παραλήπτες καθορίζονται τότε· μπορείτε να επιστρέψετε στο πρόχειρο μέχρι να ξεκινήσει."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "Οι παραλήπτες λαμβάνονται όταν ξεκινά η αποστολή: όσοι εγγραφούν αργότερα δεν το παίρνουν και όσοι διαγραφούν πριν φύγει το e-mail τους παραλείπονται. Μπορείτε να κάνετε παύση ή ακύρωση ενώ στέλνεται."
@@ -19062,6 +19152,14 @@ msgstr "Ο τομέας αποστολής δεν έχει εγγραφή DMARC.
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "Ο τομέας αποστολής δεν έχει περάσει ακόμη τον έλεγχο SPF, DKIM και DMARC. Οι ειδοποιήσεις μπορεί να καταλήξουν στα ανεπιθύμητα."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "Οι ώρες αποστολής είναι τώρα κλειστές· η αποστολή ξεκινά στις {date} στις {time}."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "Τότε οι ώρες αποστολής θα είναι κλειστές· η αποστολή ξεκινά στις {openDate} στις {openTime}."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "Ο χώρος εργασίας δεν επιτρέπεται προς τ
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Ο χώρος εργασίας δεν επιτρέπεται να στείλει μαζική αλληλογραφία αυτή τη στιγμή"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "Ο χώρος εργασίας έφτασε το σημερινό όριο αποστολής. Η αποστολή συνεχίζεται στις {local} ({utc} UTC)."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "Τα tickets έρχονται με τις απαντήσεις, τις �
 msgid "Time"
 msgstr "Ώρα"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "διέγραψαν τη συνδρομή τους τις τελευτα�
 msgid "unsubscribed now"
 msgstr "διέγραψαν τη συνδρομή τους τώρα"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Έως"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "έως {expires}"
@@ -21012,6 +21113,10 @@ msgstr "Αναμονή για τον κωδικό επιβεβαίωσης τη�
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Αναμονή να φτάσει"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Αναμονή για τις ώρες αποστολής · ανοίγει στις {time} ώρα {city} ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "Η ομάδα σας"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "Η ομάδα σας μοιράζεται γραμματοκιβώτια όπως hello@ ή billing@, εκτός των προβολών και των στατιστικών υποστήριξης."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Η ζώνη ώρας σας, {zone}. Αυτό είναι {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

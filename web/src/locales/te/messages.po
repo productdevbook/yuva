@@ -1044,6 +1044,10 @@ msgstr "{up} ఉపయోగకరం"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# అప్‌డేట్} other {# అప్‌డేట్‌లు}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. గ్రహీతలు అప్పుడే నిర్ణయమవుతారు; ప్రారంభమయ్యే వరకు మీరు డ్రాఫ్ట్‌కు తిరిగి వెళ్లవచ్చు."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# చిరునామాను దిగుమతి చేయండి} other {# చిరునామాలను దిగుమతి చేయండి}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} {contact} లో మిమ్మల్ని ప్రస్తా
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} <0>{title}</0> లో జవాబు ఇచ్చారు"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. గ్రహీతలు అప్పుడు తీసుకోబడతారు; అది ప్రారంభమయ్యే వరకు మీరు డ్రాఫ్ట్‌కు తిరిగి వెళ్లవచ్చు."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "ఈ వర్క్‌స్పేస్‌లో <0>బాట్‌ల�
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> Yuva రిపోజిటరీని Swift ప్యాకేజీగా జోడించి <1>YuvaKit</1> లైబ్రరీని ఉపయోగించండి; సర్వర్ URL మరియు ఈ కీతో క్లయింట్‌ను సృష్టించండి."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} మీ సమయంలో ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "ఏ స్థితి అయినా"
 msgid "Any team"
 msgstr "ఏ బృందమైనా"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "ఎప్పుడైనా"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "మీ సైట్‌లో ఎవరైనా రాయవచ్చు. సైన్ ఇన్ చేసిన వినియోగదారులు మాత్రమే చాట్ చేయాలంటే దీన్ని ఆఫ్ చేయండి."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "వీటికి వర్తిస్తుంది"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "తదుపరి మెయిల్‌కు వర్తిస్తుంది."
 
@@ -3223,6 +3236,10 @@ msgstr "అసిస్టెంట్‌లు, {drafts} డ్రాఫ్ట�
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "అసింక్"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "సమయం"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "ప్రచారం పేరు"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "{address} మెయిల్ {provider} కు బదులుగా Yuv
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "ఎంపికను మార్చండి"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "పంపే సమయాలను మార్చండి"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "క్లయింట్ ఐడెంటిఫైయర్"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "క్లయింట్ సీక్రెట్"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "{date} న గడియారాలు మారతాయి; సమయాలు స్థానిక సమయంలో {start}–{end} గానే ఉంటాయి."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "కస్టమర్లు చాట్, యాప్ లేదా ఈ-
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "రోజువారీ పరిమితి"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "రోజువారీ పరిమితి చేరింది · {city} సమయం ప్రకారం {time} కు కొనసాగుతుంది"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "ఆన్: {name}"
 msgid "Encryption"
 msgstr "ఎన్‌క్రిప్షన్"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "రోజు ముగింపు (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "{finished} ముగిసింది"
@@ -7613,6 +7648,7 @@ msgstr "మీ Sent ఫోల్డర్‌లలో కనుగొనబడ�
 msgid "Friday"
 msgstr "శుక్రవారం"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "మెయిలింగ్ జాబితా (List-Id)"
 msgid "Mailing lists"
 msgstr "మెయిలింగ్ లిస్ట్‌లు"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "మెయిళ్లు {city} సమయంలో {start} నుండి {end} మధ్య వెళ్తాయి ({utcStart}–{utcEnd} UTC), మరుసటి రోజు కొనసాగుతాయి."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "స్వాగత మెయిల్ పంపబడదు. ప్ర�
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "స్వాగత లేదా నిర్ధారణ మెయిల్ పంపబడదు. ప్రతి సబ్‌స్క్రిప్షన్ మీరు ప్రకటించిన సమ్మతిని మరియు అది వచ్చిన దిగుమతిని ఉంచుకుంటుంది."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "సరిపోయే టైమ్ జోన్ లేదు"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "మరెవరూ ఇంకా ఈ ఇన్‌బాక్స్‌ను చూడలేరు."
@@ -12698,6 +12742,10 @@ msgstr "ప్రస్తుతానికి స్వీకరించడ�
 msgid "Only receives"
 msgstr "స్వీకరించడం మాత్రమే"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "నిర్దిష్ట సమయాల్లో మాత్రమే పంపండి"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "ఆ సభ్యుడు మాత్రమే చదువుతారు. అది ఉందని మాత్రమే మీరు చూస్తారు."
@@ -13213,6 +13261,10 @@ msgstr "Outlook .pst ఫైల్‌లు చదవబడవు; ముంద�
 msgid "Outside business hours"
 msgstr "పని వేళల వెలుపల"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "వాటి బయట పంపడం వేచి ఉండి, సమయాలు మళ్లీ తెరిచినప్పుడు కొనసాగుతుంది."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "వాటి వెలుపల ఉత్పత్తి మూసివేసినట్లు పరిగణించబడుతుంది."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "రోజుకు"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "రోజుకు, పంపే సమయాల్లో"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "గంటకు"
 
@@ -13691,13 +13747,17 @@ msgstr "సెట్టింగ్‌లలో పంపేవారిని �
 msgid "Pick a team"
 msgstr "బృందాన్ని ఎంచుకోండి"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "సమయాన్ని ఎంచుకోండి"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "ఇప్పటి నుండి కనీసం ఒక నిమిషం తర్వాతి సమయాన్ని ఎంచుకోండి."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "తదుపరి 90 రోజుల్లో, మీ సమయ మండలం {zone} లో సమయాన్ని ఎంచుకోండి."
+msgid "Pick a time in the next 90 days."
+msgstr "రాబోయే 90 రోజుల్లో ఒక సమయాన్ని ఎంచుకోండి."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "చదవడానికి ఒక ఘటనను ఎంచుకోం
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "తెరిచి ఉన్న ఘటన లేదా నిర్వహణను ఎంచుకోండి"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "కనీసం 30 నిమిషాలు ఎంచుకోండి"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "శనివారం"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "సబ్‌స్క్రైబర్‌లను శోధించ�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "కథనాల్లో వెతుకు"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "టైమ్ జోన్‌లను వెతకండి"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "పంపడం విఫలమైంది."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "పంపడం ఇప్పటికే ప్రారంభమైంది. బదులుగా పాజ్ చేయండి లేదా రద్దు చేయండి."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "పంపే సమయాలు"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "“{name}” పంపే సమయాలు"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "పంపడం నిలిపివేయబడింది."
@@ -16485,6 +16563,10 @@ msgstr "దాని మెయిల్‌ను దీని నుండి �
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local} న పంపుతుంది"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "{sendDate} న {city} సమయం ప్రకారం {sendTime} కు పంపబడుతుంది ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "రాసినందుకు ధన్యవాదాలు"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "రాసినందుకు ధన్యవాదాలు. మేము సాధారణంగా ఒక రోజులో జవాబిస్తాము."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "అది మీ సమయంలో {mineStart}–{mineEnd} ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "నిశ్శబ్ద కాలం ముగిసింది; త�
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "స్వీకరించే సర్వర్ SPF ను నిర్ధారించలేదు. రికార్డ్‌లో మీ SMTP ప్రొవైడర్ ఉన్నారో లేదో తనిఖీ చేయండి."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "గ్రహీతలు అప్పుడే నిర్ణయమవుతారు; ప్రారంభమయ్యే వరకు మీరు డ్రాఫ్ట్‌కు తిరిగి వెళ్లవచ్చు."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "పంపడం ప్రారంభమైనప్పుడు గ్రహీతలు తీసుకోబడతారు: తర్వాత సబ్‌స్క్రైబ్ చేసేవారికి రాదు, మరియు వారి మెయిల్ వెళ్లే ముందు అన్‌సబ్‌స్క్రైబ్ చేసేవారు దాటవేయబడతారు. అది పంపుతున్నప్పుడు మీరు పాజ్ చేయవచ్చు లేదా రద్దు చేయవచ్చు."
@@ -19062,6 +19152,14 @@ msgstr "పంపే డొమైన్‌కు DMARC రికార్డ్ 
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "పంపే డొమైన్ ఇంకా SPF, DKIM, DMARC తనిఖీలో ఉత్తీర్ణత సాధించలేదు. నోటీసులు స్పామ్‌లోకి వెళ్లవచ్చు."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "పంపే సమయాలు ఇప్పుడు మూసివేయబడ్డాయి; పంపడం {date} న {time} కు ప్రారంభమవుతుంది."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "అప్పుడు పంపే సమయాలు మూసివేయబడతాయి; పంపడం {openDate} న {openTime} కు ప్రారంభమవుతుంది."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "వర్క్‌స్పేస్ ప్రస్తుతాని�
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "వర్క్‌స్పేస్ ఇప్పుడు బల్క్ మెయిల్ పంపకూడదు"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "వర్క్‌స్పేస్ ఈ రోజు పంపే పరిమితిని చేరుకుంది. పంపడం {local} ({utc} UTC) న కొనసాగుతుంది."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "టిక్కెట్‌లు వాటి జవాబులు, �
 msgid "Time"
 msgstr "సమయం"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "గత {days} రోజుల్లో అన్‌సబ్‌స్క
 msgid "unsubscribed now"
 msgstr "ఇప్పుడే అన్‌సబ్‌స్క్రైబ్ చేశారు"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "వరకు"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "{expires} వరకు"
@@ -21012,6 +21113,10 @@ msgstr "Google నిర్ధారణ కోడ్ కోసం వేచి �
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "చేరడం కోసం వేచి ఉంది"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "పంపే సమయాల కోసం వేచి ఉంది · {city} సమయం ప్రకారం {time} కు తెరుచుకుంటాయి ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "మీ బృందం"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "మీ టీమ్ hello@ లేదా billing@ వంటి మెయిల్‌బాక్స్‌లను పంచుకుంటుంది; అవి మద్దతు వీక్షణలు, గణాంకాల వెలుపల ఉంటాయి."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "మీ సమయ మండలం, {zone}. అది {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

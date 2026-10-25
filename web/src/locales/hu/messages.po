@@ -1044,6 +1044,10 @@ msgstr "{up} hasznos"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# frissítés} other {# frissítés}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. A címzetteket ekkor veszi a rendszer; az indulásig visszatérhet a piszkozathoz."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# cím importálása} other {# cím importálása}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} megemlített itt: {contact}. Beszélgetés megnyitása"
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} válaszolt itt: <0>{title}</0>"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. A címzettek ekkor kerülnek kiválasztásra; az indulásig visszaléphetsz a piszkozathoz."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "A <0>Botok küldhetnek</0> be van kapcsolva ebben a munkaterületben, í
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> add hozzá a Yuva-tárházat Swift-csomagként, és használd a <1>YuvaKit</1> könyvtárat; hozd létre az ügyfelet a szerver URL-jével és ezzel a kulccsal."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} az Ön idejében ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Bármely állapot"
 msgid "Any team"
 msgstr "Bármelyik csapat"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "Bármikor"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "A webhelyeden bárki írhat. Kapcsold ki, ha csak bejelentkezett felhasználók csevegjenek."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Hatálya"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "A következő levélre vonatkozik."
 
@@ -3223,6 +3236,10 @@ msgstr "Asszisztensek, {drafts} piszkozat vár"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Aszinkron"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "Ekkor"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Kampány neve"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Módosítsd ezt az átirányítást az alábbi címre, hogy a(z) {addres
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Választás módosítása"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Küldési órák módosítása"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "Kliensazonosító"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Klienstitok"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Az óraátállítás {date} napján van; az órák helyi idő szerint {start}–{end} maradnak."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Az ügyfelek chaten, appban vagy e-mailben írnak; értékelés, kioszt�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Napi korlát"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Napi korlát elérve · {city} szerint {time}-kor folytatódik"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Bekapcsolva: {name}"
 msgid "Encryption"
 msgstr "Titkosítás"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "A nap vége (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Befejezve: {finished}"
@@ -7613,6 +7648,7 @@ msgstr "A Elküldött mappáidban találtuk"
 msgid "Friday"
 msgstr "Péntek"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Levelezőlista (List-Id)"
 msgid "Mailing lists"
 msgstr "Levelezési listák"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "A levelek {city} szerint {start} és {end} között mennek ki ({utcStart}–{utcEnd} UTC), és másnap folytatódnak."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Üdvözlő levél nem kerül elküldésre. Minden új cím megerősíté
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Üdvözlő vagy megerősítő levél nem kerül elküldésre. Minden feliratkozás megtartja az általad megadott hozzájárulást és az importot, amelyből származik."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Nincs egyező időzóna"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Ezt a postafiókot még senki más nem látja."
@@ -12698,6 +12742,10 @@ msgstr "Egyelőre csak fogadás"
 msgid "Only receives"
 msgstr "Csak fogad"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Csak megadott órákban küldjön"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "Csak az a tag olvassa. Ön csak azt látja, hogy létezik."
@@ -13213,6 +13261,10 @@ msgstr "Az Outlook .pst fájljai nem olvashatók; előbb alakítsd át őket .mb
 msgid "Outside business hours"
 msgstr "Nyitvatartási időn kívül"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "Ezeken kívül a küldés vár, és folytatódik, amikor az órák újra kezdődnek."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Azon kívül a termék zártnak számít."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Naponta"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "naponta, a küldési órákon belül"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Óránként"
 
@@ -13691,13 +13747,17 @@ msgstr "Válassz feladót a beállításokban"
 msgid "Pick a team"
 msgstr "Válasszon csapatot"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Válasszon időpontot"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Válassz legalább egy perccel későbbi időpontot."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Válassz időpontot a következő 90 napban, a saját időzónádban: {zone}."
+msgid "Pick a time in the next 90 days."
+msgstr "Válasszon időpontot a következő 90 napban."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Válasszon egy incidenst az elolvasásához."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Válassz nyitott incidenst vagy karbantartást"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "Válasszon legalább 30 percet"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Szombat"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Feliratkozók keresése"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Keresés a cikkekben"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Időzónák keresése"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "A küldés nem sikerült."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "A küldés már elkezdődött. Inkább szüneteltesd vagy szakítsd meg."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Küldési órák"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "A(z) „{name}” küldési órái"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "A küldés fel van függesztve."
@@ -16485,6 +16563,10 @@ msgstr "Leveleit innen küldi:"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Küldés: {local}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "{sendDate} napján {city} szerint {sendTime}-kor megy ki ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Köszönjük, hogy írtál"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Köszönjük, hogy írtál. Általában egy napon belül válaszolunk."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "Ez az Ön idejében {mineStart}–{mineEnd} ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "A csendes időszak véget ért; az átvitel a következő szinkronizál�
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "A fogadó szerver nem erősítette meg az SPF-et. Ellenőrizd, hogy a rekord tartalmazza-e az SMTP-szolgáltatódat."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "A címzetteket ekkor veszi a rendszer; az indulásig visszatérhet a piszkozathoz."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "A címzettek a küldés indításakor kerülnek kiválasztásra: akik később iratkoznak fel, nem kapják meg, és aki leiratkozik, mielőtt a levele kimenne, kimarad. Küldés közben szüneteltetheted vagy megszakíthatod."
@@ -19062,6 +19152,14 @@ msgstr "A küldési domainnek nincs DMARC-rekordja."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "A küldő tartomány még nem ment át az SPF-, DKIM- és DMARC-ellenőrzésen. Az értesítések spamben köthetnek ki."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "A küldési órák most zártak; a küldés {date} napján {time}-kor kezdődik."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "Akkor a küldési órák zártak lesznek; a küldés {openDate} napján {openTime}-kor kezdődik."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "A munkaterület egyelőre nem küldhet tömeges leveleket."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "A munkaterület jelenleg nem küldhet tömeges levelet"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "A munkaterület elérte a mai küldési korlátot. A küldés folytatódik: {local} ({utc} UTC)."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "A jegyek a válaszaikkal, jegyzeteikkel, címkéikkel, állapotukkal és
 msgid "Time"
 msgstr "Idő"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "leiratkozott az elmúlt {days} napban"
 msgid "unsubscribed now"
 msgstr "most leiratkozott"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Eddig"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "eddig: {expires}"
@@ -21012,6 +21113,10 @@ msgstr "Várakozás a Google megerősítő kódjára…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Várakozás a megérkezésre"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Várakozás a küldési órákra · {city} szerint {time}-kor nyit ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "A csapatod"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "A csapata olyan postaládákat oszt meg, mint a hello@ vagy a billing@, a támogatási nézetektől és statisztikáktól elkülönítve."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Az időzónád, {zone}. Ez {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

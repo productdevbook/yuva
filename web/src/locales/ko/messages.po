@@ -1044,6 +1044,10 @@ msgstr "도움이 됨 {up}"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, other {업데이트 #개}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. 수신자는 그때 정해지며, 시작 전까지 초안으로 돌아갈 수 있습니다."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {주소 #개 가져오기}}"
@@ -1087,10 +1091,6 @@ msgstr "{who}님이 {contact}에서 회원님을 언급했습니다. 대화 열�
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who}님이 <0>{title}</0>에 답장했습니다"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. 수신자는 이때 확정되며, 시작 전까지는 초안으로 돌아갈 수 있습니다."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "이 워크스페이스에서는 <0>봇 발송 허용</0>이 켜져 있�
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> Yuva 저장소를 Swift 패키지로 추가하고 <1>YuvaKit</1> 라이브러리를 사용하세요. 서버 URL과 이 키로 클라이언트를 만듭니다."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= 내 시간으로 {mineTime} ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "모든 상태"
 msgid "Any team"
 msgstr "모든 팀"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "언제든지"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "사이트의 누구나 글을 쓸 수 있습니다. 로그인한 사용자만 채팅하게 하려면 끄세요."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "적용 대상"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "다음 메일부터 적용됩니다."
 
@@ -3223,6 +3236,10 @@ msgstr "어시스턴트, 초안 {drafts}개 대기 중"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "비동기"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "시각"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "캠페인 이름"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "전달을 아래 주소로 바꾸어 {address}의 메일이 {provider} �
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "선택 변경"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "발송 시간 변경"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "클라이언트 식별자"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "클라이언트 시크릿"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "{date}에 시계가 바뀝니다. 발송 시간은 현지 시간으로 {start}~{end}로 유지됩니다."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "고객은 채팅, 앱, 이메일로 연락합니다. 평가, 배정, SLA
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "일일 한도"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "일일 한도 도달 · {city} 시간 {time}에 재개됩니다"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "켜짐: {name}"
 msgid "Encryption"
 msgstr "암호화"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "하루의 끝 (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "{finished}에 종료됨"
@@ -7613,6 +7648,7 @@ msgstr "보낸 편지함에서 찾았습니다"
 msgid "Friday"
 msgstr "금요일"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "메일링 리스트 (List-Id)"
 msgid "Mailing lists"
 msgstr "메일링 리스트"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "메일은 {city} 시간 {start}~{end}({utcStart}~{utcEnd} UTC)에 발송되고 다음 날 이어집니다."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "환영 메일은 보내지 않습니다. 새 주소는 확인을 기다�
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "환영 메일과 확인 메일은 보내지 않습니다. 모든 구독에는 선언한 동의와 가져온 출처가 보관됩니다."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "일치하는 시간대가 없습니다"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "아직 이 받은 편지함을 볼 수 있는 사람이 없습니다."
@@ -12698,6 +12742,10 @@ msgstr "지금은 수신만"
 msgid "Only receives"
 msgstr "수신만"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "정해진 시간에만 발송"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "그 멤버만 읽습니다. 존재 여부만 보입니다."
@@ -13213,6 +13261,10 @@ msgstr "Outlook의 .pst 파일은 읽지 않습니다. 먼저 .mbox로 변환하
 msgid "Outside business hours"
 msgstr "영업시간 외"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "그 밖의 시간에는 발송이 대기하다가 다시 열리면 이어집니다."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "그 외 시간에는 제품이 닫힌 것으로 간주됩니다."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "일별"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "하루당, 발송 시간 내"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "시간별"
 
@@ -13691,13 +13747,17 @@ msgstr "설정에서 발신자 선택"
 msgid "Pick a team"
 msgstr "팀 선택"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "시각 선택"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "지금부터 1분 이상 뒤의 시간을 선택하세요."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "앞으로 90일 이내의 시각을 내 시간대 {zone}으로 선택하세요."
+msgid "Pick a time in the next 90 days."
+msgstr "앞으로 90일 이내의 시각을 선택하세요."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "인시던트를 선택하면 내용을 볼 수 있습니다."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "열려 있는 인시던트 또는 점검을 선택하세요"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "30분 이상을 선택하세요"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "토요일"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "구독자 검색"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "문서 검색"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "시간대 검색"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "전송에 실패했습니다."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "발송이 이미 시작되었습니다. 대신 일시 중지하거나 취소하세요."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "발송 시간"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "“{name}”의 발송 시간"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "발송이 정지되었습니다."
@@ -16485,6 +16563,10 @@ msgstr "메일 발송 주소"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local}에 발송"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "{sendDate} {city} 시간 {sendTime}에 발송됩니다 ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "문의해 주셔서 감사합니다"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "문의해 주셔서 감사합니다. 보통 하루 안에 답변드립니다."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "내 시간으로 {mineStart}~{mineEnd}입니다 ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "대기 기간이 끝났습니다. 이전은 다음 동기화에서 끝�
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "수신 서버가 SPF를 확인해 주지 않았습니다. 레코드에 SMTP 제공업체가 포함되어 있는지 확인하세요."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "수신자는 그때 정해지며, 시작 전까지 초안으로 돌아갈 수 있습니다."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "수신자는 발송이 시작될 때 확정됩니다. 나중에 구독한 사람은 받지 못하고, 메일이 나가기 전에 구독을 취소한 사람은 건너뜁니다. 발송 중에도 일시 중지하거나 취소할 수 있습니다."
@@ -19062,6 +19152,14 @@ msgstr "발송 도메인에 DMARC 레코드가 없습니다."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "발송 도메인이 아직 SPF, DKIM, DMARC 검사를 통과하지 못했습니다. 알림이 스팸으로 분류될 수 있습니다."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "발송 시간이 지금은 닫혀 있습니다. 발송은 {date} {time}에 시작됩니다."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "그때는 발송 시간이 닫혀 있습니다. 발송은 {openDate} {openTime}에 시작됩니다."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "워크스페이스가 현재 일괄 발송을 보낼 수 없습니다."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "현재 워크스페이스에서는 대량 메일을 발송할 수 없습니다"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "워크스페이스가 오늘의 발송 한도에 도달했습니다. {local}({utc} UTC)에 발송을 이어 갑니다."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "티켓은 답글, 메모, 태그, 상태, 담당자와 함께 가져옵�
 msgid "Time"
 msgstr "시간"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "최근 {days}일 이내에 구독 취소함"
 msgid "unsubscribed now"
 msgstr "방금 구독 취소함"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "종료"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "{expires}까지"
@@ -21012,6 +21113,10 @@ msgstr "Google의 확인 코드를 기다리는 중…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "도착을 기다리는 중"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "발송 시간 대기 중 · {city} 시간 {time}에 열립니다 ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "내 팀"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "팀이 hello@, billing@ 같은 메일함을 공유합니다. 지원 보기와 통계에는 포함되지 않습니다."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "내 시간대 {zone}. UTC {utc}입니다."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

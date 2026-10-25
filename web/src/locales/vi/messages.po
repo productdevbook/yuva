@@ -1044,6 +1044,10 @@ msgstr "{up} hữu ích"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, other {# cập nhật}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Người nhận được xác định khi đó; bạn có thể quay lại bản nháp cho đến khi bắt đầu."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {Nhập # địa chỉ}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} đã nhắc đến bạn trong {contact}. Mở cuộc trò chuyệ
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} đã trả lời trong <0>{title}</0>"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. Người nhận được lấy vào lúc đó; bạn có thể quay lại bản nháp cho đến khi quá trình bắt đầu."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "<0>Cho phép bot gửi</0> đang bật trong không gian làm việc nà
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> thêm kho lưu trữ Yuva làm gói Swift và dùng thư viện <1>YuvaKit</1>; tạo client với URL máy chủ và khóa này."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} theo giờ của bạn ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Mọi trạng thái"
 msgid "Any team"
 msgstr "Nhóm bất kỳ"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "Bất cứ lúc nào"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Bất kỳ ai trên trang web của bạn đều có thể viết. Hãy tắt khi chỉ người dùng đã đăng nhập mới được chat."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Áp dụng cho"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "Áp dụng cho thư tiếp theo."
 
@@ -3223,6 +3236,10 @@ msgstr "Trợ lý, {drafts} bản nháp đang chờ"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Bất đồng bộ"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "Lúc"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Tên chiến dịch"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Hãy đổi việc chuyển tiếp đó sang địa chỉ bên dưới, 
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Đổi lựa chọn"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Đổi giờ gửi"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "Mã định danh client"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Client secret"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Đồng hồ đổi vào {date}; giờ gửi vẫn là {start}–{end} theo giờ địa phương."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Khách hàng viết qua chat, ứng dụng hoặc e-mail; đánh giá, p
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Giới hạn hằng ngày"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Đã đạt giới hạn ngày · tiếp tục lúc {time} giờ {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Bật: {name}"
 msgid "Encryption"
 msgstr "Mã hóa"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "Cuối ngày (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Đã kết thúc {finished}"
@@ -7613,6 +7648,7 @@ msgstr "Tìm thấy trong các thư mục Đã gửi của bạn"
 msgid "Friday"
 msgstr "Thứ Sáu"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Danh sách gửi thư (List-Id)"
 msgid "Mailing lists"
 msgstr "Danh sách gửi thư"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "Thư được gửi từ {start} đến {end} giờ {city} ({utcStart}–{utcEnd} UTC) và tiếp tục vào ngày hôm sau."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Không gửi thư chào mừng. Mỗi địa chỉ mới chờ xác nh�
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Không gửi thư chào mừng hay xác nhận. Mỗi đăng ký giữ sự đồng ý bạn đã khai báo và lần nhập mà nó đến từ đó."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Không có múi giờ phù hợp"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Chưa ai khác thấy hộp thư này."
@@ -12698,6 +12742,10 @@ msgstr "Tạm thời chỉ nhận"
 msgid "Only receives"
 msgstr "Chỉ nhận"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Chỉ gửi trong những giờ nhất định"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "Chỉ thành viên đó đọc được. Bạn chỉ thấy nó tồn tại."
@@ -13213,6 +13261,10 @@ msgstr "Tệp .pst của Outlook không được đọc; hãy chuyển chúng sa
 msgid "Outside business hours"
 msgstr "Ngoài giờ làm việc"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "Ngoài các giờ đó, việc gửi chờ và tiếp tục khi giờ mở lại."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Ngoài giờ đó, sản phẩm được coi là đóng cửa."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Mỗi ngày"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "mỗi ngày, trong giờ gửi"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Mỗi giờ"
 
@@ -13691,13 +13747,17 @@ msgstr "Chọn người gửi trong cài đặt"
 msgid "Pick a team"
 msgstr "Chọn một nhóm"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Chọn giờ"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Chọn thời điểm cách bây giờ ít nhất một phút."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Chọn một thời điểm trong 90 ngày tới, theo múi giờ của bạn, {zone}."
+msgid "Pick a time in the next 90 days."
+msgstr "Chọn thời điểm trong 90 ngày tới."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Chọn một sự cố để đọc."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Chọn một sự cố hoặc đợt bảo trì đang mở"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "Chọn ít nhất 30 phút"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Thứ Bảy"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Tìm người đăng ký"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Tìm trong các bài viết"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Tìm múi giờ"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "Gửi không thành công."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Việc gửi đã bắt đầu. Hãy tạm dừng hoặc hủy thay vào đó."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Giờ gửi"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "Giờ gửi của “{name}”"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "Việc gửi đã bị đình chỉ."
@@ -16485,6 +16563,10 @@ msgstr "Gửi thư từ"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Gửi vào {local}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "Gửi vào {sendDate} lúc {sendTime} giờ {city} ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Cảm ơn bạn đã viết thư"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Cảm ơn bạn đã viết thư. Chúng tôi thường trả lời trong vòng một ngày."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "Tức là {mineStart}–{mineEnd} theo giờ của bạn ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "Thời gian im lặng đã hết; quá trình di chuyển hoàn tất �
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "Máy chủ nhận chưa xác nhận SPF. Hãy kiểm tra bản ghi có bao gồm nhà cung cấp SMTP của bạn."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "Người nhận được xác định khi đó; bạn có thể quay lại bản nháp cho đến khi bắt đầu."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "Người nhận được lấy khi bắt đầu gửi: người đăng ký sau đó không nhận, và ai hủy đăng ký trước khi thư của họ được gửi sẽ bị bỏ qua. Bạn có thể tạm dừng hoặc hủy khi đang gửi."
@@ -19062,6 +19152,14 @@ msgstr "Tên miền gửi chưa có bản ghi DMARC."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "Tên miền gửi chưa vượt qua kiểm tra SPF, DKIM và DMARC. Thông báo có thể rơi vào thư rác."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "Giờ gửi đang đóng; việc gửi bắt đầu vào {date} lúc {time}."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "Khi đó giờ gửi đang đóng; việc gửi bắt đầu vào {openDate} lúc {openTime}."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "Không gian làm việc hiện không được gửi thư hàng loạt."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Không gian làm việc hiện không được phép gửi thư hàng loạt"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "Không gian làm việc đã đạt giới hạn gửi hôm nay. Việc gửi tiếp tục vào {local} ({utc} UTC)."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "Phiếu được chuyển sang cùng phản hồi, ghi chú, thẻ, tr�
 msgid "Time"
 msgstr "Thời gian"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "đã hủy đăng ký trong {days} ngày qua"
 msgid "unsubscribed now"
 msgstr "vừa hủy đăng ký"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Đến"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "đến {expires}"
@@ -21012,6 +21113,10 @@ msgstr "Đang chờ mã xác nhận của Google…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Đang chờ thư đến"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Đang chờ giờ gửi · mở lúc {time} giờ {city} ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "Nhóm của bạn"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "Nhóm của bạn dùng chung các hộp thư như hello@ hoặc billing@, nằm ngoài các chế độ xem và thống kê hỗ trợ."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Múi giờ của bạn, {zone}. Tức là {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

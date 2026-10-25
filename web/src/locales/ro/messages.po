@@ -1044,6 +1044,10 @@ msgstr "{up} utile"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# actualizare} few {# actualizări} other {# de actualizări}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Destinatarii se stabilesc atunci; poți reveni la ciornă până începe."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importă # adresă} few {Importă # adrese} other {Importă # de adrese}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} te-a menționat în {contact}. Deschide conversația"
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} a răspuns în <0>{title}</0>"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. Destinatarii sunt aleși atunci; poți reveni la ciornă până începe."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "<0>Boții pot trimite</0> este activat în acest spațiu de lucru, deci 
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> adaugă depozitul Yuva ca pachet Swift și folosește biblioteca <1>YuvaKit</1>; creează clientul cu URL-ul serverului și această cheie."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} ora ta ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Orice stare"
 msgid "Any team"
 msgstr "Orice echipă"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "Oricând"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Oricine de pe site-ul tău poate scrie. Dezactivează când doar utilizatorii conectați pot discuta."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Se aplică la"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "Se aplică următorului e-mail."
 
@@ -3223,6 +3236,10 @@ msgstr "Asistenți, {drafts} ciorne așteaptă"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Asincron"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "La"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Nume campanie"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Schimbă acea redirecționare la adresa de mai jos, ca e-mailul pentru {
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Schimbă alegerea"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Schimbă orele de trimitere"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "Identificator de client"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Secret de client"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Ceasurile se schimbă pe {date}; orele rămân {start}–{end} ora locală."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Clienții scriu prin chat, aplicație sau e-mail; evaluările, alocarea 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Limită zilnică"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Limita zilnică atinsă · continuă la {time}, ora {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Activată: {name}"
 msgid "Encryption"
 msgstr "Criptare"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "Sfârșitul zilei (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Încheiat {finished}"
@@ -7613,6 +7648,7 @@ msgstr "Găsit în dosarele tale Trimise"
 msgid "Friday"
 msgstr "Vineri"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Listă de corespondență (List-Id)"
 msgid "Mailing lists"
 msgstr "Liste de corespondență"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "E-mailurile pleacă între {start} și {end}, ora {city} ({utcStart}–{utcEnd} UTC), și continuă a doua zi."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Niciun mesaj de bun venit nu este trimis. Fiecare adresă nouă așteapt
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Niciun mesaj de bun venit sau de confirmare nu este trimis. Fiecare abonare păstrează consimțământul declarat de tine și importul din care provine."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Niciun fus orar nu se potrivește"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Nimeni altcineva nu poate vedea încă această căsuță."
@@ -12698,6 +12742,10 @@ msgstr "Doar primește deocamdată"
 msgid "Only receives"
 msgstr "Doar primește"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Trimite doar în anumite ore"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "O citește doar acel membru. Dumneavoastră vedeți doar că există."
@@ -13213,6 +13261,10 @@ msgstr "Fișierele .pst din Outlook nu sunt citite; convertește-le mai întâi 
 msgid "Outside business hours"
 msgstr "În afara programului"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "În afara lor trimiterea așteaptă și continuă când se redeschid."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "În afara lui, produsul e considerat închis."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Pe zi"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "pe zi, în orele de trimitere"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Pe oră"
 
@@ -13691,13 +13747,17 @@ msgstr "Alege un expeditor în setări"
 msgid "Pick a team"
 msgstr "Alege o echipă"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Alege o oră"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Alege o oră la cel puțin un minut de acum."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Alege o oră în următoarele 90 de zile, în fusul tău orar, {zone}."
+msgid "Pick a time in the next 90 days."
+msgstr "Alege un moment în următoarele 90 de zile."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Alege un incident pentru a-l citi."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Alege un incident sau o mentenanță deschise"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "Alege cel puțin 30 de minute"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Sâmbătă"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Caută abonați"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Caută în articole"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Caută fusuri orare"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "Trimiterea a eșuat."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Trimiterea a început deja. Pune-o pe pauză sau anulează-o în schimb."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Orele de trimitere"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "Orele de trimitere ale „{name}”"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "Trimiterea este suspendată."
@@ -16485,6 +16563,10 @@ msgstr "Își trimite e-mailul de la"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Trimite {local}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "Se trimite pe {sendDate} la {sendTime}, ora {city} ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Mulțumim că ne-ai scris"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Mulțumim că ne-ai scris. De obicei răspundem într-o zi."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "Asta înseamnă {mineStart}–{mineEnd} ora ta ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "Perioada de liniște s-a încheiat; migrarea se termină la următoarea 
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "Serverul destinatar nu a confirmat SPF. Verifică dacă înregistrarea include furnizorul tău SMTP."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "Destinatarii se stabilesc atunci; poți reveni la ciornă până începe."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "Destinatarii sunt aleși când începe trimiterea: cei care se abonează mai târziu nu îl primesc, iar oricine se dezabonează înainte să plece e-mailul lui este omis. Poți pune pe pauză sau anula cât timp se trimite."
@@ -19062,6 +19152,14 @@ msgstr "Domeniul de trimitere nu are o înregistrare DMARC."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "Domeniul de trimitere nu a trecut încă verificarea SPF, DKIM și DMARC. Notificările pot ajunge în spam."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "Orele de trimitere sunt închise acum; trimiterea începe pe {date} la {time}."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "Orele de trimitere vor fi închise atunci; trimiterea începe pe {openDate} la {openTime}."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "Spațiul de lucru nu poate trimite deocamdată mesaje în masă."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Spațiul de lucru nu are voie să trimită e-mailuri în masă acum"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "Spațiul de lucru a atins limita de trimitere de azi. Trimiterea continuă {local} ({utc} UTC)."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "Tichetele vin cu răspunsurile, notele, tagurile, starea și persoana at
 msgid "Time"
 msgstr "Oră"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "dezabonați în ultimele {days} zile"
 msgid "unsubscribed now"
 msgstr "dezabonați acum"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Până la"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "până la {expires}"
@@ -21012,6 +21113,10 @@ msgstr "Se așteaptă codul de confirmare Google…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Se așteaptă să ajungă"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Se așteaptă orele de trimitere · se deschid la {time}, ora {city} ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "Echipa ta"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "Echipa ta împarte căsuțe poștale precum hello@ sau billing@, în afara vizualizărilor și statisticilor de asistență."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Fusul tău orar, {zone}. Adică {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

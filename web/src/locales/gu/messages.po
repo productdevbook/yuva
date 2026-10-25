@@ -1044,6 +1044,10 @@ msgstr "{up} ઉપયોગી"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# અપડેટ} other {# અપડેટ}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. પ્રાપ્તકર્તાઓ ત્યારે નક્કી થાય છે; શરૂ થાય ત્યાં સુધી તમે ડ્રાફ્ટ પર પાછા જઈ શકો છો."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {# સરનામું આયાત કરો} other {# સરનામાં આયાત કરો}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} એ {contact} માં તમારો ઉલ્લેખ કર�
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} એ <0>{title}</0> માં જવાબ આપ્યો"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. પ્રાપ્તકર્તાઓ ત્યારે લેવામાં આવે છે; તે શરૂ થાય ત્યાં સુધી તમે ડ્રાફ્ટ પર પાછા જઈ શકો છો."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "<0>બૉટ મોકલી શકે</0> આ વર્કસ્પે�
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> Yuva રિપોઝિટરીને Swift પૅકેજ તરીકે ઉમેરો અને <1>YuvaKit</1> લાઇબ્રેરી વાપરો; સર્વર URL અને આ કી સાથે ક્લાયન્ટ બનાવો."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} તમારા સમયમાં ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "કોઈપણ સ્થિતિ"
 msgid "Any team"
 msgstr "કોઈપણ ટીમ"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "કોઈપણ સમયે"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "તમારી સાઇટ પર કોઈપણ લખી શકે છે. ફક્ત સાઇન ઇન કરેલા વપરાશકર્તાઓ ચૅટ કરી શકે ત્યારે તેને બંધ કરો."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "આને લાગુ પડે છે"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "આગળના મેઇલ પર લાગુ પડે છે."
 
@@ -3223,6 +3236,10 @@ msgstr "આસિસ્ટન્ટ, {drafts} ડ્રાફ્ટ રાહ �
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "અસિંક"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "સમય"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "કૅમ્પેઇનનું નામ"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "તે ફૉરવર્ડિંગ નીચેના સરનામ
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "પસંદગી બદલો"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "મોકલવાના કલાકો બદલો"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "ક્લાયન્ટ ઓળખકર્તા"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "ક્લાયન્ટ સિક્રેટ"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "ઘડિયાળો {date}ના રોજ બદલાય છે; કલાકો સ્થાનિક સમયમાં {start}–{end} જ રહે છે."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "ગ્રાહકો ચેટ, ઍપ કે ઈ-મેલથી લ�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "દૈનિક મર્યાદા"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "દૈનિક મર્યાદા પૂરી થઈ · {city} સમય મુજબ {time} વાગ્યે ચાલુ રહેશે"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "ચાલુ: {name}"
 msgid "Encryption"
 msgstr "એન્ક્રિપ્શન"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "દિવસનો અંત (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "{finished} સમાપ્ત થયું"
@@ -7613,6 +7648,7 @@ msgstr "તમારા Sent ફોલ્ડરમાં મળ્યું"
 msgid "Friday"
 msgstr "શુક્રવાર"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "મેલિંગ લિસ્ટ (List-Id)"
 msgid "Mailing lists"
 msgstr "મેઇલિંગ લિસ્ટ"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "મેઇલ {city} સમયમાં {start} અને {end} વચ્ચે જાય છે ({utcStart}–{utcEnd} UTC) અને બીજા દિવસે ચાલુ રહે છે."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "કોઈ સ્વાગત મેઇલ મોકલાતો નથ�
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "કોઈ સ્વાગત કે પુષ્ટિ મેઇલ મોકલાતો નથી. દરેક સબ્સ્ક્રિપ્શન તમે જાહેર કરેલી સંમતિ અને તે જે આયાતમાંથી આવ્યું તે રાખે છે."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "કોઈ સમય ઝોન મેળ ખાતો નથી"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "બીજું કોઈ હજી આ ઇનબૉક્સ જોઈ શકતું નથી."
@@ -12698,6 +12742,10 @@ msgstr "હમણાં ફક્ત મેળવો"
 msgid "Only receives"
 msgstr "ફક્ત મેળવે છે"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "માત્ર નક્કી કલાકોમાં મોકલો"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "ફક્ત તે સભ્ય તેને વાંચે છે. તમે ફક્ત તે છે એટલું જુઓ છો."
@@ -13213,6 +13261,10 @@ msgstr "Outlook ની .pst ફાઇલો વંચાતી નથી; પહ
 msgid "Outside business hours"
 msgstr "કામના સમયની બહાર"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "તેની બહાર મોકલવાનું રાહ જુએ છે અને કલાકો ફરી ખુલે ત્યારે ચાલુ રહે છે."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "તેની બહાર પ્રોડક્ટ બંધ ગણાય છે."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "દિવસ દીઠ"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "દરરોજ, મોકલવાના કલાકોમાં"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "કલાક દીઠ"
 
@@ -13691,13 +13747,17 @@ msgstr "સેટિંગ્સમાં મોકલનાર પસંદ ક
 msgid "Pick a team"
 msgstr "ટીમ પસંદ કરો"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "સમય પસંદ કરો"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "હમણાંથી ઓછામાં ઓછી એક મિનિટ પછીનો સમય પસંદ કરો."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "આગામી 90 દિવસમાં તમારા સમય ક્ષેત્ર, {zone}, માં સમય પસંદ કરો."
+msgid "Pick a time in the next 90 days."
+msgstr "આગામી 90 દિવસમાં સમય પસંદ કરો."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "વાંચવા માટે ઘટના પસંદ કરો."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "ખુલ્લી ઘટના કે જાળવણી પસંદ કરો"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "ઓછામાં ઓછી 30 મિનિટ પસંદ કરો"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "શનિવાર"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "સબ્સ્ક્રાઇબર શોધો"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "લેખોમાં શોધો"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "સમય ઝોન શોધો"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "મોકલી શકાયું નહીં."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "મોકલવાનું પહેલેથી શરૂ થઈ ગયું છે. તેને બદલે થોભાવો કે રદ કરો."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "મોકલવાના કલાકો"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "“{name}”ના મોકલવાના કલાકો"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "મોકલવાનું સ્થગિત છે."
@@ -16485,6 +16563,10 @@ msgstr "તેનો મેઇલ આનાથી મોકલે છે"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "{local} એ મોકલે છે"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "{sendDate}ના રોજ {city} સમય મુજબ {sendTime} વાગ્યે મોકલાશે ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "લખવા બદલ આભાર"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "લખવા બદલ આભાર. અમે સામાન્ય રીતે એક દિવસમાં જવાબ આપીએ છીએ."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "એ તમારા સમયમાં {mineStart}–{mineEnd} છે ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "શાંત સમય પૂરો થયો; માઇગ્રેશ�
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "પ્રાપ્ત કરતા સર્વરે SPF ની પુષ્ટિ કરી નહીં. તપાસો કે રેકોર્ડમાં તમારો SMTP પ્રદાતા છે."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "પ્રાપ્તકર્તાઓ ત્યારે નક્કી થાય છે; શરૂ થાય ત્યાં સુધી તમે ડ્રાફ્ટ પર પાછા જઈ શકો છો."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "મોકલવાનું શરૂ થાય ત્યારે પ્રાપ્તકર્તાઓ લેવાય છે: જે લોકો પછી સબ્સ્ક્રાઇબ કરે તેમને મળતો નથી, અને જેમનો મેઇલ જાય તે પહેલાં અનસબ્સ્ક્રાઇબ કરે તેમને છોડી દેવાય છે. તે મોકલાતું હોય ત્યારે તમે થોભાવી કે રદ કરી શકો છો."
@@ -19062,6 +19152,14 @@ msgstr "મોકલનાર ડોમેન પાસે DMARC રેકોર
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "મોકલનાર ડોમેન હજી SPF, DKIM અને DMARC ની ચકાસણીમાં પાસ થયું નથી. સૂચનાઓ સ્પામમાં જઈ શકે છે."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "મોકલવાના કલાકો હમણાં બંધ છે; મોકલવાનું {date}ના રોજ {time} વાગ્યે શરૂ થશે."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "ત્યારે મોકલવાના કલાકો બંધ હશે; મોકલવાનું {openDate}ના રોજ {openTime} વાગ્યે શરૂ થશે."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "વર્કસ્પેસ હાલ બ્રૉડકાસ્ટ મ
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "વર્કસ્પેસ હમણાં બલ્ક મેઇલ મોકલી શકતું નથી"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "વર્કસ્પેસ આજની મોકલવાની મર્યાદાએ પહોંચ્યું. મોકલવાનું {local} ({utc} UTC) એ ચાલુ રહે છે."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "ટિકિટ તેમના જવાબો, નોંધો, ટૅ
 msgid "Time"
 msgstr "સમય"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "છેલ્લા {days} દિવસમાં અનસબ્સ્ક
 msgid "unsubscribed now"
 msgstr "હમણાં અનસબ્સ્ક્રાઇબ થયા"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "સુધી"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "{expires} સુધી"
@@ -21012,6 +21113,10 @@ msgstr "Google ના પુષ્ટિ કોડની રાહ જોવા�
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "પહોંચવાની રાહ જોવાય છે"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "મોકલવાના કલાકોની રાહ · {city} સમય મુજબ {time} વાગ્યે ખુલશે ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "તમારી ટીમ"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "તમારી ટીમ hello@ અથવા billing@ જેવા મેલબોક્સ શેર કરે છે, જે સપોર્ટ વ્યૂ અને આંકડાઓથી અલગ રહે છે."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "તમારો સમય ક્ષેત્ર, {zone}. તે {utc} UTC છે."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

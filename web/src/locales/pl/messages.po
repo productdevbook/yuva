@@ -1044,6 +1044,10 @@ msgstr "{up} pomocnych"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# aktualizacja} few {# aktualizacje} many {# aktualizacji} other {# aktualizacji}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Odbiorcy są ustalani wtedy; do startu możesz wrócić do wersji roboczej."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, one {Importuj # adres} few {Importuj # adresy} many {Importuj # adresów} other {Importuj # adresu}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} wspomniał(a) o Tobie w rozmowie {contact}. Otwórz rozmowę"
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} odpowiedział(a) w <0>{title}</0>"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. Odbiorcy są wtedy ustalani; do tego czasu możesz wrócić do wersji roboczej."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "<0>Boty mogą wysyłać</0> jest włączone w tym obszarze roboczym, wi�
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> dodaj repozytorium Yuva jako pakiet Swift i użyj biblioteki <1>YuvaKit</1>; utwórz klienta z adresem URL serwera i tym kluczem."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} w Twoim czasie ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Dowolny stan"
 msgid "Any team"
 msgstr "Dowolny zespół"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "O dowolnej porze"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Każdy w Twojej witrynie może pisać. Wyłącz, gdy czatować mogą tylko zalogowani użytkownicy."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Dotyczy"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "Dotyczy następnej wiadomości."
 
@@ -3223,6 +3236,10 @@ msgstr "Asystenci, czeka {drafts} wersji roboczych"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Asynchroniczna"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "O"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Nazwa kampanii"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Zmień to przekierowanie na poniższy adres, aby poczta {address} trafia
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Zmień wybór"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Zmień godziny wysyłki"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "Identyfikator klienta"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Sekret klienta"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Zmiana czasu następuje {date}; godziny pozostają {start}–{end} czasu lokalnego."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Klienci piszą przez czat, aplikację lub e-mail; oceny, przydzielanie i
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Limit dzienny"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Osiągnięto limit dzienny · wznowienie o {time} czasu: {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Włączona: {name}"
 msgid "Encryption"
 msgstr "Szyfrowanie"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "Koniec dnia (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Zakończono {finished}"
@@ -7613,6 +7648,7 @@ msgstr "Znaleziono w Twoich folderach Wysłane"
 msgid "Friday"
 msgstr "Piątek"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Lista mailingowa (List-Id)"
 msgid "Mailing lists"
 msgstr "Listy mailingowe"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "Wiadomości wychodzą między {start} a {end} czasu: {city} ({utcStart}–{utcEnd} UTC) i są kontynuowane następnego dnia."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Wiadomość powitalna nie jest wysyłana. Każdy nowy adres czeka na pot
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Wiadomość powitalna ani potwierdzająca nie jest wysyłana. Każda subskrypcja zachowuje zgodę, którą zadeklarowałeś(-aś), i import, z którego pochodzi."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Brak pasującej strefy"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Nikt inny nie widzi jeszcze tej skrzynki."
@@ -12698,6 +12742,10 @@ msgstr "Na razie tylko odbieraj"
 msgid "Only receives"
 msgstr "Tylko odbiera"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Wysyłaj tylko w określonych godzinach"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "Czyta ją tylko ten członek. Ty widzisz tylko, że istnieje."
@@ -13213,6 +13261,10 @@ msgstr "Pliki .pst z Outlooka nie są odczytywane; najpierw przekonwertuj je na 
 msgid "Outside business hours"
 msgstr "Poza godzinami pracy"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "Poza nimi wysyłka czeka i rusza dalej, gdy godziny znów się otworzą."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Poza nimi produkt jest uznawany za zamknięty."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Dziennie"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "dziennie, w godzinach wysyłki"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Godzinowo"
 
@@ -13691,13 +13747,17 @@ msgstr "Wybierz nadawcę w ustawieniach"
 msgid "Pick a team"
 msgstr "Wybierz zespół"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Wybierz godzinę"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Wybierz czas co najmniej minutę od teraz."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Wybierz czas w ciągu najbliższych 90 dni, w swojej strefie czasowej, {zone}."
+msgid "Pick a time in the next 90 days."
+msgstr "Wybierz termin w ciągu najbliższych 90 dni."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Wybierz incydent, aby go przeczytać."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Wybierz otwarty incydent lub konserwację"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "Wybierz co najmniej 30 minut"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Sobota"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Szukaj subskrybentów"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Szukaj w artykułach"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Szukaj stref czasowych"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "Wysyłanie nie powiodło się."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Wysyłanie już się rozpoczęło. Zamiast tego wstrzymaj je lub anuluj."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Godziny wysyłki"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "Godziny wysyłki „{name}”"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "Wysyłanie jest zawieszone."
@@ -16485,6 +16563,10 @@ msgstr "Wysyła pocztę z"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Wysyła {local}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "Wyjdzie {sendDate} o {sendTime} czasu: {city} ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Dziękujemy za wiadomość"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Dziękujemy za wiadomość. Zwykle odpowiadamy w ciągu dnia."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "To {mineStart}–{mineEnd} w Twoim czasie ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "Okres ciszy minął; migracja kończy się przy następnej synchronizacj
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "Serwer odbierający nie potwierdził SPF. Sprawdź, czy rekord obejmuje Twojego dostawcę SMTP."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "Odbiorcy są ustalani wtedy; do startu możesz wrócić do wersji roboczej."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "Odbiorcy są ustalani w chwili rozpoczęcia wysyłania: osoby, które zasubskrybują później, jej nie dostaną, a każdy, kto się wypisze, zanim jego wiadomość wyjdzie, jest pomijany. Możesz wstrzymać lub anulować w trakcie wysyłania."
@@ -19062,6 +19152,14 @@ msgstr "Domena wysyłania nie ma rekordu DMARC."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "Domena wysyłająca nie przeszła jeszcze weryfikacji SPF, DKIM i DMARC. Powiadomienia mogą trafiać do spamu."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "Godziny wysyłki są teraz zamknięte; wysyłka zacznie się {date} o {time}."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "Wtedy godziny wysyłki będą zamknięte; wysyłka zacznie się {openDate} o {openTime}."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "Obszar roboczy na razie nie może wysyłać wysyłek masowych."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Przestrzeń robocza nie może teraz wysyłać wiadomości masowych"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "Obszar roboczy osiągnął dzisiejszy limit wysyłania. Wysyłanie będzie kontynuowane {local} ({utc} UTC)."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "Zgłoszenia przychodzą z odpowiedziami, notatkami, tagami, statusem i p
 msgid "Time"
 msgstr "Czas"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "wypisani w ciągu ostatnich {days} dni"
 msgid "unsubscribed now"
 msgstr "wypisani teraz"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Do"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "do {expires}"
@@ -21012,6 +21113,10 @@ msgstr "Oczekiwanie na kod potwierdzenia od Google…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Oczekiwanie na dotarcie"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Czeka na godziny wysyłki · otwarcie o {time} czasu: {city} ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "Twój zespół"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "Twój zespół współdzieli skrzynki, takie jak hello@ czy billing@, poza widokami i statystykami obsługi klientów."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Twoja strefa czasowa, {zone}. To {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"

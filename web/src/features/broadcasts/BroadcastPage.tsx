@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CircleAlertIcon, GaugeIcon, LoaderIcon, PauseIcon } from "lucide-react"
+import { CircleAlertIcon, ClockIcon, GaugeIcon, LoaderIcon, PauseIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router"
 
@@ -23,15 +23,16 @@ import {
   ProgressBar,
   StateBadge,
   useNumber,
-  utcLine,
   PaceLine,
   WaitingLine,
+  WindowLine,
 } from "@/features/broadcasts/BroadcastParts"
 import { Composer } from "@/features/broadcasts/Composer"
 import { DesignThumb } from "@/features/broadcasts/DesignPicker"
 import { useInboxChannels, useLists } from "@/features/broadcasts/queries"
 import { Deliveries, Report, ReportStats } from "@/features/broadcasts/Report"
 import { paceGap, PaceDialog, usePaceSummary } from "@/features/broadcasts/Pace"
+import { SendTimeDialog } from "@/features/broadcasts/SendTime"
 import { designLink } from "@/features/designs/queries"
 import { Card, Section } from "@/features/settings/ui"
 import { FrameButton, FrameTabs, framePad, ProductTag } from "@/features/status/PageFrame"
@@ -40,6 +41,16 @@ import type { Broadcast } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useInboxes, useMemberMap } from "@/lib/workspace"
+import {
+  addDays,
+  localParts,
+  utcLine,
+  wallClock,
+  windowInstants,
+  zoneCity,
+  zoneLabel,
+  zonedDateTime,
+} from "@/lib/zones"
 
 export { BroadcastsOverview as BroadcastsHome } from "@/features/broadcasts/Overview"
 
@@ -49,12 +60,14 @@ function Actions({
   pending,
   onDelete,
   onPace,
+  onHours,
 }: {
   b: Broadcast
   run: (a: BroadcastAction) => void
   pending: boolean
   onDelete: () => void
   onPace: () => void
+  onHours: () => void
 }) {
   const { t } = useLingui()
   const active = b.state === "sending" || b.state === "preparing"
@@ -79,6 +92,16 @@ function Actions({
         >
           <GaugeIcon />
           <Trans>Change pace</Trans>
+        </FrameButton>
+      )}
+      {live && (
+        <FrameButton
+          onClick={onHours}
+          title={keyHint(t`Change the sending hours`, BROADCAST_KEYS.hours)}
+          data-testid="broadcast-hours-change"
+        >
+          <ClockIcon />
+          <Trans>Sending hours</Trans>
         </FrameButton>
       )}
       {b.state === "scheduled" && (
@@ -148,25 +171,42 @@ function Banner({ b, at }: { b: Broadcast; at: number }) {
   const per = rate ? Math.max(1 / rate, gap) : 0
   const next = b.pace_next_at ? Date.parse(b.pace_next_at) : 0
   const start = gap > 0 && next > at ? next : at
+  const finish = start + (left - (start > at ? 1 : 0)) * per * 1000
+  const today = localParts(b.timezone, new Date(at)).date
+  const open =
+    b.send_window &&
+    [addDays(today, -1), today]
+      .map((d) => windowInstants(b.timezone, d, b.send_window!.start, b.send_window!.end))
+      .find((w) => w && w.from.getTime() <= at && at < w.to.getTime())
+  const fits = !b.send_window || (!!open && finish <= open.to.getTime())
   const end =
-    b.state === "sending" && rate && left > 0 && !b.waiting_until
-      ? formatDateTime(new Date(start + (left - (start > at ? 1 : 0)) * per * 1000).toISOString(), i18n.locale)
+    b.state === "sending" && rate && left > 0 && !b.waiting_until && !b.window_opens_at && fits
+      ? formatDateTime(new Date(finish).toISOString(), i18n.locale)
       : null
   const every = gap > 0 ? formatDuration(gap, i18n.locale) : ""
   const reason = b.pause_reason
+  const closedUntil =
+    b.window_opens_at && Date.parse(b.window_opens_at) > Math.max(at, Date.parse(b.scheduled_at ?? "") || 0)
+  if (b.state === "scheduled" && b.window_opens_at && closedUntil) {
+    return (
+      <div className="flex flex-col gap-1 rounded-xl border bg-card p-4" data-testid="broadcast-scheduled">
+        <WindowLine opens={b.window_opens_at} zone={b.timezone} />
+        <p className="text-small text-muted-foreground">
+          <Trans>The recipients are taken then; you can go back to the draft until it starts.</Trans>
+        </p>
+      </div>
+    )
+  }
   if (b.state === "scheduled" && b.scheduled_at) {
-    const local = formatDateTime(b.scheduled_at, i18n.locale)
+    const local = `${zonedDateTime(b.scheduled_at, b.timezone, i18n.locale)} ${zoneLabel(b.timezone, new Date(b.scheduled_at), i18n.locale)}`
     const utc = utcLine(b.scheduled_at, i18n.locale)
-    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
     return (
       <div className="flex flex-col gap-1 rounded-xl border bg-card p-4" data-testid="broadcast-scheduled">
         <p className="text-reading font-semibold">
           <Trans>Sends on {local}</Trans>
         </p>
         <p className="text-small text-muted-foreground">
-          <Trans>
-            {zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts.
-          </Trans>
+          <Trans>{utc} UTC. The recipients are taken then; you can go back to the draft until it starts.</Trans>
         </p>
       </div>
     )
@@ -194,7 +234,8 @@ function Banner({ b, at }: { b: Broadcast; at: number }) {
         </p>
       </div>
       <ProgressBar b={b} className="h-2" />
-      {b.waiting_until && <WaitingLine until={b.waiting_until} />}
+      {b.window_opens_at && <WindowLine opens={b.window_opens_at} zone={b.timezone} />}
+      {b.waiting_until && <WaitingLine until={b.waiting_until} zone={b.timezone} />}
       {b.state === "sending" && b.pace_next_at && next > at && <PaceLine at={b.pace_next_at} />}
       {b.state === "paused" && reason && (
         <Notice tone={reason === "member" ? "info" : "warning"} icon={PauseIcon} data-testid="broadcast-pause-reason">
@@ -225,6 +266,8 @@ function Summary({ b }: { b: Broadcast }) {
   const paceSummary = usePaceSummary()
   const members = useMemberMap()
   const by = b.scheduled_by ? members.get(b.scheduled_by) : undefined
+  const stamp = (iso: string) =>
+    `${zonedDateTime(iso, b.timezone, i18n.locale)} ${zoneLabel(b.timezone, new Date(iso), i18n.locale)}`
   const rows: [string, React.ReactNode][] = [
     [t`Subject`, b.subject || "—"],
     [t`Preview text`, b.preheader || t`The design’s own`],
@@ -234,6 +277,16 @@ function Summary({ b }: { b: Broadcast }) {
   if (b.audience.conditions.length) rows.push([t`Conditions`, String(b.audience.conditions.length)])
   if (b.audience.locales.length) rows.push([t`Languages`, b.audience.locales.join(", ")])
   rows.push([t`Sending pace`, paceSummary(b.pace)])
+  rows.push([
+    t`Time zone`,
+    zoneLabel(b.timezone, new Date(b.scheduled_at ?? b.started_at ?? b.updated_at), i18n.locale),
+  ])
+  rows.push([
+    t`Sending hours`,
+    b.send_window
+      ? `${wallClock(b.send_window.start, i18n.locale)}–${wallClock(b.send_window.end, i18n.locale)} ${zoneCity(b.timezone)}`
+      : t`Any time`,
+  ])
   rows.push([t`Click counting`, b.click_tracking ? t`On` : t`Off`])
   rows.push([
     t`Campaign in links`,
@@ -247,8 +300,8 @@ function Summary({ b }: { b: Broadcast }) {
   ])
   if (by) rows.push([t`Scheduled by`, by.name || by.email])
   else if (b.scheduled_by_api_key) rows.push([t`Scheduled by`, t`An API key or assistant`])
-  if (b.started_at) rows.push([t`Started`, formatDateTime(b.started_at, i18n.locale)])
-  if (b.finished_at) rows.push([t`Finished`, formatDateTime(b.finished_at, i18n.locale)])
+  if (b.started_at) rows.push([t`Started`, stamp(b.started_at)])
+  if (b.finished_at) rows.push([t`Finished`, stamp(b.finished_at)])
   return (
     <Section title={b.started_at ? <Trans>What went out</Trans> : <Trans>What will go out</Trans>}>
       <Card>
@@ -291,6 +344,7 @@ export function BroadcastPage() {
   const remove = useDeleteBroadcast()
   const [confirm, confirmDialog] = useConfirm()
   const [pacing, setPacing] = useState(false)
+  const [hoursOpen, setHoursOpen] = useState(false)
   const rate = useInboxChannels(b?.inbox_id ?? "").data?.find((c) => c.id === b?.channel_id)?.email?.broadcast_rate
   const draft = b?.state === "draft"
   const scheduled = b?.state === "scheduled"
@@ -336,7 +390,11 @@ export function BroadcastPage() {
           ...(b.state === "sending" || b.state === "preparing" ? { [BROADCAST_KEYS.pause]: () => run("pause") } : {}),
           ...(b.state === "paused" ? { [BROADCAST_KEYS.pause]: () => run("resume") } : {}),
           ...(b.state === "scheduled" || isActive(b)
-            ? { [BROADCAST_KEYS.cancel]: () => run("cancel"), [BROADCAST_KEYS.pace]: () => setPacing(true) }
+            ? {
+                [BROADCAST_KEYS.cancel]: () => run("cancel"),
+                [BROADCAST_KEYS.pace]: () => setPacing(true),
+                [BROADCAST_KEYS.hours]: () => setHoursOpen(true),
+              }
             : {}),
           ...(!scheduled
             ? {
@@ -349,7 +407,7 @@ export function BroadcastPage() {
             : {}),
         }
       : {},
-    canManage && !!b && !pacing
+    canManage && !!b && !pacing && !hoursOpen
   )
 
   if (broadcast.isPending || !b) {
@@ -386,8 +444,15 @@ export function BroadcastPage() {
           {b.subject && <span className="truncate text-small text-muted-foreground">{b.subject}</span>}
         </div>
         {canManage && (
-          <div className="flex shrink-0 flex-wrap items-center gap-2">
-            <Actions b={b} run={run} pending={action.isPending} onDelete={onDelete} onPace={() => setPacing(true)} />
+          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
+            <Actions
+              b={b}
+              run={run}
+              pending={action.isPending}
+              onDelete={onDelete}
+              onPace={() => setPacing(true)}
+              onHours={() => setHoursOpen(true)}
+            />
           </div>
         )}
       </PageBar>
@@ -415,6 +480,7 @@ export function BroadcastPage() {
         </div>
       </div>
       {pacing && <PaceDialog b={b} rate={rate} onClose={() => setPacing(false)} />}
+      {hoursOpen && <SendTimeDialog b={b} inboxZone={inbox?.timezone} onClose={() => setHoursOpen(false)} />}
       {action.isPending && (
         <span className="fixed bottom-6 left-1/2 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-caption text-background shadow-lg">
           <LoaderIcon className="size-3 animate-spin" />

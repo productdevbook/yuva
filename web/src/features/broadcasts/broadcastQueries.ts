@@ -140,7 +140,7 @@ export function useSchedule(id: string) {
   const qc = useQueryClient()
   const { workspaceId: ws } = useSession()
   return useMutation({
-    mutationFn: (body: { send_at?: string; confirm_recipients?: number }) =>
+    mutationFn: (body: { send_at?: string; send_at_local?: string; confirm_recipients?: number }) =>
       unwrap(api.POST("/v1/broadcasts/{broadcastId}/schedule", { params: { path: { broadcastId: id } }, body })),
     onSuccess: set,
     onError: () => {

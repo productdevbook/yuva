@@ -3,10 +3,11 @@ import { BanIcon, ClockIcon, ShieldAlertIcon } from "lucide-react"
 import { Link } from "react-router"
 
 import { Notice } from "@/components/common"
-import { formatDateTime, useEnumText } from "@/components/common/text"
+import { formatDateTime, formatRelative, useEnumText } from "@/components/common/text"
 import { keyLabel } from "@/components/common/ShortcutSheet"
 import type { Broadcast, BroadcastState, Channel, WorkspaceBroadcasts } from "@/lib/api"
 import { useSession } from "@/lib/session"
+import { clock, utcLine, zoneCity } from "@/lib/zones"
 import { cn } from "@/lib/utils"
 
 export function keyHint(label: string, key: string) {
@@ -96,22 +97,33 @@ export function usePercent() {
   return (n: number) => fmt.format(n)
 }
 
-export function utcLine(iso: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }).format(
-    new Date(iso)
-  )
-}
-
-export function WaitingLine({ until }: { until: string }) {
+export function WaitingLine({ until, zone }: { until: string; zone: string }) {
   const { i18n } = useLingui()
-  const local = formatDateTime(until, i18n.locale)
-  const utc = utcLine(until, i18n.locale)
+  const time = clock(new Date(until), zone, i18n.locale)
+  const city = zoneCity(zone)
   return (
     <p className="flex items-start gap-1.5 text-body text-muted-foreground" data-testid="broadcast-waiting">
       <ClockIcon className="mt-0.5 size-4 shrink-0 text-warning" />
       <span>
         <Trans>
-          The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC).
+          Daily limit reached · continues at {time} {city} time
+        </Trans>
+      </span>
+    </p>
+  )
+}
+
+export function WindowLine({ opens, zone }: { opens: string; zone: string }) {
+  const { i18n } = useLingui()
+  const time = clock(new Date(opens), zone, i18n.locale)
+  const city = zoneCity(zone)
+  const relative = formatRelative(opens, i18n.locale)
+  return (
+    <p className="flex items-start gap-1.5 text-body text-muted-foreground" data-testid="broadcast-window-closed">
+      <ClockIcon className="mt-0.5 size-4 shrink-0 text-warning" />
+      <span>
+        <Trans>
+          Waiting for sending hours · opens at {time} {city} time ({relative})
         </Trans>
       </span>
     </p>

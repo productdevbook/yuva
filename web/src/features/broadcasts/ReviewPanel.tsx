@@ -5,7 +5,7 @@ import { Link } from "react-router"
 
 import { ErrorLine, Notice, Segmented } from "@/components/common"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
-import { formatBytes, formatDateTime } from "@/components/common/text"
+import { formatBytes } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -17,9 +17,10 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { problemOf, useSchedule } from "@/features/broadcasts/broadcastQueries"
+import { problemOf, useSchedule, useUpdateBroadcast } from "@/features/broadcasts/broadcastQueries"
 import { paceGap, usePaceSummary } from "@/features/broadcasts/Pace"
-import { keyHint, useBroadcastsStatus, useNumber, utcLine } from "@/features/broadcasts/BroadcastParts"
+import { keyHint, useBroadcastsStatus, useNumber } from "@/features/broadcasts/BroadcastParts"
+import { ZonePicker } from "@/features/broadcasts/SendTime"
 import { designLink } from "@/features/designs/queries"
 import { channelLink, isChecking, useDeliverability } from "@/features/settings/channels/email/deliverability"
 import type {
@@ -31,9 +32,23 @@ import type {
 } from "@/lib/api"
 import { ApiError } from "@/lib/api"
 import { useInboxes } from "@/lib/workspace"
+import {
+  addDays,
+  browserZone,
+  dayLabel,
+  localParts,
+  localToInstant,
+  nextWindowOpening,
+  zoneCity,
+  zoneLabel,
+  zoneOffset,
+  zonedDateTime,
+  wallClock,
+  clock,
+} from "@/lib/zones"
 import { cn } from "@/lib/utils"
 
-export type Spot = "sender" | "audience" | "content" | "options" | "pace" | "test"
+export type Spot = "sender" | "audience" | "content" | "options" | "pace" | "hours" | "test"
 
 type Fix = { spot: Spot } | { to: string }
 
@@ -52,6 +67,7 @@ const ORDER: BroadcastReviewKey[] = [
   "click_tracking",
   "daily_cap",
   "pace",
+  "send_window",
   "ses_tenant",
   "test_sent",
 ]
@@ -102,6 +118,7 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
     subject: t`Subject`,
     daily_cap: t`Daily limit`,
     pace: t`Sending pace`,
+    send_window: t`Sending hours`,
     test_sent: t`Test mail`,
     click_tracking: t`Click tracking`,
     ses_tenant: t`Amazon SES tenant`,
@@ -145,6 +162,15 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
         return blocking
           ? t`At this pace, sending would take about ${paceDays} days. A broadcast may take at most 365 days: raise the pace or send to fewer people.`
           : null
+      case "send_window": {
+        const opening = b.send_window
+          ? nextWindowOpening(b.timezone, new Date(), b.send_window.start, b.send_window.end)
+          : null
+        if (!opening) return null
+        const time = wallClock(opening.time, i18n.locale)
+        const date = dayLabel(opening.date, i18n.locale)
+        return t`The sending hours are closed right now; sending starts at ${time} on ${date}.`
+      }
       case "test_sent":
         return t`No test went out since the last change.`
       case "ses_tenant":
@@ -188,6 +214,8 @@ export function fixOf(b: Broadcast, key: BroadcastReviewKey): Fix | null {
       return { spot: "test" }
     case "pace":
       return { spot: "pace" }
+    case "send_window":
+      return { spot: "hours" }
     case "daily_cap":
       return null
   }
@@ -294,11 +322,6 @@ function Checklist({
   )
 }
 
-function toLocalInput(d: Date) {
-  const pad = (n: number) => String(n).padStart(2, "0")
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-}
-
 export function ReviewDialog({
   b,
   review,
@@ -320,11 +343,15 @@ export function ReviewDialog({
   const [step, setStep] = useState<1 | 2>(1)
   const [mode, setMode] = useState<"now" | "later">("now")
   const [now] = useState(() => Date.now())
-  const [at, setAt] = useState(() => toLocalInput(new Date(now + 60 * 60_000)))
+  const zone = b.timezone
+  const [date, setDate] = useState(() => localParts(zone, new Date(now + 60 * 60_000)).date)
+  const [time, setTime] = useState(() => localParts(zone, new Date(now + 60 * 60_000)).time)
   const [confirmed, setConfirmed] = useState<number | null>(null)
   const schedule = useSchedule(b.id)
-  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const sendAt = mode === "later" && at ? new Date(at) : null
+  const update = useUpdateBroadcast(b.id)
+  const inboxZone = useInboxes().data?.find((i) => i.id === b.inbox_id)?.timezone
+  const local = `${date}T${time}`
+  const sendAt = mode === "later" && date && time ? localToInstant(local, zone) : null
   const atValid =
     mode === "now" ||
     (!!sendAt && !Number.isNaN(sendAt.getTime()) && sendAt.getTime() > now && sendAt.getTime() < now + 90 * 86400_000)
@@ -332,15 +359,29 @@ export function ReviewDialog({
   const count = confirmed ?? review?.recipients ?? 0
   const recipients = num(count)
   const name = b.name
-  const when = sendAt && atValid ? formatDateTime(sendAt.toISOString(), i18n.locale) : ""
-  const utc = sendAt && atValid ? utcLine(sendAt.toISOString(), i18n.locale) : ""
+  const shown = sendAt && atValid ? sendAt : null
+  const when = shown
+    ? `${zonedDateTime(shown.toISOString(), zone, i18n.locale)} ${zoneLabel(zone, shown, i18n.locale)}`
+    : ""
+  const city = zoneCity(zone)
+  const offset = shown ? zoneOffset(zone, shown, i18n.locale) : ""
+  const sendDate = shown ? dayLabel(localParts(zone, shown).date, i18n.locale) : ""
+  const sendTime = shown ? clock(shown, zone, i18n.locale) : ""
+  const utcTime = shown ? clock(shown, "UTC", i18n.locale) : ""
+  const mine = browserZone()
+  const mineTime = shown ? clock(shown, mine, i18n.locale) : ""
+  const mineName = shown ? zoneLabel(mine, shown, i18n.locale) : ""
+  const showMine = !!shown && mine !== zone && zoneOffset(mine, shown, "en") !== zoneOffset(zone, shown, "en")
+  const closed = shown && b.send_window ? nextWindowOpening(zone, shown, b.send_window.start, b.send_window.end) : null
+  const openTime = closed ? wallClock(closed.time, i18n.locale) : ""
+  const openDate = closed ? dayLabel(closed.date, i18n.locale) : ""
   const pace = paceSummary(b.pace)
   const problem = problemOf(schedule.error)
   const changed = schedule.error instanceof ApiError && problem?.code === "audience_changed"
   const sendTitle = keyHint(t`Review, then send or schedule`, BROADCAST_KEYS.send)
   const submit = () => {
     schedule.mutate(
-      { send_at: mode === "later" && sendAt ? sendAt.toISOString() : undefined, confirm_recipients: count },
+      { send_at_local: mode === "later" && sendAt ? local : undefined, confirm_recipients: count },
       {
         onSuccess: onClose,
         onError: (err) => {
@@ -405,25 +446,71 @@ export function ReviewDialog({
                 ]}
               />
               {mode === "later" && (
-                <div className="flex flex-col gap-1.5">
-                  <Input
-                    type="datetime-local"
-                    value={at}
-                    min={toLocalInput(new Date(now))}
-                    onChange={(e) => setAt(e.target.value)}
-                    aria-label={t`Send on`}
-                    aria-invalid={!atValid || undefined}
-                    data-testid="send-at"
-                  />
-                  <p className="text-small text-faint" data-testid="send-zone">
-                    {utc ? (
-                      <Trans>
-                        Your time zone, {zone}. That is {utc} UTC.
-                      </Trans>
+                <div className="flex flex-col gap-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      type="date"
+                      value={date}
+                      min={localParts(zone, new Date(now)).date}
+                      max={addDays(localParts(zone, new Date(now)).date, 90)}
+                      onChange={(e) => setDate(e.target.value)}
+                      aria-label={t`Send on`}
+                      aria-invalid={!atValid || undefined}
+                      data-testid="send-at"
+                    />
+                    <Input
+                      type="time"
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
+                      aria-label={t`At`}
+                      aria-invalid={!atValid || undefined}
+                      data-testid="send-at-time"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 text-small text-faint">
+                    <Trans>Time zone</Trans>
+                    <ZonePicker
+                      value={zone}
+                      inboxZone={inboxZone}
+                      disabled={update.isPending}
+                      onChange={(timezone) => {
+                        update.mutate({ timezone })
+                      }}
+                      className="h-8 w-auto max-w-full flex-1"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-0.5 text-small text-faint" data-testid="send-zone">
+                    {shown ? (
+                      <>
+                        <p>
+                          <Trans>
+                            Sends on {sendDate} at {sendTime} {city} time ({offset})
+                          </Trans>
+                        </p>
+                        <p>
+                          <Trans>= {utcTime} UTC</Trans>
+                        </p>
+                        {showMine && (
+                          <p>
+                            <Trans>
+                              = {mineTime} your time ({mineName})
+                            </Trans>
+                          </p>
+                        )}
+                        {closed && (
+                          <p className="text-warning" data-testid="send-window-closed">
+                            <Trans>
+                              The sending hours are closed then; sending starts at {openTime} on {openDate}.
+                            </Trans>
+                          </p>
+                        )}
+                      </>
                     ) : (
-                      <Trans>Pick a time in the next 90 days, in your time zone, {zone}.</Trans>
+                      <p>
+                        <Trans>Pick a time in the next 90 days.</Trans>
+                      </p>
                     )}
-                  </p>
+                  </div>
                 </div>
               )}
             </div>

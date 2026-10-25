@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { utcLine } from "@/features/broadcasts/BroadcastParts"
+import { utcLine } from "@/lib/zones"
 import { ErrorLine, toLocalInput } from "@/features/changelog/text"
 import { Field } from "@/features/settings/ui"
 

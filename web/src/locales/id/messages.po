@@ -1044,6 +1044,10 @@ msgstr "{up} membantu"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, other {# pembaruan}}"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Penerima ditentukan saat itu; Anda bisa kembali ke draf sampai mulai."
+
 #: src/features/broadcasts/Import.tsx
 msgid "{valid, plural, one {Import # address} other {Import # addresses}}"
 msgstr "{valid, plural, other {Impor # alamat}}"
@@ -1087,10 +1091,6 @@ msgstr "{who} menyebut Anda di {contact}. Buka percakapan"
 msgid "{who} replied in <0>{title}</0>"
 msgstr "{who} membalas di <0>{title}</0>"
 
-#: src/features/broadcasts/BroadcastPage.tsx
-msgid "{zone} · {utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
-msgstr "{zone} · {utc} UTC. Penerima diambil saat itu; Anda bisa kembali ke draf sampai dimulai."
-
 #: src/features/settings/channels/email/EmailFields.tsx
 #: src/features/setup/email/EmailAddressStep.tsx
 msgid "*@example.com receives every address of the domain that no other channel has; replies then go out from the address the customer wrote to."
@@ -1131,6 +1131,14 @@ msgstr "<0>Bot boleh mengirim</0> aktif di ruang kerja ini, sehingga asisten den
 #: src/features/settings/channels/app/AppInstall.tsx
 msgid "<0>iOS:</0> add the Yuva repository as a Swift package and use the <1>YuvaKit</1> library; create the client with the server URL and this key."
 msgstr "<0>iOS:</0> tambahkan repositori Yuva sebagai paket Swift dan gunakan pustaka <1>YuvaKit</1>; buat klien dengan URL server dan kunci ini."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {mineTime} your time ({mineName})"
+msgstr "= {mineTime} waktu Anda ({mineName})"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "= {utcTime} UTC"
+msgstr "= {utcTime} UTC"
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -2873,6 +2881,10 @@ msgstr "Status apa pun"
 msgid "Any team"
 msgstr "Tim mana pun"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Any time"
+msgstr "Kapan saja"
+
 #: src/features/setup/AddChannelStep.tsx
 msgid "Anyone on your site can write. Turn it off when only signed-in users may chat."
 msgstr "Siapa pun di situs Anda dapat menulis. Matikan jika hanya pengguna yang sudah masuk yang boleh mengobrol."
@@ -2977,6 +2989,7 @@ msgid "Applies to"
 msgstr "Berlaku untuk"
 
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 msgid "Applies to the next mail."
 msgstr "Berlaku untuk email berikutnya."
 
@@ -3223,6 +3236,10 @@ msgstr "Asisten, {drafts} draf menunggu"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Async"
 msgstr "Asinkron"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "At"
+msgstr "Pukul"
 
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "At least 3 characters"
@@ -3767,6 +3784,7 @@ msgstr "Nama kampanye"
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Pace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactNotes.tsx
@@ -3952,6 +3970,11 @@ msgstr "Ubah penerusan itu ke alamat di bawah, agar email {address} sampai ke Yu
 #: src/features/migrations/ReviewStep.tsx
 msgid "Change the choice"
 msgstr "Ubah pilihan"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Change the sending hours"
+msgstr "Ubah jam pengiriman"
 
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
@@ -4365,6 +4388,10 @@ msgstr "Pengenal klien"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Client secret"
 msgstr "Rahasia klien"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
+msgstr "Jam berubah pada {date}; jam tetap {start}–{end} waktu setempat."
 
 #: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
@@ -5453,6 +5480,10 @@ msgstr "Pelanggan menulis lewat chat, aplikasi, atau email; penilaian, penugasan
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Daily limit"
 msgstr "Batas harian"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Daily limit reached · continues at {time} {city} time"
+msgstr "Batas harian tercapai · berlanjut pukul {time} waktu {city}"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -6720,6 +6751,10 @@ msgstr "Aktif: {name}"
 msgid "Encryption"
 msgstr "Enkripsi"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "End of day (24:00)"
+msgstr "Akhir hari (24:00)"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
 msgstr "Berakhir {finished}"
@@ -7613,6 +7648,7 @@ msgstr "Ditemukan di folder Terkirim Anda"
 msgid "Friday"
 msgstr "Jumat"
 
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9924,6 +9960,10 @@ msgstr "Milis (List-Id)"
 msgid "Mailing lists"
 msgstr "Milis"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
+msgstr "Email dikirim antara {start} dan {end} waktu {city} ({utcStart}–{utcEnd} UTC) dan berlanjut keesokan harinya."
+
 #: src/features/home/HomeSide.tsx
 #: src/features/status/StatusPages.tsx
 #: src/features/status/text.tsx
@@ -11850,6 +11890,10 @@ msgstr "Tidak ada email sambutan yang dikirim. Setiap alamat baru menunggu konfi
 msgid "No welcome or confirmation mail is sent. Every subscription keeps the consent you declared and the import it came from."
 msgstr "Tidak ada email sambutan atau konfirmasi yang dikirim. Setiap langganan menyimpan persetujuan yang Anda nyatakan dan impor asalnya."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "No zone matches"
+msgstr "Tidak ada zona waktu yang cocok"
+
 #: src/features/conversation/HeaderActions.tsx
 msgid "Nobody else can see this inbox yet."
 msgstr "Belum ada orang lain yang dapat melihat kotak masuk ini."
@@ -12698,6 +12742,10 @@ msgstr "Hanya menerima untuk sementara"
 msgid "Only receives"
 msgstr "Hanya menerima"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Only send during set hours"
+msgstr "Kirim hanya pada jam tertentu"
+
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Only that member reads it. You see only that it exists."
 msgstr "Hanya anggota itu yang membacanya. Anda hanya melihat bahwa kotak ini ada."
@@ -13213,6 +13261,10 @@ msgstr "File .pst Outlook tidak dibaca; konversikan ke .mbox dulu."
 msgid "Outside business hours"
 msgstr "Di luar jam kerja"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Outside them sending waits and goes on when they open again."
+msgstr "Di luar jam itu pengiriman menunggu dan berlanjut saat jam dibuka lagi."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Outside them the product counts as closed."
 msgstr "Di luar jam itu, produk dianggap tutup."
@@ -13545,6 +13597,10 @@ msgid "Per day"
 msgstr "Per hari"
 
 #: src/features/broadcasts/Pace.tsx
+msgid "per day, within the sending hours"
+msgstr "per hari, dalam jam pengiriman"
+
+#: src/features/broadcasts/Pace.tsx
 msgid "Per hour"
 msgstr "Per jam"
 
@@ -13691,13 +13747,17 @@ msgstr "Pilih pengirim di pengaturan"
 msgid "Pick a team"
 msgstr "Pilih tim"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick a time"
+msgstr "Pilih waktu"
+
 #: src/components/common/SendLater.tsx
 msgid "Pick a time at least a minute from now."
 msgstr "Pilih waktu setidaknya satu menit dari sekarang."
 
 #: src/features/broadcasts/ReviewPanel.tsx
-msgid "Pick a time in the next 90 days, in your time zone, {zone}."
-msgstr "Pilih waktu dalam 90 hari ke depan, di zona waktu Anda, {zone}."
+msgid "Pick a time in the next 90 days."
+msgstr "Pilih waktu dalam 90 hari ke depan."
 
 #: src/components/common/SendLater.tsx
 msgid "Pick a time within a year."
@@ -13735,6 +13795,10 @@ msgstr "Pilih insiden untuk membacanya."
 #: src/features/status/LinkIncidentDialog.tsx
 msgid "Pick an open incident or maintenance"
 msgstr "Pilih insiden atau pemeliharaan yang terbuka"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Pick at least 30 minutes"
+msgstr "Pilih minimal 30 menit"
 
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
@@ -15679,6 +15743,7 @@ msgstr "Sabtu"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/Pace.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/inbox/views/ViewDialog.tsx
@@ -16023,6 +16088,10 @@ msgstr "Cari pelanggan"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search the articles"
 msgstr "Cari di artikel"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Search time zones"
+msgstr "Cari zona waktu"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Search, triage and draft replies from Codex. It acts as you, with the access you allow."
@@ -16417,6 +16486,15 @@ msgstr "Gagal mengirim."
 msgid "Sending has already started. Pause or cancel it instead."
 msgstr "Pengiriman sudah dimulai. Jeda atau batalkan saja."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sending hours"
+msgstr "Jam pengiriman"
+
+#: src/features/broadcasts/SendTime.tsx
+msgid "Sending hours of “{name}”"
+msgstr "Jam pengiriman “{name}”"
+
 #: src/features/home/HomePage.tsx
 msgid "Sending is suspended."
 msgstr "Pengiriman ditangguhkan."
@@ -16485,6 +16563,10 @@ msgstr "Mengirim emailnya dari"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Sends on {local}"
 msgstr "Dikirim pada {local}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Sends on {sendDate} at {sendTime} {city} time ({offset})"
+msgstr "Dikirim pada {sendDate} pukul {sendTime} waktu {city} ({offset})"
 
 #: src/features/conversation/ForwardDialog.tsx
 msgid "Sends the latest messages of this conversation by e-mail to people outside Yuva."
@@ -18173,6 +18255,10 @@ msgstr "Terima kasih sudah menulis"
 msgid "Thanks for writing. We usually answer within a day."
 msgstr "Terima kasih sudah menulis. Kami biasanya menjawab dalam sehari."
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "That is {mineStart}–{mineEnd} your time ({mineName})."
+msgstr "Itu {mineStart}–{mineEnd} waktu Anda ({mineName})."
+
 #: src/features/settings/slack/SlackPage.tsx
 msgid "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
 msgstr "That Slack workspace is connected to another Yuva workspace. Disconnect it there first."
@@ -18973,6 +19059,10 @@ msgstr "Masa tenang berakhir; migrasi selesai pada sinkronisasi berikutnya."
 msgid "The receiving server did not confirm SPF. Check that the record includes your SMTP provider."
 msgstr "Server penerima tidak mengonfirmasi SPF. Pastikan rekaman mencakup penyedia SMTP Anda."
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "The recipients are taken then; you can go back to the draft until it starts."
+msgstr "Penerima ditentukan saat itu; Anda bisa kembali ke draf sampai mulai."
+
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The recipients are taken when sending starts: people who subscribe later do not get it, and anyone who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends."
 msgstr "Penerima diambil saat pengiriman dimulai: orang yang berlangganan kemudian tidak mendapatkannya, dan siapa pun yang berhenti sebelum emailnya keluar dilewati. Anda dapat menjeda atau membatalkan selagi dikirim."
@@ -19062,6 +19152,14 @@ msgstr "Domain pengirim tidak punya rekaman DMARC."
 #: src/features/status/SettingsTab.tsx
 msgid "The sending domain has not passed a check of SPF, DKIM and DMARC yet. Notices may land in spam."
 msgstr "Domain pengirim belum lolos pemeriksaan SPF, DKIM, dan DMARC. Pemberitahuan mungkin masuk ke spam."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed right now; sending starts at {time} on {date}."
+msgstr "Jam pengiriman sedang ditutup; pengiriman mulai pada {date} pukul {time}."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The sending hours are closed then; sending starts at {openTime} on {openDate}."
+msgstr "Saat itu jam pengiriman ditutup; pengiriman mulai pada {openDate} pukul {openTime}."
 
 #: src/features/migrations/SourceStep.tsx
 msgid "The server {host} answered."
@@ -19257,10 +19355,6 @@ msgstr "Ruang kerja untuk sementara tidak boleh mengirim siaran massal."
 #: src/features/status/Notices.tsx
 msgid "The workspace may not send bulk mail now"
 msgstr "Workspace saat ini tidak diizinkan mengirim email massal"
-
-#: src/features/broadcasts/BroadcastParts.tsx
-msgid "The workspace reached today’s sending limit. Sending continues on {local} ({utc} UTC)."
-msgstr "Ruang kerja mencapai batas kirim hari ini. Pengiriman berlanjut pada {local} ({utc} UTC)."
 
 #: src/components/common/SettingsStrip.tsx
 msgid "The workspace: labels, replies, data"
@@ -19926,6 +20020,9 @@ msgstr "Tiket ikut dengan balasan, catatan, tag, status, dan penerima tugasnya. 
 msgid "Time"
 msgstr "Waktu"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/SendTime.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -20482,6 +20579,10 @@ msgstr "berhenti berlangganan dalam {days} hari terakhir"
 msgid "unsubscribed now"
 msgstr "berhenti berlangganan sekarang"
 
+#: src/features/broadcasts/SendTime.tsx
+msgid "Until"
+msgstr "Sampai"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "until {expires}"
 msgstr "hingga {expires}"
@@ -21012,6 +21113,10 @@ msgstr "Menunggu kode konfirmasi Google…"
 #: src/features/setup/previews.tsx
 msgid "Waiting for it to arrive"
 msgstr "Menunggu tiba"
+
+#: src/features/broadcasts/BroadcastParts.tsx
+msgid "Waiting for sending hours · opens at {time} {city} time ({relative})"
+msgstr "Menunggu jam pengiriman · dibuka pukul {time} waktu {city} ({relative})"
 
 #: src/components/common/AddressState.tsx
 msgid "Waiting for the code"
@@ -22125,10 +22230,6 @@ msgstr "Tim Anda"
 #: src/features/setup/SetupHub.tsx
 msgid "Your team shares mailboxes like hello@ or billing@, kept out of support views and stats."
 msgstr "Tim Anda berbagi kotak surat seperti hello@ atau billing@, terpisah dari tampilan dan statistik dukungan."
-
-#: src/features/broadcasts/ReviewPanel.tsx
-msgid "Your time zone, {zone}. That is {utc} UTC."
-msgstr "Zona waktu Anda, {zone}. Itu {utc} UTC."
 
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Your website"
