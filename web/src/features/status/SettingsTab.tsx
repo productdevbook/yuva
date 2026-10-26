@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
 import { CopyButton, ErrorLine, Notice, toast, useConfirm } from "@/components/common"
+import { LanguagePicker } from "@/components/common/LanguagePicker"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { NativeSelect } from "@/components/ui/native-select"
@@ -15,7 +16,6 @@ import { OwnDomainCard } from "@/features/settings/OwnDomainCard"
 import { validSlug } from "@/features/status/CreatePageDialog"
 import { useDeleteStatusPage, usePatchStatusPage } from "@/features/status/queries"
 import { Card, ChoiceSelect, Field, Section, ToggleRow } from "@/features/settings/ui"
-import { ChoiceChips } from "@/features/status/Choice"
 import type { StatusPage, StatusPageUpdate } from "@/lib/api"
 
 const COLOR_RE = /^#[0-9a-fA-F]{6}$/
@@ -237,22 +237,21 @@ function Accent({ page, onCommit }: { page: StatusPage; onCommit: (v: string) =>
 function DisplayCard({ page, auto }: { page: StatusPage; auto: Autosave }) {
   const { t } = useLingui()
   const { save, patch } = auto
-  const locales: [string, string][] = [
-    ["en", t`English`],
-    ["tr", t`Türkçe`],
-    ["de", t`Deutsch`],
-  ]
-  if (!locales.some(([v]) => v === page.locale)) locales.push([page.locale, page.locale])
   return (
     <Section title={<Trans>Display</Trans>}>
       <Card>
-        <Field label={<Trans>Language</Trans>} hint={<Trans>The language of the page’s words.</Trans>}>
-          <ChoiceChips
+        <Field
+          label={<Trans>Language</Trans>}
+          htmlFor="status-locale"
+          hint={<Trans>The language of the page’s words.</Trans>}
+        >
+          <LanguagePicker
+            id="status-locale"
             value={page.locale}
-            onChange={(locale) => save({ locale })}
-            options={locales}
+            onChange={(locale) => locale !== page.locale && save({ locale })}
             label={t`Language`}
-            disabled={patch.isPending}
+            className="sm:max-w-xs"
+            testId="status-setting-locale"
           />
         </Field>
         <div className="grid gap-5 sm:grid-cols-2">
