@@ -76,7 +76,7 @@ export function LanguagePicker({
       <PopoverContent align="start" className="w-(--anchor-width) min-w-64 gap-0 p-0">
         <Command label={label}>
           <CommandInput placeholder={t`Search languages or type a tag`} value={search} onValueChange={setSearch} />
-          <CommandList>
+          <CommandList className="max-h-80 scroll-fade-y [scrollbar-width:thin]!">
             <CommandEmpty>
               <Trans>No language matches</Trans>
             </CommandEmpty>
