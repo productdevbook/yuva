@@ -11,7 +11,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-const MaxTranslations = 20
+const MaxTranslations = 100
 
 type Translation struct {
 	Preheader string            `json:"preheader,omitempty"`
@@ -34,11 +34,31 @@ func CanonicalTag(s string) (string, bool) {
 }
 
 func FooterLang(tag string) (string, bool) {
-	primary, _, _ := strings.Cut(strings.ToLower(tag), "-")
+	primary, rest, _ := strings.Cut(strings.ToLower(strings.ReplaceAll(tag, "_", "-")), "-")
+	if primary == "zh" {
+		primary = chineseScript(rest)
+	}
+	if alias, ok := footerAliases[primary]; ok {
+		primary = alias
+	}
 	if _, ok := footerTexts[primary]; ok {
 		return primary, true
 	}
 	return "en", false
+}
+
+var footerAliases = map[string]string{"no": "nb", "nn": "nb", "iw": "he", "in": "id"}
+
+func chineseScript(rest string) string {
+	for _, part := range strings.Split(rest, "-") {
+		switch part {
+		case "hant", "tw", "hk", "mo":
+			return "zh-Hant"
+		case "hans", "cn", "sg":
+			return "zh-Hans"
+		}
+	}
+	return "zh-Hans"
 }
 
 func parseLanguages(top map[string]json.RawMessage, d *Document, issues []Issue) []Issue {

@@ -38,7 +38,7 @@ type Input struct {
 	Doc       Document
 	Subject   string
 	Preheader string
-	// Lang is en, tr or de; it sets the html lang and the required footer's language.
+	// Lang is a FooterLang result; it sets the html lang and the required footer's language.
 	Lang         string
 	HTMLLang     string
 	Sender       Sender

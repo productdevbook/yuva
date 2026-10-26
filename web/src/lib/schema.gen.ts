@@ -20657,7 +20657,7 @@ export interface components {
             /** @description The preview text after the subject; the design's own when empty. */
             preheader: string;
             /**
-             * @description Subject and preheader per version of the design, by language tag (at most 20). A version
+             * @description Subject and preheader per version of the design, by language tag (at most 100). A version
              *     without a subject here goes out with `subject` (review warning `translations`).
              */
             translations: {
@@ -20761,7 +20761,7 @@ export interface components {
             subject?: string;
             preheader?: string;
             /**
-             * @description Subject and preheader per version of the design, by language tag (at most 20). A version
+             * @description Subject and preheader per version of the design, by language tag (at most 100). A version
              *     without a subject here goes out with `subject` (review warning `translations`). Draft only.
              */
             translations?: {
@@ -20787,7 +20787,7 @@ export interface components {
             subject?: string;
             preheader?: string;
             /**
-             * @description Subject and preheader per version of the design, by language tag (at most 20). A version
+             * @description Subject and preheader per version of the design, by language tag (at most 100). A version
              *     without a subject here goes out with `subject` (review warning `translations`). Replaced as a
              *     whole; `{}` removes them. Draft only.
              */
@@ -25967,7 +25967,7 @@ export interface components {
              */
             fallback_locale?: components["schemas"]["LanguageTag"];
             /**
-             * @description Versions in other languages, by language tag (at most 20, none equal to `locale`). A
+             * @description Versions in other languages, by language tag (at most 100, none equal to `locale`). A
              *     contact gets the version of their exact language, else of a shorter tag (`es-MX` → `es`),
              *     else of the same language in another region (`es` → `es-MX`, `pt-PT` → `pt-BR`), else
              *     `fallback_locale`; a contact without a language gets `fallback_locale`. Layout, theme,

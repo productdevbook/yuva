@@ -2,9 +2,11 @@ package design
 
 import (
 	"bytes"
+	"fmt"
 	"slices"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestResolve(t *testing.T) {
@@ -121,8 +123,11 @@ func TestLocalizedChangesOnlyTexts(t *testing.T) {
 		t.Fatalf("missing in es: %v", m)
 	}
 	is := d.VersionIssues("ar")
-	if len(is) != 4 || is[0].Code != "translation_missing" || is[0].Field != "translations.ar.blocks.i" || is[3].Code != "footer_language" || is[3].Detail != "ar" {
+	if len(is) != 3 || is[0].Code != "translation_missing" || is[0].Field != "translations.ar.blocks.i" {
 		t.Fatalf("ar issues: %v", is)
+	}
+	if is := d.VersionIssues("sw"); len(is) == 0 || is[len(is)-1].Code != "footer_language" || is[len(is)-1].Detail != "sw" {
+		t.Fatalf("sw issues: %v", is)
 	}
 }
 
@@ -164,5 +169,63 @@ func TestTranslationIssues(t *testing.T) {
 	}
 	if is := Validate(d, Options{}); len(is) == 0 || is[0].Code != "locale_required" {
 		t.Errorf("translations without a locale: %v", is)
+	}
+}
+
+func TestFooterLanguages(t *testing.T) {
+	sdk := strings.Fields("ar bn ca cs da de el en es es-MX fi fr fr-CA gu he hi hr hu id it ja kn ko ml mr ms nb nl or pa pl pt-BR pt-PT ro ru sk sl sv ta te th tr uk ur vi zh-Hans zh-Hant")
+	sdk = append(sdk, "zh", "zh-CN", "zh-SG", "zh-TW", "zh-HK", "zh-Hant-TW")
+	at := time.Date(2026, time.October, 26, 0, 0, 0, 0, time.UTC)
+	for _, tag := range sdk {
+		key, ok := FooterLang(tag)
+		if !ok {
+			t.Errorf("%s has no footer language", tag)
+			continue
+		}
+		x := textsFor(key)
+		if got := fmt.Sprintf(x.since, "List", x.date(at, x.months)); strings.Contains(got, "%!") || !strings.Contains(got, "List") {
+			t.Errorf("%s since: %q", tag, got)
+		}
+		if got := fmt.Sprintf(x.because, "List"); strings.Contains(got, "%!") || !strings.Contains(got, "List") {
+			t.Errorf("%s because: %q", tag, got)
+		}
+		if x.unsubscribe == "" || x.prefs == "" || x.identityMissing == "" || x.website == "" || x.image == "" {
+			t.Errorf("%s has an empty word", tag)
+		}
+	}
+	for tag, want := range map[string]string{"zh": "zh-Hans", "zh-CN": "zh-Hans", "zh-SG": "zh-Hans", "zh-TW": "zh-Hant", "zh-HK": "zh-Hant", "zh-Hant-TW": "zh-Hant", "pt-PT": "pt", "fr-CA": "fr"} {
+		if got, _ := FooterLang(tag); got != want {
+			t.Errorf("FooterLang(%s) = %s, want %s", tag, got, want)
+		}
+	}
+	if _, ok := FooterLang("xx"); ok {
+		t.Error("an unknown language resolved")
+	}
+}
+
+func TestTooManyTranslations(t *testing.T) {
+	blocks := func(n int) string {
+		var b strings.Builder
+		for i := 0; i < n; i++ {
+			if i > 0 {
+				b.WriteString(",")
+			}
+			fmt.Fprintf(&b, `"a%c%c": {"blocks": {}}`, 'a'+i/26, 'a'+i%26)
+		}
+		return b.String()
+	}
+	for n, want := range map[int]bool{MaxTranslations: false, MaxTranslations + 1: true} {
+		raw := strings.Replace(versioned, versioned[strings.Index(versioned, `"translations"`):], `"translations": {`+blocks(n)+`}}`, 1)
+		_, issues, err := Parse([]byte(raw))
+		if err != nil {
+			t.Fatal(err)
+		}
+		got := false
+		for _, i := range issues {
+			got = got || i.Code == "too_many"
+		}
+		if got != want {
+			t.Errorf("%d translations: too_many = %v, want %v (%v)", n, got, want, issues)
+		}
 	}
 }

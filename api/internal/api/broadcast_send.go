@@ -358,11 +358,12 @@ func (r *bcRenderer) renderVersion(ver *bcVersion, v design.Values, listID uuid.
 		v.ListName = l.Name
 	}
 	in := design.Input{
-		Doc: ver.doc, Subject: v.Text(r.subject(tag)), Preheader: broadcastPreheader(r.b, r.doc, tag), Lang: mailLang(r.inbox.DefaultLocale), Values: v,
+		Doc: ver.doc, Subject: v.Text(r.subject(tag)), Preheader: broadcastPreheader(r.b, r.doc, tag), Values: v,
 		Image: r.image, Icon: r.s.iconURL,
 		Sender: design.Sender{LegalName: deref(r.inbox.SenderLegalName), PostalAddress: deref(r.inbox.SenderPostalAddress),
 			Registration: deref(r.inbox.SenderRegistration), Contact: deref(r.inbox.SenderContact)},
 	}
+	in.Lang, _ = design.FooterLang(r.inbox.DefaultLocale)
 	if tag != "" {
 		in.Lang, _ = design.FooterLang(tag)
 		in.HTMLLang = tag

@@ -2459,7 +2459,7 @@ Decisions:
   why the person gets the mail, unsubscribe and preference links) is always added. `email_designs` keep
   a version for concurrent edits and up to 50 snapshots.
 - **Languages (M13.9).** A design document may name its base language (`locale`), a
-  `fallback_locale` and up to 20 `translations`, each with block texts by block id (heading `text`,
+  `fallback_locale` and up to 100 `translations`, each with block texts by block id (heading `text`,
   text and footer `html`, button `label`, image `alt`), its preheader and optionally its writing
   direction; the document may then be 1 MiB (300 KiB without `translations`). Layout, theme, images
   and block links are shared; links inside a translated text are that text's. A block without a

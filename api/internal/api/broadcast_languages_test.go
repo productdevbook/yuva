@@ -54,8 +54,8 @@ func TestDesignLanguages(t *testing.T) {
 
 	path := "/v1/email-designs/" + bt.design
 	d := o.expect(http.StatusOK, "PUT", path, map[string]any{"name": "News", "document": versionedDoc(), "base_version": 1})
-	if !hasIssue(d.body, "warnings", "footer_language") {
-		t.Errorf("es and pt versions get the English footer: %s", d.raw)
+	if hasIssue(d.body, "warnings", "footer_language") {
+		t.Errorf("es, pt and tr versions have their own footer: %s", d.raw)
 	}
 	plain := versionedDoc()
 	delete(plain, "translations")
@@ -80,7 +80,7 @@ func TestDesignLanguages(t *testing.T) {
 		return o.expect(http.StatusOK, "POST", "/v1/email-designs/render", map[string]any{"document": versionedDoc(), "list_id": bt.list, "locale": locale})
 	}
 	es := render("es-MX")
-	if html := es.str("html"); es.body["locale"] != "es" || !strings.Contains(html, `lang="es"`) || !strings.Contains(html, "Hola Ada") || !strings.Contains(html, "Unsubscribe") || !hasIssue(es.body, "warnings", "footer_language") {
+	if html := es.str("html"); es.body["locale"] != "es" || !strings.Contains(html, `lang="es"`) || !strings.Contains(html, "Hola Ada") || !strings.Contains(html, "Cancelar suscripción") || hasIssue(es.body, "warnings", "footer_language") {
 		t.Fatalf("render es: %v %v %s", es.body["locale"], es.body["warnings"], es.body["text"])
 	}
 	tr := render("tr")
@@ -179,7 +179,7 @@ func TestBroadcastLanguages(t *testing.T) {
 	if len(b["translations"].(map[string]any)) != 3 {
 		t.Fatalf("translations after PATCH: %v", b["translations"])
 	}
-	if it := reviewItem(o.expect(http.StatusOK, "GET", path+"/review", nil).body, "translations"); it["detail"] != "the required footer is in English: es, pt" {
+	if it := reviewItem(o.expect(http.StatusOK, "GET", path+"/review", nil).body, "translations"); it["status"] != "ok" || it["detail"] != nil {
 		t.Fatalf("review with every subject: %v", it)
 	}
 

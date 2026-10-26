@@ -168,7 +168,7 @@ func (s *Server) renderDesign(ctx context.Context, q *store.Queries, ws uuid.UUI
 		v = *sc.values
 	}
 	if sc.inbox != nil {
-		in.Lang = mailLang(sc.inbox.DefaultLocale)
+		in.Lang, _ = design.FooterLang(sc.inbox.DefaultLocale)
 		v.InboxName = sc.inbox.Name
 		in.Sender = design.Sender{LegalName: deref(sc.inbox.SenderLegalName), PostalAddress: deref(sc.inbox.SenderPostalAddress),
 			Registration: deref(sc.inbox.SenderRegistration), Contact: deref(sc.inbox.SenderContact)}
