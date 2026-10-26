@@ -626,7 +626,7 @@ export function RequiredFooter() {
         </Trans>
         {english && (
           <span className="mt-1 block text-warning" data-testid="footer-english">
-            <Trans>This version gets it in English: Yuva has its words in English, Turkish and German only.</Trans>
+            <Trans>This version gets it in English: Yuva has no footer words in its language.</Trans>
           </span>
         )}
       </p>

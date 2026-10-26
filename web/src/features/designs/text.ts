@@ -179,7 +179,7 @@ export function useIssueText() {
       case "translation_missing":
         return t`This text is not translated yet, so the base language’s text shows.`
       case "footer_language":
-        return t`The required footer of this version is in English: Yuva has its words in English, Turkish and German only.`
+        return t`The required footer of this version is in English: Yuva has no footer words in this language.`
       case "locale_required":
         return t`Name the base language before adding other languages.`
       case "invalid_locale":
