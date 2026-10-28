@@ -35,6 +35,12 @@ msgstr "Açık bir başlık"
 msgid "A design can hold at most 200 blocks."
 msgstr "Bir tasarımda en fazla 200 blok olabilir."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Bir tasarımda tek mesaj bloğu olabilir."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Tasarım, bir e-postanın görünümüdür: bir şablonla başlayın, sonra bültenlerinizde kullanın."
@@ -58,6 +64,10 @@ msgstr "Düğme gibi görünen bir bağlantı"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Bir birleştirme alanının yedek metni yok, bu yüzden bazı kişilerde boş kalabilir."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Bu tasarımdaki bir birleştirme alanının yedek değeri yok ve bu kişi için boş."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Dil ekle"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Bağlantı ekle"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Önce bir mesaj bloğu ekleyin: üyenin yazdığı metnin nereye gireceğini belirler."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Hepsini açık renklerden türet"
 msgid "Medium"
 msgstr "Orta"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Bu gelen kutusunu görebilen üyeler bu tasarımla yanıt ve yeni e-posta gönderebilir."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Birleştirme alanı"
@@ -819,6 +837,11 @@ msgstr "Birleştirme alanı"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Birleştirme alanları bir bağlantıda yalnızca soru işaretinden sonraki kısma girebilir."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Mesaj"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Sütun sayısı"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Numaralı liste"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Konuşmalarda sun"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "E-posta 102 KB'ı aşıyor; Gmail onu kesip abonelikten çıkma bağlant
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "E-posta 90 KB'ı aşıyor. Gmail e-postaları yaklaşık 102 KB'ta keser."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Yazdığınız mesaj burada görünür"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "Yeni sürüm temel dilin metinleriyle başlar. Düzen, görseller ve bağlantılar ortak kalır; yalnızca metinleri çevirirsiniz."
@@ -1316,6 +1347,10 @@ msgstr "Yeni sürüm temel dilin metinleriyle başlar. Düzen, görseller ve ba�
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "Bu sürümün zorunlu alt bilgisi İngilizce: Yuva’nın bu dilde alt bilgi metinleri yok."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Üyenin yazdığı metin buraya girer, ardından yardım makalesi kartları ve imza gelir. Tasarım başına bir tane; sütunların içine konmaz."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Bu blokta çevrilecek metin yok."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Bu tasarım başka bir yerde değişti"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Bu tasarımda mesaj bloğu yok."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Bu tasarım, konuşma e-postasında bulunmayan bir birleştirme alanı kullanıyor (liste adı veya abonelikten çıkma ve tercih bağlantıları)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Web sitesi"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Boşsa yazılacak"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Konuşma mesajının metninin gireceği yer"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

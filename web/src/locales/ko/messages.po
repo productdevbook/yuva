@@ -1370,6 +1370,10 @@ msgstr "하루 전에 MX 레코드의 TTL을 낮춰 두면 변경이 빨리 퍼�
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD 형식의 날짜(사용자의 시간대 기준)"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "삭제된 디자인"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "삭제한 게시물은 되돌릴 수 없습니다."
@@ -1421,6 +1425,10 @@ msgstr "파일 내용이 형식과 일치하지 않습니다. 파일을 확인�
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "필터는 여기로 도착하는 모든 메일을 살펴보고 별표를 달거나, 보관하거나, 휴지통으로 옮기거나, 라벨을 붙이거나, 멤버에게 넘깁니다. 필터는 이 목록의 순서대로 실행됩니다."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "디자인으로 보내는 첫 메일에는 받은편지함의 법적 이름과 우편 주소가 있어야 합니다. 받은편지함 설정에서 추가하세요."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "메일 필터가 나에게 알림"
 msgid "a mail folder"
 msgstr "메일 폴더"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "디자인을 쓴 메일은 한 사람에게만 갑니다. 다른 수신자와 참조를 빼거나 디자인 없이 보내세요."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "메일링 리스트에는 일괄 발송 수신에 동의한 사람들이 담깁니다. 사이트의 구독 양식으로 가입하거나 팀이 직접 추가하고 동의 경위를 기록합니다. 모든 단계가 동의 증거로 보관되며 누구나 한 번의 클릭으로 탈퇴할 수 있습니다."
@@ -1519,6 +1532,10 @@ msgstr "멤버"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "멤버는 제품에 접근 권한이 있고(소유자와 관리자는 권한이 부여된 경우만), 패널이나 앱이 열려 있고, 가용성이 자동이며, 제품이 영업시간 안에 있고, 한도 미만일 때 대상이 됩니다. 아무도 대상이 아니면 대화는 대기하다가 처음 가능해진 팀원에게 배정됩니다."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "이 디자인의 병합 필드에는 대체값이 없어 이 사람에게는 비어 있습니다."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "패스키 추가"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "제품 추가"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "수신자, 제목, 본문을 입력하세요. 초안이 저장되면 미리보기가 나타납니다."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "허용되는 가장 짧은 간격"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "보낸 그대로"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "위험 영역"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "어둡게"
@@ -6005,15 +6031,25 @@ msgstr "설명"
 msgid "Description (optional)"
 msgstr "설명(선택)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "디자인"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "디자인: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "디자인"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "데스크톱"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "유예 시간을 기다리지 않고 즉시 모니터를 다운시킵니
 msgid "Failures to go down"
 msgstr "다운되기까지 연속 실패 횟수"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "대체 언어: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "의견"
@@ -7384,6 +7424,10 @@ msgstr "완료됨"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "발생한 알림은 모니터를 다운시키고 해결된 알림은 복구합니다."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "디자인으로 보내는 첫 메일은 대량 발송에 대한 서버 운영자의 승인이 필요합니다. 워크스페이스 설정에서 요청하거나 디자인 없이 보내세요."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "인용문 숨기기"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "폐기된 항목 숨기기"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "보낸 그대로의 메일 숨기기"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "레이블은 결제나 버그 같은 주제별로 대화를 분류합니
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "언어"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "디자인 언어"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "병합…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "메시지"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "메시지 블록"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "선택한 요일이 없습니다. 제품은 일주일 내내 닫힌 것�
 msgid "No deliveries yet"
 msgstr "아직 전송 내역이 없습니다"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "디자인 없음"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "일치하는 디자인이 없습니다."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "아직 디자인이 없습니다"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "대화에서 제공되는 디자인이 아직 없습니다. 소유자와 관리자가 디자이너에서 제공할 수 있습니다."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "언어가 이 중 하나인 연락처만."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "DNS만 확인할 수 있었고, 수신 서버가 메일을 어떻게 판정하는지는 확인하지 못했습니다."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "이메일로 보내는 메시지에만 디자인을 쓸 수 있습니다."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "지원 전용으로 쓰는 도메인 또는 서브도메인에만 해당: 그 MX 레코드가 모든 메일의 목적지를 결정합니다."
@@ -13037,6 +13109,10 @@ msgstr "대화 열기"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
+msgstr "디자인 열기"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
 msgstr "디자인 열기"
 
 #: src/components/common/ShortcutSheet.tsx
@@ -13694,6 +13770,10 @@ msgstr "{owner}님의 개인 메일함"
 msgid "Personal mailboxes"
 msgstr "개인 메일함"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "전화"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "저장된 답장 선택"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "준비 중"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "미리보기({previewKey})"
 msgid "Preview of {0}"
 msgstr "{0} 미리보기"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "{title} 미리 보기"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "디자인 미리 보기"
@@ -14813,6 +14899,7 @@ msgstr "다시 불러오기"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "원격 이미지는 보낸 사람에게 메일을 열었음을 알릴 수 있습니다."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "5점 만점에 {score}점"
 msgid "Screen"
 msgstr "화면"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "화면 크기"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "스크린샷"
@@ -16060,6 +16151,10 @@ msgstr "\"{search}\" 대화 검색"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "디자인 검색"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "디자인 검색…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "페이지에서 의견 보내기"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "보내는 주소"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "이메일 디자인으로 보내기"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "연락처가 메시지를 보낼 때"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "연락처, 메모, 작성한 모든 내용이 영구 삭제됩니다. 되돌릴 수 없습니다."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "연락처의 언어"
@@ -18511,6 +18613,10 @@ msgstr "전달률 확인이 아직 끝나지 않았습니다."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "디자인에 이 제목들의 버전이 없어 사용되지 않습니다: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "디자인에 해당 언어 버전이 없습니다. 다른 언어를 선택하세요."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "리스트는 이 받은 편지함의 이름으로 발송되며, 그 메�
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "메일이 도착했습니다."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "보낸 그대로의 메일은 더 이상 보관되지 않습니다."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "이 디자인의 메일이 500KB를 넘습니다. 내용을 줄이거나 더 가벼운 디자인을 선택하세요."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "이 대화를 사용할 수 없습니다"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "이 대화의 이메일 채널에 SMTP 계정이 없어 답장을 보내지 못했습니다. 받은 편지함 설정에서 추가하세요."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "이 디자인은 이 메일에 쓸 수 없습니다. 다른 디자인을 선택하세요."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "이 디자인에는 대화 메시지 본문이 들어가는 메시지 블록이 있습니다. 대량 발송에서는 비어 있게 됩니다. 다른 디자인을 선택하거나 블록을 빼세요."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "이 디자인에는 메시지 블록이 없습니다."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "이 디자인은 보관되었거나, 더 이상 대화에서 제공되지 않거나, 다른 받은편지함의 것입니다. 빼거나 다른 것을 선택하세요."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "이 디자인은 대화 메일에 없는 병합 필드(목록 이름 또는 수신 거부·환경설정 링크)를 사용합니다."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "이 엔드포인트는 {lockedName}의 이벤트만 받습니다."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "이 파일 형식은 허용되지 않습니다."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "이 첫 메일에는 수신 거부 링크가 들어갑니다."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "이 페이지는 아직 공개되지 않았으므로 게시하기 전까지 방문자에게는 아무것도 보이지 않습니다."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "이 사람은 이런 메일을 거부했으므로 디자인으로 보낼 수 없습니다. 디자인 없이 보내세요."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "이 사람은 모든 구독을 취소했거나, 메일을 스팸으로 신고했거나, 데이터가 삭제되어 팀이 다시 추가할 수 없습니다."
 
@@ -20018,6 +20160,10 @@ msgstr "이 워크스페이스는 현재 일괄 발송을 보낼 수 없습니�
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "이 워크스페이스는 현재 일괄 발송을 보낼 수 없습니다. 진행 중인 일괄 발송은 일시 중지됩니다."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "이 워크스페이스는 당분간 디자인으로 첫 메일을 보낼 수 없습니다."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "내일 아침"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "시도가 너무 많습니다. 잠시 기다린 다음 다시 시도하세요."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "디자인으로 보낸 첫 메일이 너무 많습니다. 본인은 시간당 20통, 워크스페이스는 하루 200통까지입니다. 나중에 다시 시도하세요."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Yuva가 무엇을 가져올까요?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "채팅이 약속하는 내용과 종료 후 묻는 내용"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "연락처가 받게 될 내용입니다."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "고객에게 보이는 것"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "답장이 이 주소에서 나갑니다"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "{first}님에게 보낸 답장이 전송되지 않았습니다. {0}"

@@ -35,6 +35,12 @@ msgstr "Judul yang jelas"
 msgid "A design can hold at most 200 blocks."
 msgstr "Desain dapat memuat paling banyak 200 blok."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Satu desain hanya bisa memuat satu blok pesan."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Desain adalah tampilan email: mulai dari templat, lalu gunakan untuk siaran massal Anda."
@@ -58,6 +64,10 @@ msgstr "Tautan yang terlihat seperti tombol"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Bidang gabungan tidak punya nilai cadangan, jadi bisa kosong untuk sebagian orang."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Kolom gabungan dalam desain ini tidak punya nilai cadangan dan kosong untuk orang ini."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Tambah bahasa"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Tambah tautan"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Tambahkan blok pesan dulu: ini menandai tempat teks yang ditulis anggota."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Buat semuanya dari warna terang"
 msgid "Medium"
 msgstr "Sedang"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Anggota yang melihat kotak masuk ini bisa mengirim balasan dan surel baru dengan desain ini."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Bidang gabungan"
@@ -819,6 +837,11 @@ msgstr "Bidang gabungan"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Bidang gabungan hanya boleh berada di bagian tautan setelah tanda tanya."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Pesan"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Jumlah kolom"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Daftar bernomor"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Tawarkan di percakapan"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "Email lebih dari 102 KB, jadi Gmail akan memotongnya dan menyembunyikan 
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Email lebih dari 90 KB. Gmail memotong email pada sekitar 102 KB."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Pesan yang Anda tulis muncul di sini"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "Versi baru dimulai dengan teks bahasa dasar. Tata letak, gambar, dan tautan tetap dipakai bersama; Anda hanya menerjemahkan teks."
@@ -1316,6 +1347,10 @@ msgstr "Versi baru dimulai dengan teks bahasa dasar. Tata letak, gambar, dan tau
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "Footer wajib versi ini berbahasa Inggris: Yuva tidak punya teks footer dalam bahasa ini."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Teks yang ditulis anggota ada di sini, diikuti kartu artikel bantuan dan tanda tangan. Satu per desain, tidak pernah di dalam kolom."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Blok ini tidak punya teks untuk diterjemahkan."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Desain ini berubah di tempat lain"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Desain ini tidak punya blok pesan."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Desain ini memakai kolom gabungan yang tidak ada pada surel percakapan (nama daftar atau tautan berhenti berlangganan dan preferensi)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Situs web"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Jika kosong, tulis"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Tempat teks pesan percakapan"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

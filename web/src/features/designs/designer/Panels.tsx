@@ -2,7 +2,7 @@ import { useDraggable, useDroppable } from "@dnd-kit/core"
 import { Trans, useLingui } from "@lingui/react/macro"
 import { CircleAlertIcon, EyeOffIcon, GripVerticalIcon, TriangleAlertIcon } from "lucide-react"
 
-import { BLOCK_TYPES, containerOf, ROOT, type Block, type BlockType } from "@/features/designs/doc"
+import { BLOCK_TYPES, containerOf, hasMessageBlock, ROOT, type Block, type BlockType } from "@/features/designs/doc"
 import { useDesigner } from "@/features/designs/designer/context"
 import { BlockIcon } from "@/features/designs/designer/icons"
 import { LayoutHint } from "@/features/designs/designer/Languages"
@@ -14,12 +14,14 @@ import { cn } from "@/lib/utils"
 function PaletteItem({ type, onAdd }: { type: BlockType; onAdd: (type: BlockType) => void }) {
   const names = useBlockNames()
   const hints = useBlockHints()
-  const { locked } = useDesigner()
+  const { t } = useLingui()
+  const { locked, doc } = useDesigner()
   const phone = useIsPhone()
+  const used = type === "message" && hasMessageBlock(doc)
   const { setNodeRef, listeners, attributes, isDragging } = useDraggable({
     id: `new:${type}`,
     data: { kind: "new", type },
-    disabled: locked || phone,
+    disabled: locked || phone || used,
   })
   return (
     <button
@@ -28,9 +30,9 @@ function PaletteItem({ type, onAdd }: { type: BlockType; onAdd: (type: BlockType
       {...listeners}
       {...attributes}
       role="button"
-      disabled={locked}
+      disabled={locked || used}
       onClick={() => onAdd(type)}
-      title={hints[type]}
+      title={used ? t`A design can hold one message block.` : hints[type]}
       className={cn(
         "flex cursor-grab flex-col items-center gap-1.5 rounded-xl border bg-card px-2 py-3 text-small text-muted-foreground transition-colors outline-none hover:border-faint hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing disabled:cursor-default disabled:opacity-50",
         isDragging && "opacity-50"

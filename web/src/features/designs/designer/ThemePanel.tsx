@@ -5,9 +5,10 @@ import { useState } from "react"
 import { Dot, Segmented } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { derivedDark, textOn } from "@/features/designs/colors"
-import { setTranslation } from "@/features/designs/doc"
+import { hasMessageBlock, setTranslation } from "@/features/designs/doc"
 import { useDesigner } from "@/features/designs/designer/context"
 import { LayoutHint } from "@/features/designs/designer/Languages"
 import { useLanguageName } from "@/components/common/text"
@@ -74,9 +75,13 @@ function FontSelect({
 export function ThemePanel({
   inboxId,
   onInbox,
+  offered,
+  onOffered,
 }: {
   inboxId: string | undefined
   onInbox: (id: string | undefined) => void
+  offered: boolean
+  onOffered: (v: boolean) => void
 }) {
   const { t } = useLingui()
   const d = useDesigner()
@@ -98,6 +103,7 @@ export function ThemePanel({
     ...Object.fromEntries(inboxes.map((i) => [i.id, i.name])),
   }
   const darkCard = dark.card ?? derived.card
+  const hasMessage = hasMessageBlock(d.original)
   if (d.locale) return <VersionPanel tag={d.locale} />
   return (
     <fieldset disabled={d.readOnly} className="flex min-w-0 flex-col" data-testid="theme-panel">
@@ -129,6 +135,24 @@ export function ThemePanel({
               ))}
             </SelectContent>
           </Select>
+        </Row>
+        <Row
+          label={<Trans>Offer in conversations</Trans>}
+          hint={
+            hasMessage ? (
+              <Trans>Members who see this inbox can send replies and new mail in this design.</Trans>
+            ) : (
+              <Trans>Add a message block first: it marks where the text a member writes goes.</Trans>
+            )
+          }
+        >
+          <Switch
+            checked={offered && hasMessage}
+            disabled={!hasMessage && !offered}
+            onCheckedChange={onOffered}
+            aria-label={t`Offer in conversations`}
+            data-testid="design-offered"
+          />
         </Row>
         <Row
           label={<Trans>Preview text</Trans>}

@@ -2,7 +2,7 @@ import { useCallback, useReducer } from "react"
 
 import type { Doc } from "@/features/designs/doc"
 
-export type DesignState = { name: string; inbox_id?: string; document: Doc }
+export type DesignState = { name: string; inbox_id?: string; for_conversations?: boolean; document: Doc }
 
 export type Change = DesignState | ((s: DesignState) => DesignState)
 

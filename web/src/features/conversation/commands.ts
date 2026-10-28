@@ -21,6 +21,7 @@ export type CommandName =
   | "incident"
   | "forward"
   | "article"
+  | "design"
   | "recipients"
   | "signature"
   | "sendAs"

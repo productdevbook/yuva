@@ -1370,6 +1370,10 @@ msgstr "Sænk TTL på MX-posterne en dag i forvejen, så ændringen spredes hurt
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "en dag som YYYY-MM-DD, i din tidszone"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "et slettet design"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Et slettet opslag kan ikke genoprettes."
@@ -1421,6 +1425,10 @@ msgstr "En fils indhold passer ikke til dens type. Tjek filen, og prøv igen."
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Et filter ser på hver mail, der kommer hertil, og stjernemarkerer den, arkiverer den, flytter den til papirkurven, sætter etiketter på den eller giver den til et medlem. Filtre kører i rækkefølgen på denne liste."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "En første mail i et design skal have indbakkens juridiske navn og postadresse. Tilføj dem i indbakkens indstillinger."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Et mailfilter giver mig besked"
 msgid "a mail folder"
 msgstr "en mailmappe"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "En mail i et design går til én person: fjern de andre modtagere og Cc, eller send den uden design."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "En mailingliste rummer de personer, der har sagt ja til at modtage dine udsendelser. De tilmelder sig via en tilmeldingsformular på dit websted, eller dit team tilføjer dem og noterer, hvordan de sagde ja. Hvert trin gemmes som samtykkebevis, og alle kan afmelde sig med ét klik."
@@ -1519,6 +1532,10 @@ msgstr "et medlem"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Et medlem er egnet, hvis det har adgang til produktet (ejere og administratorer kun med tildelt adgang), har panelet eller en app åben, tilgængelighed Auto, produktet er inden for åbningstiden og medlemmet er under grænsen. Hvis ingen er egnet, venter samtalen og går til den første kollega, der bliver ledig."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Et flettefelt i dette design har ingen reserveværdi og er tomt for denne person."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Tilføj en passkey"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Tilføj produkt"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Tilføj en modtager, et emne og lidt tekst: forhåndsvisningen vises, når kladden er gemt."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "Så ofte som tilladt"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Som sendt"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Farezone"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Mørk"
@@ -6005,15 +6031,25 @@ msgstr "Beskrivelse"
 msgid "Description (optional)"
 msgstr "Beskrivelse (valgfrit)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Design"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Design: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Designs"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Computer"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Fælder monitoren med det samme uden at vente på tolerancen."
 msgid "Failures to go down"
 msgstr "Fejl i træk før den fældes"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Reservesprog: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "feedback"
@@ -7384,6 +7424,10 @@ msgstr "Afsluttet"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Udløste alarmer fælder monitoren, løste genopretter den."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "Første mails i et design kræver serveroperatørens godkendelse til masseudsendelser. Bed om den i arbejdsområdets indstillinger, eller send uden design."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Skjul citeret tekst"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Skjul tilbagekaldte"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Skjul mailen som sendt"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Etiketter sorterer samtaler efter emne, fx fakturering eller fejl."
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Sprog"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Designets sprog"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Slå sammen…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Besked"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Beskedblok"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Ingen dage valgt: produktet regnes som lukket hele ugen."
 msgid "No deliveries yet"
 msgstr "Ingen leveringer endnu"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Intet design"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Intet design passer."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Intet design endnu"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "Der tilbydes endnu ingen designs i samtaler. Ejere og administratorer tilbyder et i designeren."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Kun kontakter, hvis sprog er et af disse."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Kun DNS kunne tjekkes, ikke hvordan modtagende servere vurderer mailen."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Kun mails kan sendes i et design."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Kun til et domæne eller underdomæne, der udelukkende bruges til support: dets MX-poster afgør, hvor al dets mail går hen."
@@ -13038,6 +13110,10 @@ msgstr "Åbn samtalen"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Åbn designet"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Åbn designs"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "{owner}s personlige postkasse"
 msgid "Personal mailboxes"
 msgstr "Personlige postkasser"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Telefon"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Vælg et færdigt svar"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Forbereder"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Vis eksempel ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Eksempel på {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "Eksempel på {title}"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Eksempel på designet"
@@ -14813,6 +14899,7 @@ msgstr "Genindlæs"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Fjernbilleder kan fortælle afsenderen, at du åbnede mailen."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Score {score} ud af 5"
 msgid "Screen"
 msgstr "Skærm"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Skærmstørrelse"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Skærmbillede"
@@ -16060,6 +16151,10 @@ msgstr "Søg i samtaler efter “{search}”"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Søg i designs"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Søg i designs…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Send feedback fra en side"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Send fra"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Send i et maildesign"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "Kontakten skriver en besked"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Kontakten, noterne og alt, kontakten har skrevet, slettes permanent. Det kan ikke fortrydes."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "Kontaktens sprog"
@@ -18511,6 +18613,10 @@ msgstr "Leveringsevnetjekket er ikke færdigt endnu."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "Designet har ingen version til disse emner, så de bruges ikke: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "Designet har ingen version på det sprog. Vælg et andet sprog."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "Listen sender i denne postkasses navn, og svar på dens mail lander der.
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Mailen ankom."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "Mailen som sendt gemmes ikke længere."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "Mailen i dette design er større end 500 KB. Skriv mindre, eller vælg et lettere design."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Denne samtale er ikke tilgængelig"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "Denne samtales e-mailkanal har ingen SMTP-konto, så svaret blev ikke sendt. Tilføj en i postkassens indstillinger."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Dette design kan ikke bruges til denne mail. Vælg et andet design."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Dette design har en beskedblok, som rummer teksten i en samtalebesked. I en masseudsendelse ville den være tom. Vælg et andet design, eller fjern blokken."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Dette design har ingen beskedblok."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Dette design er arkiveret, tilbydes ikke længere i samtaler eller hører til en anden indbakke. Fjern det, eller vælg et andet."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Dette design bruger et flettefelt, som samtalemails ikke har (listens navn eller linkene til afmelding og indstillinger)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Dette endpoint modtager kun hændelserne for {lockedName}."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Denne filtype er ikke tilladt."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Denne første mail har et afmeldingslink."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Denne side er ikke offentlig endnu, så besøgende ser intet, før du udgiver siden."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Denne person har afvist mails som denne, så den kan ikke sendes i et design. Send den uden design."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Denne person afmeldte sig fra alt, rapporterede en mail som spam eller fik sine data slettet, så teamet kan ikke tilføje vedkommende igen."
 
@@ -20018,6 +20160,10 @@ msgstr "Dette arbejdsområde må ikke sende udsendelser for nu."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Dette arbejdsområde må ikke sende udsendelser for nu. Igangværende udsendelser er sat på pause."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Dette arbejdsområde kan indtil videre ikke sende første mails i et design."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "I morgen tidlig"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "For mange forsøg. Vent lidt, og prøv igen."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "For mange første mails i et design for nu: 20 i timen for dig, 200 om dagen for arbejdsområdet. Prøv igen senere."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Hvad skal Yuva hente?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Hvad chatten lover, og hvad den spørger om efter lukning"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Det kontakten ville få."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Hvad kunden ser"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "Dine svar sendes fra denne adresse"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "Dit svar til {first} blev ikke sendt. {0}"

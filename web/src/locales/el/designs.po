@@ -35,6 +35,12 @@ msgstr "Ένας καθαρός τίτλος"
 msgid "A design can hold at most 200 blocks."
 msgstr "Ένα σχέδιο μπορεί να έχει το πολύ 200 μπλοκ."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Ένα σχέδιο μπορεί να έχει ένα μπλοκ μηνύματος."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Ένα σχέδιο είναι η εμφάνιση ενός e-mail: ξεκινήστε από ένα πρότυπο και μετά χρησιμοποιήστε το για τις μαζικές αποστολές σας."
@@ -58,6 +64,10 @@ msgstr "Ένας σύνδεσμος που μοιάζει με κουμπί"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Ένα πεδίο συγχώνευσης δεν έχει εφεδρική τιμή, οπότε μπορεί να είναι κενό για ορισμένα άτομα."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Ένα πεδίο συγχώνευσης σε αυτό το σχέδιο δεν έχει εναλλακτική τιμή και είναι κενό για αυτό το άτομο."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Προσθήκη γλώσσας"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Προσθήκη συνδέσμου"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Προσθέστε πρώτα ένα μπλοκ μηνύματος: δείχνει πού μπαίνει το κείμενο που γράφει ένα μέλος."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Δημιουργία όλων από τα ανοιχτά χρώματα"
 msgid "Medium"
 msgstr "Μεσαίο"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Τα μέλη που βλέπουν αυτά τα εισερχόμενα μπορούν να στέλνουν απαντήσεις και νέα μηνύματα με αυτό το σχέδιο."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Πεδίο συγχώνευσης"
@@ -819,6 +837,11 @@ msgstr "Πεδίο συγχώνευσης"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Τα πεδία συγχώνευσης μπορούν να μπουν μόνο στο τμήμα ενός συνδέσμου μετά το ερωτηματικό."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Μήνυμα"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Αριθμός στηλών"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Αριθμημένη λίστα"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Προσφορά στις συνομιλίες"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "Το e-mail ξεπερνά τα 102 KB, οπότε το Gmail θα το 
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Το e-mail ξεπερνά τα 90 KB. Το Gmail κόβει τα e-mail περίπου στα 102 KB."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Εδώ εμφανίζεται το μήνυμα που γράφετε"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "Η νέα έκδοση ξεκινά με τα κείμενα της βασικής γλώσσας. Διάταξη, εικόνες και σύνδεσμοι μένουν κοινά· μεταφράζετε μόνο τα κείμενα."
@@ -1316,6 +1347,10 @@ msgstr "Η νέα έκδοση ξεκινά με τα κείμενα της βα
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "Το υποχρεωτικό υποσέλιδο αυτής της έκδοσης είναι στα αγγλικά: το Yuva δεν έχει κείμενα υποσέλιδου σε αυτή τη γλώσσα."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Εδώ μπαίνει το κείμενο που γράφει ένα μέλος, ακολουθούμενο από κάρτες άρθρων βοήθειας και την υπογραφή. Ένα ανά σχέδιο, ποτέ μέσα σε στήλες."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Αυτό το μπλοκ δεν έχει κείμενο για μετά�
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Αυτό το σχέδιο άλλαξε αλλού"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Αυτό το σχέδιο δεν έχει μπλοκ μηνύματος."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Αυτό το σχέδιο χρησιμοποιεί πεδίο συγχώνευσης που δεν υπάρχει στα μηνύματα συνομιλίας (το όνομα της λίστας ή οι σύνδεσμοι διαγραφής και προτιμήσεων)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Ιστότοπος"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Όταν είναι κενό, γράψτε"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Πού μπαίνει το κείμενο ενός μηνύματος συνομιλίας"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

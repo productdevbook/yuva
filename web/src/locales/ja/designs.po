@@ -35,6 +35,12 @@ msgstr "わかりやすい見出し"
 msgid "A design can hold at most 200 blocks."
 msgstr "1 つのデザインに含められるブロックは最大 200 個です。"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "1つのデザインに置けるメッセージブロックは1つです。"
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "デザインはメールの見た目です。テンプレートから始めて、一斉配信に使います。"
@@ -58,6 +64,10 @@ msgstr "ボタンのように見えるリンク"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "差し込み項目に代替値がないため、一部の人には空になることがあります。"
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "このデザインの差し込みフィールドには代替値がなく、この人には空になります。"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "言語を追加"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "リンクを追加"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "先にメッセージブロックを追加してください。メンバーが書いた本文を入れる場所を示します。"
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "すべてライトの色から作成"
 msgid "Medium"
 msgstr "中"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "この受信トレイを見られるメンバーは、このデザインで返信や新規メールを送れます。"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "差し込み項目"
@@ -819,6 +837,11 @@ msgstr "差し込み項目"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "差し込み項目は、リンクの疑問符より後ろの部分にのみ使えます。"
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "メッセージ"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "列の数"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "番号付きリスト"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "会話で提供する"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "メールが 102 KB を超えているため、Gmail が切り捨てて�
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "メールが 90 KB を超えています。Gmail は約 102 KB でメールを切り捨てます。"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "書いたメッセージはここに入ります"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "新しいバージョンはベース言語のテキストから始まります。レイアウト、画像、リンクは共通のままで、翻訳するのはテキストだけです。"
@@ -1316,6 +1347,10 @@ msgstr "新しいバージョンはベース言語のテキストから始まり
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "このバージョンの必須フッターは英語です。Yuva にはこの言語のフッターの文言がありません。"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "メンバーが書いた本文がここに入り、続けてヘルプ記事カードと署名が入ります。デザインごとに1つで、列の中には置けません。"
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "このブロックには翻訳するテキストがありません。"
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "このデザインは別の場所で変更されました"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "このデザインにはメッセージブロックがありません。"
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "このデザインは、会話メールにない差し込みフィールド(リスト名、または配信停止・設定のリンク)を使っています。"
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "ウェブサイト"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "空の場合は次を書く"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "会話メッセージの本文が入る場所"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

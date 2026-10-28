@@ -35,6 +35,12 @@ msgstr "Egy világos címsor"
 msgid "A design can hold at most 200 blocks."
 msgstr "Egy dizájn legfeljebb 200 blokkot tartalmazhat."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Egy sablonban egy üzenetblokk lehet."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "A dizájn a levél megjelenése: kezdd egy sablonnal, majd használd a tömeges leveleidhez."
@@ -58,6 +64,10 @@ msgstr "Gombnak kinéző link"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Az egyesítési mezőnek nincs tartalék értéke, így néhány embernél üres lehet."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "A sablon egyik egyesítő mezőjének nincs tartalék értéke, és ennél a személynél üres."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Nyelv hozzáadása"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Link hozzáadása"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Előbb adj hozzá egy üzenetblokkot: ez jelöli, hová kerül a tag által írt szöveg."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Mind a világos színekből"
 msgid "Medium"
 msgstr "Közepes"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "A postafiókot látó tagok ezzel a sablonnal küldhetnek válaszokat és új leveleket."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Egyesítési mező"
@@ -819,6 +837,11 @@ msgstr "Egyesítési mező"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Az egyesítési mezők csak a link kérdőjel utáni részében lehetnek."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Üzenet"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Oszlopok száma"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Számozott lista"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Felkínálás a beszélgetésekben"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "A levél 102 KB fölött van, így a Gmail levágja, és elrejti a leira
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "A levél 90 KB fölött van. A Gmail kb. 102 KB-nál levágja a leveleket."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Itt jelenik meg az általad írt üzenet"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "Az új változat az alapnyelv szövegeivel indul. Az elrendezés, a képek és a hivatkozások közösek maradnak; csak a szövegeket fordítja."
@@ -1316,6 +1347,10 @@ msgstr "Az új változat az alapnyelv szövegeivel indul. Az elrendezés, a kép
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "Ennek a változatnak a kötelező lábléce angol: a Yuva nem ismeri a lábléc szövegeit ezen a nyelven."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Ide kerül a tag által írt szöveg, utána a súgócikk-kártyák és az aláírás. Sablononként egy, soha nem oszlopban."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Ebben a blokkban nincs fordítandó szöveg."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Ez a dizájn máshol módosult"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Ebben a sablonban nincs üzenetblokk."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Ez a sablon olyan egyesítő mezőt használ, amely a beszélgetési levélben nincs (a lista neve vagy a leiratkozási és beállítási hivatkozások)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Webhely"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Ha üres, írd be"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Hová kerül a beszélgetési üzenet szövege"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

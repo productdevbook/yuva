@@ -35,6 +35,12 @@ msgstr "Výrazný nadpis"
 msgid "A design can hold at most 200 blocks."
 msgstr "Návrh môže mať najviac 200 blokov."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Návrh môže mať jeden blok správy."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Návrh je vzhľad správy: začnite šablónou a potom ho použite pre svoje hromadné správy."
@@ -58,6 +64,10 @@ msgstr "Odkaz, ktorý vyzerá ako tlačidlo"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Zlučovacie pole nemá záložnú hodnotu, takže môže byť pre niektorých ľudí prázdne."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Zlučovacie pole v tomto návrhu nemá náhradnú hodnotu a pre túto osobu je prázdne."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Pridať jazyk"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Pridať odkaz"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Najprv pridajte blok správy: označuje, kam príde text, ktorý člen napíše."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Vytvoriť všetky zo svetlých farieb"
 msgid "Medium"
 msgstr "Stredné"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Členovia, ktorí vidia túto schránku, môžu v tomto návrhu posielať odpovede a nové e-maily."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Zlučovacie pole"
@@ -819,6 +837,11 @@ msgstr "Zlučovacie pole"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Zlučovacie polia môžu byť len v časti odkazu za otáznikom."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Správa"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Počet stĺpcov"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Číslovaný zoznam"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Ponúkať v konverzáciách"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "Správa má vyše 102 KB, takže ju Gmail oreže a skryje odkaz na odhl�
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Správa má vyše 90 KB. Gmail správy orezáva asi na 102 KB."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Tu sa zobrazí správa, ktorú napíšete"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "Nová verzia začína textami základného jazyka. Rozloženie, obrázky a odkazy zostávajú spoločné; prekladáte len texty."
@@ -1316,6 +1347,10 @@ msgstr "Nová verzia začína textami základného jazyka. Rozloženie, obrázky
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "Povinná pätička tejto verzie je v angličtine: Yuva nemá texty pätičky v tomto jazyku."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Sem príde text, ktorý člen napíše, za ním karty článkov pomocníka a podpis. Jeden na návrh, nikdy v stĺpcoch."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Tento blok nemá text na preklad."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Tento návrh sa zmenil inde"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Tento návrh nemá blok správy."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Tento návrh používa zlučovacie pole, ktoré e-mail v konverzácii nemá (názov zoznamu alebo odkazy na odhlásenie a predvoľby)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Web"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Keď je prázdne, napíšte"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Kam príde text správy z konverzácie"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

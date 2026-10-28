@@ -3,6 +3,8 @@ import { ClockIcon, LifeBuoyIcon, PaperclipIcon, SlashIcon, SmileIcon, SparklesI
 import { forwardRef, lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 
 import { BotAvatar, ErrorLine, Kbd, toast } from "@/components/common"
+import { DesignBar, DesignButton } from "@/components/common/DesignChoice"
+import { pickKey, pickOf, useDesignBlocked, type DesignPick } from "@/components/common/designChoice"
 import { formatWhen, SendLaterMenu } from "@/components/common/SendLater"
 import { alt, keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatBytes } from "@/components/common/text"
@@ -62,6 +64,7 @@ export type ReplyHandle = {
   discardSuggestion: () => void
   quote: (text: string) => void
   article: () => void
+  design: () => void
   addFiles: (files: File[]) => void
   insert: (choice: ReplyChoice) => void
   recipients: () => void
@@ -154,6 +157,8 @@ export const ReplyBox = forwardRef<
   const [articles, setArticles] = useState<HelpPick[]>(initial.articles)
   const [macro, setMacro] = useState<MacroPick | undefined>(initial.macro)
   const [articleOpen, setArticleOpen] = useState(false)
+  const [design, setDesign] = useState<DesignPick | undefined>(initial.design)
+  const [designOpen, setDesignOpen] = useState(false)
   const [linked, setLinked] = useState<string | null>(null)
   const [caret, setCaret] = useState(0)
   const [pick, setPick] = useState(0)
@@ -172,6 +177,7 @@ export const ReplyBox = forwardRef<
   const [editing, setEditing] = useState<Message | null>(null)
   const [laterOpen, setLaterOpen] = useState(false)
   const stash = useRef("")
+  const stashDesign = useRef<DesignPick | undefined>(undefined)
   const sending = useRef(false)
   const [restored, setRestored] = useState(false)
   const [adopting, setAdopting] = useState<{ draft: Message; unsigned: boolean } | null>(null)
@@ -207,15 +213,19 @@ export const ReplyBox = forwardRef<
   const mailing = !!emailTo && !actions.chat
   const plainText = files.length === 0 && articles.length === 0 && !macro
   const autosaveOn = mailing && !note && !blocked && plainText && !editing
+  const designable = mailing && !note && !blocked
+  const activeDesign = designable ? design : undefined
+  const designBlocked = useDesignBlocked(c.id, activeDesign)
+  const designKey = keyLabel(SHORTCUTS.design).join("")
   const unsigned = signed && noSignature
-  const autosave = useReplyAutosave(c.id, autosaveOn, body, unsigned)
+  const autosave = useReplyAutosave(c.id, autosaveOn, body, unsigned, activeDesign)
   const own = useOwnDrafts(c.id, mailing)
   const queued = usePendingReplies(c.id)
 
   useEffect(() => {
     if (editing) return
-    writeDraft(c.id, { body, mode, files, articles, macro, cc: ccEdit, bcc })
-  }, [c.id, body, mode, files, articles, macro, ccEdit, bcc, editing])
+    writeDraft(c.id, { body, mode, files, articles, macro, cc: ccEdit, bcc, design })
+  }, [c.id, body, mode, files, articles, macro, ccEdit, bcc, design, editing])
   if (!restored && own.data && !own.isFetching && mySignatures.data) {
     setRestored(true)
     const mine = own.data.items
@@ -230,12 +240,14 @@ export const ReplyBox = forwardRef<
     if (mine && !savedDraftId(c.id) && !body.trim()) {
       const wasUnsigned = !!signature && !mine.signature_html
       setBody(mine.body)
+      setDesign(pickOf(mine))
       setNoSignature(wasUnsigned)
       setAdopting({ draft: mine, unsigned: wasUnsigned })
     }
   }
   useEffect(() => {
-    if (adopting) adoptDraft(c.id, adopting.draft.id, adopting.draft.body, adopting.unsigned)
+    if (adopting)
+      adoptDraft(c.id, adopting.draft.id, adopting.draft.body, adopting.unsigned, pickKey(pickOf(adopting.draft)))
   }, [adopting, c.id])
   const stopTyping = typing.stop
   useEffect(() => {
@@ -337,6 +349,9 @@ export const ReplyBox = forwardRef<
     article: () => {
       if (helpCenter && !note) setArticleOpen(true)
     },
+    design: () => {
+      if (designable) setDesignOpen(true)
+    },
     addFiles,
     insert: (r) => {
       setMode("message")
@@ -348,7 +363,7 @@ export const ReplyBox = forwardRef<
       requestAnimationFrame(() => ccInput.current?.focus())
     },
     signature: () => {
-      if (signed) setNoSignature((x) => !x)
+      if (signed && !activeDesign) setNoSignature((x) => !x)
     },
     sendAs: () => {
       if (!emailTo || note || blocked || senders.length === 0) return
@@ -360,10 +375,14 @@ export const ReplyBox = forwardRef<
       focus("message")
     },
     edit: (m) => {
-      if (!editing) stash.current = body
+      if (!editing) {
+        stash.current = body
+        stashDesign.current = design
+      }
       setEditing(m)
       setMode("message")
       setBody(m.body)
+      setDesign(pickOf(m))
       setFiles([])
       requestAnimationFrame(() => textarea.current?.focus())
     },
@@ -372,8 +391,9 @@ export const ReplyBox = forwardRef<
         setBody((b) => `${b.trimEnd()}\n\n${m.body}`)
         discard.mutate(m)
       } else {
-        adoptDraft(c.id, m.id, m.body)
+        adoptDraft(c.id, m.id, m.body, false, pickKey(pickOf(m)))
         setBody(m.body)
+        setDesign(pickOf(m))
       }
       requestAnimationFrame(() => textarea.current?.focus())
     },
@@ -396,17 +416,20 @@ export const ReplyBox = forwardRef<
     setCcOpen(false)
     setBccOpen(false)
     setNoSignature(false)
+    setDesign(undefined)
   }
   const leaveEdit = () => {
     setBody(stash.current)
+    setDesign(stashDesign.current)
     stash.current = ""
+    stashDesign.current = undefined
     setEditing(null)
   }
   const commitEdit = (at?: Date) => {
-    if (!editing || !body.trim() || saveDraft.isPending || reschedule.isPending) return
+    if (!editing || !body.trim() || saveDraft.isPending || reschedule.isPending || designBlocked) return
     setError(null)
     saveDraft
-      .mutateAsync({ m: editing, body })
+      .mutateAsync({ m: editing, body, design: activeDesign ?? null })
       .then((saved) => (at ? reschedule.mutateAsync({ m: saved, at }) : saved))
       .then((saved) => {
         leaveEdit()
@@ -416,7 +439,7 @@ export const ReplyBox = forwardRef<
       .catch(setError)
   }
   const send = async (close: boolean, sendAt?: Date) => {
-    if (!hasContent || note || blocked || sending.current) return
+    if (!hasContent || note || blocked || designBlocked || sending.current) return
     if (editing) {
       commitEdit()
       return
@@ -431,7 +454,7 @@ export const ReplyBox = forwardRef<
       if (id) draft = { id, fresh }
     }
     const linkedDraft = suggestion && linked === suggestion.id ? suggestion : undefined
-    const saved = { body, files, articles, macro }
+    const saved = { body, files, articles, macro, design: activeDesign }
     const recipients = emailTo ? { cc: ccEdit, bcc: bcc.length ? bcc : undefined } : {}
     actions
       .send({
@@ -445,6 +468,7 @@ export const ReplyBox = forwardRef<
         fromAddress: sender?.address,
         draft,
         sendAt,
+        design: activeDesign,
         ...recipients,
       })
       ?.catch(() => {
@@ -452,6 +476,7 @@ export const ReplyBox = forwardRef<
         setFiles((f) => (f.length ? f : saved.files))
         setArticles((a) => (a.length ? a : saved.articles))
         setMacro((m) => m ?? saved.macro)
+        setDesign((d) => d ?? saved.design)
       })
     reset()
     sending.current = false
@@ -512,6 +537,11 @@ export const ReplyBox = forwardRef<
     if (e.key === "Tab" && !e.shiftKey && showSuggestion && body.trim() === "") {
       e.preventDefault()
       applySuggestion()
+      return
+    }
+    if (e.altKey && e.code === "KeyD" && designable) {
+      e.preventDefault()
+      setDesignOpen(true)
       return
     }
     if (e.key === "Enter" && e.altKey && mailing && !note && !blocked && !editing) {
@@ -627,6 +657,16 @@ export const ReplyBox = forwardRef<
           )}
         </p>
       )}
+      {activeDesign && (
+        <DesignBar
+          pick={activeDesign}
+          onChange={setDesign}
+          conversationId={c.id}
+          contactId={c.contact_id}
+          body={body}
+          className="pt-2"
+        />
+      )}
       {menuOpen && <CannedMenu items={matches} active={pick} onPick={insertSlash} />}
       {mentionOpen && <MentionMenu items={mentionMatches} active={pick} onPick={insertMention} />}
       {!blocked && (
@@ -658,7 +698,7 @@ export const ReplyBox = forwardRef<
           onKeyDown={onKeyDown}
         />
       )}
-      {signed && (
+      {signed && !activeDesign && (
         <div className="mx-4 mb-2 flex items-start gap-3 border-t pt-2" data-testid="composer-signature">
           <div className={cn("min-w-0 flex-1 opacity-70", noSignature && "line-through opacity-40")}>
             <SignatureHtml html={signature} className="max-h-24 overflow-y-auto" />
@@ -845,6 +885,20 @@ export const ReplyBox = forwardRef<
             </PopoverContent>
           </Popover>
         )}
+        {designable && (
+          <DesignButton
+            open={designOpen}
+            onOpenChange={setDesignOpen}
+            inboxId={c.inbox_id}
+            conversationId={c.id}
+            chosen={design}
+            onPick={(d) => {
+              setDesign(d)
+              requestAnimationFrame(() => textarea.current?.focus())
+            }}
+            shortcut={designKey}
+          />
+        )}
         <span className="flex-1" />
         {!editing && autosave.state !== "idle" && !note && body.trim() !== "" && (
           <span
@@ -885,7 +939,7 @@ export const ReplyBox = forwardRef<
             </SendLaterMenu>
             <Button
               onClick={() => commitEdit()}
-              disabled={!body.trim() || saveDraft.isPending}
+              disabled={!body.trim() || saveDraft.isPending || designBlocked}
               data-testid="composer-edit-save"
             >
               <Trans>Save</Trans>
@@ -905,7 +959,7 @@ export const ReplyBox = forwardRef<
                   <Button
                     variant="outline"
                     size="icon"
-                    disabled={!hasContent}
+                    disabled={!hasContent || designBlocked}
                     aria-label={t`Send later`}
                     title={t`Send later (${laterKey})`}
                     data-testid="composer-send-later"
@@ -919,7 +973,7 @@ export const ReplyBox = forwardRef<
             <Button
               variant={actions.chat ? "default" : "outline"}
               onClick={() => void send(false)}
-              disabled={!hasContent || blocked}
+              disabled={!hasContent || blocked || designBlocked}
               data-testid="composer-send"
             >
               <Trans>Send</Trans>
@@ -927,7 +981,7 @@ export const ReplyBox = forwardRef<
             <Button
               variant={actions.chat ? "outline" : "default"}
               onClick={() => void send(true)}
-              disabled={!hasContent || blocked}
+              disabled={!hasContent || blocked || designBlocked}
               data-testid="composer-send-close"
             >
               {c.kind === "feedback" ? (

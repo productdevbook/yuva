@@ -1370,6 +1370,10 @@ msgstr "Bir gün önceden MX kayıtlarının TTL değerini düşürün; değişi
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD biçiminde bir gün, saat diliminize göre"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "silinmiş bir tasarım"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Silinen bir gönderi geri getirilemez."
@@ -1421,6 +1425,10 @@ msgstr "Bir dosyanın içeriği türüyle uyuşmuyor. Dosyayı kontrol edip yeni
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Bir filtre buraya gelen her postaya bakar; yıldızlar, arşivler, çöpe taşır, etiketler ya da bir üyeye iletir. Filtreler bu listenin sırasıyla çalışır."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "Bir tasarımla gönderilen ilk e-posta, gelen kutusunun yasal adını ve posta adresini taşımalıdır. Bunları gelen kutusu ayarlarından ekleyin."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Bir posta filtresi beni bilgilendiriyor"
 msgid "a mail folder"
 msgstr "bir posta klasörü"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "Tasarımlı bir e-posta tek kişiye gider: diğer alıcıları ve Cc’yi kaldırın ya da tasarımsız gönderin."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "E-posta listesi, bültenlerinizi almayı kabul eden kişileri tutar. Kişiler sitenizdeki abonelik formundan katılır ya da ekibiniz onları, nasıl izin verdiklerini kaydederek ekler. Her adım izin kanıtı olarak saklanır ve herkes tek tıkla ayrılabilir."
@@ -1519,6 +1532,10 @@ msgstr "bir üye"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Bir üye, ürüne erişimi olduğunda (yönetici ve sahipler yalnızca yetki verilmişse), panel veya bir uygulama açıkken, uygunluğu Otomatik iken, ürün çalışma saatleri içindeyken ve sınırın altındayken uygundur. Kimse uygun değilse konuşma bekler ve uygun olan ilk takım arkadaşına verilir."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Bu tasarımdaki bir birleştirme alanının yedek değeri yok ve bu kişi için boş."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Geçiş anahtarı ekle"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Ürün ekle"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Bir alıcı, bir konu ve biraz metin ekleyin: önizleme, taslak kaydedilince görünür."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "İzin verilen en sık"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "owner/repo biçiminde."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Gönderildiği gibi"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Tehlikeli bölge"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Koyu"
@@ -6005,15 +6031,25 @@ msgstr "Açıklama"
 msgid "Description (optional)"
 msgstr "Açıklama (isteğe bağlı)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Tasarım"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Tasarım: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Tasarımlar"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Masaüstü"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Monitörü hemen düşürür, tolerans süresini beklemez."
 msgid "Failures to go down"
 msgstr "Düşmek için hata sayısı"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Yedek dil: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "geri bildirim"
@@ -7384,6 +7424,10 @@ msgstr "Bitti"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Tetiklenen uyarılar monitörü düşürür, çözülenler düzeltir."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "Tasarımlı ilk e-postalar için sunucu işletmecisinin toplu gönderim onayı gerekir. Çalışma alanı ayarlarından isteyin ya da tasarımsız gönderin."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Alıntıyı gizle"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "İptal edilenleri gizle"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Gönderildiği haliyle e-postayı gizle"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Etiketler konuşmaları faturalama veya hatalar gibi konulara göre ayı
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Dil"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Tasarımın dili"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Birleştir…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Mesaj"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Mesaj bloğu"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Hiç gün seçilmedi: ürün tüm hafta kapalı sayılır."
 msgid "No deliveries yet"
 msgstr "Henüz gönderim yok"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Tasarım yok"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Eşleşen tasarım yok."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Henüz tasarım yok"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "Henüz konuşmalarda sunulan bir tasarım yok. Sahipler ve yöneticiler tasarım düzenleyicisinde bir tasarım sunabilir."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Yalnızca dili bunlardan biri olan kişiler."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Yalnızca DNS denetlenebildi; alan sunucuların e-postayı nasıl değerlendirdiği bilinmiyor."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Yalnızca e-postayla giden mesajlar tasarımla gönderilebilir."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Yalnızca destek için kullanılan bir alan adı ya da alt alan adı için: MX kayıtları tüm e-postalarının nereye gideceğini belirler."
@@ -13038,6 +13110,10 @@ msgstr "Konuşmayı aç"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Tasarımı aç"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Tasarımları aç"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "{owner} üyesinin kişisel posta kutusu"
 msgid "Personal mailboxes"
 msgstr "Kişisel posta kutuları"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Telefon"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Hazır bir yanıt seçin"
@@ -14076,6 +14156,7 @@ msgstr "Tercih edilir: sağlayıcı sertifikasını yenilediğinde Yuva adresi y
 msgid "Preparing"
 msgstr "Hazırlanıyor"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Önizle ({previewKey})"
 msgid "Preview of {0}"
 msgstr "{0} önizlemesi"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "{title} önizlemesi"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Tasarımın önizlemesi"
@@ -14813,6 +14899,7 @@ msgstr "Yenile"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "5 üzerinden {score} puan"
 msgid "Screen"
 msgstr "Ekran"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Ekran boyutu"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Ekran görüntüsü"
@@ -16060,6 +16151,10 @@ msgstr "Konuşmalarda “{search}” ara"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Tasarımlarda ara"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Tasarım ara…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Bir sayfadan geri bildirim gönderin"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Gönderen adres"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "E-posta tasarımıyla gönder"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "Kişi bir mesaj yazar"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Kişi, notları ve yazdığı her şey kalıcı olarak silinir. Bu geri alınamaz."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "Kişinin dili"
@@ -18511,6 +18613,10 @@ msgstr "Teslim edilebilirlik denetimi henüz bitmedi."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "Tasarımda bu konular için sürüm yok, bu yüzden kullanılmıyorlar: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "Tasarımın bu dilde bir sürümü yok. Başka bir dil seçin."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "Liste bu gelen kutusunun adıyla gönderir; e-postalarına gelen yanıtl
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Posta ulaştı."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "Gönderildiği haliyle e-posta artık saklanmıyor."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "Bu tasarımla e-posta 500 KB’den büyük. Daha az yazın ya da daha hafif bir tasarım seçin."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Bu konuşmaya ulaşılamıyor"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "Bu konuşmanın e-posta kanalında SMTP hesabı yok, yanıt gönderilmedi. Gelen kutusu ayarlarından bir hesap ekleyin."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Bu tasarım bu e-posta için kullanılamaz. Başka bir tasarım seçin."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Bu tasarımda, konuşma mesajının metnini taşıyan bir mesaj bloğu var. Toplu gönderimde boş görünür. Başka bir tasarım seçin ya da bloğu çıkarın."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Bu tasarımda mesaj bloğu yok."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Bu tasarım arşivlenmiş, artık konuşmalarda sunulmuyor ya da başka bir gelen kutusuna ait. Kaldırın ya da başkasını seçin."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Bu tasarım, konuşma e-postasında bulunmayan bir birleştirme alanı kullanıyor (liste adı veya abonelikten çıkma ve tercih bağlantıları)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Bu uç nokta yalnızca {lockedName} olaylarını alır."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Bu dosya türüne izin verilmiyor."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Bu ilk e-posta bir abonelikten çıkma bağlantısı taşır."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Bu sayfa henüz herkese açık değil; sayfayı yayımlayana kadar ziyaretçiler hiçbir şey görmez."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Bu kişi bu tür e-postaları almayı reddetti, bu yüzden tasarımla gönderilemez. Tasarımsız gönderin."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Bu kişi tüm listelerden çıktı, bir e-postayı istenmeyen olarak bildirdi ya da verilerinin silinmesini istedi; bu yüzden ekip onu yeniden ekleyemez."
 
@@ -20018,6 +20160,10 @@ msgstr "Bu çalışma alanı şimdilik bülten gönderemez."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Bu çalışma alanı şimdilik bülten gönderemez. Süren bültenler duraklatıldı."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Bu çalışma alanı şimdilik tasarımlı ilk e-posta gönderemez."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Yarın sabah"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Çok fazla deneme yapıldı. Biraz bekleyip yeniden deneyin."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Şimdilik çok fazla tasarımlı ilk e-posta gönderildi: sizin için saatte 20, çalışma alanı için günde 200. Daha sonra tekrar deneyin."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Yuva neleri getirsin?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Sohbetin ne vaat ettiği ve kapatıldıktan sonra ne sorduğu"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Kişinin alacağı e-posta."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Müşterinin gördüğü"
@@ -22260,7 +22414,7 @@ msgstr "E-posta yanıtların şununla biter"
 msgid "Your replies go out from this address"
 msgstr "Yanıtlarınız bu adresten gider"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "{first} için yanıtın gönderilmedi. {0}"

@@ -1370,6 +1370,10 @@ msgstr "Dan ranije smanjite TTL MX zapisa kako bi se promjena brzo proširila."
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "dan kao YYYY-MM-DD, u vašoj vremenskoj zoni"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "izbrisani dizajn"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Izbrisana objava ne može se vratiti."
@@ -1421,6 +1425,10 @@ msgstr "Sadržaj datoteke ne odgovara njezinoj vrsti. Provjerite datoteku i poku
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Filtar provjerava svaku e-poštu koja stigne ovamo i označava je zvjezdicom, arhivira je, premješta u smeće, stavlja joj oznake ili je predaje članu. Filtri se izvršavaju redoslijedom ovog popisa."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "Prva e-pošta u dizajnu mora imati pravni naziv i poštansku adresu sandučića. Dodajte ih u postavkama sandučića."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Filtar pošte me obavještava"
 msgid "a mail folder"
 msgstr "mapa pošte"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "E-pošta u dizajnu ide jednoj osobi: uklonite ostale primatelje i Cc ili pošaljite bez dizajna."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Popis e-pošte sadrži ljude koji su pristali primati vaše masovne poruke. Pridružuju se putem obrasca za pretplatu na vašem web-mjestu ili ih dodaje vaš tim i bilježi kako su pristali. Svaki se korak čuva kao dokaz privole, a svatko se može odjaviti jednim klikom."
@@ -1519,6 +1532,10 @@ msgstr "član"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Član je prikladan ako ima pristup proizvodu (vlasnici i administratori samo uz dodijeljen pristup), ima otvoren panel ili aplikaciju, dostupnost Auto, proizvod je unutar radnog vremena i član je ispod ograničenja. Ako nitko nije prikladan, razgovor čeka i dobiva ga prvi koji postane slobodan."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Polje za spajanje u ovom dizajnu nema zamjensku vrijednost i prazno je za ovu osobu."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Dodaj pristupni ključ"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Dodaj proizvod"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Dodajte primatelja, predmet i malo teksta: pregled se prikazuje kad se skica spremi."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "Onoliko često koliko je dopušteno"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Kako je poslano"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Opasna zona"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Tamno"
@@ -6005,15 +6031,25 @@ msgstr "Opis"
 msgid "Description (optional)"
 msgstr "Opis (neobavezno)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Dizajn"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Dizajn: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Dizajni"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Računalo"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Odmah zaustavlja monitor, bez čekanja tolerancije."
 msgid "Failures to go down"
 msgstr "Neuspjesi do prekida"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Zamjenski jezik: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "povratne informacije"
@@ -7384,6 +7424,10 @@ msgstr "Završeno"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Aktivirana upozorenja zaustavljaju monitor, riješena ga vraćaju."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "Prve e-poruke u dizajnu trebaju odobrenje operatera poslužitelja za masovno slanje. Zatražite ga u postavkama radnog prostora ili pošaljite bez dizajna."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Sakrij citirani tekst"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Sakrij opozvane"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Sakrij e-poštu kako je poslana"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Oznake razvrstavaju razgovore po temi, na primjer naplata ili greške."
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Jezik"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Jezik dizajna"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Spoji…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Poruka"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Blok poruke"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Nije odabran nijedan dan: proizvod se cijeli tjedan smatra zatvorenim."
 msgid "No deliveries yet"
 msgstr "Još nema isporuka"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Bez dizajna"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Nijedan dizajn ne odgovara."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Još nema dizajna"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "U razgovorima se još ne nudi nijedan dizajn. Vlasnici i administratori ga nude u uređivaču dizajna."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Samo kontakti čiji je jezik jedan od ovih."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Mogao se provjeriti samo DNS, ne i kako primajući poslužitelji ocjenjuju poruku."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Dizajn se može koristiti samo za poruke poslane e-poštom."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Samo za domenu ili poddomenu koja se koristi isključivo za podršku: njezini MX zapisi odlučuju kamo ide sva njezina pošta."
@@ -13038,6 +13110,10 @@ msgstr "Otvori razgovor"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Otvori dizajn"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Otvori dizajne"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "Osobni sandučić: {owner}"
 msgid "Personal mailboxes"
 msgstr "Osobni sandučići"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Telefon"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Odaberite gotov odgovor"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Priprema"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Pregled ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Pregled: {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "Pregled {title}"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Pregled dizajna"
@@ -14813,6 +14899,7 @@ msgstr "Ponovno učitaj"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Udaljene slike mogu pošiljatelju reći da ste otvorili poruku."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Ocjena {score} od 5"
 msgid "Screen"
 msgstr "Zaslon"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Veličina zaslona"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Snimka zaslona"
@@ -16060,6 +16151,10 @@ msgstr "Traži razgovore za „{search}”"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Traži dizajne"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Traži dizajne…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Šalji povratne informacije sa stranice"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Pošalji s adrese"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Pošalji u dizajnu e-pošte"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "Kontakt napiše poruku"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Kontakt, njegove bilješke i sve što je napisao trajno se brišu. Ovo se ne može poništiti."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "Jezik kontakta"
@@ -18511,6 +18613,10 @@ msgstr "Provjera isporučivosti još nije završila."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "Dizajn nema verziju za ove predmete, pa se ne koriste: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "Dizajn nema verziju na tom jeziku. Odaberite drugi jezik."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "Popis šalje u ime ovog pretinca, a odgovori na njegove poruke stižu ta
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "E-poruka je stigla."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "E-pošta kako je poslana više se ne čuva."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "E-pošta u ovom dizajnu veća je od 500 KB. Pišite manje ili odaberite lakši dizajn."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Ovaj razgovor nije dostupan"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "E-poštni kanal ovog razgovora nema SMTP račun pa odgovor nije poslan. Dodajte ga u postavkama pretinca."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Ovaj dizajn nije moguće koristiti za ovu e-poštu. Odaberite drugi dizajn."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Ovaj dizajn ima blok poruke koji nosi tekst poruke iz razgovora. U masovnom slanju ostao bi prazan. Odaberite drugi dizajn ili uklonite blok."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Ovaj dizajn nema blok poruke."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Ovaj je dizajn arhiviran, više se ne nudi u razgovorima ili pripada drugom sandučiću. Uklonite ga ili odaberite drugi."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Ovaj dizajn koristi polje za spajanje koje e-pošta razgovora nema (naziv popisa ili poveznice za odjavu i postavke)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Ova krajnja točka prima samo događaje {lockedName}."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Ova vrsta datoteke nije dopuštena."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Ova prva e-pošta nosi poveznicu za odjavu."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Ova stranica još nije javna pa posjetitelji ne vide ništa dok je ne objavite."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Ova je osoba odbila ovakvu e-poštu pa se ne može poslati u dizajnu. Pošaljite bez dizajna."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Ova se osoba odjavila od svega, prijavila poruku kao neželjenu poštu ili su joj podaci izbrisani pa je tim ne može ponovno dodati."
 
@@ -20018,6 +20160,10 @@ msgstr "Ovaj radni prostor za sada ne smije slati masovne poruke."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Ovaj radni prostor za sada ne smije slati masovne poruke. Masovne poruke u tijeku su pauzirane."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Ovaj radni prostor zasad ne može slati prve e-poruke u dizajnu."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Sutra ujutro"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Previše pokušaja. Pričekajte malo i pokušajte ponovno."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Zasad previše prvih e-poruka u dizajnu: 20 na sat za vas, 200 na dan za radni prostor. Pokušajte kasnije."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Što Yuva treba prenijeti?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Što chat obećava i što pita nakon zatvaranja"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Što bi kontakt dobio."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Što klijent vidi"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "Vaši odgovori odlaze s ove adrese"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "Vaš odgovor korisniku {first} nije poslan. {0}"

@@ -35,6 +35,12 @@ msgstr "ಸ್ಪಷ್ಟ ಶೀರ್ಷಿಕೆ"
 msgid "A design can hold at most 200 blocks."
 msgstr "ಒಂದು ವಿನ್ಯಾಸ ಗರಿಷ್ಠ 200 ಬ್ಲಾಕ್‌ಗಳನ್ನು ಹೊಂದಬಹುದು."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "ಒಂದು ವಿನ್ಯಾಸದಲ್ಲಿ ಒಂದು ಸಂದೇಶ ಬ್ಲಾಕ್ ಇರಬಹುದು."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "ವಿನ್ಯಾಸ ಎಂದರೆ ಮೇಲ್‌ನ ನೋಟ: ಟೆಂಪ್ಲೇಟ್‌ನಿಂದ ಆರಂಭಿಸಿ, ನಂತರ ನಿಮ್ಮ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್‌ಗಳಿಗೆ ಬಳಸಿ."
@@ -58,6 +64,10 @@ msgstr "ಬಟನ್‌ನಂತೆ ಕಾಣುವ ಲಿಂಕ್"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "ಮರ್ಜ್ ಫೀಲ್ಡ್‌ಗೆ ಫಾಲ್‌ಬ್ಯಾಕ್ ಇಲ್ಲ, ಹಾಗಾಗಿ ಅದು ಕೆಲವರಿಗೆ ಖಾಲಿಯಾಗಿರಬಹುದು."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "ಈ ವಿನ್ಯಾಸದ ವಿಲೀನ ಕ್ಷೇತ್ರಕ್ಕೆ ಪರ್ಯಾಯ ಮೌಲ್ಯ ಇಲ್ಲ ಮತ್ತು ಈ ವ್ಯಕ್ತಿಗೆ ಅದು ಖಾಲಿ ಇದೆ."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "ಭಾಷೆ ಸೇರಿಸಿ"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "ಲಿಂಕ್ ಸೇರಿಸಿ"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "ಮೊದಲು ಸಂದೇಶ ಬ್ಲಾಕ್ ಸೇರಿಸಿ: ಸದಸ್ಯರು ಬರೆಯುವ ಪಠ್ಯ ಎಲ್ಲಿ ಬರುತ್ತದೆ ಎಂದು ಅದು ಗುರುತಿಸುತ್ತದೆ."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "ಎಲ್ಲವನ್ನೂ ತಿಳಿ ಬಣ್ಣಗಳಿಂದ ಮ
 msgid "Medium"
 msgstr "ಮಧ್ಯಮ"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "ಈ ಇನ್‌ಬಾಕ್ಸ್ ನೋಡುವ ಸದಸ್ಯರು ಈ ವಿನ್ಯಾಸದಲ್ಲಿ ಉತ್ತರಗಳು ಮತ್ತು ಹೊಸ ಮೇಲ್‌ಗಳನ್ನು ಕಳುಹಿಸಬಹುದು."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "ಮರ್ಜ್ ಫೀಲ್ಡ್"
@@ -819,6 +837,11 @@ msgstr "ಮರ್ಜ್ ಫೀಲ್ಡ್"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "ಮರ್ಜ್ ಫೀಲ್ಡ್‌ಗಳು ಲಿಂಕ್‌ನ ಪ್ರಶ್ನಾರ್ಥಕ ಚಿಹ್ನೆಯ ನಂತರದ ಭಾಗದಲ್ಲಿ ಮಾತ್ರ ಹೋಗಬಹುದು."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "ಸಂದೇಶ"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "ಕಾಲಮ್‌ಗಳ ಸಂಖ್ಯೆ"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "ಸಂಖ್ಯೆಯ ಪಟ್ಟಿ"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "ಸಂಭಾಷಣೆಗಳಲ್ಲಿ ನೀಡಿ"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "ಮೇಲ್ 102 KB ಮೀರಿದೆ, ಹಾಗಾಗಿ Gmail ಅದ�
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "ಮೇಲ್ 90 KB ಮೀರಿದೆ. Gmail ಮೇಲ್‌ಗಳನ್ನು ಸುಮಾರು 102 KB ನಲ್ಲಿ ಕತ್ತರಿಸುತ್ತದೆ."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "ನೀವು ಬರೆಯುವ ಸಂದೇಶ ಇಲ್ಲಿ ಕಾಣುತ್ತದೆ"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "ಹೊಸ ಆವೃತ್ತಿ ಮೂಲ ಭಾಷೆಯ ಪಠ್ಯಗಳೊಂದಿಗೆ ಆರಂಭವಾಗುತ್ತದೆ. ರಚನೆ, ಚಿತ್ರಗಳು ಮತ್ತು ಲಿಂಕ್‌ಗಳು ಹಂಚಿಕೊಂಡಂತೆಯೇ ಇರುತ್ತವೆ; ನೀವು ಪಠ್ಯಗಳನ್ನು ಮಾತ್ರ ಅನುವಾದಿಸುತ್ತೀರಿ."
@@ -1316,6 +1347,10 @@ msgstr "ಹೊಸ ಆವೃತ್ತಿ ಮೂಲ ಭಾಷೆಯ ಪಠ್ಯ�
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "ಈ ಆವೃತ್ತಿಯ ಕಡ್ಡಾಯ ಅಡಿಟಿಪ್ಪಣಿ ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿದೆ: Yuva ಬಳಿ ಈ ಭಾಷೆಯಲ್ಲಿ ಅಡಿಟಿಪ್ಪಣಿ ಪದಗಳಿಲ್ಲ."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "ಸದಸ್ಯರು ಬರೆಯುವ ಪಠ್ಯ ಇಲ್ಲಿ ಬರುತ್ತದೆ, ನಂತರ ಸಹಾಯ ಲೇಖನ ಕಾರ್ಡ್‌ಗಳು ಮತ್ತು ಸಹಿ. ಪ್ರತಿ ವಿನ್ಯಾಸಕ್ಕೆ ಒಂದು, ಎಂದೂ ಕಾಲಂಗಳ ಒಳಗೆ ಅಲ್ಲ."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "ಈ ಬ್ಲಾಕ್‌ನಲ್ಲಿ ಅನುವಾದಿಸಲು 
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "ಈ ವಿನ್ಯಾಸ ಬೇರೆಡೆ ಬದಲಾಗಿದೆ"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "ಈ ವಿನ್ಯಾಸದಲ್ಲಿ ಸಂದೇಶ ಬ್ಲಾಕ್ ಇಲ್ಲ."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "ಈ ವಿನ್ಯಾಸ ಸಂಭಾಷಣೆಯ ಮೇಲ್‌ನಲ್ಲಿ ಇಲ್ಲದ ವಿಲೀನ ಕ್ಷೇತ್ರ ಬಳಸುತ್ತದೆ (ಪಟ್ಟಿಯ ಹೆಸರು ಅಥವಾ ಚಂದಾದಾರಿಕೆ ರದ್ದು ಮತ್ತು ಆದ್ಯತೆಗಳ ಲಿಂಕ್‌ಗಳು)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "ವೆಬ್‌ಸೈಟ್"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "ಖಾಲಿ ಇದ್ದಾಗ, ಬರೆಯಿರಿ"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "ಸಂಭಾಷಣೆಯ ಸಂದೇಶದ ಪಠ್ಯ ಎಲ್ಲಿ ಬರುತ್ತದೆ"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

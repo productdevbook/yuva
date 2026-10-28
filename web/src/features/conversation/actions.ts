@@ -8,6 +8,7 @@ import { useErrorText } from "@/components/common/text"
 import type { HelpPick } from "@/features/conversation/composer/ArticlePicker"
 import { useIsChat, useIsLive } from "@/features/conversation/liveness"
 import { macroSetsStatus, macroThen, type MacroPick } from "@/features/conversation/macros"
+import { designFields, designPatch, pickKey, type DesignPick } from "@/components/common/designChoice"
 import { adoptDraft } from "@/features/conversation/ownDraft"
 import { patchConversation, postMessage } from "@/features/conversation/queries"
 import { api, unwrap, type Conversation, type ConversationUpdate, type Member, type Message } from "@/lib/api"
@@ -25,6 +26,7 @@ export type ReplyDraft = {
   macro?: MacroPick
   cc?: string[]
   bcc?: string[]
+  design?: DesignPick
 }
 
 const drafts = new Map<string, ReplyDraft>()
@@ -44,7 +46,7 @@ export function readDraft(id: string): ReplyDraft {
 
 export function writeDraft(id: string, d: ReplyDraft) {
   const before = drafts.get(id)?.body ?? ""
-  if (d.body === "" && d.files.length === 0 && d.articles.length === 0 && !d.macro && d.mode === "message")
+  if (d.body === "" && d.files.length === 0 && d.articles.length === 0 && !d.macro && !d.design && d.mode === "message")
     drafts.delete(id)
   else drafts.set(id, d)
   if (before !== d.body) draftListeners.forEach((l) => l())
@@ -60,8 +62,9 @@ function restoreDraftOf(id: string, req: SendRequest) {
     macro: now.macro ?? req.macro,
     cc: now.cc ?? req.cc,
     bcc: now.bcc?.length ? now.bcc : req.bcc,
+    design: now.design ?? req.design,
   })
-  if (req.draft) adoptDraft(id, req.draft.id, req.body, req.signature === false)
+  if (req.draft) adoptDraft(id, req.draft.id, req.body, req.signature === false, pickKey(req.design))
   revisions.set(id, (revisions.get(id) ?? 0) + 1)
   draftListeners.forEach((l) => l())
 }
@@ -179,6 +182,7 @@ export type SendRequest = {
   fromAddress?: string
   draft?: { id: string; fresh: boolean }
   sendAt?: Date
+  design?: DesignPick
 }
 
 export function useConversationActions(c: Conversation, contactName: string) {
@@ -214,6 +218,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
       fromAddress,
       draft,
       sendAt,
+      design,
     }: SendRequest,
     clientId = newId(),
     onSent?: () => void
@@ -224,9 +229,12 @@ export function useConversationActions(c: Conversation, contactName: string) {
     let sent: Message
     if (suggestion && plain) {
       const path = { params: { path: { messageId: suggestion.id } } }
-      if (body.trim() !== suggestion.body.trim())
+      if (body.trim() !== suggestion.body.trim() || design)
         await unwrap(
-          api.PATCH("/v1/messages/{messageId}", { ...path, body: suggestion.html ? { body, html: null } : { body } })
+          api.PATCH("/v1/messages/{messageId}", {
+            ...path,
+            body: { ...(suggestion.html ? { body, html: null } : { body }), ...(design ? designPatch(design) : {}) },
+          })
         )
       sent = await unwrap(api.POST("/v1/messages/{messageId}/send", { ...path, body: recipients }))
     } else if (draft?.fresh && plain) {
@@ -246,6 +254,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         signature,
         from_address: fromAddress,
         send_at,
+        ...designFields(design),
         // oxlint-disable-next-line unicorn/no-thenable -- the API names this field `then`
         then: macro ? macroThen(c, macro, close) : undefined,
       })
@@ -266,7 +275,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
   }
   const notSent = (req: SendRequest, err: unknown) => {
     restoreDraftOf(c.id, req)
-    toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
+    toast(t`Your reply to ${first} was not sent. ${errorText(err, !!req.design)}`)
   }
 
   return {
@@ -314,7 +323,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         return inLine(c.id, () => deliver(req))
           .then(() => undefined)
           .catch((err) => {
-            toast(t`Your reply to ${first} was not sent. ${errorText(err)}`)
+            toast(t`Your reply to ${first} was not sent. ${errorText(err, !!req.design)}`)
             throw err
           })
       }

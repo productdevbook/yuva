@@ -1370,6 +1370,10 @@ msgstr "Sehari sebelumnya, turunkan TTL rekaman MX agar perubahan cepat menyebar
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "satu hari sebagai YYYY-MM-DD, di zona waktu Anda"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "desain yang dihapus"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Kiriman yang dihapus tidak dapat dikembalikan."
@@ -1421,6 +1425,10 @@ msgstr "Isi file tidak sesuai dengan tipenya. Periksa file lalu coba lagi."
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Filter memeriksa setiap email yang masuk ke sini lalu memberinya bintang, mengarsipkan, memindahkan ke sampah, memberi label, atau menyerahkannya ke anggota. Filter berjalan sesuai urutan daftar ini."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "Surel pertama dalam desain harus memuat nama resmi dan alamat pos kotak masuk. Tambahkan di pengaturan kotak masuk."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Filter email memberi tahu saya"
 msgid "a mail folder"
 msgstr "folder surat"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "Surel dalam desain dikirim ke satu orang: hapus penerima lain dan Cc, atau kirim tanpa desain."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Milis berisi orang-orang yang setuju menerima siaran massal Anda. Mereka bergabung lewat formulir berlangganan di situs Anda, atau tim Anda menambahkan mereka dan mencatat cara mereka setuju. Setiap langkah disimpan sebagai bukti persetujuan, dan siapa pun dapat berhenti dengan satu klik."
@@ -1519,6 +1532,10 @@ msgstr "seorang anggota"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Anggota memenuhi syarat jika punya akses ke produk (pemilik dan admin hanya dengan izin), panel atau aplikasi terbuka, ketersediaan Otomatis, produk berada dalam jam kerja, dan anggota di bawah batas. Jika tidak ada yang memenuhi syarat, percakapan menunggu dan diberikan ke rekan pertama yang tersedia."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Kolom gabungan dalam desain ini tidak punya nilai cadangan dan kosong untuk orang ini."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Tambah passkey"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Tambah produk"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Tambahkan penerima, subjek, dan sedikit teks: pratinjau muncul setelah draf tersimpan."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "Sesering yang diizinkan"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Seperti yang dikirim"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Zona bahaya"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Gelap"
@@ -6005,15 +6031,25 @@ msgstr "Deskripsi"
 msgid "Description (optional)"
 msgstr "Deskripsi (opsional)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Desain"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Desain: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Desain"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Desktop"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Langsung menjatuhkan monitor tanpa menunggu toleransi."
 msgid "Failures to go down"
 msgstr "Kegagalan berturut-turut hingga mati"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Bahasa cadangan: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "masukan"
@@ -7384,6 +7424,10 @@ msgstr "Selesai"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Peringatan yang aktif menjatuhkan monitor, yang sudah selesai memulihkannya."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "Surel pertama dalam desain memerlukan persetujuan operator server untuk pengiriman massal. Mintalah di pengaturan ruang kerja, atau kirim tanpa desain."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Sembunyikan teks kutipan"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Sembunyikan yang dicabut"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Sembunyikan surel seperti yang dikirim"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Label mengurutkan percakapan menurut topik, seperti penagihan atau bug."
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Bahasa"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Bahasa desain"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Gabungkan…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Pesan"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Blok pesan"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Tidak ada hari yang dipilih: produk dianggap tutup sepanjang minggu."
 msgid "No deliveries yet"
 msgstr "Belum ada pengiriman"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Tanpa desain"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Tidak ada desain yang cocok."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Belum ada desain"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "Belum ada desain yang ditawarkan di percakapan. Pemilik dan admin menawarkannya di editor desain."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Hanya kontak yang bahasanya salah satu dari ini."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Hanya DNS yang dapat diperiksa, bukan bagaimana server penerima menilai email."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Hanya pesan yang dikirim lewat surel yang bisa memakai desain."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Hanya untuk domain atau subdomain yang dipakai khusus untuk dukungan: rekaman MX-nya menentukan ke mana semua emailnya pergi."
@@ -13037,6 +13109,10 @@ msgstr "Buka percakapan"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
+msgstr "Buka desain"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
 msgstr "Buka desain"
 
 #: src/components/common/ShortcutSheet.tsx
@@ -13694,6 +13770,10 @@ msgstr "Kotak surat pribadi {owner}"
 msgid "Personal mailboxes"
 msgstr "Kotak surat pribadi"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Telepon"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Pilih balasan tersimpan"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Menyiapkan"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Pratinjau ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Pratinjau {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "Pratinjau {title}"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Pratinjau desain"
@@ -14813,6 +14899,7 @@ msgstr "Muat ulang"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Gambar jarak jauh dapat memberi tahu pengirim bahwa Anda membuka email."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Skor {score} dari 5"
 msgid "Screen"
 msgstr "Layar"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Ukuran layar"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Tangkapan layar"
@@ -16060,6 +16151,10 @@ msgstr "Cari percakapan untuk “{search}”"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Cari desain"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Cari desain…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Kirim masukan dari halaman"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Kirim dari"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Kirim dengan desain surel"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "Kontak menulis pesan"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Kontak, catatannya, dan semua yang ditulisnya dihapus permanen. Tindakan ini tidak dapat dibatalkan."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "Bahasa kontak"
@@ -18511,6 +18613,10 @@ msgstr "Pemeriksaan pengiriman belum selesai."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "Desain tidak punya versi untuk subjek-subjek ini, jadi tidak dipakai: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "Desain tidak punya versi dalam bahasa itu. Pilih bahasa lain."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "Milis mengirim atas nama kotak masuk ini, dan balasan ke emailnya masuk 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Email tiba."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "Surel seperti yang dikirim tidak lagi disimpan."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "Surel dalam desain ini lebih besar dari 500 KB. Tulis lebih sedikit, atau pilih desain yang lebih ringan."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Percakapan ini tidak tersedia"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "Saluran email percakapan ini tidak punya akun SMTP, sehingga balasan tidak terkirim. Tambahkan satu di pengaturan kotak masuk."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Desain ini tidak bisa dipakai untuk surel ini. Pilih desain lain."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Desain ini punya blok pesan, tempat teks pesan percakapan. Pada pengiriman massal blok ini akan kosong. Pilih desain lain atau hapus blok."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Desain ini tidak punya blok pesan."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Desain ini diarsipkan, tidak lagi ditawarkan di percakapan, atau milik kotak masuk lain. Hapus atau pilih yang lain."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Desain ini memakai kolom gabungan yang tidak ada pada surel percakapan (nama daftar atau tautan berhenti berlangganan dan preferensi)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Endpoint ini hanya menerima peristiwa {lockedName}."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Jenis file ini tidak diizinkan."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Surel pertama ini memuat tautan berhenti berlangganan."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Halaman ini belum publik, sehingga pengunjung tidak melihat apa pun sampai Anda menerbitkan halaman."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Orang ini menolak surel seperti ini, jadi tidak bisa dikirim dalam desain. Kirim tanpa desain."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Orang ini berhenti dari semuanya, melaporkan email sebagai spam, atau datanya dihapus, sehingga tim tidak dapat menambahkannya lagi."
 
@@ -20018,6 +20160,10 @@ msgstr "Ruang kerja ini untuk sementara tidak boleh mengirim siaran massal."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Ruang kerja ini untuk sementara tidak boleh mengirim siaran massal. Siaran massal yang berjalan dijeda."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Ruang kerja ini sementara tidak boleh mengirim surel pertama dalam desain."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Besok pagi"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Terlalu banyak percobaan. Tunggu sebentar dan coba lagi."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Terlalu banyak surel pertama dalam desain untuk saat ini: 20 per jam untuk Anda, 200 per hari untuk ruang kerja. Coba lagi nanti."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Apa yang harus dibawa Yuva?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Apa yang dijanjikan obrolan, dan apa yang ditanyakannya setelah ditutup"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Yang akan diterima kontak."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Yang dilihat pelanggan"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "Balasan Anda keluar dari alamat ini"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "Balasan Anda ke {first} tidak terkirim. {0}"

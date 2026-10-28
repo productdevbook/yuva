@@ -1370,6 +1370,10 @@ msgstr "1 日前に MX レコードの TTL を短くしておくと、変更が�
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD 形式の日付(お使いのタイムゾーン)"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "削除されたデザイン"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "削除した投稿は元に戻せません。"
@@ -1421,6 +1425,10 @@ msgstr "ファイルの内容が種類と一致しません。ファイルを確
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "フィルターはここに届くすべてのメールを確認し、スターを付ける、アーカイブする、ゴミ箱に移す、ラベルを付ける、メンバーに渡すといった処理を行います。フィルターはこの一覧の順に実行されます。"
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "デザインで送る最初のメールには、受信トレイの正式名称と郵送先住所が必要です。受信トレイの設定で追加してください。"
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "メールフィルターから通知を受け取る"
 msgid "a mail folder"
 msgstr "メールのフォルダ"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "デザイン付きのメールは1人にだけ送られます。ほかの宛先とCcを外すか、デザインなしで送ってください。"
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "メーリングリストには、一斉配信の受信に同意した人が登録されます。サイトの登録フォームから参加するか、チームが追加して同意の経緯を記録します。すべての手順が同意の証拠として保存され、誰でもワンクリックで退会できます。"
@@ -1519,6 +1532,10 @@ msgstr "メンバー"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "メンバーが対象になるのは、プロダクトへのアクセス権があり（オーナーと管理者は付与された場合のみ）、パネルまたはアプリを開いていて、可用性が自動で、プロダクトが営業時間内にあり、上限未満のときです。誰も対象でなければ会話は待機し、最初に空いたチームメイトに割り当てられます。"
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "このデザインの差し込みフィールドには代替値がなく、この人には空になります。"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "パスキーを追加"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "製品を追加"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "宛先、件名、本文を入力してください。下書きが保存されるとプレビューが表示されます。"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "許可される最短の間隔"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "送信時の状態"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "危険な操作"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "ダーク"
@@ -6005,15 +6031,25 @@ msgstr "説明"
 msgid "Description (optional)"
 msgstr "説明(任意)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "デザイン"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "デザイン: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "デザイン"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "デスクトップ"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "猶予を待たずに、すぐにモニターをダウンさせます。
 msgid "Failures to go down"
 msgstr "ダウンまでの連続失敗回数"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "代替言語: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "フィードバック"
@@ -7384,6 +7424,10 @@ msgstr "完了"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "発生したアラートはモニターをダウンさせ、解決したアラートは復旧させます。"
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "デザイン付きの最初のメールには、一斉配信についてサーバー運営者の承認が必要です。ワークスペースの設定で申請するか、デザインなしで送ってください。"
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "引用部分を隠す"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "取り消し済みを隠す"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "送信時のメールを隠す"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "ラベルは、請求やバグなどのトピックで会話を整理し
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "言語"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "デザインの言語"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "統合…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "メッセージ"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "メッセージブロック"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "日が選ばれていません。製品は 1 週間ずっと閉まって
 msgid "No deliveries yet"
 msgstr "配信はまだありません"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "デザインなし"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "一致するデザインはありません。"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "デザインはまだありません"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "会話で提供されているデザインはまだありません。オーナーと管理者がデザイナーで提供できます。"
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "言語がこれらのいずれかの連絡先のみ。"
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "DNS しか確認できませんでした。受信サーバーがメールをどう判定するかは確認できません。"
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "デザインを使えるのはメールで送るメッセージだけです。"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "サポート専用のドメインまたはサブドメインの場合のみ: その MX レコードが、すべてのメールの届け先を決めます。"
@@ -13037,6 +13109,10 @@ msgstr "会話を開く"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
+msgstr "デザインを開く"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
 msgstr "デザインを開く"
 
 #: src/components/common/ShortcutSheet.tsx
@@ -13694,6 +13770,10 @@ msgstr "{owner}の個人用メールボックス"
 msgid "Personal mailboxes"
 msgstr "個人用メールボックス"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "電話"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "定型返信を選択"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "準備中"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "プレビュー（{previewKey}）"
 msgid "Preview of {0}"
 msgstr "{0} のプレビュー"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "{title} のプレビュー"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "デザインのプレビュー"
@@ -14813,6 +14899,7 @@ msgstr "再読み込み"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "リモート画像により、メールを開いたことが送信者に伝わる場合があります。"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "スコア 5 点中 {score} 点"
 msgid "Screen"
 msgstr "画面"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "画面サイズ"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "スクリーンショット"
@@ -16060,6 +16151,10 @@ msgstr "「{search}」で会話を検索"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "デザインを検索"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "デザインを検索…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "ページからフィードバックを送信"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "送信元"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "メールデザインで送信"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "連絡先がメッセージを書いたとき"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "連絡先、そのメモ、書いたものすべてが完全に削除されます。この操作は元に戻せません。"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "連絡先の言語"
@@ -18511,6 +18613,10 @@ msgstr "配信品質のチェックはまだ完了していません。"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "デザインにこれらの件名のバージョンがないため、使われません: {languages}。"
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "このデザインにはその言語のバージョンがありません。別の言語を選んでください。"
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "リストはこの受信トレイの名前で送信され、そのメー
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "メールが届きました。"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "送信時のメールは保存されなくなりました。"
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "このデザインのメールが500 KBを超えています。短くするか、軽いデザインを選んでください。"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "この会話は利用できません"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "この会話のメールチャネルには SMTP アカウントがないため、返信は送信されませんでした。受信トレイの設定で追加してください。"
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "このデザインはこのメールには使えません。別のデザインを選んでください。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "このデザインには会話メッセージの本文が入るメッセージブロックがあります。一斉配信では空になります。別のデザインを選ぶか、ブロックを外してください。"
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "このデザインにはメッセージブロックがありません。"
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "このデザインはアーカイブ済み、会話での提供が終了、または別の受信トレイのものです。外すか、別のものを選んでください。"
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "このデザインは、会話メールにない差し込みフィールド(リスト名、または配信停止・設定のリンク)を使っています。"
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "このエンドポイントは {lockedName} のイベントのみ受信�
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "このファイルの種類は許可されていません。"
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "この最初のメールには配信停止リンクが付きます。"
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "このページはまだ公開されていないため、公開するまで訪問者には何も表示されません。"
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "この人はこのようなメールを拒否しているため、デザインでは送れません。デザインなしで送ってください。"
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "この人はすべての配信を停止した、メールをスパム報告した、またはデータが消去されたため、チームは再追加できません。"
 
@@ -20018,6 +20160,10 @@ msgstr "現在、このワークスペースでは一斉配信を送信できま
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "現在、このワークスペースでは一斉配信を送信できません。実行中の一斉配信は一時停止されます。"
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "このワークスペースは現在、デザイン付きの最初のメールを送れません。"
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "明日の朝"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "試行回数が多すぎます。しばらくしてからもう一度お試しください。"
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "現在、デザイン付きの最初のメールが多すぎます。あなたは1時間に20通、ワークスペースは1日200通までです。後でもう一度お試しください。"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Yuva に何を取り込みますか?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "チャットが約束する内容と、クローズ後に尋ねる内容"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "連絡先に届く内容です。"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "お客様に表示される内容"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "返信はこのアドレスから送信されます"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "{first} への返信は送信されませんでした。{0}"

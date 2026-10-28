@@ -1370,6 +1370,10 @@ msgstr "ล่วงหน้าหนึ่งวัน ลด TTL ของร
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "วันในรูปแบบ YYYY-MM-DD ตามเขตเวลาของคุณ"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "ดีไซน์ที่ถูกลบ"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "โพสต์ที่ลบแล้วจะกู้คืนไม่ได้"
@@ -1421,6 +1425,10 @@ msgstr "เนื้อหาของไฟล์ไม่ตรงกับป
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "ตัวกรองจะตรวจอีเมลทุกฉบับที่เข้ามาที่นี่ แล้วติดดาว เก็บถาวร ย้ายไปถังขยะ ติดป้ายกำกับ หรือส่งต่อให้สมาชิก ตัวกรองทำงานตามลำดับของรายการนี้"
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "อีเมลฉบับแรกในดีไซน์ต้องมีชื่อตามกฎหมายและที่อยู่ไปรษณีย์ของกล่องจดหมาย เพิ่มได้ในการตั้งค่ากล่องจดหมาย"
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "ตัวกรองอีเมลแจ้งเตือนฉัน
 msgid "a mail folder"
 msgstr "โฟลเดอร์อีเมล"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "อีเมลในดีไซน์ส่งถึงคนเดียว: เอาผู้รับคนอื่นและ Cc ออก หรือส่งโดยไม่ใช้ดีไซน์"
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "รายชื่อผู้รับจดหมายคือกลุ่มคนที่ยินยอมรับบรอดคาสต์ของคุณ พวกเขาเข้าร่วมผ่านแบบฟอร์มสมัครรับบนไซต์ของคุณ หรือทีมของคุณเพิ่มและบันทึกว่าพวกเขายินยอมอย่างไร ทุกขั้นตอนจะถูกเก็บเป็นหลักฐานการยินยอม และทุกคนออกได้ด้วยการคลิกเพียงครั้งเดียว"
@@ -1519,6 +1532,10 @@ msgstr "สมาชิก"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "สมาชิกมีสิทธิ์เมื่อมีสิทธิ์เข้าถึงผลิตภัณฑ์ (เจ้าของและผู้ดูแลเฉพาะเมื่อได้รับสิทธิ์), เปิดแผงควบคุมหรือแอปอยู่, สถานะพร้อมเป็นอัตโนมัติ, ผลิตภัณฑ์อยู่ในเวลาทำการ และสมาชิกยังต่ำกว่าขีดจำกัด หากไม่มีใครมีสิทธิ์ การสนทนาจะรอและส่งให้เพื่อนร่วมทีมคนแรกที่ว่าง"
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "ฟิลด์ผสานในดีไซน์นี้ไม่มีค่าสำรองและว่างสำหรับบุคคลนี้"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "เพิ่มพาสคีย์"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "เพิ่มผลิตภัณฑ์"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "เพิ่มผู้รับ หัวข้อ และข้อความสักหน่อย: ตัวอย่างจะแสดงหลังบันทึกฉบับร่าง"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "ถี่เท่าที่อนุญาต"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "ตามที่ส่ง"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "โซนอันตราย"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "มืด"
@@ -6005,15 +6031,25 @@ msgstr "คำอธิบาย"
 msgid "Description (optional)"
 msgstr "คำอธิบาย (ไม่บังคับ)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "ดีไซน์"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "ดีไซน์: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "ดีไซน์"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "เดสก์ท็อป"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "ทำให้มอนิเตอร์ล้มเหลวทัน
 msgid "Failures to go down"
 msgstr "จำนวนความล้มเหลวติดต่อกันก่อนล่ม"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "ภาษาสำรอง: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "ความคิดเห็น"
@@ -7384,6 +7424,10 @@ msgstr "เสร็จสิ้นแล้ว"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "การแจ้งเตือนที่ถูกกระตุ้นจะทำให้มอนิเตอร์ล้มเหลว ส่วนที่แก้ไขแล้วจะทำให้กลับมาปกติ"
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "อีเมลฉบับแรกในดีไซน์ต้องได้รับอนุมัติจากผู้ดูแลเซิร์ฟเวอร์สำหรับการส่งจำนวนมาก ขอได้ในการตั้งค่าพื้นที่ทำงาน หรือส่งโดยไม่ใช้ดีไซน์"
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "ซ่อนข้อความที่อ้างอิง"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "ซ่อนที่เพิกถอนแล้ว"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "ซ่อนอีเมลตามที่ส่ง"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "ป้ายกำกับจัดเรียงการสนทน
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "ภาษา"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "ภาษาของดีไซน์"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "รวม…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "ข้อความ"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "บล็อกข้อความ"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "ยังไม่ได้เลือกวัน: ผลิตภั�
 msgid "No deliveries yet"
 msgstr "ยังไม่มีการส่ง"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "ไม่ใช้ดีไซน์"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "ไม่มีดีไซน์ที่ตรงกัน"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "ยังไม่มีดีไซน์"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "ยังไม่มีดีไซน์ให้ใช้ในการสนทนา เจ้าของและผู้ดูแลเสนอดีไซน์ได้ในตัวออกแบบ"
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "เฉพาะผู้ติดต่อที่ภาษาเป็
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "ตรวจสอบได้เฉพาะ DNS ไม่ใช่วิธีที่เซิร์ฟเวอร์ปลายทางตัดสินอีเมล"
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "ใช้ดีไซน์ได้เฉพาะข้อความที่ส่งทางอีเมล"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "สำหรับโดเมนหรือโดเมนย่อยที่ใช้เพื่อฝ่ายสนับสนุนเท่านั้น ระเบียน MX ของโดเมนนั้นกำหนดว่าอีเมลทั้งหมดไปที่ใด"
@@ -13037,6 +13109,10 @@ msgstr "เปิดการสนทนา"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
+msgstr "เปิดดีไซน์"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
 msgstr "เปิดดีไซน์"
 
 #: src/components/common/ShortcutSheet.tsx
@@ -13694,6 +13770,10 @@ msgstr "กล่องจดหมายส่วนตัวของ {owner}"
 msgid "Personal mailboxes"
 msgstr "กล่องจดหมายส่วนตัว"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "โทรศัพท์"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "เลือกคำตอบสำเร็จรูป"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "กำลังเตรียม"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "ดูตัวอย่าง ({previewKey})"
 msgid "Preview of {0}"
 msgstr "ตัวอย่างของ {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "ตัวอย่างของ {title}"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "ตัวอย่างของดีไซน์"
@@ -14813,6 +14899,7 @@ msgstr "โหลดใหม่"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "รูปภาพระยะไกลอาจบอกผู้ส่งว่าคุณเปิดอีเมลแล้ว"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "คะแนน {score} จาก 5"
 msgid "Screen"
 msgstr "หน้าจอ"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "ขนาดหน้าจอ"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "ภาพหน้าจอ"
@@ -16060,6 +16151,10 @@ msgstr "ค้นหาการสนทนาสำหรับ “{search}”
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "ค้นหาดีไซน์"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "ค้นหาดีไซน์…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "ส่งความคิดเห็นจากหน้า"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "ส่งจาก"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "ส่งด้วยดีไซน์อีเมล"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "ผู้ติดต่อเขียนข้อความ"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "ผู้ติดต่อ บันทึกของผู้ติดต่อ และทุกสิ่งที่เขียนจะถูกลบถาวร ไม่สามารถยกเลิกได้"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "ภาษาของผู้ติดต่อ"
@@ -18511,6 +18613,10 @@ msgstr "การตรวจสอบความสามารถในกา
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "ดีไซน์ไม่มีเวอร์ชันสำหรับหัวเรื่องเหล่านี้ จึงไม่ถูกใช้: {languages}"
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "ดีไซน์ไม่มีเวอร์ชันในภาษานั้น เลือกภาษาอื่น"
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "รายชื่อส่งในนามของกล่องข
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "อีเมลมาถึงแล้ว"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "อีเมลตามที่ส่งไม่ได้เก็บไว้อีกแล้ว"
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "อีเมลในดีไซน์นี้ใหญ่กว่า 500 KB เขียนให้น้อยลงหรือเลือกดีไซน์ที่เบากว่า"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "การสนทนานี้ไม่พร้อมใช้งา
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "ช่องทางอีเมลของการสนทนานี้ไม่มีบัญชี SMTP จึงไม่ได้ส่งการตอบกลับ เพิ่มในการตั้งค่ากล่องข้อความ"
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "ใช้ดีไซน์นี้กับอีเมลนี้ไม่ได้ เลือกดีไซน์อื่น"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "ดีไซน์นี้มีบล็อกข้อความซึ่งใส่ข้อความของการสนทนา ในการส่งจำนวนมากจะว่างเปล่า เลือกดีไซน์อื่นหรือเอาบล็อกออก"
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "ดีไซน์นี้ไม่มีบล็อกข้อความ"
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "ดีไซน์นี้ถูกเก็บถาวร ไม่ได้เสนอในการสนทนาอีกแล้ว หรืออยู่ในกล่องจดหมายอื่น เอาออกหรือเลือกอันอื่น"
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "ดีไซน์นี้ใช้ฟิลด์ผสานที่อีเมลสนทนาไม่มี (ชื่อรายการหรือลิงก์ยกเลิกการรับและการตั้งค่า)"
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "เอนด์พอยต์นี้รับเฉพาะเหต
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "ไม่อนุญาตไฟล์ประเภทนี้"
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "อีเมลฉบับแรกนี้มีลิงก์ยกเลิกการรับ"
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "หน้านี้ยังไม่เป็นสาธารณะ ผู้เข้าชมจึงไม่เห็นอะไรจนกว่าคุณจะเผยแพร่หน้า"
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "บุคคลนี้ปฏิเสธอีเมลแบบนี้ จึงส่งในดีไซน์ไม่ได้ ส่งโดยไม่ใช้ดีไซน์"
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "บุคคลนี้ยกเลิกการสมัครรับทุกอย่าง รายงานอีเมลว่าเป็นสแปม หรือถูกลบข้อมูล ทีมจึงเพิ่มกลับไม่ได้"
 
@@ -20018,6 +20160,10 @@ msgstr "พื้นที่ทำงานนี้ส่งบรอดคา
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "พื้นที่ทำงานนี้ส่งบรอดคาสต์ไม่ได้ในขณะนี้ บรอดคาสต์ที่กำลังส่งถูกหยุดชั่วคราว"
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "พื้นที่ทำงานนี้ยังส่งอีเมลฉบับแรกในดีไซน์ไม่ได้ในขณะนี้"
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "เช้าพรุ่งนี้"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "ลองมากเกินไป รอสักครู่แล้วลองอีกครั้ง"
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "อีเมลฉบับแรกในดีไซน์มากเกินไปในขณะนี้: 20 ต่อชั่วโมงสำหรับคุณ 200 ต่อวันสำหรับพื้นที่ทำงาน ลองใหม่ภายหลัง"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Yuva ควรนำอะไรเข้ามา"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "สิ่งที่แชตสัญญา และสิ่งที่ถามหลังปิด"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "สิ่งที่ผู้ติดต่อจะได้รับ"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "สิ่งที่ลูกค้าเห็น"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "การตอบกลับของคุณส่งจากที่อยู่นี้"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "การตอบกลับถึง {first} ของคุณไม่ได้ส่ง {0}"

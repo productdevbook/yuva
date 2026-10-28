@@ -2,6 +2,7 @@ import {
   Columns2Icon,
   HeadingIcon,
   ImageIcon,
+  MessageSquareTextIcon,
   MinusIcon,
   MousePointerClickIcon,
   MoveVerticalIcon,
@@ -24,6 +25,7 @@ const ICONS: Record<BlockType, React.ComponentType<{ className?: string }>> = {
   spacer: MoveVerticalIcon,
   social: Share2Icon,
   footer: PanelBottomIcon,
+  message: MessageSquareTextIcon,
 }
 
 export function BlockIcon({ type, className }: { type: BlockType; className?: string }) {

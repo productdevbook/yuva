@@ -35,6 +35,12 @@ msgstr "Một tiêu đề rõ ràng"
 msgid "A design can hold at most 200 blocks."
 msgstr "Một thiết kế có tối đa 200 khối."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Một thiết kế chỉ có một khối tin nhắn."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Thiết kế là diện mạo của một thư: bắt đầu từ một mẫu, rồi dùng cho thư hàng loạt của bạn."
@@ -58,6 +64,10 @@ msgstr "Một liên kết trông như nút"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Một trường hợp nhất không có giá trị dự phòng, nên có thể trống với một số người."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Một trường hợp nhất trong thiết kế này không có giá trị dự phòng và đang trống với người này."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Thêm ngôn ngữ"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Thêm liên kết"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Hãy thêm khối tin nhắn trước: nó đánh dấu nơi đặt nội dung thành viên viết."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Tạo tất cả từ màu sáng"
 msgid "Medium"
 msgstr "Vừa"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Thành viên thấy hộp thư này có thể gửi trả lời và thư mới bằng thiết kế này."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Trường hợp nhất"
@@ -819,6 +837,11 @@ msgstr "Trường hợp nhất"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Trường hợp nhất chỉ đặt được ở phần của liên kết sau dấu hỏi."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Tin nhắn"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Số cột"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Danh sách đánh số"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Đưa vào cuộc trò chuyện"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "Thư vượt quá 102 KB, nên Gmail sẽ cắt nó và ẩn liên kết
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Thư vượt quá 90 KB. Gmail cắt thư ở khoảng 102 KB."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Tin nhắn bạn viết sẽ hiện ở đây"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "Phiên bản mới bắt đầu với văn bản của ngôn ngữ gốc. Bố cục, hình ảnh và liên kết vẫn dùng chung; bạn chỉ dịch văn bản."
@@ -1316,6 +1347,10 @@ msgstr "Phiên bản mới bắt đầu với văn bản của ngôn ngữ gốc
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "Chân trang bắt buộc của phiên bản này bằng tiếng Anh: Yuva không có chữ chân trang bằng ngôn ngữ này."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Nội dung thành viên viết nằm ở đây, tiếp theo là thẻ bài viết trợ giúp và chữ ký. Mỗi thiết kế một khối, không bao giờ nằm trong cột."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Khối này không có văn bản để dịch."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Thiết kế này đã thay đổi ở nơi khác"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Thiết kế này không có khối tin nhắn."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Thiết kế này dùng một trường hợp nhất mà thư trò chuyện không có (tên danh sách hoặc liên kết hủy đăng ký và tùy chọn)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Trang web"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Khi trống, hãy viết"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Nơi đặt nội dung tin nhắn của cuộc trò chuyện"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

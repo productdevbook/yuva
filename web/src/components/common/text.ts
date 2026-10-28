@@ -407,8 +407,36 @@ export function usePreviewText() {
 
 export function useErrorText() {
   const { t } = useLingui()
-  return (err: unknown): string => {
+  return (err: unknown, designed = false): string => {
     if (!(err instanceof ApiError)) return t`Could not reach the server. Check your connection and try again.`
+    if (err.code === "email_opted_out")
+      return t`This person opted out of mail like this, so it cannot go out in a design. Send it without a design.`
+    if (err.code === "sender_identity_missing")
+      return t`A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings.`
+    if (err.code === "design_locale_unknown")
+      return t`The design has no version in that language. Choose another language.`
+    if (err.code === "design_unavailable")
+      return t`This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another.`
+    if (err.code === "design_not_emailed") return t`Only e-mailed messages can be sent in a design.`
+    if (err.code === "design_one_recipient")
+      return t`A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design.`
+    if (err.code === "html_too_large")
+      return t`The mail in this design is larger than 500 KB. Write less, or choose a lighter design.`
+    if (err.code === "invalid_design") {
+      const issue = (err.body as { errors?: { code: string }[] } | undefined)?.errors?.[0]?.code
+      if (issue === "merge_field_unavailable")
+        return t`This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links).`
+      if (issue === "merge_field_empty")
+        return t`A merge field in this design has no fallback and is empty for this person.`
+      if (issue === "message_block_missing") return t`This design has no message block.`
+      return t`This design cannot be used for this mail. Choose another design.`
+    }
+    if (designed && err.code === "rate_limited")
+      return t`Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later.`
+    if (designed && err.code === "broadcasts_approval_required")
+      return t`First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design.`
+    if (designed && err.code === "broadcasts_suspended")
+      return t`This workspace may not send first mails in a design for now.`
     if (err.code === "from_not_allowed") return err.detail ?? t`You cannot send from this address through this channel.`
     if (err.code === "slack_not_configured") return t`This server has no Slack app set up.`
     if (err.code === "slack_not_connected") return t`Slack is not connected to this workspace.`

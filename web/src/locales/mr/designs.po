@@ -35,6 +35,12 @@ msgstr "स्पष्ट शीर्षक"
 msgid "A design can hold at most 200 blocks."
 msgstr "एका डिझाइनमध्ये जास्तीत जास्त 200 ब्लॉक असू शकतात."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "एका डिझाइनमध्ये एकच संदेश ब्लॉक असू शकतो."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "डिझाइन म्हणजे मेलचे स्वरूप: टेम्पलेटपासून सुरू करा, मग ते तुमच्या ब्रॉडकास्टसाठी वापरा."
@@ -58,6 +64,10 @@ msgstr "बटणासारखी दिसणारी लिंक"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "मर्ज फील्डला फॉलबॅक नाही, म्हणून ते काही लोकांसाठी रिकामे असू शकते."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "या डिझाइनमधील मर्ज फील्डला पर्यायी मूल्य नाही आणि ते या व्यक्तीसाठी रिकामे आहे."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "भाषा जोडा"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "लिंक जोडा"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "आधी संदेश ब्लॉक जोडा: सदस्याने लिहिलेला मजकूर कुठे येईल ते तो दाखवतो."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "सर्व फिकट रंगांपासून बनवा"
 msgid "Medium"
 msgstr "मध्यम"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "हा इनबॉक्स पाहणारे सदस्य या डिझाइनमध्ये उत्तरे आणि नवे मेल पाठवू शकतात."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "मर्ज फील्ड"
@@ -819,6 +837,11 @@ msgstr "मर्ज फील्ड"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "मर्ज फील्ड फक्त लिंकच्या प्रश्नचिन्हानंतरच्या भागात जाऊ शकतात."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "संदेश"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "कॉलमची संख्या"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "क्रमांकित यादी"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "संभाषणांमध्ये द्या"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "मेल 102 KB पेक्षा जास्त आहे, म्ह
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "मेल 90 KB पेक्षा जास्त आहे. Gmail सुमारे 102 KB वर मेल कापतो."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "तुम्ही लिहिलेला संदेश इथे दिसतो"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "नवी आवृत्ती आधार भाषेच्या मजकुराने सुरू होते. मांडणी, प्रतिमा आणि लिंक सामायिक राहतात; तुम्ही फक्त मजकुराचे भाषांतर करता."
@@ -1316,6 +1347,10 @@ msgstr "नवी आवृत्ती आधार भाषेच्या �
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "या आवृत्तीचे अनिवार्य फूटर इंग्रजीत आहे: Yuva कडे या भाषेत फूटरचे शब्द नाहीत."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "सदस्याने लिहिलेला मजकूर इथे येतो, त्यानंतर मदत लेखांची कार्डे आणि स्वाक्षरी. प्रत्येक डिझाइनमध्ये एक, कधीही स्तंभांच्या आत नाही."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "या ब्लॉकमध्ये भाषांतर करण्
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "हे डिझाइन इतरत्र बदलले"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "या डिझाइनमध्ये संदेश ब्लॉक नाही."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "हे डिझाइन संभाषणाच्या मेलमध्ये नसलेले मर्ज फील्ड वापरते (यादीचे नाव किंवा सदस्यता रद्द आणि पसंतीचे दुवे)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "वेबसाइट"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "रिकामे असताना लिहा"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "संभाषणाच्या संदेशाचा मजकूर कुठे येतो"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

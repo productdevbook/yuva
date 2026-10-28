@@ -35,6 +35,12 @@ msgstr "清晰的标题"
 msgid "A design can hold at most 200 blocks."
 msgstr "一个设计最多可包含 200 个区块。"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "一个设计只能有一个消息块。"
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "设计是邮件的外观:从模板开始,然后用于你的群发。"
@@ -58,6 +64,10 @@ msgstr "看起来像按钮的链接"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "合并字段没有备用值,因此对某些人可能为空。"
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "此设计中的合并字段没有备用值，对此人为空。"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "添加语言"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "添加链接"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "请先添加消息块：它标出成员所写文字的位置。"
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "全部根据浅色生成"
 msgid "Medium"
 msgstr "中"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "能看到此收件箱的成员可以用此设计发送回复和新邮件。"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "合并字段"
@@ -819,6 +837,11 @@ msgstr "合并字段"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "合并字段只能放在链接中问号之后的部分。"
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "消息"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "列数"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "编号列表"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "在对话中提供"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "邮件超过 102 KB,Gmail 会截断它并隐藏退订链接。请删除�
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "邮件超过 90 KB。Gmail 会在约 102 KB 处截断邮件。"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "你写的消息会显示在这里"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "新版本从基础语言的文本开始。布局、图片和链接保持共享；你只需翻译文本。"
@@ -1316,6 +1347,10 @@ msgstr "新版本从基础语言的文本开始。布局、图片和链接保持
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "此版本的必需页脚为英文：Yuva 没有这种语言的页脚文字。"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "成员所写的文字放在这里，后面是帮助文章卡片和签名。每个设计一个，不能放在分栏内。"
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "此区块没有可翻译的文本。"
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "此设计在别处发生了更改"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "此设计没有消息块。"
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "此设计使用了对话邮件没有的合并字段（列表名称，或退订和偏好设置链接）。"
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "网站"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "为空时,写"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "对话消息正文所在的位置"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

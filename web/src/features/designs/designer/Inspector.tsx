@@ -117,7 +117,7 @@ function Layout({ block }: { block: Block }) {
           />
         ))}
       </div>
-      {block.type !== "spacer" && block.type !== "section" && block.type !== "columns" && (
+      {block.type !== "spacer" && block.type !== "section" && block.type !== "columns" && block.type !== "message" && (
         <Row label={<Trans>Alignment</Trans>}>
           <Segmented
             value={block.align ?? "auto"}
@@ -562,6 +562,19 @@ function SocialFields({ block }: { block: BlockOf<"social"> }) {
   )
 }
 
+function MessageFields() {
+  return (
+    <Group title={<Trans>Message</Trans>}>
+      <p className="text-small text-muted-foreground">
+        <Trans>
+          The text a member writes goes here, followed by help article cards and the signature. One per design, never
+          inside columns.
+        </Trans>
+      </p>
+    </Group>
+  )
+}
+
 function FooterFields() {
   return (
     <Group title={<Trans>Footer text</Trans>}>
@@ -597,6 +610,8 @@ function Fields({ block }: { block: Block }) {
       return <SocialFields block={block} />
     case "footer":
       return <FooterFields />
+    case "message":
+      return <MessageFields />
   }
 }
 

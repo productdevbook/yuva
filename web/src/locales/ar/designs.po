@@ -35,6 +35,12 @@ msgstr "عنوان واضح"
 msgid "A design can hold at most 200 blocks."
 msgstr "يمكن أن يحتوي التصميم على 200 كتلة كحد أقصى."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "يمكن أن يحتوي التصميم على كتلة رسالة واحدة."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "التصميم هو شكل الرسالة: ابدأ من قالب ثم استخدمه لرسائلك الجماعية."
@@ -58,6 +64,10 @@ msgstr "رابط يبدو كزر"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "الحقل الدمجي بلا قيمة بديلة، فقد يكون فارغًا لدى بعض الأشخاص."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "حقل الدمج في هذا التصميم بلا قيمة بديلة وهو فارغ لهذا الشخص."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "إضافة لغة"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "إضافة رابط"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "أضف كتلة رسالة أولًا: تحدد مكان النص الذي يكتبه العضو."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "اجعلها كلها من الألوان الفاتحة"
 msgid "Medium"
 msgstr "متوسط"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "يمكن للأعضاء الذين يرون هذا الصندوق إرسال الردود والرسائل الجديدة بهذا التصميم."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "حقل دمج"
@@ -819,6 +837,11 @@ msgstr "حقل دمج"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "يمكن وضع حقول الدمج فقط في جزء الرابط بعد علامة الاستفهام."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "الرسالة"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "عدد الأعمدة"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "قائمة مرقمة"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "عرض في المحادثات"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "الرسالة تتجاوز 102 كيلوبايت، لذا سيقتطعه
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "الرسالة تتجاوز 90 كيلوبايت. يقتطع Gmail الرسائل عند نحو 102 كيلوبايت."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "تظهر هنا الرسالة التي تكتبها"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "تبدأ النسخة الجديدة بنصوص اللغة الأساسية. يبقى التخطيط والصور والروابط مشتركة؛ وتترجم النصوص فقط."
@@ -1316,6 +1347,10 @@ msgstr "تبدأ النسخة الجديدة بنصوص اللغة الأساس�
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "التذييل الإلزامي لهذه النسخة بالإنجليزية: لا تتوفر لدى Yuva نصوص التذييل بهذه اللغة."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "يوضع هنا النص الذي يكتبه العضو يليه بطاقات مقالات المساعدة والتوقيع. واحدة لكل تصميم وليس داخل الأعمدة."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "لا تحتوي هذه الكتلة على نص للترجمة."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "تغيّر هذا التصميم في مكان آخر"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "ليس في هذا التصميم كتلة رسالة."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "يستخدم هذا التصميم حقل دمج غير موجود في رسائل المحادثات (اسم القائمة أو رابطا إلغاء الاشتراك والتفضيلات)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "الموقع"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "عندما يكون فارغًا، اكتب"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "مكان نص رسالة المحادثة"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

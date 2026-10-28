@@ -35,6 +35,12 @@ msgstr "தெளிவான தலைப்பு"
 msgid "A design can hold at most 200 blocks."
 msgstr "ஒரு வடிவமைப்பில் அதிகபட்சம் 200 தொகுதிகள் இருக்கலாம்."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "ஒரு வடிவமைப்பில் ஒரு செய்தித் தொகுதி இருக்கலாம்."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "வடிவமைப்பு என்பது அஞ்சலின் தோற்றம்: வார்ப்புருவிலிருந்து தொடங்கி, உங்கள் ஒளிபரப்புகளுக்குப் பயன்படுத்துங்கள்."
@@ -58,6 +64,10 @@ msgstr "பொத்தான் போலத் தெரியும் இண
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "இணைப்புப் புலத்துக்கு மாற்று மதிப்பு இல்லை, எனவே சிலருக்குக் காலியாக இருக்கலாம்."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "இந்த வடிவமைப்பில் உள்ள இணைப்புப் புலத்துக்கு மாற்று மதிப்பு இல்லை, இந்த நபருக்கு அது காலியாக உள்ளது."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "மொழியைச் சேர்"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "இணைப்பைச் சேர்"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "முதலில் செய்தித் தொகுதியைச் சேர்க்கவும்: உறுப்பினர் எழுதும் உரை எங்கே வரும் என்பதை இது குறிக்கிறது."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "அனைத்தையும் ஒளிரும் நிறங்�
 msgid "Medium"
 msgstr "நடுத்தர"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "இந்த இன்பாக்ஸைப் பார்க்கும் உறுப்பினர்கள் இந்த வடிவமைப்பில் பதில்களையும் புதிய மின்னஞ்சல்களையும் அனுப்பலாம்."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "இணைப்புப் புலம்"
@@ -819,6 +837,11 @@ msgstr "இணைப்புப் புலம்"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "இணைப்புப் புலங்கள் இணைப்பின் கேள்விக்குறிக்குப் பிந்தைய பகுதியில் மட்டுமே இருக்கலாம்."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "செய்தி"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "நெடுவரிசைகளின் எண்ணிக்கை"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "எண்ணிட்ட பட்டியல்"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "உரையாடல்களில் வழங்கு"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "அஞ்சல் 102 KB-ஐத் தாண்டியது, என�
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "அஞ்சல் 90 KB-ஐத் தாண்டியது. Gmail சுமார் 102 KB-இல் அஞ்சலை வெட்டும்."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "நீங்கள் எழுதும் செய்தி இங்கே தோன்றும்"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "புதிய பதிப்பு அடிப்படை மொழியின் உரைகளுடன் தொடங்கும். தளவமைப்பு, படங்கள், இணைப்புகள் பொதுவாகவே இருக்கும்; நீங்கள் உரைகளை மட்டும் மொழிபெயர்க்கிறீர்கள்."
@@ -1316,6 +1347,10 @@ msgstr "புதிய பதிப்பு அடிப்படை மொழ
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "இந்தப் பதிப்பின் கட்டாய அடிக்குறிப்பு ஆங்கிலத்தில் உள்ளது: Yuva-விடம் இந்த மொழியில் அடிக்குறிப்புச் சொற்கள் இல்லை."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "உறுப்பினர் எழுதும் உரை இங்கே வரும், அதன் பின் உதவிக் கட்டுரை அட்டைகளும் கையொப்பமும். ஒரு வடிவமைப்புக்கு ஒன்று, நெடுவரிசைகளுக்குள் ஒருபோதும் இல்லை."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "இந்தத் தொகுதியில் மொழிபெய�
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "இந்த வடிவமைப்பு வேறிடத்தில் மாறியது"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "இந்த வடிவமைப்பில் செய்தித் தொகுதி இல்லை."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "இந்த வடிவமைப்பு உரையாடல் மின்னஞ்சலில் இல்லாத இணைப்புப் புலத்தைப் பயன்படுத்துகிறது (பட்டியலின் பெயர் அல்லது சந்தா நீக்கம் மற்றும் விருப்பத்தேர்வு இணைப்புகள்)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "இணையதளம்"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "அது காலியாக இருக்கும்போது, எழுதுங்கள்"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "உரையாடல் செய்தியின் உரை எங்கே வரும்"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

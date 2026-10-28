@@ -1370,6 +1370,10 @@ msgstr "ஒரு நாள் முன்பே, MX பதிவுகளி�
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD வடிவில் ஒரு நாள், உங்கள் நேர மண்டலத்தில்"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "நீக்கப்பட்ட வடிவமைப்பு"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "நீக்கிய இடுகையை மீட்க முடியாது."
@@ -1421,6 +1425,10 @@ msgstr "கோப்பின் உள்ளடக்கம் அதன் வ
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "வடிகட்டி இங்கு வரும் ஒவ்வொரு மின்னஞ்சலையும் பார்த்து அதற்கு நட்சத்திரம் இடுகிறது, காப்பகப்படுத்துகிறது, குப்பைக்கு நகர்த்துகிறது, லேபிள் இடுகிறது அல்லது ஓர் உறுப்பினரிடம் ஒப்படைக்கிறது. வடிகட்டிகள் இந்தப் பட்டியலின் வரிசையில் இயங்கும்."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "வடிவமைப்பில் அனுப்பும் முதல் மின்னஞ்சலில் இன்பாக்ஸின் சட்டப்பூர்வ பெயரும் அஞ்சல் முகவரியும் இருக்க வேண்டும். இன்பாக்ஸ் அமைப்புகளில் சேர்க்கவும்."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "மின்னஞ்சல் வடிகட்டி எனக்க�
 msgid "a mail folder"
 msgstr "அஞ்சல் கோப்புறை"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "வடிவமைப்புடன் உள்ள மின்னஞ்சல் ஒருவருக்கே செல்லும்: மற்ற பெறுநர்களையும் Cc-ஐயும் நீக்கவும், அல்லது வடிவமைப்பு இல்லாமல் அனுப்பவும்."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "அஞ்சல் பட்டியல் உங்கள் ஒளிபரப்புகளைப் பெற ஒப்புக்கொண்டவர்களை வைத்திருக்கும். அவர்கள் உங்கள் தளத்தில் உள்ள சந்தா படிவம் மூலம் சேர்வார்கள், அல்லது உங்கள் குழு அவர்களைச் சேர்த்து எப்படி ஒப்புக்கொண்டனர் என்பதைப் பதிவு செய்யும். ஒவ்வொரு படியும் ஒப்புதலுக்கான சான்றாகப் பாதுகாக்கப்படும்; ஒவ்வொருவரும் ஒரே கிளிக்கில் விலகலாம்."
@@ -1519,6 +1532,10 @@ msgstr "ஓர் உறுப்பினர்"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "உறுப்பினருக்கு தயாரிப்புக்கான அணுகல் இருந்தால் (உரிமையாளர்கள், நிர்வாகிகள் அனுமதியுடன் மட்டும்), பேனல் அல்லது செயலி திறந்திருந்தால், கிடைக்கும் நிலை தானியங்கி என்றால், தயாரிப்பு வேலை நேரத்திற்குள் இருந்தால், உறுப்பினர் வரம்புக்குக் கீழ் இருந்தால் தகுதியானவர். யாரும் தகுதியில்லையெனில் உரையாடல் காத்திருந்து முதலில் கிடைக்கும் சக ஊழியருக்குச் செல்லும்."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "இந்த வடிவமைப்பில் உள்ள இணைப்புப் புலத்துக்கு மாற்று மதிப்பு இல்லை, இந்த நபருக்கு அது காலியாக உள்ளது."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "பாஸ்கீ சேர்"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "தயாரிப்பைச் சேர்"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "ஒரு பெறுநர், பொருள் மற்றும் சிறிது உரையைச் சேர்க்கவும்: வரைவு சேமிக்கப்பட்டதும் முன்னோட்டம் தோன்றும்."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "அனுமதிக்கப்பட்ட அளவு அடிக�
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "அனுப்பியபடி"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "ஆபத்துப் பகுதி"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "இருண்ட"
@@ -6005,15 +6031,25 @@ msgstr "விளக்கம்"
 msgid "Description (optional)"
 msgstr "விளக்கம் (விருப்பம்)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "வடிவமைப்பு"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "வடிவமைப்பு: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "வடிவமைப்புகள்"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "டெஸ்க்டாப்"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "சலுகை நேரத்திற்காகக் காத்�
 msgid "Failures to go down"
 msgstr "செயலிழப்புக்கு முன் தொடர் தோல்விகள்"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "மாற்று மொழி: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "கருத்து"
@@ -7384,6 +7424,10 @@ msgstr "முடிந்தது"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "செயல்படும் எச்சரிக்கைகள் கண்காணிப்பை தோல்வியடையச் செய்யும், தீர்ந்தவை அதை மீட்டெடுக்கும்."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "வடிவமைப்பில் முதல் மின்னஞ்சல்களை மொத்தமாக அனுப்ப சர்வர் இயக்குநரின் ஒப்புதல் தேவை. பணியிட அமைப்புகளில் கேளுங்கள், அல்லது வடிவமைப்பு இல்லாமல் அனுப்பவும்."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "மேற்கோள் உரையை மறை"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "திரும்பப் பெற்றவற்றை மறை"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "அனுப்பியபடி உள்ள மின்னஞ்சலை மறை"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "லேபிள்கள் உரையாடல்களை பில�
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "மொழி"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "வடிவமைப்பின் மொழி"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "இணை…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "செய்தி"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "செய்தித் தொகுதி"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "நாள் எதுவும் தேர்ந்தெடுக்�
 msgid "No deliveries yet"
 msgstr "இன்னும் விநியோகங்கள் இல்லை"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "வடிவமைப்பு இல்லை"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "பொருந்தும் வடிவமைப்பு இல்லை."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "இன்னும் வடிவமைப்பு இல்லை"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "உரையாடல்களில் இன்னும் வடிவமைப்பு எதுவும் வழங்கப்படவில்லை. உரிமையாளர்களும் நிர்வாகிகளும் வடிவமைப்பாளரில் ஒன்றை வழங்குகிறார்கள்."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "மொழி இவற்றில் ஒன்றாக உள்ள �
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "DNS-ஐ மட்டுமே சரிபார்க்க முடிந்தது; பெறும் சேவையகங்கள் அஞ்சலை எப்படி மதிப்பிடுகின்றன என்பதை அல்ல."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "மின்னஞ்சலாக அனுப்பும் செய்திகளில் மட்டுமே வடிவமைப்பைப் பயன்படுத்த முடியும்."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "ஆதரவுக்கு மட்டுமே பயன்படும் டொமைன் அல்லது துணை டொமைனுக்கு மட்டும்: அதன் MX பதிவுகள் அதன் அனைத்து அஞ்சலும் எங்கே செல்லும் என்பதை முடிவு செய்யும்."
@@ -13038,6 +13110,10 @@ msgstr "உரையாடலைத் திற"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "வடிவமைப்பைத் திற"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "வடிவமைப்புகளைத் திற"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "{owner}-இன் தனிப்பட்ட அஞ்சல் பெ�
 msgid "Personal mailboxes"
 msgstr "தனிப்பட்ட அஞ்சல் பெட்டிகள்"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "தொலைபேசி"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "ஒரு தயார் பதிலைத் தேர்ந்தெடுக்கவும்"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "தயாரிக்கிறது"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "முன்னோட்டம் ({previewKey})"
 msgid "Preview of {0}"
 msgstr "{0} முன்னோட்டம்"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "{title}-இன் முன்னோட்டம்"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "வடிவமைப்பின் முன்னோட்டம்"
@@ -14813,6 +14899,7 @@ msgstr "மீண்டும் ஏற்று"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "தொலைநிலைப் படங்கள் நீங்கள் அஞ்சலைத் திறந்ததை அனுப்புநருக்குத் தெரிவிக்கலாம்."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "5-க்கு {score} மதிப்பெண்"
 msgid "Screen"
 msgstr "திரை"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "திரை அளவு"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "திரைப்பிடிப்பு"
@@ -16060,6 +16151,10 @@ msgstr "“{search}” என உரையாடல்களைத் தேட�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "வடிவமைப்புகளைத் தேடு"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "வடிவமைப்புகளைத் தேடு…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "பக்கத்திலிருந்து கருத்தை �
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "இதிலிருந்து அனுப்பு"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "மின்னஞ்சல் வடிவமைப்பில் அனுப்பு"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "தொடர்பு ஒரு செய்தி எழுதுகி
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "தொடர்பு, அவரது குறிப்புகள், அவர் எழுதிய அனைத்தும் நிரந்தரமாக நீக்கப்படும். இதைத் திரும்பப் பெற முடியாது."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "தொடர்பின் மொழி"
@@ -18511,6 +18613,10 @@ msgstr "விநியோகத் திறன் சோதனை இன்ன
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "இந்தப் பொருள்களுக்கு வடிவமைப்பில் பதிப்பு இல்லை, எனவே இவை பயன்படாது: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "வடிவமைப்புக்கு அந்த மொழியில் பதிப்பு இல்லை. வேறு மொழியைத் தேர்ந்தெடுக்கவும்."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "பட்டியல் இந்த இன்பாக்ஸின் 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "அஞ்சல் வந்தது."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "அனுப்பியபடி உள்ள மின்னஞ்சல் இனி சேமிக்கப்படுவதில்லை."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "இந்த வடிவமைப்பில் மின்னஞ்சல் 500 KB-ஐ விட பெரியது. குறைவாக எழுதுங்கள் அல்லது இலகுவான வடிவமைப்பைத் தேர்ந்தெடுக்கவும்."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "இந்த உரையாடல் கிடைக்கவில்�
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "இந்த உரையாடலின் மின்னஞ்சல் சேனலுக்கு SMTP கணக்கு இல்லை; எனவே பதில் அனுப்பப்படவில்லை. இன்பாக்ஸ் அமைப்புகளில் ஒன்றைச் சேருங்கள்."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "இந்த வடிவமைப்பை இந்த மின்னஞ்சலுக்குப் பயன்படுத்த முடியாது. வேறு வடிவமைப்பைத் தேர்ந்தெடுக்கவும்."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "இந்த வடிவமைப்பில் உரையாடல் செய்தியின் உரையை வைக்கும் செய்தித் தொகுதி உள்ளது. மொத்த அனுப்புதலில் அது காலியாக இருக்கும். வேறு வடிவமைப்பைத் தேர்ந்தெடுக்கவும் அல்லது தொகுதியை நீக்கவும்."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "இந்த வடிவமைப்பில் செய்தித் தொகுதி இல்லை."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "இந்த வடிவமைப்பு காப்பகப்படுத்தப்பட்டுள்ளது, உரையாடல்களில் இனி வழங்கப்படுவதில்லை அல்லது வேறு இன்பாக்ஸுக்குரியது. நீக்கவும் அல்லது வேறொன்றைத் தேர்ந்தெடுக்கவும்."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "இந்த வடிவமைப்பு உரையாடல் மின்னஞ்சலில் இல்லாத இணைப்புப் புலத்தைப் பயன்படுத்துகிறது (பட்டியலின் பெயர் அல்லது சந்தா நீக்கம் மற்றும் விருப்பத்தேர்வு இணைப்புகள்)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "இந்த முனை {lockedName}-இன் நிகழ்வு�
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "இந்தக் கோப்பு வகை அனுமதிக்கப்படவில்லை."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "இந்த முதல் மின்னஞ்சலில் சந்தா நீக்க இணைப்பு உள்ளது."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "இந்தப் பக்கம் இன்னும் பொதுவில் இல்லை, எனவே நீங்கள் வெளியிடும் வரை பார்வையாளர்களுக்கு எதுவும் தெரியாது."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "இந்த நபர் இது போன்ற மின்னஞ்சல்களை மறுத்துள்ளார், எனவே வடிவமைப்பில் அனுப்ப முடியாது. வடிவமைப்பு இல்லாமல் அனுப்பவும்."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "இந்த நபர் அனைத்திலிருந்தும் சந்தாவை விலக்கினார், அஞ்சலை ஸ்பேம் எனப் புகாரளித்தார் அல்லது அவர் தரவு அழிக்கப்பட்டது; எனவே குழுவால் அவரை மீண்டும் சேர்க்க முடியாது."
 
@@ -20018,6 +20160,10 @@ msgstr "இந்தப் பணியிடம் இப்போதைக்�
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "இந்தப் பணியிடம் இப்போதைக்கு ஒளிபரப்புகளை அனுப்பக் கூடாது. ஓடும் ஒளிபரப்புகள் இடைநிறுத்தப்பட்டுள்ளன."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "இந்தப் பணியிடம் தற்போது வடிவமைப்பில் முதல் மின்னஞ்சல்களை அனுப்ப முடியாது."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "நாளை காலை"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "மிக அதிக முயற்சிகள். சிறிது காத்திருந்து மீண்டும் முயலுங்கள்."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "தற்போது வடிவமைப்பில் முதல் மின்னஞ்சல்கள் மிக அதிகம்: உங்களுக்கு மணிக்கு 20, பணியிடத்துக்கு நாளுக்கு 200. பின்னர் மீண்டும் முயலவும்."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Yuva எதைக் கொண்டுவர வேண்டும்?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "அரட்டை என்ன உறுதியளிக்கிறது, மூடிய பின் என்ன கேட்கிறது"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "தொடர்புக்குக் கிடைப்பது."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "வாடிக்கையாளர் பார்ப்பது"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "உங்கள் பதில்கள் இந்த முகவரியிலிருந்து செல்லும்"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "{first}-க்கான உங்கள் பதில் அனுப்பப்படவில்லை. {0}"

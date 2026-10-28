@@ -1370,6 +1370,10 @@ msgstr "Trước một ngày, hãy giảm TTL của các bản ghi MX để thay
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "một ngày dạng YYYY-MM-DD, theo múi giờ của bạn"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "một thiết kế đã xóa"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Bài đã xóa không thể khôi phục."
@@ -1421,6 +1425,10 @@ msgstr "Nội dung của tệp không khớp với loại của nó. Hãy kiểm
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Bộ lọc xem xét mọi thư đến đây rồi gắn sao, lưu trữ, chuyển vào thùng rác, gắn nhãn hoặc giao cho một thành viên. Các bộ lọc chạy theo thứ tự của danh sách này."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "Thư đầu tiên trong thiết kế phải có tên pháp lý và địa chỉ bưu chính của hộp thư. Hãy thêm chúng trong phần cài đặt hộp thư."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Bộ lọc thư thông báo cho tôi"
 msgid "a mail folder"
 msgstr "một thư mục thư"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "Thư trong thiết kế chỉ gửi cho một người: hãy bỏ những người nhận khác và Cc, hoặc gửi không dùng thiết kế."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Danh sách gửi thư chứa những người đã đồng ý nhận thư hàng loạt của bạn. Họ tham gia qua biểu mẫu đăng ký trên trang web của bạn, hoặc nhóm của bạn thêm họ và ghi lại cách họ đã đồng ý. Mọi bước đều được lưu làm bằng chứng đồng ý, và ai cũng có thể rời đi chỉ với một lần nhấp."
@@ -1519,6 +1532,10 @@ msgstr "một thành viên"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Một thành viên đủ điều kiện khi có quyền truy cập sản phẩm (chủ sở hữu và quản trị viên chỉ khi được cấp quyền), đang mở bảng điều khiển hoặc ứng dụng, trạng thái sẵn sàng là Tự động, sản phẩm trong giờ làm việc và thành viên dưới giới hạn. Nếu không ai đủ điều kiện, cuộc trò chuyện chờ và chuyển cho đồng nghiệp đầu tiên rảnh."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Một trường hợp nhất trong thiết kế này không có giá trị dự phòng và đang trống với người này."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Thêm khóa truy cập"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Thêm sản phẩm"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Thêm người nhận, tiêu đề và vài dòng chữ: bản xem trước sẽ hiện sau khi bản nháp được lưu."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "Thường xuyên nhất có thể"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Như đã gửi"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Vùng nguy hiểm"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Tối"
@@ -6005,15 +6031,25 @@ msgstr "Mô tả"
 msgid "Description (optional)"
 msgstr "Mô tả (không bắt buộc)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Thiết kế"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Thiết kế: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Thiết kế"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Máy tính"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Làm trình giám sát ngừng ngay, không chờ thời gian châm chư
 msgid "Failures to go down"
 msgstr "Số lần lỗi liên tiếp để ngừng"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Ngôn ngữ dự phòng: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "phản hồi"
@@ -7384,6 +7424,10 @@ msgstr "Đã hoàn tất"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Cảnh báo đang kích hoạt làm trình giám sát ngừng, cảnh báo đã giải quyết khôi phục nó."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "Thư đầu tiên trong thiết kế cần nhà vận hành máy chủ chấp thuận gửi hàng loạt. Hãy xin trong cài đặt không gian làm việc, hoặc gửi không dùng thiết kế."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Ẩn văn bản trích dẫn"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Ẩn các khóa đã thu hồi"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Ẩn thư như đã gửi"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Nhãn sắp xếp cuộc trò chuyện theo chủ đề, như thanh toá
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Ngôn ngữ"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Ngôn ngữ của thiết kế"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Gộp…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Tin nhắn"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Khối tin nhắn"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Chưa chọn ngày nào: sản phẩm được coi là đóng cửa cả
 msgid "No deliveries yet"
 msgstr "Chưa có lượt gửi"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Không dùng thiết kế"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Không có thiết kế nào khớp."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Chưa có thiết kế"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "Chưa có thiết kế nào được đưa vào cuộc trò chuyện. Chủ sở hữu và quản trị viên đưa một thiết kế vào trong trình thiết kế."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Chỉ các liên hệ có ngôn ngữ là một trong số này."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Chỉ kiểm tra được DNS, không kiểm tra được cách các máy chủ nhận đánh giá thư."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Chỉ tin nhắn gửi qua email mới dùng được thiết kế."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Chỉ dành cho tên miền hoặc tên miền phụ chỉ dùng cho hỗ trợ: bản ghi MX của nó quyết định mọi thư của nó đi đâu."
@@ -13038,6 +13110,10 @@ msgstr "Mở cuộc trò chuyện"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Mở thiết kế"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Mở các thiết kế"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "Hộp thư cá nhân của {owner}"
 msgid "Personal mailboxes"
 msgstr "Hộp thư cá nhân"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Điện thoại"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Chọn một câu trả lời soạn sẵn"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Đang chuẩn bị"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Xem trước ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Xem trước {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "Xem trước {title}"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Xem trước thiết kế"
@@ -14813,6 +14899,7 @@ msgstr "Tải lại"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Hình ảnh từ xa có thể cho người gửi biết bạn đã mở thư."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Điểm {score} trên 5"
 msgid "Screen"
 msgstr "Màn hình"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Kích thước màn hình"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Ảnh chụp màn hình"
@@ -16060,6 +16151,10 @@ msgstr "Tìm cuộc trò chuyện cho “{search}”"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Tìm thiết kế"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Tìm thiết kế…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Gửi phản hồi từ một trang"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Gửi từ"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Gửi bằng thiết kế email"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "Người liên hệ viết một tin nhắn"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Liên hệ, ghi chú của họ và mọi thứ họ đã viết bị xóa vĩnh viễn. Không thể hoàn tác."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "Ngôn ngữ của liên hệ"
@@ -18511,6 +18613,10 @@ msgstr "Việc kiểm tra khả năng gửi thư chưa xong."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "Thiết kế không có phiên bản cho các tiêu đề này nên chúng không được dùng: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "Thiết kế không có phiên bản bằng ngôn ngữ đó. Hãy chọn ngôn ngữ khác."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "Danh sách gửi với tên của hộp thư này, và phản hồi cho 
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Thư đã đến."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "Thư như đã gửi không còn được lưu nữa."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "Thư trong thiết kế này lớn hơn 500 KB. Hãy viết ngắn lại hoặc chọn thiết kế nhẹ hơn."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Cuộc trò chuyện này không khả dụng"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "Kênh email của cuộc trò chuyện này không có tài khoản SMTP, nên phản hồi chưa được gửi. Hãy thêm trong cài đặt hộp thư."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Không thể dùng thiết kế này cho thư này. Hãy chọn thiết kế khác."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Thiết kế này có khối tin nhắn, nơi chứa nội dung tin nhắn của cuộc trò chuyện. Khi gửi hàng loạt nó sẽ trống. Hãy chọn thiết kế khác hoặc gỡ khối này."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Thiết kế này không có khối tin nhắn."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Thiết kế này đã được lưu trữ, không còn được đưa vào cuộc trò chuyện hoặc thuộc hộp thư khác. Hãy gỡ nó hoặc chọn cái khác."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Thiết kế này dùng một trường hợp nhất mà thư trò chuyện không có (tên danh sách hoặc liên kết hủy đăng ký và tùy chọn)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Endpoint này chỉ nhận các sự kiện của {lockedName}."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Loại tệp này không được phép."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Thư đầu tiên này có liên kết hủy đăng ký."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Trang này chưa công khai nên khách truy cập không thấy gì cho đến khi bạn xuất bản trang."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Người này đã từ chối thư như thế này nên không thể gửi bằng thiết kế. Hãy gửi không dùng thiết kế."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Người này đã hủy đăng ký mọi thứ, báo thư là thư rác hoặc đã bị xóa dữ liệu, nên nhóm không thể thêm lại họ."
 
@@ -20018,6 +20160,10 @@ msgstr "Không gian làm việc này hiện không được gửi thư hàng lo�
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Không gian làm việc này hiện không được gửi thư hàng loạt. Các thư hàng loạt đang chạy bị tạm dừng."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Không gian làm việc này tạm thời không được gửi thư đầu tiên bằng thiết kế."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Sáng mai"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Quá nhiều lần thử. Hãy chờ một lúc rồi thử lại."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Hiện có quá nhiều thư đầu tiên bằng thiết kế: 20 mỗi giờ cho bạn, 200 mỗi ngày cho không gian làm việc. Hãy thử lại sau."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Yuva nên đưa vào gì?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Điều chat hứa hẹn, và điều nó hỏi sau khi đóng"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Những gì liên hệ sẽ nhận được."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Những gì khách hàng thấy"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "Phản hồi của bạn được gửi từ địa chỉ này"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "Phản hồi của bạn cho {first} chưa được gửi. {0}"

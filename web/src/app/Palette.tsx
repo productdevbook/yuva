@@ -89,6 +89,7 @@ function useItems(open: boolean): Item[] {
       act("incident", t`Link to a status incident`, SHORTCUTS.incident)
       act("forward", t`Forward by e-mail…`, SHORTCUTS.forward)
       act("article", t`Send a help article`, SHORTCUTS.article)
+      act("design", t`Send in an e-mail design`, SHORTCUTS.design)
       act("recipients", t`Cc and Bcc the reply`, SHORTCUTS.recipients)
       act("signature", t`Leave your signature off this reply, or put it back`, SHORTCUTS.signature)
       act("sendAs", t`Send the reply from one of your own addresses`, SHORTCUTS.sendAs)

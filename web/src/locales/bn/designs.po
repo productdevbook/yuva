@@ -35,6 +35,12 @@ msgstr "একটি পরিষ্কার শিরোনাম"
 msgid "A design can hold at most 200 blocks."
 msgstr "একটি ডিজাইনে সর্বোচ্চ 200টি ব্লক থাকতে পারে।"
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "একটি ডিজাইনে একটি বার্তা ব্লক থাকতে পারে।"
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "ডিজাইন হলো মেইলের চেহারা: একটি টেমপ্লেট থেকে শুরু করুন, তারপর আপনার ব্রডকাস্টের জন্য ব্যবহার করুন।"
@@ -58,6 +64,10 @@ msgstr "বোতামের মতো দেখতে একটি লিং�
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "একটি মার্জ ফিল্ডের ফলব্যাক নেই, তাই এটি কিছু মানুষের জন্য খালি হতে পারে।"
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "এই ডিজাইনের একটি মার্জ ফিল্ডের বিকল্প মান নেই এবং এই ব্যক্তির জন্য এটি ফাঁকা।"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "ভাষা যোগ করুন"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "একটি লিংক যোগ করুন"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "আগে একটি বার্তা ব্লক যোগ করুন: এটি দেখায় সদস্যের লেখা কোথায় বসবে।"
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "সবগুলো হালকা রং থেকে বানান"
 msgid "Medium"
 msgstr "মাঝারি"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "যে সদস্যরা এই ইনবক্স দেখেন তারা এই ডিজাইনে উত্তর ও নতুন মেল পাঠাতে পারেন।"
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "মার্জ ফিল্ড"
@@ -819,6 +837,11 @@ msgstr "মার্জ ফিল্ড"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "মার্জ ফিল্ড শুধু লিংকের প্রশ্নচিহ্নের পরের অংশে যেতে পারে।"
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "বার্তা"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "কলামের সংখ্যা"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "নম্বরযুক্ত তালিকা"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "কথোপকথনে দিন"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "মেইল 102 KB-এর বেশি, তাই Gmail এটি ক�
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "মেইল 90 KB-এর বেশি। Gmail প্রায় 102 KB-এ মেইল কেটে দেয়।"
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "আপনার লেখা বার্তা এখানে দেখা যায়"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "নতুন সংস্করণ ভিত্তি ভাষার লেখা দিয়ে শুরু হয়। লেআউট, ছবি ও লিংক একই থাকে; আপনি শুধু লেখা অনুবাদ করেন।"
@@ -1316,6 +1347,10 @@ msgstr "নতুন সংস্করণ ভিত্তি ভাষার �
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "এই সংস্করণের আবশ্যিক ফুটার ইংরেজিতে: Yuva-র কাছে এই ভাষায় ফুটারের শব্দ নেই।"
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "সদস্যের লেখা এখানে বসে, তারপর সাহায্য নিবন্ধের কার্ড ও স্বাক্ষর। প্রতি ডিজাইনে একটি, কখনও কলামের ভিতরে নয়।"
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "এই ব্লকে অনুবাদ করার মতো লে�
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "এই ডিজাইন অন্য কোথাও বদলেছে"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "এই ডিজাইনে বার্তা ব্লক নেই।"
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "এই ডিজাইন এমন মার্জ ফিল্ড ব্যবহার করে যা কথোপকথনের মেলে নেই (তালিকার নাম বা সদস্যতা বাতিল ও পছন্দের লিংক)।"
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "ওয়েবসাইট"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "খালি থাকলে লিখুন"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "কথোপকথনের বার্তার লেখা কোথায় বসে"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

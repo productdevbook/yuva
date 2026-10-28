@@ -50,6 +50,7 @@ export const SHORTCUTS = {
   incident: "i",
   forward: "W",
   article: "H",
+  design: "D",
   recipients: "C",
   signature: "S",
   sendAs: "A",
@@ -84,6 +85,7 @@ export const MAIL_KEYS = {
   changeTime: "l",
   cancelSchedule: "L",
   sendAgain: "D",
+  design: "m",
   filter: "F",
 } as const
 
@@ -332,6 +334,7 @@ export function ShortcutSheet({
         [k(SHORTCUTS.incident), t`Link to a status incident`],
         [k(SHORTCUTS.forward), t`Forward the conversation by e-mail, or the focused message`],
         [k(SHORTCUTS.article), t`Send a help article`],
+        [k(SHORTCUTS.design), t`Send in an e-mail design`],
         [k(SHORTCUTS.recipients), t`Cc and Bcc the reply`],
         [k(SHORTCUTS.signature), t`Leave your signature off this reply, or put it back`],
         [k(SHORTCUTS.sendAs), t`Send the reply from one of your own addresses`],
@@ -382,6 +385,8 @@ export function ShortcutSheet({
         [k(MAIL_KEYS.changeTime), t`Change the time of the scheduled mail`],
         [k(MAIL_KEYS.cancelSchedule), t`Cancel the schedule and edit the mail again`],
         [k(MAIL_KEYS.sendAgain), t`Send the draft that could not be sent again`],
+        [k(MAIL_KEYS.design), t`Send in an e-mail design`],
+        [[alt, "D"], t`Send in an e-mail design`],
         [[alt, "↵"], t`Send later`],
         [["Esc"], t`Clear the selection`],
       ],

@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { designPatch, type DesignPick } from "@/components/common/designChoice"
 import { withRequiredFields } from "@/features/fields/required"
 import {
   api,
@@ -223,8 +224,16 @@ export function useDraftActions() {
     onSuccess: (data) => applyEvent(qc, live, { type: "message.created", data }),
   })
   const save = useMutation({
-    mutationFn: ({ m, body }: { m: Message; body: string }) =>
-      unwrap(api.PATCH("/v1/messages/{messageId}", { ...path(m), body: m.html ? { body, html: null } : { body } })),
+    mutationFn: ({ m, body, design }: { m: Message; body: string; design?: DesignPick | null }) =>
+      unwrap(
+        api.PATCH("/v1/messages/{messageId}", {
+          ...path(m),
+          body: {
+            ...(m.html ? { body, html: null } : { body }),
+            ...(design === undefined ? {} : designPatch(design ?? undefined)),
+          },
+        })
+      ),
     onSuccess: (data) => applyEvent(qc, live, { type: "draft.updated", data }),
   })
   const discard = useMutation({

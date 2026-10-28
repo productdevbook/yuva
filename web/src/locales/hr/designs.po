@@ -35,6 +35,12 @@ msgstr "Jasan naslov"
 msgid "A design can hold at most 200 blocks."
 msgstr "Dizajn može imati najviše 200 blokova."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Dizajn može imati jedan blok poruke."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Dizajn je izgled poruke: počnite s predloškom pa ga koristite za svoje masovne poruke."
@@ -58,6 +64,10 @@ msgstr "Poveznica koja izgleda kao gumb"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Polje za spajanje nema zamjensku vrijednost pa može biti prazno za neke ljude."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Polje za spajanje u ovom dizajnu nema zamjensku vrijednost i prazno je za ovu osobu."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Dodaj jezik"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Dodaj poveznicu"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Prvo dodajte blok poruke: označava gdje ide tekst koji član napiše."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Napravi sve od svijetlih boja"
 msgid "Medium"
 msgstr "Srednje"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Članovi koji vide ovaj sandučić mogu slati odgovore i novu e-poštu u ovom dizajnu."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Polje za spajanje"
@@ -819,6 +837,11 @@ msgstr "Polje za spajanje"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Polja za spajanje mogu biti samo u dijelu poveznice nakon upitnika."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Poruka"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Broj stupaca"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Numerirani popis"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Nudi u razgovorima"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "Poruka ima više od 102 KB pa će je Gmail skratiti i sakriti poveznicu 
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Poruka ima više od 90 KB. Gmail skraćuje poruke na otprilike 102 KB."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Ovdje se prikazuje poruka koju pišete"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "Nova verzija počinje tekstovima osnovnog jezika. Raspored, slike i poveznice ostaju zajednički; prevodite samo tekstove."
@@ -1316,6 +1347,10 @@ msgstr "Nova verzija počinje tekstovima osnovnog jezika. Raspored, slike i pove
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "Obavezno podnožje ove verzije je na engleskom: Yuva nema tekstove podnožja na ovom jeziku."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Ovdje ide tekst koji član napiše, a iza njega kartice članaka pomoći i potpis. Jedan po dizajnu, nikad unutar stupaca."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Ovaj blok nema teksta za prijevod."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Ovaj dizajn promijenio se drugdje"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Ovaj dizajn nema blok poruke."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Ovaj dizajn koristi polje za spajanje koje e-pošta razgovora nema (naziv popisa ili poveznice za odjavu i postavke)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Web-mjesto"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Kad je prazno, napišite"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Gdje ide tekst poruke iz razgovora"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

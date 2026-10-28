@@ -1370,6 +1370,10 @@ msgstr "Den předem snižte TTL záznamů MX, aby se změna rychle rozšířila.
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "den jako YYYY-MM-DD, ve vašem časovém pásmu"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "smazaný návrh"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Smazaný příspěvek nelze obnovit."
@@ -1421,6 +1425,10 @@ msgstr "Obsah souboru neodpovídá jeho typu. Zkontrolujte soubor a zkuste to zn
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Filtr zkontroluje každý e-mail, který sem dorazí, a označí ho hvězdičkou, archivuje ho, přesune do koše, opatří štítky nebo ho předá členovi. Filtry se spouštějí v pořadí tohoto seznamu."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "První e-mail v návrhu musí nést právní název a poštovní adresu schránky. Doplňte je v nastavení schránky."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Filtr pošty mi dá vědět"
 msgid "a mail folder"
 msgstr "složka pošty"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "E-mail v návrhu jde jedné osobě: odeberte ostatní příjemce a kopii, nebo ho pošlete bez návrhu."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "E-mailová skupina obsahuje lidi, kteří souhlasili s přijímáním vašich hromadných zpráv. Připojují se přes formulář k odběru na vašem webu, nebo je přidá váš tým a zaznamená, jak souhlasili. Každý krok se uchovává jako důkaz souhlasu a každý se může odhlásit jedním kliknutím."
@@ -1519,6 +1532,10 @@ msgstr "člen"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Člen je způsobilý, pokud má přístup k produktu (vlastníci a správci jen s udělením), má otevřený panel nebo aplikaci, dostupnost Auto, produkt je v pracovní době a člen je pod limitem. Pokud není způsobilý nikdo, konverzace čeká a dostane ji první, kdo bude volný."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Slučovací pole v tomto návrhu nemá náhradní hodnotu a je pro tuto osobu prázdné."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Přidat přístupový klíč"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Přidat produkt"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Přidejte příjemce, předmět a nějaký text: náhled se zobrazí po uložení konceptu."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "Tak často, jak je povoleno"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Tak, jak byl odeslán"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Nebezpečná zóna"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Tmavý"
@@ -6005,15 +6031,25 @@ msgstr "Popis"
 msgid "Description (optional)"
 msgstr "Popis (volitelné)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Návrh"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Návrh: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Návrhy"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Počítač"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Okamžitě vyřadí monitor, aniž by čekal na toleranci."
 msgid "Failures to go down"
 msgstr "Selhání do výpadku"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Náhradní jazyk: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "zpětná vazba"
@@ -7384,6 +7424,10 @@ msgstr "Dokončeno"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Spuštěné výstrahy monitor vyřadí, vyřešené ho obnoví."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "První e-maily v návrhu potřebují souhlas provozovatele serveru s hromadným odesíláním. Požádejte o něj v nastavení pracovního prostoru, nebo pošlete bez návrhu."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Skrýt citovaný text"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Skrýt odvolané"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Skrýt e-mail tak, jak byl odeslán"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Štítky třídí konverzace podle tématu, například fakturace nebo c
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Jazyk"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Jazyk návrhu"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Sloučit…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Zpráva"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Blok zprávy"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Nejsou vybrány žádné dny: produkt se celý týden považuje za zavř
 msgid "No deliveries yet"
 msgstr "Zatím žádná doručení"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Bez návrhu"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Žádný návrh neodpovídá."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Zatím žádný návrh"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "V konverzacích zatím není nabízen žádný návrh. Vlastníci a správci ho nabídnou v editoru návrhů."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Jen kontakty, jejichž jazyk je jeden z těchto."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Dalo se zkontrolovat jen DNS, ne to, jak zprávu posuzují přijímající servery."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Návrh lze použít jen u zpráv odeslaných e-mailem."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Jen pro doménu nebo subdoménu používanou výhradně pro podporu: její záznamy MX rozhodují, kam jde veškerá její pošta."
@@ -13038,6 +13110,10 @@ msgstr "Otevřít konverzaci"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Otevřít návrh"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Otevřít návrhy"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "Osobní schránka: {owner}"
 msgid "Personal mailboxes"
 msgstr "Osobní schránky"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Telefon"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Vyberte připravenou odpověď"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Připravuje se"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Náhled ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Náhled: {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "Náhled {title}"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Náhled návrhu"
@@ -14813,6 +14899,7 @@ msgstr "Načíst znovu"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Vzdálené obrázky mohou odesílateli prozradit, že jste zprávu otevřeli."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Skóre {score} z 5"
 msgid "Screen"
 msgstr "Obrazovka"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Velikost obrazovky"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Snímek obrazovky"
@@ -16060,6 +16151,10 @@ msgstr "Hledat konverzace pro „{search}“"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Hledat návrhy"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Hledat návrhy…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Posílat zpětnou vazbu ze stránky"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Odeslat z"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Odeslat v e-mailovém návrhu"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "Kontakt napíše zprávu"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Kontakt, jeho poznámky a vše, co napsal, se smaže natrvalo. Nelze to vrátit zpět."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "Jazyk kontaktu"
@@ -18511,6 +18613,10 @@ msgstr "Kontrola doručitelnosti ještě neskončila."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "Návrh pro tyto předměty nemá verzi, proto se nepoužijí: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "Návrh nemá verzi v tomto jazyce. Vyberte jiný jazyk."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "Skupina odesílá jménem této schránky a odpovědi na její zprávy d
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Zpráva dorazila."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "E-mail tak, jak byl odeslán, se už neuchovává."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "E-mail v tomto návrhu má přes 500 KB. Pište méně, nebo vyberte lehčí návrh."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Tato konverzace není dostupná"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "E-mailový kanál této konverzace nemá účet SMTP, takže odpověď nebyla odeslána. Přidejte ho v nastavení schránky."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Tento návrh nelze pro tento e-mail použít. Vyberte jiný návrh."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Tento návrh má blok zprávy, který nese text zprávy z konverzace. V hromadné rozesílce by zůstal prázdný. Vyberte jiný návrh, nebo blok odeberte."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Tento návrh nemá blok zprávy."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Tento návrh je archivován, v konverzacích se už nenabízí, nebo patří jiné schránce. Odeberte ho, nebo vyberte jiný."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Tento návrh používá slučovací pole, které e-mail v konverzaci nemá (název seznamu nebo odkazy pro odhlášení a předvolby)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Tento koncový bod přijímá jen události {lockedName}."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Tento typ souboru není povolen."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Tento první e-mail nese odkaz pro odhlášení."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Tato stránka zatím není veřejná, takže návštěvníci nic neuvidí, dokud ji nezveřejníte."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Tato osoba takové e-maily odmítla, proto nemůže odejít v návrhu. Pošlete ho bez návrhu."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Tato osoba se odhlásila ze všeho, nahlásila zprávu jako spam, nebo byla její data vymazána, takže ji tým nemůže přidat znovu."
 
@@ -20018,6 +20160,10 @@ msgstr "Tento pracovní prostor zatím nesmí odesílat hromadné zprávy."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Tento pracovní prostor zatím nesmí odesílat hromadné zprávy. Běžící hromadné zprávy jsou pozastaveny."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Tento pracovní prostor zatím nemůže posílat první e-maily v návrhu."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Zítra ráno"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Příliš mnoho pokusů. Chvíli počkejte a zkuste to znovu."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Zatím příliš mnoho prvních e-mailů v návrhu: 20 za hodinu pro vás, 200 za den pro pracovní prostor. Zkuste to později."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Co má Yuva přenést?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Co chat slibuje a na co se ptá po uzavření"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Co by kontakt dostal."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Co zákazník vidí"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "Vaše odpovědi odcházejí z této adresy"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "Vaše odpověď uživateli {first} nebyla odeslána. {0}"

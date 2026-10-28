@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import { designFields, designPatch, pickKey, type DesignPick } from "@/components/common/designChoice"
 import { useLatest } from "@/hooks/use-latest"
 import { api, unwrap, type Message } from "@/lib/api"
 import { keys } from "@/lib/keys"
@@ -19,7 +20,7 @@ export function isShownDraft(m: Message, memberId: string) {
   return isOwnDraft(m, memberId) && (!!m.scheduled_at || !!m.send_error)
 }
 
-type Saved = { id: string; unsigned: boolean; body: string }
+type Saved = { id: string; unsigned: boolean; body: string; design: string }
 
 const saved = new Map<string, Saved>()
 
@@ -33,13 +34,13 @@ export function takeSavedDraft(conversationId: string) {
   return rec?.id
 }
 
-export function adoptDraft(conversationId: string, id: string, body: string, unsigned = false) {
+export function adoptDraft(conversationId: string, id: string, body: string, unsigned = false, design = "") {
   const now = saved.get(conversationId)
   if (now && now.id !== id) {
     void api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: id } } }).catch(() => undefined)
     return
   }
-  saved.set(conversationId, { id, unsigned, body: body.trim() })
+  saved.set(conversationId, { id, unsigned, body: body.trim(), design })
 }
 
 export function useOwnDrafts(conversationId: string, enabled: boolean) {
@@ -56,13 +57,21 @@ export type SaveState = "idle" | "saving" | "saved" | "failed"
 
 const waiting = new Map<string, { timer: ReturnType<typeof setTimeout>; fire: () => void }>()
 
-export function useReplyAutosave(conversationId: string, enabled: boolean, body: string, unsigned: boolean) {
+export function useReplyAutosave(
+  conversationId: string,
+  enabled: boolean,
+  body: string,
+  unsigned: boolean,
+  design?: DesignPick
+) {
   const [state, setState] = useState<SaveState>("idle")
-  const latest = useLatest({ body, unsigned, enabled, conversationId })
+  const designId = pickKey(design)
+  const latest = useLatest({ body, unsigned, enabled, conversationId, design })
   const chain = useRef<Promise<unknown>>(Promise.resolve())
 
   const run = useCallback(async () => {
-    const { body: raw, unsigned: noSig, conversationId: id } = latest.current
+    const { body: raw, unsigned: noSig, conversationId: id, design: pick } = latest.current
+    const dk = pickKey(pick)
     const text = raw.trim()
     const rec = saved.get(id)
     if (text === "") {
@@ -72,20 +81,30 @@ export function useReplyAutosave(conversationId: string, enabled: boolean, body:
       return
     }
     if (rec && rec.unsigned === noSig) {
-      if (rec.body === text) return
+      if (rec.body === text && rec.design === dk) return
       await unwrap(
-        api.PATCH("/v1/messages/{messageId}", { params: { path: { messageId: rec.id } }, body: { body: text } })
+        api.PATCH("/v1/messages/{messageId}", {
+          params: { path: { messageId: rec.id } },
+          body: { body: text, ...(rec.design === dk ? {} : designPatch(pick)) },
+        })
       )
-      saved.set(id, { ...rec, body: text })
+      saved.set(id, { ...rec, body: text, design: dk })
       return
     }
     const created = await unwrap(
       api.POST("/v1/conversations/{conversationId}/messages", {
         params: { path: { conversationId: id } },
-        body: { kind: "message", body: text, draft: true, client_id: newId(), signature: noSig ? false : undefined },
+        body: {
+          kind: "message",
+          body: text,
+          draft: true,
+          client_id: newId(),
+          signature: noSig ? false : undefined,
+          ...designFields(pick),
+        },
       })
     )
-    saved.set(id, { id: created.id, unsigned: noSig, body: text })
+    saved.set(id, { id: created.id, unsigned: noSig, body: text, design: dk })
     if (rec) await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: rec.id } } })
   }, [latest])
 
@@ -109,7 +128,7 @@ export function useReplyAutosave(conversationId: string, enabled: boolean, body:
     if (!enabled) return
     const rec = saved.get(conversationId)
     if (body.trim() === "" && !rec) return
-    if (rec && rec.body === body.trim() && rec.unsigned === unsigned) return
+    if (rec && rec.body === body.trim() && rec.unsigned === unsigned && rec.design === designId) return
     const fire = () => {
       waiting.delete(conversationId)
       void save().catch(() => undefined)
@@ -117,7 +136,7 @@ export function useReplyAutosave(conversationId: string, enabled: boolean, body:
     const timer = setTimeout(fire, AUTOSAVE_MS)
     waiting.set(conversationId, { timer, fire })
     return () => clearTimeout(timer)
-  }, [conversationId, enabled, body, unsigned, save])
+  }, [conversationId, enabled, body, unsigned, designId, save])
 
   useEffect(
     () => () => {

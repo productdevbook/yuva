@@ -35,6 +35,12 @@ msgstr "분명한 제목"
 msgid "A design can hold at most 200 blocks."
 msgstr "디자인 하나에는 블록을 최대 200개까지 넣을 수 있습니다."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "디자인에는 메시지 블록을 하나만 둘 수 있습니다."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "디자인은 메일의 모양입니다. 템플릿으로 시작해 일괄 발송에 사용하세요."
@@ -58,6 +64,10 @@ msgstr "버튼처럼 보이는 링크"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "병합 필드에 대체값이 없어 일부 사람에게는 비어 보일 수 있습니다."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "이 디자인의 병합 필드에는 대체값이 없어 이 사람에게는 비어 있습니다."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "언어 추가"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "링크 추가"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "먼저 메시지 블록을 추가하세요. 멤버가 쓴 글이 들어갈 자리를 표시합니다."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "모두 밝은 색상으로 만들기"
 msgid "Medium"
 msgstr "보통"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "이 받은편지함이 보이는 멤버는 이 디자인으로 답장과 새 메일을 보낼 수 있습니다."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "병합 필드"
@@ -819,6 +837,11 @@ msgstr "병합 필드"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "병합 필드는 링크에서 물음표 뒤 부분에만 넣을 수 있습니다."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "메시지"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "열 개수"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "번호 매기기 목록"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "대화에서 제공"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "메일이 102KB를 넘어 Gmail이 잘라내고 구독 취소 링크를 
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "메일이 90KB를 넘습니다. Gmail은 약 102KB에서 메일을 잘라냅니다."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "작성한 메시지가 여기에 나타납니다"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "새 버전은 기본 언어의 텍스트로 시작합니다. 레이아웃, 이미지, 링크는 공유되며 텍스트만 번역합니다."
@@ -1316,6 +1347,10 @@ msgstr "새 버전은 기본 언어의 텍스트로 시작합니다. 레이아�
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "이 버전의 필수 바닥글은 영어입니다: Yuva에는 이 언어의 바닥글 문구가 없습니다."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "멤버가 쓴 글이 여기에 들어가고, 이어서 도움말 문서 카드와 서명이 옵니다. 디자인당 하나이며 열 안에는 둘 수 없습니다."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "이 블록에는 번역할 텍스트가 없습니다."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "이 디자인이 다른 곳에서 변경되었습니다"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "이 디자인에는 메시지 블록이 없습니다."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "이 디자인은 대화 메일에 없는 병합 필드(목록 이름 또는 수신 거부·환경설정 링크)를 사용합니다."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "웹사이트"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "비어 있으면 다음을 쓰기"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "대화 메시지 본문이 들어가는 곳"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

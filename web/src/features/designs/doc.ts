@@ -20,6 +20,7 @@ export const BLOCK_TYPES: BlockType[] = [
   "spacer",
   "social",
   "footer",
+  "message",
 ]
 
 export const MAX_BLOCKS = 200
@@ -48,7 +49,11 @@ export function accepts(container: string, type: BlockType) {
   const c = parseContainer(container)
   if (c.kind === "root") return true
   if (c.kind === "section") return type !== "section"
-  return type !== "section" && type !== "columns"
+  return type !== "section" && type !== "columns" && type !== "message"
+}
+
+export function hasMessageBlock(doc: Doc) {
+  return walk(doc).some((e) => e.block.type === "message")
 }
 
 export function childContainers(b: Block): string[] {
@@ -301,6 +306,8 @@ export function makeBlock(type: BlockType, d: Defaults): Block {
       return { id, type, items: [{ network: "website", url: "https://example.com" }], style: "icons", color: "dark" }
     case "footer":
       return { id, type, html: p(d.footer) }
+    case "message":
+      return { id, type }
   }
 }
 

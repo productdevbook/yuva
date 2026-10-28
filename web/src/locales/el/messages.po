@@ -1370,6 +1370,10 @@ msgstr "Μία ημέρα νωρίτερα, μειώστε το TTL των εγ�
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "μια ημέρα ως YYYY-MM-DD, στη ζώνη ώρας σας"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "ένα διαγραμμένο σχέδιο"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Μια διαγραμμένη δημοσίευση δεν μπορεί να ανακτηθεί."
@@ -1421,6 +1425,10 @@ msgstr "Το περιεχόμενο ενός αρχείου δεν ταιριά�
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Ένα φίλτρο ελέγχει κάθε μήνυμα που φτάνει εδώ και το επισημαίνει με αστέρι, το αρχειοθετεί, το μεταφέρει στον κάδο, του βάζει ετικέτες ή το δίνει σε ένα μέλος. Τα φίλτρα εκτελούνται με τη σειρά αυτής της λίστας."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "Το πρώτο μήνυμα με σχέδιο πρέπει να φέρει τη νομική επωνυμία και την ταχυδρομική διεύθυνση του εισερχομένων. Προσθέστε τα στις ρυθμίσεις των εισερχομένων."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Ένα φίλτρο αλληλογραφίας με ειδοποιεί"
 msgid "a mail folder"
 msgstr "ένας φάκελος αλληλογραφίας"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "Ένα μήνυμα με σχέδιο πηγαίνει σε ένα άτομο: αφαιρέστε τους άλλους παραλήπτες και το Cc ή στείλτε το χωρίς σχέδιο."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Μια λίστα αλληλογραφίας περιέχει τα άτομα που συμφώνησαν να λαμβάνουν τις μαζικές αποστολές σας. Εγγράφονται σε μια φόρμα εγγραφής στον ιστότοπό σας ή η ομάδα σας τα προσθέτει και καταγράφει πώς συμφώνησαν. Κάθε βήμα φυλάσσεται ως απόδειξη συναίνεσης και ο καθένας μπορεί να αποχωρήσει με ένα κλικ."
@@ -1519,6 +1532,10 @@ msgstr "ένα μέλος"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Ένα μέλος είναι κατάλληλο όταν έχει πρόσβαση στο προϊόν (ιδιοκτήτες και διαχειριστές μόνο με παραχωρημένη πρόσβαση), έχει ανοιχτό το πάνελ ή μια εφαρμογή, διαθεσιμότητα Αυτόματη, το προϊόν είναι εντός ωραρίου και το μέλος είναι κάτω από το όριο. Αν κανείς δεν είναι κατάλληλος, η συνομιλία περιμένει και πηγαίνει στον πρώτο συνάδελφο που θα ελευθερωθεί."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Ένα πεδίο συγχώνευσης σε αυτό το σχέδιο δεν έχει εναλλακτική τιμή και είναι κενό για αυτό το άτομο."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Προσθήκη passkey"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Προσθήκη προϊόντος"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Προσθέστε παραλήπτη, θέμα και λίγο κείμενο: η προεπισκόπηση εμφανίζεται μόλις αποθηκευτεί το πρόχειρο."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "Όσο συχνά επιτρέπεται"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Όπως στάλθηκε"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Επικίνδυνη ζώνη"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Σκούρο"
@@ -6005,15 +6031,25 @@ msgstr "Περιγραφή"
 msgid "Description (optional)"
 msgstr "Περιγραφή (προαιρετικά)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Σχέδιο"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Σχέδιο: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Σχέδια"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Υπολογιστής"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Ρίχνει την παρακολούθηση αμέσως, χωρίς 
 msgid "Failures to go down"
 msgstr "Αποτυχίες στη σειρά ως την πτώση"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Εναλλακτική γλώσσα: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "σχόλια"
@@ -7384,6 +7424,10 @@ msgstr "Ολοκληρώθηκε"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Οι ενεργοποιημένες ειδοποιήσεις ρίχνουν την παρακολούθηση, οι επιλυμένες την αποκαθιστούν."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "Τα πρώτα μηνύματα με σχέδιο χρειάζονται έγκριση του διαχειριστή του διακομιστή για μαζικές αποστολές. Ζητήστε την στις ρυθμίσεις του χώρου εργασίας ή στείλτε χωρίς σχέδιο."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Απόκρυψη παρατιθέμενου κειμένου"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Απόκρυψη ανακληθέντων"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Απόκρυψη του μηνύματος όπως στάλθηκε"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Οι ετικέτες ταξινομούν τις συνομιλίες �
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Γλώσσα"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Γλώσσα του σχεδίου"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Συγχώνευση…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Μήνυμα"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Μπλοκ μηνύματος"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Δεν έχουν επιλεγεί ημέρες: το προϊόν θε�
 msgid "No deliveries yet"
 msgstr "Δεν υπάρχουν ακόμη παραδόσεις"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Χωρίς σχέδιο"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Κανένα σχέδιο δεν ταιριάζει."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Κανένα σχέδιο ακόμη"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "Δεν προσφέρεται ακόμη κανένα σχέδιο στις συνομιλίες. Οι ιδιοκτήτες και οι διαχειριστές προσφέρουν ένα στον σχεδιαστή."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Μόνο επαφές των οποίων η γλώσσα είναι μ�
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Ελέγχθηκε μόνο το DNS, όχι πώς κρίνουν το e-mail οι διακομιστές παραλαβής."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Μόνο τα μηνύματα που στέλνονται με email μπορούν να χρησιμοποιήσουν σχέδιο."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Μόνο για τομέα ή υποτομέα που χρησιμοποιείται αποκλειστικά για υποστήριξη: οι εγγραφές MX καθορίζουν πού πηγαίνει όλη η αλληλογραφία του."
@@ -13038,6 +13110,10 @@ msgstr "Άνοιγμα της συνομιλίας"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Άνοιγμα του σχεδίου"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Άνοιγμα των σχεδίων"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "Προσωπικό γραμματοκιβώτιο του {owner}"
 msgid "Personal mailboxes"
 msgstr "Προσωπικά γραμματοκιβώτια"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Τηλέφωνο"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Επιλέξτε μια έτοιμη απάντηση"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Προετοιμασία"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Προεπισκόπηση ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Προεπισκόπηση του {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "Προεπισκόπηση του «{title}»"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Προεπισκόπηση του σχεδίου"
@@ -14813,6 +14899,7 @@ msgstr "Επαναφόρτωση"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Οι απομακρυσμένες εικόνες μπορούν να πουν στον αποστολέα ότι ανοίξατε το e-mail."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Βαθμολογία {score} στα 5"
 msgid "Screen"
 msgstr "Οθόνη"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Μέγεθος οθόνης"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Στιγμιότυπο οθόνης"
@@ -16060,6 +16151,10 @@ msgstr "Αναζήτηση συνομιλιών για «{search}»"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Αναζήτηση σχεδίων"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Αναζήτηση σχεδίων…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Αποστολή σχολίων από σελίδα"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Αποστολή από"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Αποστολή με σχέδιο email"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "Η επαφή γράφει ένα μήνυμα"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Η επαφή, οι σημειώσεις της και ό,τι έγραψε διαγράφονται οριστικά. Αυτό δεν αναιρείται."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "Η γλώσσα της επαφής"
@@ -18511,6 +18613,10 @@ msgstr "Ο έλεγχος παραδοσιμότητας δεν έχει ολο�
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "Το σχέδιο δεν έχει έκδοση για αυτά τα θέματα, οπότε δεν χρησιμοποιούνται: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "Το σχέδιο δεν έχει έκδοση σε αυτή τη γλώσσα. Επιλέξτε άλλη γλώσσα."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "Η λίστα στέλνει στο όνομα αυτών των εισ�
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Το e-mail έφτασε."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "Το μήνυμα όπως στάλθηκε δεν φυλάσσεται πια."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "Το μήνυμα με αυτό το σχέδιο ξεπερνά τα 500 KB. Γράψτε λιγότερα ή επιλέξτε ελαφρύτερο σχέδιο."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Αυτή η συνομιλία δεν είναι διαθέσιμη"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "Το κανάλι e-mail αυτής της συνομιλίας δεν έχει λογαριασμό SMTP, οπότε η απάντηση δεν στάλθηκε. Προσθέστε έναν στις ρυθμίσεις εισερχομένων."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Αυτό το σχέδιο δεν μπορεί να χρησιμοποιηθεί για αυτό το μήνυμα. Επιλέξτε άλλο σχέδιο."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Αυτό το σχέδιο έχει μπλοκ μηνύματος, που φιλοξενεί το κείμενο ενός μηνύματος συνομιλίας. Σε μαζική αποστολή θα έμενε κενό. Επιλέξτε άλλο σχέδιο ή αφαιρέστε το μπλοκ."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Αυτό το σχέδιο δεν έχει μπλοκ μηνύματος."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Αυτό το σχέδιο είναι αρχειοθετημένο, δεν προσφέρεται πια στις συνομιλίες ή ανήκει σε άλλα εισερχόμενα. Αφαιρέστε το ή επιλέξτε άλλο."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Αυτό το σχέδιο χρησιμοποιεί πεδίο συγχώνευσης που δεν υπάρχει στα μηνύματα συνομιλίας (το όνομα της λίστας ή οι σύνδεσμοι διαγραφής και προτιμήσεων)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Αυτό το endpoint λαμβάνει μόνο τα συμβάντα �
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Αυτός ο τύπος αρχείου δεν επιτρέπεται."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Αυτό το πρώτο μήνυμα φέρει σύνδεσμο διαγραφής συνδρομής."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Αυτή η σελίδα δεν είναι ακόμη δημόσια, οπότε οι επισκέπτες δεν βλέπουν τίποτα μέχρι να τη δημοσιεύσετε."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Αυτό το άτομο αρνήθηκε τέτοια μηνύματα, οπότε δεν μπορεί να σταλεί με σχέδιο. Στείλτε το χωρίς σχέδιο."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Αυτό το άτομο διαγράφηκε από όλα, ανέφερε e-mail ως spam ή τα δεδομένα του διαγράφηκαν, οπότε η ομάδα δεν μπορεί να το προσθέσει ξανά."
 
@@ -20018,6 +20160,10 @@ msgstr "Αυτός ο χώρος εργασίας δεν επιτρέπεται 
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Αυτός ο χώρος εργασίας δεν επιτρέπεται προς το παρόν να στέλνει μαζικές αποστολές. Οι μαζικές αποστολές που τρέχουν τίθενται σε παύση."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Αυτός ο χώρος εργασίας δεν μπορεί προς το παρόν να στέλνει πρώτα μηνύματα με σχέδιο."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Αύριο το πρωί"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Πάρα πολλές προσπάθειες. Περιμένετε λίγο και δοκιμάστε ξανά."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Πάρα πολλά πρώτα μηνύματα με σχέδιο προς το παρόν: 20 την ώρα για εσάς, 200 την ημέρα για τον χώρο εργασίας. Δοκιμάστε ξανά αργότερα."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Τι να φέρει το Yuva;"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Τι υπόσχεται η συνομιλία και τι ρωτά μετά το κλείσιμο"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Αυτό που θα λάμβανε η επαφή."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Τι βλέπει ο πελάτης"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "Οι απαντήσεις σας φεύγουν από αυτή τη διεύθυνση"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "Η απάντησή σας στον/στην {first} δεν στάλθηκε. {0}"

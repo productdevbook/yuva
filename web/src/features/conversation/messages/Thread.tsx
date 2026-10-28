@@ -37,6 +37,7 @@ import { Attachments } from "@/features/conversation/messages/Attachments"
 import { baseSubject, timeOf, useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
 import { DeliveryState } from "@/features/conversation/messages/DeliveryState"
 import { SignatureHtml } from "@/components/common/SignatureHtml"
+import { DesignLine } from "@/features/conversation/messages/DesignLine"
 import { MailBody, MailControls, mailSurface, useMail } from "@/features/conversation/messages/EmailBody"
 import { RedactedLine } from "@/features/conversation/messages/Redacted"
 import { EventLine } from "@/features/conversation/messages/EventLine"
@@ -318,6 +319,7 @@ function Line({
         )}
         <Attachments items={m.attachments} outgoing={false} />
         <ArticleCards items={m.cards} outgoing={false} />
+        <DesignLine m={m} />
         <Delivery m={m} />
         {ticks && last && !first && (
           <MessageFooter className={footerClass}>
@@ -410,6 +412,7 @@ function Mail({
         </Bubble>
         <Attachments items={mail.listed} outgoing={false} />
         <ArticleCards items={m.cards} outgoing={false} />
+        <DesignLine m={m} />
         <Delivery m={m} />
         <MessageFooter className={footerClass}>
           <Time iso={m.created_at} className="me-1" />

@@ -35,6 +35,12 @@ msgstr "Een duidelijke kop"
 msgid "A design can hold at most 200 blocks."
 msgstr "Een ontwerp kan maximaal 200 blokken bevatten."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Een ontwerp kan één berichtblok bevatten."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Een ontwerp is het uiterlijk van een mail: begin vanuit een sjabloon en gebruik het dan voor je mailings."
@@ -58,6 +64,10 @@ msgstr "Een link die eruitziet als een knop"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Een samenvoegveld heeft geen terugvalwaarde, dus het kan voor sommige mensen leeg zijn."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Een samenvoegveld in dit ontwerp heeft geen terugvalwaarde en is leeg voor deze persoon."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Taal toevoegen"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Een link toevoegen"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Voeg eerst een berichtblok toe: het markeert waar de tekst van een lid komt."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Ze allemaal maken van de lichte kleuren"
 msgid "Medium"
 msgstr "Gemiddeld"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Leden die deze inbox zien, kunnen antwoorden en nieuwe mail in dit ontwerp versturen."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Samenvoegveld"
@@ -819,6 +837,11 @@ msgstr "Samenvoegveld"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Samenvoegvelden kunnen alleen in het deel van een link na het vraagteken."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Bericht"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Aantal kolommen"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Genummerde lijst"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Aanbieden in gesprekken"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "De mail is groter dan 102 KB, dus Gmail kapt hem af en verbergt de afmel
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "De mail is groter dan 90 KB. Gmail kapt mails af bij ongeveer 102 KB."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Hier verschijnt het bericht dat je schrijft"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "De nieuwe versie begint met de teksten van de basistaal. Opmaak, afbeeldingen en links blijven gedeeld; je vertaalt alleen de teksten."
@@ -1316,6 +1347,10 @@ msgstr "De nieuwe versie begint met de teksten van de basistaal. Opmaak, afbeeld
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "De verplichte voettekst van deze versie is in het Engels: Yuva heeft de voettekst niet in deze taal."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Hier komt de tekst van een lid, gevolgd door helpartikelkaarten en de handtekening. Eén per ontwerp, nooit in kolommen."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Dit blok heeft geen tekst om te vertalen."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Dit ontwerp is elders gewijzigd"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Dit ontwerp heeft geen berichtblok."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Dit ontwerp gebruikt een samenvoegveld dat gespreksmail niet heeft (de lijstnaam of de afmeld- en voorkeurenlinks)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Website"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Schrijf als het leeg is"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Waar de tekst van een gespreksbericht komt"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

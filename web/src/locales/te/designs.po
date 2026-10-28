@@ -35,6 +35,12 @@ msgstr "స్పష్టమైన శీర్షిక"
 msgid "A design can hold at most 200 blocks."
 msgstr "ఒక డిజైన్‌లో గరిష్టంగా 200 బ్లాక్‌లు ఉండవచ్చు."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "ఒక డిజైన్‌లో ఒక సందేశ బ్లాక్ ఉండవచ్చు."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "డిజైన్ అంటే మెయిల్ రూపం: టెంప్లేట్‌తో ప్రారంభించి, దాన్ని మీ బ్రాడ్‌కాస్ట్‌ల కోసం ఉపయోగించండి."
@@ -58,6 +64,10 @@ msgstr "బటన్‌లా కనిపించే లింక్"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "మెర్జ్ ఫీల్డ్‌కు ఫాల్‌బ్యాక్ లేదు, కాబట్టి కొందరికి ఖాళీగా ఉండవచ్చు."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "ఈ డిజైన్‌లోని విలీన ఫీల్డ్‌కు ప్రత్యామ్నాయ విలువ లేదు, ఈ వ్యక్తికి అది ఖాళీగా ఉంది."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "భాషను జోడించండి"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "లింక్‌ను జోడించండి"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "ముందుగా సందేశ బ్లాక్ జోడించండి: సభ్యుడు రాసే వచనం ఎక్కడ వస్తుందో అది సూచిస్తుంది."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "అన్నింటినీ లేత రంగుల నుండి
 msgid "Medium"
 msgstr "మధ్యస్థ"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "ఈ ఇన్‌బాక్స్‌ను చూసే సభ్యులు ఈ డిజైన్‌లో సమాధానాలు, కొత్త మెయిల్‌లు పంపవచ్చు."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "మెర్జ్ ఫీల్డ్"
@@ -819,6 +837,11 @@ msgstr "మెర్జ్ ఫీల్డ్"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "మెర్జ్ ఫీల్డ్‌లు లింక్‌లో ప్రశ్న గుర్తు తర్వాతి భాగంలో మాత్రమే ఉండవచ్చు."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "సందేశం"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "నిలువు వరుసల సంఖ్య"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "సంఖ్యల జాబితా"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "సంభాషణలలో అందించండి"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "మెయిల్ 102 KB కంటే ఎక్కువ, కాబట�
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "మెయిల్ 90 KB కంటే ఎక్కువ. Gmail సుమారు 102 KB వద్ద మెయిల్‌లను కత్తిరిస్తుంది."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "మీరు రాసే సందేశం ఇక్కడ కనిపిస్తుంది"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "కొత్త వెర్షన్ బేస్ భాష పాఠాలతో మొదలవుతుంది. లేఅవుట్, చిత్రాలు, లింక్‌లు ఉమ్మడిగానే ఉంటాయి; మీరు పాఠాలను మాత్రమే అనువదిస్తారు."
@@ -1316,6 +1347,10 @@ msgstr "కొత్త వెర్షన్ బేస్ భాష పాఠ�
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "ఈ వెర్షన్ తప్పనిసరి ఫుటర్ ఆంగ్లంలో ఉంది: Yuva వద్ద ఈ భాషలో ఫుటర్ పదాలు లేవు."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "సభ్యుడు రాసే వచనం ఇక్కడ వస్తుంది, ఆ తర్వాత సహాయ వ్యాస కార్డులు, సంతకం. ప్రతి డిజైన్‌కు ఒకటి, ఎప్పుడూ నిలువు వరుసల లోపల కాదు."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "ఈ బ్లాక్‌లో అనువదించడానిక�
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "ఈ డిజైన్ వేరే చోట మారింది"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "ఈ డిజైన్‌లో సందేశ బ్లాక్ లేదు."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "ఈ డిజైన్ సంభాషణ మెయిల్‌లో లేని విలీన ఫీల్డ్‌ను వాడుతోంది (జాబితా పేరు లేదా చందా రద్దు, ప్రాధాన్యతల లింక్‌లు)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "వెబ్‌సైట్"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "అది ఖాళీగా ఉన్నప్పుడు, రాయండి"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "సంభాషణ సందేశ వచనం ఎక్కడ వస్తుంది"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

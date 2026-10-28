@@ -1370,6 +1370,10 @@ msgstr "За день до цього зменшіть TTL записів MX, щ
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "день у форматі YYYY-MM-DD, у вашому часовому поясі"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "видалений дизайн"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Видалену публікацію не можна відновити."
@@ -1421,6 +1425,10 @@ msgstr "Вміст файлу не відповідає його типу. Пе�
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Фільтр переглядає кожен лист, що сюди надходить, і ставить йому зірку, архівує, переносить до кошика, додає мітки або передає учаснику. Фільтри виконуються в порядку цього списку."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "Перший лист із дизайном має містити юридичну назву та поштову адресу скриньки. Додайте їх у налаштуваннях скриньки."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Поштовий фільтр сповіщає мене"
 msgid "a mail folder"
 msgstr "папка пошти"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "Лист із дизайном іде одній людині: приберіть інших одержувачів і копію або надішліть без дизайну."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Список розсилки об'єднує людей, які погодилися отримувати ваші розсилки. Вони підписуються через форму на вашому сайті, або ваша команда додає їх і записує, як вони погодилися. Кожен крок зберігається як доказ згоди, а відписатися можна одним клацанням."
@@ -1519,6 +1532,10 @@ msgstr "учасник"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Учасник підходить, якщо має доступ до продукту (власники й адміністратори лише з наданим доступом), відкрито панель або застосунок, доступність Авто, продукт у робочих годинах і учасник нижче ліміту. Якщо ніхто не підходить, розмова чекає й дістається першому, хто звільниться."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Поле злиття в цьому дизайні не має запасного значення і порожнє для цієї людини."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Додати ключ доступу"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Додати продукт"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Додайте одержувача, тему та трохи тексту: попередній перегляд з’явиться після збереження чернетки."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "Так часто, як дозволено"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Як надіслано"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Небезпечна зона"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Темна"
@@ -6005,15 +6031,25 @@ msgstr "Опис"
 msgid "Description (optional)"
 msgstr "Опис (необов'язково)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Дизайн"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Дизайн: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Дизайни"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Комп'ютер"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Одразу переводить монітор у збій, не че�
 msgid "Failures to go down"
 msgstr "Збоїв до відмови"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Запасна мова: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "відгуки"
@@ -7384,6 +7424,10 @@ msgstr "Завершено"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Спрацьовані сповіщення переводять монітор у збій, розв'язані відновлюють його."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "Для перших листів із дизайном потрібне схвалення оператора сервера на масові розсилки. Попросіть його в налаштуваннях робочого простору або надішліть без дизайну."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Приховати цитований текст"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Сховати відкликані"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Сховати лист як надіслано"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Мітки сортують розмови за темою, наприк
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Мова"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Мова дизайну"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Об’єднати…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Повідомлення"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Блок повідомлення"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Дні не вибрано: продукт вважається закр
 msgid "No deliveries yet"
 msgstr "Доставок поки немає"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Без дизайну"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Жоден дизайн не підходить."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Дизайнів поки немає"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "У розмовах ще не пропонується жодного дизайну. Власники й адміністратори пропонують його в редакторі дизайнів."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Лише контакти, чия мова входить до цьог�
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Вдалося перевірити лише DNS, а не те, як лист оцінюють сервери-отримувачі."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Дизайн можна використати лише в повідомленнях, що надсилаються e-mail."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Лише для домену чи піддомену, що використовується виключно для підтримки: його записи MX визначають, куди йде вся його пошта."
@@ -13038,6 +13110,10 @@ msgstr "Відкрити розмову"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Відкрити дизайн"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Відкрити дизайни"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "Особиста скринька: {owner}"
 msgid "Personal mailboxes"
 msgstr "Особисті скриньки"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Телефон"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Виберіть готову відповідь"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Підготовка"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Попередній перегляд ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Попередній перегляд: {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "Попередній перегляд «{title}»"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Попередній перегляд дизайну"
@@ -14813,6 +14899,7 @@ msgstr "Перезавантажити"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Віддалені зображення можуть повідомити відправнику, що ви відкрили лист."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Оцінка {score} з 5"
 msgid "Screen"
 msgstr "Екран"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Розмір екрана"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Знімок екрана"
@@ -16060,6 +16151,10 @@ msgstr "Пошук розмов за запитом «{search}»"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Пошук дизайнів"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Пошук дизайнів…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Надіслати відгук зі сторінки"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Надіслати з адреси"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Надіслати в дизайні листа"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "Контакт пише повідомлення"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "Контакт, його нотатки та все, що він написав, буде видалено назавжди. Це не можна скасувати."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "Мова контакту"
@@ -18511,6 +18613,10 @@ msgstr "Перевірка доставлюваності ще не заверш
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "У дизайні немає версії для цих тем, тому вони не використовуються: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "Дизайн не має версії цією мовою. Виберіть іншу мову."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "Список надсилає від імені цієї скриньк�
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Лист надійшов."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "Лист як надіслано більше не зберігається."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "Лист у цьому дизайні більший за 500 КБ. Пишіть коротше або виберіть легший дизайн."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Ця розмова недоступна"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "У поштового каналу цієї розмови немає облікового запису SMTP, тож відповідь не надіслано. Додайте його в налаштуваннях скриньки."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Цей дизайн не можна використати для цього листа. Виберіть інший дизайн."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "У цьому дизайні є блок повідомлення, куди потрапляє текст повідомлення з розмови. У масовій розсилці він лишився б порожнім. Виберіть інший дизайн або приберіть блок."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "У цьому дизайні немає блока повідомлення."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Цей дизайн в архіві, більше не пропонується в розмовах або належить іншій скриньці. Приберіть його або виберіть інший."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Цей дизайн використовує поле злиття, якого немає в листах розмов (назва списку або посилання на відписку й налаштування)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Цей ендпоїнт отримує лише події {lockedName}.
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Цей тип файлу не дозволено."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Цей перший лист містить посилання для відписки."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Ця сторінка ще не публічна, тож відвідувачі нічого не побачать, доки ви її не опублікуєте."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Ця людина відмовилася від таких листів, тому його не можна надіслати в дизайні. Надішліть без дизайну."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Ця людина відписалася від усього, поскаржилася на лист як на спам або її дані стерто, тож команда не може додати її знову."
 
@@ -20018,6 +20160,10 @@ msgstr "Цьому робочому простору поки не можна н
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Цьому робочому простору поки не можна надсилати розсилки. Розсилки, що тривають, призупинено."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Цей робочий простір поки не може надсилати перші листи в дизайні."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Завтра зранку"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Забагато спроб. Зачекайте трохи й спробуйте знову."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Поки забагато перших листів у дизайні: 20 на годину для вас, 200 на добу для робочого простору. Спробуйте пізніше."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Що Yuva має перенести?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Що чат обіцяє і про що питає після закриття"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Що отримав би контакт."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Що бачить клієнт"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "Ваші відповіді йдуть з цієї адреси"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "Вашу відповідь {first} не надіслано. {0}"

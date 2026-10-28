@@ -365,7 +365,22 @@ function BlockBody({ block }: { block: Block }) {
       return <SocialBody block={block} />
     case "footer":
       return <FooterBody block={block} />
+    case "message":
+      return <MessageBody />
   }
+}
+
+function MessageBody() {
+  const d = useDesigner()
+  return (
+    <div
+      className="rounded-lg border-2 border-dashed px-4 py-6 text-center"
+      style={{ borderColor: d.view.colors.border, color: d.view.colors.muted, fontSize: 15, lineHeight: "24px" }}
+      data-testid="message-slot"
+    >
+      <Trans>The message you write appears here</Trans>
+    </div>
+  )
 }
 
 function SectionBody({ block }: { block: BlockOf<"section"> }) {

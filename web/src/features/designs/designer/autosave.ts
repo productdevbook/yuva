@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import type { DesignState } from "@/features/designs/designer/history"
 import { useLatest } from "@/hooks/use-latest"
-import { pruneTranslations } from "@/features/designs/doc"
+import { hasMessageBlock, pruneTranslations } from "@/features/designs/doc"
 import { conflictOf, issuesOf, saveDesign, useRefreshDesigns } from "@/features/designs/queries"
 import { ApiError, type EmailDesign, type EmailDesignIssue } from "@/lib/api"
 
@@ -11,11 +11,15 @@ export type SaveStatus = "saved" | "dirty" | "saving" | "offline" | "invalid" | 
 const DELAY = 1500
 
 export function stateOf(d: EmailDesign): DesignState {
-  return { name: d.name, inbox_id: d.inbox_id, document: d.document }
+  return { name: d.name, inbox_id: d.inbox_id, for_conversations: d.for_conversations, document: d.document }
+}
+
+function offeredOf(s: DesignState) {
+  return !!s.for_conversations && hasMessageBlock(s.document)
 }
 
 export function serialize(s: DesignState) {
-  return JSON.stringify([s.name, s.inbox_id ?? null, s.document])
+  return JSON.stringify([s.name, s.inbox_id ?? null, s.document, offeredOf(s)])
 }
 
 type Draft = { state: DesignState; base: number }
@@ -86,6 +90,7 @@ export function useAutosave({
         const d = await saveDesign(id, {
           name: s.name.trim() || fallbackName.current,
           inbox_id: s.inbox_id,
+          for_conversations: offeredOf(s),
           document: pruneTranslations(s.document),
           base_version: server.current.version,
           snapshot: snapshot || undefined,

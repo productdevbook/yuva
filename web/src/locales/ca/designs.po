@@ -35,6 +35,12 @@ msgstr "Un títol clar"
 msgid "A design can hold at most 200 blocks."
 msgstr "Un disseny pot tenir com a màxim 200 blocs."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Un disseny només pot tenir un bloc de missatge."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Un disseny és l'aspecte d'un correu: comença des d'una plantilla i després fes-lo servir per als teus enviaments massius."
@@ -58,6 +64,10 @@ msgstr "Un enllaç que sembla un botó"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Un camp de combinació no té valor alternatiu, de manera que pot estar buit per a algunes persones."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Un camp de combinació d’aquest disseny no té valor alternatiu i és buit per a aquesta persona."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Afegeix una llengua"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Afegeix un enllaç"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Primer afegeix un bloc de missatge: marca on va el text que escriu un membre."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Fes-los tots a partir dels colors clars"
 msgid "Medium"
 msgstr "Mitjà"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Els membres que veuen aquesta safata poden enviar respostes i correus nous amb aquest disseny."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Camp de combinació"
@@ -819,6 +837,11 @@ msgstr "Camp de combinació"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Els camps de combinació només poden anar a la part d'un enllaç després del signe d'interrogació."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Missatge"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Nombre de columnes"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Llista numerada"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Ofereix a les converses"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "El correu supera els 102 KB, de manera que Gmail el tallarà i amagarà 
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "El correu supera els 90 KB. Gmail talla els correus a uns 102 KB."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Aquí apareix el missatge que escrius"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "La nova versió comença amb els textos de la llengua base. El disseny, les imatges i els enllaços es comparteixen; només tradueixes els textos."
@@ -1316,6 +1347,10 @@ msgstr "La nova versió comença amb els textos de la llengua base. El disseny, 
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "El peu obligatori d’aquesta versió és en anglès: Yuva no té els textos del peu en aquest idioma."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Aquí va el text que escriu un membre, seguit de les targetes d’articles d’ajuda i la signatura. Un per disseny, mai dins de columnes."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Aquest bloc no té text per traduir."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Aquest disseny ha canviat en un altre lloc"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Aquest disseny no té bloc de missatge."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Aquest disseny usa un camp de combinació que el correu de conversa no té (el nom de la llista o els enllaços de baixa i de preferències)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Lloc web"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Quan és buit, escriu"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "On va el text d’un missatge de conversa"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

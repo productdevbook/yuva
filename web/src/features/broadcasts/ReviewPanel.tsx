@@ -126,6 +126,7 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
     click_tracking: t`Click tracking`,
     ses_tenant: t`Amazon SES tenant`,
     translations: t`Languages`,
+    message_block: t`Message block`,
   }
   const name = (tag: string) => languageName(tag, i18n.locale)
   const list = (xs: string[]) => new Intl.ListFormat(i18n.locale, { type: "conjunction" }).format(xs)
@@ -223,6 +224,8 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
         return t`Links will point at this server’s link domain instead of your own. Spam filters look at link domains.`
       case "translations":
         return translationText()
+      case "message_block":
+        return t`This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out.`
     }
   }
   return { titles, problem }
@@ -244,6 +247,7 @@ export function fixOf(b: Broadcast, key: BroadcastReviewKey, doc?: Doc): Fix | n
     case "subject":
       return { spot: "content" }
     case "merge_fields":
+    case "message_block":
     case "html_size":
     case "links":
     case "images_alt":

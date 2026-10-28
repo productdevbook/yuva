@@ -1370,6 +1370,10 @@ msgstr "Egy nappal előtte csökkentsd az MX-rekordok TTL-jét, hogy a változá
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "egy nap YYYY-MM-DD formában, az Ön időzónájában"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "egy törölt sablon"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "A törölt hozzászólás nem állítható vissza."
@@ -1421,6 +1425,10 @@ msgstr "A fájl tartalma nem egyezik a típusával. Ellenőrizd a fájlt, és pr
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "A szűrő megvizsgál minden ide érkező levelet, és csillagozza, archiválja, a kukába teszi, címkézi vagy továbbadja egy tagnak. A szűrők a lista sorrendjében futnak."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "A sablonnal küldött első levélnek tartalmaznia kell a postafiók jogi nevét és postacímét. Add meg őket a postafiók beállításaiban."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Egy levélszűrő értesít engem"
 msgid "a mail folder"
 msgstr "egy levelezőmappa"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "A sablonos levél egy személynek megy: távolítsd el a többi címzettet és a Cc-t, vagy küldd sablon nélkül."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "A levelezési lista azokat tartalmazza, akik beleegyeztek a tömeges leveleid fogadásába. A webhelyed feliratkozási űrlapján csatlakoznak, vagy a csapatod adja hozzá őket, és rögzíti, hogyan egyeztek bele. Minden lépés a hozzájárulás bizonyítékaként megmarad, és bárki egy kattintással leiratkozhat."
@@ -1519,6 +1532,10 @@ msgstr "egy tag"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Egy tag akkor alkalmas, ha hozzáfér a termékhez (tulajdonosok és adminok csak kapott hozzáféréssel), nyitva van a panel vagy egy app, az elérhetősége Auto, a termék a nyitvatartáson belül van, és a tag a korlát alatt van. Ha senki sem alkalmas, a beszélgetés vár, és az első felszabaduló kollégához kerül."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "A sablon egyik egyesítő mezőjének nincs tartalék értéke, és ennél a személynél üres."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Hozzáférési kulcs hozzáadása"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Termék hozzáadása"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Adj meg egy címzettet, egy tárgyat és némi szöveget: az előnézet a piszkozat mentése után jelenik meg."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "A megengedett leggyakrabban"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Ahogy elküldték"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Veszélyzóna"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Sötét"
@@ -6005,15 +6031,25 @@ msgstr "Leírás"
 msgid "Description (optional)"
 msgstr "Leírás (nem kötelező)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Dizájn"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Sablon: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Dizájnok"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Asztali gép"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Azonnal leállítja a figyelőt, a türelmi idő megvárása nélkül."
 msgid "Failures to go down"
 msgstr "Hibák egymás után a leálláshoz"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Tartalék nyelv: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "visszajelzés"
@@ -7384,6 +7424,10 @@ msgstr "Befejezve"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "A kiváltott riasztások leállítják a figyelőt, a megoldottak helyreállítják."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "A sablonos első levelekhez a szerver üzemeltetőjének jóváhagyása kell a tömeges küldéshez. Kérd a munkaterület beállításaiban, vagy küldd sablon nélkül."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Idézett szöveg elrejtése"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Visszavontak elrejtése"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "A levél elrejtése, ahogy elküldték"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "A címkék téma szerint rendezik a beszélgetéseket, például száml�
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Nyelv"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "A sablon nyelve"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Egyesítés…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Üzenet"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Üzenetblokk"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "Nincs kiválasztott nap: a termék az egész héten zártnak számít."
 msgid "No deliveries yet"
 msgstr "Még nincs kézbesítés"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Nincs sablon"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Egy sablon sem egyezik."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Még nincs dizájn"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "A beszélgetésekben még nincs felkínált sablon. A tulajdonosok és az adminisztrátorok a szerkesztőben kínálhatnak fel egyet."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Csak azok a kontaktok, akiknek a nyelve ezek egyike."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Csak a DNS volt ellenőrizhető, nem az, hogyan ítélik meg a fogadó szerverek a levelet."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Csak e-mailben küldött üzenethez használható sablon."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Csak kizárólag támogatásra használt domainhez vagy aldomainhez: az MX-rekordjai döntenek arról, hová megy az összes levele."
@@ -13038,6 +13110,10 @@ msgstr "Beszélgetés megnyitása"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Dizájn megnyitása"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Sablonok megnyitása"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "{owner} személyes postafiókja"
 msgid "Personal mailboxes"
 msgstr "Személyes postafiókok"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Telefon"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Válasszon mentett választ"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Előkészítés"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Előnézet ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Előnézet: {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "{title} előnézete"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Dizájn előnézete"
@@ -14813,6 +14899,7 @@ msgstr "Újratöltés"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "A távoli képek elárulhatják a feladónak, hogy megnyitottad a levelet."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Pontszám: {score} az 5-ből"
 msgid "Screen"
 msgstr "Képernyő"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Képernyőméret"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Képernyőkép"
@@ -16060,6 +16151,10 @@ msgstr "Beszélgetések keresése erre: „{search}”"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Dizájnok keresése"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Sablonok keresése…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Visszajelzés küldése egy oldalról"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Küldés innen"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Küldés e-mail sablonnal"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "A kapcsolattartó üzenetet ír"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "A kontakt, a jegyzetei és minden, amit írt, véglegesen törlődik. Ez nem vonható vissza."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "A kapcsolat nyelve"
@@ -18511,6 +18613,10 @@ msgstr "A kézbesíthetőségi ellenőrzés még nem fejeződött be."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "A tervnek nincs változata ezekhez a tárgyakhoz, ezért nem használja őket: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "A sablonnak nincs változata ezen a nyelven. Válassz másik nyelvet."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "A lista ennek a postafióknak a nevében küld, és a leveleire adott v�
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "A levél megérkezett."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "A levelet, ahogy elküldték, már nem őrizzük."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "A levél ezzel a sablonnal nagyobb 500 KB-nál. Írj kevesebbet, vagy válassz könnyebb sablont."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Ez a beszélgetés nem elérhető"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "Ennek a beszélgetésnek az e-mail-csatornájához nincs SMTP-fiók, ezért a válasz nem lett elküldve. Adj hozzá egyet a postafiók beállításaiban."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Ez a sablon nem használható ehhez a levélhez. Válassz másik sablont."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Ebben a sablonban van egy üzenetblokk, amely a beszélgetésbeli üzenet szövegét tartalmazza. Tömeges küldésben üres maradna. Válassz másik sablont, vagy vedd ki a blokkot."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Ebben a sablonban nincs üzenetblokk."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Ez a sablon archivált, a beszélgetésekben már nem kínálják fel, vagy másik postafiókhoz tartozik. Távolítsd el, vagy válassz másikat."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Ez a sablon olyan egyesítő mezőt használ, amely a beszélgetési levélben nincs (a lista neve vagy a leiratkozási és beállítási hivatkozások)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Ez a végpont csak a(z) {lockedName} eseményeit fogadja."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "Ez a fájltípus nem engedélyezett."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Ez az első levél leiratkozási hivatkozást tartalmaz."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Ez az oldal még nem nyilvános, ezért a látogatók addig nem látnak semmit, amíg közzé nem teszi."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Ez a személy elutasította az ilyen leveleket, ezért nem küldhető sablonnal. Küldd sablon nélkül."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Ez a személy mindenről leiratkozott, spamnek jelentett egy levelet, vagy törölték az adatait, ezért a csapat nem tudja újra hozzáadni."
 
@@ -20018,6 +20160,10 @@ msgstr "Ez a munkaterület egyelőre nem küldhet tömeges leveleket."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Ez a munkaterület egyelőre nem küldhet tömeges leveleket. A futó tömeges levelek szünetelnek."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Ez a munkaterület egyelőre nem küldhet sablonos első leveleket."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Holnap reggel"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Túl sok próbálkozás. Várj egy kicsit, és próbáld újra."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Egyelőre túl sok sablonos első levél: óránként 20 neked, naponta 200 a munkaterületnek. Próbáld később."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Mit hozzon át a Yuva?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Mit ígér a csevegés, és mit kérdez a lezárás után"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Amit a kapcsolat kapna."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Mit lát az ügyfél"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "A válaszaid erről a címről mennek ki"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "A(z) {first} neki küldött válaszod nem lett elküldve. {0}"

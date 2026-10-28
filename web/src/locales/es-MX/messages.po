@@ -1370,6 +1370,10 @@ msgstr "Un día antes, baja el TTL de los registros MX para que el cambio se pro
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "un día como YYYY-MM-DD, en tu zona horaria"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "un diseño eliminado"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "Una publicación eliminada no se puede recuperar."
@@ -1421,6 +1425,10 @@ msgstr "El contenido de un archivo no coincide con su tipo. Revisa el archivo y 
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "Un filtro revisa cada correo que llega aquí y lo marca con una estrella, lo archiva, lo manda a la papelera, le pone etiquetas o se lo pasa a un miembro. Los filtros se ejecutan en el orden de esta lista."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "Un primer correo con diseño debe llevar el nombre legal y la dirección postal de la bandeja. Añádelos en los ajustes de la bandeja."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "Un filtro de correo me avisa"
 msgid "a mail folder"
 msgstr "una carpeta de correo"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "Un correo con diseño va a una sola persona: quita los demás destinatarios y el Cc, o envíalo sin diseño."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "Una lista de correo reúne a las personas que aceptaron recibir tus envíos. Se unen con un formulario de suscripción en tu sitio, o tu equipo las añade y registra cómo aceptaron. Cada paso se guarda como prueba de consentimiento, y cualquiera puede darse de baja con un clic."
@@ -1519,6 +1532,10 @@ msgstr "un miembro"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "Un miembro es elegible si tiene acceso al producto (propietarios y administradores solo con permiso), tiene el panel o una app abierta, su disponibilidad es Auto, el producto está dentro de su horario y no ha llegado al límite. Si nadie es elegible, la conversación espera y pasa al primer compañero que quede disponible."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Un campo de combinación de este diseño no tiene valor alternativo y está vacío para esta persona."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "Añadir una clave de acceso"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "Añadir producto"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "Añade un destinatario, un asunto y algo de texto: la vista previa aparece cuando se guarda el borrador."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "Tan a menudo como se permita"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "Tal como se envió"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "Zona de peligro"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "Oscuro"
@@ -6005,15 +6031,25 @@ msgstr "Descripción"
 msgid "Description (optional)"
 msgstr "Descripción (opcional)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "Diseño"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "Diseño: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "Diseños"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "Escritorio"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "Hace caer el monitor de inmediato, sin esperar la tolerancia."
 msgid "Failures to go down"
 msgstr "Fallos para caer"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "Idioma alternativo: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "comentarios"
@@ -7384,6 +7424,10 @@ msgstr "Terminado"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "Las alertas activas hacen caer el monitor y las resueltas lo recuperan."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "Los primeros correos con diseño necesitan la aprobación del operador para envíos masivos. Pídela en los ajustes del espacio de trabajo o envía sin diseño."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "Ocultar el texto citado"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "Ocultar revocadas"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "Ocultar el correo tal como se envió"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "Las etiquetas clasifican las conversaciones por tema, como facturación 
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "Idioma"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "Idioma del diseño"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "Fusionar…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "Mensaje"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "Bloque de mensaje"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "No se eligió ningún día: el producto se considera cerrado toda la sem
 msgid "No deliveries yet"
 msgstr "Aún no hay entregas"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "Sin diseño"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "Ningún diseño coincide."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "Aún no hay diseños"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "Aún no hay diseños ofrecidos en las conversaciones. Los propietarios y administradores ofrecen uno en el diseñador."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "Solo contactos cuyo idioma sea uno de estos."
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "Solo se pudo comprobar el DNS, no cómo juzgan el correo los servidores receptores."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "Solo los mensajes enviados por correo pueden usar un diseño."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "Solo para un dominio o subdominio usado únicamente para soporte: sus registros MX deciden adónde va todo su correo."
@@ -13038,6 +13110,10 @@ msgstr "Abrir la conversación"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "Abrir el diseño"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "Abrir los diseños"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "Buzón personal de {owner}"
 msgid "Personal mailboxes"
 msgstr "Buzones personales"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "Teléfono"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "Elige una respuesta predefinida"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "Preparando"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "Vista previa ({previewKey})"
 msgid "Preview of {0}"
 msgstr "Vista previa de {0}"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "Vista previa de {title}"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "Vista previa del diseño"
@@ -14813,6 +14899,7 @@ msgstr "Recargar"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Las imágenes remotas pueden decirle al remitente que abriste el correo."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "Calificación {score} de 5"
 msgid "Screen"
 msgstr "Pantalla"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "Tamaño de pantalla"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "Captura de pantalla"
@@ -16060,6 +16151,10 @@ msgstr "Buscar «{search}» en las conversaciones"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "Buscar diseños"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "Buscar diseños…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "Enviar comentarios desde una página"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "Enviar desde"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "Enviar con un diseño de correo"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "El contacto escribe un mensaje"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "El contacto, sus notas y todo lo que escribió se eliminan definitivamente. No se puede deshacer."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "El idioma del contacto"
@@ -18511,6 +18613,10 @@ msgstr "La comprobación de entregabilidad aún no ha terminado."
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "El diseño no tiene versión para estos asuntos, así que no se usan: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "El diseño no tiene versión en ese idioma. Elige otro idioma."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "La lista envía con el nombre de este buzón, y las respuestas a su corr
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "El correo llegó."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "El correo tal como se envió ya no se conserva."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "El correo con este diseño supera los 500 KB. Escribe menos o elige un diseño más ligero."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "Esta conversación no está disponible"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "El canal de correo de esta conversación no tiene cuenta SMTP, así que no se envió la respuesta. Añade una en la configuración del buzón."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "Este diseño no se puede usar para este correo. Elige otro diseño."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "Este diseño tiene un bloque de mensaje, que contiene el texto de un mensaje de conversación. En un envío masivo quedaría vacío. Elige otro diseño o quita el bloque."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "Este diseño no tiene bloque de mensaje."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "Este diseño está archivado, ya no se ofrece en las conversaciones o pertenece a otra bandeja. Quítalo o elige otro."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Este diseño usa un campo de combinación que el correo de conversación no tiene (el nombre de la lista o los enlaces de baja y de preferencias)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "Este endpoint solo recibe los eventos de {lockedName}."
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "No se permite este tipo de archivo."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "Este primer correo lleva un enlace para darse de baja."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "Esta página aún no es pública, así que los visitantes no ven nada hasta que la publiques."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "Esta persona rechazó correos como este, así que no puede enviarse con un diseño. Envíalo sin diseño."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "Esta persona se dio de baja de todo, marcó un correo como spam o hizo borrar sus datos, así que el equipo no puede volver a añadirla."
 
@@ -20018,6 +20160,10 @@ msgstr "Este espacio de trabajo no puede enviar envíos por ahora."
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "Este espacio de trabajo no puede enviar envíos por ahora. Los envíos en curso están en pausa."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "Este espacio de trabajo no puede enviar por ahora primeros correos con diseño."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "Mañana por la mañana"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "Demasiados intentos. Espera un poco e inténtalo de nuevo."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "Demasiados primeros correos con diseño por ahora: 20 por hora para ti y 200 al día para el espacio de trabajo. Inténtalo más tarde."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "¿Qué debe traer Yuva?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "Lo que promete el chat y lo que pregunta al cerrar"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "Lo que recibiría el contacto."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "Lo que ve el cliente"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "Tus respuestas salen desde esta dirección"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "No se envió tu respuesta a {first}. {0}"

@@ -35,6 +35,12 @@ msgstr "Чіткий заголовок"
 msgid "A design can hold at most 200 blocks."
 msgstr "У дизайні може бути не більше 200 блоків."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "У дизайні може бути один блок повідомлення."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Дизайн — це вигляд листа: почніть із шаблону, потім використовуйте його для своїх розсилок."
@@ -58,6 +64,10 @@ msgstr "Посилання, що виглядає як кнопка"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "У поля злиття немає запасного значення, тож у деяких людей воно може бути порожнім."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Поле злиття в цьому дизайні не має запасного значення і порожнє для цієї людини."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Додати мову"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Додати посилання"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Спершу додайте блок повідомлення: він показує, куди потрапляє текст учасника."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Створити всі зі світлих кольорів"
 msgid "Medium"
 msgstr "Середній"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Учасники, які бачать цю скриньку, можуть надсилати відповіді й нові листи в цьому дизайні."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Поле злиття"
@@ -819,6 +837,11 @@ msgstr "Поле злиття"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Поля злиття можна розміщувати лише в частині посилання після знака питання."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Повідомлення"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Кількість стовпців"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Нумерований список"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Пропонувати в розмовах"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "Лист понад 102 КБ, тож Gmail обріже його й сх
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "Лист понад 90 КБ. Gmail обрізає листи приблизно на 102 КБ."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "Тут з’явиться ваше повідомлення"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "Нова версія починається з текстів базової мови. Макет, зображення й посилання залишаються спільними; ви перекладаєте лише тексти."
@@ -1316,6 +1347,10 @@ msgstr "Нова версія починається з текстів базо�
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "Обовʼязковий нижній колонтитул цієї версії англійською: у Yuva немає текстів колонтитула цією мовою."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "Сюди потрапляє текст учасника, далі картки статей довідки та підпис. Один на дизайн, ніколи в колонках."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "У цьому блоці немає тексту для переклад
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Цей дизайн змінився деінде"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "У цьому дизайні немає блока повідомлення."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Цей дизайн використовує поле злиття, якого немає в листах розмов (назва списку або посилання на відписку й налаштування)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Сайт"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Якщо порожньо, пишіть"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Куди потрапляє текст повідомлення з розмови"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

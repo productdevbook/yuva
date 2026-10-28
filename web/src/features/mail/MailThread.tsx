@@ -45,6 +45,7 @@ import { useSnoozeTimes } from "@/features/conversation/HeaderActions"
 import { Attachments } from "@/features/conversation/messages/Attachments"
 import { useAuthorName, type ThreadContext } from "@/features/conversation/messages/context"
 import { DeliveryState } from "@/features/conversation/messages/DeliveryState"
+import { DesignLine } from "@/features/conversation/messages/DesignLine"
 import { MailBody, MailControls, useMail } from "@/features/conversation/messages/EmailBody"
 import { EventLine } from "@/features/conversation/messages/EventLine"
 import { OwnDraftCard } from "@/features/conversation/messages/OwnDraftCard"
@@ -246,8 +247,9 @@ function MailCard({
       <div className={cn("min-w-0", mail.originalHtml || mail.waiting ? "" : "px-5 pb-4 phone:px-4")}>
         <MailBody mail={mail} />
       </div>
-      {(mail.listed.length > 0 || m.delivery) && (
+      {(mail.listed.length > 0 || m.delivery || m.design) && (
         <div className="flex flex-col gap-2 px-5 pb-4 phone:px-4">
+          <DesignLine m={m} />
           <Attachments items={mail.listed} />
           {m.delivery && <DeliveryState d={m.delivery} />}
         </div>
@@ -539,6 +541,7 @@ function Loaded({ c, contact, onBack, onLeave, openDraft }: Props & { c: Convers
           [MAIL_KEYS.replyAll]: () => replyTo(true),
           [MAIL_KEYS.note]: () => write && reply.current?.focus("note"),
           [MAIL_KEYS.attach]: () => write && reply.current?.attach(),
+          [MAIL_KEYS.design]: () => write && reply.current?.design(),
           [MAIL_KEYS.archive]: () => write && archive(),
           [MAIL_KEYS.trash]: () => write && canManage && trash(),
           [MAIL_KEYS.star]: toggleStar,

@@ -132,7 +132,13 @@ export function useRestoreDesign() {
   return useMutation({
     mutationFn: async (id: string) => {
       const d = await unwrap(api.GET("/v1/email-designs/{designId}", { params: { path: { designId: id } } }))
-      return saveDesign(id, { name: d.name, inbox_id: d.inbox_id, document: d.document, base_version: d.version })
+      return saveDesign(id, {
+        name: d.name,
+        inbox_id: d.inbox_id,
+        for_conversations: d.for_conversations,
+        document: d.document,
+        base_version: d.version,
+      })
     },
     onSuccess: (d) => refresh(d),
   })
@@ -140,7 +146,14 @@ export function useRestoreDesign() {
 
 export function saveDesign(
   id: string,
-  body: { name: string; inbox_id?: string; document: EmailDesignDocument; base_version: number; snapshot?: boolean }
+  body: {
+    name: string
+    inbox_id?: string
+    for_conversations?: boolean
+    document: EmailDesignDocument
+    base_version: number
+    snapshot?: boolean
+  }
 ) {
   return unwrap(api.PUT("/v1/email-designs/{designId}", { params: { path: { designId: id } }, body }))
 }

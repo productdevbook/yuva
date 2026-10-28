@@ -66,6 +66,7 @@ import {
   children,
   countBlocks,
   duplicateBlock,
+  hasMessageBlock,
   fileName,
   findBlock,
   imageIds,
@@ -576,6 +577,10 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
       toast(t`A design can hold at most 200 blocks.`)
       return
     }
+    if (type === "message" && hasMessageBlock(doc)) {
+      toast(t`A design can hold one message block.`)
+      return
+    }
     const block = makeBlock(type, defaults)
     const next = at ? insertBlock(doc, at.container, at.index, block) : insertNear(doc, selected, block)
     history.commit({ ...state, document: next })
@@ -632,6 +637,8 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
     duplicate: (id) => {
       if (locale) return layoutHint()
       if (countBlocks(doc) >= MAX_BLOCKS) return toast(t`A design can hold at most 200 blocks.`)
+      const source = findBlock(doc, id)
+      if (source && hasMessageBlock({ ...doc, blocks: [source] })) return toast(t`A design can hold one message block.`)
       const r = duplicateBlock(doc, id)
       history.commit({ ...state, document: r.doc })
       setSelected(r.id)
@@ -872,7 +879,14 @@ function DesignerScreen({ initial, ws }: { initial: EmailDesign; ws: string }) {
       <Trans>Select a block to change it. Design settings apply to the whole mail.</Trans>
     </p>
   )
-  const design = <ThemePanel inboxId={state.inbox_id} onInbox={(id) => history.commit({ ...state, inbox_id: id })} />
+  const design = (
+    <ThemePanel
+      inboxId={state.inbox_id}
+      onInbox={(id) => history.commit({ ...state, inbox_id: id })}
+      offered={!!state.for_conversations}
+      onOffered={(v) => history.commit({ ...state, for_conversations: v })}
+    />
+  )
   const block = selectedBlock ? <Inspector key={selectedBlock.id} block={selectedBlock} /> : emptyBlock
   const right = selectedBlock ? block : design
 

@@ -35,6 +35,12 @@ msgstr "Um título claro"
 msgid "A design can hold at most 200 blocks."
 msgstr "Um design pode ter no máximo 200 blocos."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "Um design só pode ter um bloco de mensagem."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "Um design é a aparência de um e-mail: comece de um modelo e depois use-o nos seus envios."
@@ -58,6 +64,10 @@ msgstr "Um link com aparência de botão"
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "Um campo de mesclagem não tem valor alternativo, então pode ficar vazio para algumas pessoas."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "Um campo de mesclagem deste design não tem valor alternativo e está vazio para esta pessoa."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "Adicionar um idioma"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "Adicionar um link"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "Primeiro adicione um bloco de mensagem: ele marca onde vai o texto que um membro escreve."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "Fazer todas a partir das cores claras"
 msgid "Medium"
 msgstr "Médio"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "Os membros que veem esta caixa podem enviar respostas e novos e-mails com este design."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "Campo de mesclagem"
@@ -819,6 +837,11 @@ msgstr "Campo de mesclagem"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "Campos de mesclagem só podem ir na parte de um link depois do ponto de interrogação."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "Mensagem"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "Número de colunas"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "Lista numerada"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "Oferecer nas conversas"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "O e-mail passa de 102 KB, então o Gmail vai cortá-lo e esconder o link
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "O e-mail passa de 90 KB. O Gmail corta e-mails em cerca de 102 KB."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "A mensagem que você escreve aparece aqui"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "A nova versão começa com os textos do idioma base. Layout, imagens e links continuam compartilhados; você traduz só os textos."
@@ -1316,6 +1347,10 @@ msgstr "A nova versão começa com os textos do idioma base. Layout, imagens e l
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "O rodapé obrigatório desta versão está em inglês: o Yuva não tem os textos do rodapé neste idioma."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "O texto que um membro escreve vai aqui, seguido dos cartões de artigos de ajuda e da assinatura. Um por design, nunca dentro de colunas."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "Este bloco não tem texto para traduzir."
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "Este design mudou em outro lugar"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "Este design não tem bloco de mensagem."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "Este design usa um campo de mesclagem que o e-mail de conversa não tem (o nome da lista ou os links de cancelamento e de preferências)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "Site"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "Quando estiver vazio, escreva"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "Onde vai o texto de uma mensagem de conversa"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

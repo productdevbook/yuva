@@ -35,6 +35,12 @@ msgstr "വ്യക്തമായ ഒരു തലക്കെട്ട്"
 msgid "A design can hold at most 200 blocks."
 msgstr "ഒരു ഡിസൈനിന് പരമാവധി 200 ബ്ലോക്കുകൾ ഉണ്ടാകാം."
 
+#: src/features/designs/designer/DesignerPage.tsx
+#: src/features/designs/designer/Panels.tsx
+#: src/features/designs/text.ts
+msgid "A design can hold one message block."
+msgstr "ഒരു ഡിസൈനിൽ ഒരു സന്ദേശ ബ്ലോക്ക് മാത്രം ഉണ്ടാകാം."
+
 #: src/features/designs/GalleryPage.tsx
 msgid "A design is the look of a mail: start from a template, then use it for your broadcasts."
 msgstr "ഡിസൈൻ എന്നത് ഒരു മെയിലിന്റെ രൂപമാണ്: ഒരു ടെംപ്ലേറ്റിൽ നിന്ന് തുടങ്ങി നിങ്ങളുടെ ബ്രോഡ്കാസ്റ്റുകൾക്ക് ഉപയോഗിക്കുക."
@@ -58,6 +64,10 @@ msgstr "ബട്ടൺ പോലെ തോന്നുന്ന ഒരു ല�
 #: src/features/designs/text.ts
 msgid "A merge field has no fallback, so it can be empty for some people."
 msgstr "ഒരു മെർജ് ഫീൽഡിന് ഫാൾബാക്ക് ഇല്ല, അതിനാൽ ചിലർക്ക് അത് ശൂന്യമായിരിക്കാം."
+
+#: src/features/designs/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "ഈ ഡിസൈനിലെ ലയന ഫീൽഡിന് ബദൽ മൂല്യമില്ല, ഈ വ്യക്തിക്ക് അത് ശൂന്യമാണ്."
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "A newer version of Yuva made this design. You can look at it here, but not change it."
@@ -96,6 +106,10 @@ msgstr "ഭാഷ ചേർക്കുക"
 #: src/features/designs/designer/Inspector.tsx
 msgid "Add a link"
 msgstr "ഒരു ലിങ്ക് ചേർക്കുക"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Add a message block first: it marks where the text a member writes goes."
+msgstr "ആദ്യം സന്ദേശ ബ്ലോക്ക് ചേർക്കുക: അംഗം എഴുതുന്ന വാചകം എവിടെ വരുമെന്ന് ഇത് കാണിക്കുന്നു."
 
 #: src/features/designs/designer/Canvas.tsx
 msgid "Add your own lines above the required footer"
@@ -812,6 +826,10 @@ msgstr "എല്ലാം ഇളം നിറങ്ങളിൽ നിന്ന
 msgid "Medium"
 msgstr "ഇടത്തരം"
 
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Members who see this inbox can send replies and new mail in this design."
+msgstr "ഈ ഇൻബോക്സ് കാണുന്ന അംഗങ്ങൾക്ക് ഈ ഡിസൈനിൽ മറുപടികളും പുതിയ മെയിലുകളും അയയ്ക്കാം."
+
 #: src/features/designs/designer/editor.tsx
 msgid "Merge field"
 msgstr "മെർജ് ഫീൽഡ്"
@@ -819,6 +837,11 @@ msgstr "മെർജ് ഫീൽഡ്"
 #: src/features/designs/text.ts
 msgid "Merge fields can only go in the part of a link after the question mark."
 msgstr "മെർജ് ഫീൽഡുകൾ ലിങ്കിലെ ചോദ്യചിഹ്നത്തിന് ശേഷമുള്ള ഭാഗത്ത് മാത്രമേ വരാൻ പാടുള്ളൂ."
+
+#: src/features/designs/designer/Inspector.tsx
+#: src/features/designs/text.ts
+msgid "Message"
+msgstr "സന്ദേശം"
 
 #: src/features/designs/GalleryPage.tsx
 msgid "Mine"
@@ -910,6 +933,10 @@ msgstr "കോളങ്ങളുടെ എണ്ണം"
 #: src/features/designs/designer/editor.tsx
 msgid "Numbered list"
 msgstr "അക്കമിട്ട ലിസ്റ്റ്"
+
+#: src/features/designs/designer/ThemePanel.tsx
+msgid "Offer in conversations"
+msgstr "സംഭാഷണങ്ങളിൽ നൽകുക"
 
 #: src/features/designs/designer/DesignerPage.tsx
 msgid "Offline, kept on this device"
@@ -1309,6 +1336,10 @@ msgstr "മെയിൽ 102 KB-ക്ക് മുകളിലാണ്, അത�
 msgid "The mail is over 90 KB. Gmail cuts mails off at about 102 KB."
 msgstr "മെയിൽ 90 KB-ക്ക് മുകളിലാണ്. Gmail മെയിലുകൾ ഏകദേശം 102 KB-ൽ മുറിക്കുന്നു."
 
+#: src/features/designs/designer/Canvas.tsx
+msgid "The message you write appears here"
+msgstr "നിങ്ങൾ എഴുതുന്ന സന്ദേശം ഇവിടെ കാണുന്നു"
+
 #: src/features/designs/designer/Languages.tsx
 msgid "The new version starts with the texts of the base language. Layout, images and links stay shared; you translate only the texts."
 msgstr "പുതിയ പതിപ്പ് അടിസ്ഥാന ഭാഷയുടെ വാചകങ്ങളോടെ ആരംഭിക്കുന്നു. ലേഔട്ട്, ചിത്രങ്ങൾ, ലിങ്കുകൾ എന്നിവ പൊതുവായി തുടരും; നിങ്ങൾ വാചകങ്ങൾ മാത്രം വിവർത്തനം ചെയ്യുന്നു."
@@ -1316,6 +1347,10 @@ msgstr "പുതിയ പതിപ്പ് അടിസ്ഥാന ഭാഷ
 #: src/features/designs/text.ts
 msgid "The required footer of this version is in English: Yuva has no footer words in this language."
 msgstr "ഈ പതിപ്പിന്റെ നിർബന്ധിത ഫൂട്ടർ ഇംഗ്ലീഷിലാണ്: Yuva-യിൽ ഈ ഭാഷയിൽ ഫൂട്ടർ വാക്കുകളില്ല."
+
+#: src/features/designs/designer/Inspector.tsx
+msgid "The text a member writes goes here, followed by help article cards and the signature. One per design, never inside columns."
+msgstr "അംഗം എഴുതുന്ന വാചകം ഇവിടെ വരുന്നു, തുടർന്ന് സഹായ ലേഖന കാർഡുകളും ഒപ്പും. ഒരു ഡിസൈനിൽ ഒന്ന്, ഒരിക്കലും കോളങ്ങൾക്കുള്ളിലല്ല."
 
 #: src/features/designs/text.ts
 msgid "The text has formatting e-mails cannot keep. Clear its formatting and try again."
@@ -1365,6 +1400,14 @@ msgstr "ഈ ബ്ലോക്കിൽ വിവർത്തനം ചെയ്
 #: src/features/designs/designer/ConflictDialog.tsx
 msgid "This design changed somewhere else"
 msgstr "ഈ ഡിസൈൻ മറ്റൊരിടത്ത് മാറി"
+
+#: src/features/designs/text.ts
+msgid "This design has no message block."
+msgstr "ഈ ഡിസൈനിൽ സന്ദേശ ബ്ലോക്ക് ഇല്ല."
+
+#: src/features/designs/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "ഈ ഡിസൈൻ സംഭാഷണ മെയിലിലില്ലാത്ത ലയന ഫീൽഡ് ഉപയോഗിക്കുന്നു (ലിസ്റ്റിന്റെ പേര് അല്ലെങ്കിൽ അൺസബ്സ്ക്രൈബ്, മുൻഗണനാ ലിങ്കുകൾ)."
 
 #: src/features/designs/designer/ImageLibrary.tsx
 msgid "This file type is not allowed. Use PNG, JPEG, GIF or WebP; SVG files can carry scripts, so they are refused."
@@ -1510,6 +1553,10 @@ msgstr "വെബ്സൈറ്റ്"
 #: src/features/designs/designer/editor.tsx
 msgid "When it is empty, write"
 msgstr "ശൂന്യമാകുമ്പോൾ, എഴുതുക"
+
+#: src/features/designs/text.ts
+msgid "Where the text of a conversation message goes"
+msgstr "സംഭാഷണ സന്ദേശത്തിന്റെ വാചകം എവിടെ വരുന്നു"
 
 #: src/features/designs/designer/ThemePanel.tsx
 #: src/features/designs/NewDesignDialog.tsx

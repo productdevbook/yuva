@@ -4,6 +4,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { Kbd, toast } from "@/components/common"
+import { DesignBar, DesignButton } from "@/components/common/DesignChoice"
+import {
+  designFields,
+  designPatch,
+  pickKey,
+  pickOf,
+  isDesignError,
+  useDesignBlocked,
+  type DesignPick,
+} from "@/components/common/designChoice"
 import { AddressChips } from "@/components/common/AddressChips"
 import { FromPicker, sendingAddress, useOwnSenders } from "@/components/common/FromPicker"
 import { OnBehalfNote } from "@/components/common/OnBehalf"
@@ -41,6 +51,7 @@ type Draft = {
   signature: boolean
   clientId: string
   channelId?: string
+  design?: DesignPick
 }
 
 function post({ files, ...d }: Draft) {
@@ -55,6 +66,7 @@ function post({ files, ...d }: Draft) {
     draft: true,
     client_id: d.clientId,
     channel_id: d.channelId,
+    ...designFields(d.design),
   }
   if (files.length === 0) return unwrap(api.POST("/v1/conversations/mail", { body }))
   return unwrap(
@@ -156,6 +168,9 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
   const [body, setBody] = useState(draft?.draft.body ?? "")
   const [files, setFiles] = useState<File[]>([])
   const [noSignature, setNoSignature] = useState(false)
+  const [design, setDesign] = useState<DesignPick | undefined>(() => (draft ? pickOf(draft.draft) : undefined))
+  const [designOpen, setDesignOpen] = useState(false)
+  const [conversationId, setConversationId] = useState<string | undefined>(draft?.conversation.id)
   const [asking, setAsking] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<unknown>(null)
@@ -181,6 +196,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             draft.draft.recipients?.cc ?? [],
             draft.draft.recipients?.bcc ?? [],
             draft.conversation.subject.trim(),
+            pickKey(pickOf(draft.draft)),
           ]),
           body: draft.draft.body.trim(),
         }
@@ -192,10 +208,12 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
   const hasContent =
     to.length + cc.length + bcc.length > 0 || subject.trim() !== "" || body.trim() !== "" || files.length > 0
   const ready = !!inboxId && to.length > 0 && subject.trim() !== ""
-  const saveable = ready && (body.trim() !== "" || files.length > 0 || kept.length > 0)
-  const canSend = saveable && !busy
+  const designRecipients = !!design && (to.length > 1 || cc.length > 0)
+  const designBlocked = useDesignBlocked(conversationId, design)
+  const saveable = ready && !designRecipients && (body.trim() !== "" || files.length > 0 || kept.length > 0)
+  const canSend = saveable && !busy && !designBlocked
   const structure = JSON.stringify([inboxId, noSignature, files.map((f) => `${f.name}:${f.size}:${f.lastModified}`)])
-  const fields = JSON.stringify([to, cc, bcc, subject.trim()])
+  const fields = JSON.stringify([to, cc, bcc, subject.trim(), pickKey(design)])
   const latest = useLatest({
     inboxId,
     channelId: senderChannel?.id,
@@ -209,6 +227,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
     structure,
     fields,
     saveable,
+    design,
   })
 
   const run = useCallback(async () => {
@@ -221,7 +240,14 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
       await unwrap(
         api.PATCH("/v1/messages/{messageId}", {
           params: { path: { messageId: rec.id } },
-          body: { body: text, to: cur.to, cc: cur.cc, bcc: cur.bcc, subject: cur.subject.trim() },
+          body: {
+            body: text,
+            to: cur.to,
+            cc: cur.cc,
+            bcc: cur.bcc,
+            subject: cur.subject.trim(),
+            ...designPatch(cur.design),
+          },
         })
       )
       saved.current = { ...rec, body: text, fields: cur.fields }
@@ -238,6 +264,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
       signature: !cur.noSignature,
       clientId: newId(),
       channelId: cur.channelId,
+      design: cur.design,
     })
     saved.current = {
       id: made.message.id,
@@ -247,6 +274,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
       fields: cur.fields,
       body: text,
     }
+    setConversationId(made.conversation.id)
     if (rec) await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: rec.id } } })
   }, [latest])
   const save = useCallback(() => {
@@ -272,10 +300,12 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
     if (rec && rec.structure === structure && rec.fields === fields && rec.body === body.trim()) return
     timer.current = setTimeout(() => {
       timer.current = undefined
-      void save().catch(() => undefined)
+      void save().catch((e: unknown) => {
+        if (latest.current.design && isDesignError(e)) setError(e)
+      })
     }, AUTOSAVE_MS)
     return () => clearTimeout(timer.current)
-  }, [saveable, structure, fields, body, save])
+  }, [saveable, structure, fields, body, save, latest])
 
   const go = async (at?: Date) => {
     if (!canSend) return
@@ -357,7 +387,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
       role="dialog"
       aria-label={t`New mail`}
       className={cn(
-        "fixed z-40 flex flex-col overflow-hidden border bg-card shadow-[0_24px_60px_rgb(0_0_0/0.25)]",
+        "@container/composer fixed z-40 flex flex-col overflow-hidden border bg-card shadow-[0_24px_60px_rgb(0_0_0/0.25)]",
         phone
           ? "inset-0 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
           : "end-6 bottom-0 max-h-[min(720px,calc(100svh-96px))] w-[min(600px,calc(100vw-48px))] rounded-t-2xl"
@@ -367,6 +397,9 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
         if (e.key === "Escape" && !e.defaultPrevented) {
           e.stopPropagation()
           void close()
+        } else if (e.altKey && e.code === "KeyD") {
+          e.preventDefault()
+          if (inboxId) setDesignOpen(true)
         } else if (e.key === "Enter" && e.altKey) {
           e.preventDefault()
           if (canSend) setLaterOpen(true)
@@ -418,7 +451,10 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
                 size="sm"
                 value={inboxId ?? ""}
                 aria-label={t`From`}
-                onChange={(e) => setPicked(e.target.value)}
+                onChange={(e) => {
+                  setPicked(e.target.value)
+                  setDesign(undefined)
+                }}
                 data-testid="compose-from"
               >
                 {options.map((i) => (
@@ -518,6 +554,17 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             />
           </Row>
         </>
+        {design && (
+          <DesignBar pick={design} onChange={setDesign} conversationId={conversationId} body={body} className="px-4" />
+        )}
+        {designRecipients && (
+          <p role="alert" className="mx-4 text-caption text-destructive" data-testid="compose-design-recipients">
+            <Trans>
+              A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the
+              design.
+            </Trans>
+          </p>
+        )}
         <Textarea
           value={body}
           maxLength={65536}
@@ -534,7 +581,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
           className="min-h-40 flex-1 resize-none rounded-none border-0 bg-transparent px-4 py-2 text-reading shadow-none hover:border-0 focus-visible:ring-0 md:text-reading dark:bg-transparent"
           data-testid="compose-body"
         />
-        {signature && !reopened && (
+        {signature && !reopened && !design && (
           <div className="mx-4 flex items-start gap-3 border-t pt-2" data-testid="compose-signature">
             <div className={cn("min-w-0 flex-1 opacity-70", noSignature && "line-through opacity-40")}>
               <SignatureHtml html={signature} className="max-h-24 overflow-y-auto" />
@@ -623,6 +670,17 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
               >
                 <PaperclipIcon />
               </Button>
+            )}
+            {inboxId && (
+              <DesignButton
+                open={designOpen}
+                onOpenChange={setDesignOpen}
+                inboxId={inboxId}
+                conversationId={conversationId}
+                chosen={design}
+                onPick={setDesign}
+                shortcut={`${alt}D`}
+              />
             )}
             <Button
               variant="ghost"

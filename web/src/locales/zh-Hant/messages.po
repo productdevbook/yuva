@@ -1370,6 +1370,10 @@ msgstr "提前一天降低 MX 記錄的 TTL,這樣變更能很快生效。"
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD 格式的日期,依你的時區"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "已刪除的設計"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "已刪除的貼文無法復原。"
@@ -1421,6 +1425,10 @@ msgstr "檔案內容與其類型不符。請檢查檔案後重試。"
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "篩選器會檢查送達這裡的每封郵件,為其加上星號、封存、移到垃圾桶、加上標籤或交給某位成員。篩選器依此清單的順序執行。"
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "使用設計寄出的第一封郵件必須帶有收件匣的法定名稱和郵寄地址。請在收件匣設定中新增。"
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "郵件篩選器通知我"
 msgid "a mail folder"
 msgstr "郵件資料夾"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "使用設計的郵件只會寄給一個人：請移除其他收件者和副本，或不使用設計寄送。"
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "郵件列表收納了同意接收你群發郵件的人。他們透過你網站上的訂閱表單加入,或由你的團隊新增並記錄他們是如何同意的。每一步都會作為同意憑證儲存,每個人都可以一鍵退訂。"
@@ -1519,6 +1532,10 @@ msgstr "成員"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "成員符合資格的條件是：可存取該產品（擁有者與管理員須獲授權）、已開啟面板或應用程式、可用狀態為自動、產品在營業時間內，且未達上限。若無人符合，對話會等待，並交給第一位有空的同事。"
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "此設計中的合併欄位沒有備用值，對此人為空。"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "新增通行金鑰"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "新增產品"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "請新增收件者、主旨和一些內文：儲存草稿後會顯示預覽。"
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "允許的最高頻率"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "寄出時的樣子"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "危險區域"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "深色"
@@ -6005,15 +6031,25 @@ msgstr "說明"
 msgid "Description (optional)"
 msgstr "描述(可選)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "設計"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "設計：{title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "設計"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "桌面裝置"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "立即讓監控失敗，不等待寬限時間。"
 msgid "Failures to go down"
 msgstr "連續失敗幾次後故障"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "備用語言：{tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "反饋"
@@ -7384,6 +7424,10 @@ msgstr "已完成"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "觸發的警示會讓監控失敗，已解決的警示會讓它恢復。"
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "使用設計寄出的第一封郵件需要伺服器營運者核准群發。請在工作區設定中申請，或不使用設計寄送。"
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "隱藏引用文字"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "隱藏已撤銷"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "隱藏寄出時的郵件"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "標籤依主題整理對話，例如帳單或錯誤。"
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "語言"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "設計的語言"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "合併…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "訊息"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "訊息區塊"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "未選擇任何日期：該產品整週都視為關閉。"
 msgid "No deliveries yet"
 msgstr "還沒有投遞記錄"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "不使用設計"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "沒有相符的設計。"
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "還沒有設計"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "對話中還沒有提供設計。擁有者和管理員可在設計器中提供一個。"
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "僅限語言是其中之一的聯絡人。"
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "只能檢查 DNS,無法檢查接收伺服器如何判定這封郵件。"
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "只有透過電子郵件寄出的訊息才能使用設計。"
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "僅適用於專門用於支援的域名或子域名:它的 MX 記錄決定其所有郵件的去向。"
@@ -13037,6 +13109,10 @@ msgstr "開啟對話"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
+msgstr "開啟設計"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
 msgstr "開啟設計"
 
 #: src/components/common/ShortcutSheet.tsx
@@ -13694,6 +13770,10 @@ msgstr "{owner}的個人信箱"
 msgid "Personal mailboxes"
 msgstr "個人信箱"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "手機"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "選擇一則快速回覆"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "準備中"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "預覽（{previewKey}）"
 msgid "Preview of {0}"
 msgstr "{0} 的預覽"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "{title} 的預覽"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "設計預覽"
@@ -14813,6 +14899,7 @@ msgstr "重新載入"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "遠端圖片可能會讓發件人知道你已開啟郵件。"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "評分 {score} / 5"
 msgid "Screen"
 msgstr "螢幕"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "螢幕尺寸"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "截圖"
@@ -16060,6 +16151,10 @@ msgstr "搜尋包含「{search}」的對話"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "搜尋設計"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "搜尋設計…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "從頁面傳送反饋"
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "寄件者"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "以郵件設計寄送"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "聯絡人傳來訊息"
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "聯絡人、其備註以及其寫下的所有內容將永久刪除。此操作無法復原。"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "聯絡人的語言"
@@ -18511,6 +18613,10 @@ msgstr "送達率檢查尚未完成。"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "設計中沒有這些主旨對應的版本，因此不會使用：{languages}。"
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "此設計沒有該語言的版本。請選擇其他語言。"
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "該列表以此收件匣的名義傳送,對其郵件的回覆會進入�
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "郵件已到達。"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "寄出時的郵件已不再保存。"
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "此設計的郵件超過 500 KB。請少寫一些，或選擇較輕的設計。"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "此對話不可用"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "此對話的郵件頻道沒有 SMTP 帳號,因此回覆未傳送。請在收件匣設定中新增。"
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "此設計不能用於這封郵件。請選擇其他設計。"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "此設計有一個訊息區塊，用來放對話訊息的內文。群發時它會是空的。請選擇其他設計或移除該區塊。"
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "此設計沒有訊息區塊。"
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "此設計已封存、不再在對話中提供，或屬於其他收件匣。請移除它或選擇其他設計。"
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "此設計使用了對話郵件沒有的合併欄位（清單名稱，或取消訂閱和偏好設定連結）。"
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "此端點只接收 {lockedName} 的事件。"
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "不允許此檔案類型。"
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "這封第一封郵件帶有取消訂閱連結。"
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "此頁面尚未公開，因此在你發布頁面之前訪客看不到任何內容。"
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "此人拒絕了這類郵件，所以不能以設計寄送。請不使用設計寄送。"
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "此人已退訂所有內容、把郵件舉報為垃圾郵件或其資料已被清除,因此團隊無法再次新增他們。"
 
@@ -20018,6 +20160,10 @@ msgstr "此工作區暫時不能傳送群發。"
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "此工作區暫時不能傳送群發。正在執行的群發已暫停。"
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "此工作區暫時不能以設計寄出第一封郵件。"
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "明天早上"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "嘗試次數過多。請稍等片刻後重試。"
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "目前以設計寄出的第一封郵件過多：每人每小時 20 封，工作區每天 200 封。請稍後再試。"
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Yuva 應該匯入什麼?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "聊天承諾什麼，以及關閉後詢問什麼"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "聯絡人會收到的內容。"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "客戶看到的內容"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "你的回覆會從此地址發出"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "你給 {first} 的回覆沒有發出。{0}"

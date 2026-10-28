@@ -1370,6 +1370,10 @@ msgstr "ఒక రోజు ముందు, MX రికార్డ్‌ల T
 msgid "a day as YYYY-MM-DD, in your time zone"
 msgstr "YYYY-MM-DD రూపంలో ఒక రోజు, మీ సమయ మండలంలో"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "a deleted design"
+msgstr "తొలగించిన డిజైన్"
+
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
 msgstr "తొలగించిన పోస్ట్‌ను తిరిగి తీసుకురాలేరు."
@@ -1421,6 +1425,10 @@ msgstr "ఫైల్ కంటెంట్ దాని రకంతో సర�
 #: src/features/mail/MailFiltersPage.tsx
 msgid "A filter looks at every mail that arrives here and stars, archives, trashes, labels or hands it to a member. Filters run in the order of this list."
 msgstr "ఫిల్టర్ ఇక్కడికి వచ్చే ప్రతి మెయిల్‌ను చూసి దానికి నక్షత్రం పెడుతుంది, ఆర్కైవ్ చేస్తుంది, ట్రాష్‌లోకి తరలిస్తుంది, లేబుల్స్ పెడుతుంది లేదా ఒక సభ్యునికి అప్పగిస్తుంది. ఫిల్టర్లు ఈ జాబితా క్రమంలో నడుస్తాయి."
+
+#: src/components/common/text.ts
+msgid "A first mail in a design must carry the inbox’s legal name and postal address. Add them in the inbox settings."
+msgstr "డిజైన్‌లో పంపే మొదటి మెయిల్‌లో ఇన్‌బాక్స్ చట్టబద్ధ పేరు, తపాలా చిరునామా ఉండాలి. వాటిని ఇన్‌బాక్స్ సెట్టింగ్‌లలో జోడించండి."
 
 #: src/components/common/authorText.ts
 #: src/features/conversation/messages/Redacted.tsx
@@ -1500,6 +1508,11 @@ msgstr "మెయిల్ ఫిల్టర్ నాకు తెలియజ
 msgid "a mail folder"
 msgstr "మెయిల్ ఫోల్డర్"
 
+#: src/components/common/text.ts
+#: src/features/mail/Compose.tsx
+msgid "A mail in a design goes to one person: remove the other recipients and the Cc, or send it without the design."
+msgstr "డిజైన్‌తో ఉన్న మెయిల్ ఒకరికే వెళ్తుంది: ఇతర గ్రహీతలను, Ccని తీసివేయండి, లేదా డిజైన్ లేకుండా పంపండి."
+
 #: src/features/broadcasts/ListParts.tsx
 msgid "A mailing list holds the people who agreed to get your broadcasts. They join on a subscribe form on your site, or your team adds them and records how they agreed. Every step is kept as proof of consent, and everyone can leave with one click."
 msgstr "మెయిలింగ్ లిస్ట్ మీ బ్రాడ్‌కాస్ట్‌లను అందుకోవడానికి అంగీకరించిన వ్యక్తులను కలిగి ఉంటుంది. వారు మీ సైట్‌లోని సబ్‌స్క్రైబ్ ఫారమ్ ద్వారా చేరతారు, లేదా మీ బృందం వారిని జోడించి వారు ఎలా అంగీకరించారో నమోదు చేస్తుంది. ప్రతి దశ సమ్మతికి రుజువుగా ఉంచబడుతుంది, మరియు ప్రతి ఒక్కరూ ఒక్క క్లిక్‌తో నిష్క్రమించవచ్చు."
@@ -1519,6 +1532,10 @@ msgstr "ఒక సభ్యుడు"
 #: src/components/common/AssignmentFields.tsx
 msgid "A member is eligible while they have access to the product (owners and admins only with a grant), have the panel or an app open, are set to Auto availability, the product is inside its business hours and they are under the limit. When nobody is eligible the conversation waits and goes to the first teammate who becomes available."
 msgstr "సభ్యునికి ఉత్పత్తికి ప్రాప్యత ఉంటే (యజమానులు, అడ్మిన్‌లు అనుమతితో మాత్రమే), ప్యానెల్ లేదా యాప్ తెరిచి ఉంటే, లభ్యత ఆటో అయితే, ఉత్పత్తి పని వేళల్లో ఉంటే, సభ్యుడు పరిమితికి లోపల ఉంటే అర్హుడు. ఎవరూ అర్హులు కాకపోతే సంభాషణ వేచి ఉండి, మొదట అందుబాటులోకి వచ్చిన సహోద్యోగికి వెళ్తుంది."
+
+#: src/components/common/text.ts
+msgid "A merge field in this design has no fallback and is empty for this person."
+msgstr "ఈ డిజైన్‌లోని విలీన ఫీల్డ్‌కు ప్రత్యామ్నాయ విలువ లేదు, ఈ వ్యక్తికి అది ఖాళీగా ఉంది."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "A merge field without a fallback would be empty for some recipients. Give it a fallback."
@@ -1931,6 +1948,10 @@ msgstr "పాస్‌కీని జోడించండి"
 #: src/features/settings/AddProductDialog.tsx
 msgid "Add a product"
 msgstr "ఉత్పత్తిని జోడించండి"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Add a recipient, a subject and some text: the preview appears once the draft is saved."
+msgstr "గ్రహీత, విషయం, కొంత వచనం జోడించండి: డ్రాఫ్ట్ సేవ్ అయ్యాక ప్రివ్యూ కనిపిస్తుంది."
 
 #: src/features/settings/connected-apps/AssistantPage.tsx
 msgid "Add a remote server with the Streamable HTTP transport and the server URL. Many clients take a configuration like this:"
@@ -3109,6 +3130,10 @@ msgstr "అనుమతించినంత తరచుగా"
 #: src/features/issues/IssueDialog.tsx
 msgid "As owner/repo."
 msgstr "As owner/repo."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "As sent"
+msgstr "పంపినట్లుగా"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ask everyone to confirm again"
@@ -5509,6 +5534,7 @@ msgid "Danger zone"
 msgstr "ప్రమాద ప్రాంతం"
 
 #: src/app/UserMenu.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 msgid "Dark"
 msgstr "డార్క్"
@@ -6005,15 +6031,25 @@ msgstr "వివరణ"
 msgid "Description (optional)"
 msgstr "వివరణ (ఐచ్ఛికం)"
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
 msgstr "డిజైన్"
 
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Design: {title}"
+msgstr "డిజైన్: {title}"
+
 #: src/app/Sidebar.tsx
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Designs"
 msgstr "డిజైన్‌లు"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Desktop"
+msgstr "డెస్క్‌టాప్"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "Desktop notifications are allowed."
@@ -7177,6 +7213,10 @@ msgstr "సడలింపు సమయం కోసం వేచి ఉండ�
 msgid "Failures to go down"
 msgstr "నిలిచిపోయే ముందు వరుస వైఫల్యాలు"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Fallback: {tagName}"
+msgstr "ప్రత్యామ్నాయ భాష: {tagName}"
+
 #: src/features/docs/PagesTab.tsx
 msgid "feedback"
 msgstr "అభిప్రాయం"
@@ -7384,6 +7424,10 @@ msgstr "ముగిసింది"
 #: src/features/status/MonitorToken.tsx
 msgid "Firing alerts fail the monitor, resolved ones recover it."
 msgstr "క్రియాశీల హెచ్చరికలు మానిటర్‌ను విఫలం చేస్తాయి, పరిష్కరించినవి దానిని పునరుద్ధరిస్తాయి."
+
+#: src/components/common/text.ts
+msgid "First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design."
+msgstr "డిజైన్‌లో మొదటి మెయిల్‌లను పెద్దమొత్తంలో పంపడానికి సర్వర్ ఆపరేటర్ ఆమోదం కావాలి. వర్క్‌స్పేస్ సెట్టింగ్‌లలో అడగండి, లేదా డిజైన్ లేకుండా పంపండి."
 
 #: src/features/setup/SetupLayout.tsx
 msgid "First message"
@@ -8149,6 +8193,10 @@ msgstr "ఉటంకించిన టెక్స్ట్‌ను దాచ�
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Hide revoked"
 msgstr "రద్దు చేసినవి దాచండి"
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "Hide the mail as sent"
+msgstr "మెయిల్‌ను పంపినట్లుగా దాచండి"
 
 #: src/components/common/Wizard.tsx
 msgid "Hide the preview"
@@ -9216,6 +9264,10 @@ msgstr "లేబుల్‌లు సంభాషణలను బిల్ల�
 #: src/features/status/SettingsTab.tsx
 msgid "Language"
 msgstr "భాష"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Language of the design"
+msgstr "డిజైన్ భాష"
 
 #: src/features/team/TeamPage.tsx
 msgid "Language of the invite"
@@ -10321,6 +10373,10 @@ msgstr "విలీనం చేయండి…"
 #: src/features/setup/previews.tsx
 msgid "Message"
 msgstr "సందేశం"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Message block"
+msgstr "సందేశ బ్లాక్"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "Message copied"
@@ -11498,9 +11554,21 @@ msgstr "ఏ రోజులూ ఎంచుకోలేదు: ఉత్పత�
 msgid "No deliveries yet"
 msgstr "ఇంకా డెలివరీలు లేవు"
 
+#: src/components/common/DesignChoice.tsx
+msgid "No design"
+msgstr "డిజైన్ లేదు"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No design matches."
+msgstr "ఏ డిజైన్ సరిపోలలేదు."
+
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "No design yet"
 msgstr "ఇంకా డిజైన్ లేదు"
+
+#: src/components/common/DesignChoice.tsx
+msgid "No designs are offered in conversations yet. Owners and admins offer one in the designer."
+msgstr "సంభాషణలలో ఇంకా ఏ డిజైన్ అందించలేదు. యజమానులు, అడ్మిన్‌లు డిజైనర్‌లో ఒకటి అందిస్తారు."
 
 #: src/features/docs/PagesTab.tsx
 msgid "No discussions on this page yet."
@@ -12707,6 +12775,10 @@ msgstr "భాష వీటిలో ఒకటిగా ఉన్న కాం�
 msgid "Only DNS could be checked, not how receiving servers judge the mail."
 msgstr "DNS ను మాత్రమే తనిఖీ చేయగలిగాము, స్వీకరించే సర్వర్‌లు మెయిల్‌ను ఎలా అంచనా వేస్తాయో కాదు."
 
+#: src/components/common/text.ts
+msgid "Only e-mailed messages can be sent in a design."
+msgstr "ఇమెయిల్ ద్వారా పంపే సందేశాలలో మాత్రమే డిజైన్ వాడవచ్చు."
+
 #: src/features/migrations/SwitchStep.tsx
 msgid "Only for a domain or subdomain used for support alone: its MX records decide where all of its mail goes."
 msgstr "సపోర్ట్ కోసం మాత్రమే ఉపయోగించే డొమైన్ లేదా సబ్‌డొమైన్ కోసం మాత్రమే: దాని MX రికార్డ్‌లు దాని మెయిల్ అంతా ఎక్కడికి వెళ్తుందో నిర్ణయిస్తాయి."
@@ -13038,6 +13110,10 @@ msgstr "సంభాషణను తెరవండి"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Open the design"
 msgstr "డిజైన్‌ను తెరవండి"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Open the designs"
+msgstr "డిజైన్‌లను తెరవండి"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Open the discussion"
@@ -13694,6 +13770,10 @@ msgstr "{owner} వ్యక్తిగత మెయిల్‌బాక్స
 msgid "Personal mailboxes"
 msgstr "వ్యక్తిగత మెయిల్‌బాక్స్‌లు"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Phone"
+msgstr "ఫోన్"
+
 #: src/features/settings/automation/ActionRow.tsx
 msgid "Pick a canned reply"
 msgstr "సిద్ధ ప్రత్యుత్తరాన్ని ఎంచుకోండి"
@@ -14076,6 +14156,7 @@ msgstr "Preferred: Yuva reads it again when the provider rotates its certificate
 msgid "Preparing"
 msgstr "సిద్ధం చేస్తోంది"
 
+#: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Wizard.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -14094,6 +14175,11 @@ msgstr "ప్రివ్యూ ({previewKey})"
 msgid "Preview of {0}"
 msgstr "{0} ప్రివ్యూ"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Preview of {title}"
+msgstr "{title} ప్రివ్యూ"
+
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "Preview of the design"
 msgstr "డిజైన్ ప్రివ్యూ"
@@ -14813,6 +14899,7 @@ msgstr "రీలోడ్ చేయండి"
 msgid "Remote images can tell the sender that you opened the mail."
 msgstr "రిమోట్ చిత్రాలు మీరు మెయిల్‌ను తెరిచినట్లు పంపేవారికి తెలియజేయగలవు."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -16017,6 +16104,10 @@ msgstr "5 లో {score} స్కోరు"
 msgid "Screen"
 msgstr "స్క్రీన్"
 
+#: src/components/common/DesignChoice.tsx
+msgid "Screen size"
+msgstr "స్క్రీన్ పరిమాణం"
+
 #: src/features/feedback/Lightbox.tsx
 msgid "Screenshot"
 msgstr "స్క్రీన్‌షాట్"
@@ -16060,6 +16151,10 @@ msgstr "“{search}” కోసం సంభాషణలను శోధిం�
 #: src/components/common/ShortcutSheet.tsx
 msgid "Search designs"
 msgstr "డిజైన్‌లను శోధించండి"
+
+#: src/components/common/DesignChoice.tsx
+msgid "Search designs…"
+msgstr "డిజైన్‌లను వెతకండి…"
 
 #: src/features/conversation/composer/EmojiPanel.tsx
 msgid "Search emoji"
@@ -16360,6 +16455,12 @@ msgstr "పేజీ నుండి అభిప్రాయాన్ని ప
 #: src/components/common/FromPicker.tsx
 msgid "Send from"
 msgstr "దీని నుండి పంపండి"
+
+#: src/app/Palette.tsx
+#: src/components/common/DesignChoice.tsx
+#: src/components/common/ShortcutSheet.tsx
+msgid "Send in an e-mail design"
+msgstr "ఇమెయిల్ డిజైన్‌లో పంపండి"
 
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
@@ -18472,6 +18573,7 @@ msgstr "సంప్రదింపు సందేశం రాస్తుం�
 msgid "The contact, their notes and everything they wrote are deleted for good. This cannot be undone."
 msgstr "కాంటాక్ట్, వారి నోట్‌లు, వారు రాసినదంతా శాశ్వతంగా తొలగించబడతాయి. దీన్ని రద్దు చేయలేరు."
 
+#: src/components/common/DesignChoice.tsx
 #: src/features/broadcasts/TestSend.tsx
 msgid "The contact’s language"
 msgstr "సంప్రదింపు భాష"
@@ -18511,6 +18613,10 @@ msgstr "డెలివరబిలిటీ తనిఖీ ఇంకా పూ
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The design has no version for these subjects, so they are not used: {languages}."
 msgstr "ఈ విషయాలకు డిజైన్‌లో వెర్షన్ లేదు, కాబట్టి ఇవి వాడబడవు: {languages}."
+
+#: src/components/common/text.ts
+msgid "The design has no version in that language. Choose another language."
+msgstr "డిజైన్‌కు ఆ భాషలో వెర్షన్ లేదు. మరో భాషను ఎంచుకోండి."
 
 #: src/features/broadcasts/DesignPicker.tsx
 msgid "The design is frozen when you schedule the broadcast. Changing the design later does not change mail that is already scheduled or sent."
@@ -18868,6 +18974,14 @@ msgstr "లిస్ట్ ఈ ఇన్‌బాక్స్ పేరుతో
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "మెయిల్ చేరింది."
+
+#: src/features/conversation/messages/DesignLine.tsx
+msgid "The mail as sent is no longer kept."
+msgstr "పంపినట్లుగా ఉన్న మెయిల్ ఇకపై భద్రపరచబడదు."
+
+#: src/components/common/text.ts
+msgid "The mail in this design is larger than 500 KB. Write less, or choose a lighter design."
+msgstr "ఈ డిజైన్‌లో మెయిల్ 500 KB కంటే పెద్దది. తక్కువ రాయండి లేదా తేలికైన డిజైన్‌ను ఎంచుకోండి."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "The mail is {size}, close to the 102 KB where Gmail cuts it off."
@@ -19677,6 +19791,26 @@ msgstr "ఈ సంభాషణ అందుబాటులో లేదు"
 msgid "This conversation's e-mail channel has no SMTP account, so the reply was not sent. Add one in the inbox settings."
 msgstr "ఈ సంభాషణ ఇమెయిల్ ఛానెల్‌కు SMTP ఖాతా లేదు, కాబట్టి జవాబు పంపబడలేదు. ఇన్‌బాక్స్ సెట్టింగ్‌లలో ఒకదాన్ని జోడించండి."
 
+#: src/components/common/text.ts
+msgid "This design cannot be used for this mail. Choose another design."
+msgstr "ఈ డిజైన్‌ను ఈ మెయిల్‌కు వాడలేరు. మరో డిజైన్‌ను ఎంచుకోండి."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out."
+msgstr "ఈ డిజైన్‌లో సంభాషణ సందేశ వచనం ఉంచే సందేశ బ్లాక్ ఉంది. పెద్దమొత్తంలో పంపినప్పుడు అది ఖాళీగా ఉండేది. మరో డిజైన్‌ను ఎంచుకోండి లేదా బ్లాక్‌ను తీసివేయండి."
+
+#: src/components/common/text.ts
+msgid "This design has no message block."
+msgstr "ఈ డిజైన్‌లో సందేశ బ్లాక్ లేదు."
+
+#: src/components/common/text.ts
+msgid "This design is archived, no longer offered in conversations or belongs to another inbox. Remove it or choose another."
+msgstr "ఈ డిజైన్ ఆర్కైవ్ అయింది, సంభాషణలలో ఇకపై అందించబడదు లేదా మరో ఇన్‌బాక్స్‌కు చెందినది. దాన్ని తీసివేయండి లేదా మరొకదాన్ని ఎంచుకోండి."
+
+#: src/components/common/text.ts
+msgid "This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links)."
+msgstr "ఈ డిజైన్ సంభాషణ మెయిల్‌లో లేని విలీన ఫీల్డ్‌ను వాడుతోంది (జాబితా పేరు లేదా చందా రద్దు, ప్రాధాన్యతల లింక్‌లు)."
+
 #: src/features/settings/notifications/PushSection.tsx
 #: src/features/settings/profile/Sessions.tsx
 msgid "This device"
@@ -19710,6 +19844,10 @@ msgstr "ఈ ఎండ్‌పాయింట్ {lockedName} ఈవెంట్
 #: src/components/common/text.ts
 msgid "This file type is not allowed."
 msgstr "ఈ ఫైల్ రకం అనుమతించబడదు."
+
+#: src/components/common/DesignChoice.tsx
+msgid "This first mail carries an unsubscribe link."
+msgstr "ఈ మొదటి మెయిల్‌లో చందా రద్దు లింక్ ఉంటుంది."
 
 #: src/components/common/text.ts
 msgid "This goal is a step of a funnel. Take it out of the funnel, or delete the funnel, first."
@@ -19870,6 +20008,10 @@ msgid "This page is not public yet, so visitors see nothing until you publish th
 msgstr "ఈ పేజీ ఇంకా పబ్లిక్ కాదు, కాబట్టి మీరు పేజీని ప్రచురించే వరకు సందర్శకులకు ఏమీ కనిపించదు."
 
 #: src/components/common/text.ts
+msgid "This person opted out of mail like this, so it cannot go out in a design. Send it without a design."
+msgstr "ఈ వ్యక్తి ఇలాంటి మెయిల్‌లను తిరస్కరించారు, కాబట్టి దీన్ని డిజైన్‌లో పంపలేరు. డిజైన్ లేకుండా పంపండి."
+
+#: src/components/common/text.ts
 msgid "This person unsubscribed from everything, reported a mail as spam or had their data erased, so the team cannot add them again."
 msgstr "ఈ వ్యక్తి అన్నింటి నుండి అన్‌సబ్‌స్క్రైబ్ చేశారు, మెయిల్‌ను స్పామ్‌గా నివేదించారు లేదా వారి డేటా చెరిపివేయబడింది, కాబట్టి బృందం వారిని మళ్లీ జోడించలేదు."
 
@@ -20018,6 +20160,10 @@ msgstr "ఈ వర్క్‌స్పేస్ ప్రస్తుతాన�
 #: src/features/broadcasts/BroadcastParts.tsx
 msgid "This workspace may not send broadcasts for now. Running broadcasts are paused."
 msgstr "ఈ వర్క్‌స్పేస్ ప్రస్తుతానికి బ్రాడ్‌కాస్ట్‌లను పంపకూడదు. నడుస్తున్న బ్రాడ్‌కాస్ట్‌లు పాజ్ చేయబడ్డాయి."
+
+#: src/components/common/text.ts
+msgid "This workspace may not send first mails in a design for now."
+msgstr "ఈ వర్క్‌స్పేస్ ప్రస్తుతం డిజైన్‌లో మొదటి మెయిల్‌లను పంపలేదు."
 
 #: src/components/common/text.ts
 msgid "This workspace may send broadcasts once the server's operator approves it. Ask for approval in the workspace settings."
@@ -20179,6 +20325,10 @@ msgstr "రేపు ఉదయం"
 #: src/components/common/text.ts
 msgid "Too many attempts. Wait a little and try again."
 msgstr "చాలా ప్రయత్నాలు. కాసేపు ఆగి మళ్లీ ప్రయత్నించండి."
+
+#: src/components/common/text.ts
+msgid "Too many first mails in a design for now: 20 an hour for you, 200 a day for the workspace. Try again later."
+msgstr "ప్రస్తుతం డిజైన్‌లో మొదటి మెయిల్‌లు చాలా ఎక్కువ: మీకు గంటకు 20, వర్క్‌స్పేస్‌కు రోజుకు 200. తర్వాత మళ్లీ ప్రయత్నించండి."
 
 #: src/features/auth/CreateWorkspace.tsx
 msgid "Too many workspaces were created from your network today. Try again tomorrow."
@@ -21415,6 +21565,10 @@ msgstr "Yuva ఏమి తీసుకురావాలి?"
 msgid "What the chat promises, and what it asks after closing"
 msgstr "చాట్ ఏమి వాగ్దానం చేస్తుంది, ముగిసిన తర్వాత ఏమి అడుగుతుంది"
 
+#: src/components/common/DesignChoice.tsx
+msgid "What the contact would get."
+msgstr "పరిచయానికి అందేది."
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the customer sees"
 msgstr "కస్టమర్ చూసేది"
@@ -22260,7 +22414,7 @@ msgstr "Your replies by e-mail end with"
 msgid "Your replies go out from this address"
 msgstr "మీ జవాబులు ఈ చిరునామా నుండి వెళ్తాయి"
 
-#. placeholder {0}: errorText(err)
+#. placeholder {0}: errorText(err, !!req.design)
 #: src/features/conversation/actions.ts
 msgid "Your reply to {first} was not sent. {0}"
 msgstr "{first} కు మీ జవాబు పంపబడలేదు. {0}"

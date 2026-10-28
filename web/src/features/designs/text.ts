@@ -32,6 +32,7 @@ export function useBlockNames(): Record<BlockType, string> {
     spacer: t`Space`,
     social: t`Social links`,
     footer: t`Footer text`,
+    message: t`Message`,
   }
 }
 
@@ -61,6 +62,7 @@ export function useBlockHints(): Record<BlockType, string> {
     spacer: t`Empty room between blocks`,
     social: t`Links to your profiles`,
     footer: t`Your own lines above the required footer`,
+    message: t`Where the text of a conversation message goes`,
   }
 }
 
@@ -184,6 +186,14 @@ export function useIssueText() {
         return t`Name the base language before adding other languages.`
       case "invalid_locale":
         return t`A language is named twice, or the fallback language is not one of the design’s languages.`
+      case "message_block_repeated":
+        return t`A design can hold one message block.`
+      case "message_block_missing":
+        return t`This design has no message block.`
+      case "merge_field_unavailable":
+        return t`This design uses a merge field that conversation mail does not have (the list name or the unsubscribe and preference links).`
+      case "merge_field_empty":
+        return t`A merge field in this design has no fallback and is empty for this person.`
       case "translation_block":
         return t`A translation is left for a block that no longer has text.`
       default:
