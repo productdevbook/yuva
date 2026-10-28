@@ -180,7 +180,7 @@ workspace or another reader is visible.
 
 Status: M13.1–M13.5 done in `v0.0.9` and deployed on 2026-10-12 (#26–#30); M13.6 (#91) and M13.7 (#92)
 done in `v0.0.18`, verified on 2026-10-19; M13.8 planned; M13.9 (#203) in progress; M13.10
-(#209) planned, spec `docs/specs/conversation-designs.md`. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
+(#209) done on main, verified on 2026-10-28 in the panel and Mailpit; spec `docs/specs/conversation-designs.md`. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
 
 - **M13.1 Lists and subscribing:** mailing lists with recorded consent and double opt-in,
   `<yuva-subscribe>` (HTML, React, Nuxt, shadcn), unsubscribe and preference pages with one-click, an API
@@ -724,7 +724,7 @@ the undo puts them back.
 
 ## M40 — Triggered e-mails
 
-Status: planned (#205); spec `docs/specs/triggered-emails.md`, decisions in `architecture.md` ›
+Status: M40.1–M40.3 done on main (#205), verified on 2026-10-28 in the panel; spec `docs/specs/triggered-emails.md`, decisions in `architecture.md` ›
 Broadcasts and e-mail designs › Triggered e-mails (M40).
 
 - **M40.1 Server, API and MCP:** broadcasts of kind `triggered` on `contact_identified`, a delay,
