@@ -537,47 +537,55 @@ type AutomationRun struct {
 }
 
 type Broadcast struct {
-	ID                 uuid.UUID
-	WorkspaceID        uuid.UUID
-	InboxID            uuid.UUID
-	ChannelID          *uuid.UUID
-	Name               string
-	Subject            string
-	Preheader          string
-	DesignID           *uuid.UUID
-	DesignVersion      *int32
-	Document           []byte
-	Audience           []byte
-	ClickTracking      bool
-	State              string
-	PauseReason        *string
-	StateDetail        *string
-	ScheduledAt        *time.Time
-	WaitingUntil       *time.Time
-	StartedAt          *time.Time
-	ResumedAt          *time.Time
-	FinishedAt         *time.Time
-	LastTestAt         *time.Time
-	SnapshotAfter      *uuid.UUID
-	SnapshotDone       bool
-	SenderFailingSince *time.Time
-	Counts             []byte
-	CreatedBy          *uuid.UUID
-	ScheduledBy        *uuid.UUID
-	ScheduledByKey     *uuid.UUID
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
-	Utm                bool
-	UtmCampaign        string
-	PacePerHour        *int32
-	PacePerDay         *int32
-	PacePerMonth       *int32
-	PaceNextAt         *time.Time
-	ChangelogEntryID   *uuid.UUID
-	Timezone           string
-	SendWindowStart    *int16
-	SendWindowEnd      *int16
-	Translations       []byte
+	ID                    uuid.UUID
+	WorkspaceID           uuid.UUID
+	InboxID               uuid.UUID
+	ChannelID             *uuid.UUID
+	Name                  string
+	Subject               string
+	Preheader             string
+	DesignID              *uuid.UUID
+	DesignVersion         *int32
+	Document              []byte
+	Audience              []byte
+	ClickTracking         bool
+	State                 string
+	PauseReason           *string
+	StateDetail           *string
+	ScheduledAt           *time.Time
+	WaitingUntil          *time.Time
+	StartedAt             *time.Time
+	ResumedAt             *time.Time
+	FinishedAt            *time.Time
+	LastTestAt            *time.Time
+	SnapshotAfter         *uuid.UUID
+	SnapshotDone          bool
+	SenderFailingSince    *time.Time
+	Counts                []byte
+	CreatedBy             *uuid.UUID
+	ScheduledBy           *uuid.UUID
+	ScheduledByKey        *uuid.UUID
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
+	Utm                   bool
+	UtmCampaign           string
+	PacePerHour           *int32
+	PacePerDay            *int32
+	PacePerMonth          *int32
+	PaceNextAt            *time.Time
+	ChangelogEntryID      *uuid.UUID
+	Timezone              string
+	SendWindowStart       *int16
+	SendWindowEnd         *int16
+	Translations          []byte
+	Kind                  string
+	Trigger               []byte
+	DelayMinutes          *int32
+	Basis                 *string
+	BackfillDays          int32
+	ServiceConfirmedBy    *uuid.UUID
+	ServiceConfirmedByKey *uuid.UUID
+	ServiceConfirmedAt    *time.Time
 }
 
 type BroadcastClick struct {
@@ -823,6 +831,7 @@ type ContactExternalID struct {
 	InboxID     uuid.UUID
 	ExternalID  string
 	ContactID   uuid.UUID
+	CreatedAt   *time.Time
 }
 
 type ContactNote struct {
@@ -2815,6 +2824,19 @@ type TrashEmptyItem struct {
 	EmptyID        uuid.UUID
 	ConversationID uuid.UUID
 	TrashedAt      time.Time
+}
+
+type TriggeredEnrollment struct {
+	WorkspaceID uuid.UUID
+	BroadcastID uuid.UUID
+	ContactID   uuid.UUID
+	TriggeredAt time.Time
+	State       string
+	SkipReason  *string
+	DeliveryID  *uuid.UUID
+	Source      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type UsageCounter struct {

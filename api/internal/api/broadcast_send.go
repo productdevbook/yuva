@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/binary"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"html"
@@ -171,10 +172,19 @@ func (s *Server) SweepBroadcasts(ctx context.Context) error {
 			switch {
 			case b.State == bcPreparing || (b.State == bcScheduled && b.ScheduledAt != nil && !b.ScheduledAt.After(now)):
 				batch = append(batch, river.InsertManyParams{Args: BroadcastStartArgs{WorkspaceID: ws, BroadcastID: b.ID}, InsertOpts: broadcastJobOpts(time.Time{}, "")})
-			case b.State == bcSending && b.ChannelID != nil && !seen[*b.ChannelID]:
+			case b.State == bcActive && !b.SnapshotDone:
+				batch = append(batch, river.InsertManyParams{Args: BroadcastStartArgs{WorkspaceID: ws, BroadcastID: b.ID}, InsertOpts: broadcastJobOpts(time.Time{}, "")})
+			case (b.State == bcSending || (b.State == bcActive && parseCounts(b.Counts).Queued > 0)) && b.ChannelID != nil && !seen[*b.ChannelID]:
 				seen[*b.ChannelID] = true
 				batch = append(batch, river.InsertManyParams{Args: BroadcastSendArgs{WorkspaceID: ws, ChannelID: *b.ChannelID}, InsertOpts: broadcastJobOpts(time.Time{}, broadcastQueue)})
 			}
+		}
+		due, err := s.st.ListDueTriggered(ctx, store.ListDueTriggeredParams{WorkspaceID: ws, Now: now})
+		if err != nil {
+			return err
+		}
+		for _, id := range due {
+			batch = append(batch, river.InsertManyParams{Args: TriggeredDueArgs{WorkspaceID: ws, BroadcastID: id}, InsertOpts: broadcastJobOpts(time.Time{}, broadcastQueue)})
 		}
 		if len(batch) > 0 {
 			if _, err := s.jobs.InsertMany(ctx, batch); err != nil {
@@ -363,6 +373,9 @@ func (r *bcRenderer) renderVersion(ver *bcVersion, v design.Values, listID uuid.
 		Sender: design.Sender{LegalName: deref(r.inbox.SenderLegalName), PostalAddress: deref(r.inbox.SenderPostalAddress),
 			Registration: deref(r.inbox.SenderRegistration), Contact: deref(r.inbox.SenderContact)},
 	}
+	if serviceBasis(r.b) {
+		in.Footer = design.FooterService
+	}
 	in.Lang, _ = design.FooterLang(r.inbox.DefaultLocale)
 	if tag != "" {
 		in.Lang, _ = design.FooterLang(tag)
@@ -472,6 +485,9 @@ func (r *bcRenderer) message(d store.BroadcastDelivery, c contactRow) ([]byte, e
 		listID = *d.ListID
 	}
 	manage := r.s.manageURL(ws, listID, d.ContactID, r.b.ID)
+	if serviceBasis(r.b) {
+		manage = r.s.triggeredStopURL(r.b, d.ContactID)
+	}
 	v := contactValues(c.Name, d.Email, c.Attributes)
 	v.UnsubscribeURL, v.PreferencesURL = manage, manage
 	tag := deref(d.Locale)
@@ -511,11 +527,14 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 		if err != nil {
 			return err
 		}
-		switch b.State {
-		case bcPreparing:
+		switch {
+		case b.State == bcPreparing:
 			goOn = true
 			return nil
-		case bcScheduled:
+		case b.Kind == bcTriggered && (b.State == bcActive || b.State == bcPaused):
+			goOn = !b.SnapshotDone
+			return nil
+		case b.State == bcScheduled:
 		default:
 			return nil
 		}
@@ -528,10 +547,16 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 			return err
 		}
 		prev := b.State
-		if s.broadcastMode() == broadcastsOff || w.BroadcastsStatus != wsAllowed {
+		switch {
+		case s.broadcastMode() == broadcastsOff || w.BroadcastsStatus != wsAllowed:
 			b.State, b.PauseReason = bcPaused, new(string(oas.BroadcastPauseReasonWorkspaceSuspended))
 			b.StateDetail = new("the workspace may not send broadcasts now")
-		} else {
+		case b.Kind == bcTriggered:
+			if err := s.startTriggered(ctx, q, &b, w); err != nil {
+				return err
+			}
+			goOn = !b.SnapshotDone
+		default:
 			b.State = bcPreparing
 			goOn = true
 		}
@@ -544,15 +569,13 @@ func (s *Server) StartBroadcast(ctx context.Context, ws, id uuid.UUID, budget ti
 	if err != nil || !goOn {
 		return notYet, err
 	}
-	a := parseAudience(b.Audience)
-	from := ""
-	if b.ChannelID != nil {
-		if ch, err := s.st.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: ws, ChannelID: *b.ChannelID}); err == nil {
-			_, from, _, _ = s.broadcastAccount(ch)
-		}
+	if b.Kind == bcTriggered {
+		return s.backfillTriggered(ctx, ws, id, deadline)
 	}
-	if from == "" {
-		return -1, s.failBroadcast(ctx, ws, id, "the broadcast's e-mail channel cannot send")
+	a := parseAudience(b.Audience)
+	_, from, err := s.broadcastFrom(ctx, s.st.Queries, ws, b.ChannelID)
+	if err != nil {
+		return -1, s.senderFailure(ctx, ws, id, err)
 	}
 	domain := email.Domain(from)
 	var doc design.Document
@@ -675,7 +698,19 @@ func (s *Server) recountBroadcast(ctx context.Context, q *store.Queries, b *stor
 		"recipients": r.Recipients, "queued": r.Queued, "sent": r.Sent, "failed": r.Failed, "bounced": r.Bounced,
 		"complained": r.Complained, "unsubscribed": r.Unsubscribed, "replied": r.Replied, "auto_replied": max(r.AutoReplied, c.AutoReplied),
 		"clicked": r.Clicked, "skipped_suppressed": r.SkippedSuppressed, "skipped_opted_out": r.SkippedOptedOut,
-		"skipped_unsubscribed": r.SkippedUnsubscribed, "skipped_cancelled": r.SkippedCancelled,
+		"skipped_unsubscribed": r.SkippedUnsubscribed, "skipped_cancelled": r.SkippedCancelled, "skipped_stopped": r.SkippedStopped,
+	}
+	if b.Kind == bcTriggered {
+		var cur map[string]int64
+		_ = json.Unmarshal(b.Counts, &cur)
+		for k, v := range set {
+			if k != "queued" {
+				set[k] = max(v, cur[k])
+			}
+		}
+		if err := enrollmentCounts(ctx, q, *b, set); err != nil {
+			return err
+		}
 	}
 	if err := q.SetBroadcastCounts(ctx, store.SetBroadcastCountsParams{WorkspaceID: b.WorkspaceID, ID: b.ID, Counts: mustJSON(set)}); err != nil {
 		return err
@@ -694,8 +729,11 @@ func (s *Server) failBroadcast(ctx context.Context, ws, id uuid.UUID, why string
 		if err != nil {
 			return err
 		}
-		if b.State != bcPreparing && b.State != bcSending {
+		if b.State != bcPreparing && b.State != bcSending && b.State != bcActive {
 			return nil
+		}
+		if err := q.CancelWaitingEnrollments(ctx, store.CancelWaitingEnrollmentsParams{WorkspaceID: ws, BroadcastID: id, Now: s.now()}); err != nil {
+			return err
 		}
 		prev, now := b.State, s.now()
 		b.State, b.StateDetail, b.FinishedAt = bcFailed, &why, &now
@@ -719,7 +757,7 @@ func (s *Server) pauseBroadcast(ctx context.Context, q *store.Queries, events *e
 	if err != nil {
 		return false, err
 	}
-	if b.State != bcPreparing && b.State != bcSending && b.State != bcScheduled {
+	if b.State != bcPreparing && b.State != bcSending && b.State != bcActive && b.State != bcScheduled {
 		return false, nil
 	}
 	prev := b.State
@@ -782,6 +820,7 @@ func (s *Server) SendBroadcasts(ctx context.Context, ws, channelID uuid.UUID, bu
 		sessSent  int
 		sessStart time.Time
 		deferred  = map[uuid.UUID]time.Time{}
+		idle      = map[uuid.UUID]bool{}
 	)
 	closeSession := func() {
 		if sess != nil {
@@ -803,6 +842,9 @@ func (s *Server) SendBroadcasts(ctx context.Context, ws, channelID uuid.UUID, bu
 		var b *store.Broadcast
 		wait := time.Duration(-1)
 		for i := range list {
+			if idle[list[i].ID] {
+				continue
+			}
 			at, ok := deferred[list[i].ID]
 			if list[i].WaitingUntil != nil && list[i].WaitingUntil.After(now) {
 				at, ok = *list[i].WaitingUntil, true
@@ -862,9 +904,9 @@ func (s *Server) SendBroadcasts(ctx context.Context, ws, channelID uuid.UUID, bu
 		case gap > 0:
 			size = min(size, int32(batchTime/gap)+1)
 		}
-		ch, err := s.st.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: ws, ChannelID: channelID})
-		if store.IsNotFound(err) {
-			if err := s.failBroadcast(ctx, ws, b.ID, "the broadcast's e-mail channel was removed"); err != nil {
+		ch, _, err := s.broadcastFrom(ctx, s.st.Queries, ws, &channelID)
+		if errors.Is(err, errChannelGone) || errors.Is(err, errSenderNotReady) {
+			if err := s.senderFailure(ctx, ws, b.ID, err); err != nil {
 				return 0, err
 			}
 			continue
@@ -880,6 +922,10 @@ func (s *Server) SendBroadcasts(ctx context.Context, ws, channelID uuid.UUID, bu
 			qd, err := s.st.QueuedBroadcastDeliveries(ctx, store.QueuedBroadcastDeliveriesParams{WorkspaceID: ws, BroadcastID: b.ID})
 			if err != nil {
 				return 0, err
+			}
+			if qd.Queued == 0 && b.State == bcActive {
+				idle[b.ID] = true
+				continue
 			}
 			if qd.Queued == 0 {
 				if err := s.FinishBroadcast(ctx, ws, b.ID); err != nil {
@@ -1008,6 +1054,7 @@ func windowClosed(b store.Broadcast, now time.Time) bool {
 func (s *Server) sendBatch(ctx context.Context, r *bcRenderer, sess email.Session, due []store.BroadcastDelivery, pace, gap time.Duration, paceFactor *float64, sessSent *int) ([]deliveryResult, int, int) {
 	ws := r.b.WorkspaceID
 	lists := parseAudience(r.b.Audience).ListIDs
+	service := serviceBasis(r.b)
 	var out []deliveryResult
 	rejects := 0
 	until := time.Now().Add(batchTime)
@@ -1017,7 +1064,7 @@ func (s *Server) sendBatch(ctx context.Context, r *bcRenderer, sess email.Sessio
 			return out, stopNone, rejects
 		}
 		cur, err := s.st.GetBroadcast(ctx, store.GetBroadcastParams{WorkspaceID: ws, ID: r.b.ID})
-		if err != nil || cur.State != bcSending {
+		if err != nil || (cur.State != bcSending && cur.State != bcActive) {
 			return out, stopState, rejects
 		}
 		if windowClosed(cur, s.now()) {
@@ -1027,7 +1074,13 @@ func (s *Server) sendBatch(ctx context.Context, r *bcRenderer, sess email.Sessio
 		skip := func(reason string) {
 			res.state, res.skip = string(oas.BroadcastDeliveryStateSkipped), new(reason)
 		}
-		subscribed, err := s.st.IsContactSubscribed(ctx, store.IsContactSubscribedParams{WorkspaceID: ws, ContactID: d.ContactID, Email: d.Email, ListIds: lists})
+		var subscribed, stopped bool
+		if service {
+			subscribed = true
+			stopped, err = s.st.IsInboxMailOptedOut(ctx, store.IsInboxMailOptedOutParams{WorkspaceID: ws, InboxID: r.b.InboxID, ContactID: d.ContactID})
+		} else {
+			subscribed, err = s.st.IsContactSubscribed(ctx, store.IsContactSubscribedParams{WorkspaceID: ws, ContactID: d.ContactID, Email: d.Email, ListIds: lists})
+		}
 		if err != nil {
 			return out, stopState, rejects
 		}
@@ -1042,6 +1095,8 @@ func (s *Server) sendBatch(ctx context.Context, r *bcRenderer, sess email.Sessio
 		switch {
 		case !subscribed:
 			skip(string(oas.BroadcastSkipReasonUnsubscribed))
+		case stopped:
+			skip(string(oas.BroadcastSkipReasonStopped))
 		case suppressed:
 			skip(string(oas.BroadcastSkipReasonSuppressed))
 		case opted:
@@ -1071,7 +1126,7 @@ func (s *Server) sendBatch(ctx context.Context, r *bcRenderer, sess email.Sessio
 				return out, stopState, rejects
 			}
 			cur, err = s.st.GetBroadcast(ctx, store.GetBroadcastParams{WorkspaceID: ws, ID: r.b.ID})
-			if err != nil || cur.State != bcSending {
+			if err != nil || (cur.State != bcSending && cur.State != bcActive) {
 				return out, stopState, rejects
 			}
 			if windowClosed(cur, s.now()) {
@@ -1197,7 +1252,7 @@ func (s *Server) commitBatch(ctx context.Context, b store.Broadcast, results []d
 		if err != nil {
 			return err
 		}
-		if cur.State != bcSending && cur.State != bcPaused {
+		if cur.State != bcSending && cur.State != bcActive && cur.State != bcPaused {
 			return s.recountBroadcast(ctx, q, &cur)
 		}
 		return nil
@@ -1224,6 +1279,44 @@ func lastError(results []deliveryResult) string {
 		}
 	}
 	return ""
+}
+
+func (s *Server) startTriggered(ctx context.Context, q *store.Queries, b *store.Broadcast, w store.Workspace) error {
+	now := s.now()
+	b.State, b.StartedAt, b.ResumedAt, b.SnapshotAfter = bcActive, &now, &now, nil
+	b.SnapshotDone = b.BackfillDays == 0
+	return s.noteBroadcastOperator(ctx, q, noticeTriggeredStarted, "", w.Name, "triggered e-mail "+b.ID.String()+" started, basis "+deref(b.Basis))
+}
+
+func (s *Server) broadcastFrom(ctx context.Context, q *store.Queries, ws uuid.UUID, channelID *uuid.UUID) (store.EmailChannel, string, error) {
+	if channelID == nil {
+		return store.EmailChannel{}, "", errChannelGone
+	}
+	ch, err := q.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: ws, ChannelID: *channelID})
+	if store.IsNotFound(err) {
+		return ch, "", errChannelGone
+	}
+	if err != nil {
+		return ch, "", err
+	}
+	_, from, ok, err := s.broadcastAccount(ch)
+	if err != nil {
+		return ch, "", err
+	}
+	if !ok || from == "" {
+		return ch, "", errSenderNotReady
+	}
+	return ch, from, nil
+}
+
+func (s *Server) senderFailure(ctx context.Context, ws, id uuid.UUID, err error) error {
+	switch {
+	case errors.Is(err, errChannelGone):
+		return s.failBroadcast(ctx, ws, id, "the broadcast's e-mail channel was removed")
+	case errors.Is(err, errSenderNotReady):
+		return s.pauseForSender(ctx, ws, id, "the channel has no SMTP account or address to send from")
+	}
+	return err
 }
 
 func (s *Server) pauseForSender(ctx context.Context, ws, id uuid.UUID, detail string) error {

@@ -83,6 +83,7 @@ var broadcastNoticeTitles = map[string]string{
 	noticeBroadcastApproval:  "Broadcast approval requested",
 	noticeBroadcastSuspended: "Workspace suspended from broadcasts",
 	noticeBroadcastPaused:    "Broadcast paused",
+	noticeTriggeredStarted:   "Triggered e-mail started",
 	noticeAnalyticsLimit:     "Analytics monthly limit reached",
 	noticeAnalyticsDropped:   "Analytics events mostly dropped",
 	noticeSESTenantPaused:    "SES tenant paused",

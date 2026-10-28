@@ -10440,7 +10440,8 @@ paths:
       operationId: listBroadcasts
       summary: List broadcasts
       description: |
-        Newest first, in the inboxes the caller can see. `state` may be repeated.
+        Newest first, in the inboxes the caller can see. `state` may be repeated; `kind` keeps
+        one-off broadcasts or triggered e-mails.
 
         Owners, admins, agents (the broadcasts of their inboxes, read only) and API keys. Scope:
         `broadcasts:read`.
@@ -10452,6 +10453,10 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: kind
+          in: query
+          schema:
+            $ref: "#/components/schemas/BroadcastKind"
         - name: state
           in: query
           style: form
@@ -10489,6 +10494,14 @@ paths:
         when absent; `send_window` limits sending to hours of the day in that zone. Everything can
         be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
         missing before it can be scheduled.
+
+        `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+        consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+        (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+        `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+        paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+        `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+        are refused for `service`.
 
         Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
         broadcast write answers `403 broadcasts_disabled`.
@@ -10593,6 +10606,14 @@ paths:
         `409 pace_too_slow` (with `days`, the estimate, which counts the sending hours) refuses a
         change under which the mail still to go out would take more than 365 days. Changing
         `timezone` never moves `scheduled_at`.
+
+        A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+        (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+        `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+        `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+        resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+        and `channel_id` never change after the draft, and other fields answer
+        `409 invalid_state`.
 
         `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
         shorter than 30 minutes or with `start` equal to `end`, a malformed time.
@@ -10777,6 +10798,14 @@ paths:
         `confirm_recipients`, when given, must equal the current audience count
         (`409 audience_changed` with `recipients`).
 
+        A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+        `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+        (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+        before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+        `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+        when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+        live triggered e-mails (`409 too_many_triggered`).
+
         Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
         `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
         (the server's operator has not approved the workspace yet),
@@ -10846,7 +10875,8 @@ paths:
       summary: Pause sending
       description: |
         A preparing or sending broadcast stops within the batch in progress (at most 50 mails)
-        with `pause_reason: member`. `409 invalid_state` otherwise.
+        with `pause_reason: member`; an active triggered e-mail stops sending and keeps enrolling.
+        `409 invalid_state` otherwise.
 
         Owners, admins and API keys. Scope: `broadcasts:send`.
       tags: [broadcasts]
@@ -10881,6 +10911,11 @@ paths:
         would block it (the inbox's Amazon SES tenant is paused, or its channel lost its tenant
         isolation).
 
+        A triggered e-mail becomes `active` again: the review runs again (`409 review_failed`
+        with the blocking `items`) and the design as saved now is frozen, so mail still queued
+        goes out with it. Contacts whose due time passed more than 7 days before it can process
+        them are skipped (`late`).
+
         Owners, admins and API keys. Scope: `broadcasts:send`.
       tags: [broadcasts]
       parameters:
@@ -10908,7 +10943,9 @@ paths:
       summary: Cancel a broadcast
       description: |
         A scheduled, preparing, sending or paused broadcast stops for good within the batch in
-        progress; mail not sent yet is skipped (`cancelled`). `409 invalid_state` otherwise.
+        progress; mail not sent yet is skipped (`cancelled`). A triggered e-mail (scheduled,
+        active or paused) stops enrolling for good and drops the contacts waiting (`cancelled`).
+        `409 invalid_state` otherwise.
 
         Owners, admins and API keys. Scope: `broadcasts:send`.
       tags: [broadcasts]
@@ -11020,6 +11057,70 @@ paths:
         "403":
           $ref: "#/components/responses/Problem"
         "404":
+          $ref: "#/components/responses/Problem"
+  /v1/broadcasts/{broadcastId}/enrollments:
+    get:
+      operationId: listBroadcastEnrollments
+      summary: List a triggered e-mail's contacts
+      description: |
+        The contacts a triggered e-mail enrolled: who waits, with when their mail is due
+        (`sends_at`), who was mailed (`delivery_id`) and who was skipped and why. Newest trigger
+        first; with `state=waiting`, the one due first first. `400 validation_failed` for a one-off
+        broadcast. Nothing is written per enrollment to events or webhooks.
+
+        Owners, admins, agents of its inbox and API keys. Scopes: `broadcasts:read` and
+        `contacts:read`, as for the deliveries.
+      tags: [broadcasts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/BroadcastId"
+        - name: state
+          in: query
+          schema:
+            $ref: "#/components/schemas/TriggeredEnrollmentState"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: A page of enrollments.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TriggeredEnrollmentPage"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/broadcasts/{broadcastId}/enrollments/{contactId}:
+    delete:
+      operationId: removeBroadcastEnrollment
+      summary: Take a contact off the waiting list
+      description: |
+        A waiting contact gets no mail from this triggered e-mail: the enrollment is `skipped`
+        with `removed` and kept, so the contact is never enrolled again. `409 invalid_state` when
+        the contact is not waiting; `404` for a contact the triggered e-mail never enrolled. Sends
+        `broadcast.updated`.
+
+        Owners, admins and API keys. Scope: `broadcasts:write`.
+      tags: [broadcasts]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - $ref: "#/components/parameters/BroadcastId"
+        - $ref: "#/components/parameters/ContactId"
+      responses:
+        "204":
+          description: Removed.
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
           $ref: "#/components/responses/Problem"
   /v1/migrations:
     get:
@@ -22531,6 +22632,9 @@ components:
           `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
         - `email_design.updated`: `name`, `for_conversations` (`from`, `to`) when a save offers
           the design in conversations or stops offering it; other saves are not recorded.
+        - `broadcast.scheduled`: a triggered e-mail was started or scheduled: `name`, `kind`,
+          `basis`, `backfill_days`, `service_confirmed` (`true` when a `service` one was confirmed
+          by the actor). One-off broadcasts are not recorded.
 
         Details never make an action fail: when they would be too long, lists are replaced by
         `<name>_count` and `truncated` is `true`.
@@ -22621,12 +22725,13 @@ components:
         - member_address.verified
         - member_address.removed
         - email_design.updated
-      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditMailboxDelegateGranted, AuditMailboxDelegateRevoked, AuditMailboxHandedOver, AuditMailboxDeletedOnLeave, AuditMailboxOrphaned, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditConversationsDeleted, AuditTrashEmptied, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved, AuditEmailDesignUpdated]
+        - broadcast.scheduled
+      x-enum-varnames: [AuditMemberJoined, AuditMemberRoleChanged, AuditMemberRemoved, AuditMemberInboxAccessGranted, AuditMemberInboxAccessRevoked, AuditInviteCreated, AuditInviteDeleted, AuditApiKeyCreated, AuditApiKeyRevoked, AuditOAuthGrantCreated, AuditOAuthGrantRevoked, AuditWebhookCreated, AuditWebhookUpdated, AuditWebhookDeleted, AuditWebhookSecretRotated, AuditChannelCredentialsChanged, AuditChannelKeyRotated, AuditChannelForwardingAddressRotated, AuditChannelAddressVerified, AuditChannelAddressLost, AuditChannelAddressProven, AuditChannelDkimKeyCreated, AuditChannelDkimKeyDeleted, AuditInboxIdentitySecretRotated, AuditInboxCreated, AuditInboxDeleted, AuditInboxPurposeChanged, AuditMailboxDelegateGranted, AuditMailboxDelegateRevoked, AuditMailboxHandedOver, AuditMailboxDeletedOnLeave, AuditMailboxOrphaned, AuditConversationTrashed, AuditConversationRestored, AuditConversationDeleted, AuditConversationsDeleted, AuditTrashEmptied, AuditMessageRedacted, AuditContactDeleted, AuditContactConsentExported, AuditListConsentExported, AuditAnalyticsExportCreated, AuditWorkspaceRetentionChanged, AuditWorkspaceBotsMaySendChanged, AuditWorkspaceBroadcastsByKeysChanged, AuditWorkspaceFocusChanged, AuditWorkspaceBroadcastApprovalRequested, AuditWorkspaceBroadcastsApproved, AuditWorkspaceBroadcastsDenied, AuditWorkspaceBroadcastsSuspended, AuditWorkspaceBroadcastLimitChanged, AuditTeamCreated, AuditTeamDeleted, AuditTeamMemberAdded, AuditTeamMemberRemoved, AuditTeamInboxAccessGranted, AuditTeamInboxAccessRevoked, AuditWorkspaceSlackConnected, AuditWorkspaceSlackDisconnected, AuditMemberSlackLinked, AuditMemberSlackUnlinked, AuditSsoProviderCreated, AuditSsoProviderUpdated, AuditSsoProviderDeleted, AuditSsoSettingsChanged, AuditSsoSignedIn, AuditSsoSignInRefused, AuditSsoDomainAdded, AuditSsoDomainVerified, AuditSsoDomainDeleted, AuditSsoDomainLapsed, AuditIssueIntegrationConnected, AuditIssueIntegrationUpdated, AuditIssueIntegrationDisconnected, AuditIssueIntegrationSecretRotated, AuditAutomationRuleCreated, AuditAutomationRuleUpdated, AuditAutomationRuleDeleted, AuditMemberAddressAdded, AuditMemberAddressVerified, AuditMemberAddressRemoved, AuditEmailDesignUpdated, AuditBroadcastScheduled]
     AuditTargetType:
       type: string
       description: "`conversations` and `trash` name the workspace's conversations and its trash; their id is the workspace's."
-      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, conversations, trash, message, team, sso, sso_domain, issue_integration, automation_rule, mailbox, email_design]
-      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetConversations, AuditTargetTrash, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration, AuditTargetAutomationRule, AuditTargetMailbox, AuditTargetEmailDesign]
+      enum: [workspace, member, invite, inbox, channel, api_key, oauth_grant, webhook, contact, list, analytics_export, conversation, conversations, trash, message, team, sso, sso_domain, issue_integration, automation_rule, mailbox, email_design, broadcast]
+      x-enum-varnames: [AuditTargetWorkspace, AuditTargetMember, AuditTargetInvite, AuditTargetInbox, AuditTargetChannel, AuditTargetApiKey, AuditTargetOAuthGrant, AuditTargetWebhook, AuditTargetContact, AuditTargetList, AuditTargetAnalyticsExport, AuditTargetConversation, AuditTargetConversations, AuditTargetTrash, AuditTargetMessage, AuditTargetTeam, AuditTargetSso, AuditTargetSsoDomain, AuditTargetIssueIntegration, AuditTargetAutomationRule, AuditTargetMailbox, AuditTargetEmailDesign, AuditTargetBroadcast]
     AuditTarget:
       type: object
       required: [type, id]
@@ -25726,6 +25831,12 @@ components:
           $ref: "#/components/schemas/Attributes"
         blocked:
           type: boolean
+        skip_triggers:
+          type: boolean
+          description: |
+            An external id that is the contact's first in its inbox enrolls nobody in the inbox's
+            triggered e-mails (`contact_identified`): for a host backend that copies in users the
+            product already had.
     ContactUpdate:
       type: object
       minProperties: 1
@@ -25747,6 +25858,11 @@ components:
           $ref: "#/components/schemas/Attributes"
         blocked:
           type: boolean
+        skip_triggers:
+          type: boolean
+          description: |
+            New external ids that are the contact's first in their inbox enroll nobody in that
+            inbox's triggered e-mails (`contact_identified`).
         clear_undeliverable:
           type: array
           maxItems: 20
@@ -33511,7 +33627,101 @@ components:
         `draft` → `scheduled` (until `scheduled_at`) → `preparing` (taking the audience) →
         `sending` → `sent`. `paused` stops sending until resumed; `cancelled` ends it for good;
         `failed` when it cannot go on (its channel was removed).
-      enum: [draft, scheduled, preparing, sending, paused, sent, cancelled, failed]
+
+        A triggered e-mail (`kind` `triggered`): `draft` → `scheduled` (while it starts later) →
+        `active` ⇄ `paused` → `cancelled` (shown as Stopped), or `failed` when its channel is
+        removed; it never becomes `sent`. While `active` it enrolls contacts and sends them their
+        mail; `paused` stops sending but keeps enrolling, so nobody is missed.
+      enum: [draft, scheduled, preparing, sending, active, paused, sent, cancelled, failed]
+    BroadcastKind:
+      type: string
+      description: |
+        `once`: sent once to the audience taken when sending starts. `triggered`: sent to each
+        contact of the inbox once, `trigger.delay_minutes` after its trigger happened.
+      enum: [once, triggered]
+      x-enum-varnames: [KindOnce, KindTriggered]
+    BroadcastTriggerEvent:
+      type: string
+      description: |
+        `contact_identified`: the contact got its first external id in the inbox, from an identity
+        token (widget, mobile SDKs, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` (unless
+        `skip_triggers`), feedback or a subscription that carries an external id. Contact imports,
+        help-desk migrations and merges never trigger.
+      enum: [contact_identified]
+      x-enum-varnames: [TriggerContactIdentified]
+    BroadcastBasis:
+      type: string
+      description: |
+        Why the person may get the mail, chosen when the triggered e-mail is created and fixed after
+        the draft. `marketing`: only contacts subscribed to one of `audience.list_ids` (1 to 10) at
+        their due time, with the broadcast footer and one-click unsubscribe from that list; the only
+        basis for advertising, newsletters and offers. `service`: every matching contact, for mail
+        about the person's use of the product (onboarding, their account, a feedback request);
+        no lists; starting it needs `confirm_service`. Its footer says the person gets it because
+        they use the inbox's product and carries the postal address and a one-click unsubscribe
+        that stops the inbox's service triggered e-mails and designed outreach for them.
+      enum: [service, marketing]
+      x-enum-varnames: [BasisService, BasisMarketing]
+    BroadcastTrigger:
+      type: object
+      required: [event, delay_minutes, basis, backfill_days]
+      properties:
+        event:
+          $ref: "#/components/schemas/BroadcastTriggerEvent"
+        delay_minutes:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 525600
+          description: |
+            How long after the trigger the mail is due, 0 to 365 days. Changing it moves the due
+            time of everyone still waiting.
+        basis:
+          $ref: "#/components/schemas/BroadcastBasis"
+        backfill_days:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 30
+          description: |
+            When it starts, also enroll contacts whose trigger happened in this many days before the
+            start (their delay counts from then). 0 enrolls only triggers from the start on.
+    BroadcastTriggerInput:
+      type: object
+      description: |
+        On create `event`, `delay_minutes` and `basis` are required. On update only the fields given
+        change: all of them on a draft, `delay_minutes` alone while it is scheduled, active or
+        paused (`409 invalid_state` for the others), and `backfill_days` while it has not started.
+      properties:
+        event:
+          $ref: "#/components/schemas/BroadcastTriggerEvent"
+        delay_minutes:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 525600
+        basis:
+          $ref: "#/components/schemas/BroadcastBasis"
+        backfill_days:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 30
+    BroadcastServiceConfirmed:
+      type: object
+      description: Who confirmed, when it was started, that a `service` triggered e-mail is about using the product.
+      required: [at]
+      properties:
+        by:
+          type: string
+          format: uuid
+          description: The member; absent when an API key confirmed or the member left.
+        by_api_key:
+          type: string
+          format: uuid
+        at:
+          type: string
+          format: date-time
     BroadcastPauseReason:
       type: string
       description: |
@@ -33599,6 +33809,13 @@ components:
       description: |
         Recipients left out: when the audience was taken (`suppressed`, `opted_out`) or later,
         before their mail went out (`unsubscribed`, `suppressed`, `opted_out`, `cancelled`).
+
+        A triggered e-mail adds the contacts it decided not to mail at their due time:
+        `no_address` (no e-mail address), `blocked`, `not_subscribed` (marketing: on none of the
+        lists), `not_matching` (a condition or language does not match), `late` (due more than 7
+        days before it could be processed), `removed` (taken off the waiting list), `stopped`
+        (service: the person stopped the inbox's mail like this). Its `suppressed` and `opted_out`
+        count both enrollments and deliveries.
       required: [suppressed, opted_out, unsubscribed, cancelled]
       properties:
         suppressed:
@@ -33613,6 +33830,27 @@ components:
         cancelled:
           type: integer
           format: int64
+        no_address:
+          type: integer
+          format: int64
+        blocked:
+          type: integer
+          format: int64
+        not_subscribed:
+          type: integer
+          format: int64
+        not_matching:
+          type: integer
+          format: int64
+        late:
+          type: integer
+          format: int64
+        removed:
+          type: integer
+          format: int64
+        stopped:
+          type: integer
+          format: int64
     BroadcastCounts:
       type: object
       description: |
@@ -33622,7 +33860,8 @@ components:
         bounced or who reported it as spam, `unsubscribed` those who left a list through this
         broadcast's links, `replied` those who answered (a conversation), `auto_replied` the
         automatic answers (out of office), `clicked` recipients who opened a link (click tracking
-        only).
+        only). For a triggered e-mail `recipients` counts the mails made so far for contacts whose
+        time came (kept 400 days), and `enrolled` and `waiting` count its enrollments.
       required: [recipients, queued, sent, failed, bounced, complained, unsubscribed, replied, auto_replied, clicked, skipped]
       properties:
         recipients:
@@ -33632,6 +33871,14 @@ components:
           type: integer
           format: int64
           description: "`preparing` only: recipients taken so far."
+        enrolled:
+          type: integer
+          format: int64
+          description: "Triggered e-mails only: contacts enrolled since it started, back-filled ones included."
+        waiting:
+          type: integer
+          format: int64
+          description: "Triggered e-mails only: enrolled contacts whose mail is not due yet."
         queued:
           type: integer
           format: int64
@@ -33663,11 +33910,18 @@ components:
           $ref: "#/components/schemas/BroadcastSkipped"
     Broadcast:
       type: object
-      required: [id, inbox_id, name, subject, preheader, translations, audience, click_tracking, utm, utm_campaign, state, timezone, counts, created_at, updated_at]
+      required: [id, kind, inbox_id, name, subject, preheader, translations, audience, click_tracking, utm, utm_campaign, state, timezone, counts, created_at, updated_at]
       properties:
         id:
           type: string
           format: uuid
+        kind:
+          $ref: "#/components/schemas/BroadcastKind"
+        trigger:
+          $ref: "#/components/schemas/BroadcastTrigger"
+          description: Present for a triggered e-mail.
+        service_confirmed:
+          $ref: "#/components/schemas/BroadcastServiceConfirmed"
         inbox_id:
           type: string
           format: uuid
@@ -33798,6 +34052,11 @@ components:
       type: object
       required: [inbox_id, name]
       properties:
+        kind:
+          $ref: "#/components/schemas/BroadcastKind"
+          description: "`once` when absent; `triggered` needs `trigger`."
+        trigger:
+          $ref: "#/components/schemas/BroadcastTriggerInput"
         inbox_id:
           type: string
           format: uuid
@@ -33851,6 +34110,8 @@ components:
       type: object
       minProperties: 1
       properties:
+        trigger:
+          $ref: "#/components/schemas/BroadcastTriggerInput"
         channel_id:
           type: [string, "null"]
           format: uuid
@@ -34020,11 +34281,20 @@ components:
           format: int64
     BroadcastAudienceCount:
       type: object
+      description: |
+        For a triggered e-mail, `recipients` is `backfill` plus the contacts waiting now, and the
+        other figures describe those contacts as their mail would go out now.
       required: [recipients, excluded, missing_merge_fields, by_list]
       properties:
         recipients:
           type: integer
           format: int64
+        backfill:
+          type: integer
+          format: int64
+          description: |
+            Triggered e-mails that have not started: the contacts starting now would back-fill
+            (`trigger.backfill_days`), before any is left out.
         excluded:
           $ref: "#/components/schemas/BroadcastAudienceExcluded"
         missing_merge_fields:
@@ -34060,8 +34330,12 @@ components:
           format: int64
     BroadcastReviewKey:
       type: string
-      enum: [sender_identity, sender_ready, approval, design, audience_nonempty, merge_fields, html_size, images_alt, links, subject, deliverability, daily_cap, pace, send_window, test_sent, click_tracking, ses_tenant, translations, message_block]
+      enum: [sender_identity, sender_ready, approval, design, audience_nonempty, merge_fields, html_size, images_alt, links, subject, deliverability, daily_cap, pace, send_window, test_sent, click_tracking, ses_tenant, translations, message_block, trigger, basis]
       description: |
+        Triggered e-mails: `trigger` (`ok`, with what starts it and the delay; `blocking` without
+        a valid trigger), `basis` (`marketing`: `ok`, or `blocking` without lists; `service`: a
+        `warning` naming what service mail may be about, never advertising), and
+        `audience_nonempty` is `ok` with the back-fill count, which may be 0.
         `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
         when the window is closed at the scheduled time (now for a draft), with when sending starts.
         `translations`: `ok` for a design without versions or with every version complete,
@@ -34095,7 +34369,10 @@ components:
         recipients:
           type: integer
           format: int64
-          description: The audience count the review used; pass it as `confirm_recipients` to schedule only this audience.
+          description: |
+            The audience count the review used; pass it as `confirm_recipients` to schedule only this
+            audience. For a triggered e-mail, the contacts starting it would back-fill plus those
+            waiting.
         html_bytes:
           type: integer
           format: int32
@@ -34177,6 +34454,18 @@ components:
           type: integer
           format: int64
           minimum: 0
+          description: For a triggered e-mail, the back-fill count the review showed (0 without back-fill).
+        backfill_days:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 30
+          description: Triggered e-mails only; replaces `trigger.backfill_days` before the review runs.
+        confirm_service:
+          type: boolean
+          description: |
+            Required `true` to start a `service` triggered e-mail: the caller confirms the mail is
+            about using the inbox's product, not advertising. Stored with who confirmed and when.
     BroadcastDeliveryState:
       type: string
       description: |
@@ -34187,7 +34476,8 @@ components:
       enum: [queued, sent, failed, bounced, complained, skipped]
     BroadcastSkipReason:
       type: string
-      enum: [suppressed, opted_out, unsubscribed, cancelled]
+      description: "`stopped`: a `service` triggered e-mail's recipient stopped the inbox's mail like this before it went out."
+      enum: [suppressed, opted_out, unsubscribed, cancelled, stopped]
     BroadcastDelivery:
       type: object
       required: [id, contact, email, state, attempts, created_at]
@@ -34252,6 +34542,78 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/BroadcastDelivery"
+        next_cursor:
+          type: string
+    TriggeredEnrollmentState:
+      type: string
+      description: |
+        `waiting` until its due time; then `queued` (a delivery was made, see `delivery_id`) or
+        `skipped` (`skip_reason`), for good; `cancelled` when the triggered e-mail was stopped
+        while it waited.
+      enum: [waiting, queued, skipped, cancelled]
+    TriggeredSkipReason:
+      type: string
+      description: |
+        Why a contact was not mailed at its due time: `no_address`, `blocked`, `late` (due more than
+        7 days before it could be processed, after a long pause or the daily limit), `suppressed`
+        (the address bounced or complained), `opted_out` (objected to all mail from the
+        workspace), `stopped` (service: stopped the inbox's mail like this), `not_subscribed`
+        (marketing: on none of the lists), `not_matching` (a condition or language does not
+        match), `removed` (taken off the waiting list).
+      enum: [no_address, blocked, suppressed, opted_out, stopped, not_subscribed, not_matching, late, removed]
+    TriggeredEnrollmentSource:
+      type: string
+      description: "`trigger`: the trigger happened while it was active or paused. `backfill`: enrolled when it started."
+      enum: [trigger, backfill]
+    TriggeredEnrollmentContact:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          $ref: "#/components/schemas/Email"
+          description: The contact's first address; absent when it has none.
+    TriggeredEnrollment:
+      type: object
+      description: One contact of a triggered e-mail; each contact is enrolled at most once for as long as both exist.
+      required: [contact, state, triggered_at, source, created_at]
+      properties:
+        contact:
+          $ref: "#/components/schemas/TriggeredEnrollmentContact"
+        state:
+          $ref: "#/components/schemas/TriggeredEnrollmentState"
+        triggered_at:
+          type: string
+          format: date-time
+        sends_at:
+          type: string
+          format: date-time
+          description: |
+            `waiting` only: when the mail is due (`triggered_at` plus `delay_minutes`), moved to the
+            next opening of `send_window`; the pace and the daily limit may still delay it.
+        skip_reason:
+          $ref: "#/components/schemas/TriggeredSkipReason"
+        delivery_id:
+          type: string
+          format: uuid
+          description: "`queued`: the delivery in `GET .../deliveries`; absent once that is deleted (400 days)."
+        source:
+          $ref: "#/components/schemas/TriggeredEnrollmentSource"
+        created_at:
+          type: string
+          format: date-time
+    TriggeredEnrollmentPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TriggeredEnrollment"
         next_cursor:
           type: string
     BroadcastRates:
@@ -34404,6 +34766,10 @@ components:
           $ref: "#/components/schemas/Broadcast"
         previous_state:
           $ref: "#/components/schemas/BroadcastState"
+        enrollment_removed:
+          type: string
+          format: uuid
+          description: The contact this change took off a triggered e-mail's waiting list.
     BroadcastEvent:
       type: object
       description: |

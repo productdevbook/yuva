@@ -174,7 +174,7 @@ WHERE workspace_id = @workspace_id AND contact_id = ANY(@contact_ids::uuid[])
 ORDER BY contact_id, position;
 
 -- name: ListContactExternalIDs :many
-SELECT contact_id, inbox_id, external_id FROM contact_external_ids
+SELECT contact_id, inbox_id, external_id, created_at FROM contact_external_ids
 WHERE workspace_id = @workspace_id AND contact_id = ANY(@contact_ids::uuid[])
 ORDER BY contact_id, inbox_id, external_id;
 
@@ -188,7 +188,8 @@ INSERT INTO contact_emails (workspace_id, contact_id, email, position) VALUES ($
 DELETE FROM contact_external_ids WHERE workspace_id = $1 AND contact_id = $2;
 
 -- name: AddContactExternalID :exec
-INSERT INTO contact_external_ids (workspace_id, inbox_id, external_id, contact_id) VALUES ($1, $2, $3, $4);
+INSERT INTO contact_external_ids (workspace_id, inbox_id, external_id, contact_id, created_at)
+VALUES (@workspace_id, @inbox_id, @external_id, @contact_id, sqlc.narg(created_at));
 
 -- name: GetContactIDByExternalID :one
 SELECT contact_id FROM contact_external_ids WHERE workspace_id = $1 AND inbox_id = $2 AND external_id = $3;

@@ -43,6 +43,8 @@ type eventBatch struct {
 	rule *oas.AutomationRuleRef
 	// assign marks a batch automatic assignment wrote; it frees no member for waiting conversations.
 	assign bool
+	// noTriggers: imports and migrations enroll nobody in triggered e-mails.
+	noTriggers bool
 }
 
 func (b *eventBatch) job(args river.JobArgs, opts *river.InsertOpts) {

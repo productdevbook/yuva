@@ -111,7 +111,7 @@ ORDER BY 1, 2;
 
 -- name: ListRunningBroadcastsOfInbox :many
 SELECT * FROM broadcasts
-WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND state IN ('scheduled', 'preparing', 'sending')
+WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND state IN ('scheduled', 'preparing', 'sending', 'active')
 ORDER BY created_at, id;
 
 -- name: SetSESTenantMissing :execrows

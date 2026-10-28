@@ -504,7 +504,7 @@ func (s *Server) ListSubscriptions(ctx context.Context, req oas.ListSubscription
 
 // subscriber finds or creates the contact a host backend, member or import names, and the
 // address to subscribe; created reports a new contact.
-func (s *Server) subscriber(ctx context.Context, q *store.Queries, p principal, list store.MailingList, b *oas.SubscriptionCreate) (uuid.UUID, string, bool, error) {
+func (s *Server) subscriber(ctx context.Context, q *store.Queries, events *eventBatch, p principal, list store.MailingList, b *oas.SubscriptionCreate) (uuid.UUID, string, bool, error) {
 	ws := p.workspaceID
 	var email string
 	if b.Email != nil {
@@ -590,7 +590,7 @@ func (s *Server) subscriber(ctx context.Context, q *store.Queries, p principal, 
 			return uuid.Nil(), "", false, err
 		}
 		if externalID != "" {
-			if err := q.AddContactExternalID(ctx, store.AddContactExternalIDParams{WorkspaceID: ws, InboxID: list.InboxID, ExternalID: externalID, ContactID: c.ID}); err != nil {
+			if err := s.addExternalID(ctx, q, events, ws, list.InboxID, c.ID, externalID, true); err != nil {
 				return uuid.Nil(), "", false, err
 			}
 		}
@@ -638,7 +638,7 @@ func (s *Server) subscriber(ctx context.Context, q *store.Queries, p principal, 
 			return uuid.Nil(), "", false, err
 		}
 		if !inInbox {
-			if err := q.AddContactExternalID(ctx, store.AddContactExternalIDParams{WorkspaceID: ws, InboxID: list.InboxID, ExternalID: externalID, ContactID: cur.ID}); err != nil {
+			if err := s.addExternalID(ctx, q, events, ws, list.InboxID, cur.ID, externalID, true); err != nil {
 				return uuid.Nil(), "", false, err
 			}
 		}
@@ -671,7 +671,7 @@ func (s *Server) CreateSubscription(ctx context.Context, req oas.CreateSubscript
 				return err
 			}
 		}
-		contactID, email, _, err := s.subscriber(ctx, q, p, list, b)
+		contactID, email, _, err := s.subscriber(ctx, q, events, p, list, b)
 		if err != nil {
 			return err
 		}

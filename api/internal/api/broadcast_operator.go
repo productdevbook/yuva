@@ -76,6 +76,12 @@ type BroadcastSummary struct {
 	Sent30, Bounced30, Complained30 int64
 	SenderDomains                   []string
 	Latest                          []BroadcastLine
+	Triggered                       []TriggeredLine
+}
+
+type TriggeredLine struct {
+	Name, State, Basis              string
+	Sent30, Bounced30, Complained30 int64
 }
 
 type BroadcastLine struct {
@@ -113,6 +119,13 @@ func (s *Server) OperatorBroadcastSummary(ctx context.Context, ws uuid.UUID) (Br
 		c := parseCounts(b.Counts)
 		out.Latest = append(out.Latest, BroadcastLine{Name: b.Name, Subject: b.Subject, State: b.State, Recipients: c.Recipients,
 			Sent: c.Sent, Bounced: c.Bounced, Complained: c.Complained, CreatedAt: b.CreatedAt})
+	}
+	live, err := s.st.ListLiveTriggeredSummary(ctx, store.ListLiveTriggeredSummaryParams{WorkspaceID: ws, Since: new(s.now().Add(-rateWindow))})
+	if err != nil {
+		return out, err
+	}
+	for _, t := range live {
+		out.Triggered = append(out.Triggered, TriggeredLine{Name: t.Name, State: t.State, Basis: t.Basis, Sent30: t.Sent, Bounced30: t.Bounced, Complained30: t.Complained})
 	}
 	return out, nil
 }

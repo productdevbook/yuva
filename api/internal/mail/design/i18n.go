@@ -7,6 +7,7 @@ import (
 
 type footerText struct {
 	since, because     string
+	uses               string
 	unsubscribe, prefs string
 	identityMissing    string
 	months             [12]string
@@ -19,6 +20,7 @@ var footerTexts = map[string]footerText{
 	"en": {
 		since:           "You get this e-mail because you subscribed to %s on %s.",
 		because:         "You get this e-mail because you subscribed to %s.",
+		uses:            "You get this e-mail because you use %s.",
 		unsubscribe:     "Unsubscribe",
 		prefs:           "Manage preferences",
 		identityMissing: "Add the sender's legal name and postal address in the inbox settings.",
@@ -33,6 +35,7 @@ var footerTexts = map[string]footerText{
 	"tr": {
 		since:           "Bu e-postayı %[2]s tarihinde %[1]s listesine abone olduğunuz için alıyorsunuz.",
 		because:         "Bu e-postayı %s listesine abone olduğunuz için alıyorsunuz.",
+		uses:            "Bu e-postayı %s kullandığınız için alıyorsunuz.",
 		unsubscribe:     "Abonelikten çık",
 		prefs:           "Tercihleri yönet",
 		identityMissing: "Gönderenin yasal adını ve posta adresini gelen kutusu ayarlarına ekleyin.",
@@ -47,6 +50,7 @@ var footerTexts = map[string]footerText{
 	"de": {
 		since:           "Sie erhalten diese E-Mail, weil Sie %s am %s abonniert haben.",
 		because:         "Sie erhalten diese E-Mail, weil Sie %s abonniert haben.",
+		uses:            "Sie erhalten diese E-Mail, weil Sie %s nutzen.",
 		unsubscribe:     "Abmelden",
 		prefs:           "Einstellungen verwalten",
 		identityMissing: "Tragen Sie den rechtlichen Namen und die Postanschrift des Absenders in den Einstellungen des Posteingangs ein.",
@@ -61,6 +65,7 @@ var footerTexts = map[string]footerText{
 	"ar": {
 		since:           "تتلقى هذا البريد الإلكتروني لأنك اشتركت في %[1]s بتاريخ %[2]s.",
 		because:         "تتلقى هذا البريد الإلكتروني لأنك اشتركت في %s.",
+		uses:            "تتلقى هذا البريد الإلكتروني لأنك تستخدم %s.",
 		unsubscribe:     "إلغاء الاشتراك",
 		prefs:           "إدارة التفضيلات",
 		identityMissing: "أضف الاسم القانوني للمرسل وعنوانه البريدي في إعدادات صندوق الوارد.",
@@ -73,6 +78,7 @@ var footerTexts = map[string]footerText{
 	"bn": {
 		since:           "আপনি %[2]s তারিখে %[1]s সাবস্ক্রাইব করেছেন বলে এই ইমেল পাচ্ছেন।",
 		because:         "আপনি %s সাবস্ক্রাইব করেছেন বলে এই ইমেল পাচ্ছেন।",
+		uses:            "আপনি %s ব্যবহার করেন বলে এই ইমেল পাচ্ছেন।",
 		unsubscribe:     "সাবস্ক্রিপশন বাতিল করুন",
 		prefs:           "পছন্দ পরিচালনা করুন",
 		identityMissing: "ইনবক্স সেটিংসে প্রেরকের আইনি নাম ও ডাক ঠিকানা যোগ করুন।",
@@ -85,6 +91,7 @@ var footerTexts = map[string]footerText{
 	"ca": {
 		since:           "Rebeu aquest correu electrònic perquè us vau subscriure a %[1]s el %[2]s.",
 		because:         "Rebeu aquest correu electrònic perquè us heu subscrit a %s.",
+		uses:            "Rebeu aquest correu electrònic perquè utilitzeu %s.",
 		unsubscribe:     "Cancel·la la subscripció",
 		prefs:           "Gestiona les preferències",
 		identityMissing: "Afegiu el nom legal i l'adreça postal del remitent a la configuració de la safata d'entrada.",
@@ -103,6 +110,7 @@ var footerTexts = map[string]footerText{
 	"cs": {
 		since:           "Tento e-mail dostáváte, protože jste se %[2]s přihlásili k odběru %[1]s.",
 		because:         "Tento e-mail dostáváte, protože jste se přihlásili k odběru %s.",
+		uses:            "Tento e-mail dostáváte, protože používáte %s.",
 		unsubscribe:     "Odhlásit odběr",
 		prefs:           "Spravovat předvolby",
 		identityMissing: "Přidejte právní název a poštovní adresu odesílatele v nastavení doručené pošty.",
@@ -115,6 +123,7 @@ var footerTexts = map[string]footerText{
 	"da": {
 		since:           "Du modtager denne e-mail, fordi du tilmeldte dig %[1]s den %[2]s.",
 		because:         "Du modtager denne e-mail, fordi du har tilmeldt dig %s.",
+		uses:            "Du modtager denne e-mail, fordi du bruger %s.",
 		unsubscribe:     "Afmeld",
 		prefs:           "Administrer indstillinger",
 		identityMissing: "Tilføj afsenderens juridiske navn og postadresse i indbakkens indstillinger.",
@@ -127,6 +136,7 @@ var footerTexts = map[string]footerText{
 	"el": {
 		since:           "Λαμβάνετε αυτό το μήνυμα ηλεκτρονικού ταχυδρομείου επειδή εγγραφήκατε στη λίστα %[1]s στις %[2]s.",
 		because:         "Λαμβάνετε αυτό το μήνυμα ηλεκτρονικού ταχυδρομείου επειδή εγγραφήκατε στη λίστα %s.",
+		uses:            "Λαμβάνετε αυτό το μήνυμα ηλεκτρονικού ταχυδρομείου επειδή χρησιμοποιείτε το %s.",
 		unsubscribe:     "Διαγραφή συνδρομής",
 		prefs:           "Διαχείριση προτιμήσεων",
 		identityMissing: "Προσθέστε τη νομική επωνυμία και την ταχυδρομική διεύθυνση του αποστολέα στις ρυθμίσεις του γραμματοκιβωτίου.",
@@ -139,6 +149,7 @@ var footerTexts = map[string]footerText{
 	"es": {
 		since:           "Recibe este correo electrónico porque se suscribió a %[1]s el %[2]s.",
 		because:         "Recibe este correo electrónico porque se suscribió a %s.",
+		uses:            "Recibe este correo electrónico porque usa %s.",
 		unsubscribe:     "Cancelar suscripción",
 		prefs:           "Gestionar preferencias",
 		identityMissing: "Añada el nombre legal y la dirección postal del remitente en los ajustes de la bandeja de entrada.",
@@ -151,6 +162,7 @@ var footerTexts = map[string]footerText{
 	"fi": {
 		since:           "Saat tämän sähköpostin, koska tilasit listan %[1]s %[2]s.",
 		because:         "Saat tämän sähköpostin, koska tilasit listan %s.",
+		uses:            "Saat tämän sähköpostin, koska käytät palvelua %s.",
 		unsubscribe:     "Peruuta tilaus",
 		prefs:           "Hallitse asetuksia",
 		identityMissing: "Lisää lähettäjän virallinen nimi ja postiosoite postilaatikon asetuksiin.",
@@ -163,6 +175,7 @@ var footerTexts = map[string]footerText{
 	"fr": {
 		since:           "Vous recevez cet e-mail car vous vous êtes abonné(e) à %[1]s le %[2]s.",
 		because:         "Vous recevez cet e-mail car vous vous êtes abonné(e) à %s.",
+		uses:            "Vous recevez cet e-mail car vous utilisez %s.",
 		unsubscribe:     "Se désabonner",
 		prefs:           "Gérer les préférences",
 		identityMissing: "Ajoutez la raison sociale et l'adresse postale de l'expéditeur dans les paramètres de la boîte de réception.",
@@ -175,6 +188,7 @@ var footerTexts = map[string]footerText{
 	"gu": {
 		since:           "તમે %[2]s ના રોજ %[1]s ને સબ્સ્ક્રાઇબ કર્યું હતું, તેથી તમને આ ઇમેઇલ મળી રહ્યો છે.",
 		because:         "તમે %s ને સબ્સ્ક્રાઇબ કર્યું છે, તેથી તમને આ ઇમેઇલ મળી રહ્યો છે.",
+		uses:            "તમે %s નો ઉપયોગ કરો છો, તેથી તમને આ ઇમેઇલ મળી રહ્યો છે.",
 		unsubscribe:     "અનસબ્સ્ક્રાઇબ કરો",
 		prefs:           "પસંદગીઓ સંચાલિત કરો",
 		identityMissing: "ઇનબોક્સ સેટિંગ્સમાં પ્રેષકનું કાનૂની નામ અને પોસ્ટલ સરનામું ઉમેરો.",
@@ -187,6 +201,7 @@ var footerTexts = map[string]footerText{
 	"he": {
 		since:           "הודעת דוא״ל זו נשלחה אליך מפני שנרשמת ל-%[1]s בתאריך %[2]s.",
 		because:         "הודעת דוא״ל זו נשלחה אליך מפני שנרשמת ל-%s.",
+		uses:            "הודעת דוא״ל זו נשלחה אליך מפני שאת/ה משתמש/ת ב-%s.",
 		unsubscribe:     "ביטול הרשמה",
 		prefs:           "ניהול העדפות",
 		identityMissing: "הוסיפו את השם החוקי ואת כתובת הדואר של השולח בהגדרות תיבת הדואר הנכנס.",
@@ -201,6 +216,7 @@ var footerTexts = map[string]footerText{
 	"hi": {
 		since:           "आपको यह ईमेल इसलिए मिल रहा है क्योंकि आपने %[2]s को %[1]s की सदस्यता ली थी।",
 		because:         "आपको यह ईमेल इसलिए मिल रहा है क्योंकि आपने %s की सदस्यता ली है।",
+		uses:            "आपको यह ईमेल इसलिए मिल रहा है क्योंकि आप %s का उपयोग करते हैं।",
 		unsubscribe:     "सदस्यता रद्द करें",
 		prefs:           "प्राथमिकताएँ प्रबंधित करें",
 		identityMissing: "इनबॉक्स सेटिंग में प्रेषक का कानूनी नाम और डाक पता जोड़ें।",
@@ -213,6 +229,7 @@ var footerTexts = map[string]footerText{
 	"hr": {
 		since:           "Ovu e-poruku primate jer ste se %[2]s pretplatili na %[1]s.",
 		because:         "Ovu e-poruku primate jer ste se pretplatili na %s.",
+		uses:            "Ovu e-poruku primate jer koristite %s.",
 		unsubscribe:     "Odjava",
 		prefs:           "Upravljanje postavkama",
 		identityMissing: "Dodajte pravni naziv i poštansku adresu pošiljatelja u postavkama pristigle pošte.",
@@ -227,6 +244,7 @@ var footerTexts = map[string]footerText{
 	"hu": {
 		since:           "Azért kapja ezt az e-mailt, mert feliratkozott a(z) %[1]s listára; a feliratkozás napja: %[2]s",
 		because:         "Azért kapja ezt az e-mailt, mert feliratkozott a(z) %s listára.",
+		uses:            "Azért kapja ezt az e-mailt, mert a(z) %s szolgáltatást használja.",
 		unsubscribe:     "Leiratkozás",
 		prefs:           "Beállítások kezelése",
 		identityMissing: "Adja meg a feladó jogi nevét és postai címét a postafiók beállításaiban.",
@@ -241,6 +259,7 @@ var footerTexts = map[string]footerText{
 	"id": {
 		since:           "Anda menerima email ini karena Anda berlangganan %[1]s pada %[2]s.",
 		because:         "Anda menerima email ini karena Anda berlangganan %s.",
+		uses:            "Anda menerima email ini karena Anda menggunakan %s.",
 		unsubscribe:     "Berhenti berlangganan",
 		prefs:           "Kelola preferensi",
 		identityMissing: "Tambahkan nama resmi dan alamat pos pengirim di pengaturan kotak masuk.",
@@ -253,6 +272,7 @@ var footerTexts = map[string]footerText{
 	"it": {
 		since:           "Riceve questa e-mail perché si è iscritto/a a %[1]s il %[2]s.",
 		because:         "Riceve questa e-mail perché si è iscritto/a a %s.",
+		uses:            "Riceve questa e-mail perché utilizza %s.",
 		unsubscribe:     "Annulla l'iscrizione",
 		prefs:           "Gestisci le preferenze",
 		identityMissing: "Aggiungi la ragione sociale e l'indirizzo postale del mittente nelle impostazioni della casella di posta.",
@@ -265,6 +285,7 @@ var footerTexts = map[string]footerText{
 	"ja": {
 		since:           "このメールは、%[2]sに%[1]sを購読されたためお送りしています。",
 		because:         "このメールは、%sを購読されたためお送りしています。",
+		uses:            "このメールは、%sをご利用いただいているためお送りしています。",
 		unsubscribe:     "配信停止",
 		prefs:           "設定を管理",
 		identityMissing: "受信トレイの設定に、送信者の正式名称と郵便の宛先住所を追加してください。",
@@ -277,6 +298,7 @@ var footerTexts = map[string]footerText{
 	"kn": {
 		since:           "ನೀವು %[2]s ರಂದು %[1]s ಗೆ ಚಂದಾದಾರರಾಗಿದ್ದ ಕಾರಣ ನೀವು ಈ ಇಮೇಲ್ ಅನ್ನು ಸ್ವೀಕರಿಸುತ್ತಿದ್ದೀರಿ.",
 		because:         "ನೀವು %s ಗೆ ಚಂದಾದಾರರಾಗಿರುವ ಕಾರಣ ನೀವು ಈ ಇಮೇಲ್ ಅನ್ನು ಸ್ವೀಕರಿಸುತ್ತಿದ್ದೀರಿ.",
+		uses:            "ನೀವು %s ಅನ್ನು ಬಳಸುತ್ತಿರುವ ಕಾರಣ ನೀವು ಈ ಇಮೇಲ್ ಅನ್ನು ಸ್ವೀಕರಿಸುತ್ತಿದ್ದೀರಿ.",
 		unsubscribe:     "ಚಂದಾದಾರಿಕೆ ರದ್ದುಮಾಡಿ",
 		prefs:           "ಆದ್ಯತೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
 		identityMissing: "ಇನ್‌ಬಾಕ್ಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಕಳುಹಿಸುವವರ ಕಾನೂನು ಹೆಸರು ಮತ್ತು ಅಂಚೆ ವಿಳಾಸವನ್ನು ಸೇರಿಸಿ.",
@@ -289,6 +311,7 @@ var footerTexts = map[string]footerText{
 	"ko": {
 		since:           "%[2]s에 %[1]s 목록을 구독하셨기 때문에 이 이메일을 받으셨습니다.",
 		because:         "%s 목록을 구독하셨기 때문에 이 이메일을 받으셨습니다.",
+		uses:            "%s을(를) 이용하고 계시기 때문에 이 이메일을 받으셨습니다.",
 		unsubscribe:     "수신 거부",
 		prefs:           "환경설정 관리",
 		identityMissing: "받은편지함 설정에 발신자의 법적 명칭과 우편 주소를 추가하세요.",
@@ -303,6 +326,7 @@ var footerTexts = map[string]footerText{
 	"ml": {
 		since:           "നിങ്ങൾ %[2]s-ന് %[1]s സബ്സ്ക്രൈബ് ചെയ്തതിനാലാണ് നിങ്ങൾക്ക് ഈ ഇമെയിൽ ലഭിക്കുന്നത്.",
 		because:         "നിങ്ങൾ %s സബ്സ്ക്രൈബ് ചെയ്തതിനാലാണ് നിങ്ങൾക്ക് ഈ ഇമെയിൽ ലഭിക്കുന്നത്.",
+		uses:            "നിങ്ങൾ %s ഉപയോഗിക്കുന്നതിനാലാണ് നിങ്ങൾക്ക് ഈ ഇമെയിൽ ലഭിക്കുന്നത്.",
 		unsubscribe:     "അൺസബ്സ്ക്രൈബ് ചെയ്യുക",
 		prefs:           "മുൻഗണനകൾ കൈകാര്യം ചെയ്യുക",
 		identityMissing: "ഇൻബോക്സ് ക്രമീകരണങ്ങളിൽ അയച്ചയാളുടെ നിയമപരമായ പേരും തപാൽ വിലാസവും ചേർക്കുക.",
@@ -317,6 +341,7 @@ var footerTexts = map[string]footerText{
 	"mr": {
 		since:           "तुम्ही %[2]s रोजी %[1]s चे सदस्यत्व घेतले असल्यामुळे तुम्हाला हा ईमेल मिळत आहे.",
 		because:         "तुम्ही %s चे सदस्यत्व घेतले असल्यामुळे तुम्हाला हा ईमेल मिळत आहे.",
+		uses:            "तुम्ही %s वापरत असल्यामुळे तुम्हाला हा ईमेल मिळत आहे.",
 		unsubscribe:     "सदस्यत्व रद्द करा",
 		prefs:           "प्राधान्ये व्यवस्थापित करा",
 		identityMissing: "इनबॉक्स सेटिंग्जमध्ये प्रेषकाचे कायदेशीर नाव आणि टपाल पत्ता जोडा.",
@@ -329,6 +354,7 @@ var footerTexts = map[string]footerText{
 	"ms": {
 		since:           "Anda menerima e-mel ini kerana anda melanggan %[1]s pada %[2]s.",
 		because:         "Anda menerima e-mel ini kerana anda melanggan %s.",
+		uses:            "Anda menerima e-mel ini kerana anda menggunakan %s.",
 		unsubscribe:     "Berhenti melanggan",
 		prefs:           "Urus keutamaan",
 		identityMissing: "Tambahkan nama sah dan alamat pos penghantar dalam tetapan peti masuk.",
@@ -341,6 +367,7 @@ var footerTexts = map[string]footerText{
 	"nb": {
 		since:           "Du mottar denne e-posten fordi du abonnerte på %[1]s den %[2]s.",
 		because:         "Du mottar denne e-posten fordi du abonnerer på %s.",
+		uses:            "Du mottar denne e-posten fordi du bruker %s.",
 		unsubscribe:     "Avslutt abonnement",
 		prefs:           "Administrer innstillinger",
 		identityMissing: "Legg til avsenderens juridiske navn og postadresse i innstillingene for innboksen.",
@@ -353,6 +380,7 @@ var footerTexts = map[string]footerText{
 	"nl": {
 		since:           "U ontvangt deze e-mail omdat u zich op %[2]s hebt geabonneerd op %[1]s.",
 		because:         "U ontvangt deze e-mail omdat u zich hebt geabonneerd op %s.",
+		uses:            "U ontvangt deze e-mail omdat u %s gebruikt.",
 		unsubscribe:     "Uitschrijven",
 		prefs:           "Voorkeuren beheren",
 		identityMissing: "Voeg de juridische naam en het postadres van de afzender toe in de instellingen van de inbox.",
@@ -365,6 +393,7 @@ var footerTexts = map[string]footerText{
 	"or": {
 		since:           "ଆପଣ %[2]s ରେ %[1]s କୁ ସବସ୍କ୍ରାଇବ୍ କରିଥିବାରୁ ଆପଣ ଏହି ଇମେଲ୍ ପାଉଛନ୍ତି।",
 		because:         "ଆପଣ %s କୁ ସବସ୍କ୍ରାଇବ୍ କରିଥିବାରୁ ଆପଣ ଏହି ଇମେଲ୍ ପାଉଛନ୍ତି।",
+		uses:            "ଆପଣ %s ବ୍ୟବହାର କରୁଥିବାରୁ ଆପଣ ଏହି ଇମେଲ୍ ପାଉଛନ୍ତି।",
 		unsubscribe:     "ଅନସବସ୍କ୍ରାଇବ୍ କରନ୍ତୁ",
 		prefs:           "ପସନ୍ଦ ପରିଚାଳନା କରନ୍ତୁ",
 		identityMissing: "ଇନବକ୍ସ ସେଟିଂସରେ ପ୍ରେରକଙ୍କ ଆଇନଗତ ନାମ ଏବଂ ଡାକ ଠିକଣା ଯୋଗ କରନ୍ତୁ।",
@@ -377,6 +406,7 @@ var footerTexts = map[string]footerText{
 	"pa": {
 		since:           "ਤੁਹਾਨੂੰ ਇਹ ਈਮੇਲ ਇਸ ਲਈ ਮਿਲ ਰਹੀ ਹੈ ਕਿਉਂਕਿ ਤੁਸੀਂ %[2]s ਨੂੰ %[1]s ਦੇ ਗਾਹਕ ਬਣੇ ਸੀ।",
 		because:         "ਤੁਹਾਨੂੰ ਇਹ ਈਮੇਲ ਇਸ ਲਈ ਮਿਲ ਰਹੀ ਹੈ ਕਿਉਂਕਿ ਤੁਸੀਂ %s ਦੇ ਗਾਹਕ ਬਣੇ ਹੋ।",
+		uses:            "ਤੁਹਾਨੂੰ ਇਹ ਈਮੇਲ ਇਸ ਲਈ ਮਿਲ ਰਹੀ ਹੈ ਕਿਉਂਕਿ ਤੁਸੀਂ %s ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹੋ।",
 		unsubscribe:     "ਗਾਹਕੀ ਰੱਦ ਕਰੋ",
 		prefs:           "ਤਰਜੀਹਾਂ ਦਾ ਪ੍ਰਬੰਧ ਕਰੋ",
 		identityMissing: "ਇਨਬਾਕਸ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਭੇਜਣ ਵਾਲੇ ਦਾ ਕਾਨੂੰਨੀ ਨਾਮ ਅਤੇ ਡਾਕ ਪਤਾ ਸ਼ਾਮਲ ਕਰੋ।",
@@ -389,6 +419,7 @@ var footerTexts = map[string]footerText{
 	"pl": {
 		since:           "Otrzymujesz tę wiadomość e-mail, ponieważ %[2]s zapisano Cię do %[1]s.",
 		because:         "Otrzymujesz tę wiadomość e-mail, ponieważ zapisano Cię do %s.",
+		uses:            "Otrzymujesz tę wiadomość e-mail, ponieważ korzystasz z %s.",
 		unsubscribe:     "Wypisz się",
 		prefs:           "Zarządzaj ustawieniami",
 		identityMissing: "Dodaj pełną nazwę prawną i adres pocztowy nadawcy w ustawieniach skrzynki odbiorczej.",
@@ -401,6 +432,7 @@ var footerTexts = map[string]footerText{
 	"pt": {
 		since:           "Recebe este e-mail porque se inscreveu em %[1]s em %[2]s.",
 		because:         "Recebe este e-mail porque se inscreveu em %s.",
+		uses:            "Recebe este e-mail porque utiliza %s.",
 		unsubscribe:     "Cancelar inscrição",
 		prefs:           "Gerenciar preferências",
 		identityMissing: "Adicione o nome legal e o endereço postal do remetente nas configurações da caixa de entrada.",
@@ -413,6 +445,7 @@ var footerTexts = map[string]footerText{
 	"ro": {
 		since:           "Primiți acest e-mail deoarece v-ați abonat la %[1]s pe %[2]s.",
 		because:         "Primiți acest e-mail deoarece v-ați abonat la %s.",
+		uses:            "Primiți acest e-mail deoarece folosiți %s.",
 		unsubscribe:     "Dezabonare",
 		prefs:           "Gestionați preferințele",
 		identityMissing: "Adăugați denumirea legală și adresa poștală a expeditorului în setările căsuței de e-mail.",
@@ -425,6 +458,7 @@ var footerTexts = map[string]footerText{
 	"ru": {
 		since:           "Вы получаете это письмо, потому что %[2]s подписались на %[1]s.",
 		because:         "Вы получаете это письмо, потому что подписались на %s.",
+		uses:            "Вы получаете это письмо, потому что пользуетесь %s.",
 		unsubscribe:     "Отписаться",
 		prefs:           "Управление настройками",
 		identityMissing: "Добавьте юридическое название и почтовый адрес отправителя в настройках почтового ящика.",
@@ -439,6 +473,7 @@ var footerTexts = map[string]footerText{
 	"sk": {
 		since:           "Tento e-mail dostávate, pretože ste sa %[2]s prihlásili na odber %[1]s.",
 		because:         "Tento e-mail dostávate, pretože ste sa prihlásili na odber %s.",
+		uses:            "Tento e-mail dostávate, pretože používate %s.",
 		unsubscribe:     "Odhlásiť odber",
 		prefs:           "Spravovať predvoľby",
 		identityMissing: "Pridajte právny názov a poštovú adresu odosielateľa v nastaveniach doručenej pošty.",
@@ -451,6 +486,7 @@ var footerTexts = map[string]footerText{
 	"sl": {
 		since:           "To e-pošto prejemate, ker ste se %[2]s naročili na %[1]s.",
 		because:         "To e-pošto prejemate, ker ste se naročili na %s.",
+		uses:            "To e-pošto prejemate, ker uporabljate %s.",
 		unsubscribe:     "Odjava",
 		prefs:           "Upravljanje nastavitev",
 		identityMissing: "Dodajte pravno ime in poštni naslov pošiljatelja v nastavitvah nabiralnika.",
@@ -463,6 +499,7 @@ var footerTexts = map[string]footerText{
 	"sv": {
 		since:           "Du får det här e-postmeddelandet eftersom du prenumererade på %[1]s den %[2]s.",
 		because:         "Du får det här e-postmeddelandet eftersom du prenumererar på %s.",
+		uses:            "Du får det här e-postmeddelandet eftersom du använder %s.",
 		unsubscribe:     "Avsluta prenumeration",
 		prefs:           "Hantera inställningar",
 		identityMissing: "Lägg till avsändarens juridiska namn och postadress i inkorgens inställningar.",
@@ -475,6 +512,7 @@ var footerTexts = map[string]footerText{
 	"ta": {
 		since:           "நீங்கள் %[2]s அன்று %[1]s பட்டியலுக்குக் குழுசேர்ந்ததால் இந்த மின்னஞ்சலைப் பெறுகிறீர்கள்.",
 		because:         "நீங்கள் %s பட்டியலுக்குக் குழுசேர்ந்ததால் இந்த மின்னஞ்சலைப் பெறுகிறீர்கள்.",
+		uses:            "நீங்கள் %s ஐப் பயன்படுத்துவதால் இந்த மின்னஞ்சலைப் பெறுகிறீர்கள்.",
 		unsubscribe:     "குழுவிலகு",
 		prefs:           "விருப்பத்தேர்வுகளை நிர்வகிக்கவும்",
 		identityMissing: "இன்பாக்ஸ் அமைப்புகளில் அனுப்புநரின் சட்டப்பூர்வ பெயர் மற்றும் அஞ்சல் முகவரியைச் சேர்க்கவும்.",
@@ -487,6 +525,7 @@ var footerTexts = map[string]footerText{
 	"te": {
 		since:           "మీరు %[2]s న %[1]s కు సభ్యత్వం తీసుకున్నందున మీకు ఈ ఇమెయిల్ వస్తోంది.",
 		because:         "మీరు %s కు సభ్యత్వం తీసుకున్నందున మీకు ఈ ఇమెయిల్ వస్తోంది.",
+		uses:            "మీరు %s ను ఉపయోగిస్తున్నందున మీకు ఈ ఇమెయిల్ వస్తోంది.",
 		unsubscribe:     "చందాను రద్దు చేయండి",
 		prefs:           "ప్రాధాన్యతలను నిర్వహించండి",
 		identityMissing: "ఇన్‌బాక్స్ సెట్టింగ్‌లలో పంపినవారి చట్టబద్ధ పేరు మరియు పోస్టల్ చిరునామాను జోడించండి.",
@@ -499,6 +538,7 @@ var footerTexts = map[string]footerText{
 	"th": {
 		since:           "คุณได้รับอีเมลนี้เนื่องจากคุณสมัครรับ %[1]s เมื่อวันที่ %[2]s",
 		because:         "คุณได้รับอีเมลนี้เนื่องจากคุณสมัครรับ %s",
+		uses:            "คุณได้รับอีเมลนี้เนื่องจากคุณใช้ %s",
 		unsubscribe:     "ยกเลิกการสมัครรับ",
 		prefs:           "จัดการการตั้งค่า",
 		identityMissing: "เพิ่มชื่อตามกฎหมายและที่อยู่ไปรษณีย์ของผู้ส่งในการตั้งค่ากล่องจดหมาย",
@@ -511,6 +551,7 @@ var footerTexts = map[string]footerText{
 	"uk": {
 		since:           "Ви отримуєте цей лист, тому що %[2]s підписалися на %[1]s.",
 		because:         "Ви отримуєте цей лист, тому що підписалися на %s.",
+		uses:            "Ви отримуєте цей лист, тому що користуєтеся %s.",
 		unsubscribe:     "Відписатися",
 		prefs:           "Керування налаштуваннями",
 		identityMissing: "Додайте юридичну назву та поштову адресу відправника в налаштуваннях поштової скриньки.",
@@ -525,6 +566,7 @@ var footerTexts = map[string]footerText{
 	"ur": {
 		since:           "آپ کو یہ ای میل اس لیے موصول ہو رہی ہے کہ آپ نے %[2]s کو %[1]s کو سبسکرائب کیا تھا۔",
 		because:         "آپ کو یہ ای میل اس لیے موصول ہو رہی ہے کہ آپ نے %s کو سبسکرائب کیا ہے۔",
+		uses:            "آپ کو یہ ای میل اس لیے موصول ہو رہی ہے کہ آپ %s استعمال کرتے ہیں۔",
 		unsubscribe:     "رکنیت ختم کریں",
 		prefs:           "ترجیحات کا نظم کریں",
 		identityMissing: "ان باکس کی ترتیبات میں بھیجنے والے کا قانونی نام اور ڈاک کا پتہ شامل کریں۔",
@@ -537,6 +579,7 @@ var footerTexts = map[string]footerText{
 	"vi": {
 		since:           "Bạn nhận được e-mail này vì bạn đã đăng ký %[1]s vào %[2]s.",
 		because:         "Bạn nhận được e-mail này vì bạn đã đăng ký %s.",
+		uses:            "Bạn nhận được e-mail này vì bạn sử dụng %s.",
 		unsubscribe:     "Hủy đăng ký",
 		prefs:           "Quản lý tùy chọn",
 		identityMissing: "Thêm tên pháp lý và địa chỉ bưu điện của người gửi trong cài đặt hộp thư đến.",
@@ -551,6 +594,7 @@ var footerTexts = map[string]footerText{
 	"zh-Hans": {
 		since:           "您收到此邮件，是因为您于%[2]s订阅了%[1]s。",
 		because:         "您收到此邮件，是因为您订阅了%s。",
+		uses:            "您收到此邮件，是因为您使用%s。",
 		unsubscribe:     "取消订阅",
 		prefs:           "管理偏好设置",
 		identityMissing: "请在收件箱设置中添加发件人的法定名称和邮寄地址。",
@@ -563,6 +607,7 @@ var footerTexts = map[string]footerText{
 	"zh-Hant": {
 		since:           "您收到這封郵件，是因為您於%[2]s訂閱了%[1]s。",
 		because:         "您收到這封郵件，是因為您訂閱了%s。",
+		uses:            "您收到這封郵件，是因為您使用%s。",
 		unsubscribe:     "取消訂閱",
 		prefs:           "管理偏好設定",
 		identityMissing: "請在收件匣設定中新增寄件者的法定名稱與郵寄地址。",

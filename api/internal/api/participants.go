@@ -19,8 +19,8 @@ const (
 	maxCopies            = 50
 	maxParticipantChecks = 50
 
-	participantActive    = string(oas.Active)
-	participantSuggested = string(oas.Suggested)
+	participantActive    = string(oas.ConversationParticipantStatusActive)
+	participantSuggested = string(oas.ConversationParticipantStatusSuggested)
 	participantCc        = string(oas.Cc)
 	participantForwarded = string(oas.Forwarded)
 )

@@ -41,6 +41,7 @@ const (
 	FooterList Footer = iota
 	FooterReply
 	FooterOutreach
+	FooterService
 )
 
 type MessageSlot struct {
@@ -842,7 +843,7 @@ func (r *renderer) social(b Block, bg surface, align string) {
 // footer is the part every mail ends with: who sends it, why the person gets it, and the links
 // to leave.
 func (r *renderer) footer() string {
-	if r.in.Footer != FooterList {
+	if r.in.Footer != FooterList && r.in.Footer != FooterService {
 		return r.conversationFooter()
 	}
 	var h strings.Builder
@@ -866,7 +867,12 @@ func (r *renderer) footer() string {
 		list = in.Values.InboxName
 	}
 	why := ""
-	if list != "" {
+	switch {
+	case in.Footer == FooterService:
+		if in.Values.InboxName != "" {
+			why = fmt.Sprintf(r.t.uses, in.Values.InboxName)
+		}
+	case list != "":
 		why = fmt.Sprintf(r.t.because, list)
 		if !in.SubscribedAt.IsZero() {
 			why = fmt.Sprintf(r.t.since, list, r.t.date(in.SubscribedAt, r.t.months))

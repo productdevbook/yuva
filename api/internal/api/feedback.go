@@ -455,7 +455,7 @@ func (s *Server) feedbackContact(ctx context.Context, q *store.Queries, events *
 	if store.IsNotFound(err) && addr != "" {
 		id, err = q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: addr})
 		if err == nil {
-			err = q.AddContactExternalID(ctx, store.AddContactExternalIDParams{WorkspaceID: ws, InboxID: inbox.ID, ExternalID: externalID, ContactID: id})
+			err = s.addExternalID(ctx, q, events, ws, inbox.ID, id, externalID, false)
 			changed = true
 		}
 	}
@@ -465,7 +465,7 @@ func (s *Server) feedbackContact(ctx context.Context, q *store.Queries, events *
 			return contactRow{}, cerr
 		}
 		id = r.ID
-		err = q.AddContactExternalID(ctx, store.AddContactExternalIDParams{WorkspaceID: ws, InboxID: inbox.ID, ExternalID: externalID, ContactID: id})
+		err = s.addExternalID(ctx, q, events, ws, inbox.ID, id, externalID, true)
 		changed = true
 	}
 	if err != nil {

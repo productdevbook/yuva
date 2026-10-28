@@ -110,27 +110,7 @@ SELECT DISTINCT ON (s.contact_id)
     s.contact_id, s.email, s.list_id, c.name, c.attributes, c.blocked, c.locale,
     EXISTS (SELECT 1 FROM email_suppressions x WHERE x.workspace_id = s.workspace_id AND x.email = s.email AND x.scope <> 'confirmations')::bool AS suppressed,
     (count(*) OVER (PARTITION BY s.contact_id))::bigint AS subscriptions,
-    ((cardinality($1::text[]) = 0 OR EXISTS (
-        SELECT 1 FROM unnest($1::text[]) AS l (tag)
-        WHERE lower(coalesce(c.locale, '')) = lower(l.tag) OR lower(coalesce(c.locale, '')) LIKE lower(l.tag) || '-%'))
-     AND NOT EXISTS (
-        SELECT 1 FROM jsonb_to_recordset($2::jsonb) AS k (attribute text, op text, value text, "values" text[])
-        WHERE NOT coalesce(CASE k.op
-            WHEN 'exists' THEN c.attributes -> k.attribute IS NOT NULL
-            WHEN 'not_exists' THEN c.attributes -> k.attribute IS NULL
-            WHEN 'eq' THEN c.attributes ->> k.attribute = k.value
-            WHEN 'neq' THEN (c.attributes ->> k.attribute) IS DISTINCT FROM k.value
-            WHEN 'contains' THEN strpos(lower(c.attributes ->> k.attribute), lower(k.value)) > 0
-            WHEN 'in' THEN c.attributes ->> k.attribute = ANY(k."values")
-            WHEN 'gt' THEN CASE
-                WHEN (c.attributes ->> k.attribute) ~ '^-?[0-9]{1,30}(\.[0-9]{1,30})?$' AND k.value ~ '^-?[0-9]{1,30}(\.[0-9]{1,30})?$'
-                THEN (c.attributes ->> k.attribute)::numeric > k.value::numeric
-                ELSE (c.attributes ->> k.attribute) > k.value END
-            WHEN 'lt' THEN CASE
-                WHEN (c.attributes ->> k.attribute) ~ '^-?[0-9]{1,30}(\.[0-9]{1,30})?$' AND k.value ~ '^-?[0-9]{1,30}(\.[0-9]{1,30})?$'
-                THEN (c.attributes ->> k.attribute)::numeric < k.value::numeric
-                ELSE (c.attributes ->> k.attribute) < k.value END
-            ELSE false END, false)))::bool AS matches
+    broadcast_audience_matches(c.attributes, c.locale, $1::jsonb, $2::text[])::bool AS matches
 FROM list_subscriptions s
 JOIN contacts c ON c.workspace_id = s.workspace_id AND c.id = s.contact_id
 WHERE s.workspace_id = $3 AND s.list_id = ANY($4::uuid[]) AND s.state = 'subscribed'
@@ -140,8 +120,8 @@ LIMIT $6
 `
 
 type BroadcastAudiencePageParams struct {
-	Locales     []string
 	Conditions  []byte
+	Locales     []string
 	WorkspaceID uuid.UUID
 	ListIds     []uuid.UUID
 	After       uuid.UUID
@@ -166,8 +146,8 @@ type BroadcastAudiencePageRow struct {
 // returned so they can be counted.
 func (q *Queries) BroadcastAudiencePage(ctx context.Context, arg BroadcastAudiencePageParams) ([]BroadcastAudiencePageRow, error) {
 	rows, err := q.db.Query(ctx, broadcastAudiencePage,
-		arg.Locales,
 		arg.Conditions,
+		arg.Locales,
 		arg.WorkspaceID,
 		arg.ListIds,
 		arg.After,
@@ -328,7 +308,7 @@ func (q *Queries) BroadcastTimeline(ctx context.Context, arg BroadcastTimelinePa
 const broadcastUsesList = `-- name: BroadcastUsesList :one
 SELECT EXISTS (
     SELECT 1 FROM broadcasts
-    WHERE workspace_id = $1 AND state IN ('scheduled', 'preparing', 'sending', 'paused')
+    WHERE workspace_id = $1 AND state IN ('scheduled', 'preparing', 'sending', 'active', 'paused')
       AND audience -> 'list_ids' @> jsonb_build_array($2::text)
 ) AS used
 `
@@ -350,7 +330,7 @@ UPDATE broadcasts
 SET pace_next_at = ($1::timestamptz) + make_interval(secs => greatest(
         coalesce(3600.0 / pace_per_hour, 0), coalesce($2::float8 / pace_per_day, 0),
         coalesce(30 * $2::float8 / pace_per_month, 0))::float8)
-WHERE workspace_id = $3 AND id = $4 AND state = 'sending'
+WHERE workspace_id = $3 AND id = $4 AND state IN ('sending', 'active')
   AND (pace_next_at IS NULL OR pace_next_at <= $1::timestamptz)
 `
 
@@ -489,12 +469,13 @@ func (q *Queries) CountWorkspaceMembersByIDs(ctx context.Context, arg CountWorks
 const createBroadcast = `-- name: CreateBroadcast :one
 INSERT INTO broadcasts (id, workspace_id, inbox_id, channel_id, name, subject, preheader, translations, design_id, audience,
                         click_tracking, utm, utm_campaign, created_by, pace_per_hour, pace_per_day, pace_per_month,
-                        timezone, send_window_start, send_window_end, changelog_entry_id, created_at, updated_at)
+                        timezone, send_window_start, send_window_end, changelog_entry_id, kind, trigger, delay_minutes,
+                        basis, backfill_days, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
         $11, $12, $13, $14, $15, $16,
         $17, $18, $19, $20,
-        $21, $22, $22)
-RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations
+        $21, $22, $23, $24, $25, $26, $27, $27)
+RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at
 `
 
 type CreateBroadcastParams struct {
@@ -519,6 +500,11 @@ type CreateBroadcastParams struct {
 	SendWindowStart  *int16
 	SendWindowEnd    *int16
 	ChangelogEntryID *uuid.UUID
+	Kind             string
+	Trigger          []byte
+	DelayMinutes     *int32
+	Basis            *string
+	BackfillDays     int32
 	Now              time.Time
 }
 
@@ -545,6 +531,11 @@ func (q *Queries) CreateBroadcast(ctx context.Context, arg CreateBroadcastParams
 		arg.SendWindowStart,
 		arg.SendWindowEnd,
 		arg.ChangelogEntryID,
+		arg.Kind,
+		arg.Trigger,
+		arg.DelayMinutes,
+		arg.Basis,
+		arg.BackfillDays,
 		arg.Now,
 	)
 	var i Broadcast
@@ -590,6 +581,14 @@ func (q *Queries) CreateBroadcast(ctx context.Context, arg CreateBroadcastParams
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
 		&i.Translations,
+		&i.Kind,
+		&i.Trigger,
+		&i.DelayMinutes,
+		&i.Basis,
+		&i.BackfillDays,
+		&i.ServiceConfirmedBy,
+		&i.ServiceConfirmedByKey,
+		&i.ServiceConfirmedAt,
 	)
 	return i, err
 }
@@ -629,7 +628,7 @@ const deleteOldBroadcastDeliveries = `-- name: DeleteOldBroadcastDeliveries :exe
 DELETE FROM broadcast_deliveries WHERE (workspace_id, id) IN (
     SELECT d.workspace_id, d.id FROM broadcast_deliveries d
     JOIN broadcasts b ON b.workspace_id = d.workspace_id AND b.id = d.broadcast_id
-    WHERE d.workspace_id = $1 AND b.finished_at < $2
+    WHERE d.workspace_id = $1 AND (b.finished_at < $2 OR (b.kind = 'triggered' AND d.created_at < $2))
     LIMIT $3)
 `
 
@@ -865,7 +864,7 @@ func (q *Queries) FindBroadcastDeliveryByTokens(ctx context.Context, arg FindBro
 }
 
 const getBroadcast = `-- name: GetBroadcast :one
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at FROM broadcasts WHERE workspace_id = $1 AND id = $2
 `
 
 type GetBroadcastParams struct {
@@ -918,6 +917,14 @@ func (q *Queries) GetBroadcast(ctx context.Context, arg GetBroadcastParams) (Bro
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
 		&i.Translations,
+		&i.Kind,
+		&i.Trigger,
+		&i.DelayMinutes,
+		&i.Basis,
+		&i.BackfillDays,
+		&i.ServiceConfirmedBy,
+		&i.ServiceConfirmedByKey,
+		&i.ServiceConfirmedAt,
 	)
 	return i, err
 }
@@ -995,7 +1002,7 @@ func (q *Queries) GetBroadcastLink(ctx context.Context, arg GetBroadcastLinkPara
 
 const insertBroadcastDeliveries = `-- name: InsertBroadcastDeliveries :execrows
 INSERT INTO broadcast_deliveries (id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, locale, created_at)
-SELECT unnest($1::uuid[]), $2, $3, unnest($4::uuid[]), unnest($5::uuid[]),
+SELECT unnest($1::uuid[]), $2, $3, unnest($4::uuid[]), nullif(unnest($5::uuid[]), '00000000-0000-0000-0000-000000000000'::uuid),
        unnest($6::text[]), unnest($7::text[]), unnest($8::text[]), nullif(unnest($9::text[]), ''), $10
 ON CONFLICT DO NOTHING
 `
@@ -1365,24 +1372,26 @@ func (q *Queries) ListBroadcastSenderDomains(ctx context.Context, arg ListBroadc
 }
 
 const listBroadcasts = `-- name: ListBroadcasts :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts b
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at FROM broadcasts b
 WHERE b.workspace_id = $1
   AND ($2::uuid IS NULL OR b.inbox_id = $2::uuid)
   AND ($3::text[] IS NULL OR b.state = ANY($3::text[]))
-  AND (($4::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.personal)) OR EXISTS (
+  AND ($4::text IS NULL OR b.kind = $4::text)
+  AND (($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
-      WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = $5))
-  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = b.workspace_id AND own.id = b.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM $5::uuid)
-  AND ($6::timestamptz IS NULL
-       OR (b.created_at, b.id) < ($6::timestamptz, $7::uuid))
+      WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = $6))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = b.workspace_id AND own.id = b.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM $6::uuid)
+  AND ($7::timestamptz IS NULL
+       OR (b.created_at, b.id) < ($7::timestamptz, $8::uuid))
 ORDER BY b.created_at DESC, b.id DESC
-LIMIT $8
+LIMIT $9
 `
 
 type ListBroadcastsParams struct {
 	WorkspaceID uuid.UUID
 	InboxID     *uuid.UUID
 	States      []string
+	Kind        *string
 	AllInboxes  bool
 	ViewerID    uuid.UUID
 	CursorAt    *time.Time
@@ -1395,6 +1404,7 @@ func (q *Queries) ListBroadcasts(ctx context.Context, arg ListBroadcastsParams) 
 		arg.WorkspaceID,
 		arg.InboxID,
 		arg.States,
+		arg.Kind,
 		arg.AllInboxes,
 		arg.ViewerID,
 		arg.CursorAt,
@@ -1450,6 +1460,14 @@ func (q *Queries) ListBroadcasts(ctx context.Context, arg ListBroadcastsParams) 
 			&i.SendWindowStart,
 			&i.SendWindowEnd,
 			&i.Translations,
+			&i.Kind,
+			&i.Trigger,
+			&i.DelayMinutes,
+			&i.Basis,
+			&i.BackfillDays,
+			&i.ServiceConfirmedBy,
+			&i.ServiceConfirmedByKey,
+			&i.ServiceConfirmedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1462,7 +1480,7 @@ func (q *Queries) ListBroadcasts(ctx context.Context, arg ListBroadcastsParams) 
 }
 
 const listLatestBroadcasts = `-- name: ListLatestBroadcasts :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts WHERE workspace_id = $1 ORDER BY created_at DESC, id DESC LIMIT $2
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at FROM broadcasts WHERE workspace_id = $1 ORDER BY created_at DESC, id DESC LIMIT $2
 `
 
 type ListLatestBroadcastsParams struct {
@@ -1521,6 +1539,14 @@ func (q *Queries) ListLatestBroadcasts(ctx context.Context, arg ListLatestBroadc
 			&i.SendWindowStart,
 			&i.SendWindowEnd,
 			&i.Translations,
+			&i.Kind,
+			&i.Trigger,
+			&i.DelayMinutes,
+			&i.Basis,
+			&i.BackfillDays,
+			&i.ServiceConfirmedBy,
+			&i.ServiceConfirmedByKey,
+			&i.ServiceConfirmedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1562,8 +1588,8 @@ func (q *Queries) ListOptOutHashes(ctx context.Context, arg ListOptOutHashesPara
 }
 
 const listRunningBroadcasts = `-- name: ListRunningBroadcasts :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts
-WHERE workspace_id = $1 AND state IN ('scheduled', 'preparing', 'sending')
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at FROM broadcasts
+WHERE workspace_id = $1 AND state IN ('scheduled', 'preparing', 'sending', 'active')
 ORDER BY created_at, id
 `
 
@@ -1618,6 +1644,14 @@ func (q *Queries) ListRunningBroadcasts(ctx context.Context, workspaceID uuid.UU
 			&i.SendWindowStart,
 			&i.SendWindowEnd,
 			&i.Translations,
+			&i.Kind,
+			&i.Trigger,
+			&i.DelayMinutes,
+			&i.Basis,
+			&i.BackfillDays,
+			&i.ServiceConfirmedBy,
+			&i.ServiceConfirmedByKey,
+			&i.ServiceConfirmedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1630,9 +1664,9 @@ func (q *Queries) ListRunningBroadcasts(ctx context.Context, workspaceID uuid.UU
 }
 
 const listSendingBroadcastsOfChannel = `-- name: ListSendingBroadcastsOfChannel :many
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts
-WHERE workspace_id = $1 AND channel_id = $2 AND state = 'sending'
-ORDER BY started_at, id
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at FROM broadcasts
+WHERE workspace_id = $1 AND channel_id = $2 AND state IN ('sending', 'active')
+ORDER BY (kind = 'triggered') DESC, started_at, id
 `
 
 type ListSendingBroadcastsOfChannelParams struct {
@@ -1640,6 +1674,7 @@ type ListSendingBroadcastsOfChannelParams struct {
 	ChannelID   *uuid.UUID
 }
 
+// Triggered e-mails go first: they are few and their mail is time-bound.
 func (q *Queries) ListSendingBroadcastsOfChannel(ctx context.Context, arg ListSendingBroadcastsOfChannelParams) ([]Broadcast, error) {
 	rows, err := q.db.Query(ctx, listSendingBroadcastsOfChannel, arg.WorkspaceID, arg.ChannelID)
 	if err != nil {
@@ -1691,6 +1726,14 @@ func (q *Queries) ListSendingBroadcastsOfChannel(ctx context.Context, arg ListSe
 			&i.SendWindowStart,
 			&i.SendWindowEnd,
 			&i.Translations,
+			&i.Kind,
+			&i.Trigger,
+			&i.DelayMinutes,
+			&i.Basis,
+			&i.BackfillDays,
+			&i.ServiceConfirmedBy,
+			&i.ServiceConfirmedByKey,
+			&i.ServiceConfirmedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1738,7 +1781,7 @@ func (q *Queries) ListSendingDays(ctx context.Context, arg ListSendingDaysParams
 }
 
 const lockBroadcast = `-- name: LockBroadcast :one
-SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations FROM broadcasts WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at FROM broadcasts WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockBroadcastParams struct {
@@ -1791,6 +1834,14 @@ func (q *Queries) LockBroadcast(ctx context.Context, arg LockBroadcastParams) (B
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
 		&i.Translations,
+		&i.Kind,
+		&i.Trigger,
+		&i.DelayMinutes,
+		&i.Basis,
+		&i.BackfillDays,
+		&i.ServiceConfirmedBy,
+		&i.ServiceConfirmedByKey,
+		&i.ServiceConfirmedAt,
 	)
 	return i, err
 }
@@ -2006,7 +2057,8 @@ SELECT count(*)::bigint AS recipients,
        count(*) FILTER (WHERE skip_reason = 'suppressed')::bigint AS skipped_suppressed,
        count(*) FILTER (WHERE skip_reason = 'opted_out')::bigint AS skipped_opted_out,
        count(*) FILTER (WHERE skip_reason = 'unsubscribed')::bigint AS skipped_unsubscribed,
-       count(*) FILTER (WHERE skip_reason = 'cancelled')::bigint AS skipped_cancelled
+       count(*) FILTER (WHERE skip_reason = 'cancelled')::bigint AS skipped_cancelled,
+       count(*) FILTER (WHERE skip_reason = 'stopped')::bigint AS skipped_stopped
 FROM broadcast_deliveries WHERE workspace_id = $1 AND broadcast_id = $2
 `
 
@@ -2030,6 +2082,7 @@ type RecountBroadcastRow struct {
 	SkippedOptedOut     int64
 	SkippedUnsubscribed int64
 	SkippedCancelled    int64
+	SkippedStopped      int64
 }
 
 func (q *Queries) RecountBroadcast(ctx context.Context, arg RecountBroadcastParams) (RecountBroadcastRow, error) {
@@ -2050,6 +2103,7 @@ func (q *Queries) RecountBroadcast(ctx context.Context, arg RecountBroadcastPara
 		&i.SkippedOptedOut,
 		&i.SkippedUnsubscribed,
 		&i.SkippedCancelled,
+		&i.SkippedStopped,
 	)
 	return i, err
 }
@@ -2145,41 +2199,51 @@ UPDATE broadcasts SET channel_id = $1, name = $2, subject = $3, preheader = $4,
     started_at = $18, resumed_at = $19, finished_at = $20,
     last_test_at = $21, snapshot_after = $22, snapshot_done = $23,
     sender_failing_since = $24, scheduled_by = $25,
-    scheduled_by_key = $26, updated_at = $27::timestamptz
-WHERE workspace_id = $28 AND id = $29
-RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations
+    scheduled_by_key = $26, trigger = $27, delay_minutes = $28,
+    basis = $29, backfill_days = $30, service_confirmed_by = $31,
+    service_confirmed_by_key = $32, service_confirmed_at = $33,
+    updated_at = $34::timestamptz
+WHERE workspace_id = $35 AND id = $36
+RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at
 `
 
 type SaveBroadcastParams struct {
-	ChannelID          *uuid.UUID
-	Name               string
-	Subject            string
-	Preheader          string
-	Translations       []byte
-	DesignID           *uuid.UUID
-	DesignVersion      *int32
-	Document           []byte
-	Audience           []byte
-	ClickTracking      bool
-	Utm                bool
-	UtmCampaign        string
-	State              string
-	PauseReason        *string
-	StateDetail        *string
-	ScheduledAt        *time.Time
-	WaitingUntil       *time.Time
-	StartedAt          *time.Time
-	ResumedAt          *time.Time
-	FinishedAt         *time.Time
-	LastTestAt         *time.Time
-	SnapshotAfter      *uuid.UUID
-	SnapshotDone       bool
-	SenderFailingSince *time.Time
-	ScheduledBy        *uuid.UUID
-	ScheduledByKey     *uuid.UUID
-	Now                time.Time
-	WorkspaceID        uuid.UUID
-	ID                 uuid.UUID
+	ChannelID             *uuid.UUID
+	Name                  string
+	Subject               string
+	Preheader             string
+	Translations          []byte
+	DesignID              *uuid.UUID
+	DesignVersion         *int32
+	Document              []byte
+	Audience              []byte
+	ClickTracking         bool
+	Utm                   bool
+	UtmCampaign           string
+	State                 string
+	PauseReason           *string
+	StateDetail           *string
+	ScheduledAt           *time.Time
+	WaitingUntil          *time.Time
+	StartedAt             *time.Time
+	ResumedAt             *time.Time
+	FinishedAt            *time.Time
+	LastTestAt            *time.Time
+	SnapshotAfter         *uuid.UUID
+	SnapshotDone          bool
+	SenderFailingSince    *time.Time
+	ScheduledBy           *uuid.UUID
+	ScheduledByKey        *uuid.UUID
+	Trigger               []byte
+	DelayMinutes          *int32
+	Basis                 *string
+	BackfillDays          int32
+	ServiceConfirmedBy    *uuid.UUID
+	ServiceConfirmedByKey *uuid.UUID
+	ServiceConfirmedAt    *time.Time
+	Now                   time.Time
+	WorkspaceID           uuid.UUID
+	ID                    uuid.UUID
 }
 
 func (q *Queries) SaveBroadcast(ctx context.Context, arg SaveBroadcastParams) (Broadcast, error) {
@@ -2210,6 +2274,13 @@ func (q *Queries) SaveBroadcast(ctx context.Context, arg SaveBroadcastParams) (B
 		arg.SenderFailingSince,
 		arg.ScheduledBy,
 		arg.ScheduledByKey,
+		arg.Trigger,
+		arg.DelayMinutes,
+		arg.Basis,
+		arg.BackfillDays,
+		arg.ServiceConfirmedBy,
+		arg.ServiceConfirmedByKey,
+		arg.ServiceConfirmedAt,
 		arg.Now,
 		arg.WorkspaceID,
 		arg.ID,
@@ -2257,6 +2328,14 @@ func (q *Queries) SaveBroadcast(ctx context.Context, arg SaveBroadcastParams) (B
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
 		&i.Translations,
+		&i.Kind,
+		&i.Trigger,
+		&i.DelayMinutes,
+		&i.Basis,
+		&i.BackfillDays,
+		&i.ServiceConfirmedBy,
+		&i.ServiceConfirmedByKey,
+		&i.ServiceConfirmedAt,
 	)
 	return i, err
 }
@@ -2317,7 +2396,7 @@ const setBroadcastPace = `-- name: SetBroadcastPace :one
 UPDATE broadcasts SET pace_per_hour = $1, pace_per_day = $2,
     pace_per_month = $3, pace_next_at = $4, updated_at = $5::timestamptz
 WHERE workspace_id = $6 AND id = $7
-RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations
+RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at
 `
 
 type SetBroadcastPaceParams struct {
@@ -2383,6 +2462,14 @@ func (q *Queries) SetBroadcastPace(ctx context.Context, arg SetBroadcastPacePara
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
 		&i.Translations,
+		&i.Kind,
+		&i.Trigger,
+		&i.DelayMinutes,
+		&i.Basis,
+		&i.BackfillDays,
+		&i.ServiceConfirmedBy,
+		&i.ServiceConfirmedByKey,
+		&i.ServiceConfirmedAt,
 	)
 	return i, err
 }
@@ -2391,7 +2478,7 @@ const setBroadcastSendWindow = `-- name: SetBroadcastSendWindow :one
 UPDATE broadcasts SET timezone = $1, send_window_start = $2,
     send_window_end = $3, updated_at = $4::timestamptz
 WHERE workspace_id = $5 AND id = $6
-RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations
+RETURNING id, workspace_id, inbox_id, channel_id, name, subject, preheader, design_id, design_version, document, audience, click_tracking, state, pause_reason, state_detail, scheduled_at, waiting_until, started_at, resumed_at, finished_at, last_test_at, snapshot_after, snapshot_done, sender_failing_since, counts, created_by, scheduled_by, scheduled_by_key, created_at, updated_at, utm, utm_campaign, pace_per_hour, pace_per_day, pace_per_month, pace_next_at, changelog_entry_id, timezone, send_window_start, send_window_end, translations, kind, trigger, delay_minutes, basis, backfill_days, service_confirmed_by, service_confirmed_by_key, service_confirmed_at
 `
 
 type SetBroadcastSendWindowParams struct {
@@ -2455,13 +2542,21 @@ func (q *Queries) SetBroadcastSendWindow(ctx context.Context, arg SetBroadcastSe
 		&i.SendWindowStart,
 		&i.SendWindowEnd,
 		&i.Translations,
+		&i.Kind,
+		&i.Trigger,
+		&i.DelayMinutes,
+		&i.Basis,
+		&i.BackfillDays,
+		&i.ServiceConfirmedBy,
+		&i.ServiceConfirmedByKey,
+		&i.ServiceConfirmedAt,
 	)
 	return i, err
 }
 
 const setBroadcastsWaiting = `-- name: SetBroadcastsWaiting :exec
 UPDATE broadcasts SET waiting_until = $1
-WHERE workspace_id = $2 AND state = 'sending'
+WHERE workspace_id = $2 AND state IN ('sending', 'active')
 `
 
 type SetBroadcastsWaitingParams struct {

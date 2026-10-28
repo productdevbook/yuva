@@ -62,9 +62,13 @@ func (s *Server) outreachTarget(ctx context.Context, q *store.Queries, ids []uui
 
 // Opening the page changes nothing, since mail scanners follow links; RFC 8058 one-click is a POST.
 func (s *Server) outreachPage(w http.ResponseWriter, r *http.Request, token string) bool {
+	source := "outreach"
 	ids, _, ok := s.openToken(token, outreachTokenContext, 4, false)
 	if !ok {
-		return false
+		if ids, _, ok = s.openToken(token, triggeredTokenContext, 4, false); !ok {
+			return false
+		}
+		source = "triggered"
 	}
 	ctx := r.Context()
 	if r.Method != http.MethodPost {
@@ -75,7 +79,7 @@ func (s *Server) outreachPage(w http.ResponseWriter, r *http.Request, token stri
 		case t == nil:
 			goneListPage(w)
 		default:
-			s.outreachView(w, ctx, t, token, "", nil, false)
+			s.outreachView(w, ctx, t, token, "", nil, false, source == "triggered")
 		}
 		return true
 	}
@@ -95,12 +99,22 @@ func (s *Server) outreachPage(w http.ResponseWriter, r *http.Request, token stri
 		m := &t.manage
 		words := s.listPageView(m.inbox, &m.contact).W
 		stop := func() error {
-			return q.AddInboxMailOptOut(ctx, store.AddInboxMailOptOutParams{WorkspaceID: m.ws, InboxID: m.inbox.ID, ContactID: m.contact.ID, Source: "outreach", Now: s.now()})
+			if err := q.AddInboxMailOptOut(ctx, store.AddInboxMailOptOutParams{WorkspaceID: m.ws, InboxID: m.inbox.ID, ContactID: m.contact.ID, Source: source, Now: s.now()}); err != nil {
+				return err
+			}
+			if source != "triggered" {
+				return nil
+			}
+			return s.unsubscribedThrough(ctx, q, m.ws, ids[3], m.contact.ID)
 		}
 		switch {
 		case oneClick, action == "stop":
 			heading = fill(words.OutreachStopped, "", m.inbox.Name, "")
 			return stop()
+		case action == "save" && source == "triggered":
+			heading = words.Saved
+			undo, err = s.saveChoices(ctx, q, events, r, m, formLists(r.PostForm["lists"]))
+			return err
 		case action == "all":
 			heading = fill(words.AllGone, "", m.inbox.Name, "")
 			if undo, err = s.leaveAll(ctx, q, events, r, m); err != nil || t.stopped {
@@ -138,12 +152,12 @@ func (s *Server) outreachPage(w http.ResponseWriter, r *http.Request, token stri
 		if fresh, ferr := s.outreachTarget(ctx, s.st.Queries, ids, false); ferr == nil && fresh != nil {
 			t = fresh
 		}
-		s.outreachView(w, ctx, t, token, heading, undo, stopped)
+		s.outreachView(w, ctx, t, token, heading, undo, stopped, source == "triggered")
 	}
 	return true
 }
 
-func (s *Server) outreachView(w http.ResponseWriter, ctx context.Context, t *outreachTarget, token, heading string, undo []uuid.UUID, stopped bool) {
+func (s *Server) outreachView(w http.ResponseWriter, ctx context.Context, t *outreachTarget, token, heading string, undo []uuid.UUID, stopped, lists bool) {
 	m := &t.manage
 	v := s.listPageView(m.inbox, &m.contact)
 	in := m.inbox.Name
@@ -171,6 +185,13 @@ func (s *Server) outreachView(w http.ResponseWriter, ctx context.Context, t *out
 		v.Texts = append(v.Texts, fill(v.W.OutreachStopped, "", in, ""))
 	} else {
 		v.Forms = append(v.Forms, pageForm{Action: "stop", Button: fill(v.W.OutreachStop, "", in, ""), Note: v.W.OutreachStopNote})
+	}
+	if offered := m.offered(); lists && len(offered) > 0 {
+		choices := pageForm{Action: "save", Button: v.W.Save, Legend: fill(v.W.Lists, "", in, ""), Secondary: true}
+		for _, l := range offered {
+			choices.Choices = append(choices.Choices, pageChoice{ID: l.ID.String(), Name: l.Name, Description: l.Description, Checked: activeState(m.subsOf(l.ID))})
+		}
+		v.Forms = append(v.Forms, choices)
 	}
 	v.Forms = append(v.Forms, pageForm{Action: "all", Button: fill(v.W.UnsubscribeAll, "", in, ""), Note: fill(v.W.UnsubscribeAllText, "", in, ""), Secondary: true})
 	writeListPage(w, http.StatusOK, v)

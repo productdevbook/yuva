@@ -33,6 +33,7 @@ const (
 	noticeBroadcastApproval  = "broadcast_approval"
 	noticeBroadcastSuspended = "broadcast_suspended"
 	noticeBroadcastPaused    = "broadcast_paused"
+	noticeTriggeredStarted   = "triggered_started"
 )
 
 // warmupCap is the daily limit of an approved workspace on an approval server: 500 recipients,
@@ -189,7 +190,7 @@ func (s *Server) checkBroadcastRates(ctx context.Context, ws, id uuid.UUID) erro
 	if err != nil {
 		return err
 	}
-	if b.State == bcSending || b.State == bcPreparing {
+	if b.State == bcSending || b.State == bcPreparing || b.State == bcActive {
 		since := b.ResumedAt
 		if since == nil {
 			since = b.StartedAt

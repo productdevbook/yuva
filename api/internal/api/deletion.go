@@ -413,6 +413,9 @@ func mergeContactCopies(ctx context.Context, q *store.Queries, workspaceID, from
 	if err := q.MoveContactEvents(ctx, store.MoveContactEventsParams{WorkspaceID: workspaceID, FromContact: &from, ToContact: &to}); err != nil {
 		return err
 	}
+	if err := q.MoveContactEnrollments(ctx, store.MoveContactEnrollmentsParams{WorkspaceID: workspaceID, FromContact: from, ToContact: to}); err != nil {
+		return err
+	}
 	return q.MoveContactDeliveries(ctx, store.MoveContactDeliveriesParams{WorkspaceID: workspaceID, FromContact: &from, ToContact: &to})
 }
 

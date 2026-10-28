@@ -508,6 +508,15 @@ func showBroadcasts(ctx context.Context, srv *api.Server, ws store.Workspace, st
 		fmt.Fprintf(tw, "%s\t%s\t%d\t%d\t%d\t%d\t%s\t%s\n", b.CreatedAt.UTC().Format("2006-01-02 15:04"), b.State, b.Recipients, b.Sent,
 			b.Bounced, b.Complained, b.Name, b.Subject)
 	}
+	if err := tw.Flush(); err != nil || len(sum.Triggered) == 0 {
+		return err
+	}
+	fmt.Fprintln(stdout, "\ntriggered e-mails (live)")
+	tw = tabwriter.NewWriter(stdout, 0, 2, 2, ' ', 0)
+	fmt.Fprintln(tw, "STATE\tBASIS\tSENT 30D\tBOUNCED 30D\tCOMPLAINED 30D\tNAME")
+	for _, t := range sum.Triggered {
+		fmt.Fprintf(tw, "%s\t%s\t%d\t%d\t%d\t%s\n", t.State, t.Basis, t.Sent30, t.Bounced30, t.Complained30, t.Name)
+	}
 	return tw.Flush()
 }
 

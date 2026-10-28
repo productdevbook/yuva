@@ -1,11 +1,12 @@
 -- name: CreateBroadcast :one
 INSERT INTO broadcasts (id, workspace_id, inbox_id, channel_id, name, subject, preheader, translations, design_id, audience,
                         click_tracking, utm, utm_campaign, created_by, pace_per_hour, pace_per_day, pace_per_month,
-                        timezone, send_window_start, send_window_end, changelog_entry_id, created_at, updated_at)
+                        timezone, send_window_start, send_window_end, changelog_entry_id, kind, trigger, delay_minutes,
+                        basis, backfill_days, created_at, updated_at)
 VALUES (@id, @workspace_id, @inbox_id, sqlc.narg(channel_id), @name, @subject, @preheader, @translations, sqlc.narg(design_id), @audience,
         @click_tracking, @utm, @utm_campaign, sqlc.narg(created_by), sqlc.narg(pace_per_hour), sqlc.narg(pace_per_day),
         sqlc.narg(pace_per_month), @timezone, sqlc.narg(send_window_start), sqlc.narg(send_window_end),
-        sqlc.narg(changelog_entry_id), @now, @now)
+        sqlc.narg(changelog_entry_id), @kind, sqlc.narg(trigger), sqlc.narg(delay_minutes), sqlc.narg(basis), @backfill_days, @now, @now)
 RETURNING *;
 
 -- name: GetBroadcast :one
@@ -22,7 +23,10 @@ UPDATE broadcasts SET channel_id = sqlc.narg(channel_id), name = @name, subject 
     started_at = sqlc.narg(started_at), resumed_at = sqlc.narg(resumed_at), finished_at = sqlc.narg(finished_at),
     last_test_at = sqlc.narg(last_test_at), snapshot_after = sqlc.narg(snapshot_after), snapshot_done = @snapshot_done,
     sender_failing_since = sqlc.narg(sender_failing_since), scheduled_by = sqlc.narg(scheduled_by),
-    scheduled_by_key = sqlc.narg(scheduled_by_key), updated_at = @now::timestamptz
+    scheduled_by_key = sqlc.narg(scheduled_by_key), trigger = sqlc.narg(trigger), delay_minutes = sqlc.narg(delay_minutes),
+    basis = sqlc.narg(basis), backfill_days = @backfill_days, service_confirmed_by = sqlc.narg(service_confirmed_by),
+    service_confirmed_by_key = sqlc.narg(service_confirmed_by_key), service_confirmed_at = sqlc.narg(service_confirmed_at),
+    updated_at = @now::timestamptz
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
@@ -46,7 +50,7 @@ UPDATE broadcasts
 SET pace_next_at = (@now::timestamptz) + make_interval(secs => greatest(
         coalesce(3600.0 / pace_per_hour, 0), coalesce(sqlc.arg(day_secs)::float8 / pace_per_day, 0),
         coalesce(30 * sqlc.arg(day_secs)::float8 / pace_per_month, 0))::float8)
-WHERE workspace_id = @workspace_id AND id = @id AND state = 'sending'
+WHERE workspace_id = @workspace_id AND id = @id AND state IN ('sending', 'active')
   AND (pace_next_at IS NULL OR pace_next_at <= @now::timestamptz);
 
 -- name: MarkBroadcastTested :exec
@@ -60,6 +64,7 @@ SELECT * FROM broadcasts b
 WHERE b.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR b.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (sqlc.narg(states)::text[] IS NULL OR b.state = ANY(sqlc.narg(states)::text[]))
+  AND (sqlc.narg(kind)::text IS NULL OR b.kind = sqlc.narg(kind)::text)
   AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = b.workspace_id AND pmb.id = b.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = b.workspace_id AND iv.inbox_id = b.inbox_id AND iv.viewer_id = @viewer_id))
@@ -83,19 +88,20 @@ WHERE b.workspace_id = @workspace_id AND b.id = @id;
 -- name: SetBroadcastCounts :exec
 UPDATE broadcasts SET counts = counts || @counts::jsonb WHERE workspace_id = @workspace_id AND id = @id;
 
+-- Triggered e-mails go first: they are few and their mail is time-bound.
 -- name: ListSendingBroadcastsOfChannel :many
 SELECT * FROM broadcasts
-WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND state = 'sending'
-ORDER BY started_at, id;
+WHERE workspace_id = @workspace_id AND channel_id = @channel_id AND state IN ('sending', 'active')
+ORDER BY (kind = 'triggered') DESC, started_at, id;
 
 -- name: ListRunningBroadcasts :many
 SELECT * FROM broadcasts
-WHERE workspace_id = @workspace_id AND state IN ('scheduled', 'preparing', 'sending')
+WHERE workspace_id = @workspace_id AND state IN ('scheduled', 'preparing', 'sending', 'active')
 ORDER BY created_at, id;
 
 -- name: SetBroadcastsWaiting :exec
 UPDATE broadcasts SET waiting_until = sqlc.narg(until)
-WHERE workspace_id = @workspace_id AND state = 'sending';
+WHERE workspace_id = @workspace_id AND state IN ('sending', 'active');
 
 -- name: ListLatestBroadcasts :many
 SELECT * FROM broadcasts WHERE workspace_id = @workspace_id ORDER BY created_at DESC, id DESC LIMIT @lim;
@@ -103,7 +109,7 @@ SELECT * FROM broadcasts WHERE workspace_id = @workspace_id ORDER BY created_at 
 -- name: BroadcastUsesList :one
 SELECT EXISTS (
     SELECT 1 FROM broadcasts
-    WHERE workspace_id = @workspace_id AND state IN ('scheduled', 'preparing', 'sending', 'paused')
+    WHERE workspace_id = @workspace_id AND state IN ('scheduled', 'preparing', 'sending', 'active', 'paused')
       AND audience -> 'list_ids' @> jsonb_build_array(@list_id::text)
 ) AS used;
 
@@ -121,27 +127,7 @@ SELECT DISTINCT ON (s.contact_id)
     s.contact_id, s.email, s.list_id, c.name, c.attributes, c.blocked, c.locale,
     EXISTS (SELECT 1 FROM email_suppressions x WHERE x.workspace_id = s.workspace_id AND x.email = s.email AND x.scope <> 'confirmations')::bool AS suppressed,
     (count(*) OVER (PARTITION BY s.contact_id))::bigint AS subscriptions,
-    ((cardinality(@locales::text[]) = 0 OR EXISTS (
-        SELECT 1 FROM unnest(@locales::text[]) AS l (tag)
-        WHERE lower(coalesce(c.locale, '')) = lower(l.tag) OR lower(coalesce(c.locale, '')) LIKE lower(l.tag) || '-%'))
-     AND NOT EXISTS (
-        SELECT 1 FROM jsonb_to_recordset(@conditions::jsonb) AS k (attribute text, op text, value text, "values" text[])
-        WHERE NOT coalesce(CASE k.op
-            WHEN 'exists' THEN c.attributes -> k.attribute IS NOT NULL
-            WHEN 'not_exists' THEN c.attributes -> k.attribute IS NULL
-            WHEN 'eq' THEN c.attributes ->> k.attribute = k.value
-            WHEN 'neq' THEN (c.attributes ->> k.attribute) IS DISTINCT FROM k.value
-            WHEN 'contains' THEN strpos(lower(c.attributes ->> k.attribute), lower(k.value)) > 0
-            WHEN 'in' THEN c.attributes ->> k.attribute = ANY(k."values")
-            WHEN 'gt' THEN CASE
-                WHEN (c.attributes ->> k.attribute) ~ '^-?[0-9]{1,30}(\.[0-9]{1,30})?$' AND k.value ~ '^-?[0-9]{1,30}(\.[0-9]{1,30})?$'
-                THEN (c.attributes ->> k.attribute)::numeric > k.value::numeric
-                ELSE (c.attributes ->> k.attribute) > k.value END
-            WHEN 'lt' THEN CASE
-                WHEN (c.attributes ->> k.attribute) ~ '^-?[0-9]{1,30}(\.[0-9]{1,30})?$' AND k.value ~ '^-?[0-9]{1,30}(\.[0-9]{1,30})?$'
-                THEN (c.attributes ->> k.attribute)::numeric < k.value::numeric
-                ELSE (c.attributes ->> k.attribute) < k.value END
-            ELSE false END, false)))::bool AS matches
+    broadcast_audience_matches(c.attributes, c.locale, @conditions::jsonb, @locales::text[])::bool AS matches
 FROM list_subscriptions s
 JOIN contacts c ON c.workspace_id = s.workspace_id AND c.id = s.contact_id
 WHERE s.workspace_id = @workspace_id AND s.list_id = ANY(@list_ids::uuid[]) AND s.state = 'subscribed'
@@ -164,7 +150,7 @@ SELECT email_hash FROM email_optouts WHERE workspace_id = @workspace_id AND emai
 
 -- name: InsertBroadcastDeliveries :execrows
 INSERT INTO broadcast_deliveries (id, workspace_id, broadcast_id, contact_id, list_id, email, email_token, header_message_id, locale, created_at)
-SELECT unnest(@ids::uuid[]), @workspace_id, @broadcast_id, unnest(@contact_ids::uuid[]), unnest(@list_ids::uuid[]),
+SELECT unnest(@ids::uuid[]), @workspace_id, @broadcast_id, unnest(@contact_ids::uuid[]), nullif(unnest(@list_ids::uuid[]), '00000000-0000-0000-0000-000000000000'::uuid),
        unnest(@emails::text[]), unnest(@tokens::text[]), unnest(@headers::text[]), nullif(unnest(@locales::text[]), ''), @now
 ON CONFLICT DO NOTHING;
 
@@ -206,7 +192,8 @@ SELECT count(*)::bigint AS recipients,
        count(*) FILTER (WHERE skip_reason = 'suppressed')::bigint AS skipped_suppressed,
        count(*) FILTER (WHERE skip_reason = 'opted_out')::bigint AS skipped_opted_out,
        count(*) FILTER (WHERE skip_reason = 'unsubscribed')::bigint AS skipped_unsubscribed,
-       count(*) FILTER (WHERE skip_reason = 'cancelled')::bigint AS skipped_cancelled
+       count(*) FILTER (WHERE skip_reason = 'cancelled')::bigint AS skipped_cancelled,
+       count(*) FILTER (WHERE skip_reason = 'stopped')::bigint AS skipped_stopped
 FROM broadcast_deliveries WHERE workspace_id = @workspace_id AND broadcast_id = @broadcast_id;
 
 -- name: RecountBroadcastByLocale :many
@@ -413,7 +400,7 @@ DELETE FROM broadcast_sending_days WHERE workspace_id = @workspace_id AND day < 
 DELETE FROM broadcast_deliveries WHERE (workspace_id, id) IN (
     SELECT d.workspace_id, d.id FROM broadcast_deliveries d
     JOIN broadcasts b ON b.workspace_id = d.workspace_id AND b.id = d.broadcast_id
-    WHERE d.workspace_id = @workspace_id AND b.finished_at < @before
+    WHERE d.workspace_id = @workspace_id AND (b.finished_at < @before OR (b.kind = 'triggered' AND d.created_at < @before))
     LIMIT @lim);
 
 -- name: SetWorkspaceBroadcastsStatus :one

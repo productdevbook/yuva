@@ -575,7 +575,7 @@ func (s *Server) importListImport(ctx context.Context, imp store.ListImport, dea
 			key      *string
 		)
 		err := s.inTx(ctx, ws, func(q *store.Queries, events *eventBatch) error {
-			events.quiet = true
+			events.quiet, events.noTriggers = true, true
 			var err error
 			if cur, err = q.LockListImport(ctx, store.LockListImportParams{WorkspaceID: ws, ID: imp.ID}); err != nil {
 				return err
@@ -678,7 +678,7 @@ func (s *Server) importBatch(ctx context.Context, q *store.Queries, events *even
 			r.attrs, _ = keepValidContactFields(fieldDefs, r.attrs, true)
 			b.Attributes = new(oas.Attributes(r.attrs))
 		}
-		contactID, email, created, err := s.subscriber(ctx, q, p, list, &b)
+		contactID, email, created, err := s.subscriber(ctx, q, events, p, list, &b)
 		var apiErr *apiError
 		if errors.As(err, &apiErr) {
 			refuse(r, reasonInvalidEmail)

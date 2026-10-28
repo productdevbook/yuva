@@ -127,27 +127,36 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 		}
 	}
 	subject := strings.TrimSpace(b.Subject)
-	count, err := s.countAudience(ctx, q, b, doc, true)
-	if err != nil {
-		return out, err
+	var count oas.BroadcastAudienceCount
+	if b.Kind == bcTriggered {
+		if count.Recipients, err = backfillCount(ctx, q, b, s.now()); err != nil {
+			return out, err
+		}
+		l.triggered(b, in, doc, count.Recipients)
+	} else {
+		if count, err = s.countAudience(ctx, q, b, doc, true); err != nil {
+			return out, err
+		}
+		switch {
+		case len(parseAudience(b.Audience).ListIDs) == 0:
+			l.add(oas.BroadcastReviewKeyAudienceNonempty, oas.ReviewBlocking, "choose at least one list")
+		case count.Recipients == 0:
+			l.add(oas.BroadcastReviewKeyAudienceNonempty, oas.ReviewBlocking, "nobody in the lists would get it")
+		default:
+			l.add(oas.BroadcastReviewKeyAudienceNonempty, oas.ReviewOk, strconv.FormatInt(count.Recipients, 10)+" recipients")
+		}
 	}
 	out.Recipients = count.Recipients
 	switch {
-	case len(parseAudience(b.Audience).ListIDs) == 0:
-		l.add(oas.BroadcastReviewKeyAudienceNonempty, oas.ReviewBlocking, "choose at least one list")
-	case count.Recipients == 0:
-		l.add(oas.BroadcastReviewKeyAudienceNonempty, oas.ReviewBlocking, "nobody in the lists would get it")
-	default:
-		l.add(oas.BroadcastReviewKeyAudienceNonempty, oas.ReviewOk, strconv.FormatInt(count.Recipients, 10)+" recipients")
-	}
-	if len(count.MissingMergeFields) > 0 {
+	case b.Kind == bcTriggered:
+	case len(count.MissingMergeFields) > 0:
 		var parts []string
 		for f, n := range count.MissingMergeFields {
 			parts = append(parts, fmt.Sprintf("%s is empty for %d", f, n))
 		}
 		slices.Sort(parts)
 		l.add(oas.BroadcastReviewKeyMergeFields, oas.ReviewBlocking, strings.Join(parts, "; ")+": give the fields a fallback")
-	} else {
+	default:
 		l.add(oas.BroadcastReviewKeyMergeFields, oas.ReviewOk, "")
 	}
 	if len(rendered) > 0 {
@@ -495,9 +504,22 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 			}
 		}
 		confirm = req.Body.ConfirmRecipients
+		if b.Kind != bcTriggered && (req.Body.BackfillDays != nil || req.Body.ConfirmService != nil) {
+			return nil, errValidation("backfill_days and confirm_service are for triggered e-mails")
+		}
+		if req.Body.BackfillDays != nil {
+			if *req.Body.BackfillDays < 0 || *req.Body.BackfillDays > maxBackfillDays {
+				return nil, errValidation("backfill_days must be 0 to 30")
+			}
+			b.BackfillDays = *req.Body.BackfillDays
+		}
 	}
 	if b.State != bcDraft {
 		return nil, errBroadcastNotDraft
+	}
+	confirmService := req.Body != nil && boolOr(req.Body.ConfirmService, false)
+	if serviceBasis(b) && !confirmService {
+		return nil, errServiceUnconfirmed
 	}
 	w, err := s.st.GetWorkspace(ctx, p.workspaceID)
 	if err != nil {
@@ -536,21 +558,29 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 		if !cur.UpdatedAt.Equal(b.UpdatedAt) {
 			return problem(http.StatusConflict, "broadcast_changed", "the draft changed while it was reviewed; review it again")
 		}
-		if cur.DesignID == nil {
-			return errDesignRequired
-		}
-		d, err := q.LockEmailDesign(ctx, store.LockEmailDesignParams{WorkspaceID: p.workspaceID, ID: *cur.DesignID})
-		if err != nil {
+		if err := s.freezeDesign(ctx, q, p, &cur); err != nil {
 			return err
 		}
-		if err := s.snapshotDesign(ctx, q, p, d, "scheduled", true); err != nil {
-			return err
-		}
-		cur.Document, cur.DesignVersion = d.Document, new(d.Version)
 		cur.State, cur.ScheduledAt, cur.PauseReason, cur.StateDetail = bcScheduled, &sendAt, nil, nil
 		cur.ScheduledBy, cur.ScheduledByKey = p.memberRef(), nil
 		if p.isKey() {
 			cur.ScheduledByKey = new(p.keyID)
+		}
+		if cur.Kind == bcTriggered {
+			if err := s.checkLiveTriggered(ctx, q, p.workspaceID, cur.InboxID, cur.ID); err != nil {
+				return err
+			}
+			now := s.now()
+			cur.BackfillDays = b.BackfillDays
+			cur.ServiceConfirmedBy, cur.ServiceConfirmedByKey, cur.ServiceConfirmedAt = nil, nil, nil
+			if serviceBasis(cur) {
+				cur.ServiceConfirmedBy, cur.ServiceConfirmedByKey, cur.ServiceConfirmedAt = cur.ScheduledBy, cur.ScheduledByKey, &now
+			}
+			if err := s.audit(ctx, q, p, oas.AuditBroadcastScheduled, oas.AuditTargetBroadcast, cur.ID, auditDetails{
+				"name": cur.Name, "kind": cur.Kind, "basis": deref(cur.Basis), "backfill_days": cur.BackfillDays, "service_confirmed": serviceBasis(cur),
+			}); err != nil {
+				return err
+			}
 		}
 		if out, err = s.saveBroadcast(ctx, q, cur); err != nil {
 			return err
@@ -558,35 +588,8 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 		if err := q.SetBroadcastCounts(ctx, store.SetBroadcastCountsParams{WorkspaceID: p.workspaceID, ID: out.ID, Counts: []byte(`{"recipients": 0}`)}); err != nil {
 			return err
 		}
-		if err := q.DeleteBroadcastLinks(ctx, store.DeleteBroadcastLinksParams{WorkspaceID: p.workspaceID, BroadcastID: out.ID}); err != nil {
+		if err := s.freezeLinks(ctx, q, out); err != nil {
 			return err
-		}
-		if out.ClickTracking {
-			doc, issues, err := design.Parse(out.Document)
-			if err != nil || len(issues) > 0 {
-				return errDesignRequired
-			}
-			r, err := s.newBroadcastRenderer(ctx, q, out, doc, nil)
-			if err != nil {
-				return err
-			}
-			tags := doc.Versions()
-			if len(tags) == 0 {
-				tags = []string{""}
-			}
-			for _, tag := range tags {
-				links, err := r.trackableLinks(tag)
-				if err != nil {
-					return err
-				}
-				for pos, u := range links {
-					if err := q.InsertBroadcastLink(ctx, store.InsertBroadcastLinkParams{
-						WorkspaceID: p.workspaceID, BroadcastID: out.ID, Locale: tag, Position: int32(pos), Url: u,
-					}); err != nil {
-						return err
-					}
-				}
-			}
 		}
 		s.emitBroadcast(events, out, bcDraft)
 		if err := q.DeleteBroadcastStartJobs(ctx, out.WorkspaceID, out.ID); err != nil {
@@ -599,6 +602,56 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 		return nil, err
 	}
 	return oas.ScheduleBroadcast200JSONResponse(s.broadcastBody(out)), nil
+}
+
+func (s *Server) freezeDesign(ctx context.Context, q *store.Queries, p principal, b *store.Broadcast) error {
+	if b.DesignID == nil {
+		return errDesignRequired
+	}
+	d, err := q.LockEmailDesign(ctx, store.LockEmailDesignParams{WorkspaceID: b.WorkspaceID, ID: *b.DesignID})
+	if err != nil {
+		return err
+	}
+	if err := s.snapshotDesign(ctx, q, p, d, "scheduled", true); err != nil {
+		return err
+	}
+	b.Document, b.DesignVersion = d.Document, new(d.Version)
+	return nil
+}
+
+func (s *Server) freezeLinks(ctx context.Context, q *store.Queries, b store.Broadcast) error {
+	if err := q.DeleteBroadcastLinks(ctx, store.DeleteBroadcastLinksParams{WorkspaceID: b.WorkspaceID, BroadcastID: b.ID}); err != nil {
+		return err
+	}
+	if !b.ClickTracking {
+		return nil
+	}
+	doc, issues, err := design.Parse(b.Document)
+	if err != nil || len(issues) > 0 {
+		return errDesignRequired
+	}
+	r, err := s.newBroadcastRenderer(ctx, q, b, doc, nil)
+	if err != nil {
+		return err
+	}
+	tags := doc.Versions()
+	if len(tags) == 0 {
+		tags = []string{""}
+	}
+	for _, tag := range tags {
+		links, err := r.trackableLinks(tag)
+		if err != nil {
+			return err
+		}
+		for pos, u := range links {
+			if err := q.InsertBroadcastLink(ctx, store.InsertBroadcastLinkParams{
+				WorkspaceID: b.WorkspaceID, BroadcastID: b.ID, Locale: tag, Position: int32(pos), Url: u,
+			}); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // changeBroadcast locks a broadcast the caller may send and applies a state change.
@@ -650,6 +703,7 @@ func (s *Server) UnscheduleBroadcast(ctx context.Context, req oas.UnscheduleBroa
 			return err
 		}
 		b.State, b.ScheduledAt, b.Document, b.DesignVersion, b.ScheduledBy, b.ScheduledByKey = bcDraft, nil, nil, nil, nil, nil
+		b.ServiceConfirmedBy, b.ServiceConfirmedByKey, b.ServiceConfirmedAt = nil, nil, nil
 		return q.DeleteBroadcastLinks(ctx, store.DeleteBroadcastLinksParams{WorkspaceID: b.WorkspaceID, BroadcastID: b.ID})
 	})
 	if err != nil {
@@ -660,7 +714,7 @@ func (s *Server) UnscheduleBroadcast(ctx context.Context, req oas.UnscheduleBroa
 
 func (s *Server) PauseBroadcast(ctx context.Context, req oas.PauseBroadcastRequestObject) (oas.PauseBroadcastResponseObject, error) {
 	out, err := s.changeBroadcast(ctx, req.BroadcastId, func(_ *store.Queries, _ *eventBatch, b *store.Broadcast, _ store.Workspace) error {
-		if b.State != bcPreparing && b.State != bcSending {
+		if b.State != bcPreparing && b.State != bcSending && b.State != bcActive {
 			return errBroadcastState
 		}
 		b.State, b.PauseReason, b.StateDetail, b.WaitingUntil = bcPaused, new(string(oas.BroadcastPauseReasonMember)), nil, nil
@@ -674,12 +728,47 @@ func (s *Server) PauseBroadcast(ctx context.Context, req oas.PauseBroadcastReque
 
 func (s *Server) ResumeBroadcast(ctx context.Context, req oas.ResumeBroadcastRequestObject) (oas.ResumeBroadcastResponseObject, error) {
 	p := principalFrom(ctx)
+	reviewed, err := visibleBroadcast(ctx, s.st.Queries, p, req.BroadcastId, false)
+	if err != nil {
+		return nil, err
+	}
+	if reviewed.Kind == bcTriggered && reviewed.State == bcPaused {
+		if err := requireManagerOrKey(p); err != nil {
+			return nil, err
+		}
+		draft := reviewed
+		draft.Document = nil
+		review, err := s.reviewBroadcast(ctx, s.st.Queries, draft)
+		if err != nil {
+			return nil, err
+		}
+		var blocking []oas.BroadcastReviewItem
+		for _, it := range review.Items {
+			if it.Status == oas.ReviewBlocking && it.Key != oas.BroadcastReviewKeyApproval {
+				blocking = append(blocking, it)
+			}
+		}
+		if len(blocking) > 0 {
+			return nil, reviewFailed(blocking)
+		}
+	}
 	out, err := s.changeBroadcast(ctx, req.BroadcastId, func(q *store.Queries, events *eventBatch, b *store.Broadcast, w store.Workspace) error {
 		if b.State != bcPaused {
 			return errBroadcastState
 		}
 		if err := s.sendGate(p, w); err != nil {
 			return err
+		}
+		if b.Kind == bcTriggered {
+			if !b.UpdatedAt.Equal(reviewed.UpdatedAt) {
+				return problem(http.StatusConflict, "broadcast_changed", "the triggered e-mail changed while it was reviewed; resume it again")
+			}
+			if err := s.freezeDesign(ctx, q, p, b); err != nil {
+				return err
+			}
+			if err := s.freezeLinks(ctx, q, *b); err != nil {
+				return err
+			}
 		}
 		if b.ChannelID != nil {
 			ch, err := q.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: b.WorkspaceID, ChannelID: *b.ChannelID})
@@ -698,6 +787,28 @@ func (s *Server) ResumeBroadcast(ctx context.Context, req oas.ResumeBroadcastReq
 		}
 		now := s.now()
 		b.PauseReason, b.StateDetail, b.SenderFailingSince, b.WaitingUntil, b.ResumedAt = nil, nil, nil, nil, &now
+		if b.Kind == bcTriggered {
+			switch {
+			case b.StartedAt != nil:
+				b.State = bcActive
+			case b.ScheduledAt != nil && b.ScheduledAt.After(now):
+				b.State = bcScheduled
+				s.queueBroadcastStart(events, *b, *b.ScheduledAt)
+				return nil
+			default:
+				if err := s.startTriggered(ctx, q, b, w); err != nil {
+					return err
+				}
+			}
+			if !b.SnapshotDone {
+				s.queueBroadcastStart(events, *b, time.Time{})
+			}
+			events.jobOnce(TriggeredDueArgs{WorkspaceID: b.WorkspaceID, BroadcastID: b.ID}, broadcastJobOpts(time.Time{}, broadcastQueue))
+			if b.ChannelID != nil {
+				s.queueBroadcastSend(events, b.WorkspaceID, *b.ChannelID)
+			}
+			return nil
+		}
 		if !b.SnapshotDone {
 			b.State = bcPreparing
 			s.queueBroadcastStart(events, *b, time.Time{})
@@ -722,6 +833,9 @@ func (s *Server) CancelBroadcast(ctx context.Context, req oas.CancelBroadcastReq
 		}
 		now := s.now()
 		b.State, b.FinishedAt, b.PauseReason, b.WaitingUntil = bcCancelled, &now, nil, nil
+		if err := q.CancelWaitingEnrollments(ctx, store.CancelWaitingEnrollmentsParams{WorkspaceID: b.WorkspaceID, BroadcastID: b.ID, Now: now}); err != nil {
+			return err
+		}
 		return q.DeleteBroadcastStartJobs(ctx, b.WorkspaceID, b.ID)
 	})
 	if err != nil {
@@ -846,7 +960,7 @@ func (s *Server) GetBroadcastReport(ctx context.Context, req oas.GetBroadcastRep
 		}
 	}
 	out := oas.GetBroadcastReport200JSONResponse{
-		BroadcastId: b.ID, Counts: c.body(b.State), Rates: c.rates(), Timeline: []oas.BroadcastReportPoint{}, Replies: []oas.BroadcastReportReply{},
+		BroadcastId: b.ID, Counts: c.body(b.State, locale == nil && b.Kind == bcTriggered), Rates: c.rates(), Timeline: []oas.BroadcastReportPoint{}, Replies: []oas.BroadcastReportReply{},
 	}
 	if locale != nil {
 		out.Locale = new(oas.LanguageTag(*locale))
@@ -854,7 +968,7 @@ func (s *Server) GetBroadcastReport(ctx context.Context, req oas.GetBroadcastRep
 		list := make([]oas.BroadcastLocaleReport, len(byLocale))
 		for i, r := range byLocale {
 			lc := localeCounts(r)
-			list[i] = oas.BroadcastLocaleReport{Locale: oas.LanguageTag(r.Locale), Counts: lc.body(b.State), Rates: lc.rates()}
+			list[i] = oas.BroadcastLocaleReport{Locale: oas.LanguageTag(r.Locale), Counts: lc.body(b.State, false), Rates: lc.rates()}
 		}
 		out.Locales = &list
 	}

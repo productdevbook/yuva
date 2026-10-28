@@ -309,7 +309,7 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 		return contactRow{}, err
 	}
 	if addExternal {
-		if err := q.AddContactExternalID(ctx, store.AddContactExternalIDParams{WorkspaceID: ws, InboxID: inbox.ID, ExternalID: c.sub, ContactID: id}); err != nil {
+		if err := s.addExternalID(ctx, q, events, ws, inbox.ID, id, c.sub, visitorContact == nil || id != *visitorContact); err != nil {
 			return contactRow{}, err
 		}
 	}

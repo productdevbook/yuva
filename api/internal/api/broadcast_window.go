@@ -177,7 +177,7 @@ func windowOpensAt(b store.Broadcast, now time.Time) *time.Time {
 		return nil
 	}
 	switch b.State {
-	case bcScheduled, bcPreparing, bcSending:
+	case bcScheduled, bcPreparing, bcSending, bcActive:
 	default:
 		return nil
 	}

@@ -23,7 +23,12 @@ import (
 var (
 	errNotBroadcastManager = problem(http.StatusForbidden, "forbidden", "only owners and admins work on designs and broadcasts")
 	templateLocales        = []any{"en", "tr", "de"}
-	broadcastStates        = []any{"draft", "scheduled", "preparing", "sending", "paused", "sent", "cancelled", "failed"}
+	broadcastStates        = []any{"draft", "scheduled", "preparing", "sending", "active", "paused", "sent", "cancelled", "failed"}
+	broadcastKinds         = []any{"once", "triggered"}
+	triggerEvents          = []any{"contact_identified"}
+	triggerBases           = []any{"service", "marketing"}
+	delayUnits             = []any{"minutes", "hours", "days"}
+	enrollmentStates       = []any{"waiting", "queued", "skipped", "cancelled"}
 	conditionOps           = []any{"eq", "neq", "contains", "in", "exists", "not_exists", "gt", "lt"}
 )
 
@@ -285,29 +290,45 @@ type mcpBroadcastCondition struct {
 }
 
 type mcpBroadcastCounts struct {
-	Recipients          int64 `json:"recipients"`
-	Queued              int64 `json:"queued"`
-	Sent                int64 `json:"sent"`
-	Failed              int64 `json:"failed"`
-	Bounced             int64 `json:"bounced"`
-	Complained          int64 `json:"complained"`
-	Unsubscribed        int64 `json:"unsubscribed"`
-	Replied             int64 `json:"replied"`
-	AutoReplied         int64 `json:"auto_replied"`
-	Clicked             int64 `json:"clicked" jsonschema:"unique clicks, only with click tracking"`
-	SkippedSuppressed   int64 `json:"skipped_suppressed"`
-	SkippedOptedOut     int64 `json:"skipped_opted_out"`
-	SkippedUnsubscribed int64 `json:"skipped_unsubscribed"`
-	SkippedCancelled    int64 `json:"skipped_cancelled"`
+	Recipients          int64            `json:"recipients"`
+	Queued              int64            `json:"queued"`
+	Sent                int64            `json:"sent"`
+	Failed              int64            `json:"failed"`
+	Bounced             int64            `json:"bounced"`
+	Complained          int64            `json:"complained"`
+	Unsubscribed        int64            `json:"unsubscribed"`
+	Replied             int64            `json:"replied"`
+	AutoReplied         int64            `json:"auto_replied"`
+	Clicked             int64            `json:"clicked" jsonschema:"unique clicks, only with click tracking"`
+	SkippedSuppressed   int64            `json:"skipped_suppressed"`
+	SkippedOptedOut     int64            `json:"skipped_opted_out"`
+	SkippedUnsubscribed int64            `json:"skipped_unsubscribed"`
+	SkippedCancelled    int64            `json:"skipped_cancelled"`
+	Enrolled            *int64           `json:"enrolled,omitempty" jsonschema:"triggered e-mails: contacts the trigger enrolled, each once"`
+	Waiting             *int64           `json:"waiting,omitempty" jsonschema:"triggered e-mails: contacts whose mail is not due yet"`
+	SkippedTriggered    map[string]int64 `json:"skipped_triggered,omitempty" jsonschema:"triggered e-mails: contacts skipped at their due time, by reason"`
 }
 
 func broadcastCountsOut(c oas.BroadcastCounts) mcpBroadcastCounts {
-	return mcpBroadcastCounts{
+	out := mcpBroadcastCounts{
 		Recipients: c.Recipients, Queued: c.Queued, Sent: c.Sent, Failed: c.Failed, Bounced: c.Bounced, Complained: c.Complained,
 		Unsubscribed: c.Unsubscribed, Replied: c.Replied, AutoReplied: c.AutoReplied, Clicked: c.Clicked,
 		SkippedSuppressed: c.Skipped.Suppressed, SkippedOptedOut: c.Skipped.OptedOut, SkippedUnsubscribed: c.Skipped.Unsubscribed,
-		SkippedCancelled: c.Skipped.Cancelled,
+		SkippedCancelled: c.Skipped.Cancelled, Enrolled: c.Enrolled, Waiting: c.Waiting,
 	}
+	if c.Enrolled != nil {
+		k := c.Skipped
+		out.SkippedTriggered = map[string]int64{}
+		for name, n := range map[string]*int64{
+			"no_address": k.NoAddress, "blocked": k.Blocked, "not_subscribed": k.NotSubscribed, "not_matching": k.NotMatching,
+			"late": k.Late, "removed": k.Removed, "stopped": k.Stopped,
+		} {
+			if n != nil {
+				out.SkippedTriggered[name] = *n
+			}
+		}
+	}
+	return out
 }
 
 type mcpBroadcastTranslation struct {
@@ -337,6 +358,9 @@ type mcpBroadcast struct {
 	Conditions       []mcpBroadcastCondition   `json:"conditions" jsonschema:"contact attribute conditions every recipient meets"`
 	Locales          []string                  `json:"locales" jsonschema:"only contacts with these languages; everyone when empty"`
 	ClickTracking    bool                      `json:"click_tracking"`
+	Kind             string                    `json:"kind" jsonschema:"once, or triggered: sent to each contact once, a set time after the trigger"`
+	Trigger          *oas.BroadcastTrigger     `json:"trigger,omitempty" jsonschema:"a triggered e-mail's event, delay in minutes, consent basis and back-fill days"`
+	ServiceConfirmed *time.Time                `json:"service_confirmed_at,omitempty" jsonschema:"when starting a service triggered e-mail was confirmed as being about using the product"`
 	State            string                    `json:"state"`
 	StateDetail      string                    `json:"state_detail,omitempty" jsonschema:"why it paused or failed, such as the mail server's answer"`
 	PauseReason      string                    `json:"pause_reason,omitempty"`
@@ -364,7 +388,10 @@ func (c *mcpCall) broadcastOut(b oas.Broadcast) mcpBroadcast {
 		ClickTracking: b.ClickTracking, State: string(b.State), StateDetail: deref(b.StateDetail), ScheduledAt: b.ScheduledAt,
 		StartedAt: b.StartedAt, FinishedAt: b.FinishedAt, LastTestAt: b.LastTestAt, Pace: b.Pace, PaceNextAt: b.PaceNextAt,
 		Counts: broadcastCountsOut(b.Counts), CreatedAt: b.CreatedAt, UpdatedAt: b.UpdatedAt,
-		Timezone: b.Timezone, SendWindow: b.SendWindow, WindowOpens: b.WindowOpensAt,
+		Timezone: b.Timezone, SendWindow: b.SendWindow, WindowOpens: b.WindowOpensAt, Kind: string(b.Kind), Trigger: b.Trigger,
+	}
+	if b.ServiceConfirmed != nil {
+		out.ServiceConfirmed = &b.ServiceConfirmed.At
 	}
 	if b.ScheduledAt != nil {
 		if loc, err := zone(b.Timezone); err == nil {
@@ -401,6 +428,7 @@ func (c *mcpCall) broadcastOut(b oas.Broadcast) mcpBroadcast {
 
 type listBroadcastsIn struct {
 	InboxID *uuid.UUID `json:"inbox_id,omitempty"`
+	Kind    string     `json:"kind,omitempty" jsonschema:"only one-off broadcasts (once) or only triggered e-mails (triggered)"`
 	States  []string   `json:"states,omitempty" jsonschema:"only broadcasts in these states"`
 	Cursor  string     `json:"cursor,omitempty"`
 	Limit   int32      `json:"limit,omitempty" jsonschema:"1 to 100, default 25"`
@@ -418,7 +446,7 @@ type mcpReviewItem struct {
 
 type mcpReview struct {
 	Ready      bool            `json:"ready" jsonschema:"true when nothing blocks scheduling"`
-	Recipients int64           `json:"recipients" jsonschema:"who would get it now; schedule_broadcast needs this number as confirm_recipients"`
+	Recipients int64           `json:"recipients" jsonschema:"who would get it now (for a triggered e-mail: the contacts the back-fill would enroll, 0 without back-fill); schedule_broadcast needs this number as confirm_recipients"`
 	HTMLBytes  int32           `json:"html_bytes,omitempty"`
 	Days       int32           `json:"days,omitempty" jsonschema:"how many days sending takes under the workspace's daily limit"`
 	Duration   int64           `json:"duration_seconds,omitempty" jsonschema:"about how many seconds sending takes from its start, at the slowest of the pace, the channel's rate and the daily limit"`
@@ -478,6 +506,9 @@ func (c *mcpCall) getBroadcast(ctx context.Context, id uuid.UUID) (getBroadcastO
 		rv.Items = append(rv.Items, mcpReviewItem{Key: string(it.Key), Status: string(it.Status), Detail: deref(it.Detail)})
 	}
 	out.Review = rv
+	if b.Kind == oas.KindTriggered {
+		return out, nil
+	}
 	ares, err := c.s.CountBroadcastAudience(ctx, oas.CountBroadcastAudienceRequestObject{BroadcastId: id})
 	if err != nil {
 		return out, err
@@ -582,6 +613,9 @@ type updateBroadcastIn struct {
 	WindowEnd     string                    `json:"send_window_end,omitempty" jsonschema:"HH:MM, 24-hour (24:00 for the end of the day), in the broadcast's time zone; at least 30 minutes after send_window_start"`
 	RemoveWindow  bool                      `json:"remove_send_window,omitempty" jsonschema:"send at any hour of the day again"`
 	Translations  []mcpBroadcastTranslation `json:"translations,omitempty" jsonschema:"subject and preheader for the design's other language versions; replaces all of them, an empty list removes them"`
+	Delay         *int32                    `json:"delay,omitempty" jsonschema:"triggered e-mails: the new delay in delay_unit; moves the due time of everyone waiting"`
+	DelayUnit     string                    `json:"delay_unit,omitempty" jsonschema:"minutes, hours or days, with delay"`
+	BackfillDays  *int32                    `json:"backfill_days,omitempty" jsonschema:"triggered e-mails before they start: back-fill days, 0 to 30"`
 }
 
 var errNothingToUpdate = problem(http.StatusBadRequest, "invalid_request", "name at least one field to change")
@@ -625,6 +659,16 @@ func (in updateBroadcastIn) body() (oas.BroadcastUpdate, *apiError) {
 	case in.RemoveWindow:
 		body.SendWindow = nullable.NewNullNullable[oas.BroadcastSendWindow]()
 	}
+	if in.Delay != nil || in.BackfillDays != nil {
+		body.Trigger = &oas.BroadcastTriggerInput{BackfillDays: in.BackfillDays}
+		if in.Delay != nil {
+			m, err := delayMinutes(*in.Delay, in.DelayUnit)
+			if err != nil {
+				return body, err.(*apiError)
+			}
+			body.Trigger.DelayMinutes = &m
+		}
+	}
 	if reflect.DeepEqual(body, oas.BroadcastUpdate{}) {
 		return body, errNothingToUpdate
 	}
@@ -646,7 +690,74 @@ type scheduleBroadcastIn struct {
 	BroadcastID       uuid.UUID  `json:"broadcast_id"`
 	SendAt            *time.Time `json:"send_at,omitempty" jsonschema:"when sending starts, an instant with its offset, at most 90 days ahead; a time in the past sends now. Give send_at or send_at_local, or neither to send now"`
 	SendAtLocal       string     `json:"send_at_local,omitempty" jsonschema:"a wall-clock time YYYY-MM-DDTHH:MM in the broadcast's time zone, as get_broadcast shows it; use this when the person says a time such as 9:00 Istanbul time"`
-	ConfirmRecipients int64      `json:"confirm_recipients" jsonschema:"the recipient count get_broadcast showed and the person you work for confirmed"`
+	ConfirmRecipients int64      `json:"confirm_recipients" jsonschema:"the recipient count get_broadcast showed and the person you work for confirmed; for a triggered e-mail the back-fill count (0 without back-fill)"`
+	BackfillDays      *int32     `json:"backfill_days,omitempty" jsonschema:"triggered e-mails: also enroll contacts whose trigger happened in this many days before the start, 0 to 30; get_broadcast's review counts them"`
+	ConfirmService    bool       `json:"confirm_service,omitempty" jsonschema:"triggered e-mails with basis service: must be true, after the person you work for confirmed the mail is about using the product (getting started, the account, a feedback request) and not advertising"`
+}
+
+type createTriggeredIn struct {
+	InboxID       uuid.UUID                 `json:"inbox_id"`
+	ChannelID     *uuid.UUID                `json:"channel_id,omitempty" jsonschema:"the inbox's e-mail channel to send through"`
+	Name          string                    `json:"name" jsonschema:"shown to members"`
+	Subject       string                    `json:"subject" jsonschema:"the mail's subject; merge fields need a fallback"`
+	Preheader     string                    `json:"preheader,omitempty" jsonschema:"the line inboxes show after the subject"`
+	DesignID      *uuid.UUID                `json:"design_id,omitempty"`
+	Translations  []mcpBroadcastTranslation `json:"translations,omitempty" jsonschema:"subject and preheader for the design's other language versions"`
+	Event         string                    `json:"event" jsonschema:"contact_identified: the contact first signs in to the product (gets its first external id in the inbox)"`
+	Delay         int32                     `json:"delay" jsonschema:"how long after the trigger the mail is due, in delay_unit; at most 365 days"`
+	DelayUnit     string                    `json:"delay_unit" jsonschema:"minutes, hours or days"`
+	Basis         string                    `json:"basis" jsonschema:"service: mail about using the product, to everyone who matches, no lists; marketing: only to subscribers of list_ids. Advertising and offers are always marketing"`
+	ListIDs       []uuid.UUID               `json:"list_ids,omitempty" jsonschema:"marketing only: 1 to 10 lists of the inbox"`
+	Locales       []string                  `json:"locales,omitempty" jsonschema:"only contacts with these languages, BCP 47 tags"`
+	Conditions    []mcpBroadcastCondition   `json:"conditions,omitempty" jsonschema:"contact attribute conditions a contact must meet at its due time"`
+	ClickTracking bool                      `json:"click_tracking,omitempty" jsonschema:"count unique clicks on links; links then point at this server"`
+	Timezone      string                    `json:"timezone,omitempty" jsonschema:"an IANA time zone for the sending hours; the inbox's when absent"`
+	WindowStart   string                    `json:"send_window_start,omitempty" jsonschema:"HH:MM, 24-hour, in the time zone; mails go out only between send_window_start and send_window_end"`
+	WindowEnd     string                    `json:"send_window_end,omitempty" jsonschema:"HH:MM, 24-hour (24:00 for the end of the day), at least 30 minutes after send_window_start"`
+}
+
+func delayMinutes(n int32, unit string) (int32, error) {
+	per := map[string]int64{"minutes": 1, "hours": 60, "days": 1440}[unit]
+	if per == 0 {
+		return 0, errValidation("delay_unit must be minutes, hours or days")
+	}
+	m := int64(n) * per
+	if n < 0 || m > maxDelayMinutes {
+		return 0, errValidation("the delay must be 0 minutes to 365 days")
+	}
+	return int32(m), nil
+}
+
+type listWaitingIn struct {
+	BroadcastID uuid.UUID `json:"broadcast_id"`
+	State       string    `json:"state,omitempty" jsonschema:"waiting (default: the contacts whose mail is not due yet, due first), queued, skipped or cancelled"`
+	Cursor      string    `json:"cursor,omitempty"`
+	Limit       int32     `json:"limit,omitempty" jsonschema:"1 to 100, default 25"`
+}
+
+type mcpEnrollmentContent struct {
+	ContactName  string `json:"contact_name"`
+	ContactEmail string `json:"contact_email,omitempty"`
+}
+
+type mcpEnrollment struct {
+	ContactID       uuid.UUID            `json:"contact_id"`
+	State           string               `json:"state"`
+	TriggeredAt     time.Time            `json:"triggered_at"`
+	SendsAt         *time.Time           `json:"sends_at,omitempty" jsonschema:"while waiting: when the mail is due, moved into the sending hours"`
+	SkipReason      string               `json:"skip_reason,omitempty"`
+	Source          string               `json:"source" jsonschema:"trigger, or backfill when the start enrolled it"`
+	DeliveryID      *uuid.UUID           `json:"delivery_id,omitempty"`
+	CustomerContent mcpEnrollmentContent `json:"customer_content"`
+}
+
+type removeWaitingIn struct {
+	BroadcastID uuid.UUID `json:"broadcast_id"`
+	ContactID   uuid.UUID `json:"contact_id"`
+}
+
+type removeWaitingOut struct {
+	Removed bool `json:"removed"`
 }
 
 type mcpReportPoint struct {
@@ -839,10 +950,10 @@ var mcpBroadcastTools = []mcpTool{
 			}, nil
 		}),
 	defineTool("list_broadcasts", "List broadcasts",
-		"Lists the broadcasts of the inboxes you can see, newest first, with their state and counts. Maps to GET /v1/broadcasts.",
-		readOnly, map[string][]any{"states": broadcastStates}, mcpTool{ops: []string{"ListBroadcasts"}},
+		"Lists the broadcasts and triggered e-mails of the inboxes you can see, newest first, with their state and counts; kind narrows to one of the two. Maps to GET /v1/broadcasts.",
+		readOnly, map[string][]any{"states": broadcastStates, "kind": broadcastKinds}, mcpTool{ops: []string{"ListBroadcasts"}},
 		func(ctx context.Context, c *mcpCall, in listBroadcastsIn) (mcpPage[mcpBroadcast], error) {
-			params := oas.ListBroadcastsParams{InboxId: in.InboxID, Cursor: optString[string](in.Cursor), Limit: optLimit(in.Limit)}
+			params := oas.ListBroadcastsParams{InboxId: in.InboxID, Cursor: optString[string](in.Cursor), Limit: optLimit(in.Limit), Kind: optString[oas.BroadcastKind](in.Kind)}
 			if len(in.States) > 0 {
 				states := make([]oas.BroadcastState, len(in.States))
 				for i, st := range in.States {
@@ -904,8 +1015,8 @@ var mcpBroadcastTools = []mcpTool{
 			return c.broadcastOut(oas.Broadcast(res.(oas.CreateBroadcast201JSONResponse))), nil
 		}),
 	defineTool("update_broadcast", "Change a draft broadcast",
-		"Changes the fields you pass on a draft: name, subject, preheader, the e-mail channel (the sender), the design, the audience (list_ids with optional locales and conditions, replacing the whole audience), click tracking, UTM tags, the pace (the pace fields replace the whole pace; remove_pace drops it), the time zone and the sending hours (remove_send_window drops them). While a broadcast is scheduled or sending only the pace, time zone and sending hours can change. Returns the broadcast with the review again, so you see what still blocks it. Nothing is sent. Owners, admins and keys only. Maps to PATCH /v1/broadcasts/{id}.",
-		idempotent, map[string][]any{"conditions.op": conditionOps},
+		"Changes the fields you pass on a draft: name, subject, preheader, the e-mail channel (the sender), the design, the audience (list_ids with optional locales and conditions, replacing the whole audience), click tracking, UTM tags, the pace (the pace fields replace the whole pace; remove_pace drops it), the time zone and the sending hours (remove_send_window drops them), and a triggered e-mail's delay and back-fill days. While a broadcast is scheduled or sending only the pace, time zone and sending hours can change; a started triggered e-mail also takes a new delay, and while paused its design, subjects and conditions (with the same list_ids). Returns the broadcast with the review again, so you see what still blocks it. Nothing is sent. Owners, admins and keys only. Maps to PATCH /v1/broadcasts/{id}.",
+		idempotent, map[string][]any{"conditions.op": conditionOps, "delay_unit": delayUnits},
 		mcpTool{ops: []string{"UpdateBroadcast", "GetBroadcast", "ReviewBroadcast", "CountBroadcastAudience"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
 		func(ctx context.Context, c *mcpCall, in updateBroadcastIn) (getBroadcastOut, error) {
 			body, perr := in.body()
@@ -943,18 +1054,95 @@ var mcpBroadcastTools = []mcpTool{
 			}
 			return out, nil
 		}),
-	defineTool("schedule_broadcast", "Schedule a broadcast",
-		"Schedules a draft to go out to its audience at send_at, or at send_at_local in the broadcast's time zone (now when neither is given); with sending hours that are closed then, sending waits for them. confirm_recipients must be the recipient count that get_broadcast showed and the person you work for confirmed; if the audience changed since, nothing is scheduled. The review must pass. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/schedule.",
+	defineTool("schedule_broadcast", "Schedule a broadcast or start a triggered e-mail",
+		"Schedules a draft broadcast to go out to its audience at send_at, or at send_at_local in the broadcast's time zone (now when neither is given); with sending hours that are closed then, sending waits for them. For a triggered e-mail it starts it then instead: from then on each contact the trigger enrolls gets it once, after the delay; backfill_days also enrolls those whose trigger happened in that many days before the start, and a service one needs confirm_service. confirm_recipients must be the recipient count that get_broadcast showed and the person you work for confirmed (for a triggered e-mail the back-fill count); if it changed since, nothing is scheduled. The review must pass. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/schedule.",
 		delivering, nil,
 		mcpTool{ops: []string{"ScheduleBroadcast"}, gate: maySchedule},
 		func(ctx context.Context, c *mcpCall, in scheduleBroadcastIn) (mcpBroadcast, error) {
-			res, err := c.s.ScheduleBroadcast(ctx, oas.ScheduleBroadcastRequestObject{BroadcastId: in.BroadcastID, Body: &oas.BroadcastSchedule{
-				SendAt: in.SendAt, SendAtLocal: optString[string](in.SendAtLocal), ConfirmRecipients: &in.ConfirmRecipients,
-			}})
+			body := &oas.BroadcastSchedule{SendAt: in.SendAt, SendAtLocal: optString[string](in.SendAtLocal), ConfirmRecipients: &in.ConfirmRecipients, BackfillDays: in.BackfillDays}
+			if in.ConfirmService {
+				body.ConfirmService = &in.ConfirmService
+			}
+			res, err := c.s.ScheduleBroadcast(ctx, oas.ScheduleBroadcastRequestObject{BroadcastId: in.BroadcastID, Body: body})
 			if err != nil {
 				return mcpBroadcast{}, scheduleProblem(err)
 			}
 			return c.broadcastOut(oas.Broadcast(res.(oas.ScheduleBroadcast200JSONResponse))), nil
+		}),
+	defineTool("create_triggered_email", "Create a draft triggered e-mail",
+		"Creates a draft triggered e-mail for an inbox: one design sent to each contact once, a set time after the trigger (contact_identified: the contact first signs in to the product). basis service is for mail about using the product, to everyone who matches, with no lists; marketing goes only to subscribers of list_ids and is the only basis for advertising and offers. Nothing is sent and nobody is enrolled until schedule_broadcast starts it; check it with get_broadcast. Owners, admins and keys only. Maps to POST /v1/broadcasts with kind triggered.",
+		additive, map[string][]any{"conditions.op": conditionOps, "event": triggerEvents, "basis": triggerBases, "delay_unit": delayUnits},
+		mcpTool{ops: []string{"CreateBroadcast"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
+		func(ctx context.Context, c *mcpCall, in createTriggeredIn) (mcpBroadcast, error) {
+			delay, err := delayMinutes(in.Delay, in.DelayUnit)
+			if err != nil {
+				return mcpBroadcast{}, err
+			}
+			aud := audienceIn(in.ListIDs, in.Locales, in.Conditions)
+			kind, event, basis := oas.KindTriggered, oas.BroadcastTriggerEvent(in.Event), oas.BroadcastBasis(in.Basis)
+			body := oas.BroadcastCreate{
+				InboxId: in.InboxID, ChannelId: in.ChannelID, Name: in.Name, Subject: &in.Subject, DesignId: in.DesignID,
+				Audience: &aud, ClickTracking: &in.ClickTracking, Kind: &kind,
+				Trigger: &oas.BroadcastTriggerInput{Event: &event, DelayMinutes: &delay, Basis: &basis},
+			}
+			if in.Preheader != "" {
+				body.Preheader = &in.Preheader
+			}
+			if in.Timezone != "" {
+				body.Timezone = &in.Timezone
+			}
+			w, perr := windowIn(in.WindowStart, in.WindowEnd)
+			if perr != nil {
+				return mcpBroadcast{}, perr
+			}
+			body.SendWindow = w
+			if len(in.Translations) > 0 {
+				body.Translations = broadcastTranslationsIn(in.Translations)
+			}
+			res, err := c.s.CreateBroadcast(ctx, oas.CreateBroadcastRequestObject{Body: &body})
+			if err != nil {
+				return mcpBroadcast{}, err
+			}
+			return c.broadcastOut(oas.Broadcast(res.(oas.CreateBroadcast201JSONResponse))), nil
+		}),
+	defineTool("list_triggered_waiting", "List a triggered e-mail's contacts",
+		"Lists the contacts a triggered e-mail enrolled: by default those still waiting, the one due first first, with when their mail goes out; with state also those mailed (queued), skipped with the reason, or dropped when it was stopped (cancelled). Maps to GET /v1/broadcasts/{id}/enrollments.",
+		readOnly, map[string][]any{"state": enrollmentStates}, mcpTool{ops: []string{"ListBroadcastEnrollments"}},
+		func(ctx context.Context, c *mcpCall, in listWaitingIn) (mcpPage[mcpEnrollment], error) {
+			state := in.State
+			if state == "" {
+				state = enrollWaiting
+			}
+			params := oas.ListBroadcastEnrollmentsParams{State: new(oas.TriggeredEnrollmentState(state)), Cursor: optString[string](in.Cursor), Limit: optLimit(in.Limit)}
+			res, err := c.s.ListBroadcastEnrollments(ctx, oas.ListBroadcastEnrollmentsRequestObject{BroadcastId: in.BroadcastID, Params: params})
+			if err != nil {
+				return mcpPage[mcpEnrollment]{}, err
+			}
+			page := res.(oas.ListBroadcastEnrollments200JSONResponse)
+			out := mcpPage[mcpEnrollment]{Items: []mcpEnrollment{}}
+			for _, e := range page.Items {
+				m := mcpEnrollment{
+					ContactID: e.Contact.Id, State: string(e.State), TriggeredAt: e.TriggeredAt, SendsAt: e.SendsAt, Source: string(e.Source),
+					DeliveryID: e.DeliveryId, CustomerContent: mcpEnrollmentContent{ContactName: e.Contact.Name, ContactEmail: deref((*string)(e.Contact.Email))},
+				}
+				if e.SkipReason != nil {
+					m.SkipReason = string(*e.SkipReason)
+				}
+				out.Items = append(out.Items, m)
+			}
+			if page.NextCursor != nil {
+				out.NextCursor = *page.NextCursor
+			}
+			return out, nil
+		}),
+	defineTool("remove_triggered_contact", "Take a contact off a triggered e-mail",
+		"A waiting contact gets no mail from this triggered e-mail, now or later: it is skipped (removed) and never enrolled again. Only when the person you work for asks. Owners, admins and keys only. Maps to DELETE /v1/broadcasts/{id}/enrollments/{contact_id}.",
+		destructive, nil, mcpTool{ops: []string{"RemoveBroadcastEnrollment"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
+		func(ctx context.Context, c *mcpCall, in removeWaitingIn) (removeWaitingOut, error) {
+			if _, err := c.s.RemoveBroadcastEnrollment(ctx, oas.RemoveBroadcastEnrollmentRequestObject{BroadcastId: in.BroadcastID, ContactId: in.ContactID}); err != nil {
+				return removeWaitingOut{}, err
+			}
+			return removeWaitingOut{Removed: true}, nil
 		}),
 	defineTool("get_broadcast_report", "Get a broadcast's report",
 		"Reports a broadcast: counts, rates of sent mail, a timeline, clicks per link with click tracking, and the conversations replies opened; for a design with language versions also counts and rates per version, and with locale the report of one version. Maps to GET /v1/broadcasts/{id}/report.",

@@ -1121,6 +1121,7 @@ const (
 	AuditAutomationRuleCreated               AuditAction = "automation_rule.created"
 	AuditAutomationRuleDeleted               AuditAction = "automation_rule.deleted"
 	AuditAutomationRuleUpdated               AuditAction = "automation_rule.updated"
+	AuditBroadcastScheduled                  AuditAction = "broadcast.scheduled"
 	AuditChannelAddressLost                  AuditAction = "channel.address_lost"
 	AuditChannelAddressProven                AuditAction = "channel.address_proven"
 	AuditChannelAddressVerified              AuditAction = "channel.address_verified"
@@ -1213,6 +1214,8 @@ func (e AuditAction) Valid() bool {
 	case AuditAutomationRuleDeleted:
 		return true
 	case AuditAutomationRuleUpdated:
+		return true
+	case AuditBroadcastScheduled:
 		return true
 	case AuditChannelAddressLost:
 		return true
@@ -1403,6 +1406,7 @@ const (
 	AuditTargetAnalyticsExport  AuditTargetType = "analytics_export"
 	AuditTargetApiKey           AuditTargetType = "api_key"
 	AuditTargetAutomationRule   AuditTargetType = "automation_rule"
+	AuditTargetBroadcast        AuditTargetType = "broadcast"
 	AuditTargetChannel          AuditTargetType = "channel"
 	AuditTargetContact          AuditTargetType = "contact"
 	AuditTargetConversation     AuditTargetType = "conversation"
@@ -1432,6 +1436,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetApiKey:
 		return true
 	case AuditTargetAutomationRule:
+		return true
+	case AuditTargetBroadcast:
 		return true
 	case AuditTargetChannel:
 		return true
@@ -1812,6 +1818,24 @@ func (e Availability) Valid() bool {
 	}
 }
 
+// Defines values for BroadcastBasis.
+const (
+	BasisMarketing BroadcastBasis = "marketing"
+	BasisService   BroadcastBasis = "service"
+)
+
+// Valid indicates whether the value is a known member of the BroadcastBasis enum.
+func (e BroadcastBasis) Valid() bool {
+	switch e {
+	case BasisMarketing:
+		return true
+	case BasisService:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for BroadcastBulkChangeAction.
 const (
 	BroadcastBulkChangeActionDelete BroadcastBulkChangeAction = "delete"
@@ -1908,6 +1932,24 @@ func (e BroadcastEventType) Valid() bool {
 	}
 }
 
+// Defines values for BroadcastKind.
+const (
+	KindOnce      BroadcastKind = "once"
+	KindTriggered BroadcastKind = "triggered"
+)
+
+// Valid indicates whether the value is a known member of the BroadcastKind enum.
+func (e BroadcastKind) Valid() bool {
+	switch e {
+	case KindOnce:
+		return true
+	case KindTriggered:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for BroadcastPauseReason.
 const (
 	BroadcastPauseReasonBounceRate         BroadcastPauseReason = "bounce_rate"
@@ -1960,6 +2002,7 @@ func (e BroadcastProgressEventType) Valid() bool {
 const (
 	BroadcastReviewKeyApproval         BroadcastReviewKey = "approval"
 	BroadcastReviewKeyAudienceNonempty BroadcastReviewKey = "audience_nonempty"
+	BroadcastReviewKeyBasis            BroadcastReviewKey = "basis"
 	BroadcastReviewKeyClickTracking    BroadcastReviewKey = "click_tracking"
 	BroadcastReviewKeyDailyCap         BroadcastReviewKey = "daily_cap"
 	BroadcastReviewKeyDeliverability   BroadcastReviewKey = "deliverability"
@@ -1977,6 +2020,7 @@ const (
 	BroadcastReviewKeySubject          BroadcastReviewKey = "subject"
 	BroadcastReviewKeyTestSent         BroadcastReviewKey = "test_sent"
 	BroadcastReviewKeyTranslations     BroadcastReviewKey = "translations"
+	BroadcastReviewKeyTrigger          BroadcastReviewKey = "trigger"
 )
 
 // Valid indicates whether the value is a known member of the BroadcastReviewKey enum.
@@ -1985,6 +2029,8 @@ func (e BroadcastReviewKey) Valid() bool {
 	case BroadcastReviewKeyApproval:
 		return true
 	case BroadcastReviewKeyAudienceNonempty:
+		return true
+	case BroadcastReviewKeyBasis:
 		return true
 	case BroadcastReviewKeyClickTracking:
 		return true
@@ -2020,6 +2066,8 @@ func (e BroadcastReviewKey) Valid() bool {
 		return true
 	case BroadcastReviewKeyTranslations:
 		return true
+	case BroadcastReviewKeyTrigger:
+		return true
 	default:
 		return false
 	}
@@ -2050,6 +2098,7 @@ func (e BroadcastReviewStatus) Valid() bool {
 const (
 	BroadcastSkipReasonCancelled    BroadcastSkipReason = "cancelled"
 	BroadcastSkipReasonOptedOut     BroadcastSkipReason = "opted_out"
+	BroadcastSkipReasonStopped      BroadcastSkipReason = "stopped"
 	BroadcastSkipReasonSuppressed   BroadcastSkipReason = "suppressed"
 	BroadcastSkipReasonUnsubscribed BroadcastSkipReason = "unsubscribed"
 )
@@ -2060,6 +2109,8 @@ func (e BroadcastSkipReason) Valid() bool {
 	case BroadcastSkipReasonCancelled:
 		return true
 	case BroadcastSkipReasonOptedOut:
+		return true
+	case BroadcastSkipReasonStopped:
 		return true
 	case BroadcastSkipReasonSuppressed:
 		return true
@@ -2072,6 +2123,7 @@ func (e BroadcastSkipReason) Valid() bool {
 
 // Defines values for BroadcastState.
 const (
+	BroadcastStateActive    BroadcastState = "active"
 	BroadcastStateCancelled BroadcastState = "cancelled"
 	BroadcastStateDraft     BroadcastState = "draft"
 	BroadcastStateFailed    BroadcastState = "failed"
@@ -2085,6 +2137,8 @@ const (
 // Valid indicates whether the value is a known member of the BroadcastState enum.
 func (e BroadcastState) Valid() bool {
 	switch e {
+	case BroadcastStateActive:
+		return true
 	case BroadcastStateCancelled:
 		return true
 	case BroadcastStateDraft:
@@ -2100,6 +2154,21 @@ func (e BroadcastState) Valid() bool {
 	case BroadcastStateSending:
 		return true
 	case BroadcastStateSent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BroadcastTriggerEvent.
+const (
+	TriggerContactIdentified BroadcastTriggerEvent = "contact_identified"
+)
+
+// Valid indicates whether the value is a known member of the BroadcastTriggerEvent enum.
+func (e BroadcastTriggerEvent) Valid() bool {
+	switch e {
+	case TriggerContactIdentified:
 		return true
 	default:
 		return false
@@ -2714,16 +2783,16 @@ func (e ConversationParticipantRole) Valid() bool {
 
 // Defines values for ConversationParticipantStatus.
 const (
-	Active    ConversationParticipantStatus = "active"
-	Suggested ConversationParticipantStatus = "suggested"
+	ConversationParticipantStatusActive    ConversationParticipantStatus = "active"
+	ConversationParticipantStatusSuggested ConversationParticipantStatus = "suggested"
 )
 
 // Valid indicates whether the value is a known member of the ConversationParticipantStatus enum.
 func (e ConversationParticipantStatus) Valid() bool {
 	switch e {
-	case Active:
+	case ConversationParticipantStatusActive:
 		return true
-	case Suggested:
+	case ConversationParticipantStatusSuggested:
 		return true
 	default:
 		return false
@@ -7530,6 +7599,87 @@ func (e TeamEventType) Valid() bool {
 	}
 }
 
+// Defines values for TriggeredEnrollmentSource.
+const (
+	TriggeredEnrollmentSourceBackfill TriggeredEnrollmentSource = "backfill"
+	TriggeredEnrollmentSourceTrigger  TriggeredEnrollmentSource = "trigger"
+)
+
+// Valid indicates whether the value is a known member of the TriggeredEnrollmentSource enum.
+func (e TriggeredEnrollmentSource) Valid() bool {
+	switch e {
+	case TriggeredEnrollmentSourceBackfill:
+		return true
+	case TriggeredEnrollmentSourceTrigger:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TriggeredEnrollmentState.
+const (
+	TriggeredEnrollmentStateCancelled TriggeredEnrollmentState = "cancelled"
+	TriggeredEnrollmentStateQueued    TriggeredEnrollmentState = "queued"
+	TriggeredEnrollmentStateSkipped   TriggeredEnrollmentState = "skipped"
+	TriggeredEnrollmentStateWaiting   TriggeredEnrollmentState = "waiting"
+)
+
+// Valid indicates whether the value is a known member of the TriggeredEnrollmentState enum.
+func (e TriggeredEnrollmentState) Valid() bool {
+	switch e {
+	case TriggeredEnrollmentStateCancelled:
+		return true
+	case TriggeredEnrollmentStateQueued:
+		return true
+	case TriggeredEnrollmentStateSkipped:
+		return true
+	case TriggeredEnrollmentStateWaiting:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TriggeredSkipReason.
+const (
+	TriggeredSkipReasonBlocked       TriggeredSkipReason = "blocked"
+	TriggeredSkipReasonLate          TriggeredSkipReason = "late"
+	TriggeredSkipReasonNoAddress     TriggeredSkipReason = "no_address"
+	TriggeredSkipReasonNotMatching   TriggeredSkipReason = "not_matching"
+	TriggeredSkipReasonNotSubscribed TriggeredSkipReason = "not_subscribed"
+	TriggeredSkipReasonOptedOut      TriggeredSkipReason = "opted_out"
+	TriggeredSkipReasonRemoved       TriggeredSkipReason = "removed"
+	TriggeredSkipReasonStopped       TriggeredSkipReason = "stopped"
+	TriggeredSkipReasonSuppressed    TriggeredSkipReason = "suppressed"
+)
+
+// Valid indicates whether the value is a known member of the TriggeredSkipReason enum.
+func (e TriggeredSkipReason) Valid() bool {
+	switch e {
+	case TriggeredSkipReasonBlocked:
+		return true
+	case TriggeredSkipReasonLate:
+		return true
+	case TriggeredSkipReasonNoAddress:
+		return true
+	case TriggeredSkipReasonNotMatching:
+		return true
+	case TriggeredSkipReasonNotSubscribed:
+		return true
+	case TriggeredSkipReasonOptedOut:
+		return true
+	case TriggeredSkipReasonRemoved:
+		return true
+	case TriggeredSkipReasonStopped:
+		return true
+	case TriggeredSkipReasonSuppressed:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TypingAuthorType.
 const (
 	TypingAuthorTypeContact TypingAuthorType = "contact"
@@ -10501,6 +10651,9 @@ type Attributes map[string]interface{}
 //     `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
 //   - `email_design.updated`: `name`, `for_conversations` (`from`, `to`) when a save offers
 //     the design in conversations or stops offering it; other saves are not recorded.
+//   - `broadcast.scheduled`: a triggered e-mail was started or scheduled: `name`, `kind`,
+//     `basis`, `backfill_days`, `service_confirmed` (`true` when a `service` one was confirmed
+//     by the actor). One-off broadcasts are not recorded.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -10640,6 +10793,9 @@ type AuditEntry struct {
 	//   `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
 	// - `email_design.updated`: `name`, `for_conversations` (`from`, `to`) when a save offers
 	//   the design in conversations or stops offering it; other saves are not recorded.
+	// - `broadcast.scheduled`: a triggered e-mail was started or scheduled: `name`, `kind`,
+	//   `basis`, `backfill_days`, `service_confirmed` (`true` when a `service` one was confirmed
+	//   by the actor). One-off broadcasts are not recorded.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -11039,7 +11195,8 @@ type Broadcast struct {
 	// bounced or who reported it as spam, `unsubscribed` those who left a list through this
 	// broadcast's links, `replied` those who answered (a conversation), `auto_replied` the
 	// automatic answers (out of office), `clicked` recipients who opened a link (click tracking
-	// only).
+	// only). For a triggered e-mail `recipients` counts the mails made so far for contacts whose
+	// time came (kept 400 days), and `enrolled` and `waiting` count its enrollments.
 	Counts    BroadcastCounts `json:"counts"`
 	CreatedAt time.Time       `json:"created_at"`
 
@@ -11052,7 +11209,11 @@ type Broadcast struct {
 	FinishedAt    *time.Time `json:"finished_at,omitempty"`
 	Id            uuid.UUID  `json:"id"`
 	InboxId       uuid.UUID  `json:"inbox_id"`
-	LastTestAt    *time.Time `json:"last_test_at,omitempty"`
+
+	// Kind `once`: sent once to the audience taken when sending starts. `triggered`: sent to each
+	// contact of the inbox once, `trigger.delay_minutes` after its trigger happened.
+	Kind       BroadcastKind `json:"kind"`
+	LastTestAt *time.Time    `json:"last_test_at,omitempty"`
 
 	// Name Shown to the team only.
 	Name string `json:"name"`
@@ -11096,11 +11257,19 @@ type Broadcast struct {
 	// minutes. The window keeps its local times when the clocks change: a time skipped that day moves
 	// forward by the jump, a time that happens twice opens at the first and closes at the second.
 	SendWindow *BroadcastSendWindow `json:"send_window,omitempty"`
-	StartedAt  *time.Time           `json:"started_at,omitempty"`
+
+	// ServiceConfirmed Who confirmed, when it was started, that a `service` triggered e-mail is about using the product.
+	ServiceConfirmed *BroadcastServiceConfirmed `json:"service_confirmed,omitempty"`
+	StartedAt        *time.Time                 `json:"started_at,omitempty"`
 
 	// State `draft` → `scheduled` (until `scheduled_at`) → `preparing` (taking the audience) →
 	// `sending` → `sent`. `paused` stops sending until resumed; `cancelled` ends it for good;
 	// `failed` when it cannot go on (its channel was removed).
+	//
+	// A triggered e-mail (`kind` `triggered`): `draft` → `scheduled` (while it starts later) →
+	// `active` ⇄ `paused` → `cancelled` (shown as Stopped), or `failed` when its channel is
+	// removed; it never becomes `sent`. While `active` it enrolls contacts and sends them their
+	// mail; `paused` stops sending but keeps enrolling, so nobody is missed.
 	State BroadcastState `json:"state"`
 
 	// StateDetail Why it paused or failed, in words (an SMTP answer, the rates).
@@ -11119,7 +11288,10 @@ type Broadcast struct {
 	// Translations Subject and preheader per version of the design, by language tag (at most 100). A version
 	// without a subject here goes out with `subject` (review warning `translations`).
 	Translations map[string]BroadcastTranslation `json:"translations"`
-	UpdatedAt    time.Time                       `json:"updated_at"`
+
+	// Trigger Present for a triggered e-mail.
+	Trigger   *BroadcastTrigger `json:"trigger,omitempty"`
+	UpdatedAt time.Time         `json:"updated_at"`
 
 	// Utm Links to the web get `utm_source=newsletter`, `utm_medium=email` and
 	// `utm_campaign=<utm_campaign>` (a link that has a `utm_` parameter of its own keeps its
@@ -11161,8 +11333,13 @@ type BroadcastAudience struct {
 	Locales []LanguageTag `json:"locales"`
 }
 
-// BroadcastAudienceCount defines model for BroadcastAudienceCount.
+// BroadcastAudienceCount For a triggered e-mail, `recipients` is `backfill` plus the contacts waiting now, and the
+// other figures describe those contacts as their mail would go out now.
 type BroadcastAudienceCount struct {
+	// Backfill Triggered e-mails that have not started: the contacts starting now would back-fill
+	// (`trigger.backfill_days`), before any is left out.
+	Backfill *int64 `json:"backfill,omitempty"`
+
 	// ByList Recipients by the list their mail goes out under.
 	ByList []BroadcastListCount `json:"by_list"`
 
@@ -11204,6 +11381,16 @@ type BroadcastAudienceInput struct {
 	ListIds []uuid.UUID    `json:"list_ids"`
 	Locales *[]LanguageTag `json:"locales,omitempty"`
 }
+
+// BroadcastBasis Why the person may get the mail, chosen when the triggered e-mail is created and fixed after
+// the draft. `marketing`: only contacts subscribed to one of `audience.list_ids` (1 to 10) at
+// their due time, with the broadcast footer and one-click unsubscribe from that list; the only
+// basis for advertising, newsletters and offers. `service`: every matching contact, for mail
+// about the person's use of the product (onboarding, their account, a feedback request);
+// no lists; starting it needs `confirm_service`. Its footer says the person gets it because
+// they use the inbox's product and carries the postal address and a one-click unsubscribe
+// that stops the inbox's service triggered e-mails and designed outreach for them.
+type BroadcastBasis string
 
 // BroadcastBulkChange defines model for BroadcastBulkChange.
 type BroadcastBulkChange struct {
@@ -11250,13 +11437,17 @@ type BroadcastConditionOp string
 // bounced or who reported it as spam, `unsubscribed` those who left a list through this
 // broadcast's links, `replied` those who answered (a conversation), `auto_replied` the
 // automatic answers (out of office), `clicked` recipients who opened a link (click tracking
-// only).
+// only). For a triggered e-mail `recipients` counts the mails made so far for contacts whose
+// time came (kept 400 days), and `enrolled` and `waiting` count its enrollments.
 type BroadcastCounts struct {
 	AutoReplied int64 `json:"auto_replied"`
 	Bounced     int64 `json:"bounced"`
 	Clicked     int64 `json:"clicked"`
 	Complained  int64 `json:"complained"`
-	Failed      int64 `json:"failed"`
+
+	// Enrolled Triggered e-mails only: contacts enrolled since it started, back-filled ones included.
+	Enrolled *int64 `json:"enrolled,omitempty"`
+	Failed   int64  `json:"failed"`
 
 	// Prepared `preparing` only: recipients taken so far.
 	Prepared   *int64 `json:"prepared,omitempty"`
@@ -11267,8 +11458,18 @@ type BroadcastCounts struct {
 
 	// Skipped Recipients left out: when the audience was taken (`suppressed`, `opted_out`) or later,
 	// before their mail went out (`unsubscribed`, `suppressed`, `opted_out`, `cancelled`).
+	//
+	// A triggered e-mail adds the contacts it decided not to mail at their due time:
+	// `no_address` (no e-mail address), `blocked`, `not_subscribed` (marketing: on none of the
+	// lists), `not_matching` (a condition or language does not match), `late` (due more than 7
+	// days before it could be processed), `removed` (taken off the waiting list), `stopped`
+	// (service: the person stopped the inbox's mail like this). Its `suppressed` and `opted_out`
+	// count both enrollments and deliveries.
 	Skipped      BroadcastSkipped `json:"skipped"`
 	Unsubscribed int64            `json:"unsubscribed"`
+
+	// Waiting Triggered e-mails only: enrolled contacts whose mail is not due yet.
+	Waiting *int64 `json:"waiting,omitempty"`
 }
 
 // BroadcastCreate defines model for BroadcastCreate.
@@ -11278,7 +11479,10 @@ type BroadcastCreate struct {
 	ClickTracking *bool                   `json:"click_tracking,omitempty"`
 	DesignId      *uuid.UUID              `json:"design_id,omitempty"`
 	InboxId       uuid.UUID               `json:"inbox_id"`
-	Name          string                  `json:"name"`
+
+	// Kind `once` when absent; `triggered` needs `trigger`.
+	Kind *BroadcastKind `json:"kind,omitempty"`
+	Name string         `json:"name"`
 
 	// Pace The broadcast's own pace, below the channel's `broadcast_rate` and the workspace's daily limit:
 	// at most `per_hour` mails in any 60 minutes, `per_day` in any 24 hours (with a `send_window`:
@@ -11306,6 +11510,11 @@ type BroadcastCreate struct {
 	// Translations Subject and preheader per version of the design, by language tag (at most 100). A version
 	// without a subject here goes out with `subject` (review warning `translations`). Draft only.
 	Translations *map[string]BroadcastTranslation `json:"translations,omitempty"`
+
+	// Trigger On create `event`, `delay_minutes` and `basis` are required. On update only the fields given
+	// change: all of them on a draft, `delay_minutes` alone while it is scheduled, active or
+	// paused (`409 invalid_state` for the others), and `backfill_days` while it has not started.
+	Trigger *BroadcastTriggerInput `json:"trigger,omitempty"`
 
 	// Utm On when absent at creation.
 	Utm *bool `json:"utm,omitempty"`
@@ -11340,9 +11549,11 @@ type BroadcastDelivery struct {
 	// Locale The version of the design sent; absent when the design had no versions.
 	//
 	// Examples: en, tr
-	Locale     *LanguageTag         `json:"locale,omitempty"`
-	RepliedAt  *time.Time           `json:"replied_at,omitempty"`
-	SentAt     *time.Time           `json:"sent_at,omitempty"`
+	Locale    *LanguageTag `json:"locale,omitempty"`
+	RepliedAt *time.Time   `json:"replied_at,omitempty"`
+	SentAt    *time.Time   `json:"sent_at,omitempty"`
+
+	// SkipReason `stopped`: a `service` triggered e-mail's recipient stopped the inbox's mail like this before it went out.
 	SkipReason *BroadcastSkipReason `json:"skip_reason,omitempty"`
 
 	// State `queued` until sent (temporary SMTP failures are retried after 5 minutes, 30 minutes, 2
@@ -11383,11 +11594,23 @@ type BroadcastEventType string
 type BroadcastEventData struct {
 	Broadcast Broadcast `json:"broadcast"`
 
+	// EnrollmentRemoved The contact this change took off a triggered e-mail's waiting list.
+	EnrollmentRemoved *uuid.UUID `json:"enrollment_removed,omitempty"`
+
 	// PreviousState `draft` → `scheduled` (until `scheduled_at`) → `preparing` (taking the audience) →
 	// `sending` → `sent`. `paused` stops sending until resumed; `cancelled` ends it for good;
 	// `failed` when it cannot go on (its channel was removed).
+	//
+	// A triggered e-mail (`kind` `triggered`): `draft` → `scheduled` (while it starts later) →
+	// `active` ⇄ `paused` → `cancelled` (shown as Stopped), or `failed` when its channel is
+	// removed; it never becomes `sent`. While `active` it enrolls contacts and sends them their
+	// mail; `paused` stops sending but keeps enrolling, so nobody is missed.
 	PreviousState *BroadcastState `json:"previous_state,omitempty"`
 }
+
+// BroadcastKind `once`: sent once to the audience taken when sending starts. `triggered`: sent to each
+// contact of the inbox once, `trigger.delay_minutes` after its trigger happened.
+type BroadcastKind string
 
 // BroadcastListCount defines model for BroadcastListCount.
 type BroadcastListCount struct {
@@ -11414,7 +11637,8 @@ type BroadcastLocaleReport struct {
 	// bounced or who reported it as spam, `unsubscribed` those who left a list through this
 	// broadcast's links, `replied` those who answered (a conversation), `auto_replied` the
 	// automatic answers (out of office), `clicked` recipients who opened a link (click tracking
-	// only).
+	// only). For a triggered e-mail `recipients` counts the mails made so far for contacts whose
+	// time came (kept 400 days), and `enrolled` and `waiting` count its enrollments.
 	Counts BroadcastCounts `json:"counts"`
 
 	// Locale A BCP 47 language tag.
@@ -11520,7 +11744,8 @@ type BroadcastProgress struct {
 	// bounced or who reported it as spam, `unsubscribed` those who left a list through this
 	// broadcast's links, `replied` those who answered (a conversation), `auto_replied` the
 	// automatic answers (out of office), `clicked` recipients who opened a link (click tracking
-	// only).
+	// only). For a triggered e-mail `recipients` counts the mails made so far for contacts whose
+	// time came (kept 400 days), and `enrolled` and `waiting` count its enrollments.
 	Counts BroadcastCounts `json:"counts"`
 	Id     uuid.UUID       `json:"id"`
 
@@ -11530,6 +11755,11 @@ type BroadcastProgress struct {
 	// State `draft` → `scheduled` (until `scheduled_at`) → `preparing` (taking the audience) →
 	// `sending` → `sent`. `paused` stops sending until resumed; `cancelled` ends it for good;
 	// `failed` when it cannot go on (its channel was removed).
+	//
+	// A triggered e-mail (`kind` `triggered`): `draft` → `scheduled` (while it starts later) →
+	// `active` ⇄ `paused` → `cancelled` (shown as Stopped), or `failed` when its channel is
+	// removed; it never becomes `sent`. While `active` it enrolls contacts and sends them their
+	// mail; `paused` stops sending but keeps enrolling, so nobody is missed.
 	State        BroadcastState `json:"state"`
 	WaitingUntil *time.Time     `json:"waiting_until,omitempty"`
 
@@ -11581,7 +11811,8 @@ type BroadcastReport struct {
 	// bounced or who reported it as spam, `unsubscribed` those who left a list through this
 	// broadcast's links, `replied` those who answered (a conversation), `auto_replied` the
 	// automatic answers (out of office), `clicked` recipients who opened a link (click tracking
-	// only).
+	// only). For a triggered e-mail `recipients` counts the mails made so far for contacts whose
+	// time came (kept 400 days), and `enrolled` and `waiting` count its enrollments.
 	Counts BroadcastCounts `json:"counts"`
 
 	// Links Click tracking only, most clicked first. With versions and no `locale`: one row per URL,
@@ -11649,7 +11880,9 @@ type BroadcastReview struct {
 	// Ready No item is `blocking`.
 	Ready bool `json:"ready"`
 
-	// Recipients The audience count the review used; pass it as `confirm_recipients` to schedule only this audience.
+	// Recipients The audience count the review used; pass it as `confirm_recipients` to schedule only this
+	// audience. For a triggered e-mail, the contacts starting it would back-fill plus those
+	// waiting.
 	Recipients int64 `json:"recipients"`
 }
 
@@ -11658,7 +11891,11 @@ type BroadcastReviewItem struct {
 	// Detail What is wrong or what to know, in English.
 	Detail *string `json:"detail,omitempty"`
 
-	// Key `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
+	// Key Triggered e-mails: `trigger` (`ok`, with what starts it and the delay; `blocking` without
+	// a valid trigger), `basis` (`marketing`: `ok`, or `blocking` without lists; `service`: a
+	// `warning` naming what service mail may be about, never advertising), and
+	// `audience_nonempty` is `ok` with the back-fill count, which may be 0.
+	// `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
 	// when the window is closed at the scheduled time (now for a draft), with when sending starts.
 	// `translations`: `ok` for a design without versions or with every version complete,
 	// `warning` naming versions without their own subject, with block texts missing, whose
@@ -11670,7 +11907,11 @@ type BroadcastReviewItem struct {
 	Status BroadcastReviewStatus `json:"status"`
 }
 
-// BroadcastReviewKey `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
+// BroadcastReviewKey Triggered e-mails: `trigger` (`ok`, with what starts it and the delay; `blocking` without
+// a valid trigger), `basis` (`marketing`: `ok`, or `blocking` without lists; `service`: a
+// `warning` naming what service mail may be about, never advertising), and
+// `audience_nonempty` is `ok` with the back-fill count, which may be 0.
+// `send_window`: `ok` without sending hours or when sending would start inside them, `warning`
 // when the window is closed at the scheduled time (now for a draft), with when sending starts.
 // `translations`: `ok` for a design without versions or with every version complete,
 // `warning` naming versions without their own subject, with block texts missing, whose
@@ -11685,8 +11926,16 @@ type BroadcastReviewStatus string
 
 // BroadcastSchedule At most one of `send_at` and `send_at_local`; neither sends now.
 type BroadcastSchedule struct {
-	ConfirmRecipients *int64     `json:"confirm_recipients,omitempty"`
-	SendAt            *time.Time `json:"send_at,omitempty"`
+	// BackfillDays Triggered e-mails only; replaces `trigger.backfill_days` before the review runs.
+	BackfillDays *int32 `json:"backfill_days,omitempty"`
+
+	// ConfirmRecipients For a triggered e-mail, the back-fill count the review showed (0 without back-fill).
+	ConfirmRecipients *int64 `json:"confirm_recipients,omitempty"`
+
+	// ConfirmService Required `true` to start a `service` triggered e-mail: the caller confirms the mail is
+	// about using the inbox's product, not advertising. Stored with who confirmed and when.
+	ConfirmService *bool      `json:"confirm_service,omitempty"`
+	SendAt         *time.Time `json:"send_at,omitempty"`
 
 	// SendAtLocal A wall-clock time in the broadcast's `timezone`, such as `2026-11-02T09:00`. A time the
 	// clocks skip that day moves forward by the jump; a time that happens twice is the first.
@@ -11709,21 +11958,49 @@ type BroadcastSendWindow struct {
 	Start string `json:"start"`
 }
 
-// BroadcastSkipReason defines model for BroadcastSkipReason.
+// BroadcastServiceConfirmed Who confirmed, when it was started, that a `service` triggered e-mail is about using the product.
+type BroadcastServiceConfirmed struct {
+	At time.Time `json:"at"`
+
+	// By The member; absent when an API key confirmed or the member left.
+	By       *uuid.UUID `json:"by,omitempty"`
+	ByApiKey *uuid.UUID `json:"by_api_key,omitempty"`
+}
+
+// BroadcastSkipReason `stopped`: a `service` triggered e-mail's recipient stopped the inbox's mail like this before it went out.
 type BroadcastSkipReason string
 
 // BroadcastSkipped Recipients left out: when the audience was taken (`suppressed`, `opted_out`) or later,
 // before their mail went out (`unsubscribed`, `suppressed`, `opted_out`, `cancelled`).
+//
+// A triggered e-mail adds the contacts it decided not to mail at their due time:
+// `no_address` (no e-mail address), `blocked`, `not_subscribed` (marketing: on none of the
+// lists), `not_matching` (a condition or language does not match), `late` (due more than 7
+// days before it could be processed), `removed` (taken off the waiting list), `stopped`
+// (service: the person stopped the inbox's mail like this). Its `suppressed` and `opted_out`
+// count both enrollments and deliveries.
 type BroadcastSkipped struct {
-	Cancelled    int64 `json:"cancelled"`
-	OptedOut     int64 `json:"opted_out"`
-	Suppressed   int64 `json:"suppressed"`
-	Unsubscribed int64 `json:"unsubscribed"`
+	Blocked       *int64 `json:"blocked,omitempty"`
+	Cancelled     int64  `json:"cancelled"`
+	Late          *int64 `json:"late,omitempty"`
+	NoAddress     *int64 `json:"no_address,omitempty"`
+	NotMatching   *int64 `json:"not_matching,omitempty"`
+	NotSubscribed *int64 `json:"not_subscribed,omitempty"`
+	OptedOut      int64  `json:"opted_out"`
+	Removed       *int64 `json:"removed,omitempty"`
+	Stopped       *int64 `json:"stopped,omitempty"`
+	Suppressed    int64  `json:"suppressed"`
+	Unsubscribed  int64  `json:"unsubscribed"`
 }
 
 // BroadcastState `draft` → `scheduled` (until `scheduled_at`) → `preparing` (taking the audience) →
 // `sending` → `sent`. `paused` stops sending until resumed; `cancelled` ends it for good;
 // `failed` when it cannot go on (its channel was removed).
+//
+// A triggered e-mail (`kind` `triggered`): `draft` → `scheduled` (while it starts later) →
+// `active` ⇄ `paused` → `cancelled` (shown as Stopped), or `failed` when its channel is
+// removed; it never becomes `sent`. While `active` it enrolls contacts and sends them their
+// mail; `paused` stops sending but keeps enrolling, so nobody is missed.
 type BroadcastState string
 
 // BroadcastTest defines model for BroadcastTest.
@@ -11757,6 +12034,63 @@ type BroadcastTranslation struct {
 	Subject *string `json:"subject,omitempty"`
 }
 
+// BroadcastTrigger defines model for BroadcastTrigger.
+type BroadcastTrigger struct {
+	// BackfillDays When it starts, also enroll contacts whose trigger happened in this many days before the
+	// start (their delay counts from then). 0 enrolls only triggers from the start on.
+	BackfillDays int32 `json:"backfill_days"`
+
+	// Basis Why the person may get the mail, chosen when the triggered e-mail is created and fixed after
+	// the draft. `marketing`: only contacts subscribed to one of `audience.list_ids` (1 to 10) at
+	// their due time, with the broadcast footer and one-click unsubscribe from that list; the only
+	// basis for advertising, newsletters and offers. `service`: every matching contact, for mail
+	// about the person's use of the product (onboarding, their account, a feedback request);
+	// no lists; starting it needs `confirm_service`. Its footer says the person gets it because
+	// they use the inbox's product and carries the postal address and a one-click unsubscribe
+	// that stops the inbox's service triggered e-mails and designed outreach for them.
+	Basis BroadcastBasis `json:"basis"`
+
+	// DelayMinutes How long after the trigger the mail is due, 0 to 365 days. Changing it moves the due
+	// time of everyone still waiting.
+	DelayMinutes int32 `json:"delay_minutes"`
+
+	// Event `contact_identified`: the contact got its first external id in the inbox, from an identity
+	// token (widget, mobile SDKs, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` (unless
+	// `skip_triggers`), feedback or a subscription that carries an external id. Contact imports,
+	// help-desk migrations and merges never trigger.
+	Event BroadcastTriggerEvent `json:"event"`
+}
+
+// BroadcastTriggerEvent `contact_identified`: the contact got its first external id in the inbox, from an identity
+// token (widget, mobile SDKs, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` (unless
+// `skip_triggers`), feedback or a subscription that carries an external id. Contact imports,
+// help-desk migrations and merges never trigger.
+type BroadcastTriggerEvent string
+
+// BroadcastTriggerInput On create `event`, `delay_minutes` and `basis` are required. On update only the fields given
+// change: all of them on a draft, `delay_minutes` alone while it is scheduled, active or
+// paused (`409 invalid_state` for the others), and `backfill_days` while it has not started.
+type BroadcastTriggerInput struct {
+	BackfillDays *int32 `json:"backfill_days,omitempty"`
+
+	// Basis Why the person may get the mail, chosen when the triggered e-mail is created and fixed after
+	// the draft. `marketing`: only contacts subscribed to one of `audience.list_ids` (1 to 10) at
+	// their due time, with the broadcast footer and one-click unsubscribe from that list; the only
+	// basis for advertising, newsletters and offers. `service`: every matching contact, for mail
+	// about the person's use of the product (onboarding, their account, a feedback request);
+	// no lists; starting it needs `confirm_service`. Its footer says the person gets it because
+	// they use the inbox's product and carries the postal address and a one-click unsubscribe
+	// that stops the inbox's service triggered e-mails and designed outreach for them.
+	Basis        *BroadcastBasis `json:"basis,omitempty"`
+	DelayMinutes *int32          `json:"delay_minutes,omitempty"`
+
+	// Event `contact_identified`: the contact got its first external id in the inbox, from an identity
+	// token (widget, mobile SDKs, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` (unless
+	// `skip_triggers`), feedback or a subscription that carries an external id. Contact imports,
+	// help-desk migrations and merges never trigger.
+	Event *BroadcastTriggerEvent `json:"event,omitempty"`
+}
+
 // BroadcastUpdate defines model for BroadcastUpdate.
 type BroadcastUpdate struct {
 	Audience      *BroadcastAudienceInput      `json:"audience,omitempty"`
@@ -11784,6 +12118,11 @@ type BroadcastUpdate struct {
 	// without a subject here goes out with `subject` (review warning `translations`). Replaced as a
 	// whole; `{}` removes them. Draft only.
 	Translations *map[string]BroadcastTranslation `json:"translations,omitempty"`
+
+	// Trigger On create `event`, `delay_minutes` and `basis` are required. On update only the fields given
+	// change: all of them on a draft, `delay_minutes` alone while it is scheduled, active or
+	// paused (`409 invalid_state` for the others), and `backfill_days` while it has not started.
+	Trigger *BroadcastTriggerInput `json:"trigger,omitempty"`
 
 	// Utm On when absent at creation.
 	Utm *bool `json:"utm,omitempty"`
@@ -13943,6 +14282,11 @@ type ContactCreate struct {
 	Emails      *[]Email      `json:"emails,omitempty"`
 	ExternalIds *[]ExternalId `json:"external_ids,omitempty"`
 	Name        *string       `json:"name,omitempty"`
+
+	// SkipTriggers An external id that is the contact's first in its inbox enrolls nobody in the inbox's
+	// triggered e-mails (`contact_identified`): for a host backend that copies in users the
+	// product already had.
+	SkipTriggers *bool `json:"skip_triggers,omitempty"`
 }
 
 // ContactDelete defines model for ContactDelete.
@@ -14176,6 +14520,10 @@ type ContactUpdate struct {
 	Emails             *[]Email      `json:"emails,omitempty"`
 	ExternalIds        *[]ExternalId `json:"external_ids,omitempty"`
 	Name               *string       `json:"name,omitempty"`
+
+	// SkipTriggers New external ids that are the contact's first in their inbox enroll nobody in that
+	// inbox's triggered e-mails (`contact_identified`).
+	SkipTriggers *bool `json:"skip_triggers,omitempty"`
 }
 
 // ContactUpdatedEvent A contact changed.
@@ -25038,6 +25386,68 @@ type TrashEmptyResult struct {
 	Count int64 `json:"count"`
 }
 
+// TriggeredEnrollment One contact of a triggered e-mail; each contact is enrolled at most once for as long as both exist.
+type TriggeredEnrollment struct {
+	Contact   TriggeredEnrollmentContact `json:"contact"`
+	CreatedAt time.Time                  `json:"created_at"`
+
+	// DeliveryId `queued`: the delivery in `GET .../deliveries`; absent once that is deleted (400 days).
+	DeliveryId *uuid.UUID `json:"delivery_id,omitempty"`
+
+	// SendsAt `waiting` only: when the mail is due (`triggered_at` plus `delay_minutes`), moved to the
+	// next opening of `send_window`; the pace and the daily limit may still delay it.
+	SendsAt *time.Time `json:"sends_at,omitempty"`
+
+	// SkipReason Why a contact was not mailed at its due time: `no_address`, `blocked`, `late` (due more than
+	// 7 days before it could be processed, after a long pause or the daily limit), `suppressed`
+	// (the address bounced or complained), `opted_out` (objected to all mail from the
+	// workspace), `stopped` (service: stopped the inbox's mail like this), `not_subscribed`
+	// (marketing: on none of the lists), `not_matching` (a condition or language does not
+	// match), `removed` (taken off the waiting list).
+	SkipReason *TriggeredSkipReason `json:"skip_reason,omitempty"`
+
+	// Source `trigger`: the trigger happened while it was active or paused. `backfill`: enrolled when it started.
+	Source TriggeredEnrollmentSource `json:"source"`
+
+	// State `waiting` until its due time; then `queued` (a delivery was made, see `delivery_id`) or
+	// `skipped` (`skip_reason`), for good; `cancelled` when the triggered e-mail was stopped
+	// while it waited.
+	State       TriggeredEnrollmentState `json:"state"`
+	TriggeredAt time.Time                `json:"triggered_at"`
+}
+
+// TriggeredEnrollmentContact defines model for TriggeredEnrollmentContact.
+type TriggeredEnrollmentContact struct {
+	// Email The contact's first address; absent when it has none.
+	//
+	// Examples: owner@example.com
+	Email *Email    `json:"email,omitempty"`
+	Id    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+}
+
+// TriggeredEnrollmentPage defines model for TriggeredEnrollmentPage.
+type TriggeredEnrollmentPage struct {
+	Items      []TriggeredEnrollment `json:"items"`
+	NextCursor *string               `json:"next_cursor,omitempty"`
+}
+
+// TriggeredEnrollmentSource `trigger`: the trigger happened while it was active or paused. `backfill`: enrolled when it started.
+type TriggeredEnrollmentSource string
+
+// TriggeredEnrollmentState `waiting` until its due time; then `queued` (a delivery was made, see `delivery_id`) or
+// `skipped` (`skip_reason`), for good; `cancelled` when the triggered e-mail was stopped
+// while it waited.
+type TriggeredEnrollmentState string
+
+// TriggeredSkipReason Why a contact was not mailed at its due time: `no_address`, `blocked`, `late` (due more than
+// 7 days before it could be processed, after a long pause or the daily limit), `suppressed`
+// (the address bounced or complained), `opted_out` (objected to all mail from the
+// workspace), `stopped` (service: stopped the inbox's mail like this), `not_subscribed`
+// (marketing: on none of the lists), `not_matching` (a condition or language does not
+// match), `removed` (taken off the waiting list).
+type TriggeredSkipReason string
+
 // Typing defines model for Typing.
 type Typing struct {
 	Author         TypingAuthor `json:"author"`
@@ -25270,6 +25680,11 @@ type WebhookBroadcastData struct {
 	// PreviousState `draft` → `scheduled` (until `scheduled_at`) → `preparing` (taking the audience) →
 	// `sending` → `sent`. `paused` stops sending until resumed; `cancelled` ends it for good;
 	// `failed` when it cannot go on (its channel was removed).
+	//
+	// A triggered e-mail (`kind` `triggered`): `draft` → `scheduled` (while it starts later) →
+	// `active` ⇄ `paused` → `cancelled` (shown as Stopped), or `failed` when its channel is
+	// removed; it never becomes `sent`. While `active` it enrolls contacts and sends them their
+	// mail; `paused` stops sending but keeps enrolling, so nobody is missed.
 	PreviousState *BroadcastState `json:"previous_state,omitempty"`
 }
 
@@ -26860,6 +27275,7 @@ type ListAutomationRunsParams struct {
 // ListBroadcastsParams defines parameters for ListBroadcasts.
 type ListBroadcastsParams struct {
 	InboxId *uuid.UUID        `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+	Kind    *BroadcastKind    `form:"kind,omitempty" json:"kind,omitempty"`
 	State   *[]BroadcastState `form:"state,omitempty" json:"state,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
@@ -26939,6 +27355,26 @@ type ListBroadcastDeliveriesParams struct {
 	// Limit Page size, 1 to 100; 25 by default.
 	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
 
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// ListBroadcastEnrollmentsParams defines parameters for ListBroadcastEnrollments.
+type ListBroadcastEnrollmentsParams struct {
+	State *TriggeredEnrollmentState `form:"state,omitempty" json:"state,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 100; 25 by default.
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
+// RemoveBroadcastEnrollmentParams defines parameters for RemoveBroadcastEnrollment.
+type RemoveBroadcastEnrollmentParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -38825,7 +39261,8 @@ type ClientInterface interface {
 
 	// ListBroadcasts List broadcasts
 	//
-	// Newest first, in the inboxes the caller can see. `state` may be repeated.
+	// Newest first, in the inboxes the caller can see. `state` may be repeated; `kind` keeps
+	// one-off broadcasts or triggered e-mails.
 	//
 	// Owners, admins, agents (the broadcasts of their inboxes, read only) and API keys. Scope:
 	// `broadcasts:read`.
@@ -38842,6 +39279,14 @@ type ClientInterface interface {
 	// when absent; `send_window` limits sending to hours of the day in that zone. Everything can
 	// be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
 	// missing before it can be scheduled.
+	//
+	// `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+	// consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+	// (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+	// `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+	// paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+	// `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+	// are refused for `service`.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
 	// broadcast write answers `403 broadcasts_disabled`.
@@ -38860,6 +39305,14 @@ type ClientInterface interface {
 	// when absent; `send_window` limits sending to hours of the day in that zone. Everything can
 	// be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
 	// missing before it can be scheduled.
+	//
+	// `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+	// consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+	// (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+	// `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+	// paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+	// `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+	// are refused for `service`.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
 	// broadcast write answers `403 broadcasts_disabled`.
@@ -38937,6 +39390,14 @@ type ClientInterface interface {
 	// change under which the mail still to go out would take more than 365 days. Changing
 	// `timezone` never moves `scheduled_at`.
 	//
+	// A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+	// (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+	// `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+	// `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+	// resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+	// and `channel_id` never change after the draft, and other fields answer
+	// `409 invalid_state`.
+	//
 	// `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
 	// shorter than 30 minutes or with `start` equal to `end`, a malformed time.
 	//
@@ -38958,6 +39419,14 @@ type ClientInterface interface {
 	// `409 pace_too_slow` (with `days`, the estimate, which counts the sending hours) refuses a
 	// change under which the mail still to go out would take more than 365 days. Changing
 	// `timezone` never moves `scheduled_at`.
+	//
+	// A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+	// (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+	// `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+	// `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+	// resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+	// and `channel_id` never change after the draft, and other fields answer
+	// `409 invalid_state`.
 	//
 	// `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
 	// shorter than 30 minutes or with `start` equal to `end`, a malformed time.
@@ -38985,7 +39454,9 @@ type ClientInterface interface {
 	// CancelBroadcast Cancel a broadcast
 	//
 	// A scheduled, preparing, sending or paused broadcast stops for good within the batch in
-	// progress; mail not sent yet is skipped (`cancelled`). `409 invalid_state` otherwise.
+	// progress; mail not sent yet is skipped (`cancelled`). A triggered e-mail (scheduled,
+	// active or paused) stops enrolling for good and drops the contacts waiting (`cancelled`).
+	// `409 invalid_state` otherwise.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:send`.
 	//
@@ -39003,10 +39474,36 @@ type ClientInterface interface {
 	// Corresponds with GET /v1/broadcasts/{broadcastId}/deliveries (the `ListBroadcastDeliveries` operationId).
 	ListBroadcastDeliveries(ctx context.Context, broadcastId BroadcastId, params *ListBroadcastDeliveriesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListBroadcastEnrollments List a triggered e-mail's contacts
+	//
+	// The contacts a triggered e-mail enrolled: who waits, with when their mail is due
+	// (`sends_at`), who was mailed (`delivery_id`) and who was skipped and why. Newest trigger
+	// first; with `state=waiting`, the one due first first. `400 validation_failed` for a one-off
+	// broadcast. Nothing is written per enrollment to events or webhooks.
+	//
+	// Owners, admins, agents of its inbox and API keys. Scopes: `broadcasts:read` and
+	// `contacts:read`, as for the deliveries.
+	//
+	// Corresponds with GET /v1/broadcasts/{broadcastId}/enrollments (the `ListBroadcastEnrollments` operationId).
+	ListBroadcastEnrollments(ctx context.Context, broadcastId BroadcastId, params *ListBroadcastEnrollmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveBroadcastEnrollment Take a contact off the waiting list
+	//
+	// A waiting contact gets no mail from this triggered e-mail: the enrollment is `skipped`
+	// with `removed` and kept, so the contact is never enrolled again. `409 invalid_state` when
+	// the contact is not waiting; `404` for a contact the triggered e-mail never enrolled. Sends
+	// `broadcast.updated`.
+	//
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Corresponds with DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId} (the `RemoveBroadcastEnrollment` operationId).
+	RemoveBroadcastEnrollment(ctx context.Context, broadcastId BroadcastId, contactId ContactId, params *RemoveBroadcastEnrollmentParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// PauseBroadcast Pause sending
 	//
 	// A preparing or sending broadcast stops within the batch in progress (at most 50 mails)
-	// with `pause_reason: member`. `409 invalid_state` otherwise.
+	// with `pause_reason: member`; an active triggered e-mail stops sending and keeps enrolling.
+	// `409 invalid_state` otherwise.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:send`.
 	//
@@ -39040,6 +39537,11 @@ type ClientInterface interface {
 	// when it is not paused, and `409 ses_tenant_blocked` while the review item `ses_tenant`
 	// would block it (the inbox's Amazon SES tenant is paused, or its channel lost its tenant
 	// isolation).
+	//
+	// A triggered e-mail becomes `active` again: the review runs again (`409 review_failed`
+	// with the blocking `items`) and the design as saved now is frozen, so mail still queued
+	// goes out with it. Contacts whose due time passed more than 7 days before it can process
+	// them are skipped (`late`).
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:send`.
 	//
@@ -39080,6 +39582,14 @@ type ClientInterface interface {
 	// `confirm_recipients`, when given, must equal the current audience count
 	// (`409 audience_changed` with `recipients`).
 	//
+	// A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+	// `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+	// (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+	// before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+	// `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+	// when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+	// live triggered e-mails (`409 too_many_triggered`).
+	//
 	// Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
 	// `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
 	// (the server's operator has not approved the workspace yet),
@@ -39104,6 +39614,14 @@ type ClientInterface interface {
 	// and anyone who unsubscribes, bounces or complains before their mail goes out is skipped.
 	// `confirm_recipients`, when given, must equal the current audience count
 	// (`409 audience_changed` with `recipients`).
+	//
+	// A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+	// `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+	// (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+	// before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+	// `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+	// when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+	// live triggered e-mails (`409 too_many_triggered`).
 	//
 	// Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
 	// `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
@@ -52433,7 +52951,8 @@ func (c *Client) ListAutomationRuns(ctx context.Context, automationRuleId Automa
 
 // ListBroadcasts List broadcasts
 //
-// Newest first, in the inboxes the caller can see. `state` may be repeated.
+// Newest first, in the inboxes the caller can see. `state` may be repeated; `kind` keeps
+// one-off broadcasts or triggered e-mails.
 //
 // Owners, admins, agents (the broadcasts of their inboxes, read only) and API keys. Scope:
 // `broadcasts:read`.
@@ -52460,6 +52979,14 @@ func (c *Client) ListBroadcasts(ctx context.Context, params *ListBroadcastsParam
 // when absent; `send_window` limits sending to hours of the day in that zone. Everything can
 // be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
 // missing before it can be scheduled.
+//
+// `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+// consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+// (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+// `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+// paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+// `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+// are refused for `service`.
 //
 // Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
 // broadcast write answers `403 broadcasts_disabled`.
@@ -52488,6 +53015,14 @@ func (c *Client) CreateBroadcastWithBody(ctx context.Context, params *CreateBroa
 // when absent; `send_window` limits sending to hours of the day in that zone. Everything can
 // be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
 // missing before it can be scheduled.
+//
+// `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+// consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+// (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+// `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+// paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+// `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+// are refused for `service`.
 //
 // Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
 // broadcast write answers `403 broadcasts_disabled`.
@@ -52615,6 +53150,14 @@ func (c *Client) GetBroadcast(ctx context.Context, broadcastId BroadcastId, para
 // change under which the mail still to go out would take more than 365 days. Changing
 // `timezone` never moves `scheduled_at`.
 //
+// A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+// (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+// `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+// `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+// resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+// and `channel_id` never change after the draft, and other fields answer
+// `409 invalid_state`.
+//
 // `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
 // shorter than 30 minutes or with `start` equal to `end`, a malformed time.
 //
@@ -52646,6 +53189,14 @@ func (c *Client) UpdateBroadcastWithBody(ctx context.Context, broadcastId Broadc
 // `409 pace_too_slow` (with `days`, the estimate, which counts the sending hours) refuses a
 // change under which the mail still to go out would take more than 365 days. Changing
 // `timezone` never moves `scheduled_at`.
+//
+// A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+// (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+// `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+// `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+// resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+// and `channel_id` never change after the draft, and other fields answer
+// `409 invalid_state`.
 //
 // `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
 // shorter than 30 minutes or with `start` equal to `end`, a malformed time.
@@ -52693,7 +53244,9 @@ func (c *Client) CountBroadcastAudience(ctx context.Context, broadcastId Broadca
 // CancelBroadcast Cancel a broadcast
 //
 // A scheduled, preparing, sending or paused broadcast stops for good within the batch in
-// progress; mail not sent yet is skipped (`cancelled`). `409 invalid_state` otherwise.
+// progress; mail not sent yet is skipped (`cancelled`). A triggered e-mail (scheduled,
+// active or paused) stops enrolling for good and drops the contacts waiting (`cancelled`).
+// `409 invalid_state` otherwise.
 //
 // Owners, admins and API keys. Scope: `broadcasts:send`.
 //
@@ -52731,10 +53284,56 @@ func (c *Client) ListBroadcastDeliveries(ctx context.Context, broadcastId Broadc
 	return c.Client.Do(req)
 }
 
+// ListBroadcastEnrollments List a triggered e-mail's contacts
+//
+// The contacts a triggered e-mail enrolled: who waits, with when their mail is due
+// (`sends_at`), who was mailed (`delivery_id`) and who was skipped and why. Newest trigger
+// first; with `state=waiting`, the one due first first. `400 validation_failed` for a one-off
+// broadcast. Nothing is written per enrollment to events or webhooks.
+//
+// Owners, admins, agents of its inbox and API keys. Scopes: `broadcasts:read` and
+// `contacts:read`, as for the deliveries.
+//
+// Corresponds with GET /v1/broadcasts/{broadcastId}/enrollments (the `ListBroadcastEnrollments` operationId).
+func (c *Client) ListBroadcastEnrollments(ctx context.Context, broadcastId BroadcastId, params *ListBroadcastEnrollmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListBroadcastEnrollmentsRequest(c.Server, broadcastId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RemoveBroadcastEnrollment Take a contact off the waiting list
+//
+// A waiting contact gets no mail from this triggered e-mail: the enrollment is `skipped`
+// with `removed` and kept, so the contact is never enrolled again. `409 invalid_state` when
+// the contact is not waiting; `404` for a contact the triggered e-mail never enrolled. Sends
+// `broadcast.updated`.
+//
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Corresponds with DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId} (the `RemoveBroadcastEnrollment` operationId).
+func (c *Client) RemoveBroadcastEnrollment(ctx context.Context, broadcastId BroadcastId, contactId ContactId, params *RemoveBroadcastEnrollmentParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveBroadcastEnrollmentRequest(c.Server, broadcastId, contactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // PauseBroadcast Pause sending
 //
 // A preparing or sending broadcast stops within the batch in progress (at most 50 mails)
-// with `pause_reason: member`. `409 invalid_state` otherwise.
+// with `pause_reason: member`; an active triggered e-mail stops sending and keeps enrolling.
+// `409 invalid_state` otherwise.
 //
 // Owners, admins and API keys. Scope: `broadcasts:send`.
 //
@@ -52788,6 +53387,11 @@ func (c *Client) GetBroadcastReport(ctx context.Context, broadcastId BroadcastId
 // when it is not paused, and `409 ses_tenant_blocked` while the review item `ses_tenant`
 // would block it (the inbox's Amazon SES tenant is paused, or its channel lost its tenant
 // isolation).
+//
+// A triggered e-mail becomes `active` again: the review runs again (`409 review_failed`
+// with the blocking `items`) and the design as saved now is frozen, so mail still queued
+// goes out with it. Contacts whose due time passed more than 7 days before it can process
+// them are skipped (`late`).
 //
 // Owners, admins and API keys. Scope: `broadcasts:send`.
 //
@@ -52848,6 +53452,14 @@ func (c *Client) ReviewBroadcast(ctx context.Context, broadcastId BroadcastId, p
 // `confirm_recipients`, when given, must equal the current audience count
 // (`409 audience_changed` with `recipients`).
 //
+// A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+// `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+// (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+// before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+// `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+// when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+// live triggered e-mails (`409 too_many_triggered`).
+//
 // Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
 // `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
 // (the server's operator has not approved the workspace yet),
@@ -52882,6 +53494,14 @@ func (c *Client) ScheduleBroadcastWithBody(ctx context.Context, broadcastId Broa
 // and anyone who unsubscribes, bounces or complains before their mail goes out is skipped.
 // `confirm_recipients`, when given, must equal the current audience count
 // (`409 audience_changed` with `recipients`).
+//
+// A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+// `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+// (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+// before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+// `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+// when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+// live triggered e-mails (`409 too_many_triggered`).
 //
 // Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
 // `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
@@ -74470,6 +75090,18 @@ func NewListBroadcastsRequest(server string, params *ListBroadcastsParams) (*htt
 
 		}
 
+		if params.Kind != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "kind", *params.Kind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.State != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "state", *params.State, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "array", Format: ""}); err != nil {
@@ -75061,6 +75693,162 @@ func NewListBroadcastDeliveriesRequest(server string, broadcastId BroadcastId, p
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewListBroadcastEnrollmentsRequest constructs an http.Request for the ListBroadcastEnrollments method
+func NewListBroadcastEnrollmentsRequest(server string, broadcastId BroadcastId, params *ListBroadcastEnrollmentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s/enrollments", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.State != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "state", *params.State, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewRemoveBroadcastEnrollmentRequest constructs an http.Request for the RemoveBroadcastEnrollment method
+func NewRemoveBroadcastEnrollmentRequest(server string, broadcastId BroadcastId, contactId ContactId, params *RemoveBroadcastEnrollmentParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "broadcastId", broadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "contactId", contactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/broadcasts/%s/enrollments/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -104466,7 +105254,8 @@ type ClientWithResponsesInterface interface {
 
 	// ListBroadcastsWithResponse List broadcasts
 	//
-	// Newest first, in the inboxes the caller can see. `state` may be repeated.
+	// Newest first, in the inboxes the caller can see. `state` may be repeated; `kind` keeps
+	// one-off broadcasts or triggered e-mails.
 	//
 	// Owners, admins, agents (the broadcasts of their inboxes, read only) and API keys. Scope:
 	// `broadcasts:read`.
@@ -104486,6 +105275,14 @@ type ClientWithResponsesInterface interface {
 	// be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
 	// missing before it can be scheduled.
 	//
+	// `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+	// consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+	// (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+	// `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+	// paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+	// `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+	// are refused for `service`.
+	//
 	// Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
 	// broadcast write answers `403 broadcasts_disabled`.
 	//
@@ -104503,6 +105300,14 @@ type ClientWithResponsesInterface interface {
 	// when absent; `send_window` limits sending to hours of the day in that zone. Everything can
 	// be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
 	// missing before it can be scheduled.
+	//
+	// `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+	// consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+	// (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+	// `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+	// paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+	// `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+	// are refused for `service`.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
 	// broadcast write answers `403 broadcasts_disabled`.
@@ -104584,6 +105389,14 @@ type ClientWithResponsesInterface interface {
 	// change under which the mail still to go out would take more than 365 days. Changing
 	// `timezone` never moves `scheduled_at`.
 	//
+	// A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+	// (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+	// `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+	// `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+	// resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+	// and `channel_id` never change after the draft, and other fields answer
+	// `409 invalid_state`.
+	//
 	// `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
 	// shorter than 30 minutes or with `start` equal to `end`, a malformed time.
 	//
@@ -104605,6 +105418,14 @@ type ClientWithResponsesInterface interface {
 	// `409 pace_too_slow` (with `days`, the estimate, which counts the sending hours) refuses a
 	// change under which the mail still to go out would take more than 365 days. Changing
 	// `timezone` never moves `scheduled_at`.
+	//
+	// A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+	// (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+	// `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+	// `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+	// resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+	// and `channel_id` never change after the draft, and other fields answer
+	// `409 invalid_state`.
 	//
 	// `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
 	// shorter than 30 minutes or with `start` equal to `end`, a malformed time.
@@ -104634,7 +105455,9 @@ type ClientWithResponsesInterface interface {
 	// CancelBroadcastWithResponse Cancel a broadcast
 	//
 	// A scheduled, preparing, sending or paused broadcast stops for good within the batch in
-	// progress; mail not sent yet is skipped (`cancelled`). `409 invalid_state` otherwise.
+	// progress; mail not sent yet is skipped (`cancelled`). A triggered e-mail (scheduled,
+	// active or paused) stops enrolling for good and drops the contacts waiting (`cancelled`).
+	// `409 invalid_state` otherwise.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:send`.
 	//
@@ -104656,10 +105479,40 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /v1/broadcasts/{broadcastId}/deliveries (the `ListBroadcastDeliveries` operationId).
 	ListBroadcastDeliveriesWithResponse(ctx context.Context, broadcastId BroadcastId, params *ListBroadcastDeliveriesParams, reqEditors ...RequestEditorFn) (*ListBroadcastDeliveriesResponse, error)
 
+	// ListBroadcastEnrollmentsWithResponse List a triggered e-mail's contacts
+	//
+	// The contacts a triggered e-mail enrolled: who waits, with when their mail is due
+	// (`sends_at`), who was mailed (`delivery_id`) and who was skipped and why. Newest trigger
+	// first; with `state=waiting`, the one due first first. `400 validation_failed` for a one-off
+	// broadcast. Nothing is written per enrollment to events or webhooks.
+	//
+	// Owners, admins, agents of its inbox and API keys. Scopes: `broadcasts:read` and
+	// `contacts:read`, as for the deliveries.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/broadcasts/{broadcastId}/enrollments (the `ListBroadcastEnrollments` operationId).
+	ListBroadcastEnrollmentsWithResponse(ctx context.Context, broadcastId BroadcastId, params *ListBroadcastEnrollmentsParams, reqEditors ...RequestEditorFn) (*ListBroadcastEnrollmentsResponse, error)
+
+	// RemoveBroadcastEnrollmentWithResponse Take a contact off the waiting list
+	//
+	// A waiting contact gets no mail from this triggered e-mail: the enrollment is `skipped`
+	// with `removed` and kept, so the contact is never enrolled again. `409 invalid_state` when
+	// the contact is not waiting; `404` for a contact the triggered e-mail never enrolled. Sends
+	// `broadcast.updated`.
+	//
+	// Owners, admins and API keys. Scope: `broadcasts:write`.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId} (the `RemoveBroadcastEnrollment` operationId).
+	RemoveBroadcastEnrollmentWithResponse(ctx context.Context, broadcastId BroadcastId, contactId ContactId, params *RemoveBroadcastEnrollmentParams, reqEditors ...RequestEditorFn) (*RemoveBroadcastEnrollmentResponse, error)
+
 	// PauseBroadcastWithResponse Pause sending
 	//
 	// A preparing or sending broadcast stops within the batch in progress (at most 50 mails)
-	// with `pause_reason: member`. `409 invalid_state` otherwise.
+	// with `pause_reason: member`; an active triggered e-mail stops sending and keeps enrolling.
+	// `409 invalid_state` otherwise.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:send`.
 	//
@@ -104697,6 +105550,11 @@ type ClientWithResponsesInterface interface {
 	// when it is not paused, and `409 ses_tenant_blocked` while the review item `ses_tenant`
 	// would block it (the inbox's Amazon SES tenant is paused, or its channel lost its tenant
 	// isolation).
+	//
+	// A triggered e-mail becomes `active` again: the review runs again (`409 review_failed`
+	// with the blocking `items`) and the design as saved now is frozen, so mail still queued
+	// goes out with it. Contacts whose due time passed more than 7 days before it can process
+	// them are skipped (`late`).
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:send`.
 	//
@@ -104741,6 +105599,14 @@ type ClientWithResponsesInterface interface {
 	// `confirm_recipients`, when given, must equal the current audience count
 	// (`409 audience_changed` with `recipients`).
 	//
+	// A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+	// `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+	// (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+	// before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+	// `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+	// when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+	// live triggered e-mails (`409 too_many_triggered`).
+	//
 	// Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
 	// `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
 	// (the server's operator has not approved the workspace yet),
@@ -104765,6 +105631,14 @@ type ClientWithResponsesInterface interface {
 	// and anyone who unsubscribes, bounces or complains before their mail goes out is skipped.
 	// `confirm_recipients`, when given, must equal the current audience count
 	// (`409 audience_changed` with `recipients`).
+	//
+	// A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+	// `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+	// (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+	// before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+	// `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+	// when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+	// live triggered e-mails (`409 too_many_triggered`).
 	//
 	// Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
 	// `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
@@ -123123,6 +123997,137 @@ func (r ListBroadcastDeliveriesResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r ListBroadcastDeliveriesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListBroadcastEnrollmentsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *TriggeredEnrollmentPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListBroadcastEnrollmentsResponse) GetJSON200() *TriggeredEnrollmentPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListBroadcastEnrollmentsResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListBroadcastEnrollmentsResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListBroadcastEnrollmentsResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListBroadcastEnrollmentsResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListBroadcastEnrollmentsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListBroadcastEnrollmentsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListBroadcastEnrollmentsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListBroadcastEnrollmentsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RemoveBroadcastEnrollmentResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r RemoveBroadcastEnrollmentResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r RemoveBroadcastEnrollmentResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r RemoveBroadcastEnrollmentResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r RemoveBroadcastEnrollmentResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetBody returns the raw response body bytes
+func (r RemoveBroadcastEnrollmentResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveBroadcastEnrollmentResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveBroadcastEnrollmentResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RemoveBroadcastEnrollmentResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -154862,7 +155867,8 @@ func (c *ClientWithResponses) ListAutomationRunsWithResponse(ctx context.Context
 
 // ListBroadcastsWithResponse List broadcasts
 //
-// Newest first, in the inboxes the caller can see. `state` may be repeated.
+// Newest first, in the inboxes the caller can see. `state` may be repeated; `kind` keeps
+// one-off broadcasts or triggered e-mails.
 //
 // Owners, admins, agents (the broadcasts of their inboxes, read only) and API keys. Scope:
 // `broadcasts:read`.
@@ -154888,6 +155894,14 @@ func (c *ClientWithResponses) ListBroadcastsWithResponse(ctx context.Context, pa
 // be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
 // missing before it can be scheduled.
 //
+// `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+// consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+// (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+// `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+// paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+// `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+// are refused for `service`.
+//
 // Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
 // broadcast write answers `403 broadcasts_disabled`.
 //
@@ -154911,6 +155925,14 @@ func (c *ClientWithResponses) CreateBroadcastWithBodyWithResponse(ctx context.Co
 // when absent; `send_window` limits sending to hours of the day in that zone. Everything can
 // be changed while the broadcast is a draft; the review (`GET .../review`) says what is still
 // missing before it can be scheduled.
+//
+// `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
+// consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
+// (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
+// `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+// paused (`409 too_many_triggered`, counted when one starts as well). A design with a
+// `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
+// are refused for `service`.
 //
 // Owners, admins and API keys. Scope: `broadcasts:write`. With `YUVA_BROADCASTS=off` every
 // broadcast write answers `403 broadcasts_disabled`.
@@ -155022,6 +156044,14 @@ func (c *ClientWithResponses) GetBroadcastWithResponse(ctx context.Context, broa
 // change under which the mail still to go out would take more than 365 days. Changing
 // `timezone` never moves `scheduled_at`.
 //
+// A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+// (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+// `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+// `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+// resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+// and `channel_id` never change after the draft, and other fields answer
+// `409 invalid_state`.
+//
 // `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
 // shorter than 30 minutes or with `start` equal to `end`, a malformed time.
 //
@@ -155049,6 +156079,14 @@ func (c *ClientWithResponses) UpdateBroadcastWithBodyWithResponse(ctx context.Co
 // `409 pace_too_slow` (with `days`, the estimate, which counts the sending hours) refuses a
 // change under which the mail still to go out would take more than 365 days. Changing
 // `timezone` never moves `scheduled_at`.
+//
+// A triggered e-mail after its draft: while scheduled or active also `trigger.delay_minutes`
+// (it moves the due time of everyone waiting) and `click_tracking: false`; while paused also
+// `design_id`, `subject`, `preheader`, `translations`, `click_tracking` and
+// `audience.conditions` and `audience.locales` (with the same `audience.list_ids`), which
+// resuming reviews and freezes again. `trigger.event`, `trigger.basis`, `audience.list_ids`
+// and `channel_id` never change after the draft, and other fields answer
+// `409 invalid_state`.
 //
 // `400 validation_failed`: a `timezone` that is not an IANA zone name, a `send_window`
 // shorter than 30 minutes or with `start` equal to `end`, a malformed time.
@@ -155090,7 +156128,9 @@ func (c *ClientWithResponses) CountBroadcastAudienceWithResponse(ctx context.Con
 // CancelBroadcastWithResponse Cancel a broadcast
 //
 // A scheduled, preparing, sending or paused broadcast stops for good within the batch in
-// progress; mail not sent yet is skipped (`cancelled`). `409 invalid_state` otherwise.
+// progress; mail not sent yet is skipped (`cancelled`). A triggered e-mail (scheduled,
+// active or paused) stops enrolling for good and drops the contacts waiting (`cancelled`).
+// `409 invalid_state` otherwise.
 //
 // Owners, admins and API keys. Scope: `broadcasts:send`.
 //
@@ -155124,10 +156164,52 @@ func (c *ClientWithResponses) ListBroadcastDeliveriesWithResponse(ctx context.Co
 	return ParseListBroadcastDeliveriesResponse(rsp)
 }
 
+// ListBroadcastEnrollmentsWithResponse List a triggered e-mail's contacts
+//
+// The contacts a triggered e-mail enrolled: who waits, with when their mail is due
+// (`sends_at`), who was mailed (`delivery_id`) and who was skipped and why. Newest trigger
+// first; with `state=waiting`, the one due first first. `400 validation_failed` for a one-off
+// broadcast. Nothing is written per enrollment to events or webhooks.
+//
+// Owners, admins, agents of its inbox and API keys. Scopes: `broadcasts:read` and
+// `contacts:read`, as for the deliveries.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/broadcasts/{broadcastId}/enrollments (the `ListBroadcastEnrollments` operationId).
+func (c *ClientWithResponses) ListBroadcastEnrollmentsWithResponse(ctx context.Context, broadcastId BroadcastId, params *ListBroadcastEnrollmentsParams, reqEditors ...RequestEditorFn) (*ListBroadcastEnrollmentsResponse, error) {
+	rsp, err := c.ListBroadcastEnrollments(ctx, broadcastId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListBroadcastEnrollmentsResponse(rsp)
+}
+
+// RemoveBroadcastEnrollmentWithResponse Take a contact off the waiting list
+//
+// A waiting contact gets no mail from this triggered e-mail: the enrollment is `skipped`
+// with `removed` and kept, so the contact is never enrolled again. `409 invalid_state` when
+// the contact is not waiting; `404` for a contact the triggered e-mail never enrolled. Sends
+// `broadcast.updated`.
+//
+// Owners, admins and API keys. Scope: `broadcasts:write`.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId} (the `RemoveBroadcastEnrollment` operationId).
+func (c *ClientWithResponses) RemoveBroadcastEnrollmentWithResponse(ctx context.Context, broadcastId BroadcastId, contactId ContactId, params *RemoveBroadcastEnrollmentParams, reqEditors ...RequestEditorFn) (*RemoveBroadcastEnrollmentResponse, error) {
+	rsp, err := c.RemoveBroadcastEnrollment(ctx, broadcastId, contactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveBroadcastEnrollmentResponse(rsp)
+}
+
 // PauseBroadcastWithResponse Pause sending
 //
 // A preparing or sending broadcast stops within the batch in progress (at most 50 mails)
-// with `pause_reason: member`. `409 invalid_state` otherwise.
+// with `pause_reason: member`; an active triggered e-mail stops sending and keeps enrolling.
+// `409 invalid_state` otherwise.
 //
 // Owners, admins and API keys. Scope: `broadcasts:send`.
 //
@@ -155177,6 +156259,11 @@ func (c *ClientWithResponses) GetBroadcastReportWithResponse(ctx context.Context
 // when it is not paused, and `409 ses_tenant_blocked` while the review item `ses_tenant`
 // would block it (the inbox's Amazon SES tenant is paused, or its channel lost its tenant
 // isolation).
+//
+// A triggered e-mail becomes `active` again: the review runs again (`409 review_failed`
+// with the blocking `items`) and the design as saved now is frozen, so mail still queued
+// goes out with it. Contacts whose due time passed more than 7 days before it can process
+// them are skipped (`late`).
 //
 // Owners, admins and API keys. Scope: `broadcasts:send`.
 //
@@ -155233,6 +156320,14 @@ func (c *ClientWithResponses) ReviewBroadcastWithResponse(ctx context.Context, b
 // `confirm_recipients`, when given, must equal the current audience count
 // (`409 audience_changed` with `recipients`).
 //
+// A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+// `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+// (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+// before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+// `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+// when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+// live triggered e-mails (`409 too_many_triggered`).
+//
 // Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
 // `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
 // (the server's operator has not approved the workspace yet),
@@ -155263,6 +156358,14 @@ func (c *ClientWithResponses) ScheduleBroadcastWithBodyWithResponse(ctx context.
 // and anyone who unsubscribes, bounces or complains before their mail goes out is skipped.
 // `confirm_recipients`, when given, must equal the current audience count
 // (`409 audience_changed` with `recipients`).
+//
+// A triggered e-mail starts instead: at `send_at` (`scheduled` until then) or now it becomes
+// `active` and enrolls each contact whose trigger happens from then on; with `backfill_days`
+// (here or in `trigger`) it also enrolls those whose trigger happened in that many days
+// before the start, and `confirm_recipients` is that back-fill count. A `service` one needs
+// `confirm_service: true` (`400 service_basis_unconfirmed`), stored with who confirmed and
+// when; the audit log records the start (`broadcast.scheduled`). An inbox has at most 20
+// live triggered e-mails (`409 too_many_triggered`).
 //
 // Refusals: `409 not_draft`; `409 review_failed` with the blocking `items`;
 // `403 broadcasts_disabled` (`YUVA_BROADCASTS=off`), `403 broadcasts_approval_required`
@@ -175006,6 +176109,110 @@ func ParseListBroadcastDeliveriesResponse(rsp *http.Response) (*ListBroadcastDel
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListBroadcastEnrollmentsResponse parses an HTTP response from a ListBroadcastEnrollmentsWithResponse call
+func ParseListBroadcastEnrollmentsResponse(rsp *http.Response) (*ListBroadcastEnrollmentsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListBroadcastEnrollmentsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TriggeredEnrollmentPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveBroadcastEnrollmentResponse parses an HTTP response from a RemoveBroadcastEnrollmentWithResponse call
+func ParseRemoveBroadcastEnrollmentResponse(rsp *http.Response) (*RemoveBroadcastEnrollmentResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveBroadcastEnrollmentResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 

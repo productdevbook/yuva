@@ -2573,14 +2573,17 @@ Decisions:
   `active` ⇄ `paused` → `cancelled` (Stopped), never `sent`; pausing stops sending, not enrolling.
   The trigger's transaction inserts `triggered_enrollments (workspace, broadcast, contact,
   triggered_at, state waiting|queued|skipped|cancelled)`, whose primary key is the once-per-contact
-  rule for as long as both exist, and queues `triggered_due` at the due time (unique per broadcast;
-  the 5-minute broadcast sweep re-queues it). `triggered_due` takes due enrollments 500 at a time,
-  decides each once (blocked, no address, more than 7 days late, suppressed, opted out, stopped,
+  rule for as long as both exist, and queues `triggered_due` at the due time (unique per broadcast
+  in every state including running, so a busy job snoozes up to 5 minutes; the 5-minute broadcast
+  sweep re-queues it). The broadcast's enrollment counts are brought up to date by that job, within
+  5 minutes, not in the trigger's transaction, so triggers never lock the broadcast row. `triggered_due` takes due enrollments 500 at a time,
+  decides each once (blocked, no address, more than 7 days late for a live trigger, suppressed, opted out, stopped,
   not subscribed, not matching the audience conditions and locales) and creates the
   `broadcast_deliveries` row the channel's `broadcast_send` sends, triggered e-mails before
   one-off broadcasts, under the pace, sending hours, daily limit, warm-up and automatic pauses of
   broadcasts. Only triggers while it is active or paused enroll; starting may back-fill contacts
-  triggered in the last 0 to 30 days, counted in the review; imports, help-desk migrations and
+  triggered in the last 0 to 30 days, counted in the review, each due at the later of its trigger
+  plus the delay and the start, never skipped as late; imports, help-desk migrations and
   merges never trigger, and `/v1/contacts` writes with `skip_triggers` do not. The consent basis is
   explicit and fixed after the draft: `marketing` mails only contacts subscribed to its lists, with
   the broadcast footer and one-click from the list; `service` (mail about using the product) mails
@@ -2593,8 +2596,12 @@ Decisions:
   enrolled, waiting and skips by reason. Changeable while active: pace, zone, sending hours, delay;
   while paused also the content and audience conditions (resume reviews and freezes again); never
   the trigger, basis, lists, inbox or channel. At most 20 live per inbox. `GET
-  /v1/broadcasts/{id}/enrollments` lists who waits and why others were skipped; `DELETE
-  …/enrollments/{contactId}` drops one waiting contact. No event or webhook per enrollment.
+  /v1/broadcasts/{id}/enrollments` (`broadcasts:read` and `contacts:read`, as deliveries) lists who
+  waits and why others were skipped; `DELETE
+  …/enrollments/{contactId}` drops one waiting contact. No event or webhook per enrollment. A merge field without fallback is a review warning, not a
+  block, since the contacts are not known when it starts. Resume does not repeat the approval
+  check in the review; the send gate enforces it. Starting one notes `triggered_started` for the
+  operator. Counters survive delivery retention: a recount never lowers what retention purged.
 - **Amazon SES tenants.** On a shared SES account one inbox's bounces and complaints pause only its own
   SES tenant, never another inbox of the workspace or another workspace (M13.7). One tenant per inbox,
   not per workspace, because inboxes are where a workspace keeps its products. With

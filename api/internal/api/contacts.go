@@ -296,7 +296,7 @@ func limitAgentKeys(ctx context.Context, q *store.Queries, p principal, contactI
 	return nil
 }
 
-func writeContactKeys(ctx context.Context, q *store.Queries, workspaceID, contactID uuid.UUID, in contactInput, setEmails, setExternal bool) error {
+func (s *Server) writeContactKeys(ctx context.Context, q *store.Queries, events *eventBatch, workspaceID, contactID uuid.UUID, in contactInput, setEmails, setExternal, trigger bool) error {
 	if setEmails {
 		if err := q.DeleteContactEmails(ctx, store.DeleteContactEmailsParams{WorkspaceID: workspaceID, ContactID: contactID}); err != nil {
 			return err
@@ -312,11 +312,27 @@ func writeContactKeys(ctx context.Context, q *store.Queries, workspaceID, contac
 		}
 	}
 	if setExternal {
+		old, err := q.ListContactExternalIDs(ctx, store.ListContactExternalIDsParams{WorkspaceID: workspaceID, ContactIds: []uuid.UUID{contactID}})
+		if err != nil {
+			return err
+		}
 		if err := q.DeleteContactExternalIDs(ctx, store.DeleteContactExternalIDsParams{WorkspaceID: workspaceID, ContactID: contactID}); err != nil {
 			return err
 		}
+		now := s.now()
+		var identified []uuid.UUID
 		for _, x := range in.externalIDs {
-			err := q.AddContactExternalID(ctx, store.AddContactExternalIDParams{WorkspaceID: workspaceID, InboxID: x.InboxId, ExternalID: x.ExternalId, ContactID: contactID})
+			at := &now
+			known := false
+			for _, o := range old {
+				if o.InboxID == x.InboxId && (!known || o.CreatedAt == nil || (at != nil && o.CreatedAt.Before(*at))) {
+					known, at = true, o.CreatedAt
+				}
+			}
+			if trigger && !known && !slices.Contains(identified, x.InboxId) {
+				identified = append(identified, x.InboxId)
+			}
+			err := q.AddContactExternalID(ctx, store.AddContactExternalIDParams{WorkspaceID: workspaceID, InboxID: x.InboxId, ExternalID: x.ExternalId, ContactID: contactID, CreatedAt: at})
 			if store.IsUniqueViolation(err) {
 				return errExternalIDTaken
 			}
@@ -324,6 +340,11 @@ func writeContactKeys(ctx context.Context, q *store.Queries, workspaceID, contac
 				return errExternalIDInbox
 			}
 			if err != nil {
+				return err
+			}
+		}
+		for _, inboxID := range identified {
+			if err := s.triggerContact(ctx, q, events, workspaceID, inboxID, contactID, triggerIdentified, now); err != nil {
 				return err
 			}
 		}
@@ -504,7 +525,7 @@ func (s *Server) CreateContact(ctx context.Context, req oas.CreateContactRequest
 	}
 	in.blocked = b.Blocked != nil && *b.Blocked
 	var out oas.Contact
-	err = s.st.InTx(ctx, func(q *store.Queries) error {
+	err = s.inTx(ctx, p.workspaceID, func(q *store.Queries, events *eventBatch) error {
 		if err := limitAgentKeys(ctx, q, p, nil, &in, true, true); err != nil {
 			return err
 		}
@@ -514,7 +535,7 @@ func (s *Server) CreateContact(ctx context.Context, req oas.CreateContactRequest
 		if err != nil {
 			return err
 		}
-		if err := writeContactKeys(ctx, q, p.workspaceID, r.ID, in, true, true); err != nil {
+		if err := s.writeContactKeys(ctx, q, events, p.workspaceID, r.ID, in, true, true, !boolOr(b.SkipTriggers, false)); err != nil {
 			return err
 		}
 		out, err = s.contactBody(ctx, q, p.workspaceID, scopeOf(p), contactRow(r))
@@ -643,7 +664,7 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 		if err != nil {
 			return err
 		}
-		if err := writeContactKeys(ctx, q, p.workspaceID, cur.ID, in, b.Emails != nil, b.ExternalIds != nil); err != nil {
+		if err := s.writeContactKeys(ctx, q, events, p.workspaceID, cur.ID, in, b.Emails != nil, b.ExternalIds != nil, !boolOr(b.SkipTriggers, false)); err != nil {
 			return err
 		}
 		if out, err = s.contactBodyAndEvent(ctx, q, p, events, contactRow(r)); err != nil {

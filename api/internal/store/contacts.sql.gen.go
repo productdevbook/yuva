@@ -34,7 +34,8 @@ func (q *Queries) AddContactEmail(ctx context.Context, arg AddContactEmailParams
 }
 
 const addContactExternalID = `-- name: AddContactExternalID :exec
-INSERT INTO contact_external_ids (workspace_id, inbox_id, external_id, contact_id) VALUES ($1, $2, $3, $4)
+INSERT INTO contact_external_ids (workspace_id, inbox_id, external_id, contact_id, created_at)
+VALUES ($1, $2, $3, $4, $5)
 `
 
 type AddContactExternalIDParams struct {
@@ -42,6 +43,7 @@ type AddContactExternalIDParams struct {
 	InboxID     uuid.UUID
 	ExternalID  string
 	ContactID   uuid.UUID
+	CreatedAt   *time.Time
 }
 
 func (q *Queries) AddContactExternalID(ctx context.Context, arg AddContactExternalIDParams) error {
@@ -50,6 +52,7 @@ func (q *Queries) AddContactExternalID(ctx context.Context, arg AddContactExtern
 		arg.InboxID,
 		arg.ExternalID,
 		arg.ContactID,
+		arg.CreatedAt,
 	)
 	return err
 }
@@ -531,7 +534,7 @@ func (q *Queries) ListContactEmails(ctx context.Context, arg ListContactEmailsPa
 }
 
 const listContactExternalIDs = `-- name: ListContactExternalIDs :many
-SELECT contact_id, inbox_id, external_id FROM contact_external_ids
+SELECT contact_id, inbox_id, external_id, created_at FROM contact_external_ids
 WHERE workspace_id = $1 AND contact_id = ANY($2::uuid[])
 ORDER BY contact_id, inbox_id, external_id
 `
@@ -545,6 +548,7 @@ type ListContactExternalIDsRow struct {
 	ContactID  uuid.UUID
 	InboxID    uuid.UUID
 	ExternalID string
+	CreatedAt  *time.Time
 }
 
 func (q *Queries) ListContactExternalIDs(ctx context.Context, arg ListContactExternalIDsParams) ([]ListContactExternalIDsRow, error) {
@@ -556,7 +560,12 @@ func (q *Queries) ListContactExternalIDs(ctx context.Context, arg ListContactExt
 	var items []ListContactExternalIDsRow
 	for rows.Next() {
 		var i ListContactExternalIDsRow
-		if err := rows.Scan(&i.ContactID, &i.InboxID, &i.ExternalID); err != nil {
+		if err := rows.Scan(
+			&i.ContactID,
+			&i.InboxID,
+			&i.ExternalID,
+			&i.CreatedAt,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

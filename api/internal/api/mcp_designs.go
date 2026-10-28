@@ -349,7 +349,7 @@ var mcpDesignTools = []mcpTool{
 			return c.designOut(oas.EmailDesign(res.(oas.DuplicateEmailDesign201JSONResponse)))
 		}),
 	defineTool("pause_broadcast", "Pause a broadcast",
-		"Pauses a broadcast that is preparing or sending; nothing more goes out until resume_broadcast. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/pause.",
+		"Pauses a broadcast that is preparing or sending, or an active triggered e-mail; nothing more goes out until resume_broadcast (a triggered e-mail keeps enrolling, so nobody is missed). Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/pause.",
 		idempotent, nil, mcpTool{ops: []string{"PauseBroadcast"}, gate: maySchedule},
 		func(ctx context.Context, c *mcpCall, in broadcastIn) (mcpBroadcast, error) {
 			res, err := c.s.PauseBroadcast(ctx, oas.PauseBroadcastRequestObject{BroadcastId: in.BroadcastID})
@@ -359,7 +359,7 @@ var mcpDesignTools = []mcpTool{
 			return c.broadcastOut(oas.Broadcast(res.(oas.PauseBroadcast200JSONResponse))), nil
 		}),
 	defineTool("resume_broadcast", "Resume a broadcast",
-		"Resumes a paused broadcast, so it goes on sending to the rest of its audience. Only when the person you work for asks. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/resume.",
+		"Resumes a paused broadcast, so it goes on sending to the rest of its audience; a triggered e-mail is reviewed again and sends with its design as it is now. Only when the person you work for asks. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/resume.",
 		delivering, nil, mcpTool{ops: []string{"ResumeBroadcast"}, gate: maySchedule},
 		func(ctx context.Context, c *mcpCall, in broadcastIn) (mcpBroadcast, error) {
 			res, err := c.s.ResumeBroadcast(ctx, oas.ResumeBroadcastRequestObject{BroadcastId: in.BroadcastID})
@@ -379,7 +379,7 @@ var mcpDesignTools = []mcpTool{
 			return c.broadcastOut(oas.Broadcast(res.(oas.UnscheduleBroadcast200JSONResponse))), nil
 		}),
 	defineTool("cancel_broadcast", "Cancel a broadcast",
-		"Cancels a scheduled, preparing, sending or paused broadcast for good: mail not yet sent never goes out, and it cannot be resumed. confirm_name must be the broadcast's name, which the person you work for confirmed. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/cancel.",
+		"Cancels a scheduled, preparing, sending or paused broadcast for good: mail not yet sent never goes out, and it cannot be resumed. A triggered e-mail is stopped for good the same way: it enrolls nobody more and contacts still waiting get nothing. confirm_name must be the broadcast's name, which the person you work for confirmed. Listed only while the workspace lets API keys and assistants schedule broadcasts. Maps to POST /v1/broadcasts/{id}/cancel.",
 		destructive, nil, mcpTool{ops: []string{"GetBroadcast", "CancelBroadcast"}, gate: maySchedule},
 		func(ctx context.Context, c *mcpCall, in cancelBroadcastIn) (mcpBroadcast, error) {
 			res, err := c.s.GetBroadcast(ctx, oas.GetBroadcastRequestObject{BroadcastId: in.BroadcastID})

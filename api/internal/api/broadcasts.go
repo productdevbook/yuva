@@ -27,6 +27,7 @@ const (
 	bcScheduled = string(oas.BroadcastStateScheduled)
 	bcPreparing = string(oas.BroadcastStatePreparing)
 	bcSending   = string(oas.BroadcastStateSending)
+	bcActive    = string(oas.BroadcastStateActive)
 	bcPaused    = string(oas.BroadcastStatePaused)
 	bcSent      = string(oas.BroadcastStateSent)
 	bcCancelled = string(oas.BroadcastStateCancelled)
@@ -126,7 +127,7 @@ func paceGap(b store.Broadcast, now time.Time) time.Duration {
 }
 
 func paceNextShown(b store.Broadcast, now time.Time) *time.Time {
-	if b.State != bcSending || b.PaceNextAt == nil || paceGap(b, now) < paceShownFrom {
+	if (b.State != bcSending && b.State != bcActive) || b.PaceNextAt == nil || paceGap(b, now) < paceShownFrom {
 		return nil
 	}
 	return b.PaceNextAt
@@ -274,6 +275,19 @@ type bcCounts struct {
 	SkippedCancelled    int64 `json:"skipped_cancelled"`
 	ExcludedSuppressed  int64 `json:"excluded_suppressed"`
 	ExcludedOptedOut    int64 `json:"excluded_opted_out"`
+
+	Enrolled             int64 `json:"enrolled"`
+	Waiting              int64 `json:"waiting"`
+	SkippedStopped       int64 `json:"skipped_stopped"`
+	SkippedNoAddress     int64 `json:"skipped_no_address"`
+	SkippedBlocked       int64 `json:"skipped_blocked"`
+	SkippedNotSubscribed int64 `json:"skipped_not_subscribed"`
+	SkippedNotMatching   int64 `json:"skipped_not_matching"`
+	SkippedLate          int64 `json:"skipped_late"`
+	SkippedRemoved       int64 `json:"skipped_removed"`
+	EnrollSuppressed     int64 `json:"enrollment_suppressed"`
+	EnrollOptedOut       int64 `json:"enrollment_opted_out"`
+	EnrollStopped        int64 `json:"enrollment_stopped"`
 }
 
 func parseCounts(raw []byte) bcCounts {
@@ -282,14 +296,23 @@ func parseCounts(raw []byte) bcCounts {
 	return c
 }
 
-func (c bcCounts) body(state string) oas.BroadcastCounts {
+func (c bcCounts) body(state string, triggered bool) oas.BroadcastCounts {
 	out := oas.BroadcastCounts{
 		Recipients: c.Recipients, Queued: c.Queued, Sent: c.Sent, Failed: c.Failed, Bounced: c.Bounced, Complained: c.Complained,
 		Unsubscribed: c.Unsubscribed, Replied: c.Replied, AutoReplied: c.AutoReplied, Clicked: c.Clicked,
-		Skipped: oas.BroadcastSkipped{Suppressed: c.SkippedSuppressed + c.ExcludedSuppressed, OptedOut: c.SkippedOptedOut + c.ExcludedOptedOut, Unsubscribed: c.SkippedUnsubscribed, Cancelled: c.SkippedCancelled},
+		Skipped: oas.BroadcastSkipped{
+			Suppressed: c.SkippedSuppressed + c.ExcludedSuppressed + c.EnrollSuppressed, OptedOut: c.SkippedOptedOut + c.ExcludedOptedOut + c.EnrollOptedOut,
+			Unsubscribed: c.SkippedUnsubscribed, Cancelled: c.SkippedCancelled,
+		},
 	}
 	if state == bcPreparing {
 		out.Prepared = new(c.Prepared)
+	}
+	if triggered {
+		out.Enrolled, out.Waiting = new(c.Enrolled), new(c.Waiting)
+		k := &out.Skipped
+		k.Stopped, k.NoAddress, k.Blocked, k.NotSubscribed = new(c.SkippedStopped+c.EnrollStopped), new(c.SkippedNoAddress), new(c.SkippedBlocked), new(c.SkippedNotSubscribed)
+		k.NotMatching, k.Late, k.Removed = new(c.SkippedNotMatching), new(c.SkippedLate), new(c.SkippedRemoved)
 	}
 	return out
 }
@@ -310,7 +333,7 @@ func (s *Server) broadcastBody(b store.Broadcast) oas.Broadcast {
 		Id: b.ID, InboxId: b.InboxID, ChannelId: b.ChannelID, Name: b.Name, Subject: b.Subject, Preheader: b.Preheader,
 		Translations: translationsBody(b.Translations), DesignId: b.DesignID, DesignVersion: b.DesignVersion, Audience: aud, ClickTracking: b.ClickTracking, Utm: b.Utm, UtmCampaign: b.UtmCampaign,
 		State: oas.BroadcastState(b.State), StateDetail: b.StateDetail, ScheduledAt: b.ScheduledAt, WaitingUntil: b.WaitingUntil,
-		StartedAt: b.StartedAt, FinishedAt: b.FinishedAt, LastTestAt: b.LastTestAt, Counts: parseCounts(b.Counts).body(b.State),
+		StartedAt: b.StartedAt, FinishedAt: b.FinishedAt, LastTestAt: b.LastTestAt, Counts: parseCounts(b.Counts).body(b.State, b.Kind == bcTriggered),
 		CreatedBy: b.CreatedBy, ScheduledBy: b.ScheduledBy, ScheduledByApiKey: b.ScheduledByKey, ChangelogEntryId: b.ChangelogEntryID, CreatedAt: b.CreatedAt, UpdatedAt: b.UpdatedAt,
 	}
 	if b.PauseReason != nil && b.State == bcPaused {
@@ -319,6 +342,11 @@ func (s *Server) broadcastBody(b store.Broadcast) oas.Broadcast {
 	}
 	if b.State == bcDraft {
 		out.DesignVersion = nil
+	}
+	out.Kind = oas.BroadcastKind(b.Kind)
+	out.Trigger = triggerBody(b)
+	if b.ServiceConfirmedAt != nil {
+		out.ServiceConfirmed = &oas.BroadcastServiceConfirmed{By: b.ServiceConfirmedBy, ByApiKey: b.ServiceConfirmedByKey, At: *b.ServiceConfirmedAt}
 	}
 	now := s.now()
 	out.Pace = paceOf(b).body()
@@ -343,7 +371,7 @@ func (s *Server) emitBroadcast(events *eventBatch, b store.Broadcast, previous s
 
 func activeBroadcast(state string) bool {
 	switch state {
-	case bcScheduled, bcPreparing, bcSending, bcPaused:
+	case bcScheduled, bcPreparing, bcSending, bcActive, bcPaused:
 		return true
 	}
 	return false
@@ -589,13 +617,20 @@ func (s *Server) ListBroadcasts(ctx context.Context, req oas.ListBroadcastsReque
 	if req.Params.State != nil {
 		for _, st := range *req.Params.State {
 			if !st.Valid() {
-				return nil, errValidation("state must be draft, scheduled, preparing, sending, paused, sent, cancelled or failed")
+				return nil, errValidation("state must be draft, scheduled, preparing, sending, active, paused, sent, cancelled or failed")
 			}
 			states = append(states, string(st))
 		}
 	}
+	var kind *string
+	if req.Params.Kind != nil {
+		if !req.Params.Kind.Valid() {
+			return nil, errValidation("kind must be once or triggered")
+		}
+		kind = new(string(*req.Params.Kind))
+	}
 	rows, err := s.st.ListBroadcasts(ctx, store.ListBroadcastsParams{
-		WorkspaceID: p.workspaceID, InboxID: req.Params.InboxId, States: states, AllInboxes: p.seesAllInboxes(),
+		WorkspaceID: p.workspaceID, InboxID: req.Params.InboxId, States: states, Kind: kind, AllInboxes: p.seesAllInboxes(),
 		ViewerID: p.viewerID(), CursorAt: at, CursorID: id, Lim: lim + 1,
 	})
 	if err != nil {
@@ -647,12 +682,16 @@ type broadcastDraft struct {
 	timezone                 string
 	window                   *[2]int16
 	translations             map[string]bcTranslation
+	trigger                  triggerDraft
 }
 
 func checkBroadcastDraft(b oas.BroadcastCreate) (broadcastDraft, error) {
 	var d broadcastDraft
 	var err error
 	if d.name, err = trimmed(b.Name, 1, 200, "name"); err != nil {
+		return d, err
+	}
+	if d.trigger, err = checkTrigger(b.Kind, b.Trigger); err != nil {
 		return d, err
 	}
 	if b.Subject != nil {
@@ -726,6 +765,15 @@ func (s *Server) insertBroadcast(ctx context.Context, q *store.Queries, p princi
 	if err != nil {
 		return store.Broadcast{}, err
 	}
+	t := d.trigger
+	if t.kind == bcTriggered {
+		if err := checkBasisLists(t.basis, len(aud.ListIDs)); err != nil {
+			return store.Broadcast{}, err
+		}
+		if err := s.checkLiveTriggered(ctx, q, p.workspaceID, in.ID, uuid.Nil()); err != nil {
+			return store.Broadcast{}, err
+		}
+	}
 	tz := d.timezone
 	if tz == "" {
 		tz = "UTC"
@@ -738,6 +786,10 @@ func (s *Server) insertBroadcast(ctx context.Context, q *store.Queries, p princi
 		Preheader: d.preheader, Translations: translationsJSON(d.translations), DesignID: b.DesignId, Audience: mustJSON(aud), ClickTracking: boolOr(b.ClickTracking, false),
 		Utm: boolOr(b.Utm, true), UtmCampaign: d.campaign, CreatedBy: p.memberRef(), PacePerHour: d.pace.hour,
 		PacePerDay: d.pace.day, PacePerMonth: d.pace.month, Timezone: tz, ChangelogEntryID: entry, Now: s.now(),
+		Kind: t.kind, DelayMinutes: t.delay,
+	}
+	if t.kind == bcTriggered {
+		params.Trigger, params.Basis, params.BackfillDays = mustJSON(bcTrigger{Event: t.event}), &t.basis, *t.backfill
 	}
 	if d.window != nil {
 		params.SendWindowStart, params.SendWindowEnd = &d.window[0], &d.window[1]
@@ -762,7 +814,9 @@ func (s *Server) saveBroadcast(ctx context.Context, q *store.Queries, b store.Br
 		Utm: b.Utm, UtmCampaign: b.UtmCampaign, State: b.State, PauseReason: b.PauseReason, StateDetail: b.StateDetail, ScheduledAt: b.ScheduledAt, WaitingUntil: b.WaitingUntil,
 		StartedAt: b.StartedAt, ResumedAt: b.ResumedAt, FinishedAt: b.FinishedAt, LastTestAt: b.LastTestAt,
 		SnapshotAfter: b.SnapshotAfter, SnapshotDone: b.SnapshotDone, SenderFailingSince: b.SenderFailingSince,
-		ScheduledBy: b.ScheduledBy, ScheduledByKey: b.ScheduledByKey, Now: s.now(),
+		ScheduledBy: b.ScheduledBy, ScheduledByKey: b.ScheduledByKey, Trigger: b.Trigger, DelayMinutes: b.DelayMinutes, Basis: b.Basis,
+		BackfillDays: b.BackfillDays, ServiceConfirmedBy: b.ServiceConfirmedBy, ServiceConfirmedByKey: b.ServiceConfirmedByKey,
+		ServiceConfirmedAt: b.ServiceConfirmedAt, Now: s.now(),
 	})
 }
 
@@ -777,6 +831,13 @@ func (s *Server) UpdateBroadcast(ctx context.Context, req oas.UpdateBroadcastReq
 		}
 		if err := s.requireBroadcastWriter(p); err != nil {
 			return err
+		}
+		if b.Kind == bcTriggered && b.State != bcDraft {
+			if out, err = s.updateStartedTriggered(ctx, q, p, b, body); err != nil {
+				return err
+			}
+			s.emitBroadcast(events, out, "")
+			return nil
 		}
 		sendingOnly := oas.BroadcastUpdate{Pace: body.Pace, Timezone: body.Timezone, SendWindow: body.SendWindow}
 		if b.State != bcDraft {
@@ -858,6 +919,9 @@ func (s *Server) UpdateBroadcast(ctx context.Context, req oas.UpdateBroadcastReq
 				return err
 			}
 			b.Audience = mustJSON(aud)
+		}
+		if err := updateTriggeredDraft(&b, body.Trigger); err != nil {
+			return err
 		}
 		if body.ClickTracking != nil {
 			b.ClickTracking = *body.ClickTracking
@@ -1291,7 +1355,7 @@ func (s *Server) queueBroadcastSend(events *eventBatch, ws, channelID uuid.UUID)
 func (s *Server) broadcastProgress(ctx context.Context, b store.Broadcast) {
 	inbox := b.InboxID
 	s.signal(ctx, realtime.Event{Type: eventBroadcastProgress, WorkspaceID: b.WorkspaceID, InboxID: &inbox, Data: mustJSON(oas.BroadcastProgress{
-		Id: b.ID, State: oas.BroadcastState(b.State), Counts: parseCounts(b.Counts).body(b.State), WaitingUntil: b.WaitingUntil,
+		Id: b.ID, State: oas.BroadcastState(b.State), Counts: parseCounts(b.Counts).body(b.State, b.Kind == bcTriggered), WaitingUntil: b.WaitingUntil,
 		PaceNextAt: paceNextShown(b, s.now()), WindowOpensAt: windowOpensAt(b, s.now()),
 	})})
 }
