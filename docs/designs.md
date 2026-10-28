@@ -47,6 +47,7 @@ Enter on one to add it after the selected block. Click a block to change it unde
 | Divider, Spacer | A thin line, empty room. |
 | Social | Links to your profiles, as icons or text. |
 | Footer text | Your own lines above the required footer. |
+| Message | Where the text a member writes goes when the design is used in a conversation ([section 8](#8-use-a-design-in-a-conversation)). At most one, never in columns. |
 
 Headings, text, footer text and button labels are edited in place. Text keeps only what mail apps
 handle well: bold, italic, underline, strikethrough, links, lists, line breaks and code. Links
@@ -187,16 +188,75 @@ A save sends the `version` it started from as `base_version`; if the design move
 `409 version_conflict` with the current design in `design`. An invalid document answers
 `422 invalid_design` with one entry per problem in `errors`.
 
+## 8. Use a design in a conversation
+
+A reply or a new mail from an inbox can go out in one of your designs instead of as plain text. The
+design needs exactly one Message block, at the top level or inside a section (not in columns). The
+block holds no text of its own; the text a member writes is set into it, followed by the help article
+cards and the member's signature. A design with a Message block cannot be sent as a broadcast: its
+review and test sends refuse it.
+
+An owner or admin makes the design available by offering it in conversations (`for_conversations`
+on `PUT /v1/email-designs/{designId}`). Every member who sees the design's inbox, and keys and tokens
+with `conversations:read`, can then list the offered designs (`GET /v1/email-designs?for_conversations=true`)
+and read them; editing stays with owners, admins and `broadcasts:write`.
+
+In the panel, the composer of an e-mailed conversation and of new mail has a design picker. Pick a
+design and the message is sent in it. Over the API, `design_id` (and optionally `design_locale`)
+goes on `POST /v1/conversations/{id}/messages` (a reply, or the first message of a conversation you
+opened) and on `POST /v1/conversations/mail`; `PATCH /v1/messages/{id}` changes the design of a draft.
+
+How it works:
+
+- The contact's language version of the design is used, chosen as for broadcasts; `design_locale`
+  names another one. The text is escaped into the Message block, and a blank line starts a paragraph.
+- The text part of the mail is the whole mail as text. The conversation still shows what was written,
+  not the design; `GET /v1/messages/{id}/email` returns the mail as sent.
+- Merge fields are the contact's. `list.name`, `unsubscribe_url` and `preferences_url` are refused, and a
+  field without a fallback that is empty for the contact refuses the message (`422 invalid_design`).
+- Headers, recipients, threading and the SMTP account are those of a plain reply.
+- Designs apply to e-mailed messages only: not notes, chat or app conversations (`400 design_not_emailed`).
+- A design that is archived or no longer offered answers `409 design_unavailable`.
+- A mail over 500 KB of HTML answers `422 html_too_large`.
+- New mail with a design goes to one `to` address and no `cc` (`400 design_one_recipient`).
+
+Preview what a contact would get with `POST /v1/conversations/{id}/design-preview`: the contact's
+version and merge values, your signature, the footer and your text (or the design's placeholder). It
+returns `html`, `text`, `subject` and `footer`, stores and sends nothing, and shares the 120 renders a
+minute with `POST /v1/email-designs/render`.
+
+### Footer: reply or outreach
+
+| Footer | When | Contains |
+|---|---|---|
+| `reply` | The contact has written in the conversation. | The inbox's sender identity line. |
+| `outreach` | The contact has not written: the first message of a new conversation or new mail. | The identity line, an unsubscribe link, and the `List-Unsubscribe` header with one-click. |
+
+The unsubscribe link and one-click stop outreach in designs from that inbox to the contact; ordinary
+replies are not affected. Outreach with a design is refused when:
+
+| Refusal | Reason |
+|---|---|
+| `409 email_opted_out` | The address has a suppression of any scope, a workspace opt-out, or stopped outreach from the inbox. |
+| `409 sender_identity_missing` | The inbox's [sender identity](lists.md#1-set-the-sender-identity) has no legal name or postal address. |
+| `429 rate_limited` | More than 20 an hour per member or key, or 200 a day (UTC) per workspace. |
+| `403 broadcasts_approval_required`, `403 broadcasts_suspended` | The server requires approval for broadcasts and your workspace has not been allowed, or was suspended. |
+
+Replies with a design have no extra limit, and outreach without a design follows the rules of a plain
+message. Designs are never used for notes, chat or app conversations, forwards, rule replies,
+greetings or rating requests.
+
 ## Reference
 
 ### Endpoints
 
 | Endpoint | Use |
 |---|---|
-| `GET`, `POST /v1/email-designs` | List (`inbox_id`, `q`, `archived=true`) and create from a `document`, a `template` or nothing. |
+| `GET`, `POST /v1/email-designs` | List (`inbox_id`, `q`, `archived=true`, `for_conversations`) and create from a `document`, a `template` or nothing. |
 | `GET`, `PUT`, `DELETE /v1/email-designs/{designId}` | Read, save (with `base_version`), archive. |
 | `POST /v1/email-designs/{designId}/duplicate` | Copy a design. |
 | `POST /v1/email-designs/render` | Render a document: HTML, text, size and warnings. At most 120 a minute. |
+| `POST /v1/conversations/{id}/design-preview` | Preview a message in a design offered in conversations. Scope `conversations:read`; shares the 120 a minute. |
 | `GET /v1/email-designs/{designId}/versions` | The kept versions. |
 | `GET /v1/email-designs/{designId}/versions/{version}` | One version with its document. |
 | `POST /v1/email-designs/{designId}/versions/{version}/restore` | Save a version as the newest. |
@@ -211,6 +271,7 @@ A save sends the `version` it started from as `base_version`; if the design move
 | Scope | Meaning |
 |---|---|
 | `broadcasts:read` | Read designs, versions, images and templates; render. |
+| `conversations:read` | List, read and preview the designs offered in conversations. |
 | `broadcasts:write` | Create, save, copy, archive and restore designs; upload and delete images. |
 
 A key limited to inboxes reads the designs of its inboxes and the workspace-wide ones, and changes
@@ -229,4 +290,5 @@ only designs of its inboxes. Keys made before these scopes existed do not get th
 | Merge field fallback | 100 characters |
 | Link | 2,048 characters |
 | Renders | 120 a minute per caller |
+| Messages with a design to people who have not written | 20 an hour per member or key, 200 a day per workspace |
 | Unused images | Deleted 7 days after upload |

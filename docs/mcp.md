@@ -192,6 +192,14 @@ with the role and scope each tool names in the [table below](#tools). Tools you 
   addresses are refused) or `data_base64`, about 5 MB of image at most through an assistant, and returns the id that an
   image block of `update_design` takes. `list_designs`, `get_design`, `list_email_images` and `duplicate_design` complete
   the set. See [E-mail designs](designs.md#4-images) for the image rules.
+- **Designs in conversations.** `send_reply`, `draft_reply`, `compose_mail` and `start_conversation` take
+  `design_id`, a design offered in conversations (`list_designs` with `for_conversations: true` lists them), and
+  optionally `design_locale`. The body is set into the design's message block in the contact's language.
+  `update_draft` takes `design_id` and `design_locale` too, and `no_design: true` sends the draft as plain text.
+  `preview_message_design` shows what the contact would get (subject, footer, text, size and warnings; with
+  `include_html` the HTML as an embedded resource) without storing or sending anything. Members who do not edit
+  designs, and connections with `conversations:read`, see only offered designs. The rules, footers and limits for
+  mail to someone who has not written yet are in [E-mail designs](designs.md#8-use-a-design-in-a-conversation).
 - **Running broadcasts.** `pause_broadcast`, `resume_broadcast`, `unschedule_broadcast` and `cancel_broadcast` are
   listed under the same rule as `schedule_broadcast`. `cancel_broadcast` needs `confirm_name`, the broadcast's name as
   you confirmed it. `request_broadcast_approval` asks the operator to allow broadcasts; it is offered only to an owner
@@ -230,6 +238,7 @@ answers `insufficient_scope` with the scope to grant.
 | `list_inboxes` | `inboxes:read` |
 | `get_contact`, `lookup_contact` | `contacts:read` |
 | `draft_reply` | `messages:write` |
+| `preview_message_design` | `conversations:read` |
 | `send_reply` | `messages:write`; only when bots may send |
 | `send_draft` (sends a `draft_reply` draft) | `messages:write` and `drafts:send`; only when bots may send |
 | `update_draft`, `discard_draft` (only unsent drafts; a member's own draft only by that member) | `messages:write` |
@@ -275,6 +284,7 @@ answers `insufficient_scope` with the scope to grant.
 | `list_subscriptions`, `get_list_import`, `list_list_imports`, `get_list_import_errors` | `lists:read` |
 | `create_mailing_list`, `update_mailing_list`, `add_subscription`, `unsubscribe`, `create_list_import`, `update_list_import_mapping`, `cancel_list_import`, `start_list_import` (owners, admins, keys) | `lists:write` |
 | `list_designs`, `get_design`, `list_email_images` (owners, admins, keys) | `broadcasts:read` |
+| `list_designs` (other members, and connections with only this scope: the designs offered in conversations) | `conversations:read` |
 | `duplicate_design`, `upload_email_image` (owners, admins, keys) | `broadcasts:write` |
 | `pause_broadcast`, `resume_broadcast`, `unschedule_broadcast`, `cancel_broadcast` (only while the workspace allows keys and assistants to send broadcasts) | `broadcasts:send` |
 | `create_status_page`, `create_status_component`, `create_status_monitor`, `update_incident` (owners, admins, keys) | `status:manage` |

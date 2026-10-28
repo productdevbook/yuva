@@ -206,6 +206,8 @@ e-posta taslak olarak saklanır ve `POST /v1/messages/{id}/send` ile yazıldığ
 üye veya anahtar dakikada en çok 60 yeni e-posta yazar ve saatte en çok 300 alıcıya ulaşır. API
 anahtarlarının `conversations:write`, `messages:write` ve `contacts:write` izinleri olmalıdır.
 
+Tek bir `to` adresine ve `cc` olmadan giden yeni e-posta, konuşmalarda sunulan bir [e-posta tasarımıyla](designs.md#8-konuşmada-tasarım-kullanma) gidebilir: `design_id` (isteğe bağlı `design_locale`) verin. E-posta o zaman abonelikten çıkma bağlantısı ve tek tıklamalı `List-Unsubscribe` başlığı taşır, itiraz etmiş bir adrese ya da gelen kutusunda gönderen bilgisi yokken reddedilir ve üye ya da anahtar başına saatte 20, çalışma alanı başına günde 200 ile sınırlıdır.
+
 Sonraki yanıtlar kimin kopyalanacağını seçer: `cc` içermeyen bir yanıt kişiye gider ve her etkin
 katılımcıyı kopyalar (Tümünü yanıtla); `cc: []` yalnızca kişiye gider (Yanıtla); bir `cc` listesi tam
 olarak o adresleri kopyalar. Birkaç `To` adresinden biri geri dönerse yalnızca o adres teslim

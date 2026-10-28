@@ -51,6 +51,7 @@ tıklayın.
 | Ayırıcı, Boşluk | İnce bir çizgi, boş alan. |
 | Sosyal bağlantılar | Profillerinize bağlantılar, simge ya da metin olarak. |
 | Alt bilgi metni | Zorunlu alt bilginin üstüne kendi satırlarınız. |
+| Mesaj | Tasarım bir konuşmada kullanıldığında bir üyenin yazdığı metnin yeri ([bölüm 8](#8-konuşmada-tasarım-kullanma)). En çok bir tane, sütunlarda olmaz. |
 
 Başlıklar, metinler, alt bilgi metni ve düğme etiketleri yerinde düzenlenir. Metin yalnızca e-posta
 uygulamalarının iyi işlediklerini korur: kalın, italik, altı çizili, üstü çizili, bağlantı, liste,
@@ -193,16 +194,76 @@ Kayıt, başladığı `version` değerini `base_version` olarak gönderir; tasar
 güncel tasarımı `design` içinde taşıyan `409 version_conflict` olur. Geçersiz belge, her sorun için bir
 kayıtla `errors` taşıyan `422 invalid_design` döner.
 
+## 8. Konuşmada tasarım kullanma
+
+Bir gelen kutusundan giden yanıt ya da yeni e-posta, düz metin yerine tasarımlarınızdan biriyle
+gidebilir. Tasarımda tam olarak bir Mesaj bloğu olmalıdır; üst düzeyde ya da bir bölümün içinde
+(sütunlarda olmaz). Blok kendi metnini taşımaz; üyenin yazdığı metin buraya yerleştirilir, ardından
+yardım makalesi kartları ve üyenin imzası gelir. Mesaj bloğu olan bir tasarım bülten olarak
+gönderilemez: incelemesi ve deneme gönderimleri onu reddeder.
+
+Sahip ya da yönetici tasarımı konuşmalarda sunar (`PUT /v1/email-designs/{designId}` üzerinde
+`for_conversations`). Tasarımın gelen kutusunu gören her üye ile `conversations:read` yetkili anahtar ve
+belirteçler, sunulan tasarımları listeleyebilir (`GET /v1/email-designs?for_conversations=true`) ve
+okuyabilir; düzenleme sahiplerde, yöneticilerde ve `broadcasts:write` yetkisinde kalır.
+
+Panelde, e-postayla yazışılan bir konuşmanın ve yeni e-postanın yazma alanında bir tasarım seçici
+bulunur. Bir tasarım seçin, mesaj onunla gider. API'de `design_id` (isteğe bağlı `design_locale`)
+`POST /v1/conversations/{id}/messages` (bir yanıt ya da açtığınız konuşmanın ilk mesajı) ve
+`POST /v1/conversations/mail` isteğine girer; `PATCH /v1/messages/{id}` bir taslağın tasarımını değiştirir.
+
+Nasıl çalışır:
+
+- Kişinin dil sürümü kullanılır, bülteklerdeki gibi seçilir; `design_locale` başka birini seçer. Metin
+  kaçışlanarak Mesaj bloğuna konur, boş satır yeni paragraf başlatır.
+- E-postanın metin kısmı, e-postanın tamamının metin halidir. Konuşma yine yazılanı gösterir, tasarımı
+  değil; `GET /v1/messages/{id}/email` e-postayı gönderildiği gibi döndürür.
+- Birleştirme alanları kişinindir. `list.name`, `unsubscribe_url` ve `preferences_url` reddedilir; kişi
+  için boş olan ve yedeği bulunmayan bir alan mesajı reddettirir (`422 invalid_design`).
+- Başlıklar, alıcılar, ileti dizisi ve SMTP hesabı düz bir yanıtınkiyle aynıdır.
+- Tasarımlar yalnızca e-postayla giden mesajlarda geçerlidir: notlarda, sohbette ve uygulama
+  konuşmalarında değil (`400 design_not_emailed`).
+- Arşivlenmiş ya da artık sunulmayan bir tasarım `409 design_unavailable` döndürür.
+- HTML'i 500 KB'ı aşan e-posta `422 html_too_large` döndürür.
+- Tasarımlı yeni e-posta tek bir `to` adresine ve `cc` olmadan gider (`400 design_one_recipient`).
+
+Bir kişinin alacağını `POST /v1/conversations/{id}/design-preview` ile önizleyin: kişinin sürümü ve
+birleştirme değerleri, imzanız, alt bilgi ve metniniz (ya da tasarımın yer tutucusu). `html`, `text`,
+`subject` ve `footer` döner, hiçbir şey kaydedilmez ya da gönderilmez; dakikada 120 işleme hakkı
+`POST /v1/email-designs/render` ile ortaktır.
+
+### Alt bilgi: yanıt ya da ilk iletişim
+
+| Alt bilgi | Ne zaman | İçeriği |
+|---|---|---|
+| `reply` | Kişi konuşmada yazmış. | Gelen kutusunun gönderen bilgileri satırı. |
+| `outreach` | Kişi yazmamış: yeni konuşmanın ilk mesajı ya da yeni e-posta. | Gönderen bilgileri satırı, bir abonelikten çıkma bağlantısı ve tek tıklamalı `List-Unsubscribe` başlığı. |
+
+Abonelikten çıkma bağlantısı ve tek tıklama, o gelen kutusundan kişiye tasarımla giden ilk iletişimi
+durdurur; olağan yanıtlar etkilenmez. Tasarımlı ilk iletişim şu durumlarda reddedilir:
+
+| Ret | Neden |
+|---|---|
+| `409 email_opted_out` | Adreste herhangi bir kapsamda engelleme ya da çalışma alanı çıkışı var, ya da kişi o gelen kutusundan gelen iletişimi durdurmuş. |
+| `409 sender_identity_missing` | Gelen kutusunun [gönderen bilgilerinde](lists.md#1-gönderen-bilgilerini-girin) yasal ad ya da posta adresi yok. |
+| `429 rate_limited` | Üye ya da anahtar başına saatte 20'den, çalışma alanı başına günde (UTC) 200'den fazla. |
+| `403 broadcasts_approval_required`, `403 broadcasts_suspended` | Sunucu bültenler için onay istiyor ve çalışma alanınıza izin verilmemiş ya da askıya alınmış. |
+
+Tasarımlı yanıtlarda ek sınır yoktur, tasarımsız ilk iletişim düz mesajın kurallarını izler.
+Tasarımlar notlarda, sohbet ve uygulama konuşmalarında, yönlendirmelerde, kural yanıtlarında,
+karşılama mesajlarında ve puan isteklerinde hiç kullanılmaz.
+
 ## Başvuru
 
 ### Uç noktalar
 
 | Uç nokta | Kullanım |
 |---|---|
-| `GET`, `POST /v1/email-designs` | Listele (`inbox_id`, `q`, `archived=true`) ve bir `document`, bir `template` ya da boş olarak oluştur. |
+| `GET`, `POST /v1/email-designs` | Listele (`inbox_id`, `q`, `archived=true`, `for_conversations`) ve bir `document`, bir `template` ya da boş olarak oluştur. |
 | `GET`, `PUT`, `DELETE /v1/email-designs/{designId}` | Oku, kaydet (`base_version` ile), arşivle. |
 | `POST /v1/email-designs/{designId}/duplicate` | Tasarımı kopyala. |
 | `POST /v1/email-designs/render` | Bir belgeyi işle: HTML, metin, boyut ve uyarılar. Dakikada en çok 120. |
+| `POST /v1/conversations/{id}/design-preview` | Konuşmalarda sunulan bir tasarımla mesaj önizle. Kapsam `conversations:read`; dakikada 120 hakkı paylaşır. |
 | `GET /v1/email-designs/{designId}/versions` | Saklanan sürümler. |
 | `GET /v1/email-designs/{designId}/versions/{version}` | Belgesiyle bir sürüm. |
 | `POST /v1/email-designs/{designId}/versions/{version}/restore` | Bir sürümü en yeni olarak kaydet. |
@@ -217,6 +278,7 @@ kayıtla `errors` taşıyan `422 invalid_design` döner.
 | Kapsam | Anlamı |
 |---|---|
 | `broadcasts:read` | Tasarımları, sürümleri, görselleri ve şablonları oku; işle. |
+| `conversations:read` | Konuşmalarda sunulan tasarımları listele, oku ve önizle. |
 | `broadcasts:write` | Tasarım oluştur, kaydet, kopyala, arşivle ve geri yükle; görsel yükle ve sil. |
 
 Gelen kutularıyla sınırlı bir anahtar, kendi gelen kutularının ve tüm çalışma alanına ait tasarımları
@@ -236,4 +298,5 @@ oluşturulan anahtarlara verilmez.
 | Birleştirme alanı yedek değeri | 100 karakter |
 | Bağlantı | 2.048 karakter |
 | İşleme | Çağıran başına dakikada 120 |
+| Henüz yazmamış kişilere tasarımlı mesaj | Üye ya da anahtar başına saatte 20, çalışma alanı başına günde 200 |
 | Kullanılmayan görseller | Yüklemeden 7 gün sonra silinir |

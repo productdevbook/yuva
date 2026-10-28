@@ -50,6 +50,7 @@ Block, um ihn rechts unter Blockeinstellungen zu ändern.
 | Divider, Spacer | Eine dünne Linie, Leerraum. |
 | Social links | Links zu Ihren Profilen, als Icons oder Text. |
 | Footer text | Eigene Zeilen über der vorgeschriebenen Fußzeile. |
+| Message | Die Stelle für den Text, den ein Mitglied schreibt, wenn das Design in einer Unterhaltung verwendet wird ([Abschnitt 8](#8-ein-design-in-einer-unterhaltung-verwenden)). Höchstens einer, nie in Spalten. |
 
 Überschriften, Text, Fußzeilentext und Button-Beschriftungen bearbeiten Sie direkt an Ort und Stelle.
 Text behält nur, was Mail-Apps gut darstellen: fett, kursiv, unterstrichen, durchgestrichen, Links,
@@ -200,16 +201,79 @@ dunkle Palette. Ein Speichern sendet die `version`, von der es ausging, als `bas
 Design inzwischen geändert, lautet die Antwort `409 version_conflict` mit dem aktuellen Design in
 `design`. Ein ungültiges Dokument ergibt `422 invalid_design` mit einem Eintrag je Problem in `errors`.
 
+## 8. Ein Design in einer Unterhaltung verwenden
+
+Eine Antwort oder neue Mail aus einem Posteingang kann statt als reiner Text in einem Ihrer Designs
+rausgehen. Das Design braucht genau einen Message-Block, auf oberster Ebene oder in einem Abschnitt
+(nicht in Spalten). Der Block hat keinen eigenen Text; der Text des Mitglieds wird hineingesetzt,
+danach folgen die Karten der Hilfeartikel und die Signatur des Mitglieds. Ein Design mit Message-Block
+lässt sich nicht als Broadcast senden: Prüfung und Testversand lehnen es ab.
+
+Inhaber oder Admins bieten das Design in Unterhaltungen an (`for_conversations` bei
+`PUT /v1/email-designs/{designId}`). Jedes Mitglied, das den Posteingang des Designs sieht, sowie
+Schlüssel und Tokens mit `conversations:read` können die angebotenen Designs auflisten
+(`GET /v1/email-designs?for_conversations=true`) und lesen; Bearbeiten bleibt bei Inhabern, Admins und
+`broadcasts:write`.
+
+Im Panel hat der Editor einer per E-Mail geführten Unterhaltung und einer neuen Mail eine
+Design-Auswahl. Wählen Sie ein Design, geht die Nachricht darin raus. Per API kommt `design_id` (optional
+`design_locale`) an `POST /v1/conversations/{id}/messages` (eine Antwort oder die erste Nachricht einer
+von Ihnen eröffneten Unterhaltung) und an `POST /v1/conversations/mail`; `PATCH /v1/messages/{id}`
+ändert das Design eines Entwurfs.
+
+So funktioniert es:
+
+- Es gilt die Sprachfassung des Kontakts, gewählt wie bei Broadcasts; `design_locale` nennt eine andere.
+  Der Text wird escaped in den Message-Block gesetzt, eine Leerzeile beginnt einen Absatz.
+- Der Textteil der Mail ist die ganze Mail als Text. Die Unterhaltung zeigt weiter, was geschrieben
+  wurde, nicht das Design; `GET /v1/messages/{id}/email` liefert die Mail, wie sie gesendet wurde.
+- Merge-Felder sind die des Kontakts. `list.name`, `unsubscribe_url` und `preferences_url` werden
+  abgelehnt, und ein Feld ohne Fallback, das für den Kontakt leer ist, lässt die Nachricht scheitern
+  (`422 invalid_design`).
+- Header, Empfänger, Threading und SMTP-Konto sind die einer normalen Antwort.
+- Designs gelten nur für per E-Mail gesendete Nachrichten: nicht für Notizen, Chat oder App-Unterhaltungen
+  (`400 design_not_emailed`).
+- Ein archiviertes oder nicht mehr angebotenes Design antwortet mit `409 design_unavailable`.
+- Eine Mail über 500 KB HTML antwortet mit `422 html_too_large`.
+- Neue Mail mit Design geht an genau eine `to`-Adresse und ohne `cc` (`400 design_one_recipient`).
+
+Was ein Kontakt bekäme, zeigt `POST /v1/conversations/{id}/design-preview`: seine Fassung und
+Merge-Werte, Ihre Signatur, die Fußzeile und Ihr Text (oder der Platzhalter des Designs). Die Antwort
+enthält `html`, `text`, `subject` und `footer`; nichts wird gespeichert oder gesendet, und die 120
+Renderings pro Minute teilt sie sich mit `POST /v1/email-designs/render`.
+
+### Fußzeile: Antwort oder Erstkontakt
+
+| Fußzeile | Wann | Inhalt |
+|---|---|---|
+| `reply` | Der Kontakt hat in der Unterhaltung geschrieben. | Die Zeile mit den Absenderangaben des Posteingangs. |
+| `outreach` | Der Kontakt hat nicht geschrieben: erste Nachricht einer neuen Unterhaltung oder neue Mail. | Die Absenderzeile, ein Abmeldelink und der Header `List-Unsubscribe` mit One-Click. |
+
+Abmeldelink und One-Click beenden den Erstkontakt mit Designs von diesem Posteingang an den Kontakt;
+gewöhnliche Antworten bleiben unberührt. Ein Erstkontakt mit Design wird abgelehnt, wenn:
+
+| Ablehnung | Grund |
+|---|---|
+| `409 email_opted_out` | Die Adresse hat eine Sperre beliebigen Umfangs, einen Opt-out des Workspace oder hat den Erstkontakt dieses Posteingangs beendet. |
+| `409 sender_identity_missing` | Die [Absenderangaben](lists.md#1-absenderangaben-eintragen) des Posteingangs haben keinen rechtlichen Namen oder keine Postadresse. |
+| `429 rate_limited` | Mehr als 20 pro Stunde je Mitglied oder Schlüssel oder 200 pro Tag (UTC) je Workspace. |
+| `403 broadcasts_approval_required`, `403 broadcasts_suspended` | Der Server verlangt Freigabe für Broadcasts und Ihr Workspace ist nicht freigegeben oder wurde gesperrt. |
+
+Antworten mit Design haben keine zusätzliche Grenze; ein Erstkontakt ohne Design folgt den Regeln einer
+normalen Nachricht. Designs werden nie für Notizen, Chat- oder App-Unterhaltungen, Weiterleitungen,
+Regelantworten, Begrüßungen oder Bewertungsanfragen verwendet.
+
 ## Referenz
 
 ### Endpunkte
 
 | Endpunkt | Verwendung |
 |---|---|
-| `GET`, `POST /v1/email-designs` | Auflisten (`inbox_id`, `q`, `archived=true`) und aus einem `document`, einem `template` oder leer erstellen. |
+| `GET`, `POST /v1/email-designs` | Auflisten (`inbox_id`, `q`, `archived=true`, `for_conversations`) und aus einem `document`, einem `template` oder leer erstellen. |
 | `GET`, `PUT`, `DELETE /v1/email-designs/{designId}` | Lesen, speichern (mit `base_version`), archivieren. |
 | `POST /v1/email-designs/{designId}/duplicate` | Ein Design kopieren. |
 | `POST /v1/email-designs/render` | Ein Dokument rendern: HTML, Text, Größe und Warnungen. Höchstens 120 pro Minute. |
+| `POST /v1/conversations/{id}/design-preview` | Eine Nachricht in einem in Unterhaltungen angebotenen Design in der Vorschau zeigen. Scope `conversations:read`; teilt sich die 120 pro Minute. |
 | `GET /v1/email-designs/{designId}/versions` | Die gespeicherten Versionen. |
 | `GET /v1/email-designs/{designId}/versions/{version}` | Eine Version mit ihrem Dokument. |
 | `POST /v1/email-designs/{designId}/versions/{version}/restore` | Eine Version als neueste speichern. |
@@ -224,6 +288,7 @@ Design inzwischen geändert, lautet die Antwort `409 version_conflict` mit dem a
 | Scope | Bedeutung |
 |---|---|
 | `broadcasts:read` | Designs, Versionen, Bilder und Vorlagen lesen; rendern. |
+| `conversations:read` | In Unterhaltungen angebotene Designs auflisten, lesen und in der Vorschau zeigen. |
 | `broadcasts:write` | Designs erstellen, speichern, kopieren, archivieren und wiederherstellen; Bilder hochladen und löschen. |
 
 Ein auf Posteingänge beschränkter Key liest die Designs seiner Posteingänge und die workspaceweiten
@@ -243,4 +308,5 @@ nicht.
 | Ersatzwert eines Merge-Felds | 100 Zeichen |
 | Link | 2.048 Zeichen |
 | Renderings | 120 pro Minute und Aufrufer |
+| Nachrichten mit Design an Personen, die nicht geschrieben haben | 20 pro Stunde je Mitglied oder Schlüssel, 200 pro Tag je Workspace |
 | Ungenutzte Bilder | Werden 7 Tage nach dem Upload gelöscht |

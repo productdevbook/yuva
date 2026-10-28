@@ -210,6 +210,8 @@ mit `POST /v1/messages/{id}/send` so gesendet, wie sie geschrieben wurde. Ein Mi
 Schlüssel schreibt höchstens 60 neue E-Mails pro Minute und erreicht höchstens 300 Empfänger pro
 Stunde. API-Schlüssel brauchen `conversations:write`, `messages:write` und `contacts:write`.
 
+Neue Mail an genau eine `to`-Adresse und ohne `cc` kann in einem in Unterhaltungen angebotenen [E-Mail-Design](designs.md#8-ein-design-in-einer-unterhaltung-verwenden) rausgehen: Übergeben Sie `design_id` (optional `design_locale`). Die Mail trägt dann einen Abmeldelink und einen One-Click-Header `List-Unsubscribe`, wird an eine Adresse, die widersprochen hat, oder ohne Absenderangaben des Posteingangs abgelehnt und ist auf 20 pro Stunde je Mitglied oder Schlüssel und 200 pro Tag je Workspace begrenzt.
+
 Spätere Antworten bestimmen, wer in Kopie steht: Eine Antwort ohne `cc` geht an den Kontakt und
 setzt alle aktiven Beteiligten in Kopie (Allen antworten); `cc: []` geht nur an den Kontakt
 (Antworten); eine `cc`-Liste setzt genau diese Adressen in Kopie. Ein Bounce für eine von mehreren

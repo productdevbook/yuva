@@ -196,6 +196,8 @@ answers join the conversation. `Bcc` recipients get the mail but never appear in
 A member or key writes at most 60 new mails a minute and reaches at most 300 recipients an hour. API
 keys need `conversations:write`, `messages:write` and `contacts:write`.
 
+New mail to one `to` address and no `cc` can go out in an [e-mail design](designs.md#8-use-a-design-in-a-conversation) offered in conversations: pass `design_id` (and optionally `design_locale`). The mail then carries an unsubscribe link and a one-click `List-Unsubscribe` header, is refused to an address that objected or while the inbox has no sender identity, and is limited to 20 an hour per member or key and 200 a day per workspace.
+
 Later replies choose who is copied: a reply without `cc` goes to the contact and copies every active
 participant (Reply all); `cc: []` goes to the contact alone (Reply); a `cc` list copies exactly
 those addresses. A bounce for one of several `To` addresses marks only that address undeliverable.
