@@ -6080,8 +6080,8 @@ export interface paths {
          *
          *     `kind: triggered` makes a triggered e-mail: `trigger` names the event, the delay and the
          *     consent `basis`. `marketing` needs 1 to 10 lists in `audience.list_ids` and `service` none
-         *     (`400 basis_lists`); a trigger missing a field or given to a one-off broadcast is
-         *     `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
+         *     (`400 basis_lists`); a trigger missing a field, given to a one-off broadcast, or with a
+         *     `list_id` or `condition` its event does not take is `400 trigger_invalid`; an inbox has at most 20 triggered e-mails scheduled, active or
          *     paused (`409 too_many_triggered`, counted when one starts as well). A design with a
          *     `message` block is refused when it starts, as for broadcasts, and `list.name` merge fields
          *     are refused for `service`.
@@ -15603,9 +15603,10 @@ export interface components {
             attributes?: components["schemas"]["Attributes"];
             blocked?: boolean;
             /**
-             * @description An external id that is the contact's first in its inbox enrolls nobody in the inbox's
-             *     triggered e-mails (`contact_identified`): for a host backend that copies in users the
-             *     product already had.
+             * @description The write enrolls nobody in triggered e-mails: neither an external id that is the
+             *     contact's first in its inbox (`contact_identified`) nor attributes that newly match a
+             *     condition (`attribute_changed`). For a host backend that copies in users the product
+             *     already had.
              */
             skip_triggers?: boolean;
         };
@@ -15616,8 +15617,9 @@ export interface components {
             attributes?: components["schemas"]["Attributes"];
             blocked?: boolean;
             /**
-             * @description New external ids that are the contact's first in their inbox enroll nobody in that
-             *     inbox's triggered e-mails (`contact_identified`).
+             * @description The write enrolls nobody in triggered e-mails: neither new external ids that are the
+             *     contact's first in their inbox (`contact_identified`) nor attributes that newly match a
+             *     condition (`attribute_changed`).
              */
             skip_triggers?: boolean;
             /** @description Addresses to mail again, e.g. after the recipient fixed their mailbox. */
@@ -20806,11 +20808,24 @@ export interface components {
         /**
          * @description `contact_identified`: the contact got its first external id in the inbox, from an identity
          *     token (widget, mobile SDKs, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` (unless
-         *     `skip_triggers`), feedback or a subscription that carries an external id. Contact imports,
-         *     help-desk migrations and merges never trigger.
+         *     `skip_triggers`), feedback or a subscription that carries an external id; the trigger time
+         *     is the external id's creation.
+         *
+         *     `subscribed`: a subscription to the list `trigger.list_id` (a list of the inbox, not a
+         *     status page's) became `subscribed`, from any source but `import`; a double opt-in counts
+         *     when the person confirms it, never while it is pending. The trigger time is `consent_at`.
+         *
+         *     `attribute_changed`: a write made the contact match `trigger.condition` when it did not
+         *     before; creating a contact that matches counts. The writes are an identity token,
+         *     `POST`/`PATCH /v1/contacts` (the panel's too, unless `skip_triggers`) and a subscription
+         *     that creates its contact. It enrolls contacts of the inbox only: with an external id or a
+         *     conversation in it, a subscription to one of its lists, or written through it (the identity
+         *     token's inbox, the list's). The trigger time is the write; it takes no back-fill.
+         *
+         *     Contact imports, help-desk migrations and merges never trigger.
          * @enum {string}
          */
-        BroadcastTriggerEvent: "contact_identified";
+        BroadcastTriggerEvent: "contact_identified" | "subscribed" | "attribute_changed";
         /**
          * @description Why the person may get the mail, chosen when the triggered e-mail is created and fixed after
          *     the draft. `marketing`: only contacts subscribed to one of `audience.list_ids` (1 to 10) at
@@ -20826,6 +20841,13 @@ export interface components {
         BroadcastTrigger: {
             event: components["schemas"]["BroadcastTriggerEvent"];
             /**
+             * Format: uuid
+             * @description `subscribed` only: the list whose confirmed subscriptions trigger it.
+             */
+            list_id?: string;
+            /** @description `attribute_changed` only: the condition a contact newly matching triggers it. */
+            condition?: components["schemas"]["BroadcastCondition"];
+            /**
              * Format: int32
              * @description How long after the trigger the mail is due, 0 to 365 days. Changing it moves the due
              *     time of everyone still waiting.
@@ -20835,17 +20857,25 @@ export interface components {
             /**
              * Format: int32
              * @description When it starts, also enroll contacts whose trigger happened in this many days before the
-             *     start (their delay counts from then). 0 enrolls only triggers from the start on.
+             *     start (their delay counts from then). 0 enrolls only triggers from the start on;
+             *     `attribute_changed` takes only 0.
              */
             backfill_days: number;
         };
         /**
-         * @description On create `event`, `delay_minutes` and `basis` are required. On update only the fields given
-         *     change: all of them on a draft, `delay_minutes` alone while it is scheduled, active or
+         * @description On create `event`, `delay_minutes` and `basis` are required, with `list_id` for
+         *     `subscribed` and `condition` for `attribute_changed` (`400 trigger_invalid` when missing,
+         *     given to another event, or with `backfill_days` above 0 for `attribute_changed`; a
+         *     `list_id` of another inbox or of a status page is `400 validation_failed`). On update only
+         *     the fields given change: all of them on a draft (a new `event` drops the `list_id` and
+         *     `condition` it does not take), `delay_minutes` alone while it is scheduled, active or
          *     paused (`409 invalid_state` for the others), and `backfill_days` while it has not started.
          */
         BroadcastTriggerInput: {
             event?: components["schemas"]["BroadcastTriggerEvent"];
+            /** Format: uuid */
+            list_id?: string;
+            condition?: components["schemas"]["BroadcastCondition"];
             /** Format: int32 */
             delay_minutes?: number;
             basis?: components["schemas"]["BroadcastBasis"];
@@ -21366,6 +21396,7 @@ export interface components {
             /**
              * Format: int32
              * @description Triggered e-mails only; replaces `trigger.backfill_days` before the review runs.
+             *     `attribute_changed` takes only 0 (`400 trigger_invalid`).
              */
             backfill_days?: number;
             /**
