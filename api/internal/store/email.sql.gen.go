@@ -332,11 +332,12 @@ const createMessageEmail = `-- name: CreateMessageEmail :exec
 INSERT INTO message_emails (workspace_id, message_id, conversation_id, channel_id, direction, header_message_id,
                             in_reply_to, references_ids, from_address, to_addresses, cc_addresses, subject,
                             full_text, full_html, quoted, headers, raw_key, raw_size, authentication_results,
-                            dmarc, auto, created_at)
+                            dmarc, auto, created_at, design_id, design_version, design_locale, outreach)
 VALUES ($1, $2, $3, $4, $5, $6,
         $7, $8, $9, $10, $11, $12,
         $13, $14, $15, $16, $17, $18, $19,
-        $20, $21, $22)
+        $20, $21, $22, $23::uuid, $24::integer,
+        $25::text, coalesce($26::bool, false))
 `
 
 type CreateMessageEmailParams struct {
@@ -362,6 +363,10 @@ type CreateMessageEmailParams struct {
 	Dmarc                 string
 	Auto                  bool
 	CreatedAt             time.Time
+	DesignID              *uuid.UUID
+	DesignVersion         *int32
+	DesignLocale          *string
+	Outreach              *bool
 }
 
 func (q *Queries) CreateMessageEmail(ctx context.Context, arg CreateMessageEmailParams) error {
@@ -388,6 +393,10 @@ func (q *Queries) CreateMessageEmail(ctx context.Context, arg CreateMessageEmail
 		arg.Dmarc,
 		arg.Auto,
 		arg.CreatedAt,
+		arg.DesignID,
+		arg.DesignVersion,
+		arg.DesignLocale,
+		arg.Outreach,
 	)
 	return err
 }
@@ -1145,7 +1154,7 @@ func (q *Queries) GetIngestChannel(ctx context.Context, arg GetIngestChannelPara
 }
 
 const getMessageEmail = `-- name: GetMessageEmail :one
-SELECT workspace_id, message_id, conversation_id, channel_id, direction, header_message_id, in_reply_to, references_ids, from_address, to_addresses, cc_addresses, subject, full_text, full_html, quoted, headers, raw_key, raw_size, authentication_results, dmarc, auto, created_at, imported_at, relay_message_id, bcc_addresses, shared, member_address_id FROM message_emails WHERE workspace_id = $1 AND message_id = $2
+SELECT workspace_id, message_id, conversation_id, channel_id, direction, header_message_id, in_reply_to, references_ids, from_address, to_addresses, cc_addresses, subject, full_text, full_html, quoted, headers, raw_key, raw_size, authentication_results, dmarc, auto, created_at, imported_at, relay_message_id, bcc_addresses, shared, member_address_id, design_id, design_version, design_locale, outreach FROM message_emails WHERE workspace_id = $1 AND message_id = $2
 `
 
 type GetMessageEmailParams struct {
@@ -1184,6 +1193,10 @@ func (q *Queries) GetMessageEmail(ctx context.Context, arg GetMessageEmailParams
 		&i.BccAddresses,
 		&i.Shared,
 		&i.MemberAddressID,
+		&i.DesignID,
+		&i.DesignVersion,
+		&i.DesignLocale,
+		&i.Outreach,
 	)
 	return i, err
 }
@@ -1608,7 +1621,8 @@ func (q *Queries) ListInboxRawKeys(ctx context.Context, arg ListInboxRawKeysPara
 
 const listMessageEmails = `-- name: ListMessageEmails :many
 SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addresses, e.cc_addresses, e.bcc_addresses, e.subject, e.quoted,
-       (e.raw_key IS NOT NULL)::bool AS has_raw, e.auto, e.dmarc,
+       (e.raw_key IS NOT NULL)::bool AS has_raw, e.auto, e.dmarc, e.design_id, e.design_version, e.design_locale,
+       coalesce(dd.name, '')::text AS design_name,
        (e.direction = 'in' AND NOT EXISTS (
            SELECT 1 FROM contact_emails ce
            WHERE ce.workspace_id = e.workspace_id AND ce.contact_id = coalesce(m.author_contact_id, c.contact_id)
@@ -1617,6 +1631,7 @@ SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addr
 FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+LEFT JOIN email_designs dd ON dd.workspace_id = e.workspace_id AND dd.id = e.design_id
 WHERE e.workspace_id = $1 AND e.message_id = ANY($2::uuid[])
 `
 
@@ -1638,6 +1653,10 @@ type ListMessageEmailsRow struct {
 	HasRaw           bool
 	Auto             bool
 	Dmarc            string
+	DesignID         *uuid.UUID
+	DesignVersion    *int32
+	DesignLocale     *string
+	DesignName       string
 	UnverifiedSender bool
 }
 
@@ -1663,6 +1682,10 @@ func (q *Queries) ListMessageEmails(ctx context.Context, arg ListMessageEmailsPa
 			&i.HasRaw,
 			&i.Auto,
 			&i.Dmarc,
+			&i.DesignID,
+			&i.DesignVersion,
+			&i.DesignLocale,
+			&i.DesignName,
 			&i.UnverifiedSender,
 		); err != nil {
 			return nil, err

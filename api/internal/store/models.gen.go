@@ -1166,18 +1166,19 @@ type EmailConfirmation struct {
 }
 
 type EmailDesign struct {
-	ID           uuid.UUID
-	WorkspaceID  uuid.UUID
-	InboxID      *uuid.UUID
-	Name         string
-	Document     []byte
-	Version      int32
-	TemplateSlug *string
-	CreatedBy    *uuid.UUID
-	UpdatedBy    *uuid.UUID
-	ArchivedAt   *time.Time
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	ID               uuid.UUID
+	WorkspaceID      uuid.UUID
+	InboxID          *uuid.UUID
+	Name             string
+	Document         []byte
+	Version          int32
+	TemplateSlug     *string
+	CreatedBy        *uuid.UUID
+	UpdatedBy        *uuid.UUID
+	ArchivedAt       *time.Time
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	ForConversations bool
 }
 
 type EmailDesignVersion struct {
@@ -1471,6 +1472,14 @@ type Inbox struct {
 	SignatureImageIds    []uuid.UUID
 	OwnerMemberID        *uuid.UUID
 	Personal             bool
+}
+
+type InboxMailOptout struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ContactID   uuid.UUID
+	Source      string
+	CreatedAt   time.Time
 }
 
 type InboxMember struct {
@@ -1798,6 +1807,8 @@ type Message struct {
 	ScheduledFrom      *string
 	SendError          []byte
 	OnBehalfOfMemberID *uuid.UUID
+	EmailDesignID      *uuid.UUID
+	EmailDesignLocale  *string
 }
 
 type MessageEmail struct {
@@ -1828,6 +1839,10 @@ type MessageEmail struct {
 	BccAddresses          []string
 	Shared                bool
 	MemberAddressID       *uuid.UUID
+	DesignID              *uuid.UUID
+	DesignVersion         *int32
+	DesignLocale          *string
+	Outreach              bool
 }
 
 type Migration struct {

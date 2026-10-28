@@ -74,6 +74,9 @@ func richText(src string, v Values) string {
 
 const textWidth = 78
 
+// signatureDelimiter is the RFC 3676 line before a signature; its trailing space is kept.
+const signatureDelimiter = "-- "
+
 // wrapText wraps lines at 78 columns between words; a word is never broken, so URLs stay whole.
 func wrapText(s string) string {
 	var out strings.Builder
@@ -81,6 +84,10 @@ func wrapText(s string) string {
 	for i, line := range lines {
 		if i > 0 {
 			out.WriteString("\n")
+		}
+		if line == signatureDelimiter {
+			out.WriteString(line)
+			continue
 		}
 		indent := len(line) - len(strings.TrimLeft(line, " "))
 		col := 0

@@ -3,6 +3,7 @@ package design
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -34,6 +35,20 @@ type Sender struct {
 
 func (s Sender) complete() bool { return s.LegalName != "" && s.PostalAddress != "" }
 
+type Footer int
+
+const (
+	FooterList Footer = iota
+	FooterReply
+	FooterOutreach
+)
+
+type MessageSlot struct {
+	Text                         string
+	CardsHTML, CardsText         string
+	SignatureHTML, SignatureText string
+}
+
 type Input struct {
 	Doc       Document
 	Subject   string
@@ -49,7 +64,9 @@ type Input struct {
 	// Icon is the URL of a social icon, variant dark, light or brand.
 	Icon func(network, variant string) string
 	// Dark draws the dark palette as the page's own colours.
-	Dark bool
+	Dark    bool
+	Message *MessageSlot
+	Footer  Footer
 }
 
 type Output struct {
@@ -384,6 +401,8 @@ func (r *renderer) block(b Block, bg surface, width, depth int) {
 		r.social(b, here, align)
 	case "footer":
 		r.footerBlock(b, here)
+	case "message":
+		r.messageBlock(b, here)
 	}
 	h.WriteString("</td></tr>\n")
 }
@@ -511,6 +530,54 @@ func (r *renderer) textBlock(b Block, bg surface) {
 func (r *renderer) footerBlock(b Block, bg surface) {
 	color, cls := r.slotInk(b, "html", "", "muted", bg)
 	r.flow(b, b.HTML, bg, color, cls, 13, 20)
+}
+
+var paragraphBreak = regexp.MustCompile(`\n[ \t]*\n\s*`)
+
+func (r *renderer) messageBlock(b Block, bg surface) {
+	color, cls := r.slotInk(b, "", "", "text", bg)
+	h := &r.h
+	m := r.in.Message
+	if m == nil {
+		mc, mcls := r.ink(b.ID, "", r.in.Doc.Theme.Colors.Muted, bg, "muted")
+		bd := r.cls("border-color", r.light.Border, r.dark.Border)
+		fmt.Fprintf(h, "<table role=\"presentation\" width=\"100%%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%%;\"><tr><td%s height=\"96\" align=\"center\" style=\"height:96px;border:1px dashed %s;border-radius:%dpx;font-family:%s;font-size:14px;color:%s;\">%s</td></tr></table>",
+			classAttr(bd, mcls), r.light.Border, r.radius, r.font, mc, style.Escape(r.t.message))
+		r.text.WriteString("[" + r.t.message + "]\n\n")
+		return
+	}
+	text := strings.TrimSpace(strings.ReplaceAll(m.Text, "\r\n", "\n"))
+	if text != "" {
+		fmt.Fprintf(h, "<div%s style=\"margin:0;font-family:%s;font-size:16px;line-height:26px;color:%s;text-align:%s;\">",
+			classAttr(cls), r.font, color, r.side(""))
+		paras := paragraphBreak.Split(text, -1)
+		for i, p := range paras {
+			margin := "margin:0 0 16px 0;"
+			if i == len(paras)-1 {
+				margin = "margin:0;"
+			}
+			lines := strings.Split(p, "\n")
+			for j := range lines {
+				lines[j] = style.Escape(lines[j])
+			}
+			h.WriteString("<p" + r.cellDir() + " style=\"" + margin + "\">" + strings.Join(lines, "<br>") + "</p>")
+		}
+		h.WriteString("</div>")
+		r.text.WriteString(strings.Join(paras, "\n\n") + "\n\n")
+	}
+	if m.CardsHTML != "" {
+		h.WriteString(m.CardsHTML)
+	}
+	if t := strings.TrimSpace(m.CardsText); t != "" {
+		r.text.WriteString(t + "\n\n")
+	}
+	if m.SignatureHTML != "" {
+		fmt.Fprintf(h, "<div class=\"%s\" style=\"margin:16px 0 0 0;font-family:%s;font-size:14px;line-height:22px;color:%s;text-align:%s;\">-- <br>%s</div>",
+			strings.TrimSpace("yuva-signature "+cls), r.font, color, r.side(""), m.SignatureHTML)
+	}
+	if t := strings.TrimSpace(m.SignatureText); t != "" {
+		r.text.WriteString(signatureDelimiter + "\n" + t + "\n\n")
+	}
 }
 
 func (r *renderer) flow(b Block, src string, bg surface, color, cls string, size, line int) {
@@ -775,6 +842,9 @@ func (r *renderer) social(b Block, bg surface, align string) {
 // footer is the part every mail ends with: who sends it, why the person gets it, and the links
 // to leave.
 func (r *renderer) footer() string {
+	if r.in.Footer != FooterList {
+		return r.conversationFooter()
+	}
 	var h strings.Builder
 	in := r.in
 	page := surface{r.light.Page, r.dark.Page}
@@ -821,5 +891,44 @@ func (r *renderer) footer() string {
 	}
 	r.text.WriteString(r.t.unsubscribe + ": " + in.Values.UnsubscribeURL + "\n")
 	r.text.WriteString(r.t.prefs + ": " + in.Values.PreferencesURL + "\n")
+	return h.String()
+}
+
+func (r *renderer) conversationFooter() string {
+	in := r.in
+	var who []string
+	for _, s := range []string{in.Sender.LegalName, in.Sender.PostalAddress, in.Sender.Registration, in.Sender.Contact} {
+		if s = strings.TrimSpace(s); s != "" {
+			who = append(who, s)
+		}
+	}
+	outreach := in.Footer == FooterOutreach
+	if outreach && !in.Sender.complete() {
+		r.warnOnce("", "", "sender_identity_missing")
+	}
+	if strings.TrimSpace(in.Sender.LegalName) == "" && !outreach {
+		return ""
+	}
+	if strings.TrimSpace(in.Sender.LegalName) == "" {
+		who = nil
+	}
+	page := surface{r.light.Page, r.dark.Page}
+	muted, cls := r.ink("", "theme.colors.muted", in.Doc.Theme.Colors.Muted, page, "")
+	var h strings.Builder
+	fmt.Fprintf(&h, "<tr><td%s align=\"center\" dir=\"auto\" style=\"padding:24px 24px 8px 24px;font-family:%s;font-size:12px;line-height:18px;color:%s;text-align:center;\">",
+		classAttr(cls), r.font, muted)
+	r.text.WriteString(strings.Repeat("—", 24) + "\n")
+	if len(who) > 0 {
+		h.WriteString(style.Escape(strings.Join(who, " · ")))
+		r.text.WriteString(strings.Join(who, " · ") + "\n")
+	}
+	if outreach {
+		if len(who) > 0 {
+			h.WriteString("<br>")
+		}
+		h.WriteString("<a href=\"" + style.URLAttr(in.Values.UnsubscribeURL) + "\" target=\"_blank\"" + classAttr(cls) + " style=\"color:" + muted + ";text-decoration:underline;\">" + style.Escape(r.t.unsubscribe) + "</a>")
+		r.text.WriteString(r.t.unsubscribe + ": " + in.Values.UnsubscribeURL + "\n")
+	}
+	h.WriteString("</td></tr>\n")
 	return h.String()
 }

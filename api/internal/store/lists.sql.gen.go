@@ -58,6 +58,31 @@ func (q *Queries) AddConsentEvent(ctx context.Context, arg AddConsentEventParams
 	return err
 }
 
+const addInboxMailOptOut = `-- name: AddInboxMailOptOut :exec
+INSERT INTO inbox_mail_optouts (workspace_id, inbox_id, contact_id, source, created_at)
+VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT (workspace_id, inbox_id, contact_id) DO NOTHING
+`
+
+type AddInboxMailOptOutParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ContactID   uuid.UUID
+	Source      string
+	Now         time.Time
+}
+
+func (q *Queries) AddInboxMailOptOut(ctx context.Context, arg AddInboxMailOptOutParams) error {
+	_, err := q.db.Exec(ctx, addInboxMailOptOut,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.ContactID,
+		arg.Source,
+		arg.Now,
+	)
+	return err
+}
+
 const addOptOut = `-- name: AddOptOut :exec
 INSERT INTO email_optouts (workspace_id, email_hash, reason, created_at) VALUES ($1, $2, $3, $4)
 ON CONFLICT (workspace_id, email_hash) DO NOTHING
@@ -524,6 +549,25 @@ func (q *Queries) IsEmailSuppressedAnyScope(ctx context.Context, arg IsEmailSupp
 	var suppressed bool
 	err := row.Scan(&suppressed)
 	return suppressed, err
+}
+
+const isInboxMailOptedOut = `-- name: IsInboxMailOptedOut :one
+SELECT EXISTS (
+    SELECT 1 FROM inbox_mail_optouts WHERE workspace_id = $1 AND inbox_id = $2 AND contact_id = $3
+) AS opted_out
+`
+
+type IsInboxMailOptedOutParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ContactID   uuid.UUID
+}
+
+func (q *Queries) IsInboxMailOptedOut(ctx context.Context, arg IsInboxMailOptedOutParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isInboxMailOptedOut, arg.WorkspaceID, arg.InboxID, arg.ContactID)
+	var opted_out bool
+	err := row.Scan(&opted_out)
+	return opted_out, err
 }
 
 const isOptedOut = `-- name: IsOptedOut :one
@@ -1482,6 +1526,28 @@ type MoveContactSubscriptionsParams struct {
 
 func (q *Queries) MoveContactSubscriptions(ctx context.Context, arg MoveContactSubscriptionsParams) error {
 	_, err := q.db.Exec(ctx, moveContactSubscriptions, arg.ToContact, arg.WorkspaceID, arg.FromContact)
+	return err
+}
+
+const removeInboxMailOptOut = `-- name: RemoveInboxMailOptOut :exec
+DELETE FROM inbox_mail_optouts
+WHERE workspace_id = $1 AND inbox_id = $2 AND contact_id = $3 AND created_at >= $4
+`
+
+type RemoveInboxMailOptOutParams struct {
+	WorkspaceID uuid.UUID
+	InboxID     uuid.UUID
+	ContactID   uuid.UUID
+	Since       time.Time
+}
+
+func (q *Queries) RemoveInboxMailOptOut(ctx context.Context, arg RemoveInboxMailOptOutParams) error {
+	_, err := q.db.Exec(ctx, removeInboxMailOptOut,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.ContactID,
+		arg.Since,
+	)
 	return err
 }
 

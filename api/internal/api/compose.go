@@ -25,7 +25,7 @@ var (
 	composeRecipientsBudget = fmt.Sprintf("new mail goes to at most %d recipients an hour per member or key", limitComposeRecipients.n)
 )
 
-var composeFormFields = []string{"inbox_id", "channel_id", "to", "cc", "bcc", "subject", "body", "html", "signature", "draft", "client_id", "from_address", "send_at"}
+var composeFormFields = []string{"inbox_id", "channel_id", "to", "cc", "bcc", "subject", "body", "html", "signature", "draft", "client_id", "from_address", "send_at", "design_id", "design_locale"}
 
 // composeChannel is the e-mail channel a new mail of the inbox goes out through: the one named, or
 // the inbox's first with an SMTP account, an exact address before a catch-all.
@@ -274,6 +274,7 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		in.to, in.cc, in.bcc = copiesOf(&b.To), copiesOf(b.Cc), copiesOf(b.Bcc)
 		in.from = (*string)(b.FromAddress)
 		in.sendAt, in.undrafted = b.SendAt, b.Draft != nil && !*b.Draft
+		in.designID, in.locale = b.DesignId, (*string)(b.DesignLocale)
 		inboxID, channelID = b.InboxId, b.ChannelId
 	case req.MultipartBody != nil:
 		if in, err = s.readMultipart(req.MultipartBody, p.workspaceID, composeFormFields, s.serverLimits()); err != nil {
@@ -310,6 +311,9 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 	}
 	if len(toIn) == 0 {
 		return nil, errValidation("to needs at least one address")
+	}
+	if in.designID != nil && (len(toIn) > 1 || len(ccIn) > 0) {
+		return nil, errDesignOneRecipient
 	}
 	if _, err := writableInbox(ctx, s.st.Queries, p, inboxID); err != nil {
 		return nil, err
@@ -434,6 +438,7 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		arg := store.CreateMessageParams{
 			ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: in.kind, Direction: &in.direction, Body: in.body,
 			Html: in.html, ClientID: in.clientID, CreatedAt: now, Draft: in.draft, Via: p.viaClient(),
+			EmailDesignID: in.designID, EmailDesignLocale: in.locale,
 		}
 		arg.AuthorType, arg.AuthorMemberID, arg.AuthorApiKeyID = authorFor(p)
 		if arg.OnBehalfOfMemberID, err = onBehalfOf(ctx, q, p, c.InboxID); err != nil {
@@ -446,9 +451,19 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		if err := s.signMessage(ctx, q, p, c, in, plan != nil, &arg); err != nil {
 			return err
 		}
+		if in.designID != nil {
+			if _, err := usableDesign(ctx, q, c, *in.designID); err != nil {
+				return err
+			}
+		}
 		msg, err := q.CreateMessage(ctx, arg)
 		if err != nil {
 			return err
+		}
+		if in.draft && in.designID != nil {
+			if err := s.checkDraftDesign(ctx, q, c, *in.designID, in.locale, to[0], msg); err != nil {
+				return err
+			}
 		}
 		var summary *store.ListMessageEmailsRow
 		if plan != nil {

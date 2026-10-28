@@ -262,3 +262,17 @@ UPDATE inboxes SET sender_legal_name = sqlc.narg(legal_name), sender_postal_addr
     sender_registration = sqlc.narg(registration), sender_contact = sqlc.narg(contact), updated_at = @now
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
+
+-- name: AddInboxMailOptOut :exec
+INSERT INTO inbox_mail_optouts (workspace_id, inbox_id, contact_id, source, created_at)
+VALUES (@workspace_id, @inbox_id, @contact_id, @source, @now)
+ON CONFLICT (workspace_id, inbox_id, contact_id) DO NOTHING;
+
+-- name: IsInboxMailOptedOut :one
+SELECT EXISTS (
+    SELECT 1 FROM inbox_mail_optouts WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND contact_id = @contact_id
+) AS opted_out;
+
+-- name: RemoveInboxMailOptOut :exec
+DELETE FROM inbox_mail_optouts
+WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND contact_id = @contact_id AND created_at >= @since;

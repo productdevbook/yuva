@@ -1135,6 +1135,7 @@ const (
 	AuditConversationRestored                AuditAction = "conversation.restored"
 	AuditConversationTrashed                 AuditAction = "conversation.trashed"
 	AuditConversationsDeleted                AuditAction = "conversations.deleted"
+	AuditEmailDesignUpdated                  AuditAction = "email_design.updated"
 	AuditInboxCreated                        AuditAction = "inbox.created"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
@@ -1240,6 +1241,8 @@ func (e AuditAction) Valid() bool {
 	case AuditConversationTrashed:
 		return true
 	case AuditConversationsDeleted:
+		return true
+	case AuditEmailDesignUpdated:
 		return true
 	case AuditInboxCreated:
 		return true
@@ -1404,6 +1407,7 @@ const (
 	AuditTargetContact          AuditTargetType = "contact"
 	AuditTargetConversation     AuditTargetType = "conversation"
 	AuditTargetConversations    AuditTargetType = "conversations"
+	AuditTargetEmailDesign      AuditTargetType = "email_design"
 	AuditTargetInbox            AuditTargetType = "inbox"
 	AuditTargetInvite           AuditTargetType = "invite"
 	AuditTargetIssueIntegration AuditTargetType = "issue_integration"
@@ -1436,6 +1440,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetConversation:
 		return true
 	case AuditTargetConversations:
+		return true
+	case AuditTargetEmailDesign:
 		return true
 	case AuditTargetInbox:
 		return true
@@ -1962,6 +1968,7 @@ const (
 	BroadcastReviewKeyImagesAlt        BroadcastReviewKey = "images_alt"
 	BroadcastReviewKeyLinks            BroadcastReviewKey = "links"
 	BroadcastReviewKeyMergeFields      BroadcastReviewKey = "merge_fields"
+	BroadcastReviewKeyMessageBlock     BroadcastReviewKey = "message_block"
 	BroadcastReviewKeyPace             BroadcastReviewKey = "pace"
 	BroadcastReviewKeySendWindow       BroadcastReviewKey = "send_window"
 	BroadcastReviewKeySenderIdentity   BroadcastReviewKey = "sender_identity"
@@ -1994,6 +2001,8 @@ func (e BroadcastReviewKey) Valid() bool {
 	case BroadcastReviewKeyLinks:
 		return true
 	case BroadcastReviewKeyMergeFields:
+		return true
+	case BroadcastReviewKeyMessageBlock:
 		return true
 	case BroadcastReviewKeyPace:
 		return true
@@ -2604,6 +2613,24 @@ const (
 func (e ConversationDeletedEventType) Valid() bool {
 	switch e {
 	case ConversationDeletedEventTypeConversationDeleted:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConversationDesignRenderFooter.
+const (
+	DesignFooterOutreach ConversationDesignRenderFooter = "outreach"
+	DesignFooterReply    ConversationDesignRenderFooter = "reply"
+)
+
+// Valid indicates whether the value is a known member of the ConversationDesignRenderFooter enum.
+func (e ConversationDesignRenderFooter) Valid() bool {
+	switch e {
+	case DesignFooterOutreach:
+		return true
+	case DesignFooterReply:
 		return true
 	default:
 		return false
@@ -3468,6 +3495,21 @@ const (
 func (e EmailImageBulkChangeAction) Valid() bool {
 	switch e {
 	case EmailImageBulkChangeActionDelete:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailMessageBlockType.
+const (
+	EmailBlockMessage EmailMessageBlockType = "message"
+)
+
+// Valid indicates whether the value is a known member of the EmailMessageBlockType enum.
+func (e EmailMessageBlockType) Valid() bool {
+	switch e {
+	case EmailBlockMessage:
 		return true
 	default:
 		return false
@@ -10457,6 +10499,8 @@ type Attributes map[string]interface{}
 //     `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
 //     among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
 //     `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
+//   - `email_design.updated`: `name`, `for_conversations` (`from`, `to`) when a save offers
+//     the design in conversations or stops offering it; other saves are not recorded.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -10594,6 +10638,8 @@ type AuditEntry struct {
 	//   `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
 	//   among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
 	//   `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
+	// - `email_design.updated`: `name`, `for_conversations` (`from`, `to`) when a save offers
+	//   the design in conversations or stops offering it; other saves are not recorded.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -11617,7 +11663,9 @@ type BroadcastReviewItem struct {
 	// `translations`: `ok` for a design without versions or with every version complete,
 	// `warning` naming versions without their own subject, with block texts missing, whose
 	// required footer is in English, and broadcast subjects for languages the design does not
-	// have (they are not used).
+	// have (they are not used). `message_block`: `blocking` when the design has a `message`
+	// block, which is for conversations and would leave an empty slot in list mail; listed only
+	// then.
 	Key    BroadcastReviewKey    `json:"key"`
 	Status BroadcastReviewStatus `json:"status"`
 }
@@ -11627,7 +11675,9 @@ type BroadcastReviewItem struct {
 // `translations`: `ok` for a design without versions or with every version complete,
 // `warning` naming versions without their own subject, with block texts missing, whose
 // required footer is in English, and broadcast subjects for languages the design does not
-// have (they are not used).
+// have (they are not used). `message_block`: `blocking` when the design has a `message`
+// block, which is for conversations and would leave an empty slot in list mail; listed only
+// then.
 type BroadcastReviewKey string
 
 // BroadcastReviewStatus defines model for BroadcastReviewStatus.
@@ -13667,6 +13717,15 @@ type ComposeMail struct {
 	// ClientId Makes the request idempotent within the inbox.
 	ClientId *string `json:"client_id,omitempty"`
 
+	// DesignId An e-mail design offered in conversations of the inbox or workspace-wide; only with one
+	// `to` and no `cc` (`400 design_one_recipient`). See `createMessage`.
+	DesignId *uuid.UUID `json:"design_id,omitempty"`
+
+	// DesignLocale One of the design's versions to send instead of the contact's; needs `design_id`.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag `json:"design_locale,omitempty"`
+
 	// Draft Stores the message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
@@ -13698,11 +13757,17 @@ type ComposeMailMultipart struct {
 	Body *string  `json:"body,omitempty"`
 
 	// Cc Repeat the field once per address.
-	Cc        *[]Email              `json:"cc,omitempty"`
-	ChannelId *uuid.UUID            `json:"channel_id,omitempty"`
-	ClientId  *string               `json:"client_id,omitempty"`
-	Draft     *bool                 `json:"draft,omitempty"`
-	Files     *[]openapi_types.File `json:"files,omitempty"`
+	Cc        *[]Email   `json:"cc,omitempty"`
+	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+	ClientId  *string    `json:"client_id,omitempty"`
+	DesignId  *uuid.UUID `json:"design_id,omitempty"`
+
+	// DesignLocale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag          `json:"design_locale,omitempty"`
+	Draft        *bool                 `json:"draft,omitempty"`
+	Files        *[]openapi_types.File `json:"files,omitempty"`
 
 	// FromAddress Examples: owner@example.com
 	FromAddress *Email     `json:"from_address,omitempty"`
@@ -14391,6 +14456,48 @@ type ConversationDeletedEvent struct {
 
 // ConversationDeletedEventType defines model for ConversationDeletedEvent.Type.
 type ConversationDeletedEventType string
+
+// ConversationDesignPreview defines model for ConversationDesignPreview.
+type ConversationDesignPreview struct {
+	// Body The message text; the placeholder text without it.
+	Body *string `json:"body,omitempty"`
+
+	// Dark Render the dark palette as the page's own colours, as `renderEmailDesign`.
+	Dark     *bool     `json:"dark,omitempty"`
+	DesignId uuid.UUID `json:"design_id"`
+
+	// DesignLocale One of the design's versions instead of the contact's.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag `json:"design_locale,omitempty"`
+}
+
+// ConversationDesignRender defines model for ConversationDesignRender.
+type ConversationDesignRender struct {
+	// Footer `reply` when the contact has written in the conversation (the inbox's identity line
+	// only), `outreach` otherwise (the identity line, an unsubscribe link and one-click
+	// `List-Unsubscribe`, under the outreach rules of `createMessage`).
+	Footer ConversationDesignRenderFooter `json:"footer"`
+	Html   string                         `json:"html"`
+
+	// Locale The version rendered; absent for a design without versions.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+
+	// SizeBytes The HTML's size in bytes, as Gmail counts it before clipping.
+	SizeBytes int64 `json:"size_bytes"`
+
+	// Subject The subject the mail would carry.
+	Subject  string             `json:"subject"`
+	Text     string             `json:"text"`
+	Warnings []EmailDesignIssue `json:"warnings"`
+}
+
+// ConversationDesignRenderFooter `reply` when the contact has written in the conversation (the inbox's identity line
+// only), `outreach` otherwise (the identity line, an unsubscribe link and one-click
+// `List-Unsubscribe`, under the outreach rules of `createMessage`).
+type ConversationDesignRenderFooter string
 
 // ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels, subject or
 // SLA (`sla`, for example when a target starts, is met or is breached) changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
@@ -15872,9 +15979,14 @@ type EmailDesign struct {
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
 	Document EmailDesignDocument `json:"document"`
-	Id       uuid.UUID           `json:"id"`
+
+	// ForConversations Offered in conversations: members who see the design's inbox may send replies and new
+	// mail with it. Only a design with one `message` block.
+	ForConversations bool      `json:"for_conversations"`
+	Id               uuid.UUID `json:"id"`
 
 	// InboxId Absent for workspace-wide designs.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
@@ -15907,16 +16019,22 @@ type EmailDesignBulkChangeAction string
 type EmailDesignCreate struct {
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
-	Document *EmailDesignDocument    `json:"document,omitempty"`
-	InboxId  *uuid.UUID              `json:"inbox_id,omitempty"`
-	Name     string                  `json:"name"`
-	Template *EmailDesignTemplateRef `json:"template,omitempty"`
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
+	Document *EmailDesignDocument `json:"document,omitempty"`
+
+	// ForConversations Offer the design in conversations; owners, admins and keys. Needs exactly one `message`
+	// block at the top level or in a section (`422 invalid_design`, `message_block_missing`).
+	ForConversations *bool                   `json:"for_conversations,omitempty"`
+	InboxId          *uuid.UUID              `json:"inbox_id,omitempty"`
+	Name             string                  `json:"name"`
+	Template         *EmailDesignTemplateRef `json:"template,omitempty"`
 }
 
 // EmailDesignDocument An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 // JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-// most.
+// most. At most one `message` block, at the top level or in a section, marks where a
+// conversation message's text goes (`EmailMessageBlock`).
 type EmailDesignDocument struct {
 	Blocks []EmailBlock `json:"blocks"`
 
@@ -15963,8 +16081,12 @@ type EmailDesignDuplicate struct {
 // `locale_required` (`translations` without `locale`), `invalid_locale` (a translation key
 // equal to `locale` or to another key after canonical casing, or a `fallback_locale` that is
 // not a version), `translation_block` (an entry for a block that does not exist or has no
-// text; `field` as `translations.es.blocks.b7`). Warning codes are listed under
-// `renderEmailDesign`.
+// text; `field` as `translations.es.blocks.b7`), `message_block_repeated` (a second `message`
+// block), `message_block_missing` (`for_conversations` on a document without one),
+// `merge_field_unavailable` (`list.name`, `unsubscribe_url` or `preferences_url` in a design
+// used in a conversation; `detail` the field), `merge_field_empty` (a field without fallback
+// that is empty for the conversation's contact; `detail` the field). Warning codes are listed
+// under `renderEmailDesign`.
 type EmailDesignIssue struct {
 	// BlockId The block; absent for the theme and the preheader.
 	BlockId *string `json:"block_id,omitempty"`
@@ -16063,7 +16185,8 @@ type EmailDesignRenderRequest struct {
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
 	Document EmailDesignDocument `json:"document"`
 	InboxId  *uuid.UUID          `json:"inbox_id,omitempty"`
 	ListId   *uuid.UUID          `json:"list_id,omitempty"`
@@ -16092,7 +16215,11 @@ type EmailDesignSummary struct {
 
 	// CreatedBy The member; absent for keys and members who left.
 	CreatedBy *uuid.UUID `json:"created_by,omitempty"`
-	Id        uuid.UUID  `json:"id"`
+
+	// ForConversations Offered in conversations: members who see the design's inbox may send replies and new
+	// mail with it. Only a design with one `message` block.
+	ForConversations bool      `json:"for_conversations"`
+	Id               uuid.UUID `json:"id"`
 
 	// InboxId Absent for workspace-wide designs.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
@@ -16144,6 +16271,11 @@ type EmailDesignUpdate struct {
 	// `translations: {}` removes every version.
 	Document EmailDesignDocument `json:"document"`
 
+	// ForConversations Offer the design in conversations, or stop offering it; unchanged when absent. While it
+	// is on, a document without exactly one top-level or section `message` block is refused
+	// (`422 invalid_design`, `message_block_missing`).
+	ForConversations *bool `json:"for_conversations,omitempty"`
+
 	// InboxId Absent makes the design workspace-wide.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 	Name    string     `json:"name"`
@@ -16166,7 +16298,8 @@ type EmailDesignVersionDetail struct {
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
 	Document EmailDesignDocument      `json:"document"`
 	MemberId *uuid.UUID               `json:"member_id,omitempty"`
 	Reason   EmailDesignVersionReason `json:"reason"`
@@ -16478,6 +16611,32 @@ type EmailImageUsage struct {
 	} `json:"member_signatures,omitempty"`
 }
 
+// EmailMessageBlock Where the text a member writes appears when the design is used in a conversation, followed
+// by the help article cards and the signature. At most one per document, at the top level or
+// in a section, never in columns; it holds no text and takes no translation entry. Previews
+// without a message show a dashed placeholder; a broadcast's review blocks a design that has
+// one (`message_block`). `align` is ignored.
+type EmailMessageBlock struct {
+	// Align Mirrored in right-to-left designs.
+	Align *EmailAlign `json:"align,omitempty"`
+
+	// Background Examples: #2563eb
+	Background *EmailColor `json:"background,omitempty"`
+
+	// Hide Hides the block on narrow (`mobile`) or wide (`desktop`) screens where the client supports it.
+	Hide *EmailHide `json:"hide,omitempty"`
+
+	// Id Chosen by the client, unique in the document; validation errors and warnings name it.
+	Id string `json:"id"`
+
+	// Padding Top, right, bottom and left padding in pixels; the block's default when absent.
+	Padding *[]int32              `json:"padding,omitempty"`
+	Type    EmailMessageBlockType `json:"type"`
+}
+
+// EmailMessageBlockType defines model for EmailMessageBlock.Type.
+type EmailMessageBlockType string
+
 // EmailSectionBlock A group of blocks on its own background. Sections do not nest.
 type EmailSectionBlock struct {
 	// Align Mirrored in right-to-left designs.
@@ -16656,7 +16815,8 @@ type EmailTemplateDetail struct {
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
 	Document EmailDesignDocument  `json:"document"`
 	Images   []EmailTemplateImage `json:"images"`
 	Locale   EmailTemplateLocale  `json:"locale"`
@@ -19800,8 +19960,11 @@ type Message struct {
 	CreatedAt time.Time `json:"created_at"`
 
 	// Delivery Delivery of an outgoing message by e-mail.
-	Delivery  *MessageDelivery `json:"delivery,omitempty"`
-	Direction *Direction       `json:"direction,omitempty"`
+	Delivery *MessageDelivery `json:"delivery,omitempty"`
+
+	// Design The e-mail design the message is (or, for a draft, will be) sent in; absent when none.
+	Design    *MessageDesign `json:"design,omitempty"`
+	Direction *Direction     `json:"direction,omitempty"`
 
 	// Draft An outgoing message that is not delivered until it is sent
 	// (`POST /v1/messages/{id}/send`). Drafts are shown only on `/v1`: never to contacts,
@@ -19940,8 +20103,17 @@ type MessageCreate struct {
 	Cc *[]Email `json:"cc,omitempty"`
 
 	// ClientId Makes the request idempotent within the conversation.
-	ClientId  *string    `json:"client_id,omitempty"`
-	Direction *Direction `json:"direction,omitempty"`
+	ClientId *string `json:"client_id,omitempty"`
+
+	// DesignId E-mailed outgoing messages only: an e-mail design offered in conversations
+	// (`for_conversations`) of the conversation's inbox or workspace-wide. See `createMessage`.
+	DesignId *uuid.UUID `json:"design_id,omitempty"`
+
+	// DesignLocale One of the design's versions to send instead of the contact's; needs `design_id`.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag `json:"design_locale,omitempty"`
+	Direction    *Direction   `json:"direction,omitempty"`
 
 	// Draft Stores an outgoing message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
@@ -19992,11 +20164,17 @@ type MessageCreateMultipart struct {
 	Body *string  `json:"body,omitempty"`
 
 	// Cc Repeat the field once per address; one empty `cc` field copies no one.
-	Cc        *[]string             `json:"cc,omitempty"`
-	ClientId  *string               `json:"client_id,omitempty"`
-	Direction *Direction            `json:"direction,omitempty"`
-	Draft     *bool                 `json:"draft,omitempty"`
-	Files     *[]openapi_types.File `json:"files,omitempty"`
+	Cc       *[]string  `json:"cc,omitempty"`
+	ClientId *string    `json:"client_id,omitempty"`
+	DesignId *uuid.UUID `json:"design_id,omitempty"`
+
+	// DesignLocale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag          `json:"design_locale,omitempty"`
+	Direction    *Direction            `json:"direction,omitempty"`
+	Draft        *bool                 `json:"draft,omitempty"`
+	Files        *[]openapi_types.File `json:"files,omitempty"`
 
 	// FromAddress Examples: owner@example.com
 	FromAddress *Email                     `json:"from_address,omitempty"`
@@ -20047,6 +20225,26 @@ type MessageDeliveryChannel string
 
 // MessageDeliveryState defines model for MessageDelivery.State.
 type MessageDeliveryState string
+
+// MessageDesign The e-mail design of an outgoing message. Never its HTML: `body` stays what was written, and
+// the mail as sent is at `GET /v1/messages/{id}/email`.
+type MessageDesign struct {
+	// Id Absent when the design is gone.
+	Id *uuid.UUID `json:"id,omitempty"`
+
+	// Locale The language version the mail was rendered in; on a draft the `design_locale` it asked
+	// for. Absent for a design without versions and on a draft that takes the contact's.
+	//
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+
+	// Name Empty when the design is gone.
+	Name string `json:"name"`
+
+	// Version The design's `version` the mail was rendered from; absent on a draft.
+	Version *int32 `json:"version,omitempty"`
+}
 
 // MessageEmail Set on messages that came or went by e-mail. `body` and `html` of the message show the new
 // text only; `quoted` tells whether quoted history or a signature was hidden, which
@@ -20111,7 +20309,8 @@ type MessageEmailDetail struct {
 	InReplyTo *string           `json:"in_reply_to,omitempty"`
 	MessageId string            `json:"message_id"`
 
-	// OriginalHtml The whole HTML part of the kept original, built on request and sanitized with a policy
+	// OriginalHtml For an outgoing message sent with a design, the HTML part exactly as it was sent.
+	// Otherwise the whole HTML part of the kept original, built on request and sanitized with a policy
 	// that keeps inline styles limited to an allowlist of CSS properties (no `url(`,
 	// `expression` or `@import` values) and the colour, alignment and size attributes of
 	// tables and `font`; never `<style>` blocks, scripts, forms, frames, stylesheets or event
@@ -20269,6 +20468,12 @@ type MessageUpdate struct {
 
 	// Cc New mail drafts only; replaces the stored Cc.
 	Cc *[]Email `json:"cc,omitempty"`
+
+	// DesignId The e-mail design the draft is sent in, checked as on `createMessage`; `null` removes it.
+	DesignId nullable.Nullable[uuid.UUID] `json:"design_id,omitempty"`
+
+	// DesignLocale One of the design's versions; `null` goes back to the contact's. Absent keeps it, unless `design_id` names another design.
+	DesignLocale nullable.Nullable[string] `json:"design_locale,omitempty"`
 
 	// Html Sanitized before it is stored; `null` removes it.
 	Html nullable.Nullable[string] `json:"html,omitempty"`
@@ -27461,6 +27666,12 @@ type UpdateConversationParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// PreviewConversationDesignParams defines parameters for PreviewConversationDesign.
+type PreviewConversationDesignParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // CreateDiscussionFromConversationParams defines parameters for CreateDiscussionFromConversation.
 type CreateDiscussionFromConversationParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -27964,10 +28175,13 @@ type ListDraftsParams struct {
 
 // ListEmailDesignsParams defines parameters for ListEmailDesigns.
 type ListEmailDesignsParams struct {
-	// InboxId Only the designs of this inbox.
-	InboxId  *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
-	Q        *string    `form:"q,omitempty" json:"q,omitempty"`
-	Archived *bool      `form:"archived,omitempty" json:"archived,omitempty"`
+	// InboxId Only the designs of this inbox; with `for_conversations`, those of this inbox and the workspace-wide ones.
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// ForConversations Only designs offered in conversations (`true`) or only the others (`false`).
+	ForConversations *bool   `form:"for_conversations,omitempty" json:"for_conversations,omitempty"`
+	Q                *string `form:"q,omitempty" json:"q,omitempty"`
+	Archived         *bool   `form:"archived,omitempty" json:"archived,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -30940,6 +31154,9 @@ type EmptyTrashJSONRequestBody = TrashEmpty
 // UpdateConversationJSONRequestBody defines body for UpdateConversation for application/json ContentType.
 type UpdateConversationJSONRequestBody = ConversationUpdate
 
+// PreviewConversationDesignJSONRequestBody defines body for PreviewConversationDesign for application/json ContentType.
+type PreviewConversationDesignJSONRequestBody = ConversationDesignPreview
+
 // CreateDiscussionFromConversationJSONRequestBody defines body for CreateDiscussionFromConversation for application/json ContentType.
 type CreateDiscussionFromConversationJSONRequestBody = DiscussionFromConversation
 
@@ -32425,6 +32642,40 @@ func (t *EmailBlock) MergeEmailFooterBlock(v EmailFooterBlock) error {
 	return err
 }
 
+// AsEmailMessageBlock returns the union data inside the EmailBlock as a EmailMessageBlock
+func (t EmailBlock) AsEmailMessageBlock() (EmailMessageBlock, error) {
+	var body EmailMessageBlock
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEmailMessageBlock overwrites any union data inside the EmailBlock as the provided EmailMessageBlock
+func (t *EmailBlock) FromEmailMessageBlock(v EmailMessageBlock) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"message"}`))
+	t.union = b
+	return err
+}
+
+// MergeEmailMessageBlock performs a merge with any union data inside the EmailBlock, using the provided EmailMessageBlock
+func (t *EmailBlock) MergeEmailMessageBlock(v EmailMessageBlock) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"message"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 func (t EmailBlock) Discriminator() (string, error) {
 	var discriminator struct {
 		Discriminator string `json:"type"`
@@ -32451,6 +32702,8 @@ func (t EmailBlock) ValueByDiscriminator() (interface{}, error) {
 		return t.AsEmailHeadingBlock()
 	case "image":
 		return t.AsEmailImageBlock()
+	case "message":
+		return t.AsEmailMessageBlock()
 	case "section":
 		return t.AsEmailSectionBlock()
 	case "social":
@@ -33097,6 +33350,40 @@ func (t *EmailSectionChild) MergeEmailFooterBlock(v EmailFooterBlock) error {
 	return err
 }
 
+// AsEmailMessageBlock returns the union data inside the EmailSectionChild as a EmailMessageBlock
+func (t EmailSectionChild) AsEmailMessageBlock() (EmailMessageBlock, error) {
+	var body EmailMessageBlock
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEmailMessageBlock overwrites any union data inside the EmailSectionChild as the provided EmailMessageBlock
+func (t *EmailSectionChild) FromEmailMessageBlock(v EmailMessageBlock) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"message"}`))
+	t.union = b
+	return err
+}
+
+// MergeEmailMessageBlock performs a merge with any union data inside the EmailSectionChild, using the provided EmailMessageBlock
+func (t *EmailSectionChild) MergeEmailMessageBlock(v EmailMessageBlock) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"message"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 func (t EmailSectionChild) Discriminator() (string, error) {
 	var discriminator struct {
 		Discriminator string `json:"type"`
@@ -33123,6 +33410,8 @@ func (t EmailSectionChild) ValueByDiscriminator() (interface{}, error) {
 		return t.AsEmailHeadingBlock()
 	case "image":
 		return t.AsEmailImageBlock()
+	case "message":
+		return t.AsEmailMessageBlock()
 	case "social":
 		return t.AsEmailSocialBlock()
 	case "spacer":
@@ -38838,7 +39127,8 @@ type ClientInterface interface {
 	// version a contact with that language gets; with `contact_id` and no `locale`, the
 	// contact's; otherwise the fallback. Its unsubscribe link names no list and says it
 	// was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-	// sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+	// sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+	// `409 review_failed` with the `message_block` item when the design has a `message` block.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:write`.
 	//
@@ -38856,7 +39146,8 @@ type ClientInterface interface {
 	// version a contact with that language gets; with `contact_id` and no `locale`, the
 	// contact's; otherwise the fallback. Its unsubscribe link names no list and says it
 	// was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-	// sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+	// sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+	// `409 review_failed` with the `message_block` item when the design has a `message` block.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:write`.
 	//
@@ -40114,6 +40405,11 @@ type ClientInterface interface {
 	// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
 	// `POST /v1/messages/{id}/send` with `send_at` describes.
 	//
+	// `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+	// with the outreach footer and rules; only with one `to` and no `cc`
+	// (`400 design_one_recipient`), so merge fields never show one person's details to another.
+	// A draft is checked again when it is sent.
+	//
 	// A repeated `client_id` in the same inbox returns the conversation and message stored with
 	// it with `200` instead of writing them again, before any rate limit, so a retry costs
 	// nothing.
@@ -40195,6 +40491,11 @@ type ClientInterface interface {
 	//
 	// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
 	// `POST /v1/messages/{id}/send` with `send_at` describes.
+	//
+	// `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+	// with the outreach footer and rules; only with one `to` and no `cc`
+	// (`400 design_one_recipient`), so merge fields never show one person's details to another.
+	// A draft is checked again when it is sent.
 	//
 	// A repeated `client_id` in the same inbox returns the conversation and message stored with
 	// it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -40333,6 +40634,58 @@ type ClientInterface interface {
 	//
 	// Corresponds with PATCH /v1/conversations/{conversationId} (the `UpdateConversation` operationId).
 	UpdateConversation(ctx context.Context, conversationId ConversationId, params *UpdateConversationParams, body UpdateConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewConversationDesignWithBody Preview a message in an e-mail design
+	//
+	// Renders what the conversation's contact would get for an outgoing message with
+	// `design_id`: their language version (or `design_locale`), their merge field values, the
+	// caller's signature for the inbox, the footer the message would have (`reply` when the
+	// contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+	// and `body` in the `message` block, the design's placeholder text without one. The subject
+	// is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+	// at an example token.
+	//
+	// The design must be offered in conversations, not archived, and of the conversation's inbox
+	// or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+	// (`400 design_not_emailed`). A merge field conversation mail does not have
+	// (`merge_field_unavailable`), one without fallback that is empty for the contact
+	// (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+	// answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+	// `422 html_too_large`. At most 120 renders a minute per caller, shared with
+	// `renderEmailDesign` (`429 rate_limited`).
+	//
+	// Members who see the conversation. Scope: `conversations:read`.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/design-preview (the `PreviewConversationDesign` operationId).
+	PreviewConversationDesignWithBody(ctx context.Context, conversationId ConversationId, params *PreviewConversationDesignParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewConversationDesign Preview a message in an e-mail design
+	//
+	// Renders what the conversation's contact would get for an outgoing message with
+	// `design_id`: their language version (or `design_locale`), their merge field values, the
+	// caller's signature for the inbox, the footer the message would have (`reply` when the
+	// contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+	// and `body` in the `message` block, the design's placeholder text without one. The subject
+	// is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+	// at an example token.
+	//
+	// The design must be offered in conversations, not archived, and of the conversation's inbox
+	// or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+	// (`400 design_not_emailed`). A merge field conversation mail does not have
+	// (`merge_field_unavailable`), one without fallback that is empty for the contact
+	// (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+	// answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+	// `422 html_too_large`. At most 120 renders a minute per caller, shared with
+	// `renderEmailDesign` (`429 rate_limited`).
+	//
+	// Members who see the conversation. Scope: `conversations:read`.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/design-preview (the `PreviewConversationDesign` operationId).
+	PreviewConversationDesign(ctx context.Context, conversationId ConversationId, params *PreviewConversationDesignParams, body PreviewConversationDesignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateDiscussionFromConversationWithBody Turn a private conversation into a public thread
 	//
@@ -40603,6 +40956,38 @@ type ClientInterface interface {
 	// A message or note posted by a member moves that member's read cursor to it in the same
 	// transaction, with the same `conversation.read` event as `POST .../read`.
 	//
+	// `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+	// (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+	// otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+	// chat and app conversations and other messages that are not e-mailed answer
+	// `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+	// version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+	// one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+	// handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+	// the body escaped into the `message` block (a blank line starts a paragraph), then the help
+	// cards and the signature; the text part is the whole mail as text. The stored parts are sent
+	// unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+	// written, and the message's `design` names the design, version and language. A draft only
+	// keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+	// `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+	// without fallback that is empty for the contact (`merge_field_empty`) answer
+	// `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+	// threading and the SMTP account are a plain reply's.
+	//
+	// The footer is the inbox's identity line (legal name, postal address, registration, contact)
+	// when the contact has written in the conversation. When the contact has not (outreach: the
+	// first message of a conversation started with `createConversation` or `composeMail`), it
+	// also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+	// `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+	// outreach in designs from the inbox to that contact. Outreach with a design is refused for
+	// an address with a suppression of any scope, a workspace opt-out or that stop
+	// (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+	// (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+	// UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+	// broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+	// (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+	// no extra gate, and outreach without a design keeps the rules of a plain message.
+	//
 	// A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 	// e-mailed to the contact through the channel's SMTP account by a background job: the message
 	// is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
@@ -40701,6 +41086,38 @@ type ClientInterface interface {
 	//
 	// A message or note posted by a member moves that member's read cursor to it in the same
 	// transaction, with the same `conversation.read` event as `POST .../read`.
+	//
+	// `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+	// (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+	// otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+	// chat and app conversations and other messages that are not e-mailed answer
+	// `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+	// version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+	// one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+	// handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+	// the body escaped into the `message` block (a blank line starts a paragraph), then the help
+	// cards and the signature; the text part is the whole mail as text. The stored parts are sent
+	// unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+	// written, and the message's `design` names the design, version and language. A draft only
+	// keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+	// `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+	// without fallback that is empty for the contact (`merge_field_empty`) answer
+	// `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+	// threading and the SMTP account are a plain reply's.
+	//
+	// The footer is the inbox's identity line (legal name, postal address, registration, contact)
+	// when the contact has written in the conversation. When the contact has not (outreach: the
+	// first message of a conversation started with `createConversation` or `composeMail`), it
+	// also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+	// `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+	// outreach in designs from the inbox to that contact. Outreach with a design is refused for
+	// an address with a suppression of any scope, a workspace opt-out or that stop
+	// (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+	// (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+	// UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+	// broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+	// (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+	// no extra gate, and outreach without a design keeps the rules of a plain message.
 	//
 	// A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 	// e-mailed to the contact through the channel's SMTP account by a background job: the message
@@ -41633,7 +42050,10 @@ type ClientInterface interface {
 	// Most recently saved first, without their documents. Archived designs are left out unless
 	// `archived=true`, which lists only them. `q` matches the name.
 	//
-	// Owners, admins and API keys. Scope: `broadcasts:read`.
+	// Owners, admins and API keys. Scope: `broadcasts:read`. With `for_conversations=true` only
+	// the designs offered in conversations are listed, and every member may list those of the
+	// inboxes they see and the workspace-wide ones; keys and tokens need `conversations:read` or
+	// `broadcasts:read` for that.
 	//
 	// Corresponds with GET /v1/email-designs (the `ListEmailDesigns` operationId).
 	ListEmailDesigns(ctx context.Context, params *ListEmailDesignsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -41775,14 +42195,19 @@ type ClientInterface interface {
 	// The design with its document (upgraded to the newest `schema`) and the render's
 	// `warnings`.
 	//
-	// Owners, admins and API keys. Scope: `broadcasts:read`.
+	// Owners, admins and API keys. Scope: `broadcasts:read`. A design offered in conversations is
+	// also readable by every member who sees its inbox (every member for a workspace-wide one)
+	// and by keys and tokens with `conversations:read`; an archived one only with the usual
+	// rights. To them any other design answers `404 not_found`.
 	//
 	// Corresponds with GET /v1/email-designs/{designId} (the `GetEmailDesign` operationId).
 	GetEmailDesign(ctx context.Context, designId DesignId, params *GetEmailDesignParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateEmailDesignWithBody Save an e-mail design
 	//
-	// Replaces the name, inbox and document. `base_version` is the `version` the edit started
+	// Replaces the name, inbox and document, and with `for_conversations` whether the design is
+	// offered in conversations (the audit log records `email_design.updated` with the change).
+	// `base_version` is the `version` the edit started
 	// from; when the design has moved on since, nothing is saved and the answer is
 	// `409 version_conflict` with the current design in `design`, and the current version is
 	// kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -41798,7 +42223,9 @@ type ClientInterface interface {
 
 	// UpdateEmailDesign Save an e-mail design
 	//
-	// Replaces the name, inbox and document. `base_version` is the `version` the edit started
+	// Replaces the name, inbox and document, and with `for_conversations` whether the design is
+	// offered in conversations (the audit log records `email_design.updated` with the change).
+	// `base_version` is the `version` the edit started
 	// from; when the design has moved on since, nothing is saved and the answer is
 	// `409 version_conflict` with the current design in `design`, and the current version is
 	// kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -44435,7 +44862,9 @@ type ClientInterface interface {
 
 	// UpdateMessageWithBody Edit a draft
 	//
-	// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+	// Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+	// once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+	// `bcc` and `subject`, or with
 	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
@@ -44448,7 +44877,9 @@ type ClientInterface interface {
 
 	// UpdateMessage Edit a draft
 	//
-	// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+	// Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+	// once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+	// `bcc` and `subject`, or with
 	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
@@ -44554,7 +44985,9 @@ type ClientInterface interface {
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-	// `createMessage`.
+	// `createMessage`. A draft with a design is rendered now from the design's current version,
+	// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+	// is no longer offered).
 	//
 	// Members always may, their own drafts and those written with an API key (another member's
 	// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -44594,7 +45027,9 @@ type ClientInterface interface {
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-	// `createMessage`.
+	// `createMessage`. A draft with a design is rendered now from the design's current version,
+	// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+	// is no longer offered).
 	//
 	// Members always may, their own drafts and those written with an API key (another member's
 	// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -52480,7 +52915,8 @@ func (c *Client) ScheduleBroadcast(ctx context.Context, broadcastId BroadcastId,
 // version a contact with that language gets; with `contact_id` and no `locale`, the
 // contact's; otherwise the fallback. Its unsubscribe link names no list and says it
 // was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-// sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+// sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+// `409 review_failed` with the `message_block` item when the design has a `message` block.
 //
 // Owners, admins and API keys. Scope: `broadcasts:write`.
 //
@@ -52508,7 +52944,8 @@ func (c *Client) SendBroadcastTestWithBody(ctx context.Context, broadcastId Broa
 // version a contact with that language gets; with `contact_id` and no `locale`, the
 // contact's; otherwise the fallback. Its unsubscribe link names no list and says it
 // was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-// sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+// sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+// `409 review_failed` with the `message_block` item when the design has a `message` block.
 //
 // Owners, admins and API keys. Scope: `broadcasts:write`.
 //
@@ -54596,6 +55033,11 @@ func (c *Client) DeleteConversations(ctx context.Context, params *DeleteConversa
 // `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
 // `POST /v1/messages/{id}/send` with `send_at` describes.
 //
+// `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+// with the outreach footer and rules; only with one `to` and no `cc`
+// (`400 design_one_recipient`), so merge fields never show one person's details to another.
+// A draft is checked again when it is sent.
+//
 // A repeated `client_id` in the same inbox returns the conversation and message stored with
 // it with `200` instead of writing them again, before any rate limit, so a retry costs
 // nothing.
@@ -54687,6 +55129,11 @@ func (c *Client) ComposeMailWithBody(ctx context.Context, params *ComposeMailPar
 //
 // `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
 // `POST /v1/messages/{id}/send` with `send_at` describes.
+//
+// `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+// with the outreach footer and rules; only with one `to` and no `cc`
+// (`400 design_one_recipient`), so merge fields never show one person's details to another.
+// A draft is checked again when it is sent.
 //
 // A repeated `client_id` in the same inbox returns the conversation and message stored with
 // it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -54886,6 +55333,78 @@ func (c *Client) UpdateConversationWithBody(ctx context.Context, conversationId 
 // Corresponds with PATCH /v1/conversations/{conversationId} (the `UpdateConversation` operationId).
 func (c *Client) UpdateConversation(ctx context.Context, conversationId ConversationId, params *UpdateConversationParams, body UpdateConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateConversationRequest(c.Server, conversationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewConversationDesignWithBody Preview a message in an e-mail design
+//
+// Renders what the conversation's contact would get for an outgoing message with
+// `design_id`: their language version (or `design_locale`), their merge field values, the
+// caller's signature for the inbox, the footer the message would have (`reply` when the
+// contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+// and `body` in the `message` block, the design's placeholder text without one. The subject
+// is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+// at an example token.
+//
+// The design must be offered in conversations, not archived, and of the conversation's inbox
+// or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+// (`400 design_not_emailed`). A merge field conversation mail does not have
+// (`merge_field_unavailable`), one without fallback that is empty for the contact
+// (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+// answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+// `422 html_too_large`. At most 120 renders a minute per caller, shared with
+// `renderEmailDesign` (`429 rate_limited`).
+//
+// Members who see the conversation. Scope: `conversations:read`.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/design-preview (the `PreviewConversationDesign` operationId).
+func (c *Client) PreviewConversationDesignWithBody(ctx context.Context, conversationId ConversationId, params *PreviewConversationDesignParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewConversationDesignRequestWithBody(c.Server, conversationId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewConversationDesign Preview a message in an e-mail design
+//
+// Renders what the conversation's contact would get for an outgoing message with
+// `design_id`: their language version (or `design_locale`), their merge field values, the
+// caller's signature for the inbox, the footer the message would have (`reply` when the
+// contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+// and `body` in the `message` block, the design's placeholder text without one. The subject
+// is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+// at an example token.
+//
+// The design must be offered in conversations, not archived, and of the conversation's inbox
+// or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+// (`400 design_not_emailed`). A merge field conversation mail does not have
+// (`merge_field_unavailable`), one without fallback that is empty for the contact
+// (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+// answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+// `422 html_too_large`. At most 120 renders a minute per caller, shared with
+// `renderEmailDesign` (`429 rate_limited`).
+//
+// Members who see the conversation. Scope: `conversations:read`.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /v1/conversations/{conversationId}/design-preview (the `PreviewConversationDesign` operationId).
+func (c *Client) PreviewConversationDesign(ctx context.Context, conversationId ConversationId, params *PreviewConversationDesignParams, body PreviewConversationDesignJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewConversationDesignRequest(c.Server, conversationId, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -55265,6 +55784,38 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // A message or note posted by a member moves that member's read cursor to it in the same
 // transaction, with the same `conversation.read` event as `POST .../read`.
 //
+// `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+// (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+// otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+// chat and app conversations and other messages that are not e-mailed answer
+// `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+// version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+// one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+// handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+// the body escaped into the `message` block (a blank line starts a paragraph), then the help
+// cards and the signature; the text part is the whole mail as text. The stored parts are sent
+// unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+// written, and the message's `design` names the design, version and language. A draft only
+// keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+// `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+// without fallback that is empty for the contact (`merge_field_empty`) answer
+// `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+// threading and the SMTP account are a plain reply's.
+//
+// The footer is the inbox's identity line (legal name, postal address, registration, contact)
+// when the contact has written in the conversation. When the contact has not (outreach: the
+// first message of a conversation started with `createConversation` or `composeMail`), it
+// also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+// `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+// outreach in designs from the inbox to that contact. Outreach with a design is refused for
+// an address with a suppression of any scope, a workspace opt-out or that stop
+// (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+// (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+// UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+// broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+// (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+// no extra gate, and outreach without a design keeps the rules of a plain message.
+//
 // A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 // e-mailed to the contact through the channel's SMTP account by a background job: the message
 // is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
@@ -55373,6 +55924,38 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 //
 // A message or note posted by a member moves that member's read cursor to it in the same
 // transaction, with the same `conversation.read` event as `POST .../read`.
+//
+// `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+// (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+// otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+// chat and app conversations and other messages that are not e-mailed answer
+// `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+// version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+// one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+// handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+// the body escaped into the `message` block (a blank line starts a paragraph), then the help
+// cards and the signature; the text part is the whole mail as text. The stored parts are sent
+// unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+// written, and the message's `design` names the design, version and language. A draft only
+// keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+// `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+// without fallback that is empty for the contact (`merge_field_empty`) answer
+// `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+// threading and the SMTP account are a plain reply's.
+//
+// The footer is the inbox's identity line (legal name, postal address, registration, contact)
+// when the contact has written in the conversation. When the contact has not (outreach: the
+// first message of a conversation started with `createConversation` or `composeMail`), it
+// also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+// `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+// outreach in designs from the inbox to that contact. Outreach with a design is refused for
+// an address with a suppression of any scope, a workspace opt-out or that stop
+// (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+// (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+// UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+// broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+// (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+// no extra gate, and outreach without a design keeps the rules of a plain message.
 //
 // A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 // e-mailed to the contact through the channel's SMTP account by a background job: the message
@@ -56915,7 +57498,10 @@ func (c *Client) ListDrafts(ctx context.Context, params *ListDraftsParams, reqEd
 // Most recently saved first, without their documents. Archived designs are left out unless
 // `archived=true`, which lists only them. `q` matches the name.
 //
-// Owners, admins and API keys. Scope: `broadcasts:read`.
+// Owners, admins and API keys. Scope: `broadcasts:read`. With `for_conversations=true` only
+// the designs offered in conversations are listed, and every member may list those of the
+// inboxes they see and the workspace-wide ones; keys and tokens need `conversations:read` or
+// `broadcasts:read` for that.
 //
 // Corresponds with GET /v1/email-designs (the `ListEmailDesigns` operationId).
 func (c *Client) ListEmailDesigns(ctx context.Context, params *ListEmailDesignsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -57137,7 +57723,10 @@ func (c *Client) ArchiveEmailDesign(ctx context.Context, designId DesignId, para
 // The design with its document (upgraded to the newest `schema`) and the render's
 // `warnings`.
 //
-// Owners, admins and API keys. Scope: `broadcasts:read`.
+// Owners, admins and API keys. Scope: `broadcasts:read`. A design offered in conversations is
+// also readable by every member who sees its inbox (every member for a workspace-wide one)
+// and by keys and tokens with `conversations:read`; an archived one only with the usual
+// rights. To them any other design answers `404 not_found`.
 //
 // Corresponds with GET /v1/email-designs/{designId} (the `GetEmailDesign` operationId).
 func (c *Client) GetEmailDesign(ctx context.Context, designId DesignId, params *GetEmailDesignParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -57154,7 +57743,9 @@ func (c *Client) GetEmailDesign(ctx context.Context, designId DesignId, params *
 
 // UpdateEmailDesignWithBody Save an e-mail design
 //
-// Replaces the name, inbox and document. `base_version` is the `version` the edit started
+// Replaces the name, inbox and document, and with `for_conversations` whether the design is
+// offered in conversations (the audit log records `email_design.updated` with the change).
+// `base_version` is the `version` the edit started
 // from; when the design has moved on since, nothing is saved and the answer is
 // `409 version_conflict` with the current design in `design`, and the current version is
 // kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -57180,7 +57771,9 @@ func (c *Client) UpdateEmailDesignWithBody(ctx context.Context, designId DesignI
 
 // UpdateEmailDesign Save an e-mail design
 //
-// Replaces the name, inbox and document. `base_version` is the `version` the edit started
+// Replaces the name, inbox and document, and with `for_conversations` whether the design is
+// offered in conversations (the audit log records `email_design.updated` with the change).
+// `base_version` is the `version` the edit started
 // from; when the design has moved on since, nothing is saved and the answer is
 // `409 version_conflict` with the current design in `design`, and the current version is
 // kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -61727,7 +62320,9 @@ func (c *Client) DeleteMessage(ctx context.Context, messageId MessageId, params 
 
 // UpdateMessageWithBody Edit a draft
 //
-// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+// Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+// once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+// `bcc` and `subject`, or with
 // `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
@@ -61750,7 +62345,9 @@ func (c *Client) UpdateMessageWithBody(ctx context.Context, messageId MessageId,
 
 // UpdateMessage Edit a draft
 //
-// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+// Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+// once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+// `bcc` and `subject`, or with
 // `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
@@ -61916,7 +62513,9 @@ func (c *Client) UnscheduleMessage(ctx context.Context, messageId MessageId, par
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-// `createMessage`.
+// `createMessage`. A draft with a design is rendered now from the design's current version,
+// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+// is no longer offered).
 //
 // Members always may, their own drafts and those written with an API key (another member's
 // draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -61966,7 +62565,9 @@ func (c *Client) SendMessageWithBody(ctx context.Context, messageId MessageId, p
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-// `createMessage`.
+// `createMessage`. A draft with a design is rendered now from the design's current version,
+// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+// is no longer offered).
 //
 // Members always may, their own drafts and those written with an API key (another member's
 // draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -79477,6 +80078,68 @@ func NewUpdateConversationRequestWithBody(server string, conversationId Conversa
 	return req, nil
 }
 
+// NewPreviewConversationDesignRequest calls the generic PreviewConversationDesign builder with application/json body
+func NewPreviewConversationDesignRequest(server string, conversationId ConversationId, params *PreviewConversationDesignParams, body PreviewConversationDesignJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPreviewConversationDesignRequestWithBody(server, conversationId, params, "application/json", bodyReader)
+}
+
+// NewPreviewConversationDesignRequestWithBody constructs an http.Request for the PreviewConversationDesign method, with any body, and a specified content type
+func NewPreviewConversationDesignRequestWithBody(server string, conversationId ConversationId, params *PreviewConversationDesignParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "conversationId", conversationId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/conversations/%s/design-preview", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewCreateDiscussionFromConversationRequest calls the generic CreateDiscussionFromConversation builder with application/json body
 func NewCreateDiscussionFromConversationRequest(server string, conversationId ConversationId, params *CreateDiscussionFromConversationParams, body CreateDiscussionFromConversationJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -83250,6 +83913,18 @@ func NewListEmailDesignsRequest(server string, params *ListEmailDesignsParams) (
 		if params.InboxId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ForConversations != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "for_conversations", *params.ForConversations, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -104113,7 +104788,8 @@ type ClientWithResponsesInterface interface {
 	// version a contact with that language gets; with `contact_id` and no `locale`, the
 	// contact's; otherwise the fallback. Its unsubscribe link names no list and says it
 	// was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-	// sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+	// sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+	// `409 review_failed` with the `message_block` item when the design has a `message` block.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:write`.
 	//
@@ -104131,7 +104807,8 @@ type ClientWithResponsesInterface interface {
 	// version a contact with that language gets; with `contact_id` and no `locale`, the
 	// contact's; otherwise the fallback. Its unsubscribe link names no list and says it
 	// was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-	// sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+	// sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+	// `409 review_failed` with the `message_block` item when the design has a `message` block.
 	//
 	// Owners, admins and API keys. Scope: `broadcasts:write`.
 	//
@@ -105463,6 +106140,11 @@ type ClientWithResponsesInterface interface {
 	// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
 	// `POST /v1/messages/{id}/send` with `send_at` describes.
 	//
+	// `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+	// with the outreach footer and rules; only with one `to` and no `cc`
+	// (`400 design_one_recipient`), so merge fields never show one person's details to another.
+	// A draft is checked again when it is sent.
+	//
 	// A repeated `client_id` in the same inbox returns the conversation and message stored with
 	// it with `200` instead of writing them again, before any rate limit, so a retry costs
 	// nothing.
@@ -105544,6 +106226,11 @@ type ClientWithResponsesInterface interface {
 	//
 	// `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
 	// `POST /v1/messages/{id}/send` with `send_at` describes.
+	//
+	// `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+	// with the outreach footer and rules; only with one `to` and no `cc`
+	// (`400 design_one_recipient`), so merge fields never show one person's details to another.
+	// A draft is checked again when it is sent.
 	//
 	// A repeated `client_id` in the same inbox returns the conversation and message stored with
 	// it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -105686,6 +106373,58 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with PATCH /v1/conversations/{conversationId} (the `UpdateConversation` operationId).
 	UpdateConversationWithResponse(ctx context.Context, conversationId ConversationId, params *UpdateConversationParams, body UpdateConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConversationResponse, error)
+
+	// PreviewConversationDesignWithBodyWithResponse Preview a message in an e-mail design
+	//
+	// Renders what the conversation's contact would get for an outgoing message with
+	// `design_id`: their language version (or `design_locale`), their merge field values, the
+	// caller's signature for the inbox, the footer the message would have (`reply` when the
+	// contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+	// and `body` in the `message` block, the design's placeholder text without one. The subject
+	// is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+	// at an example token.
+	//
+	// The design must be offered in conversations, not archived, and of the conversation's inbox
+	// or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+	// (`400 design_not_emailed`). A merge field conversation mail does not have
+	// (`merge_field_unavailable`), one without fallback that is empty for the contact
+	// (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+	// answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+	// `422 html_too_large`. At most 120 renders a minute per caller, shared with
+	// `renderEmailDesign` (`429 rate_limited`).
+	//
+	// Members who see the conversation. Scope: `conversations:read`.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/design-preview (the `PreviewConversationDesign` operationId).
+	PreviewConversationDesignWithBodyWithResponse(ctx context.Context, conversationId ConversationId, params *PreviewConversationDesignParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewConversationDesignResponse, error)
+
+	// PreviewConversationDesignWithResponse Preview a message in an e-mail design
+	//
+	// Renders what the conversation's contact would get for an outgoing message with
+	// `design_id`: their language version (or `design_locale`), their merge field values, the
+	// caller's signature for the inbox, the footer the message would have (`reply` when the
+	// contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+	// and `body` in the `message` block, the design's placeholder text without one. The subject
+	// is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+	// at an example token.
+	//
+	// The design must be offered in conversations, not archived, and of the conversation's inbox
+	// or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+	// (`400 design_not_emailed`). A merge field conversation mail does not have
+	// (`merge_field_unavailable`), one without fallback that is empty for the contact
+	// (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+	// answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+	// `422 html_too_large`. At most 120 renders a minute per caller, shared with
+	// `renderEmailDesign` (`429 rate_limited`).
+	//
+	// Members who see the conversation. Scope: `conversations:read`.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /v1/conversations/{conversationId}/design-preview (the `PreviewConversationDesign` operationId).
+	PreviewConversationDesignWithResponse(ctx context.Context, conversationId ConversationId, params *PreviewConversationDesignParams, body PreviewConversationDesignJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewConversationDesignResponse, error)
 
 	// CreateDiscussionFromConversationWithBodyWithResponse Turn a private conversation into a public thread
 	//
@@ -105964,6 +106703,38 @@ type ClientWithResponsesInterface interface {
 	// A message or note posted by a member moves that member's read cursor to it in the same
 	// transaction, with the same `conversation.read` event as `POST .../read`.
 	//
+	// `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+	// (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+	// otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+	// chat and app conversations and other messages that are not e-mailed answer
+	// `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+	// version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+	// one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+	// handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+	// the body escaped into the `message` block (a blank line starts a paragraph), then the help
+	// cards and the signature; the text part is the whole mail as text. The stored parts are sent
+	// unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+	// written, and the message's `design` names the design, version and language. A draft only
+	// keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+	// `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+	// without fallback that is empty for the contact (`merge_field_empty`) answer
+	// `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+	// threading and the SMTP account are a plain reply's.
+	//
+	// The footer is the inbox's identity line (legal name, postal address, registration, contact)
+	// when the contact has written in the conversation. When the contact has not (outreach: the
+	// first message of a conversation started with `createConversation` or `composeMail`), it
+	// also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+	// `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+	// outreach in designs from the inbox to that contact. Outreach with a design is refused for
+	// an address with a suppression of any scope, a workspace opt-out or that stop
+	// (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+	// (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+	// UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+	// broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+	// (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+	// no extra gate, and outreach without a design keeps the rules of a plain message.
+	//
 	// A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 	// e-mailed to the contact through the channel's SMTP account by a background job: the message
 	// is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
@@ -106062,6 +106833,38 @@ type ClientWithResponsesInterface interface {
 	//
 	// A message or note posted by a member moves that member's read cursor to it in the same
 	// transaction, with the same `conversation.read` event as `POST .../read`.
+	//
+	// `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+	// (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+	// otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+	// chat and app conversations and other messages that are not e-mailed answer
+	// `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+	// version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+	// one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+	// handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+	// the body escaped into the `message` block (a blank line starts a paragraph), then the help
+	// cards and the signature; the text part is the whole mail as text. The stored parts are sent
+	// unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+	// written, and the message's `design` names the design, version and language. A draft only
+	// keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+	// `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+	// without fallback that is empty for the contact (`merge_field_empty`) answer
+	// `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+	// threading and the SMTP account are a plain reply's.
+	//
+	// The footer is the inbox's identity line (legal name, postal address, registration, contact)
+	// when the contact has written in the conversation. When the contact has not (outreach: the
+	// first message of a conversation started with `createConversation` or `composeMail`), it
+	// also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+	// `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+	// outreach in designs from the inbox to that contact. Outreach with a design is refused for
+	// an address with a suppression of any scope, a workspace opt-out or that stop
+	// (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+	// (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+	// UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+	// broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+	// (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+	// no extra gate, and outreach without a design keeps the rules of a plain message.
 	//
 	// A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 	// e-mailed to the contact through the channel's SMTP account by a background job: the message
@@ -107054,7 +107857,10 @@ type ClientWithResponsesInterface interface {
 	// Most recently saved first, without their documents. Archived designs are left out unless
 	// `archived=true`, which lists only them. `q` matches the name.
 	//
-	// Owners, admins and API keys. Scope: `broadcasts:read`.
+	// Owners, admins and API keys. Scope: `broadcasts:read`. With `for_conversations=true` only
+	// the designs offered in conversations are listed, and every member may list those of the
+	// inboxes they see and the workspace-wide ones; keys and tokens need `conversations:read` or
+	// `broadcasts:read` for that.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -107200,7 +108006,10 @@ type ClientWithResponsesInterface interface {
 	// The design with its document (upgraded to the newest `schema`) and the render's
 	// `warnings`.
 	//
-	// Owners, admins and API keys. Scope: `broadcasts:read`.
+	// Owners, admins and API keys. Scope: `broadcasts:read`. A design offered in conversations is
+	// also readable by every member who sees its inbox (every member for a workspace-wide one)
+	// and by keys and tokens with `conversations:read`; an archived one only with the usual
+	// rights. To them any other design answers `404 not_found`.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -107209,7 +108018,9 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateEmailDesignWithBodyWithResponse Save an e-mail design
 	//
-	// Replaces the name, inbox and document. `base_version` is the `version` the edit started
+	// Replaces the name, inbox and document, and with `for_conversations` whether the design is
+	// offered in conversations (the audit log records `email_design.updated` with the change).
+	// `base_version` is the `version` the edit started
 	// from; when the design has moved on since, nothing is saved and the answer is
 	// `409 version_conflict` with the current design in `design`, and the current version is
 	// kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -107225,7 +108036,9 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateEmailDesignWithResponse Save an e-mail design
 	//
-	// Replaces the name, inbox and document. `base_version` is the `version` the edit started
+	// Replaces the name, inbox and document, and with `for_conversations` whether the design is
+	// offered in conversations (the audit log records `email_design.updated` with the change).
+	// `base_version` is the `version` the edit started
 	// from; when the design has moved on since, nothing is saved and the answer is
 	// `409 version_conflict` with the current design in `design`, and the current version is
 	// kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -110040,7 +110853,9 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMessageWithBodyWithResponse Edit a draft
 	//
-	// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+	// Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+	// once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+	// `bcc` and `subject`, or with
 	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
@@ -110053,7 +110868,9 @@ type ClientWithResponsesInterface interface {
 
 	// UpdateMessageWithResponse Edit a draft
 	//
-	// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+	// Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+	// once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+	// `bcc` and `subject`, or with
 	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
@@ -110169,7 +110986,9 @@ type ClientWithResponsesInterface interface {
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-	// `createMessage`.
+	// `createMessage`. A draft with a design is rendered now from the design's current version,
+	// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+	// is no longer offered).
 	//
 	// Members always may, their own drafts and those written with an API key (another member's
 	// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -110209,7 +111028,9 @@ type ClientWithResponsesInterface interface {
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-	// `createMessage`.
+	// `createMessage`. A draft with a design is rendered now from the design's current version,
+	// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+	// is no longer offered).
 	//
 	// Members always may, their own drafts and those written with an API key (another member's
 	// draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -127193,6 +128014,96 @@ func (r UpdateConversationResponse) ContentType() string {
 	return ""
 }
 
+type PreviewConversationDesignResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ConversationDesignRender
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *EmailDesignProblem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PreviewConversationDesignResponse) GetJSON200() *ConversationDesignRender {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r PreviewConversationDesignResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r PreviewConversationDesignResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r PreviewConversationDesignResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r PreviewConversationDesignResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r PreviewConversationDesignResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r PreviewConversationDesignResponse) GetApplicationproblemJSON422() *EmailDesignProblem {
+	return r.ApplicationproblemJSON422
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r PreviewConversationDesignResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
+}
+
+// GetBody returns the raw response body bytes
+func (r PreviewConversationDesignResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PreviewConversationDesignResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PreviewConversationDesignResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PreviewConversationDesignResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type CreateDiscussionFromConversationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -127732,6 +128643,10 @@ type CreateMessageResponse struct {
 	ApplicationproblemJSON413 *Problem
 	// ApplicationproblemJSON415 the response for an HTTP 415 `application/problem+json` response
 	ApplicationproblemJSON415 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *EmailDesignProblem
+	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
+	ApplicationproblemJSON429 *Problem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -127777,6 +128692,16 @@ func (r CreateMessageResponse) GetApplicationproblemJSON413() *Problem {
 // GetApplicationproblemJSON415 returns the response for an HTTP 415 `application/problem+json` response
 func (r CreateMessageResponse) GetApplicationproblemJSON415() *Problem {
 	return r.ApplicationproblemJSON415
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r CreateMessageResponse) GetApplicationproblemJSON422() *EmailDesignProblem {
+	return r.ApplicationproblemJSON422
+}
+
+// GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
+func (r CreateMessageResponse) GetApplicationproblemJSON429() *Problem {
+	return r.ApplicationproblemJSON429
 }
 
 // GetBody returns the raw response body bytes
@@ -140706,6 +141631,8 @@ type UpdateMessageResponse struct {
 	ApplicationproblemJSON404 *Problem
 	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
 	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *EmailDesignProblem
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -140736,6 +141663,11 @@ func (r UpdateMessageResponse) GetApplicationproblemJSON404() *Problem {
 // GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
 func (r UpdateMessageResponse) GetApplicationproblemJSON409() *Problem {
 	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r UpdateMessageResponse) GetApplicationproblemJSON422() *EmailDesignProblem {
+	return r.ApplicationproblemJSON422
 }
 
 // GetBody returns the raw response body bytes
@@ -141121,6 +142053,8 @@ type SendMessageResponse struct {
 	ApplicationproblemJSON404 *Problem
 	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
 	ApplicationproblemJSON409 *Problem
+	// ApplicationproblemJSON422 the response for an HTTP 422 `application/problem+json` response
+	ApplicationproblemJSON422 *EmailDesignProblem
 	// ApplicationproblemJSON429 the response for an HTTP 429 `application/problem+json` response
 	ApplicationproblemJSON429 *Problem
 }
@@ -141153,6 +142087,11 @@ func (r SendMessageResponse) GetApplicationproblemJSON404() *Problem {
 // GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
 func (r SendMessageResponse) GetApplicationproblemJSON409() *Problem {
 	return r.ApplicationproblemJSON409
+}
+
+// GetApplicationproblemJSON422 returns the response for an HTTP 422 `application/problem+json` response
+func (r SendMessageResponse) GetApplicationproblemJSON422() *EmailDesignProblem {
+	return r.ApplicationproblemJSON422
 }
 
 // GetApplicationproblemJSON429 returns the response for an HTTP 429 `application/problem+json` response
@@ -154353,7 +155292,8 @@ func (c *ClientWithResponses) ScheduleBroadcastWithResponse(ctx context.Context,
 // version a contact with that language gets; with `contact_id` and no `locale`, the
 // contact's; otherwise the fallback. Its unsubscribe link names no list and says it
 // was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-// sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+// sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+// `409 review_failed` with the `message_block` item when the design has a `message` block.
 //
 // Owners, admins and API keys. Scope: `broadcasts:write`.
 //
@@ -154377,7 +155317,8 @@ func (c *ClientWithResponses) SendBroadcastTestWithBodyWithResponse(ctx context.
 // version a contact with that language gets; with `contact_id` and no `locale`, the
 // contact's; otherwise the fallback. Its unsubscribe link names no list and says it
 // was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-// sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+// sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+// `409 review_failed` with the `message_block` item when the design has a `message` block.
 //
 // Owners, admins and API keys. Scope: `broadcasts:write`.
 //
@@ -156207,6 +157148,11 @@ func (c *ClientWithResponses) DeleteConversationsWithResponse(ctx context.Contex
 // `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
 // `POST /v1/messages/{id}/send` with `send_at` describes.
 //
+// `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+// with the outreach footer and rules; only with one `to` and no `cc`
+// (`400 design_one_recipient`), so merge fields never show one person's details to another.
+// A draft is checked again when it is sent.
+//
 // A repeated `client_id` in the same inbox returns the conversation and message stored with
 // it with `200` instead of writing them again, before any rate limit, so a retry costs
 // nothing.
@@ -156294,6 +157240,11 @@ func (c *ClientWithResponses) ComposeMailWithBodyWithResponse(ctx context.Contex
 //
 // `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
 // `POST /v1/messages/{id}/send` with `send_at` describes.
+//
+// `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+// with the outreach footer and rules; only with one `to` and no `cc`
+// (`400 design_one_recipient`), so merge fields never show one person's details to another.
+// A draft is checked again when it is sent.
 //
 // A repeated `client_id` in the same inbox returns the conversation and message stored with
 // it with `200` instead of writing them again, before any rate limit, so a retry costs
@@ -156477,6 +157428,70 @@ func (c *ClientWithResponses) UpdateConversationWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseUpdateConversationResponse(rsp)
+}
+
+// PreviewConversationDesignWithBodyWithResponse Preview a message in an e-mail design
+//
+// Renders what the conversation's contact would get for an outgoing message with
+// `design_id`: their language version (or `design_locale`), their merge field values, the
+// caller's signature for the inbox, the footer the message would have (`reply` when the
+// contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+// and `body` in the `message` block, the design's placeholder text without one. The subject
+// is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+// at an example token.
+//
+// The design must be offered in conversations, not archived, and of the conversation's inbox
+// or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+// (`400 design_not_emailed`). A merge field conversation mail does not have
+// (`merge_field_unavailable`), one without fallback that is empty for the contact
+// (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+// answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+// `422 html_too_large`. At most 120 renders a minute per caller, shared with
+// `renderEmailDesign` (`429 rate_limited`).
+//
+// Members who see the conversation. Scope: `conversations:read`.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/design-preview (the `PreviewConversationDesign` operationId).
+func (c *ClientWithResponses) PreviewConversationDesignWithBodyWithResponse(ctx context.Context, conversationId ConversationId, params *PreviewConversationDesignParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewConversationDesignResponse, error) {
+	rsp, err := c.PreviewConversationDesignWithBody(ctx, conversationId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewConversationDesignResponse(rsp)
+}
+
+// PreviewConversationDesignWithResponse Preview a message in an e-mail design
+//
+// Renders what the conversation's contact would get for an outgoing message with
+// `design_id`: their language version (or `design_locale`), their merge field values, the
+// caller's signature for the inbox, the footer the message would have (`reply` when the
+// contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+// and `body` in the `message` block, the design's placeholder text without one. The subject
+// is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+// at an example token.
+//
+// The design must be offered in conversations, not archived, and of the conversation's inbox
+// or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+// (`400 design_not_emailed`). A merge field conversation mail does not have
+// (`merge_field_unavailable`), one without fallback that is empty for the contact
+// (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+// answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+// `422 html_too_large`. At most 120 renders a minute per caller, shared with
+// `renderEmailDesign` (`429 rate_limited`).
+//
+// Members who see the conversation. Scope: `conversations:read`.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /v1/conversations/{conversationId}/design-preview (the `PreviewConversationDesign` operationId).
+func (c *ClientWithResponses) PreviewConversationDesignWithResponse(ctx context.Context, conversationId ConversationId, params *PreviewConversationDesignParams, body PreviewConversationDesignJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewConversationDesignResponse, error) {
+	rsp, err := c.PreviewConversationDesign(ctx, conversationId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewConversationDesignResponse(rsp)
 }
 
 // CreateDiscussionFromConversationWithBodyWithResponse Turn a private conversation into a public thread
@@ -156816,6 +157831,38 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // A message or note posted by a member moves that member's read cursor to it in the same
 // transaction, with the same `conversation.read` event as `POST .../read`.
 //
+// `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+// (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+// otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+// chat and app conversations and other messages that are not e-mailed answer
+// `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+// version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+// one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+// handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+// the body escaped into the `message` block (a blank line starts a paragraph), then the help
+// cards and the signature; the text part is the whole mail as text. The stored parts are sent
+// unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+// written, and the message's `design` names the design, version and language. A draft only
+// keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+// `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+// without fallback that is empty for the contact (`merge_field_empty`) answer
+// `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+// threading and the SMTP account are a plain reply's.
+//
+// The footer is the inbox's identity line (legal name, postal address, registration, contact)
+// when the contact has written in the conversation. When the contact has not (outreach: the
+// first message of a conversation started with `createConversation` or `composeMail`), it
+// also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+// `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+// outreach in designs from the inbox to that contact. Outreach with a design is refused for
+// an address with a suppression of any scope, a workspace opt-out or that stop
+// (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+// (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+// UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+// broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+// (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+// no extra gate, and outreach without a design keeps the rules of a plain message.
+//
 // A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 // e-mailed to the contact through the channel's SMTP account by a background job: the message
 // is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
@@ -156920,6 +157967,38 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 //
 // A message or note posted by a member moves that member's read cursor to it in the same
 // transaction, with the same `conversation.read` event as `POST .../read`.
+//
+// `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+// (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+// otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+// chat and app conversations and other messages that are not e-mailed answer
+// `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+// version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+// one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+// handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+// the body escaped into the `message` block (a blank line starts a paragraph), then the help
+// cards and the signature; the text part is the whole mail as text. The stored parts are sent
+// unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+// written, and the message's `design` names the design, version and language. A draft only
+// keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+// `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+// without fallback that is empty for the contact (`merge_field_empty`) answer
+// `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+// threading and the SMTP account are a plain reply's.
+//
+// The footer is the inbox's identity line (legal name, postal address, registration, contact)
+// when the contact has written in the conversation. When the contact has not (outreach: the
+// first message of a conversation started with `createConversation` or `composeMail`), it
+// also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+// `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+// outreach in designs from the inbox to that contact. Outreach with a design is refused for
+// an address with a suppression of any scope, a workspace opt-out or that stop
+// (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+// (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+// UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+// broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+// (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+// no extra gate, and outreach without a design keeps the rules of a plain message.
 //
 // A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
 // e-mailed to the contact through the channel's SMTP account by a background job: the message
@@ -158278,7 +159357,10 @@ func (c *ClientWithResponses) ListDraftsWithResponse(ctx context.Context, params
 // Most recently saved first, without their documents. Archived designs are left out unless
 // `archived=true`, which lists only them. `q` matches the name.
 //
-// Owners, admins and API keys. Scope: `broadcasts:read`.
+// Owners, admins and API keys. Scope: `broadcasts:read`. With `for_conversations=true` only
+// the designs offered in conversations are listed, and every member may list those of the
+// inboxes they see and the workspace-wide ones; keys and tokens need `conversations:read` or
+// `broadcasts:read` for that.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -158472,7 +159554,10 @@ func (c *ClientWithResponses) ArchiveEmailDesignWithResponse(ctx context.Context
 // The design with its document (upgraded to the newest `schema`) and the render's
 // `warnings`.
 //
-// Owners, admins and API keys. Scope: `broadcasts:read`.
+// Owners, admins and API keys. Scope: `broadcasts:read`. A design offered in conversations is
+// also readable by every member who sees its inbox (every member for a workspace-wide one)
+// and by keys and tokens with `conversations:read`; an archived one only with the usual
+// rights. To them any other design answers `404 not_found`.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -158487,7 +159572,9 @@ func (c *ClientWithResponses) GetEmailDesignWithResponse(ctx context.Context, de
 
 // UpdateEmailDesignWithBodyWithResponse Save an e-mail design
 //
-// Replaces the name, inbox and document. `base_version` is the `version` the edit started
+// Replaces the name, inbox and document, and with `for_conversations` whether the design is
+// offered in conversations (the audit log records `email_design.updated` with the change).
+// `base_version` is the `version` the edit started
 // from; when the design has moved on since, nothing is saved and the answer is
 // `409 version_conflict` with the current design in `design`, and the current version is
 // kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -158509,7 +159596,9 @@ func (c *ClientWithResponses) UpdateEmailDesignWithBodyWithResponse(ctx context.
 
 // UpdateEmailDesignWithResponse Save an e-mail design
 //
-// Replaces the name, inbox and document. `base_version` is the `version` the edit started
+// Replaces the name, inbox and document, and with `for_conversations` whether the design is
+// offered in conversations (the audit log records `email_design.updated` with the change).
+// `base_version` is the `version` the edit started
 // from; when the design has moved on since, nothing is saved and the answer is
 // `409 version_conflict` with the current design in `design`, and the current version is
 // kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -162470,7 +163559,9 @@ func (c *ClientWithResponses) DeleteMessageWithResponse(ctx context.Context, mes
 
 // UpdateMessageWithBodyWithResponse Edit a draft
 //
-// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+// Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+// once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+// `bcc` and `subject`, or with
 // `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
@@ -162489,7 +163580,9 @@ func (c *ClientWithResponses) UpdateMessageWithBodyWithResponse(ctx context.Cont
 
 // UpdateMessageWithResponse Edit a draft
 //
-// Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+// Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+// once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+// `bcc` and `subject`, or with
 // `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
@@ -162641,7 +163734,9 @@ func (c *ClientWithResponses) UnscheduleMessageWithResponse(ctx context.Context,
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-// `createMessage`.
+// `createMessage`. A draft with a design is rendered now from the design's current version,
+// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+// is no longer offered).
 //
 // Members always may, their own drafts and those written with an API key (another member's
 // draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -162687,7 +163782,9 @@ func (c *ClientWithResponses) SendMessageWithBodyWithResponse(ctx context.Contex
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-// `createMessage`.
+// `createMessage`. A draft with a design is rendered now from the design's current version,
+// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+// is no longer offered).
 //
 // Members always may, their own drafts and those written with an API key (another member's
 // draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -177771,6 +178868,81 @@ func ParseUpdateConversationResponse(rsp *http.Response) (*UpdateConversationRes
 	return response, nil
 }
 
+// ParsePreviewConversationDesignResponse parses an HTTP response from a PreviewConversationDesignWithResponse call
+func ParsePreviewConversationDesignResponse(rsp *http.Response) (*PreviewConversationDesignResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PreviewConversationDesignResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConversationDesignRender
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest EmailDesignProblem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateDiscussionFromConversationResponse parses an HTTP response from a CreateDiscussionFromConversationWithResponse call
 func ParseCreateDiscussionFromConversationResponse(rsp *http.Response) (*CreateDiscussionFromConversationResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -178263,6 +179435,20 @@ func ParseCreateMessageResponse(rsp *http.Response) (*CreateMessageResponse, err
 			return nil, err
 		}
 		response.ApplicationproblemJSON415 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest EmailDesignProblem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON429 = &dest
 
 	}
 
@@ -188448,6 +189634,13 @@ func ParseUpdateMessageResponse(rsp *http.Response) (*UpdateMessageResponse, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest EmailDesignProblem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
+
 	}
 
 	return response, nil
@@ -188784,6 +189977,13 @@ func ParseSendMessageResponse(rsp *http.Response) (*SendMessageResponse, error) 
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest EmailDesignProblem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
 		var dest Problem

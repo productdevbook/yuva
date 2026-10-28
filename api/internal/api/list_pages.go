@@ -34,6 +34,8 @@ type listWords struct {
 	SubscribeTitle, SubscribeConsent, EmailLabel, SubscribeButton string
 	SentTitle, SentText, TooMany, FormExpired, PageFull           string
 	InvalidEmail, ChooseOne                                       string
+	OutreachTitle, OutreachText, OutreachStop, OutreachStopNote   string
+	OutreachStopped                                               string
 }
 
 var listLanguages = map[string]listWords{
@@ -61,6 +63,9 @@ var listLanguages = map[string]listWords{
 		TooMany:     "Too many requests from here. Try again in a while.",
 		FormExpired: "The form is out of date. Please send it again.", PageFull: "This page takes no more subscribers.",
 		InvalidEmail: "Enter a valid e-mail address.", ChooseOne: "Choose at least one component.",
+		OutreachTitle: "Mail from %i", OutreachText: "%i sent this message to %s.",
+		OutreachStop: "Stop mail like this from %i", OutreachStopNote: "Replies to what you write still reach you.",
+		OutreachStopped: "You will get no more mail like this from %i. Replies to what you write still reach you.",
 	},
 	"tr": {
 		Lang: "tr", Gone: "Bu bağlantı artık geçerli değil.", Error: "Bir sorun oluştu. Bağlantıyı daha sonra yeniden deneyin.",
@@ -86,6 +91,9 @@ var listLanguages = map[string]listWords{
 		TooMany:     "Buradan çok fazla istek geldi. Bir süre sonra yeniden deneyin.",
 		FormExpired: "Formun süresi doldu. Lütfen yeniden gönderin.", PageFull: "Bu sayfa yeni abone kabul etmiyor.",
 		InvalidEmail: "Geçerli bir e-posta adresi girin.", ChooseOne: "En az bir bileşen seçin.",
+		OutreachTitle: "%i e-postaları", OutreachText: "Bu mesajı %i, %s adresine gönderdi.",
+		OutreachStop: "%i tarafından gelen bu tür e-postaları durdur", OutreachStopNote: "Yazdıklarınıza verilen yanıtlar size ulaşmaya devam eder.",
+		OutreachStopped: "%i tarafından artık bu tür e-posta almayacaksınız. Yazdıklarınıza verilen yanıtlar size ulaşmaya devam eder.",
 	},
 	"de": {
 		Lang: "de", Gone: "Dieser Link ist nicht mehr gültig.", Error: "Etwas ist schiefgelaufen. Versuchen Sie den Link später erneut.",
@@ -111,6 +119,9 @@ var listLanguages = map[string]listWords{
 		TooMany:     "Zu viele Anfragen von hier. Versuchen Sie es später erneut.",
 		FormExpired: "Das Formular ist veraltet. Bitte senden Sie es erneut.", PageFull: "Diese Seite nimmt keine weiteren Abonnenten an.",
 		InvalidEmail: "Geben Sie eine gültige E-Mail-Adresse ein.", ChooseOne: "Wählen Sie mindestens eine Komponente.",
+		OutreachTitle: "E-Mails von %i", OutreachText: "%i hat diese Nachricht an %s gesendet.",
+		OutreachStop: "Solche E-Mails von %i stoppen", OutreachStopNote: "Antworten auf das, was Sie schreiben, erhalten Sie weiterhin.",
+		OutreachStopped: "Sie erhalten keine solchen E-Mails mehr von %i. Antworten auf das, was Sie schreiben, erhalten Sie weiterhin.",
 	},
 }
 
@@ -644,7 +655,7 @@ func (s *Server) testManagePage(w http.ResponseWriter, r *http.Request, token st
 
 func (s *Server) serveManagePage(w http.ResponseWriter, r *http.Request) {
 	token := r.PathValue("token")
-	if s.testManagePage(w, r, token) {
+	if s.testManagePage(w, r, token) || s.outreachPage(w, r, token) {
 		return
 	}
 	t, err := s.manageTarget(r.Context(), s.st.Queries, token, false)
@@ -679,7 +690,7 @@ func (s *Server) serveManagePost(w http.ResponseWriter, r *http.Request) {
 		_ = r.ParseForm()
 	}
 	token := r.PathValue("token")
-	if s.testManagePage(w, r, token) {
+	if s.testManagePage(w, r, token) || s.outreachPage(w, r, token) {
 		return
 	}
 	action := r.PostFormValue("action")

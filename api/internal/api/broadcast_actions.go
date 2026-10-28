@@ -122,6 +122,9 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 		} else {
 			l.add(oas.BroadcastReviewKeyDesign, oas.ReviewOk, "")
 		}
+		if n, _ := doc.HasMessageBlock(); n > 0 {
+			l.add(oas.BroadcastReviewKeyMessageBlock, oas.ReviewBlocking, messageBlockReview)
+		}
 	}
 	subject := strings.TrimSpace(b.Subject)
 	count, err := s.countAudience(ctx, q, b, doc, true)
@@ -417,6 +420,9 @@ func (s *Server) SendBroadcastTest(ctx context.Context, req oas.SendBroadcastTes
 	if doc == nil {
 		return nil, errDesignRequired
 	}
+	if n, _ := doc.HasMessageBlock(); n > 0 {
+		return nil, reviewFailed([]oas.BroadcastReviewItem{{Key: oas.BroadcastReviewKeyMessageBlock, Status: oas.ReviewBlocking, Detail: new(messageBlockReview)}})
+	}
 	for range members {
 		if s.rateLimit(ctx, rateCheck{"broadcast-test:" + p.workspaceID.String(), limit{testsPerHour, time.Hour}}) != nil {
 			return nil, errTestLimit
@@ -447,6 +453,8 @@ func (s *Server) SendBroadcastTest(ctx context.Context, req oas.SendBroadcastTes
 	}
 	return out, nil
 }
+
+const messageBlockReview = "the design has a message block for conversation mail, which a broadcast would send empty; choose a design without one"
 
 func reviewFailed(items []oas.BroadcastReviewItem) *apiError {
 	e := problem(http.StatusConflict, "review_failed", "the review found what must change first; see items")

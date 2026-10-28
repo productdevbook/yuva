@@ -75,9 +75,11 @@ type messageInput struct {
 	from      *string
 	sendAt    *time.Time
 	undrafted bool
+	designID  *uuid.UUID
+	locale    *string
 }
 
-var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "signature", "mentions", "article_ids", "macro_id", "then", "cc", "bcc", "from_address", "send_at"}
+var memberFormFields = []string{"kind", "direction", "body", "html", "client_id", "draft", "signature", "mentions", "article_ids", "macro_id", "then", "cc", "bcc", "from_address", "send_at", "design_id", "design_locale"}
 
 func (in *messageInput) close() {
 	for _, f := range in.files {
@@ -174,6 +176,24 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 	}
 	if strings.TrimSpace(in.body) == "" && len(in.files) == 0 && len(in.articles) == 0 {
 		return errValidation("body is required unless files or articles are attached")
+	}
+	if in.locale != nil && in.designID == nil {
+		return errValidation("design_locale goes with design_id")
+	}
+	if in.designID != nil {
+		if in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out) {
+			return errDesignNotEmailed
+		}
+		if in.html != nil {
+			return errDesignWithHTML
+		}
+		if in.locale != nil {
+			tag, err := languageTag(*in.locale, "design_locale")
+			if err != nil {
+				return err
+			}
+			in.locale = &tag
+		}
 	}
 	if in.html != nil {
 		if len(*in.html) > maxMessageHTMLBytes {
@@ -359,6 +379,17 @@ func (s *Server) readMultipart(r *multipart.Reader, workspaceID uuid.UUID, field
 				return nil, errInvalidSendAt
 			}
 			in.sendAt = &at
+		case "design_id":
+			id, err := uuid.Parse(strings.TrimSpace(v))
+			if err != nil {
+				in.close()
+				return nil, errValidation("design_id must be a design id")
+			}
+			in.designID = &id
+		case "design_locale":
+			if v = strings.TrimSpace(v); v != "" {
+				in.locale = &v
+			}
 		case "to", "cc", "bcc":
 			list := &in.cc
 			switch part.FormName() {
@@ -474,6 +505,7 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 		out.SignatureHtml = m.SignatureHtml
 	}
 	out.ScheduledAt = m.ScheduledAt
+	out.Design = messageDesign(m)
 	if len(m.SendError) > 0 {
 		var e oas.MessageSendError
 		if json.Unmarshal(m.SendError, &e) == nil {
@@ -590,6 +622,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		in.cc, in.bcc = copiesOf(b.Cc), copiesOf(b.Bcc)
 		in.from = (*string)(b.FromAddress)
 		in.sendAt, in.undrafted = b.SendAt, b.Draft != nil && !*b.Draft
+		in.designID, in.locale = b.DesignId, (*string)(b.DesignLocale)
 	case req.MultipartBody != nil:
 		limits, err := s.channelLimits(ctx, s.st.Queries, p.workspaceID, conv.ChannelID)
 		if err != nil {
@@ -714,6 +747,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		arg := store.CreateMessageParams{
 			ID: newID(), WorkspaceID: p.workspaceID, ConversationID: c.ID, Kind: in.kind, Body: in.body,
 			Html: in.html, ClientID: in.clientID, CreatedAt: now, Draft: in.draft, Via: p.viaClient(), Mentions: in.mentions,
+			EmailDesignID: in.designID, EmailDesignLocale: in.locale,
 		}
 		if len(in.articles) > 0 {
 			_, cards, err = s.helpCards(ctx, q, c, in.articles)
@@ -746,8 +780,18 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if err := s.signMessage(ctx, q, p, c, in, plan != nil, &arg); err != nil {
 			return err
 		}
+		if in.designID != nil {
+			if _, err := usableDesign(ctx, q, c, *in.designID); err != nil {
+				return err
+			}
+		}
 		if msg, err = q.CreateMessage(ctx, arg); err != nil {
 			return err
+		}
+		if in.draft && in.designID != nil {
+			if err := s.checkDraftDesign(ctx, q, c, *in.designID, in.locale, "", msg); err != nil {
+				return err
+			}
 		}
 		if deliver {
 			if summary, err = s.dispatchOutgoing(ctx, q, events, p, c, plan, msg, now); err != nil {

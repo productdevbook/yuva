@@ -12,6 +12,7 @@ type footerText struct {
 	months             [12]string
 	date               func(t time.Time, months [12]string) string
 	website, image     string
+	message            string
 }
 
 var footerTexts = map[string]footerText{
@@ -27,6 +28,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Website",
 		image:   "Image",
+		message: "Your message appears here",
 	},
 	"tr": {
 		since:           "Bu e-postayı %[2]s tarihinde %[1]s listesine abone olduğunuz için alıyorsunuz.",
@@ -40,6 +42,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Web sitesi",
 		image:   "Görsel",
+		message: "Mesajınız burada görünür",
 	},
 	"de": {
 		since:           "Sie erhalten diese E-Mail, weil Sie %s am %s abonniert haben.",
@@ -53,6 +56,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Website",
 		image:   "Bild",
+		message: "Ihre Nachricht erscheint hier",
 	},
 	"ar": {
 		since:           "تتلقى هذا البريد الإلكتروني لأنك اشتركت في %[1]s بتاريخ %[2]s.",
@@ -64,6 +68,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "الموقع الإلكتروني",
 		image:           "صورة",
+		message:         "تظهر رسالتك هنا",
 	},
 	"bn": {
 		since:           "আপনি %[2]s তারিখে %[1]s সাবস্ক্রাইব করেছেন বলে এই ইমেল পাচ্ছেন।",
@@ -75,6 +80,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "ওয়েবসাইট",
 		image:           "ছবি",
+		message:         "আপনার বার্তা এখানে দেখা যাবে",
 	},
 	"ca": {
 		since:           "Rebeu aquest correu electrònic perquè us vau subscriure a %[1]s el %[2]s.",
@@ -92,6 +98,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Lloc web",
 		image:   "Imatge",
+		message: "El vostre missatge apareix aquí",
 	},
 	"cs": {
 		since:           "Tento e-mail dostáváte, protože jste se %[2]s přihlásili k odběru %[1]s.",
@@ -103,6 +110,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDotDMY,
 		website:         "Web",
 		image:           "Obrázek",
+		message:         "Zde se zobrazí vaše zpráva",
 	},
 	"da": {
 		since:           "Du modtager denne e-mail, fordi du tilmeldte dig %[1]s den %[2]s.",
@@ -114,6 +122,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDotDMY,
 		website:         "Websted",
 		image:           "Billede",
+		message:         "Din besked vises her",
 	},
 	"el": {
 		since:           "Λαμβάνετε αυτό το μήνυμα ηλεκτρονικού ταχυδρομείου επειδή εγγραφήκατε στη λίστα %[1]s στις %[2]s.",
@@ -125,6 +134,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Ιστότοπος",
 		image:           "Εικόνα",
+		message:         "Το μήνυμά σας εμφανίζεται εδώ",
 	},
 	"es": {
 		since:           "Recibe este correo electrónico porque se suscribió a %[1]s el %[2]s.",
@@ -136,6 +146,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDeMonthDe,
 		website:         "Sitio web",
 		image:           "Imagen",
+		message:         "Su mensaje aparece aquí",
 	},
 	"fi": {
 		since:           "Saat tämän sähköpostin, koska tilasit listan %[1]s %[2]s.",
@@ -147,6 +158,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDotDMY,
 		website:         "Verkkosivusto",
 		image:           "Kuva",
+		message:         "Viestisi näkyy tässä",
 	},
 	"fr": {
 		since:           "Vous recevez cet e-mail car vous vous êtes abonné(e) à %[1]s le %[2]s.",
@@ -158,6 +170,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Site web",
 		image:           "Image",
+		message:         "Votre message apparaît ici",
 	},
 	"gu": {
 		since:           "તમે %[2]s ના રોજ %[1]s ને સબ્સ્ક્રાઇબ કર્યું હતું, તેથી તમને આ ઇમેઇલ મળી રહ્યો છે.",
@@ -169,6 +182,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "વેબસાઇટ",
 		image:           "છબી",
+		message:         "તમારો સંદેશ અહીં દેખાશે",
 	},
 	"he": {
 		since:           "הודעת דוא״ל זו נשלחה אליך מפני שנרשמת ל-%[1]s בתאריך %[2]s.",
@@ -182,6 +196,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "אתר",
 		image:   "תמונה",
+		message: "ההודעה שלכם תופיע כאן",
 	},
 	"hi": {
 		since:           "आपको यह ईमेल इसलिए मिल रहा है क्योंकि आपने %[2]s को %[1]s की सदस्यता ली थी।",
@@ -193,6 +208,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "वेबसाइट",
 		image:           "छवि",
+		message:         "आपका संदेश यहाँ दिखाई देगा",
 	},
 	"hr": {
 		since:           "Ovu e-poruku primate jer ste se %[2]s pretplatili na %[1]s.",
@@ -206,6 +222,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Web-mjesto",
 		image:   "Slika",
+		message: "Vaša poruka pojavljuje se ovdje",
 	},
 	"hu": {
 		since:           "Azért kapja ezt az e-mailt, mert feliratkozott a(z) %[1]s listára; a feliratkozás napja: %[2]s",
@@ -219,6 +236,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Weboldal",
 		image:   "Kép",
+		message: "Az Ön üzenete itt jelenik meg",
 	},
 	"id": {
 		since:           "Anda menerima email ini karena Anda berlangganan %[1]s pada %[2]s.",
@@ -230,6 +248,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Situs web",
 		image:           "Gambar",
+		message:         "Pesan Anda muncul di sini",
 	},
 	"it": {
 		since:           "Riceve questa e-mail perché si è iscritto/a a %[1]s il %[2]s.",
@@ -241,6 +260,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Sito web",
 		image:           "Immagine",
+		message:         "Il tuo messaggio appare qui",
 	},
 	"ja": {
 		since:           "このメールは、%[2]sに%[1]sを購読されたためお送りしています。",
@@ -252,6 +272,7 @@ var footerTexts = map[string]footerText{
 		date:            dateCJK,
 		website:         "ウェブサイト",
 		image:           "画像",
+		message:         "ここにメッセージが表示されます",
 	},
 	"kn": {
 		since:           "ನೀವು %[2]s ರಂದು %[1]s ಗೆ ಚಂದಾದಾರರಾಗಿದ್ದ ಕಾರಣ ನೀವು ಈ ಇಮೇಲ್ ಅನ್ನು ಸ್ವೀಕರಿಸುತ್ತಿದ್ದೀರಿ.",
@@ -263,6 +284,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "ವೆಬ್‌ಸೈಟ್",
 		image:           "ಚಿತ್ರ",
+		message:         "ನಿಮ್ಮ ಸಂದೇಶ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ",
 	},
 	"ko": {
 		since:           "%[2]s에 %[1]s 목록을 구독하셨기 때문에 이 이메일을 받으셨습니다.",
@@ -276,6 +298,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "웹사이트",
 		image:   "이미지",
+		message: "여기에 메시지가 표시됩니다",
 	},
 	"ml": {
 		since:           "നിങ്ങൾ %[2]s-ന് %[1]s സബ്സ്ക്രൈബ് ചെയ്തതിനാലാണ് നിങ്ങൾക്ക് ഈ ഇമെയിൽ ലഭിക്കുന്നത്.",
@@ -289,6 +312,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "വെബ്സൈറ്റ്",
 		image:   "ചിത്രം",
+		message: "നിങ്ങളുടെ സന്ദേശം ഇവിടെ ദൃശ്യമാകും",
 	},
 	"mr": {
 		since:           "तुम्ही %[2]s रोजी %[1]s चे सदस्यत्व घेतले असल्यामुळे तुम्हाला हा ईमेल मिळत आहे.",
@@ -300,6 +324,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "वेबसाइट",
 		image:           "प्रतिमा",
+		message:         "तुमचा संदेश येथे दिसेल",
 	},
 	"ms": {
 		since:           "Anda menerima e-mel ini kerana anda melanggan %[1]s pada %[2]s.",
@@ -311,6 +336,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Laman web",
 		image:           "Imej",
+		message:         "Mesej anda dipaparkan di sini",
 	},
 	"nb": {
 		since:           "Du mottar denne e-posten fordi du abonnerte på %[1]s den %[2]s.",
@@ -322,6 +348,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDotDMY,
 		website:         "Nettsted",
 		image:           "Bilde",
+		message:         "Meldingen din vises her",
 	},
 	"nl": {
 		since:           "U ontvangt deze e-mail omdat u zich op %[2]s hebt geabonneerd op %[1]s.",
@@ -333,6 +360,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Website",
 		image:           "Afbeelding",
+		message:         "Uw bericht verschijnt hier",
 	},
 	"or": {
 		since:           "ଆପଣ %[2]s ରେ %[1]s କୁ ସବସ୍କ୍ରାଇବ୍ କରିଥିବାରୁ ଆପଣ ଏହି ଇମେଲ୍ ପାଉଛନ୍ତି।",
@@ -344,6 +372,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "ୱେବସାଇଟ୍",
 		image:           "ଚିତ୍ର",
+		message:         "ଆପଣଙ୍କ ବାର୍ତ୍ତା ଏଠାରେ ଦେଖାଯିବ",
 	},
 	"pa": {
 		since:           "ਤੁਹਾਨੂੰ ਇਹ ਈਮੇਲ ਇਸ ਲਈ ਮਿਲ ਰਹੀ ਹੈ ਕਿਉਂਕਿ ਤੁਸੀਂ %[2]s ਨੂੰ %[1]s ਦੇ ਗਾਹਕ ਬਣੇ ਸੀ।",
@@ -355,6 +384,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "ਵੈੱਬਸਾਈਟ",
 		image:           "ਤਸਵੀਰ",
+		message:         "ਤੁਹਾਡਾ ਸੁਨੇਹਾ ਇੱਥੇ ਦਿਖਾਈ ਦੇਵੇਗਾ",
 	},
 	"pl": {
 		since:           "Otrzymujesz tę wiadomość e-mail, ponieważ %[2]s zapisano Cię do %[1]s.",
@@ -366,6 +396,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Strona internetowa",
 		image:           "Obraz",
+		message:         "Tutaj pojawi się Twoja wiadomość",
 	},
 	"pt": {
 		since:           "Recebe este e-mail porque se inscreveu em %[1]s em %[2]s.",
@@ -377,6 +408,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDeMonthDe,
 		website:         "Site",
 		image:           "Imagem",
+		message:         "Sua mensagem aparece aqui",
 	},
 	"ro": {
 		since:           "Primiți acest e-mail deoarece v-ați abonat la %[1]s pe %[2]s.",
@@ -388,6 +420,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Site web",
 		image:           "Imagine",
+		message:         "Mesajul dumneavoastră apare aici",
 	},
 	"ru": {
 		since:           "Вы получаете это письмо, потому что %[2]s подписались на %[1]s.",
@@ -401,6 +434,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Веб-сайт",
 		image:   "Изображение",
+		message: "Здесь появится ваше сообщение",
 	},
 	"sk": {
 		since:           "Tento e-mail dostávate, pretože ste sa %[2]s prihlásili na odber %[1]s.",
@@ -412,6 +446,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDotDMY,
 		website:         "Web",
 		image:           "Obrázok",
+		message:         "Tu sa zobrazí vaša správa",
 	},
 	"sl": {
 		since:           "To e-pošto prejemate, ker ste se %[2]s naročili na %[1]s.",
@@ -423,6 +458,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDotDMY,
 		website:         "Spletno mesto",
 		image:           "Slika",
+		message:         "Tukaj se prikaže vaše sporočilo",
 	},
 	"sv": {
 		since:           "Du får det här e-postmeddelandet eftersom du prenumererade på %[1]s den %[2]s.",
@@ -434,6 +470,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "Webbplats",
 		image:           "Bild",
+		message:         "Ditt meddelande visas här",
 	},
 	"ta": {
 		since:           "நீங்கள் %[2]s அன்று %[1]s பட்டியலுக்குக் குழுசேர்ந்ததால் இந்த மின்னஞ்சலைப் பெறுகிறீர்கள்.",
@@ -445,6 +482,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "இணையதளம்",
 		image:           "படம்",
+		message:         "உங்கள் செய்தி இங்கே தோன்றும்",
 	},
 	"te": {
 		since:           "మీరు %[2]s న %[1]s కు సభ్యత్వం తీసుకున్నందున మీకు ఈ ఇమెయిల్ వస్తోంది.",
@@ -456,6 +494,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "వెబ్‌సైట్",
 		image:           "చిత్రం",
+		message:         "మీ సందేశం ఇక్కడ కనిపిస్తుంది",
 	},
 	"th": {
 		since:           "คุณได้รับอีเมลนี้เนื่องจากคุณสมัครรับ %[1]s เมื่อวันที่ %[2]s",
@@ -467,6 +506,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "เว็บไซต์",
 		image:           "รูปภาพ",
+		message:         "ข้อความของคุณจะแสดงที่นี่",
 	},
 	"uk": {
 		since:           "Ви отримуєте цей лист, тому що %[2]s підписалися на %[1]s.",
@@ -480,6 +520,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Вебсайт",
 		image:   "Зображення",
+		message: "Тут з’явиться ваше повідомлення",
 	},
 	"ur": {
 		since:           "آپ کو یہ ای میل اس لیے موصول ہو رہی ہے کہ آپ نے %[2]s کو %[1]s کو سبسکرائب کیا تھا۔",
@@ -491,6 +532,7 @@ var footerTexts = map[string]footerText{
 		date:            dateDMY,
 		website:         "ویب سائٹ",
 		image:           "تصویر",
+		message:         "آپ کا پیغام یہاں ظاہر ہوگا",
 	},
 	"vi": {
 		since:           "Bạn nhận được e-mail này vì bạn đã đăng ký %[1]s vào %[2]s.",
@@ -504,6 +546,7 @@ var footerTexts = map[string]footerText{
 		},
 		website: "Trang web",
 		image:   "Hình ảnh",
+		message: "Tin nhắn của bạn hiển thị ở đây",
 	},
 	"zh-Hans": {
 		since:           "您收到此邮件，是因为您于%[2]s订阅了%[1]s。",
@@ -515,6 +558,7 @@ var footerTexts = map[string]footerText{
 		date:            dateCJK,
 		website:         "网站",
 		image:           "图片",
+		message:         "您的消息将显示在这里",
 	},
 	"zh-Hant": {
 		since:           "您收到這封郵件，是因為您於%[2]s訂閱了%[1]s。",
@@ -526,6 +570,7 @@ var footerTexts = map[string]footerText{
 		date:            dateCJK,
 		website:         "網站",
 		image:           "圖片",
+		message:         "您的訊息將顯示在這裡",
 	},
 }
 

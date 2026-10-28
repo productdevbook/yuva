@@ -34,7 +34,7 @@ func (q *Queries) ArchiveEmailDesign(ctx context.Context, arg ArchiveEmailDesign
 const createEmailDesign = `-- name: CreateEmailDesign :one
 INSERT INTO email_designs (id, workspace_id, inbox_id, name, document, template_slug, created_by, updated_by, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $7, $8, $8)
-RETURNING id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at
+RETURNING id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at, for_conversations
 `
 
 type CreateEmailDesignParams struct {
@@ -73,6 +73,7 @@ func (q *Queries) CreateEmailDesign(ctx context.Context, arg CreateEmailDesignPa
 		&i.ArchivedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ForConversations,
 	)
 	return i, err
 }
@@ -239,7 +240,7 @@ func (q *Queries) DeleteWorkspaceEmailImages(ctx context.Context, arg DeleteWork
 }
 
 const getEmailDesign = `-- name: GetEmailDesign :one
-SELECT id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at FROM email_designs WHERE workspace_id = $1 AND id = $2
+SELECT id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at, for_conversations FROM email_designs WHERE workspace_id = $1 AND id = $2
 `
 
 type GetEmailDesignParams struct {
@@ -263,6 +264,7 @@ func (q *Queries) GetEmailDesign(ctx context.Context, arg GetEmailDesignParams) 
 		&i.ArchivedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ForConversations,
 	)
 	return i, err
 }
@@ -532,47 +534,51 @@ func (q *Queries) ListEmailDesignVersions(ctx context.Context, arg ListEmailDesi
 }
 
 const listEmailDesigns = `-- name: ListEmailDesigns :many
-SELECT id, workspace_id, inbox_id, name, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at
+SELECT id, workspace_id, inbox_id, name, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at, for_conversations
 FROM email_designs d
 WHERE d.workspace_id = $1
   AND $2::bool = (d.archived_at IS NOT NULL)
-  AND ($3::uuid IS NULL OR d.inbox_id = $3::uuid)
-  AND ($4::text IS NULL OR d.name ILIKE '%' || $4::text || '%')
-  AND (d.inbox_id IS NULL OR ($5::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.personal)) OR EXISTS (
+  AND ($3::uuid IS NULL OR d.inbox_id = $3::uuid OR ($4::bool AND d.inbox_id IS NULL))
+  AND ($5::bool IS NULL OR d.for_conversations = $5::bool)
+  AND ($6::text IS NULL OR d.name ILIKE '%' || $6::text || '%')
+  AND (d.inbox_id IS NULL OR ($7::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
-      WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = $6))
-  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = d.workspace_id AND own.id = d.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM $6::uuid)
+      WHERE iv.workspace_id = d.workspace_id AND iv.inbox_id = d.inbox_id AND iv.viewer_id = $8))
+  AND NOT EXISTS (SELECT 1 FROM inboxes own WHERE own.workspace_id = d.workspace_id AND own.id = d.inbox_id AND own.personal AND own.owner_member_id IS DISTINCT FROM $8::uuid)
 
-  AND ($7::timestamptz IS NULL
-       OR (d.updated_at, d.id) < ($7::timestamptz, $8::uuid))
+  AND ($9::timestamptz IS NULL
+       OR (d.updated_at, d.id) < ($9::timestamptz, $10::uuid))
 ORDER BY d.updated_at DESC, d.id DESC
-LIMIT $9
+LIMIT $11
 `
 
 type ListEmailDesignsParams struct {
-	WorkspaceID uuid.UUID
-	Archived    bool
-	InboxID     *uuid.UUID
-	Q           *string
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	CursorAt    *time.Time
-	CursorID    *uuid.UUID
-	Lim         int32
+	WorkspaceID      uuid.UUID
+	Archived         bool
+	InboxID          *uuid.UUID
+	WithShared       bool
+	ForConversations *bool
+	Q                *string
+	AllInboxes       bool
+	ViewerID         uuid.UUID
+	CursorAt         *time.Time
+	CursorID         *uuid.UUID
+	Lim              int32
 }
 
 type ListEmailDesignsRow struct {
-	ID           uuid.UUID
-	WorkspaceID  uuid.UUID
-	InboxID      *uuid.UUID
-	Name         string
-	Version      int32
-	TemplateSlug *string
-	CreatedBy    *uuid.UUID
-	UpdatedBy    *uuid.UUID
-	ArchivedAt   *time.Time
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	ID               uuid.UUID
+	WorkspaceID      uuid.UUID
+	InboxID          *uuid.UUID
+	Name             string
+	Version          int32
+	TemplateSlug     *string
+	CreatedBy        *uuid.UUID
+	UpdatedBy        *uuid.UUID
+	ArchivedAt       *time.Time
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	ForConversations bool
 }
 
 func (q *Queries) ListEmailDesigns(ctx context.Context, arg ListEmailDesignsParams) ([]ListEmailDesignsRow, error) {
@@ -580,6 +586,8 @@ func (q *Queries) ListEmailDesigns(ctx context.Context, arg ListEmailDesignsPara
 		arg.WorkspaceID,
 		arg.Archived,
 		arg.InboxID,
+		arg.WithShared,
+		arg.ForConversations,
 		arg.Q,
 		arg.AllInboxes,
 		arg.ViewerID,
@@ -606,6 +614,7 @@ func (q *Queries) ListEmailDesigns(ctx context.Context, arg ListEmailDesignsPara
 			&i.ArchivedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ForConversations,
 		); err != nil {
 			return nil, err
 		}
@@ -716,7 +725,7 @@ func (q *Queries) ListEmailImagesByIDs(ctx context.Context, arg ListEmailImagesB
 }
 
 const lockEmailDesign = `-- name: LockEmailDesign :one
-SELECT id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at FROM email_designs WHERE workspace_id = $1 AND id = $2 FOR UPDATE
+SELECT id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at, for_conversations FROM email_designs WHERE workspace_id = $1 AND id = $2 FOR UPDATE
 `
 
 type LockEmailDesignParams struct {
@@ -740,6 +749,7 @@ func (q *Queries) LockEmailDesign(ctx context.Context, arg LockEmailDesignParams
 		&i.ArchivedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ForConversations,
 	)
 	return i, err
 }
@@ -826,7 +836,7 @@ const saveEmailDesign = `-- name: SaveEmailDesign :one
 UPDATE email_designs SET name = $1, inbox_id = $2, document = $3, version = version + 1,
     updated_by = $4, archived_at = NULL, updated_at = $5
 WHERE workspace_id = $6 AND id = $7
-RETURNING id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at
+RETURNING id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at, for_conversations
 `
 
 type SaveEmailDesignParams struct {
@@ -863,6 +873,40 @@ func (q *Queries) SaveEmailDesign(ctx context.Context, arg SaveEmailDesignParams
 		&i.ArchivedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ForConversations,
+	)
+	return i, err
+}
+
+const setEmailDesignOffered = `-- name: SetEmailDesignOffered :one
+UPDATE email_designs SET for_conversations = $1
+WHERE workspace_id = $2 AND id = $3
+RETURNING id, workspace_id, inbox_id, name, document, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at, for_conversations
+`
+
+type SetEmailDesignOfferedParams struct {
+	ForConversations bool
+	WorkspaceID      uuid.UUID
+	ID               uuid.UUID
+}
+
+func (q *Queries) SetEmailDesignOffered(ctx context.Context, arg SetEmailDesignOfferedParams) (EmailDesign, error) {
+	row := q.db.QueryRow(ctx, setEmailDesignOffered, arg.ForConversations, arg.WorkspaceID, arg.ID)
+	var i EmailDesign
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.InboxID,
+		&i.Name,
+		&i.Document,
+		&i.Version,
+		&i.TemplateSlug,
+		&i.CreatedBy,
+		&i.UpdatedBy,
+		&i.ArchivedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ForConversations,
 	)
 	return i, err
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/oapi-codegen/nullable"
 	"github.com/oapi-codegen/runtime/types"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -116,6 +117,7 @@ type startConversationIn struct {
 	AssigneeID *uuid.UUID  `json:"assignee_id,omitempty" jsonschema:"a member from list_members with access to the inbox"`
 	LabelIDs   []uuid.UUID `json:"label_ids,omitempty"`
 	Priority   string      `json:"priority,omitempty"`
+	mcpDesignChoice
 }
 
 type startConversationOut struct {
@@ -132,9 +134,12 @@ type listDraftsIn struct {
 }
 
 type updateDraftIn struct {
-	MessageID uuid.UUID `json:"message_id" jsonschema:"a draft from list_drafts, draft_reply or start_conversation"`
-	Body      *string   `json:"body,omitempty" jsonschema:"the new text, plain; unchanged when absent"`
-	Subject   *string   `json:"subject,omitempty" jsonschema:"the new subject of a new e-mail draft (compose_mail); unchanged when absent"`
+	MessageID    uuid.UUID  `json:"message_id" jsonschema:"a draft from list_drafts, draft_reply or start_conversation"`
+	Body         *string    `json:"body,omitempty" jsonschema:"the new text, plain; unchanged when absent"`
+	Subject      *string    `json:"subject,omitempty" jsonschema:"the new subject of a new e-mail draft (compose_mail); unchanged when absent"`
+	DesignID     *uuid.UUID `json:"design_id,omitempty" jsonschema:"an e-mail design offered in conversations, from list_designs with for_conversations; unchanged when absent"`
+	DesignLocale *string    `json:"design_locale,omitempty" jsonschema:"one of the design's language versions; an empty string takes the contact's; unchanged when absent, unless design_id names another design"`
+	NoDesign     bool       `json:"no_design,omitempty" jsonschema:"true sends the draft as plain text, without its design"`
 }
 
 type discardDraftIn struct {
@@ -435,7 +440,7 @@ var mcpContactTools = []mcpTool{
 			return out, nil
 		}),
 	defineTool("start_conversation", "Start a conversation",
-		"Starts a conversation with a contact in an inbox and writes the first outgoing message. The message is a draft for a member to review unless the workspace lets assistants deliver and send is true. Maps to POST /v1/conversations and POST /v1/conversations/{id}/messages.",
+		"Starts a conversation with a contact in an inbox and writes the first outgoing message, in an e-mail design offered in conversations when design_id is given. The message is a draft for a member to review unless the workspace lets assistants deliver and send is true. Maps to POST /v1/conversations and POST /v1/conversations/{id}/messages.",
 		delivering, map[string][]any{"priority": {"low", "normal", "high", "urgent"}},
 		mcpTool{ops: []string{"CreateConversation", "CreateMessage"}, scopes: []oas.ApiKeyScope{oas.MessagesWrite}},
 		func(ctx context.Context, c *mcpCall, in startConversationIn) (startConversationOut, error) {
@@ -457,7 +462,7 @@ var mcpContactTools = []mcpTool{
 			if in.Send && draft {
 				out.Note = botSendingNote
 			}
-			msg := oas.MessageCreate{Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body}
+			msg := oas.MessageCreate{Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, DesignId: in.DesignID, DesignLocale: in.locale()}
 			if draft {
 				msg.Draft = boolPtr(true)
 			}
@@ -497,13 +502,30 @@ var mcpContactTools = []mcpTool{
 			return out, nil
 		}),
 	defineTool("update_draft", "Change a draft",
-		"Rewrites an unsent draft: body replaces its text and subject, for a new e-mail draft, its subject. Only a draft can change, and a member's own draft only by that member; a sent message is refused. Maps to PATCH /v1/messages/{id}.",
+		"Rewrites an unsent draft: body replaces its text and subject, for a new e-mail draft, its subject; design_id puts it in an e-mail design offered in conversations and no_design takes it out. Only a draft can change, and a member's own draft only by that member; a sent message is refused. Maps to PATCH /v1/messages/{id}.",
 		idempotent, nil, mcpTool{ops: []string{"UpdateMessage"}},
 		func(ctx context.Context, c *mcpCall, in updateDraftIn) (mcpMessage, error) {
-			if in.Body == nil && in.Subject == nil {
-				return mcpMessage{}, errValidation("give a body or a subject")
+			if in.Body == nil && in.Subject == nil && in.DesignID == nil && in.DesignLocale == nil && !in.NoDesign {
+				return mcpMessage{}, errValidation("give a body, a subject or a design")
 			}
-			res, err := c.s.UpdateMessage(ctx, oas.UpdateMessageRequestObject{MessageId: in.MessageID, Body: &oas.MessageUpdate{Body: in.Body, Subject: in.Subject}})
+			if in.NoDesign && (in.DesignID != nil || in.DesignLocale != nil) {
+				return mcpMessage{}, errValidation("send no_design or a design, not both")
+			}
+			b := oas.MessageUpdate{Body: in.Body, Subject: in.Subject}
+			switch {
+			case in.NoDesign:
+				b.DesignId = nullable.NewNullNullable[uuid.UUID]()
+			case in.DesignID != nil:
+				b.DesignId = nullable.NewNullableWithValue(*in.DesignID)
+			}
+			if in.DesignLocale != nil {
+				if *in.DesignLocale == "" {
+					b.DesignLocale = nullable.NewNullNullable[string]()
+				} else {
+					b.DesignLocale = nullable.NewNullableWithValue(*in.DesignLocale)
+				}
+			}
+			res, err := c.s.UpdateMessage(ctx, oas.UpdateMessageRequestObject{MessageId: in.MessageID, Body: &b})
 			if err != nil {
 				return mcpMessage{}, err
 			}

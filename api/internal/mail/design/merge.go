@@ -159,3 +159,44 @@ func (v Values) URL(s string) string {
 }
 
 func isLinkField(name string) bool { return name == "unsubscribe_url" || name == "preferences_url" }
+
+// Mail sent in a conversation has no list and no unsubscribe or preference page.
+func ConversationFields(name string) bool { return name != "list.name" && !isLinkField(name) }
+
+func (d Document) FieldIssues(v Values, allowed func(name string) bool) []Issue {
+	var out []Issue
+	seen := map[string]bool{}
+	check := func(id string, fields []Field) {
+		for _, f := range fields {
+			code := ""
+			switch {
+			case !allowed(f.Name):
+				code = "merge_field_unavailable"
+			case !f.HasFallback && strings.TrimSpace(v.value(f)) == "":
+				code = "merge_field_empty"
+			default:
+				continue
+			}
+			if k := id + "\x00" + code + "\x00" + f.Name; !seen[k] {
+				seen[k] = true
+				out = append(out, Issue{BlockID: id, Code: code, Detail: f.Name})
+			}
+		}
+	}
+	check("", Fields(d.Preheader))
+	d.Walk(func(b Block) {
+		switch b.Type {
+		case "heading":
+			f, _ := richFields(b.Text)
+			check(b.ID, f)
+		case "text", "footer":
+			f, _ := richFields(b.HTML)
+			check(b.ID, f)
+		case "button":
+			check(b.ID, append(Fields(b.Label), Fields(b.URL)...))
+		case "image":
+			check(b.ID, Fields(b.Link))
+		}
+	})
+	return out
+}

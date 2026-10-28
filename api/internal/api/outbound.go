@@ -55,6 +55,7 @@ type emailPlan struct {
 	references      []string
 	auto            bool
 	memberAddressID *uuid.UUID
+	design          *designedMail
 }
 
 func (p *emailPlan) recipients() []string {
@@ -171,13 +172,18 @@ func (s *Server) recordOutboundEmail(ctx context.Context, q *store.Queries, plan
 		refs = []string{}
 	}
 	chID := plan.channelID
-	if err := q.CreateMessageEmail(ctx, store.CreateMessageEmailParams{
+	arg := store.CreateMessageEmailParams{
 		WorkspaceID: msg.WorkspaceID, MessageID: msg.ID, ConversationID: msg.ConversationID, ChannelID: &chID,
 		Direction: string(oas.Out), HeaderMessageID: plan.headerID, InReplyTo: plan.inReplyTo, ReferencesIds: refs,
 		FromAddress: plan.from.Email, ToAddresses: plan.recipients(), CcAddresses: nonNil(plan.cc), Subject: plan.subject,
 		FullText: msg.Body, FullHtml: msg.Html, Headers: []byte("{}"), Dmarc: email.DMARCUnknown, Auto: plan.auto,
 		CreatedAt: msg.CreatedAt,
-	}); err != nil {
+	}
+	if d := plan.design; d != nil {
+		arg.FullText, arg.FullHtml = d.text, &d.html
+		arg.DesignID, arg.DesignVersion, arg.DesignLocale, arg.Outreach = &d.id, &d.version, &d.locale, &d.outreach
+	}
+	if err := q.CreateMessageEmail(ctx, arg); err != nil {
 		return err
 	}
 	if plan.memberAddressID != nil {
@@ -198,11 +204,15 @@ func (s *Server) queueEmail(ctx context.Context, q *store.Queries, events *event
 		return nil, err
 	}
 	events.job(EmailSendArgs{WorkspaceID: msg.WorkspaceID, MessageID: msg.ID}, &river.InsertOpts{MaxAttempts: emailSendAttempts})
-	return &store.ListMessageEmailsRow{
+	out := &store.ListMessageEmailsRow{
 		MessageID: msg.ID, Direction: string(oas.Out), HeaderMessageID: plan.headerID, FromAddress: plan.from.Email,
 		ToAddresses: plan.recipients(), CcAddresses: plan.cc, BccAddresses: plan.bcc, Subject: plan.subject, Auto: plan.auto,
 		Dmarc: email.DMARCUnknown,
-	}, nil
+	}
+	if d := plan.design; d != nil {
+		out.DesignID, out.DesignVersion, out.DesignLocale, out.DesignName = &d.id, &d.version, &d.locale, d.name
+	}
+	return out, nil
 }
 
 func emailSummaries(ctx context.Context, q *store.Queries, workspaceID uuid.UUID, ids []uuid.UUID) (map[uuid.UUID]*store.ListMessageEmailsRow, error) {
@@ -246,6 +256,9 @@ func withEmail(m oas.Message, e *store.ListMessageEmailsRow) oas.Message {
 		out.Subject = &subject
 	}
 	m.Email = out
+	if d := emailDesign(e); d != nil {
+		m.Design = d
+	}
 	return m
 }
 
@@ -568,8 +581,11 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	if me.FullHtml != nil && len(msgs) == 1 {
 		out.HTML = *me.FullHtml
 	}
+	designed := me.DesignVersion != nil && me.FullHtml != nil
 	blocks := batchCards(msgs)
-	if sigHTML, sigText, ok := batchSignature(msgs); ok {
+	if designed {
+		out.Text = me.FullText
+	} else if sigHTML, sigText, ok := batchSignature(msgs); ok {
 		if out.HTML == "" {
 			out.Text = signedText(out.Text, sigText)
 			out.HTML = signedHTML(batchText(msgs, true), blocks, sigHTML)
@@ -597,6 +613,11 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 	}
 	if out.Headers, err = s.sesHeaders(ctx, ch, cfg); err != nil {
 		return "", err
+	}
+	if designed && me.Outreach {
+		manage := s.outreachURL(conv)
+		out.Headers = append(out.Headers, email.Header{Name: "List-Unsubscribe", Value: "<" + manage + ">"},
+			email.Header{Name: "List-Unsubscribe-Post", Value: "List-Unsubscribe=One-Click"})
 	}
 	raw, err := email.Build(out)
 	if err != nil {
@@ -772,6 +793,10 @@ func (s *Server) GetMessageEmail(ctx context.Context, req oas.GetMessageEmailReq
 		return nil, err
 	}
 	original := s.originalHTML(ctx, me)
+	if me.DesignVersion != nil && me.FullHtml != nil {
+		original = me.FullHtml
+		me.FullHtml = new(s.sanitize.Sanitize(*me.FullHtml))
+	}
 	out := oas.GetMessageEmail200JSONResponse{
 		MessageId: me.HeaderMessageID, FullText: me.FullText, FullHtml: me.FullHtml, OriginalHtml: original, InReplyTo: me.InReplyTo,
 		AuthenticationResults: me.AuthenticationResults, Headers: map[string]string{},

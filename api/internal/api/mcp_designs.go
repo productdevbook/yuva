@@ -13,6 +13,8 @@ import (
 	"time"
 	"uuid"
 
+	"github.com/modelcontextprotocol/go-sdk/mcp"
+
 	"github.com/productdevbook/yuva/api/internal/mail/images"
 	"github.com/productdevbook/yuva/api/internal/oas"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -179,26 +181,56 @@ func (c *mcpCall) uploadImage(ctx context.Context, in uploadImageIn) (uploadImag
 }
 
 type listDesignsIn struct {
-	InboxID  *uuid.UUID `json:"inbox_id,omitempty" jsonschema:"only this inbox's designs"`
-	Query    string     `json:"query,omitempty" jsonschema:"part of the name"`
-	Archived bool       `json:"archived,omitempty" jsonschema:"true lists archived designs instead"`
-	Cursor   string     `json:"cursor,omitempty"`
-	Limit    int32      `json:"limit,omitempty" jsonschema:"1 to 100, default 25"`
+	InboxID          *uuid.UUID `json:"inbox_id,omitempty" jsonschema:"only this inbox's designs"`
+	Query            string     `json:"query,omitempty" jsonschema:"part of the name"`
+	Archived         bool       `json:"archived,omitempty" jsonschema:"true lists archived designs instead"`
+	ForConversations bool       `json:"for_conversations,omitempty" jsonschema:"true lists only the designs offered in conversations, the ones send_reply, draft_reply, compose_mail and start_conversation take as design_id; with inbox_id, that inbox's and the workspace-wide ones. Members who do not edit designs always get these"`
+	Cursor           string     `json:"cursor,omitempty"`
+	Limit            int32      `json:"limit,omitempty" jsonschema:"1 to 100, default 25"`
 }
 
 type mcpDesignSummary struct {
-	ID           uuid.UUID  `json:"id"`
-	Name         string     `json:"name"`
-	InboxID      *uuid.UUID `json:"inbox_id,omitempty" jsonschema:"absent for a design every inbox may use"`
-	Version      int32      `json:"version"`
-	TemplateSlug string     `json:"template_slug,omitempty"`
-	ArchivedAt   *time.Time `json:"archived_at,omitempty"`
-	UpdatedAt    time.Time  `json:"updated_at"`
-	PanelURL     string     `json:"panel_url,omitempty"`
+	ID               uuid.UUID  `json:"id"`
+	Name             string     `json:"name"`
+	InboxID          *uuid.UUID `json:"inbox_id,omitempty" jsonschema:"absent for a design every inbox may use"`
+	Version          int32      `json:"version"`
+	TemplateSlug     string     `json:"template_slug,omitempty"`
+	ForConversations bool       `json:"for_conversations,omitempty" jsonschema:"offered in conversations"`
+	ArchivedAt       *time.Time `json:"archived_at,omitempty"`
+	UpdatedAt        time.Time  `json:"updated_at"`
+	PanelURL         string     `json:"panel_url,omitempty"`
 }
 
 type designIn struct {
 	DesignID uuid.UUID `json:"design_id"`
+}
+
+type previewMessageDesignIn struct {
+	ConversationID uuid.UUID `json:"conversation_id"`
+	DesignID       uuid.UUID `json:"design_id" jsonschema:"a design offered in conversations, from list_designs with for_conversations"`
+	DesignLocale   string    `json:"design_locale,omitempty" jsonschema:"one of the design's language versions instead of the contact's"`
+	Body           string    `json:"body,omitempty" jsonschema:"the message text to set into the design; the design's placeholder without it"`
+	Dark           bool      `json:"dark,omitempty" jsonschema:"true renders as a mail app in dark mode shows it"`
+	IncludeHTML    bool      `json:"include_html,omitempty" jsonschema:"true adds the HTML as an embedded text/html resource"`
+}
+
+type previewMessageDesignOut struct {
+	DesignID  uuid.UUID        `json:"design_id"`
+	Locale    string           `json:"locale,omitempty" jsonschema:"the version the contact would get; absent for a design in one language"`
+	Subject   string           `json:"subject" jsonschema:"the subject the mail would carry"`
+	Footer    string           `json:"footer" jsonschema:"reply when the contact has written in the conversation; outreach otherwise, with an unsubscribe link and the outreach limits of send_reply"`
+	Text      string           `json:"text" jsonschema:"the plain-text part of the mail with the contact's merge fields"`
+	SizeBytes int64            `json:"size_bytes" jsonschema:"the HTML's size; Gmail cuts mail off above 102 KB"`
+	Warnings  []mcpDesignIssue `json:"warnings"`
+	HTMLURI   string           `json:"html_uri,omitempty" jsonschema:"with include_html, the HTML comes as an embedded text/html resource with this URI"`
+	html      string
+}
+
+func (o previewMessageDesignOut) extraContent() []mcp.Content {
+	if o.HTMLURI == "" {
+		return nil
+	}
+	return []mcp.Content{&mcp.EmbeddedResource{Resource: &mcp.ResourceContents{URI: o.HTMLURI, MIMEType: "text/html", Text: o.html}}}
 }
 
 type duplicateDesignIn struct {
@@ -245,10 +277,13 @@ var mcpDesignTools = []mcpTool{
 			return c.uploadImage(ctx, in)
 		}),
 	defineTool("list_designs", "List e-mail designs",
-		"Lists the workspace's e-mail designs, most recently changed first. Read one with get_design. Owners, admins and keys only. Maps to GET /v1/email-designs.",
-		readOnly, nil, mcpTool{ops: []string{"ListEmailDesigns"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
+		"Lists the workspace's e-mail designs, most recently changed first. Read one with get_design. Owners, admins and keys see every design; other members and connections with conversations:read only those offered in conversations, which replies and new mail can be sent in. Maps to GET /v1/email-designs.",
+		readOnly, nil, mcpTool{ops: []string{"ListEmailDesigns"}, gate: func(p principal) error { _, err := designReader(p); return mcpScopeError(err) }},
 		func(ctx context.Context, c *mcpCall, in listDesignsIn) (mcpPage[mcpDesignSummary], error) {
 			params := oas.ListEmailDesignsParams{InboxId: in.InboxID, Q: optString[string](in.Query), Cursor: optString[string](in.Cursor), Limit: optLimit(in.Limit)}
+			if editor, _ := designReader(c.p); in.ForConversations || !editor {
+				params.ForConversations = boolPtr(true)
+			}
 			if in.Archived {
 				params.Archived = &in.Archived
 			}
@@ -259,8 +294,9 @@ var mcpDesignTools = []mcpTool{
 			page := res.(oas.ListEmailDesigns200JSONResponse)
 			out := mcpPage[mcpDesignSummary]{Items: []mcpDesignSummary{}}
 			for _, d := range page.Items {
-				s := mcpDesignSummary{ID: d.Id, Name: d.Name, InboxID: d.InboxId, Version: d.Version, TemplateSlug: deref(d.TemplateSlug), ArchivedAt: d.ArchivedAt, UpdatedAt: d.UpdatedAt}
-				if !c.s.noPanel {
+				s := mcpDesignSummary{ID: d.Id, Name: d.Name, InboxID: d.InboxId, Version: d.Version, TemplateSlug: deref(d.TemplateSlug), ArchivedAt: d.ArchivedAt, UpdatedAt: d.UpdatedAt,
+					ForConversations: d.ForConversations}
+				if editor, _ := designReader(c.p); !c.s.noPanel && editor {
 					s.PanelURL = c.panelURL("/broadcasts/designs/" + d.Id.String())
 				}
 				out.Items = append(out.Items, s)
@@ -270,9 +306,34 @@ var mcpDesignTools = []mcpTool{
 			}
 			return out, nil
 		}),
+	defineTool("preview_message_design", "Preview a message in an e-mail design",
+		"Renders what the conversation's contact would get for a reply or new mail in a design offered in conversations: their language version, their merge fields, your signature, the footer (reply or outreach) and body in the design's message block. Nothing is stored or sent. Maps to POST /v1/conversations/{id}/design-preview.",
+		readOnly, nil, mcpTool{ops: []string{"PreviewConversationDesign"}},
+		func(ctx context.Context, c *mcpCall, in previewMessageDesignIn) (previewMessageDesignOut, error) {
+			b := oas.ConversationDesignPreview{DesignId: in.DesignID, Dark: &in.Dark}
+			if in.Body != "" {
+				b.Body = &in.Body
+			}
+			if in.DesignLocale != "" {
+				b.DesignLocale = new(oas.LanguageTag(in.DesignLocale))
+			}
+			res, err := c.s.PreviewConversationDesign(ctx, oas.PreviewConversationDesignRequestObject{ConversationId: in.ConversationID, Body: &b})
+			if err != nil {
+				return previewMessageDesignOut{}, err
+			}
+			r := oas.ConversationDesignRender(res.(oas.PreviewConversationDesign200JSONResponse))
+			out := previewMessageDesignOut{
+				DesignID: in.DesignID, Locale: deref((*string)(r.Locale)), Subject: r.Subject, Footer: string(r.Footer), Text: r.Text,
+				SizeBytes: r.SizeBytes, Warnings: designIssuesOut(r.Warnings),
+			}
+			if in.IncludeHTML {
+				out.HTMLURI, out.html = mcpURIPrefix+"conversation/"+in.ConversationID.String()+"/design/"+in.DesignID.String()+"/preview.html", r.Html
+			}
+			return out, nil
+		}),
 	defineTool("get_design", "Get an e-mail design",
 		"Returns a design with its document, version and warnings; change it with update_design. Owners, admins and keys only. Maps to GET /v1/email-designs/{id}.",
-		readOnly, nil, mcpTool{ops: []string{"GetEmailDesign"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
+		readOnly, nil, mcpTool{ops: []string{"GetEmailDesign"}, scopes: []oas.ApiKeyScope{oas.BroadcastsRead}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
 		func(ctx context.Context, c *mcpCall, in designIn) (mcpDesign, error) {
 			return c.getDesign(ctx, in.DesignID)
 		}),

@@ -60,18 +60,20 @@ RETURNING *;
 INSERT INTO message_emails (workspace_id, message_id, conversation_id, channel_id, direction, header_message_id,
                             in_reply_to, references_ids, from_address, to_addresses, cc_addresses, subject,
                             full_text, full_html, quoted, headers, raw_key, raw_size, authentication_results,
-                            dmarc, auto, created_at)
+                            dmarc, auto, created_at, design_id, design_version, design_locale, outreach)
 VALUES (@workspace_id, @message_id, @conversation_id, @channel_id, @direction, @header_message_id,
         @in_reply_to, @references_ids, @from_address, @to_addresses, @cc_addresses, @subject,
         @full_text, @full_html, @quoted, @headers, @raw_key, @raw_size, @authentication_results,
-        @dmarc, @auto, @created_at);
+        @dmarc, @auto, @created_at, sqlc.narg(design_id)::uuid, sqlc.narg(design_version)::integer,
+        sqlc.narg(design_locale)::text, coalesce(sqlc.narg(outreach)::bool, false));
 
 -- name: GetMessageEmail :one
 SELECT * FROM message_emails WHERE workspace_id = $1 AND message_id = $2;
 
 -- name: ListMessageEmails :many
 SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addresses, e.cc_addresses, e.bcc_addresses, e.subject, e.quoted,
-       (e.raw_key IS NOT NULL)::bool AS has_raw, e.auto, e.dmarc,
+       (e.raw_key IS NOT NULL)::bool AS has_raw, e.auto, e.dmarc, e.design_id, e.design_version, e.design_locale,
+       coalesce(dd.name, '')::text AS design_name,
        (e.direction = 'in' AND NOT EXISTS (
            SELECT 1 FROM contact_emails ce
            WHERE ce.workspace_id = e.workspace_id AND ce.contact_id = coalesce(m.author_contact_id, c.contact_id)
@@ -80,6 +82,7 @@ SELECT e.message_id, e.direction, e.header_message_id, e.from_address, e.to_addr
 FROM message_emails e
 JOIN conversations c ON c.workspace_id = e.workspace_id AND c.id = e.conversation_id
 JOIN messages m ON m.workspace_id = e.workspace_id AND m.id = e.message_id
+LEFT JOIN email_designs dd ON dd.workspace_id = e.workspace_id AND dd.id = e.design_id
 WHERE e.workspace_id = @workspace_id AND e.message_id = ANY(@message_ids::uuid[]);
 
 -- name: FindInboundEmailByHeader :one

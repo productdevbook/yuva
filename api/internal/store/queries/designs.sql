@@ -15,16 +15,22 @@ UPDATE email_designs SET name = @name, inbox_id = sqlc.narg(inbox_id), document 
 WHERE workspace_id = @workspace_id AND id = @id
 RETURNING *;
 
+-- name: SetEmailDesignOffered :one
+UPDATE email_designs SET for_conversations = @for_conversations
+WHERE workspace_id = @workspace_id AND id = @id
+RETURNING *;
+
 -- name: ArchiveEmailDesign :execrows
 UPDATE email_designs SET archived_at = coalesce(archived_at, @now::timestamptz)
 WHERE workspace_id = @workspace_id AND id = @id;
 
 -- name: ListEmailDesigns :many
-SELECT id, workspace_id, inbox_id, name, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at
+SELECT id, workspace_id, inbox_id, name, version, template_slug, created_by, updated_by, archived_at, created_at, updated_at, for_conversations
 FROM email_designs d
 WHERE d.workspace_id = @workspace_id
   AND @archived::bool = (d.archived_at IS NOT NULL)
-  AND (sqlc.narg(inbox_id)::uuid IS NULL OR d.inbox_id = sqlc.narg(inbox_id)::uuid)
+  AND (sqlc.narg(inbox_id)::uuid IS NULL OR d.inbox_id = sqlc.narg(inbox_id)::uuid OR (@with_shared::bool AND d.inbox_id IS NULL))
+  AND (sqlc.narg(for_conversations)::bool IS NULL OR d.for_conversations = sqlc.narg(for_conversations)::bool)
   AND (sqlc.narg(q)::text IS NULL OR d.name ILIKE '%' || sqlc.narg(q)::text || '%')
   AND (d.inbox_id IS NULL OR (@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = d.workspace_id AND pmb.id = d.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv

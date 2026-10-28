@@ -1341,6 +1341,9 @@ func (s *Server) SendBroadcastTestMail(ctx context.Context, a BroadcastTestArgs,
 	if doc == nil {
 		return skip("no design")
 	}
+	if n, _ := doc.HasMessageBlock(); n > 0 {
+		return skip("the design has a message block")
+	}
 	r, err := s.newBroadcastRenderer(ctx, s.st.Queries, b, *doc, &ch)
 	if errors.Is(err, errSenderNotReady) {
 		return skip("the channel cannot send")

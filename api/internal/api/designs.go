@@ -145,13 +145,16 @@ func (s *Server) iconURL(network, variant string) string {
 // renderScope is what a render knows besides the document: the inbox for the footer and the
 // language, the list it names, and whose values fill the merge fields.
 type renderScope struct {
-	inbox   *store.Inbox
-	list    *store.MailingList
-	values  *design.Values
-	subject string
-	pre     string
-	dark    bool
-	version string
+	inbox       *store.Inbox
+	list        *store.MailingList
+	values      *design.Values
+	subject     string
+	pre         string
+	dark        bool
+	version     string
+	message     *design.MessageSlot
+	footer      design.Footer
+	unsubscribe string
 }
 
 func (s *Server) renderDesign(ctx context.Context, q *store.Queries, ws uuid.UUID, d design.Document, sc renderScope) (design.Output, error) {
@@ -181,8 +184,12 @@ func (s *Server) renderDesign(ctx context.Context, q *store.Queries, ws uuid.UUI
 		v.ListName = sc.list.Name
 	}
 	v.UnsubscribeURL = s.linkBase() + "/m/example"
+	if sc.unsubscribe != "" {
+		v.UnsubscribeURL = sc.unsubscribe
+	}
 	v.PreferencesURL = v.UnsubscribeURL
 	in.Values = v
+	in.Message, in.Footer = sc.message, sc.footer
 	img, err := s.designImages(ctx, q, ws, d)
 	if err != nil {
 		return design.Output{}, err
@@ -292,7 +299,7 @@ func (s *Server) designBody(ctx context.Context, q *store.Queries, row store.Ema
 	return oas.EmailDesign{
 		Id: row.ID, Name: row.Name, InboxId: row.InboxID, Version: row.Version, TemplateSlug: row.TemplateSlug,
 		CreatedBy: row.CreatedBy, UpdatedBy: row.UpdatedBy, ArchivedAt: row.ArchivedAt, CreatedAt: row.CreatedAt, UpdatedAt: row.UpdatedAt,
-		Document: doc, Warnings: warnings,
+		Document: doc, Warnings: warnings, ForConversations: row.ForConversations,
 	}, nil
 }
 
@@ -325,6 +332,41 @@ func visibleDesign(ctx context.Context, q *store.Queries, p principal, id uuid.U
 		}
 	}
 	return d, nil
+}
+
+func offeredDesign(ctx context.Context, q *store.Queries, p principal, id uuid.UUID) (store.EmailDesign, error) {
+	d, err := q.GetEmailDesign(ctx, store.GetEmailDesignParams{WorkspaceID: p.workspaceID, ID: id})
+	if store.IsNotFound(err) {
+		return d, errDesignGone
+	}
+	if err != nil {
+		return d, err
+	}
+	if !d.ForConversations || d.ArchivedAt != nil {
+		return d, errDesignGone
+	}
+	if d.InboxID != nil {
+		ok, err := inboxObjectsVisible(ctx, q, p, *d.InboxID)
+		if err != nil {
+			return d, err
+		}
+		if !ok {
+			return d, errDesignGone
+		}
+	}
+	return d, nil
+}
+
+func (s *Server) offerDesign(ctx context.Context, q *store.Queries, p principal, row store.EmailDesign, on bool) (store.EmailDesign, error) {
+	if row.ForConversations == on {
+		return row, nil
+	}
+	out, err := q.SetEmailDesignOffered(ctx, store.SetEmailDesignOfferedParams{ForConversations: on, WorkspaceID: p.workspaceID, ID: row.ID})
+	if err != nil {
+		return row, err
+	}
+	return out, s.audit(ctx, q, p, oas.AuditEmailDesignUpdated, oas.AuditTargetEmailDesign, row.ID,
+		auditDetails{"name": out.Name, "for_conversations": map[string]bool{"from": row.ForConversations, "to": on}})
 }
 
 // designInbox checks the inbox a design is saved under: one the caller sees, and for a key limited
@@ -383,10 +425,35 @@ func (s *Server) keepConflictVersion(ctx context.Context, q *store.Queries, cur 
 
 func designName(name string) (string, error) { return trimmed(name, 1, 200, "name") }
 
+func designReader(p principal) (bool, error) {
+	if requireManagerOrKey(p) == nil && requireScope(p, oas.BroadcastsRead) == nil {
+		return true, nil
+	}
+	if err := requireScope(p, oas.ConversationsRead); err != nil {
+		if p.isKey() {
+			return false, errInsufficientScope(oas.BroadcastsRead)
+		}
+		return false, err
+	}
+	return false, nil
+}
+
 func (s *Server) ListEmailDesigns(ctx context.Context, req oas.ListEmailDesignsRequestObject) (oas.ListEmailDesignsResponseObject, error) {
 	p := principalFrom(ctx)
-	if err := requireManagerOrKey(p); err != nil {
+	offered := boolOr(req.Params.ForConversations, false)
+	editor, err := designReader(p)
+	if err != nil {
 		return nil, err
+	}
+	if !editor && !offered {
+		if err := requireManagerOrKey(p); err != nil {
+			return nil, err
+		}
+		return nil, requireScope(p, oas.BroadcastsRead)
+	}
+	archived := boolOr(req.Params.Archived, false)
+	if !editor && archived {
+		return nil, errValidation("archived designs are listed for those who edit designs")
 	}
 	lim, err := pageSize(req.Params.Limit)
 	if err != nil {
@@ -397,7 +464,11 @@ func (s *Server) ListEmailDesigns(ctx context.Context, req oas.ListEmailDesignsR
 		return nil, err
 	}
 	if req.Params.InboxId != nil {
-		if _, err := ownedInbox(ctx, s.st.Queries, p, *req.Params.InboxId); err != nil {
+		check := ownedInbox
+		if offered {
+			check = visibleInbox
+		}
+		if _, err := check(ctx, s.st.Queries, p, *req.Params.InboxId); err != nil {
 			return nil, err
 		}
 	}
@@ -407,7 +478,8 @@ func (s *Server) ListEmailDesigns(ctx context.Context, req oas.ListEmailDesignsR
 		search = &esc
 	}
 	rows, err := s.st.ListEmailDesigns(ctx, store.ListEmailDesignsParams{
-		WorkspaceID: p.workspaceID, Archived: boolOr(req.Params.Archived, false), InboxID: req.Params.InboxId, Q: search,
+		WorkspaceID: p.workspaceID, Archived: archived, InboxID: req.Params.InboxId, Q: search,
+		WithShared: offered && req.Params.InboxId != nil, ForConversations: req.Params.ForConversations,
 		AllInboxes: p.seesAllInboxes(), ViewerID: p.viewerID(), CursorAt: at, CursorID: id, Lim: lim + 1,
 	})
 	if err != nil {
@@ -424,6 +496,7 @@ func (s *Server) ListEmailDesigns(ctx context.Context, req oas.ListEmailDesignsR
 		items[i] = oas.EmailDesignSummary{
 			Id: r.ID, Name: r.Name, InboxId: r.InboxID, Version: r.Version, TemplateSlug: r.TemplateSlug, CreatedBy: r.CreatedBy,
 			UpdatedBy: r.UpdatedBy, ArchivedAt: r.ArchivedAt, CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt,
+			ForConversations: r.ForConversations,
 		}
 	}
 	return oas.ListEmailDesigns200JSONResponse{Items: items, NextCursor: next}, nil
@@ -467,11 +540,18 @@ func (s *Server) CreateEmailDesign(ctx context.Context, req oas.CreateEmailDesig
 		default:
 			d = blankDocument()
 		}
+		offered := boolOr(b.ForConversations, false)
+		if is := messageBlockIssue(d); offered && is != nil {
+			return issuesProblem(is)
+		}
 		row, err = q.CreateEmailDesign(ctx, store.CreateEmailDesignParams{
 			ID: newID(), WorkspaceID: p.workspaceID, InboxID: b.InboxId, Name: name, Document: design.Marshal(d),
 			TemplateSlug: slug, MemberID: p.memberRef(), Now: s.now(),
 		})
 		if err != nil {
+			return err
+		}
+		if row, err = s.offerDesign(ctx, q, p, row, offered); err != nil {
 			return err
 		}
 		return s.snapshotDesign(ctx, q, p, row, "autosave", true)
@@ -488,7 +568,16 @@ func (s *Server) CreateEmailDesign(ctx context.Context, req oas.CreateEmailDesig
 
 func (s *Server) GetEmailDesign(ctx context.Context, req oas.GetEmailDesignRequestObject) (oas.GetEmailDesignResponseObject, error) {
 	p := principalFrom(ctx)
-	row, err := visibleDesign(ctx, s.st.Queries, p, req.DesignId, false)
+	editor, err := designReader(p)
+	if err != nil {
+		return nil, err
+	}
+	var row store.EmailDesign
+	if editor {
+		row, err = visibleDesign(ctx, s.st.Queries, p, req.DesignId, false)
+	} else {
+		row, err = offeredDesign(ctx, s.st.Queries, p, req.DesignId)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -570,12 +659,19 @@ func (s *Server) UpdateEmailDesign(ctx context.Context, req oas.UpdateEmailDesig
 				return err
 			}
 		}
+		offered := boolOr(b.ForConversations, cur.ForConversations)
+		if is := messageBlockIssue(d); offered && is != nil {
+			return issuesProblem(is)
+		}
 		row, err = s.saveDesign(ctx, q, p, cur, b.BaseVersion, name, b.InboxId, d)
 		if errors.Is(err, errVersionConflict) {
 			conflict = cur
 			return s.keepConflictVersion(ctx, q, cur)
 		}
 		if err != nil {
+			return err
+		}
+		if row, err = s.offerDesign(ctx, q, p, row, offered); err != nil {
 			return err
 		}
 		if boolOr(b.Snapshot, false) {
@@ -727,6 +823,9 @@ func (s *Server) RestoreEmailDesignVersion(ctx context.Context, req oas.RestoreE
 		if err != nil {
 			return err
 		}
+		if is := messageBlockIssue(d); cur.ForConversations && is != nil {
+			return issuesProblem(is)
+		}
 		row, err = s.saveDesign(ctx, q, p, cur, req.Body.BaseVersion, cur.Name, cur.InboxID, d)
 		if errors.Is(err, errVersionConflict) {
 			conflict = cur
@@ -829,7 +928,11 @@ func (s *Server) contactValues(ctx context.Context, q *store.Queries, p principa
 	if err := visibleContact(ctx, q, p, id); err != nil {
 		return design.Values{}, "", err
 	}
-	c, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: p.workspaceID, ID: id})
+	return contactValuesOf(ctx, q, p.workspaceID, id)
+}
+
+func contactValuesOf(ctx context.Context, q *store.Queries, ws, id uuid.UUID) (design.Values, string, error) {
+	c, err := q.GetContact(ctx, store.GetContactParams{WorkspaceID: ws, ID: id})
 	if store.IsNotFound(err) {
 		return design.Values{}, "", errContactGone
 	}
@@ -837,7 +940,7 @@ func (s *Server) contactValues(ctx context.Context, q *store.Queries, p principa
 		return design.Values{}, "", err
 	}
 	v := design.Values{ContactName: c.Name, Attributes: map[string]string{}}
-	emails, err := q.ListContactEmails(ctx, store.ListContactEmailsParams{WorkspaceID: p.workspaceID, ContactIds: []uuid.UUID{id}})
+	emails, err := q.ListContactEmails(ctx, store.ListContactEmailsParams{WorkspaceID: ws, ContactIds: []uuid.UUID{id}})
 	if err != nil {
 		return v, "", err
 	}

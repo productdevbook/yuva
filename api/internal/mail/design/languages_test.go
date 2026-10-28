@@ -189,7 +189,7 @@ func TestFooterLanguages(t *testing.T) {
 		if got := fmt.Sprintf(x.because, "List"); strings.Contains(got, "%!") || !strings.Contains(got, "List") {
 			t.Errorf("%s because: %q", tag, got)
 		}
-		if x.unsubscribe == "" || x.prefs == "" || x.identityMissing == "" || x.website == "" || x.image == "" {
+		if x.unsubscribe == "" || x.prefs == "" || x.identityMissing == "" || x.website == "" || x.image == "" || x.message == "" {
 			t.Errorf("%s has an empty word", tag)
 		}
 	}

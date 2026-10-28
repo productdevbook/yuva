@@ -1137,6 +1137,7 @@ const (
 	AuditConversationRestored                AuditAction = "conversation.restored"
 	AuditConversationTrashed                 AuditAction = "conversation.trashed"
 	AuditConversationsDeleted                AuditAction = "conversations.deleted"
+	AuditEmailDesignUpdated                  AuditAction = "email_design.updated"
 	AuditInboxCreated                        AuditAction = "inbox.created"
 	AuditInboxDeleted                        AuditAction = "inbox.deleted"
 	AuditInboxIdentitySecretRotated          AuditAction = "inbox.identity_secret_rotated"
@@ -1242,6 +1243,8 @@ func (e AuditAction) Valid() bool {
 	case AuditConversationTrashed:
 		return true
 	case AuditConversationsDeleted:
+		return true
+	case AuditEmailDesignUpdated:
 		return true
 	case AuditInboxCreated:
 		return true
@@ -1406,6 +1409,7 @@ const (
 	AuditTargetContact          AuditTargetType = "contact"
 	AuditTargetConversation     AuditTargetType = "conversation"
 	AuditTargetConversations    AuditTargetType = "conversations"
+	AuditTargetEmailDesign      AuditTargetType = "email_design"
 	AuditTargetInbox            AuditTargetType = "inbox"
 	AuditTargetInvite           AuditTargetType = "invite"
 	AuditTargetIssueIntegration AuditTargetType = "issue_integration"
@@ -1438,6 +1442,8 @@ func (e AuditTargetType) Valid() bool {
 	case AuditTargetConversation:
 		return true
 	case AuditTargetConversations:
+		return true
+	case AuditTargetEmailDesign:
 		return true
 	case AuditTargetInbox:
 		return true
@@ -1964,6 +1970,7 @@ const (
 	BroadcastReviewKeyImagesAlt        BroadcastReviewKey = "images_alt"
 	BroadcastReviewKeyLinks            BroadcastReviewKey = "links"
 	BroadcastReviewKeyMergeFields      BroadcastReviewKey = "merge_fields"
+	BroadcastReviewKeyMessageBlock     BroadcastReviewKey = "message_block"
 	BroadcastReviewKeyPace             BroadcastReviewKey = "pace"
 	BroadcastReviewKeySendWindow       BroadcastReviewKey = "send_window"
 	BroadcastReviewKeySenderIdentity   BroadcastReviewKey = "sender_identity"
@@ -1996,6 +2003,8 @@ func (e BroadcastReviewKey) Valid() bool {
 	case BroadcastReviewKeyLinks:
 		return true
 	case BroadcastReviewKeyMergeFields:
+		return true
+	case BroadcastReviewKeyMessageBlock:
 		return true
 	case BroadcastReviewKeyPace:
 		return true
@@ -2606,6 +2615,24 @@ const (
 func (e ConversationDeletedEventType) Valid() bool {
 	switch e {
 	case ConversationDeletedEventTypeConversationDeleted:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConversationDesignRenderFooter.
+const (
+	DesignFooterOutreach ConversationDesignRenderFooter = "outreach"
+	DesignFooterReply    ConversationDesignRenderFooter = "reply"
+)
+
+// Valid indicates whether the value is a known member of the ConversationDesignRenderFooter enum.
+func (e ConversationDesignRenderFooter) Valid() bool {
+	switch e {
+	case DesignFooterOutreach:
+		return true
+	case DesignFooterReply:
 		return true
 	default:
 		return false
@@ -3470,6 +3497,21 @@ const (
 func (e EmailImageBulkChangeAction) Valid() bool {
 	switch e {
 	case EmailImageBulkChangeActionDelete:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EmailMessageBlockType.
+const (
+	EmailBlockMessage EmailMessageBlockType = "message"
+)
+
+// Valid indicates whether the value is a known member of the EmailMessageBlockType enum.
+func (e EmailMessageBlockType) Valid() bool {
+	switch e {
+	case EmailBlockMessage:
 		return true
 	default:
 		return false
@@ -10411,6 +10453,8 @@ type Attributes map[string]interface{}
 //     `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
 //     among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
 //     `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
+//   - `email_design.updated`: `name`, `for_conversations` (`from`, `to`) when a save offers
+//     the design in conversations or stops offering it; other saves are not recorded.
 //
 // Details never make an action fail: when they would be too long, lists are replaced by
 // `<name>_count` and `truncated` is `true`.
@@ -10548,6 +10592,8 @@ type AuditEntry struct {
 	//   `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
 	//   among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
 	//   `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
+	// - `email_design.updated`: `name`, `for_conversations` (`from`, `to`) when a save offers
+	//   the design in conversations or stops offering it; other saves are not recorded.
 	//
 	// Details never make an action fail: when they would be too long, lists are replaced by
 	// `<name>_count` and `truncated` is `true`.
@@ -11571,7 +11617,9 @@ type BroadcastReviewItem struct {
 	// `translations`: `ok` for a design without versions or with every version complete,
 	// `warning` naming versions without their own subject, with block texts missing, whose
 	// required footer is in English, and broadcast subjects for languages the design does not
-	// have (they are not used).
+	// have (they are not used). `message_block`: `blocking` when the design has a `message`
+	// block, which is for conversations and would leave an empty slot in list mail; listed only
+	// then.
 	Key    BroadcastReviewKey    `json:"key"`
 	Status BroadcastReviewStatus `json:"status"`
 }
@@ -11581,7 +11629,9 @@ type BroadcastReviewItem struct {
 // `translations`: `ok` for a design without versions or with every version complete,
 // `warning` naming versions without their own subject, with block texts missing, whose
 // required footer is in English, and broadcast subjects for languages the design does not
-// have (they are not used).
+// have (they are not used). `message_block`: `blocking` when the design has a `message`
+// block, which is for conversations and would leave an empty slot in list mail; listed only
+// then.
 type BroadcastReviewKey string
 
 // BroadcastReviewStatus defines model for BroadcastReviewStatus.
@@ -13621,6 +13671,15 @@ type ComposeMail struct {
 	// ClientId Makes the request idempotent within the inbox.
 	ClientId *string `json:"client_id,omitempty"`
 
+	// DesignId An e-mail design offered in conversations of the inbox or workspace-wide; only with one
+	// `to` and no `cc` (`400 design_one_recipient`). See `createMessage`.
+	DesignId *uuid.UUID `json:"design_id,omitempty"`
+
+	// DesignLocale One of the design's versions to send instead of the contact's; needs `design_id`.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag `json:"design_locale,omitempty"`
+
 	// Draft Stores the message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
@@ -13652,11 +13711,17 @@ type ComposeMailMultipart struct {
 	Body *string  `json:"body,omitempty"`
 
 	// Cc Repeat the field once per address.
-	Cc        *[]Email              `json:"cc,omitempty"`
-	ChannelId *uuid.UUID            `json:"channel_id,omitempty"`
-	ClientId  *string               `json:"client_id,omitempty"`
-	Draft     *bool                 `json:"draft,omitempty"`
-	Files     *[]openapi_types.File `json:"files,omitempty"`
+	Cc        *[]Email   `json:"cc,omitempty"`
+	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+	ClientId  *string    `json:"client_id,omitempty"`
+	DesignId  *uuid.UUID `json:"design_id,omitempty"`
+
+	// DesignLocale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag          `json:"design_locale,omitempty"`
+	Draft        *bool                 `json:"draft,omitempty"`
+	Files        *[]openapi_types.File `json:"files,omitempty"`
 
 	// FromAddress Examples: owner@example.com
 	FromAddress *Email     `json:"from_address,omitempty"`
@@ -14345,6 +14410,48 @@ type ConversationDeletedEvent struct {
 
 // ConversationDeletedEventType defines model for ConversationDeletedEvent.Type.
 type ConversationDeletedEventType string
+
+// ConversationDesignPreview defines model for ConversationDesignPreview.
+type ConversationDesignPreview struct {
+	// Body The message text; the placeholder text without it.
+	Body *string `json:"body,omitempty"`
+
+	// Dark Render the dark palette as the page's own colours, as `renderEmailDesign`.
+	Dark     *bool     `json:"dark,omitempty"`
+	DesignId uuid.UUID `json:"design_id"`
+
+	// DesignLocale One of the design's versions instead of the contact's.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag `json:"design_locale,omitempty"`
+}
+
+// ConversationDesignRender defines model for ConversationDesignRender.
+type ConversationDesignRender struct {
+	// Footer `reply` when the contact has written in the conversation (the inbox's identity line
+	// only), `outreach` otherwise (the identity line, an unsubscribe link and one-click
+	// `List-Unsubscribe`, under the outreach rules of `createMessage`).
+	Footer ConversationDesignRenderFooter `json:"footer"`
+	Html   string                         `json:"html"`
+
+	// Locale The version rendered; absent for a design without versions.
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+
+	// SizeBytes The HTML's size in bytes, as Gmail counts it before clipping.
+	SizeBytes int64 `json:"size_bytes"`
+
+	// Subject The subject the mail would carry.
+	Subject  string             `json:"subject"`
+	Text     string             `json:"text"`
+	Warnings []EmailDesignIssue `json:"warnings"`
+}
+
+// ConversationDesignRenderFooter `reply` when the contact has written in the conversation (the inbox's identity line
+// only), `outreach` otherwise (the identity line, an unsubscribe link and one-click
+// `List-Unsubscribe`, under the outreach rules of `createMessage`).
+type ConversationDesignRenderFooter string
 
 // ConversationEvent A conversation was created, or its status, snooze, assignee, priority, labels, subject or
 // SLA (`sla`, for example when a target starts, is met or is breached) changed. `conversation.trashed`: it went to the trash, so drop it from every list but the
@@ -15826,9 +15933,14 @@ type EmailDesign struct {
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
 	Document EmailDesignDocument `json:"document"`
-	Id       uuid.UUID           `json:"id"`
+
+	// ForConversations Offered in conversations: members who see the design's inbox may send replies and new
+	// mail with it. Only a design with one `message` block.
+	ForConversations bool      `json:"for_conversations"`
+	Id               uuid.UUID `json:"id"`
 
 	// InboxId Absent for workspace-wide designs.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
@@ -15861,16 +15973,22 @@ type EmailDesignBulkChangeAction string
 type EmailDesignCreate struct {
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
-	Document *EmailDesignDocument    `json:"document,omitempty"`
-	InboxId  *uuid.UUID              `json:"inbox_id,omitempty"`
-	Name     string                  `json:"name"`
-	Template *EmailDesignTemplateRef `json:"template,omitempty"`
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
+	Document *EmailDesignDocument `json:"document,omitempty"`
+
+	// ForConversations Offer the design in conversations; owners, admins and keys. Needs exactly one `message`
+	// block at the top level or in a section (`422 invalid_design`, `message_block_missing`).
+	ForConversations *bool                   `json:"for_conversations,omitempty"`
+	InboxId          *uuid.UUID              `json:"inbox_id,omitempty"`
+	Name             string                  `json:"name"`
+	Template         *EmailDesignTemplateRef `json:"template,omitempty"`
 }
 
 // EmailDesignDocument An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 // JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-// most.
+// most. At most one `message` block, at the top level or in a section, marks where a
+// conversation message's text goes (`EmailMessageBlock`).
 type EmailDesignDocument struct {
 	Blocks []EmailBlock `json:"blocks"`
 
@@ -15917,8 +16035,12 @@ type EmailDesignDuplicate struct {
 // `locale_required` (`translations` without `locale`), `invalid_locale` (a translation key
 // equal to `locale` or to another key after canonical casing, or a `fallback_locale` that is
 // not a version), `translation_block` (an entry for a block that does not exist or has no
-// text; `field` as `translations.es.blocks.b7`). Warning codes are listed under
-// `renderEmailDesign`.
+// text; `field` as `translations.es.blocks.b7`), `message_block_repeated` (a second `message`
+// block), `message_block_missing` (`for_conversations` on a document without one),
+// `merge_field_unavailable` (`list.name`, `unsubscribe_url` or `preferences_url` in a design
+// used in a conversation; `detail` the field), `merge_field_empty` (a field without fallback
+// that is empty for the conversation's contact; `detail` the field). Warning codes are listed
+// under `renderEmailDesign`.
 type EmailDesignIssue struct {
 	// BlockId The block; absent for the theme and the preheader.
 	BlockId *string `json:"block_id,omitempty"`
@@ -16017,7 +16139,8 @@ type EmailDesignRenderRequest struct {
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
 	Document EmailDesignDocument `json:"document"`
 	InboxId  *uuid.UUID          `json:"inbox_id,omitempty"`
 	ListId   *uuid.UUID          `json:"list_id,omitempty"`
@@ -16046,7 +16169,11 @@ type EmailDesignSummary struct {
 
 	// CreatedBy The member; absent for keys and members who left.
 	CreatedBy *uuid.UUID `json:"created_by,omitempty"`
-	Id        uuid.UUID  `json:"id"`
+
+	// ForConversations Offered in conversations: members who see the design's inbox may send replies and new
+	// mail with it. Only a design with one `message` block.
+	ForConversations bool      `json:"for_conversations"`
+	Id               uuid.UUID `json:"id"`
 
 	// InboxId Absent for workspace-wide designs.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
@@ -16098,6 +16225,11 @@ type EmailDesignUpdate struct {
 	// `translations: {}` removes every version.
 	Document EmailDesignDocument `json:"document"`
 
+	// ForConversations Offer the design in conversations, or stop offering it; unchanged when absent. While it
+	// is on, a document without exactly one top-level or section `message` block is refused
+	// (`422 invalid_design`, `message_block_missing`).
+	ForConversations *bool `json:"for_conversations,omitempty"`
+
 	// InboxId Absent makes the design workspace-wide.
 	InboxId *uuid.UUID `json:"inbox_id,omitempty"`
 	Name    string     `json:"name"`
@@ -16120,7 +16252,8 @@ type EmailDesignVersionDetail struct {
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
 	Document EmailDesignDocument      `json:"document"`
 	MemberId *uuid.UUID               `json:"member_id,omitempty"`
 	Reason   EmailDesignVersionReason `json:"reason"`
@@ -16432,6 +16565,32 @@ type EmailImageUsage struct {
 	} `json:"member_signatures,omitempty"`
 }
 
+// EmailMessageBlock Where the text a member writes appears when the design is used in a conversation, followed
+// by the help article cards and the signature. At most one per document, at the top level or
+// in a section, never in columns; it holds no text and takes no translation entry. Previews
+// without a message show a dashed placeholder; a broadcast's review blocks a design that has
+// one (`message_block`). `align` is ignored.
+type EmailMessageBlock struct {
+	// Align Mirrored in right-to-left designs.
+	Align *EmailAlign `json:"align,omitempty"`
+
+	// Background Examples: #2563eb
+	Background *EmailColor `json:"background,omitempty"`
+
+	// Hide Hides the block on narrow (`mobile`) or wide (`desktop`) screens where the client supports it.
+	Hide *EmailHide `json:"hide,omitempty"`
+
+	// Id Chosen by the client, unique in the document; validation errors and warnings name it.
+	Id string `json:"id"`
+
+	// Padding Top, right, bottom and left padding in pixels; the block's default when absent.
+	Padding *[]int32              `json:"padding,omitempty"`
+	Type    EmailMessageBlockType `json:"type"`
+}
+
+// EmailMessageBlockType defines model for EmailMessageBlock.Type.
+type EmailMessageBlockType string
+
 // EmailSectionBlock A group of blocks on its own background. Sections do not nest.
 type EmailSectionBlock struct {
 	// Align Mirrored in right-to-left designs.
@@ -16610,7 +16769,8 @@ type EmailTemplateDetail struct {
 
 	// Document An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
 	// JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-	// most.
+	// most. At most one `message` block, at the top level or in a section, marks where a
+	// conversation message's text goes (`EmailMessageBlock`).
 	Document EmailDesignDocument  `json:"document"`
 	Images   []EmailTemplateImage `json:"images"`
 	Locale   EmailTemplateLocale  `json:"locale"`
@@ -19754,8 +19914,11 @@ type Message struct {
 	CreatedAt time.Time `json:"created_at"`
 
 	// Delivery Delivery of an outgoing message by e-mail.
-	Delivery  *MessageDelivery `json:"delivery,omitempty"`
-	Direction *Direction       `json:"direction,omitempty"`
+	Delivery *MessageDelivery `json:"delivery,omitempty"`
+
+	// Design The e-mail design the message is (or, for a draft, will be) sent in; absent when none.
+	Design    *MessageDesign `json:"design,omitempty"`
+	Direction *Direction     `json:"direction,omitempty"`
 
 	// Draft An outgoing message that is not delivered until it is sent
 	// (`POST /v1/messages/{id}/send`). Drafts are shown only on `/v1`: never to contacts,
@@ -19894,8 +20057,17 @@ type MessageCreate struct {
 	Cc *[]Email `json:"cc,omitempty"`
 
 	// ClientId Makes the request idempotent within the conversation.
-	ClientId  *string    `json:"client_id,omitempty"`
-	Direction *Direction `json:"direction,omitempty"`
+	ClientId *string `json:"client_id,omitempty"`
+
+	// DesignId E-mailed outgoing messages only: an e-mail design offered in conversations
+	// (`for_conversations`) of the conversation's inbox or workspace-wide. See `createMessage`.
+	DesignId *uuid.UUID `json:"design_id,omitempty"`
+
+	// DesignLocale One of the design's versions to send instead of the contact's; needs `design_id`.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag `json:"design_locale,omitempty"`
+	Direction    *Direction   `json:"direction,omitempty"`
 
 	// Draft Stores an outgoing message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
@@ -19946,11 +20118,17 @@ type MessageCreateMultipart struct {
 	Body *string  `json:"body,omitempty"`
 
 	// Cc Repeat the field once per address; one empty `cc` field copies no one.
-	Cc        *[]string             `json:"cc,omitempty"`
-	ClientId  *string               `json:"client_id,omitempty"`
-	Direction *Direction            `json:"direction,omitempty"`
-	Draft     *bool                 `json:"draft,omitempty"`
-	Files     *[]openapi_types.File `json:"files,omitempty"`
+	Cc       *[]string  `json:"cc,omitempty"`
+	ClientId *string    `json:"client_id,omitempty"`
+	DesignId *uuid.UUID `json:"design_id,omitempty"`
+
+	// DesignLocale A BCP 47 language tag.
+	//
+	// Examples: en, tr
+	DesignLocale *LanguageTag          `json:"design_locale,omitempty"`
+	Direction    *Direction            `json:"direction,omitempty"`
+	Draft        *bool                 `json:"draft,omitempty"`
+	Files        *[]openapi_types.File `json:"files,omitempty"`
 
 	// FromAddress Examples: owner@example.com
 	FromAddress *Email                     `json:"from_address,omitempty"`
@@ -20001,6 +20179,26 @@ type MessageDeliveryChannel string
 
 // MessageDeliveryState defines model for MessageDelivery.State.
 type MessageDeliveryState string
+
+// MessageDesign The e-mail design of an outgoing message. Never its HTML: `body` stays what was written, and
+// the mail as sent is at `GET /v1/messages/{id}/email`.
+type MessageDesign struct {
+	// Id Absent when the design is gone.
+	Id *uuid.UUID `json:"id,omitempty"`
+
+	// Locale The language version the mail was rendered in; on a draft the `design_locale` it asked
+	// for. Absent for a design without versions and on a draft that takes the contact's.
+	//
+	//
+	// Examples: en, tr
+	Locale *LanguageTag `json:"locale,omitempty"`
+
+	// Name Empty when the design is gone.
+	Name string `json:"name"`
+
+	// Version The design's `version` the mail was rendered from; absent on a draft.
+	Version *int32 `json:"version,omitempty"`
+}
 
 // MessageEmail Set on messages that came or went by e-mail. `body` and `html` of the message show the new
 // text only; `quoted` tells whether quoted history or a signature was hidden, which
@@ -20065,7 +20263,8 @@ type MessageEmailDetail struct {
 	InReplyTo *string           `json:"in_reply_to,omitempty"`
 	MessageId string            `json:"message_id"`
 
-	// OriginalHtml The whole HTML part of the kept original, built on request and sanitized with a policy
+	// OriginalHtml For an outgoing message sent with a design, the HTML part exactly as it was sent.
+	// Otherwise the whole HTML part of the kept original, built on request and sanitized with a policy
 	// that keeps inline styles limited to an allowlist of CSS properties (no `url(`,
 	// `expression` or `@import` values) and the colour, alignment and size attributes of
 	// tables and `font`; never `<style>` blocks, scripts, forms, frames, stylesheets or event
@@ -20223,6 +20422,12 @@ type MessageUpdate struct {
 
 	// Cc New mail drafts only; replaces the stored Cc.
 	Cc *[]Email `json:"cc,omitempty"`
+
+	// DesignId The e-mail design the draft is sent in, checked as on `createMessage`; `null` removes it.
+	DesignId nullable.Nullable[uuid.UUID] `json:"design_id,omitempty"`
+
+	// DesignLocale One of the design's versions; `null` goes back to the contact's. Absent keeps it, unless `design_id` names another design.
+	DesignLocale nullable.Nullable[string] `json:"design_locale,omitempty"`
 
 	// Html Sanitized before it is stored; `null` removes it.
 	Html nullable.Nullable[string] `json:"html,omitempty"`
@@ -27361,6 +27566,12 @@ type UpdateConversationParams struct {
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
 
+// PreviewConversationDesignParams defines parameters for PreviewConversationDesign.
+type PreviewConversationDesignParams struct {
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // CreateDiscussionFromConversationParams defines parameters for CreateDiscussionFromConversation.
 type CreateDiscussionFromConversationParams struct {
 	// IdempotencyKey Makes a retried request return the first response; see "Idempotency".
@@ -27864,10 +28075,13 @@ type ListDraftsParams struct {
 
 // ListEmailDesignsParams defines parameters for ListEmailDesigns.
 type ListEmailDesignsParams struct {
-	// InboxId Only the designs of this inbox.
-	InboxId  *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
-	Q        *string    `form:"q,omitempty" json:"q,omitempty"`
-	Archived *bool      `form:"archived,omitempty" json:"archived,omitempty"`
+	// InboxId Only the designs of this inbox; with `for_conversations`, those of this inbox and the workspace-wide ones.
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// ForConversations Only designs offered in conversations (`true`) or only the others (`false`).
+	ForConversations *bool   `form:"for_conversations,omitempty" json:"for_conversations,omitempty"`
+	Q                *string `form:"q,omitempty" json:"q,omitempty"`
+	Archived         *bool   `form:"archived,omitempty" json:"archived,omitempty"`
 
 	// Cursor The `next_cursor` of the previous page.
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -30825,6 +31039,9 @@ type EmptyTrashJSONRequestBody = TrashEmpty
 // UpdateConversationJSONRequestBody defines body for UpdateConversation for application/json ContentType.
 type UpdateConversationJSONRequestBody = ConversationUpdate
 
+// PreviewConversationDesignJSONRequestBody defines body for PreviewConversationDesign for application/json ContentType.
+type PreviewConversationDesignJSONRequestBody = ConversationDesignPreview
+
 // CreateDiscussionFromConversationJSONRequestBody defines body for CreateDiscussionFromConversation for application/json ContentType.
 type CreateDiscussionFromConversationJSONRequestBody = DiscussionFromConversation
 
@@ -32310,6 +32527,40 @@ func (t *EmailBlock) MergeEmailFooterBlock(v EmailFooterBlock) error {
 	return err
 }
 
+// AsEmailMessageBlock returns the union data inside the EmailBlock as a EmailMessageBlock
+func (t EmailBlock) AsEmailMessageBlock() (EmailMessageBlock, error) {
+	var body EmailMessageBlock
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEmailMessageBlock overwrites any union data inside the EmailBlock as the provided EmailMessageBlock
+func (t *EmailBlock) FromEmailMessageBlock(v EmailMessageBlock) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"message"}`))
+	t.union = b
+	return err
+}
+
+// MergeEmailMessageBlock performs a merge with any union data inside the EmailBlock, using the provided EmailMessageBlock
+func (t *EmailBlock) MergeEmailMessageBlock(v EmailMessageBlock) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"message"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 func (t EmailBlock) Discriminator() (string, error) {
 	var discriminator struct {
 		Discriminator string `json:"type"`
@@ -32336,6 +32587,8 @@ func (t EmailBlock) ValueByDiscriminator() (interface{}, error) {
 		return t.AsEmailHeadingBlock()
 	case "image":
 		return t.AsEmailImageBlock()
+	case "message":
+		return t.AsEmailMessageBlock()
 	case "section":
 		return t.AsEmailSectionBlock()
 	case "social":
@@ -32982,6 +33235,40 @@ func (t *EmailSectionChild) MergeEmailFooterBlock(v EmailFooterBlock) error {
 	return err
 }
 
+// AsEmailMessageBlock returns the union data inside the EmailSectionChild as a EmailMessageBlock
+func (t EmailSectionChild) AsEmailMessageBlock() (EmailMessageBlock, error) {
+	var body EmailMessageBlock
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEmailMessageBlock overwrites any union data inside the EmailSectionChild as the provided EmailMessageBlock
+func (t *EmailSectionChild) FromEmailMessageBlock(v EmailMessageBlock) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"message"}`))
+	t.union = b
+	return err
+}
+
+// MergeEmailMessageBlock performs a merge with any union data inside the EmailSectionChild, using the provided EmailMessageBlock
+func (t *EmailSectionChild) MergeEmailMessageBlock(v EmailMessageBlock) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"message"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
 func (t EmailSectionChild) Discriminator() (string, error) {
 	var discriminator struct {
 		Discriminator string `json:"type"`
@@ -33008,6 +33295,8 @@ func (t EmailSectionChild) ValueByDiscriminator() (interface{}, error) {
 		return t.AsEmailHeadingBlock()
 	case "image":
 		return t.AsEmailImageBlock()
+	case "message":
+		return t.AsEmailMessageBlock()
 	case "social":
 		return t.AsEmailSocialBlock()
 	case "spacer":
@@ -36029,6 +36318,9 @@ type ServerInterface interface {
 	// UpdateConversation Update a conversation
 	// (PATCH /v1/conversations/{conversationId})
 	UpdateConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params UpdateConversationParams)
+	// PreviewConversationDesign Preview a message in an e-mail design
+	// (POST /v1/conversations/{conversationId}/design-preview)
+	PreviewConversationDesign(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params PreviewConversationDesignParams)
 	// CreateDiscussionFromConversation Turn a private conversation into a public thread
 	// (POST /v1/conversations/{conversationId}/discussion)
 	CreateDiscussionFromConversation(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params CreateDiscussionFromConversationParams)
@@ -48058,6 +48350,56 @@ func (siw *ServerInterfaceWrapper) UpdateConversation(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
+// PreviewConversationDesign operation middleware
+func (siw *ServerInterfaceWrapper) PreviewConversationDesign(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "conversationId" -------------
+	var conversationId ConversationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "conversationId", r.PathValue("conversationId"), &conversationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "conversationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PreviewConversationDesignParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewConversationDesign(w, r, conversationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // CreateDiscussionFromConversation operation middleware
 func (siw *ServerInterfaceWrapper) CreateDiscussionFromConversation(w http.ResponseWriter, r *http.Request) {
 
@@ -51635,6 +51977,19 @@ func (siw *ServerInterfaceWrapper) ListEmailDesigns(w http.ResponseWriter, r *ht
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "for_conversations" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "for_conversations", r.URL.Query(), &params.ForConversations, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "for_conversations"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "for_conversations", Err: err})
 		}
 		return
 	}
@@ -68185,6 +68540,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/discussion", wrapper.CreateDiscussionFromConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.ListMessages)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/messages", wrapper.CreateMessage)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/design-preview", wrapper.PreviewConversationDesign)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/forward", wrapper.ForwardConversation)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/{conversationId}/participants", wrapper.ListConversationParticipants)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/{conversationId}/participants", wrapper.AddConversationParticipant)
@@ -88731,6 +89087,132 @@ func (response UpdateConversation409ApplicationProblemPlusJSONResponse) VisitUpd
 	return err
 }
 
+type PreviewConversationDesignRequestObject struct {
+	ConversationId ConversationId `json:"conversationId"`
+	Params         PreviewConversationDesignParams
+	Body           *PreviewConversationDesignJSONRequestBody
+}
+
+type PreviewConversationDesignResponseObject interface {
+	VisitPreviewConversationDesignResponse(w http.ResponseWriter) error
+}
+
+type PreviewConversationDesign200JSONResponse ConversationDesignRender
+
+func (response PreviewConversationDesign200JSONResponse) VisitPreviewConversationDesignResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PreviewConversationDesign400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response PreviewConversationDesign400ApplicationProblemPlusJSONResponse) VisitPreviewConversationDesignResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PreviewConversationDesign401ApplicationProblemPlusJSONResponse Problem
+
+func (response PreviewConversationDesign401ApplicationProblemPlusJSONResponse) VisitPreviewConversationDesignResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PreviewConversationDesign403ApplicationProblemPlusJSONResponse Problem
+
+func (response PreviewConversationDesign403ApplicationProblemPlusJSONResponse) VisitPreviewConversationDesignResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PreviewConversationDesign404ApplicationProblemPlusJSONResponse Problem
+
+func (response PreviewConversationDesign404ApplicationProblemPlusJSONResponse) VisitPreviewConversationDesignResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PreviewConversationDesign409ApplicationProblemPlusJSONResponse Problem
+
+func (response PreviewConversationDesign409ApplicationProblemPlusJSONResponse) VisitPreviewConversationDesignResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PreviewConversationDesign422ApplicationProblemPlusJSONResponse struct {
+	EmailDesignProblemApplicationProblemPlusJSONResponse
+}
+
+func (response PreviewConversationDesign422ApplicationProblemPlusJSONResponse) VisitPreviewConversationDesignResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type PreviewConversationDesign429ApplicationProblemPlusJSONResponse Problem
+
+func (response PreviewConversationDesign429ApplicationProblemPlusJSONResponse) VisitPreviewConversationDesignResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type CreateDiscussionFromConversationRequestObject struct {
 	ConversationId ConversationId `json:"conversationId"`
 	Params         CreateDiscussionFromConversationParams
@@ -89515,6 +89997,36 @@ func (response CreateMessage415ApplicationProblemPlusJSONResponse) VisitCreateMe
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(415)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateMessage422ApplicationProblemPlusJSONResponse struct {
+	EmailDesignProblemApplicationProblemPlusJSONResponse
+}
+
+func (response CreateMessage422ApplicationProblemPlusJSONResponse) VisitCreateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateMessage429ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateMessage429ApplicationProblemPlusJSONResponse) VisitCreateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(429)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -104785,6 +105297,22 @@ func (response UpdateMessage409ApplicationProblemPlusJSONResponse) VisitUpdateMe
 	return err
 }
 
+type UpdateMessage422ApplicationProblemPlusJSONResponse struct {
+	EmailDesignProblemApplicationProblemPlusJSONResponse
+}
+
+func (response UpdateMessage422ApplicationProblemPlusJSONResponse) VisitUpdateMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetMessageEmailRequestObject struct {
 	MessageId MessageId `json:"messageId"`
 	Params    GetMessageEmailParams
@@ -105286,6 +105814,22 @@ func (response SendMessage409ApplicationProblemPlusJSONResponse) VisitSendMessag
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SendMessage422ApplicationProblemPlusJSONResponse struct {
+	EmailDesignProblemApplicationProblemPlusJSONResponse
+}
+
+func (response SendMessage422ApplicationProblemPlusJSONResponse) VisitSendMessageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(422)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -115889,6 +116433,9 @@ type StrictServerInterface interface {
 	// UpdateConversation Update a conversation
 	// (PATCH /v1/conversations/{conversationId})
 	UpdateConversation(ctx context.Context, request UpdateConversationRequestObject) (UpdateConversationResponseObject, error)
+	// PreviewConversationDesign Preview a message in an e-mail design
+	// (POST /v1/conversations/{conversationId}/design-preview)
+	PreviewConversationDesign(ctx context.Context, request PreviewConversationDesignRequestObject) (PreviewConversationDesignResponseObject, error)
 	// CreateDiscussionFromConversation Turn a private conversation into a public thread
 	// (POST /v1/conversations/{conversationId}/discussion)
 	CreateDiscussionFromConversation(ctx context.Context, request CreateDiscussionFromConversationRequestObject) (CreateDiscussionFromConversationResponseObject, error)
@@ -122994,6 +123541,40 @@ func (sh *strictHandler) UpdateConversation(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(UpdateConversationResponseObject); ok {
 		if err := validResponse.VisitUpdateConversationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// PreviewConversationDesign operation middleware
+func (sh *strictHandler) PreviewConversationDesign(w http.ResponseWriter, r *http.Request, conversationId ConversationId, params PreviewConversationDesignParams) {
+	var request PreviewConversationDesignRequestObject
+
+	request.ConversationId = conversationId
+	request.Params = params
+
+	var body PreviewConversationDesignJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.PreviewConversationDesign(ctx, request.(PreviewConversationDesignRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "PreviewConversationDesign")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(PreviewConversationDesignResponseObject); ok {
+		if err := validResponse.VisitPreviewConversationDesignResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

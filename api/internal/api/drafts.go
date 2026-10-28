@@ -26,6 +26,11 @@ func draftHidden(p principal, m store.GetMessageRow) bool {
 // dispatchOutgoing hands a delivered outgoing message to e-mail (plan) or, for a member's reply in
 // a chat that continues by e-mail, to continuity.
 func (s *Server) dispatchOutgoing(ctx context.Context, q *store.Queries, events *eventBatch, p principal, c store.Conversation, plan *emailPlan, msg messageRow, now time.Time) (*store.ListMessageEmailsRow, error) {
+	if msg.EmailDesignID != nil {
+		if err := s.designMessage(ctx, q, p, c, plan, msg); err != nil {
+			return nil, err
+		}
+	}
 	if plan != nil {
 		return s.queueEmail(ctx, q, events, plan, msg)
 	}
@@ -153,11 +158,55 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 		if strings.TrimSpace(body) == "" && len(atts[cur.ID]) == 0 && !forward {
 			return errValidation("body is required unless files are attached")
 		}
+		designID, locale, designSet, err := draftDesign(b, cur.EmailDesignID, cur.EmailDesignLocale)
+		if err != nil {
+			return err
+		}
+		if designID != nil {
+			if forward || cur.Kind != string(oas.MessageKindMessage) {
+				return errDesignNotEmailed
+			}
+			if html != nil {
+				return errDesignWithHTML
+			}
+		}
 		m, err := q.UpdateDraft(ctx, store.UpdateDraftParams{WorkspaceID: p.workspaceID, ID: cur.ID, Body: body, Html: html})
 		if err != nil {
 			return err
 		}
 		row := messageRow(m)
+		if designSet && designID != nil {
+			if _, err := usableDesign(ctx, q, c, *designID); err != nil {
+				return err
+			}
+		}
+		if designSet {
+			if err := q.SetMessageDesign(ctx, store.SetMessageDesignParams{DesignID: designID, Locale: locale, WorkspaceID: p.workspaceID, ID: cur.ID}); err != nil {
+				return err
+			}
+			g, err := q.GetMessage(ctx, store.GetMessageParams{WorkspaceID: p.workspaceID, ID: cur.ID})
+			if err != nil {
+				return err
+			}
+			row = messageRow(g)
+		}
+		if designID != nil && (designSet || b.Body != nil || recomposed) {
+			to, dc := "", c
+			if isComposed {
+				if len(composed.ToAddresses) > 1 || len(composed.CcAddresses) > 0 {
+					return errDesignOneRecipient
+				}
+				if len(composed.ToAddresses) > 0 {
+					to = composed.ToAddresses[0]
+				}
+				if dc, err = q.GetConversation(ctx, store.GetConversationParams{WorkspaceID: p.workspaceID, ID: c.ID}); err != nil {
+					return err
+				}
+			}
+			if err := s.checkDraftDesign(ctx, q, dc, *designID, locale, to, row); err != nil {
+				return err
+			}
+		}
 		if b.SendAt != nil {
 			if err := ownDraft(p, cur); err != nil {
 				return err
@@ -180,6 +229,34 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 		return nil, err
 	}
 	return oas.UpdateMessage200JSONResponse(out), nil
+}
+
+func draftDesign(b *oas.MessageUpdate, id *uuid.UUID, locale *string) (*uuid.UUID, *string, bool, error) {
+	set := b.DesignId.IsSpecified() || b.DesignLocale.IsSpecified()
+	if b.DesignId.IsSpecified() {
+		was := id
+		id = nil
+		if !b.DesignId.IsNull() {
+			id = new(b.DesignId.MustGet())
+		}
+		if id == nil || was == nil || *was != *id {
+			locale = nil
+		}
+	}
+	if b.DesignLocale.IsSpecified() {
+		locale = nil
+		if !b.DesignLocale.IsNull() {
+			tag, err := languageTag(b.DesignLocale.MustGet(), "design_locale")
+			if err != nil {
+				return nil, nil, false, err
+			}
+			locale = &tag
+		}
+	}
+	if locale != nil && id == nil {
+		return nil, nil, false, errValidation("design_locale goes with design_id")
+	}
+	return id, locale, set, nil
 }
 
 var (

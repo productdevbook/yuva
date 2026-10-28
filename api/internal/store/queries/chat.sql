@@ -166,6 +166,8 @@ SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_ty
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
        m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.email_design_id, m.email_design_locale,
+       coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m
@@ -182,6 +184,8 @@ SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_ty
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
        m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.email_design_id, m.email_design_locale,
+       coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
        coalesce(sk.bot_name, sk.name, '')::text AS sent_by_bot_name
 FROM messages m

@@ -135,6 +135,7 @@ var blockFields = map[string][]string{
 	"spacer":  {"height"},
 	"social":  {"items", "style", "color"},
 	"footer":  {"html"},
+	"message": {},
 }
 
 // Parse reads a document, upgrading an older schema, and checks its shape: unknown fields and
@@ -302,9 +303,10 @@ type Options struct {
 }
 
 type checker struct {
-	opt    Options
-	issues []Issue
-	ids    map[string]bool
+	opt      Options
+	issues   []Issue
+	ids      map[string]bool
+	messages int
 }
 
 func (c *checker) add(block, field, code, detail string) {
@@ -555,7 +557,32 @@ func (c *checker) block(b Block, depth int) {
 		}
 	case "footer":
 		c.rich(id, "html", b.HTML, false, 2000)
+	case "message":
+		if depth > 1 {
+			c.add(id, "type", "nesting", "a message block goes at the top level or in a section")
+		}
+		if c.messages++; c.messages > 1 {
+			c.add(id, "type", "message_block_repeated", "a design has at most one message block")
+		}
 	}
+}
+
+func (d Document) HasMessageBlock() (count int, nested bool) {
+	var walk func(bs []Block, depth int)
+	walk = func(bs []Block, depth int) {
+		for _, b := range bs {
+			if b.Type == "message" {
+				count++
+				nested = nested || depth > 1
+			}
+			walk(b.Blocks, depth+1)
+			for _, col := range b.Columns {
+				walk(col.Blocks, 2)
+			}
+		}
+	}
+	walk(d.Blocks, 0)
+	return count, nested
 }
 
 // Walk calls f for every block, nested ones included, in document order.

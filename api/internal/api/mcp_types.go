@@ -165,7 +165,15 @@ type mcpMessage struct {
 	Event           *mcpEvent         `json:"event,omitempty"`
 	Redacted        bool              `json:"redacted,omitempty" jsonschema:"true when a member removed its content"`
 	CreatedAt       time.Time         `json:"created_at"`
+	Design          *mcpMessageDesign `json:"design,omitempty" jsonschema:"the e-mail design the message is sent in"`
 	CustomerContent mcpMessageContent `json:"customer_content"`
+}
+
+type mcpMessageDesign struct {
+	ID      *uuid.UUID `json:"id,omitempty" jsonschema:"absent when the design was deleted"`
+	Name    string     `json:"name"`
+	Version *int32     `json:"version,omitempty" jsonschema:"the design version the mail was rendered from; absent on a draft"`
+	Locale  string     `json:"locale,omitempty" jsonschema:"the language version sent, or a draft's chosen one"`
 }
 
 func messageOut(m oas.Message) mcpMessage {
@@ -184,6 +192,9 @@ func messageOut(m oas.Message) mcpMessage {
 	}
 	if m.Delivery != nil {
 		out.DeliveryState = string(m.Delivery.State)
+	}
+	if d := m.Design; d != nil {
+		out.Design = &mcpMessageDesign{ID: d.Id, Name: d.Name, Version: d.Version, Locale: deref((*string)(d.Locale))}
 	}
 	if m.Event != nil {
 		ev := &mcpEvent{Type: string(m.Event.Type), AssigneeID: m.Event.AssigneeId, InboxID: m.Event.InboxId}
