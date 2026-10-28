@@ -20,6 +20,7 @@ import (
 type mcpTool struct {
 	name   string
 	input  *jsonschema.Schema
+	output *jsonschema.Schema
 	ops    []string
 	scopes []oas.ApiKeyScope
 	allow  func(p principal) bool
@@ -96,9 +97,9 @@ func defineTool[In, Out any](name, title, description string, ann mcp.ToolAnnota
 	ann.Title = title
 	tool := &mcp.Tool{
 		Name: name, Title: title, Description: description + customerContentRule, Annotations: &ann,
-		InputSchema: mcpSchema[In](enums), OutputSchema: mcpSchema[Out](nil),
+		InputSchema: mcpSchema[In](enums), OutputSchema: mcpOutputSchema[Out](),
 	}
-	t.name, t.input = name, tool.InputSchema.(*jsonschema.Schema)
+	t.name, t.input, t.output = name, tool.InputSchema.(*jsonschema.Schema), tool.OutputSchema.(*jsonschema.Schema)
 	t.add = func(srv *mcp.Server, c *mcpCall) {
 		mcp.AddTool(srv, tool, func(ctx context.Context, _ *mcp.CallToolRequest, in In) (*mcp.CallToolResult, Out, error) {
 			out, err := run(c.as(ctx), c, in)

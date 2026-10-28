@@ -74,6 +74,39 @@ func mcpSchema[T any](enums map[string][]any) *jsonschema.Schema {
 	return sc
 }
 
+func mcpOutputSchema[T any]() *jsonschema.Schema {
+	sc := mcpSchema[T](nil)
+	openObjects(sc)
+	return sc
+}
+
+// openObjects lifts the additionalProperties:false that jsonschema.For puts on every struct: a field
+// added to an output later must not make clients that cached the tool list reject the result.
+func openObjects(sc *jsonschema.Schema) {
+	if sc == nil {
+		return
+	}
+	if ap := sc.AdditionalProperties; ap != nil && ap.Not != nil && reflect.DeepEqual(ap.Not, &jsonschema.Schema{}) {
+		sc.AdditionalProperties = nil
+	}
+	for _, p := range sc.Properties {
+		openObjects(p)
+	}
+	for _, p := range sc.PatternProperties {
+		openObjects(p)
+	}
+	for _, p := range sc.Defs {
+		openObjects(p)
+	}
+	for _, group := range [][]*jsonschema.Schema{sc.AllOf, sc.AnyOf, sc.OneOf, sc.PrefixItems} {
+		for _, p := range group {
+			openObjects(p)
+		}
+	}
+	openObjects(sc.Items)
+	openObjects(sc.AdditionalProperties)
+}
+
 // singleTypes drops the null of inferred ["null", T] types: absent fields are left out instead,
 // and clients with a single-type schema dialect (Gemini) accept the tools.
 func singleTypes(sc *jsonschema.Schema) {
