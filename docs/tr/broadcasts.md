@@ -304,7 +304,7 @@ curl -X POST https://support.example.com/v1/broadcasts \
   }'
 ```
 
-- **Olay.** Tek olay `contact_identified`.
+- **Olay.** `contact_identified` (yukarıda), `subscribed` ya da `attribute_changed`; bkz. [Olaylar](#olaylar).
 - **Gecikme.** Tetikten 0 dakika ile 365 gün sonrası. E-posta o kadar bekler, sonra bültenlerin hızı, gönderim
   saatleri ve günlük sınırı altında gider; o an saatler kapalıysa açılmalarını bekler. Tetiklenen e-postalar,
   aynı kanalın tek seferlik bültenlerinden önce gider.
@@ -312,6 +312,26 @@ curl -X POST https://support.example.com/v1/broadcasts \
   çalışırken değiştirilebilir.
 - **Alıcılar.** Koşullar ve diller (en fazla 10 ve 20), kişinin tanındığı anda değil, gönderim zamanı geldiğinde
   denetlenir. Artık uymayan kişi atlanır.
+
+### Olaylar
+
+| Olay | Gerekir | Şu durumda tetiklenir |
+|---|---|---|
+| `contact_identified` | Hiçbir şey. | Kişi gelen kutusunda ilk harici kimliğini alır. |
+| `subscribed` | `trigger.list_id`: gelen kutusunun bir listesi (durum sayfasınınki değil). | O listeye bir abonelik onaylanır. Tetikleme zamanı onaylandığı andır; çift onayda kişi onayladığında sayılır, beklerken sayılmaz. İçe aktarmayla oluşan abonelikler bunu asla tetiklemez. |
+| `attribute_changed` | `trigger.condition`: bir [bülten koşulu](#2-bülteni-yazın). | Bir yazma, kişiyi daha önce eşleşmediği koşulla eşleştirir; koşula uyan yeni bir kişi de sayılır. Yazmalar: kimlik belirteci, `POST` ve `PATCH /v1/contacts` ve kişisini oluşturan bir abonelik. |
+
+```json
+{ "event": "subscribed", "list_id": "LIST-ID", "delay_minutes": 60, "basis": "marketing" }
+```
+
+`attribute_changed` geriye dönük kayıt yapmaz: yalnızca `backfill_days` 0 alır ve başladığında zaten eşleşen
+kişiler hiçbir şey almaz. Bir yazma kişiyi yalnızca ait olduğu gelen kutularına kaydeder: harici kimliği ya da
+görüşmesi olan, listelerinden birine abone olan ya da yazmanın geldiği gelen kutusu. Eksik, yanlış yere konmuş
+ya da uygun olmayan alanlar `400 trigger_invalid` verir. `skip_triggers` ve içe aktarmalar üç olayı da atlar.
+
+Zamanlanmış, etkin ya da duraklatılmış bir tetiklenen e-postanın adını verdiği liste silinemez
+(`DELETE /v1/lists/{listId}` `409 list_in_use` döner); önce e-postayı durdurun.
 
 ### Pazarlama mı hizmet mi
 
@@ -344,7 +364,7 @@ Gecikme tetikten sayılır, ama kimse başlatmadan önce gönderilmez. Gözden g
 
 Kendi arka ucunuzdan kopyaladığınız kişiler de bir tetiktir: ürünün zaten sahip olduğu bir kullanıcı "hoş geldin"
 e-postası alırdı. `POST /v1/contacts` ya da `PATCH /v1/contacts/{contactId}` ile `"skip_triggers": true` gönderin;
-yeni harici kimlik kimseyi kaydetmez. İçe aktarmalar, destek masası taşımaları ve birleştirmeler asla tetiklemez.
+yazma kimseyi kaydetmez. İçe aktarmalar, destek masası taşımaları ve birleştirmeler asla tetiklemez.
 
 | İşlem | Ne yapar |
 |---|---|
@@ -354,7 +374,7 @@ yeni harici kimlik kimseyi kaydetmez. İçe aktarmalar, destek masası taşımal
 
 **Etkinken** hızı, saat dilimini, gönderim saatlerini, gecikmeyi (bekleyen herkesin zamanını kaydırır) ve tıklama
 takibini değiştirebilirsiniz. **Duraklatılmışken** ayrıca tasarımı, konuları, önizleme metnini, çevirileri, koşulları
-ve dilleri değiştirebilirsiniz; sürdürmek yeniden gözden geçirir. Olay, dayanak, listeler ve kanal taslaktan sonra
+ve dilleri değiştirebilirsiniz; sürdürmek yeniden gözden geçirir. Olay, listesi ya da koşulu, dayanak, listeler ve kanal taslaktan sonra
 asla değişmez; bunun için yeni e-posta oluşturun. Duraklatma, sürdürme ve durdurma `broadcasts:send` ister.
 
 ### Kim bekliyor

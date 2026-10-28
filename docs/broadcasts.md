@@ -302,7 +302,7 @@ curl -X POST https://support.example.com/v1/broadcasts \
   }'
 ```
 
-- **Event.** `contact_identified` is the only event.
+- **Event.** `contact_identified` (above), `subscribed` or `attribute_changed`, see [Events](#events).
 - **Delay.** From 0 minutes to 365 days after the trigger. The mail waits that long, then goes out under
   the pace, the sending hours and the daily limit of broadcasts; if the hours are closed at that time it waits for them.
   Triggered e-mails go out before one-off broadcasts of the same channel.
@@ -310,6 +310,26 @@ curl -X POST https://support.example.com/v1/broadcasts \
   while it is running.
 - **Audience.** Conditions and languages (up to 10 and 20) are checked at the contact's due time, not when
   they are identified. A contact who no longer matches is skipped.
+
+### Events
+
+| Event | Needs | Triggers when |
+|---|---|---|
+| `contact_identified` | Nothing. | The contact gets its first external id in the inbox. |
+| `subscribed` | `trigger.list_id`: a list of the inbox (not a status page's). | A subscription to that list is confirmed. The trigger time is the moment it is confirmed; a double opt-in counts when the person confirms, not while it is pending. Subscriptions created by an import never trigger it. |
+| `attribute_changed` | `trigger.condition`: a [broadcast condition](#2-write-the-broadcast). | A write makes a contact match the condition when it did not before; a new contact that matches counts. The writes are an identity token, `POST` and `PATCH /v1/contacts` and a subscription that creates its contact. |
+
+```json
+{ "event": "subscribed", "list_id": "LIST-ID", "delay_minutes": 60, "basis": "marketing" }
+```
+
+`attribute_changed` has no back-fill: it takes only `backfill_days` 0, and contacts that already match
+when it starts get nothing. A write enrolls a contact only in the inboxes it belongs to: those where it has an
+external id or a conversation, a subscription to one of their lists, or through which the write came. Missing,
+misplaced or unfit fields are `400 trigger_invalid`. `skip_triggers` and imports skip all three events.
+
+A list named by a scheduled, active or paused triggered e-mail cannot be deleted
+(`DELETE /v1/lists/{listId}` answers `409 list_in_use`); stop the e-mail first.
 
 ### Marketing or service
 
@@ -342,7 +362,7 @@ delay counts from the trigger, but nobody is due earlier than the start. The rev
 
 Contacts you copy in from your own backend are a trigger too: a user the product already had would get a
 "welcome" mail. Send `"skip_triggers": true` with `POST /v1/contacts` or `PATCH /v1/contacts/{contactId}` so that
-the new external id enrolls nobody. Imports, help-desk migrations and merges never trigger.
+the write enrolls nobody. Imports, help-desk migrations and merges never trigger.
 
 | Action | What it does |
 |---|---|
@@ -352,7 +372,7 @@ the new external id enrolls nobody. Imports, help-desk migrations and merges nev
 
 While it is **active** you can change the pace, time zone, sending hours, the delay (it moves the due time of
 everyone waiting) and click tracking. While it is **paused** you can also change the design, subjects, preheader,
-translations, conditions and languages; resuming reviews it again. The event, the basis, the lists and the channel
+translations, conditions and languages; resuming reviews it again. The event, its list or condition, the basis, the lists and the channel
 never change after the draft; make a new e-mail for that. Pause, resume and stop need `broadcasts:send`.
 
 ### Who waits

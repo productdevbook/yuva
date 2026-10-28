@@ -317,7 +317,7 @@ curl -X POST https://support.example.com/v1/broadcasts \
   }'
 ```
 
-- **Ereignis.** `contact_identified` ist das einzige Ereignis.
+- **Ereignis.** `contact_identified` (oben), `subscribed` oder `attribute_changed`, siehe [Ereignisse](#ereignisse).
 - **Verzögerung.** Von 0 Minuten bis 365 Tage nach dem Auslöser. Die Mail wartet so lange und wird dann unter
   Tempo, Versandzeiten und Tageslimit von Broadcasts versendet; sind die Zeiten dann geschlossen, wartet sie auf deren
   Öffnung. Ausgelöste E-Mails werden vor den einmaligen Broadcasts desselben Kanals versendet.
@@ -325,6 +325,27 @@ curl -X POST https://support.example.com/v1/broadcasts \
   ändern, während die E-Mail läuft.
 - **Zielgruppe.** Bedingungen und Sprachen (bis zu 10 und 20) werden zur Fälligkeit des Kontakts geprüft, nicht bei
   der Erkennung. Wer nicht mehr passt, wird übersprungen.
+
+### Ereignisse
+
+| Ereignis | Braucht | Löst aus, wenn |
+|---|---|---|
+| `contact_identified` | Nichts. | Der Kontakt im Posteingang seine erste externe ID erhält. |
+| `subscribed` | `trigger.list_id`: eine Liste des Posteingangs (nicht die einer Statusseite). | Ein Abo dieser Liste bestätigt wird. Der Auslösezeitpunkt ist der Moment der Bestätigung; beim Double-Opt-in zählt es, wenn die Person bestätigt, nicht solange es aussteht. Durch einen Import entstandene Abos lösen es nie aus. |
+| `attribute_changed` | `trigger.condition`: eine [Broadcast-Bedingung](#2-den-broadcast-schreiben). | Ein Schreibvorgang den Kontakt eine Bedingung erfüllen lässt, die er vorher nicht erfüllte; ein neuer Kontakt, der passt, zählt. Schreibvorgänge: ein Identitäts-Token, `POST` und `PATCH /v1/contacts` und ein Abo, das seinen Kontakt anlegt. |
+
+```json
+{ "event": "subscribed", "list_id": "LIST-ID", "delay_minutes": 60, "basis": "marketing" }
+```
+
+`attribute_changed` hat keine Rückwirkung: Es nimmt nur `backfill_days` 0, und Kontakte, die beim Start schon
+passen, bekommen nichts. Ein Schreibvorgang erfasst einen Kontakt nur in Posteingängen, zu denen er gehört: wo er
+eine externe ID oder ein Gespräch hat, eine ihrer Listen abonniert hat oder über die der Schreibvorgang kam.
+Fehlende, falsch platzierte oder unpassende Felder ergeben `400 trigger_invalid`. `skip_triggers` und Importe
+überspringen alle drei Ereignisse.
+
+Eine Liste, die eine geplante, aktive oder pausierte ausgelöste E-Mail nennt, lässt sich nicht löschen
+(`DELETE /v1/lists/{listId}` antwortet `409 list_in_use`); stoppen Sie zuerst die E-Mail.
 
 ### Marketing oder Service
 
@@ -358,7 +379,7 @@ und `confirm_recipients` muss dieser Zahl entsprechen (0 ohne Rückwirkung).
 
 Kontakte, die Sie aus Ihrem eigenen Backend hineinkopieren, sind ebenfalls ein Auslöser: ein Nutzer, den das
 Produkt schon hatte, bekäme eine "Willkommen"-Mail. Senden Sie `"skip_triggers": true` mit `POST /v1/contacts` oder
-`PATCH /v1/contacts/{contactId}`, damit die neue externe ID niemanden erfasst. Importe, Help-Desk-Umzüge und
+`PATCH /v1/contacts/{contactId}`, damit der Schreibvorgang niemanden erfasst. Importe, Help-Desk-Umzüge und
 Zusammenführungen lösen nie aus.
 
 | Aktion | Wirkung |
@@ -369,7 +390,7 @@ Zusammenführungen lösen nie aus.
 
 Solange sie **aktiv** ist, können Sie Tempo, Zeitzone, Versandzeiten, die Verzögerung (sie verschiebt die
 Fälligkeit aller Wartenden) und das Klick-Tracking ändern. Solange sie **pausiert** ist, auch Design, Betreffs,
-Vorschautext, Übersetzungen, Bedingungen und Sprachen; das Fortsetzen prüft sie erneut. Ereignis, Grundlage, Listen
+Vorschautext, Übersetzungen, Bedingungen und Sprachen; das Fortsetzen prüft sie erneut. Ereignis, seine Liste oder Bedingung, Grundlage, Listen
 und Kanal ändern sich nach dem Entwurf nie; legen Sie dafür eine neue E-Mail an. Pausieren, Fortsetzen und Stoppen
 brauchen `broadcasts:send`.
 
