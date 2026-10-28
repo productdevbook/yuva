@@ -2874,6 +2874,11 @@ export interface paths {
          *     `send_at` (member sessions only) stores the mail as a draft that is sent at that time, as
          *     `POST /v1/messages/{id}/send` with `send_at` describes.
          *
+         *     `design_id` and `design_locale` send the mail in an e-mail design as on `createMessage`,
+         *     with the outreach footer and rules; only with one `to` and no `cc`
+         *     (`400 design_one_recipient`), so merge fields never show one person's details to another.
+         *     A draft is checked again when it is sent.
+         *
          *     A repeated `client_id` in the same inbox returns the conversation and message stored with
          *     it with `200` instead of writing them again, before any rate limit, so a retry costs
          *     nothing.
@@ -3425,6 +3430,38 @@ export interface paths {
          *     A message or note posted by a member moves that member's read cursor to it in the same
          *     transaction, with the same `conversation.read` event as `POST .../read`.
          *
+         *     `design_id` sends an e-mailed outgoing message in an e-mail design offered in conversations
+         *     (`EmailDesignSummary.for_conversations`) of the conversation's inbox or workspace-wide;
+         *     otherwise `409 design_unavailable` (archived, not offered, another inbox's). Notes,
+         *     chat and app conversations and other messages that are not e-mailed answer
+         *     `400 design_not_emailed`, and `html` with `design_id` `400 validation_failed`. The design's
+         *     version for the contact is chosen as for broadcasts (`contacts.locale`; `design_locale` names
+         *     one of its versions, `400 design_locale_unknown` otherwise) and rendered when the message is
+         *     handed to the outbox (at once, on `sendMessage` for a draft, or at a draft's `send_at`):
+         *     the body escaped into the `message` block (a blank line starts a paragraph), then the help
+         *     cards and the signature; the text part is the whole mail as text. The stored parts are sent
+         *     unchanged on retries and shown at `GET /v1/messages/{id}/email`; `body` stays what was
+         *     written, and the message's `design` names the design, version and language. A draft only
+         *     keeps which design it uses (rendered once to check it). Merge fields are the contact's;
+         *     `list.name`, `unsubscribe_url` and `preferences_url` (`merge_field_unavailable`) and a field
+         *     without fallback that is empty for the contact (`merge_field_empty`) answer
+         *     `422 invalid_design`, a mail over 500 KB of HTML `422 html_too_large`. Headers, recipients,
+         *     threading and the SMTP account are a plain reply's.
+         *
+         *     The footer is the inbox's identity line (legal name, postal address, registration, contact)
+         *     when the contact has written in the conversation. When the contact has not (outreach: the
+         *     first message of a conversation started with `createConversation` or `composeMail`), it
+         *     also carries one unsubscribe link, and the mail `List-Unsubscribe` with
+         *     `List-Unsubscribe-Post: List-Unsubscribe=One-Click`; the link's page and one-click stop
+         *     outreach in designs from the inbox to that contact. Outreach with a design is refused for
+         *     an address with a suppression of any scope, a workspace opt-out or that stop
+         *     (`409 email_opted_out`), and while the inbox's sender has no legal name or postal address
+         *     (`409 sender_identity_missing`); at most 20 go out per member or key an hour and 200 per workspace a
+         *     UTC day (`429 rate_limited`, counted when handed to the outbox); on a server whose
+         *     broadcasts need approval, only a workspace whose broadcasts are allowed sends them
+         *     (`403 broadcasts_approval_required`, `403 broadcasts_suspended`). Replies with a design have
+         *     no extra gate, and outreach without a design keeps the rules of a plain message.
+         *
          *     A member's reply (`message`, `out`) in a conversation that started on an `email` channel is
          *     e-mailed to the contact through the channel's SMTP account by a background job: the message
          *     is returned with `delivery.state` `queued`, and `message.updated` events report `sent` or
@@ -3485,6 +3522,43 @@ export interface paths {
          *     macro writes a `macro_applied` event naming it before the events of the changes.
          */
         post: operations["createMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/conversations/{conversationId}/design-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview a message in an e-mail design
+         * @description Renders what the conversation's contact would get for an outgoing message with
+         *     `design_id`: their language version (or `design_locale`), their merge field values, the
+         *     caller's signature for the inbox, the footer the message would have (`reply` when the
+         *     contact has written in the conversation, `outreach` with the unsubscribe link otherwise)
+         *     and `body` in the `message` block, the design's placeholder text without one. The subject
+         *     is the one the mail would carry. Nothing is stored or sent, and the unsubscribe link points
+         *     at an example token.
+         *
+         *     The design must be offered in conversations, not archived, and of the conversation's inbox
+         *     or workspace-wide (`409 design_unavailable`); the conversation must be e-mailed
+         *     (`400 design_not_emailed`). A merge field conversation mail does not have
+         *     (`merge_field_unavailable`), one without fallback that is empty for the contact
+         *     (`merge_field_empty`) or a document without a `message` block (`message_block_missing`)
+         *     answers `422 invalid_design` with the issues in `errors`; a mail over 500 KB of HTML
+         *     `422 html_too_large`. At most 120 renders a minute per caller, shared with
+         *     `renderEmailDesign` (`429 rate_limited`).
+         *
+         *     Members who see the conversation. Scope: `conversations:read`.
+         */
+        post: operations["previewConversationDesign"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3910,7 +3984,9 @@ export interface paths {
         head?: never;
         /**
          * Edit a draft
-         * @description Changes a draft's text, a new mail draft's `to`, `cc`, `bcc` and `subject`, or with
+         * @description Changes a draft's text, its e-mail design (`design_id`, `design_locale`, checked and rendered
+         *     once as on `createMessage`, nothing kept of the render), a new mail draft's `to`, `cc`,
+         *     `bcc` and `subject`, or with
          *     `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
          *     draft answers `409 not_a_draft`; another member's draft answers `404`.
          *
@@ -3944,7 +4020,9 @@ export interface paths {
          *     contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
          *     under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
          *     `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-         *     `createMessage`.
+         *     `createMessage`. A draft with a design is rendered now from the design's current version,
+         *     under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
+         *     is no longer offered).
          *
          *     Members always may, their own drafts and those written with an API key (another member's
          *     draft answers `404`). An API key needs `drafts:send` and `messages:write`, and the
@@ -5648,7 +5726,10 @@ export interface paths {
          * @description Most recently saved first, without their documents. Archived designs are left out unless
          *     `archived=true`, which lists only them. `q` matches the name.
          *
-         *     Owners, admins and API keys. Scope: `broadcasts:read`.
+         *     Owners, admins and API keys. Scope: `broadcasts:read`. With `for_conversations=true` only
+         *     the designs offered in conversations are listed, and every member may list those of the
+         *     inboxes they see and the workspace-wide ones; keys and tokens need `conversations:read` or
+         *     `broadcasts:read` for that.
          */
         get: operations["listEmailDesigns"];
         put?: never;
@@ -5749,12 +5830,17 @@ export interface paths {
          * @description The design with its document (upgraded to the newest `schema`) and the render's
          *     `warnings`.
          *
-         *     Owners, admins and API keys. Scope: `broadcasts:read`.
+         *     Owners, admins and API keys. Scope: `broadcasts:read`. A design offered in conversations is
+         *     also readable by every member who sees its inbox (every member for a workspace-wide one)
+         *     and by keys and tokens with `conversations:read`; an archived one only with the usual
+         *     rights. To them any other design answers `404 not_found`.
          */
         get: operations["getEmailDesign"];
         /**
          * Save an e-mail design
-         * @description Replaces the name, inbox and document. `base_version` is the `version` the edit started
+         * @description Replaces the name, inbox and document, and with `for_conversations` whether the design is
+         *     offered in conversations (the audit log records `email_design.updated` with the change).
+         *     `base_version` is the `version` the edit started
          *     from; when the design has moved on since, nothing is saved and the answer is
          *     `409 version_conflict` with the current design in `design`, and the current version is
          *     kept as a `conflict` snapshot. Each save increases `version` by one and takes a snapshot
@@ -6155,7 +6241,8 @@ export interface paths {
          *     version a contact with that language gets; with `contact_id` and no `locale`, the
          *     contact's; otherwise the fallback. Its unsubscribe link names no list and says it
          *     was a test. At most 20 tests an hour per workspace (`429 test_limit`); `409
-         *     sender_not_ready` when the channel cannot send; `409 design_required` without a design.
+         *     sender_not_ready` when the channel cannot send; `409 design_required` without a design;
+         *     `409 review_failed` with the `message_block` item when the design has a `message` block.
          *
          *     Owners, admins and API keys. Scope: `broadcasts:write`.
          */
@@ -13386,6 +13473,8 @@ export interface components {
          *       `send_webhook` actions name, never their URLs). `automation_rule.updated`: `fields`
          *       among `name`, `enabled`, `inbox_id`, `trigger`, `idle_minutes`, `conditions` and
          *       `actions`, with the same `name`, `trigger`, `action_types` and `webhook_hosts`.
+         *     - `email_design.updated`: `name`, `for_conversations` (`from`, `to`) when a save offers
+         *       the design in conversations or stops offering it; other saves are not recorded.
          *
          *     Details never make an action fail: when they would be too long, lists are replaced by
          *     `<name>_count` and `truncated` is `true`.
@@ -13395,12 +13484,12 @@ export interface components {
          *     More actions are added over time; show an unknown one by its name.
          * @enum {string}
          */
-        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.created" | "inbox.deleted" | "inbox.purpose_changed" | "mailbox.delegate_granted" | "mailbox.delegate_revoked" | "mailbox.handed_over" | "mailbox.deleted_on_leave" | "mailbox.orphaned" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "conversations.deleted" | "trash.emptied" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed";
+        AuditAction: "member.joined" | "member.role_changed" | "member.removed" | "member.inbox_access_granted" | "member.inbox_access_revoked" | "invite.created" | "invite.deleted" | "api_key.created" | "api_key.revoked" | "oauth_grant.created" | "oauth_grant.revoked" | "webhook.created" | "webhook.updated" | "webhook.deleted" | "webhook.secret_rotated" | "channel.credentials_changed" | "channel.key_rotated" | "channel.forwarding_address_rotated" | "channel.address_verified" | "channel.address_lost" | "channel.address_proven" | "channel.dkim_key_created" | "channel.dkim_key_deleted" | "inbox.identity_secret_rotated" | "inbox.created" | "inbox.deleted" | "inbox.purpose_changed" | "mailbox.delegate_granted" | "mailbox.delegate_revoked" | "mailbox.handed_over" | "mailbox.deleted_on_leave" | "mailbox.orphaned" | "conversation.trashed" | "conversation.restored" | "conversation.deleted" | "conversations.deleted" | "trash.emptied" | "message.redacted" | "contact.deleted" | "contact.consent_exported" | "list.consent_exported" | "analytics_export.created" | "workspace.retention_changed" | "workspace.bots_may_send_changed" | "workspace.broadcasts_by_keys_changed" | "workspace.focus_changed" | "workspace.broadcast_approval_requested" | "workspace.broadcasts_approved" | "workspace.broadcasts_denied" | "workspace.broadcasts_suspended" | "workspace.broadcast_limit_changed" | "team.created" | "team.deleted" | "team.member_added" | "team.member_removed" | "team.inbox_access_granted" | "team.inbox_access_revoked" | "workspace.slack_connected" | "workspace.slack_disconnected" | "member.slack_linked" | "member.slack_unlinked" | "sso.provider_created" | "sso.provider_updated" | "sso.provider_deleted" | "sso.settings_changed" | "sso.signed_in" | "sso.sign_in_refused" | "sso_domain.added" | "sso_domain.verified" | "sso_domain.deleted" | "sso_domain.lapsed" | "issue_integration.connected" | "issue_integration.updated" | "issue_integration.disconnected" | "issue_integration.secret_rotated" | "automation_rule.created" | "automation_rule.updated" | "automation_rule.deleted" | "member_address.added" | "member_address.verified" | "member_address.removed" | "email_design.updated";
         /**
          * @description `conversations` and `trash` name the workspace's conversations and its trash; their id is the workspace's.
          * @enum {string}
          */
-        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "conversations" | "trash" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule" | "mailbox";
+        AuditTargetType: "workspace" | "member" | "invite" | "inbox" | "channel" | "api_key" | "oauth_grant" | "webhook" | "contact" | "list" | "analytics_export" | "conversation" | "conversations" | "trash" | "message" | "team" | "sso" | "sso_domain" | "issue_integration" | "automation_rule" | "mailbox" | "email_design";
         AuditTarget: {
             type: components["schemas"]["AuditTargetType"];
             /**
@@ -16747,11 +16836,36 @@ export interface components {
              *     never contain it.
              */
             signature_html?: string;
+            /** @description The e-mail design the message is (or, for a draft, will be) sent in; absent when none. */
+            design?: components["schemas"]["MessageDesign"];
             /**
              * Format: date-time
              * @description For a sent draft, when it was sent.
              */
             created_at: string;
+        };
+        /**
+         * @description The e-mail design of an outgoing message. Never its HTML: `body` stays what was written, and
+         *     the mail as sent is at `GET /v1/messages/{id}/email`.
+         */
+        MessageDesign: {
+            /**
+             * Format: uuid
+             * @description Absent when the design is gone.
+             */
+            id?: string;
+            /** @description Empty when the design is gone. */
+            name: string;
+            /**
+             * Format: int32
+             * @description The design's `version` the mail was rendered from; absent on a draft.
+             */
+            version?: number;
+            /**
+             * @description The language version the mail was rendered in; on a draft the `design_locale` it asked
+             *     for. Absent for a design without versions and on a draft that takes the contact's.
+             */
+            locale?: components["schemas"]["LanguageTag"];
         };
         /**
          * @description The To, Cc and Bcc a new mail draft (`POST /v1/conversations/mail` with `draft: true`) is
@@ -16845,7 +16959,8 @@ export interface components {
             /** @description The whole HTML part, sanitized. */
             full_html?: string;
             /**
-             * @description The whole HTML part of the kept original, built on request and sanitized with a policy
+             * @description For an outgoing message sent with a design, the HTML part exactly as it was sent.
+             *     Otherwise the whole HTML part of the kept original, built on request and sanitized with a policy
              *     that keeps inline styles limited to an allowlist of CSS properties (no `url(`,
              *     `expression` or `@import` values) and the colour, alignment and size attributes of
              *     tables and `font`; never `<style>` blocks, scripts, forms, frames, stylesheets or event
@@ -16924,6 +17039,14 @@ export interface components {
              *     at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
              */
             send_at?: string;
+            /**
+             * Format: uuid
+             * @description E-mailed outgoing messages only: an e-mail design offered in conversations
+             *     (`for_conversations`) of the conversation's inbox or workspace-wide. See `createMessage`.
+             */
+            design_id?: string;
+            /** @description One of the design's versions to send instead of the contact's; needs `design_id`. */
+            design_locale?: components["schemas"]["LanguageTag"];
         };
         ConversationForward: {
             to: components["schemas"]["Email"][];
@@ -17013,6 +17136,14 @@ export interface components {
              *     at most 366 days ahead (`400 invalid_send_at`). See `sendMessage`.
              */
             send_at?: string;
+            /**
+             * Format: uuid
+             * @description An e-mail design offered in conversations of the inbox or workspace-wide; only with one
+             *     `to` and no `cc` (`400 design_one_recipient`). See `createMessage`.
+             */
+            design_id?: string;
+            /** @description One of the design's versions to send instead of the contact's; needs `design_id`. */
+            design_locale?: components["schemas"]["LanguageTag"];
         };
         ComposeMailMultipart: {
             /** Format: uuid */
@@ -17034,6 +17165,9 @@ export interface components {
             from_address?: components["schemas"]["Email"];
             /** Format: date-time */
             send_at?: string;
+            /** Format: uuid */
+            design_id?: string;
+            design_locale?: components["schemas"]["LanguageTag"];
             files?: string[];
         };
         ComposedMail: {
@@ -17065,6 +17199,9 @@ export interface components {
             from_address?: components["schemas"]["Email"];
             /** Format: date-time */
             send_at?: string;
+            /** Format: uuid */
+            design_id?: string;
+            design_locale?: components["schemas"]["LanguageTag"];
             files?: string[];
         };
         /** @description Only the fields sent change. */
@@ -17090,6 +17227,13 @@ export interface components {
             bcc?: components["schemas"]["Email"][];
             /** @description New mail drafts only; also the conversation's subject. */
             subject?: string;
+            /**
+             * Format: uuid
+             * @description The e-mail design the draft is sent in, checked as on `createMessage`; `null` removes it.
+             */
+            design_id?: string | null;
+            /** @description One of the design's versions; `null` goes back to the contact's. Absent keeps it, unless `design_id` names another design. */
+            design_locale?: string | null;
         };
         MessagePage: {
             items: components["schemas"]["Message"][];
@@ -20915,10 +21059,12 @@ export interface components {
          *     `translations`: `ok` for a design without versions or with every version complete,
          *     `warning` naming versions without their own subject, with block texts missing, whose
          *     required footer is in English, and broadcast subjects for languages the design does not
-         *     have (they are not used).
+         *     have (they are not used). `message_block`: `blocking` when the design has a `message`
+         *     block, which is for conversations and would leave an empty slot in list mail; listed only
+         *     then.
          * @enum {string}
          */
-        BroadcastReviewKey: "sender_identity" | "sender_ready" | "approval" | "design" | "audience_nonempty" | "merge_fields" | "html_size" | "images_alt" | "links" | "subject" | "deliverability" | "daily_cap" | "pace" | "send_window" | "test_sent" | "click_tracking" | "ses_tenant" | "translations";
+        BroadcastReviewKey: "sender_identity" | "sender_ready" | "approval" | "design" | "audience_nonempty" | "merge_fields" | "html_size" | "images_alt" | "links" | "subject" | "deliverability" | "daily_cap" | "pace" | "send_window" | "test_sent" | "click_tracking" | "ses_tenant" | "translations" | "message_block";
         /** @enum {string} */
         BroadcastReviewStatus: "ok" | "warning" | "blocking";
         BroadcastReviewItem: {
@@ -25938,13 +26084,31 @@ export interface components {
              */
             type: "footer";
         };
+        /**
+         * @description Where the text a member writes appears when the design is used in a conversation, followed
+         *     by the help article cards and the signature. At most one per document, at the top level or
+         *     in a section, never in columns; it holds no text and takes no translation entry. Previews
+         *     without a message show a dashed placeholder; a broadcast's review blocks a design that has
+         *     one (`message_block`). `align` is ignored.
+         */
+        EmailMessageBlock: components["schemas"]["EmailBlockBase"] & {
+            /** @enum {string} */
+            type: "message";
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "message";
+        };
         EmailColumnChild: components["schemas"]["EmailHeadingBlock"] | components["schemas"]["EmailTextBlock"] | components["schemas"]["EmailImageBlock"] | components["schemas"]["EmailButtonBlock"] | components["schemas"]["EmailDividerBlock"] | components["schemas"]["EmailSpacerBlock"] | components["schemas"]["EmailSocialBlock"] | components["schemas"]["EmailFooterBlock"];
-        EmailSectionChild: components["schemas"]["EmailColumnsBlock"] | components["schemas"]["EmailHeadingBlock"] | components["schemas"]["EmailTextBlock"] | components["schemas"]["EmailImageBlock"] | components["schemas"]["EmailButtonBlock"] | components["schemas"]["EmailDividerBlock"] | components["schemas"]["EmailSpacerBlock"] | components["schemas"]["EmailSocialBlock"] | components["schemas"]["EmailFooterBlock"];
-        EmailBlock: components["schemas"]["EmailSectionBlock"] | components["schemas"]["EmailColumnsBlock"] | components["schemas"]["EmailHeadingBlock"] | components["schemas"]["EmailTextBlock"] | components["schemas"]["EmailImageBlock"] | components["schemas"]["EmailButtonBlock"] | components["schemas"]["EmailDividerBlock"] | components["schemas"]["EmailSpacerBlock"] | components["schemas"]["EmailSocialBlock"] | components["schemas"]["EmailFooterBlock"];
+        EmailSectionChild: components["schemas"]["EmailColumnsBlock"] | components["schemas"]["EmailHeadingBlock"] | components["schemas"]["EmailTextBlock"] | components["schemas"]["EmailImageBlock"] | components["schemas"]["EmailButtonBlock"] | components["schemas"]["EmailDividerBlock"] | components["schemas"]["EmailSpacerBlock"] | components["schemas"]["EmailSocialBlock"] | components["schemas"]["EmailFooterBlock"] | components["schemas"]["EmailMessageBlock"];
+        EmailBlock: components["schemas"]["EmailSectionBlock"] | components["schemas"]["EmailColumnsBlock"] | components["schemas"]["EmailHeadingBlock"] | components["schemas"]["EmailTextBlock"] | components["schemas"]["EmailImageBlock"] | components["schemas"]["EmailButtonBlock"] | components["schemas"]["EmailDividerBlock"] | components["schemas"]["EmailSpacerBlock"] | components["schemas"]["EmailSocialBlock"] | components["schemas"]["EmailFooterBlock"] | components["schemas"]["EmailMessageBlock"];
         /**
          * @description An e-mail design: a theme and up to 200 blocks (counting nested ones) in at most 300 KiB of
          *     JSON without `translations` and 1 MiB with them. Nesting is section › columns › blocks at
-         *     most.
+         *     most. At most one `message` block, at the top level or in a section, marks where a
+         *     conversation message's text goes (`EmailMessageBlock`).
          */
         EmailDesignDocument: {
             /**
@@ -26004,8 +26168,12 @@ export interface components {
          *     `locale_required` (`translations` without `locale`), `invalid_locale` (a translation key
          *     equal to `locale` or to another key after canonical casing, or a `fallback_locale` that is
          *     not a version), `translation_block` (an entry for a block that does not exist or has no
-         *     text; `field` as `translations.es.blocks.b7`). Warning codes are listed under
-         *     `renderEmailDesign`.
+         *     text; `field` as `translations.es.blocks.b7`), `message_block_repeated` (a second `message`
+         *     block), `message_block_missing` (`for_conversations` on a document without one),
+         *     `merge_field_unavailable` (`list.name`, `unsubscribe_url` or `preferences_url` in a design
+         *     used in a conversation; `detail` the field), `merge_field_empty` (a field without fallback
+         *     that is empty for the conversation's contact; `detail` the field). Warning codes are listed
+         *     under `renderEmailDesign`.
          */
         EmailDesignIssue: {
             /** @description The block; absent for the theme and the preheader. */
@@ -26035,6 +26203,11 @@ export interface components {
              * @description Absent for workspace-wide designs.
              */
             inbox_id?: string;
+            /**
+             * @description Offered in conversations: members who see the design's inbox may send replies and new
+             *     mail with it. Only a design with one `message` block.
+             */
+            for_conversations: boolean;
             /**
              * Format: int32
              * @description Increases by one with every save.
@@ -26082,6 +26255,11 @@ export interface components {
             inbox_id?: string;
             document?: components["schemas"]["EmailDesignDocument"];
             template?: components["schemas"]["EmailDesignTemplateRef"];
+            /**
+             * @description Offer the design in conversations; owners, admins and keys. Needs exactly one `message`
+             *     block at the top level or in a section (`422 invalid_design`, `message_block_missing`).
+             */
+            for_conversations?: boolean;
         };
         EmailDesignUpdate: {
             name: string;
@@ -26103,6 +26281,12 @@ export interface components {
             base_version: number;
             /** @description Keep a snapshot of this save (`manual`) whatever the time since the last one. */
             snapshot?: boolean;
+            /**
+             * @description Offer the design in conversations, or stop offering it; unchanged when absent. While it
+             *     is on, a document without exactly one top-level or section `message` block is refused
+             *     (`422 invalid_design`, `message_block_missing`).
+             */
+            for_conversations?: boolean;
         };
         EmailDesignDuplicate: {
             name?: string;
@@ -26157,6 +26341,27 @@ export interface components {
              */
             size_bytes: number;
             warnings: components["schemas"]["EmailDesignIssue"][];
+        };
+        ConversationDesignPreview: {
+            /** Format: uuid */
+            design_id: string;
+            /** @description One of the design's versions instead of the contact's. */
+            design_locale?: components["schemas"]["LanguageTag"];
+            /** @description The message text; the placeholder text without it. */
+            body?: string;
+            /** @description Render the dark palette as the page's own colours, as `renderEmailDesign`. */
+            dark?: boolean;
+        };
+        ConversationDesignRender: components["schemas"]["EmailDesignRender"] & {
+            /** @description The subject the mail would carry. */
+            subject: string;
+            /**
+             * @description `reply` when the contact has written in the conversation (the inbox's identity line
+             *     only), `outreach` otherwise (the identity line, an unsubscribe link and one-click
+             *     `List-Unsubscribe`, under the outreach rules of `createMessage`).
+             * @enum {string}
+             */
+            footer: "reply" | "outreach";
         };
         EmailImage: {
             /** Format: uuid */
@@ -32901,6 +33106,44 @@ export interface operations {
             409: components["responses"]["Problem"];
             413: components["responses"]["Problem"];
             415: components["responses"]["Problem"];
+            422: components["responses"]["EmailDesignProblem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    previewConversationDesign: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path: {
+                conversationId: components["parameters"]["ConversationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversationDesignPreview"];
+            };
+        };
+        responses: {
+            /** @description The rendered mail. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationDesignRender"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            422: components["responses"]["EmailDesignProblem"];
+            429: components["responses"]["Problem"];
         };
     };
     forwardConversation: {
@@ -33504,6 +33747,7 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+            422: components["responses"]["EmailDesignProblem"];
         };
     };
     sendMessage: {
@@ -33540,6 +33784,7 @@ export interface operations {
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+            422: components["responses"]["EmailDesignProblem"];
             429: components["responses"]["Problem"];
         };
     };
@@ -36254,8 +36499,10 @@ export interface operations {
     listEmailDesigns: {
         parameters: {
             query?: {
-                /** @description Only the designs of this inbox. */
+                /** @description Only the designs of this inbox; with `for_conversations`, those of this inbox and the workspace-wide ones. */
                 inbox_id?: string;
+                /** @description Only designs offered in conversations (`true`) or only the others (`false`). */
+                for_conversations?: boolean;
                 q?: string;
                 archived?: boolean;
                 /** @description The `next_cursor` of the previous page. */
