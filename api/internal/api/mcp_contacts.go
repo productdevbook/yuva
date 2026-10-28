@@ -131,6 +131,21 @@ type listDraftsIn struct {
 	Limit     int32      `json:"limit,omitempty" jsonschema:"1 to 100, default 25"`
 }
 
+type updateDraftIn struct {
+	MessageID uuid.UUID `json:"message_id" jsonschema:"a draft from list_drafts, draft_reply or start_conversation"`
+	Body      *string   `json:"body,omitempty" jsonschema:"the new text, plain; unchanged when absent"`
+	Subject   *string   `json:"subject,omitempty" jsonschema:"the new subject of a new e-mail draft (compose_mail); unchanged when absent"`
+}
+
+type discardDraftIn struct {
+	MessageID uuid.UUID `json:"message_id" jsonschema:"a draft from list_drafts, draft_reply or start_conversation"`
+}
+
+type discardDraftOut struct {
+	MessageID uuid.UUID `json:"message_id"`
+	Discarded bool      `json:"discarded"`
+}
+
 type mcpDraftConversationContent struct {
 	Subject      string `json:"subject"`
 	ContactName  string `json:"contact_name,omitempty"`
@@ -480,6 +495,32 @@ var mcpContactTools = []mcpTool{
 				out.NextCursor = *page.NextCursor
 			}
 			return out, nil
+		}),
+	defineTool("update_draft", "Change a draft",
+		"Rewrites an unsent draft: body replaces its text and subject, for a new e-mail draft, its subject. Only a draft can change, and a member's own draft only by that member; a sent message is refused. Maps to PATCH /v1/messages/{id}.",
+		idempotent, nil, mcpTool{ops: []string{"UpdateMessage"}},
+		func(ctx context.Context, c *mcpCall, in updateDraftIn) (mcpMessage, error) {
+			if in.Body == nil && in.Subject == nil {
+				return mcpMessage{}, errValidation("give a body or a subject")
+			}
+			res, err := c.s.UpdateMessage(ctx, oas.UpdateMessageRequestObject{MessageId: in.MessageID, Body: &oas.MessageUpdate{Body: in.Body, Subject: in.Subject}})
+			if err != nil {
+				return mcpMessage{}, err
+			}
+			m, ok := res.(oas.UpdateMessage200JSONResponse)
+			if !ok {
+				return mcpMessage{}, errInternal
+			}
+			return messageOut(oas.Message(m)), nil
+		}),
+	defineTool("discard_draft", "Discard a draft",
+		"Deletes an unsent draft for good; a draft that started its conversation (compose_mail) takes that conversation with it. Only a draft can be discarded, and a member's own draft only by that member. Maps to DELETE /v1/messages/{id}.",
+		destructive, nil, mcpTool{ops: []string{"DeleteMessage"}},
+		func(ctx context.Context, c *mcpCall, in discardDraftIn) (discardDraftOut, error) {
+			if _, err := c.s.DeleteMessage(ctx, oas.DeleteMessageRequestObject{MessageId: in.MessageID}); err != nil {
+				return discardDraftOut{}, err
+			}
+			return discardDraftOut{MessageID: in.MessageID, Discarded: true}, nil
 		}),
 	defineTool("create_label", "Create a label",
 		"Creates a label conversations can be tagged with. Owners, admins and keys only. Maps to POST /v1/labels.",

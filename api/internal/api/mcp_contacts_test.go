@@ -150,6 +150,87 @@ func TestMCPStartConversationDraftsUnlessAssistantsMayDeliver(t *testing.T) {
 	}
 }
 
+func TestMCPUpdateAndDiscardDrafts(t *testing.T) {
+	h := newHarness(t)
+	et := newEmailTeam(t, h, false)
+	et.owner.expect(http.StatusNoContent, "PUT", "/v1/inboxes/"+et.inbox+"/members/"+et.agentID, nil)
+	scopes := []string{"conversations:read", "conversations:write", "messages:write", "contacts:read"}
+	cs := h.mcpSession(h.oauthToken(et.owner, et.ws, "Claude Code", testOrigin+"/mcp", scopes))
+	readOnly := h.mcpSession(h.oauthToken(et.owner, et.ws, "Claude Code", testOrigin+"/mcp", []string{"conversations:read"}))
+	for _, name := range []string{"update_draft", "discard_draft"} {
+		if !slices.Contains(toolNames(t, cs), name) || slices.Contains(toolNames(t, readOnly), name) {
+			t.Fatalf("%s is listed only with messages:write", name)
+		}
+	}
+	if _, errText := callTool(t, readOnly, "discard_draft", map[string]any{"message_id": "00000000-0000-0000-0000-000000000000"}); !strings.Contains(errText, "messages:write") {
+		t.Fatalf("discard_draft without messages:write: %q", errText)
+	}
+
+	started, errText := callTool(t, cs, "start_conversation", map[string]any{"inbox_id": et.inbox, "contact_id": et.contact, "channel_id": et.channel, "subject": "Welcome", "body": "Hello Ayşe"})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	draftID := started["message"].(map[string]any)["id"].(string)
+	if _, errText = callTool(t, cs, "update_draft", map[string]any{"message_id": draftID}); errText == "" {
+		t.Fatal("update_draft with nothing to change")
+	}
+	updated, errText := callTool(t, cs, "update_draft", map[string]any{"message_id": draftID, "body": "Hello Ayşe, welcome aboard"})
+	if errText != "" || updated["id"] != draftID || updated["draft"] != true {
+		t.Fatalf("update_draft: %v %s", updated, errText)
+	}
+	drafts, _ := callTool(t, cs, "list_drafts", map[string]any{"inbox_id": et.inbox})
+	if drafts["total"] != 1.0 || !strings.Contains(drafts["items"].([]any)[0].(map[string]any)["draft"].(map[string]any)["customer_content"].(map[string]any)["body"].(string), "welcome aboard") {
+		t.Fatalf("list_drafts after update_draft: %v", drafts)
+	}
+	discarded, errText := callTool(t, cs, "discard_draft", map[string]any{"message_id": draftID})
+	if errText != "" || discarded["discarded"] != true || discarded["message_id"] != draftID {
+		t.Fatalf("discard_draft: %v %s", discarded, errText)
+	}
+	if drafts, _ = callTool(t, cs, "list_drafts", map[string]any{"inbox_id": et.inbox}); drafts["total"] != 0.0 {
+		t.Fatalf("list_drafts after discard_draft: %v", drafts)
+	}
+	if _, errText = callTool(t, cs, "discard_draft", map[string]any{"message_id": draftID}); !strings.Contains(errText, "not_found") {
+		t.Fatalf("discard_draft twice: %q", errText)
+	}
+
+	conv := et.conversation(et.owner)
+	sent := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+conv+"/messages", map[string]any{"kind": "message", "body": "Sent already"}).str("id")
+	for tool, args := range map[string]map[string]any{"update_draft": {"message_id": sent, "body": "x"}, "discard_draft": {"message_id": sent}} {
+		if _, errText = callTool(t, cs, tool, args); !strings.Contains(errText, "not_a_draft") {
+			t.Fatalf("%s on a sent message: %q", tool, errText)
+		}
+	}
+
+	mine := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/mail", map[string]any{
+		"inbox_id": et.inbox, "to": []string{"dora@example.org"}, "subject": "Plan", "body": "First", "draft": true,
+	}).body["message"].(map[string]any)["id"].(string)
+	agent := h.mcpSession(h.oauthToken(et.agent, et.ws, "Claude Code", testOrigin+"/mcp", scopes))
+	for tool, args := range map[string]map[string]any{"update_draft": {"message_id": mine, "body": "Stolen"}, "discard_draft": {"message_id": mine}} {
+		if _, errText = callTool(t, agent, tool, args); !strings.Contains(errText, "not_found") {
+			t.Fatalf("%s on another member's draft: %q", tool, errText)
+		}
+	}
+	if out, errText := callTool(t, cs, "update_draft", map[string]any{"message_id": mine, "subject": "Plan B", "body": "Second"}); errText != "" || out["id"] != mine {
+		t.Fatalf("update_draft on the author's own draft: %v %s", out, errText)
+	}
+	if _, errText = callTool(t, cs, "discard_draft", map[string]any{"message_id": mine}); errText != "" {
+		t.Fatal(errText)
+	}
+
+	other := newTeam(t, h)
+	ocs := h.mcpSession(h.oauthToken(other.owner, other.ws, "Claude Code", testOrigin+"/mcp", scopes))
+	again, _ := callTool(t, cs, "start_conversation", map[string]any{"inbox_id": et.inbox, "contact_id": et.contact, "channel_id": et.channel, "subject": "Again", "body": "Hi"})
+	foreign := again["message"].(map[string]any)["id"].(string)
+	for tool, args := range map[string]map[string]any{"update_draft": {"message_id": foreign, "body": "x"}, "discard_draft": {"message_id": foreign}} {
+		if _, errText = callTool(t, ocs, tool, args); !strings.Contains(errText, "not_found") {
+			t.Fatalf("%s on another workspace's draft: %q", tool, errText)
+		}
+	}
+	if drafts, _ = callTool(t, cs, "list_drafts", map[string]any{"inbox_id": et.inbox}); drafts["total"] != 1.0 {
+		t.Fatalf("the other workspace changed a draft: %v", drafts)
+	}
+}
+
 func TestMCPContactNotesLabelsAndCannedReplies(t *testing.T) {
 	h := newHarness(t)
 	tm := newTeam(t, h)

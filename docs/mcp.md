@@ -199,7 +199,7 @@ with the role and scope each tool names in the [table below](#tools). Tools you 
   the assistant's.
 - **People and conversations.** `list_members` gives `assign` its ids; contacts, their notes and subscriptions can be
   searched, created and updated; `start_conversation` writes the first message as a draft unless the workspace lets
-  assistants deliver; `list_drafts` shows drafts waiting for review; labels and canned replies can be created.
+  assistants deliver; `list_drafts` shows drafts waiting for review, `update_draft` rewrites one and `discard_draft` deletes one; labels and canned replies can be created.
   `list_discussions` and `get_discussion` read discussions; `reply_to_discussion` and `mark_discussion_answer` reply and
   mark the answer as you, through OAuth only and only while the workspace lets assistants deliver, since a reply is public
   at once.
@@ -232,6 +232,7 @@ answers `insufficient_scope` with the scope to grant.
 | `draft_reply` | `messages:write` |
 | `send_reply` | `messages:write`; only when bots may send |
 | `send_draft` (sends a `draft_reply` draft) | `messages:write` and `drafts:send`; only when bots may send |
+| `update_draft`, `discard_draft` (only unsent drafts; a member's own draft only by that member) | `messages:write` |
 | `add_note` | `notes:write` |
 | `assign`, `set_status`, `snooze`, `add_labels`, `remove_labels`, `move_conversation`, `bulk_update` | `conversations:write` |
 | `merge_contacts` (owners, admins, keys without an inbox limit) | `contacts:write` |
