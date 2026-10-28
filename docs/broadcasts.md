@@ -272,6 +272,115 @@ Sending is the one thing API keys and OAuth tokens do not get by default:
   Pausing and cancelling need `broadcasts:send` and are not held back by the switch.
 - Through an [assistant](mcp.md#lists-designs-and-setup-from-an-assistant), `pause_broadcast`, `resume_broadcast`, `unschedule_broadcast` and `cancel_broadcast` are listed only while the switch is on, like `schedule_broadcast`.
 
+## 8. Triggered e-mails
+
+A triggered e-mail sends one [design](designs.md) once to each contact of an inbox, a set time after the
+contact is first identified there: the moment an app or your backend gives the contact its first external id
+(through an [identity token](identity.md), `POST /v1/contacts`, or a form that carries one). Use it for a
+welcome mail a day after sign-up or a "how is it going" note a week later. It is a broadcast of `kind`
+`triggered`, so the design, subjects per language, merge fields, review, test sends, click tracking, pace,
+sending hours and daily limit work as described above. Nothing is sent to a list at once: contacts are enrolled one by one
+as they are identified.
+
+### Set one up
+
+In the panel, create a triggered e-mail in the inbox instead of a one-off broadcast. Or through the API,
+with `kind: "triggered"` and a `trigger`:
+
+```sh
+curl -X POST https://support.example.com/v1/broadcasts \
+  -H "Authorization: Bearer $YUVA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inbox_id": "INBOX-ID",
+    "channel_id": "CHANNEL-ID",
+    "name": "Welcome",
+    "subject": "Welcome, {{ contact.first_name | \"there\" }}",
+    "design_id": "DESIGN-ID",
+    "kind": "triggered",
+    "trigger": { "event": "contact_identified", "delay_minutes": 1440, "basis": "service" }
+  }'
+```
+
+- **Event.** `contact_identified` is the only event.
+- **Delay.** From 0 minutes to 365 days after the trigger. The mail waits that long, then goes out under
+  the pace, the sending hours and the daily limit of broadcasts; if the hours are closed at that time it waits for them.
+  Triggered e-mails go out before one-off broadcasts of the same channel.
+- **Sending hours.** `timezone` and `send_window` work as for [broadcasts](#sending-pace) and can be changed
+  while it is running.
+- **Audience.** Conditions and languages (up to 10 and 20) are checked at the contact's due time, not when
+  they are identified. A contact who no longer matches is skipped.
+
+### Marketing or service
+
+The consent basis is chosen when you create it and cannot change afterwards.
+
+| Basis | Goes to | Footer | Needs |
+|---|---|---|---|
+| `marketing` | Only contacts subscribed to its 1 to 10 `audience.list_ids`. | The usual broadcast footer, with one-click unsubscribe from the list. | Lists. |
+| `service` | Every matching contact, no lists. | A footer saying the person uses the inbox's product, your postal address and a one-click stop. | `confirm_service: true` when you start it. |
+
+Choose `service` only for mail about using the product: getting started, the account, a request for
+feedback. Advertising and offers are always `marketing`. A `service` e-mail cannot use the `list.name` merge field.
+Starting a `service` e-mail without `confirm_service: true` answers `400 service_basis_unconfirmed`; Yuva stores
+who confirmed and when, and the audit log records the start.
+
+The one-click stop of a service footer stops the inbox's service triggered e-mails and
+[designed outreach](designs.md#8-use-a-design-in-a-conversation) to that person; it does not unsubscribe them from any list.
+Both bases skip addresses that bounced or complained and people who objected to all mail from the workspace.
+
+### Start, back-fill and stop
+
+Starting works like scheduling (`POST /v1/broadcasts/{broadcastId}/schedule`): at `send_at` (it is
+`scheduled` until then) or now it becomes `active`. The review must pass first. From then on every contact
+whose trigger happens is enrolled once, and a contact is never enrolled twice.
+
+Contacts identified before the start get nothing, unless you **back-fill**: `backfill_days` (0 to 30, on the
+start or in `trigger`) also enrolls contacts whose trigger happened in that many days before the start. Their
+delay counts from the trigger, but nobody is due earlier than the start. The review counts them, and
+`confirm_recipients` must equal that count (0 without back-fill).
+
+Contacts you copy in from your own backend are a trigger too: a user the product already had would get a
+"welcome" mail. Send `"skip_triggers": true` with `POST /v1/contacts` or `PATCH /v1/contacts/{contactId}` so that
+the new external id enrolls nobody. Imports, help-desk migrations and merges never trigger.
+
+| Action | What it does |
+|---|---|
+| Pause (`POST .../pause`) | Stops sending. New triggers are still enrolled and wait. |
+| Resume (`POST .../resume`) | Runs the review again and freezes the design as saved now. Contacts whose due time passed more than 7 days before are skipped as `late`. |
+| Stop (`POST .../cancel`) | Stops for good. It no longer enrolls and drops the contacts waiting. A stopped e-mail cannot be started again; make a new one. |
+
+While it is **active** you can change the pace, time zone, sending hours, the delay (it moves the due time of
+everyone waiting) and click tracking. While it is **paused** you can also change the design, subjects, preheader,
+translations, conditions and languages; resuming reviews it again. The event, the basis, the lists and the channel
+never change after the draft; make a new e-mail for that. Pause, resume and stop need `broadcasts:send`.
+
+### Who waits
+
+The broadcast page lists the contacts it enrolled: waiting with the time their mail is due, mailed, and skipped
+with the reason. Through the API, `GET /v1/broadcasts/{broadcastId}/enrollments` lists them (`state`:
+`waiting`, `queued`, `skipped`, `cancelled`), the one due first first for `waiting`. To keep one waiting contact from getting the mail,
+`DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId}` takes them off: they are skipped as `removed` and
+never enrolled again. Only a waiting contact can be removed (`409 invalid_state` otherwise).
+
+| Skip reason | Meaning |
+|---|---|
+| `no_address` | The contact has no e-mail address. |
+| `blocked` | You blocked the contact. |
+| `suppressed` | The address bounced or complained. |
+| `opted_out` | The person objected to all mail from the workspace. |
+| `stopped` | `service`: the person stopped the inbox's mail like this. |
+| `not_subscribed` | `marketing`: on none of its lists. |
+| `not_matching` | A condition or language does not match. |
+| `late` | Due more than 7 days before it could be processed, after a long pause or the daily limit. |
+| `removed` | Taken off the waiting list. |
+
+The report adds contacts enrolled, waiting and the skips by reason. Counts are brought up to date within
+5 minutes. No event or webhook is sent per enrolled contact.
+
+At most 20 triggered e-mails of an inbox can be scheduled, active or paused at the same time
+(`409 too_many_triggered`). A merge field without a fallback is only a warning in the review, since the contacts are not
+known yet.
 ## Approval on hosted servers
 
 A server that offers sign-up to anyone (`YUVA_SIGNUP=open`) runs broadcasts in `approval` mode by
@@ -348,7 +457,7 @@ curl -X POST https://support.example.com/v1/broadcasts/BROADCAST-ID/schedule \
 
 | Endpoint | Use |
 |---|---|
-| `GET`, `POST /v1/broadcasts` | List (`inbox_id`, `state`) and create drafts. |
+| `GET`, `POST /v1/broadcasts` | List (`inbox_id`, `state`, `kind`) and create drafts or [triggered e-mails](#8-triggered-e-mails) (`kind: "triggered"`, `trigger`). |
 | `GET`, `PATCH`, `DELETE /v1/broadcasts/{broadcastId}` | Read, change a draft (or only the pace of a scheduled or running one), delete a draft or finished broadcast. |
 | `POST /v1/broadcasts/{broadcastId}/audience` | Count the audience: recipients, who is left out and why, merge fields that would be empty. |
 | `GET /v1/broadcasts/{broadcastId}/review` | The checklist. |
@@ -357,6 +466,8 @@ curl -X POST https://support.example.com/v1/broadcasts/BROADCAST-ID/schedule \
 | `POST /v1/broadcasts/{broadcastId}/unschedule` | Back to draft, before it starts. |
 | `POST /v1/broadcasts/{broadcastId}/pause`, `resume`, `cancel` | Control a running broadcast. |
 | `GET /v1/broadcasts/{broadcastId}/deliveries` | The recipients (`state`, `q`, `replied`). |
+| `GET /v1/broadcasts/{broadcastId}/enrollments` | A triggered e-mail's contacts (`state`): who waits and when, who was mailed, who was skipped. |
+| `DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId}` | Take a waiting contact off a triggered e-mail. |
 | `GET /v1/broadcasts/{broadcastId}/report` | Counts, rates, timeline, links and replies. |
 | `GET /v1/conversations?broadcast_id=` | Conversations opened by replies to a broadcast. |
 | `PATCH /v1/workspace` | `broadcasts_by_keys`, the switch for keys and assistants. |
@@ -374,8 +485,8 @@ Full shapes are in the [API contract](../openapi/openapi.yaml). Errors worth han
 
 | Scope | Meaning |
 |---|---|
-| `broadcasts:read` | Read broadcasts, audience counts, reviews and reports; deliveries also need `contacts:read`. |
-| `broadcasts:write` | Create, change and delete drafts; send tests. |
+| `broadcasts:read` | Read broadcasts, audience counts, reviews and reports; deliveries and the enrollments of a triggered e-mail also need `contacts:read`. |
+| `broadcasts:write` | Create, change and delete drafts; send tests; take a contact off a triggered e-mail. |
 | `broadcasts:send` | Schedule, unschedule, pause, resume and cancel. Never implied. |
 
 Keys made before these scopes existed do not get them.
@@ -406,3 +517,6 @@ Both reach callers with `broadcasts:read` who can see the broadcast's inbox. Rep
 | HTML | 90 KB warning, 102 KB blocks, 500 KB refused |
 | Broadcasts per workspace | 1,000 on an `approval` server |
 | Recipient list kept | 400 days after the broadcast finished |
+| Triggered e-mails per inbox | 20 scheduled, active or paused |
+| Delay of a triggered e-mail | 0 minutes to 365 days |
+| Back-fill | 0 to 30 days |

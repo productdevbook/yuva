@@ -287,6 +287,120 @@ Versenden ist das Einzige, das API-Keys und OAuth-Tokens standardmäßig nicht b
   Abbrechen brauchen `broadcasts:send` und werden vom Schalter nicht zurückgehalten.
 - Über einen [Assistenten](mcp.md#listen-designs-und-einrichtung-über-einen-assistenten) werden `pause_broadcast`, `resume_broadcast`, `unschedule_broadcast` und `cancel_broadcast` wie `schedule_broadcast` nur aufgelistet, solange der Schalter an ist.
 
+## 8. Ausgelöste E-Mails
+
+Eine ausgelöste E-Mail sendet ein [Design](designs.md) einmal an jeden Kontakt eines Posteingangs, eine
+festgelegte Zeit nachdem der Kontakt dort zum ersten Mal erkannt wurde: in dem Moment, in dem eine App oder Ihr
+Backend dem Kontakt seine erste externe ID gibt (über ein [Identitäts-Token](identity.md), `POST /v1/contacts` oder
+ein Formular, das eine ID mitbringt). Nutzen Sie sie für eine Willkommensmail einen Tag nach der Anmeldung oder eine
+Nachfrage "Wie läuft es?" eine Woche später. Sie ist ein Broadcast mit `kind` `triggered`; Design, Betreffs je
+Sprache, Merge-Felder, Prüfung, Testversand, Klick-Tracking, Tempo, Versandzeiten und Tageslimit funktionieren wie
+oben beschrieben. Nichts geht auf einmal an eine Liste: Kontakte werden einzeln erfasst, sobald sie erkannt werden.
+
+### Einrichten
+
+Legen Sie im Panel im Posteingang eine ausgelöste E-Mail statt eines einmaligen Broadcasts an. Oder per API mit
+`kind: "triggered"` und einem `trigger`:
+
+```sh
+curl -X POST https://support.example.com/v1/broadcasts \
+  -H "Authorization: Bearer $YUVA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inbox_id": "INBOX-ID",
+    "channel_id": "CHANNEL-ID",
+    "name": "Welcome",
+    "subject": "Welcome, {{ contact.first_name | \"there\" }}",
+    "design_id": "DESIGN-ID",
+    "kind": "triggered",
+    "trigger": { "event": "contact_identified", "delay_minutes": 1440, "basis": "service" }
+  }'
+```
+
+- **Ereignis.** `contact_identified` ist das einzige Ereignis.
+- **Verzögerung.** Von 0 Minuten bis 365 Tage nach dem Auslöser. Die Mail wartet so lange und wird dann unter
+  Tempo, Versandzeiten und Tageslimit von Broadcasts versendet; sind die Zeiten dann geschlossen, wartet sie auf deren
+  Öffnung. Ausgelöste E-Mails werden vor den einmaligen Broadcasts desselben Kanals versendet.
+- **Versandzeiten.** `timezone` und `send_window` funktionieren wie bei [Broadcasts](#versandtempo) und lassen sich
+  ändern, während die E-Mail läuft.
+- **Zielgruppe.** Bedingungen und Sprachen (bis zu 10 und 20) werden zur Fälligkeit des Kontakts geprüft, nicht bei
+  der Erkennung. Wer nicht mehr passt, wird übersprungen.
+
+### Marketing oder Service
+
+Die Einwilligungsgrundlage wird beim Anlegen gewählt und lässt sich danach nicht ändern.
+
+| Grundlage | Geht an | Fußzeile | Braucht |
+|---|---|---|---|
+| `marketing` | Nur Kontakte, die eine ihrer 1 bis 10 `audience.list_ids` abonniert haben. | Die übliche Broadcast-Fußzeile mit Ein-Klick-Abmeldung von der Liste. | Listen. |
+| `service` | Jeden passenden Kontakt, keine Listen. | Eine Fußzeile, die sagt, dass die Person das Produkt des Posteingangs nutzt, mit Ihrer Postadresse und einem Ein-Klick-Stopp. | `confirm_service: true` beim Start. |
+
+Wählen Sie `service` nur für Mails über die Nutzung des Produkts: Einstieg, Konto, Bitte um Feedback. Werbung und
+Angebote sind immer `marketing`. Eine `service`-E-Mail darf das Merge-Feld `list.name` nicht verwenden. Eine
+`service`-E-Mail ohne `confirm_service: true` zu starten, ergibt `400 service_basis_unconfirmed`; Yuva speichert, wer
+wann bestätigt hat, und das Audit-Log hält den Start fest.
+
+Der Ein-Klick-Stopp einer Service-Fußzeile beendet für diese Person die ausgelösten Service-E-Mails des Posteingangs
+und [gestaltete Nachrichten](designs.md#8-ein-design-in-einer-unterhaltung-verwenden); er meldet sie von keiner Liste ab.
+Beide Grundlagen überspringen Adressen, die gebounct sind oder sich beschwert haben, und Personen, die jeder Mail
+des Workspace widersprochen haben.
+
+### Starten, Rückwirkung und Stoppen
+
+Das Starten funktioniert wie das Planen (`POST /v1/broadcasts/{broadcastId}/schedule`): zu `send_at` (bis dahin
+`scheduled`) oder sofort wird sie `active`. Zuerst muss die Prüfung bestehen. Von da an wird jeder Kontakt, dessen
+Auslöser eintritt, einmal erfasst; niemand wird zweimal erfasst.
+
+Kontakte, die vor dem Start erkannt wurden, bekommen nichts, außer Sie nutzen die **Rückwirkung**: `backfill_days`
+(0 bis 30, beim Start oder in `trigger`) erfasst auch Kontakte, deren Auslöser in dieser Zahl von Tagen vor dem
+Start eintrat. Die Verzögerung zählt ab dem Auslöser, aber niemand ist vor dem Start fällig. Die Prüfung zählt sie,
+und `confirm_recipients` muss dieser Zahl entsprechen (0 ohne Rückwirkung).
+
+Kontakte, die Sie aus Ihrem eigenen Backend hineinkopieren, sind ebenfalls ein Auslöser: ein Nutzer, den das
+Produkt schon hatte, bekäme eine "Willkommen"-Mail. Senden Sie `"skip_triggers": true` mit `POST /v1/contacts` oder
+`PATCH /v1/contacts/{contactId}`, damit die neue externe ID niemanden erfasst. Importe, Help-Desk-Umzüge und
+Zusammenführungen lösen nie aus.
+
+| Aktion | Wirkung |
+|---|---|
+| Pausieren (`POST .../pause`) | Stoppt das Senden. Neue Auslöser werden weiter erfasst und warten. |
+| Fortsetzen (`POST .../resume`) | Führt die Prüfung erneut aus und friert das Design im jetzt gespeicherten Stand ein. Kontakte, deren Fälligkeit mehr als 7 Tage zurückliegt, werden als `late` übersprungen. |
+| Stoppen (`POST .../cancel`) | Hält für immer an. Erfasst nicht mehr und verwirft die Wartenden. Eine gestoppte E-Mail lässt sich nicht neu starten; legen Sie eine neue an. |
+
+Solange sie **aktiv** ist, können Sie Tempo, Zeitzone, Versandzeiten, die Verzögerung (sie verschiebt die
+Fälligkeit aller Wartenden) und das Klick-Tracking ändern. Solange sie **pausiert** ist, auch Design, Betreffs,
+Vorschautext, Übersetzungen, Bedingungen und Sprachen; das Fortsetzen prüft sie erneut. Ereignis, Grundlage, Listen
+und Kanal ändern sich nach dem Entwurf nie; legen Sie dafür eine neue E-Mail an. Pausieren, Fortsetzen und Stoppen
+brauchen `broadcasts:send`.
+
+### Wer wartet
+
+Die Broadcast-Seite listet die erfassten Kontakte: wartend mit dem Zeitpunkt, an dem ihre Mail fällig ist,
+versendet und übersprungen mit dem Grund. Über die API listet `GET /v1/broadcasts/{broadcastId}/enrollments` sie
+auf (`state`: `waiting`, `queued`, `skipped`, `cancelled`); bei `waiting` zuerst der am frühesten Fällige. Soll ein
+wartender Kontakt die Mail nicht bekommen, nimmt ihn `DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId}`
+heraus: er wird als `removed` übersprungen und nie wieder erfasst. Nur ein wartender Kontakt lässt sich entfernen
+(sonst `409 invalid_state`).
+
+| Grund | Bedeutung |
+|---|---|
+| `no_address` | Der Kontakt hat keine E-Mail-Adresse. |
+| `blocked` | Sie haben den Kontakt gesperrt. |
+| `suppressed` | Die Adresse ist gebounct oder hat sich beschwert. |
+| `opted_out` | Die Person widersprach jeder Mail des Workspace. |
+| `stopped` | `service`: die Person hat solche Mails des Posteingangs gestoppt. |
+| `not_subscribed` | `marketing`: auf keiner ihrer Listen. |
+| `not_matching` | Eine Bedingung oder Sprache passt nicht. |
+| `late` | Mehr als 7 Tage vor der Verarbeitung fällig, nach langer Pause oder wegen des Tageslimits. |
+| `removed` | Von der Warteliste genommen. |
+
+Der Bericht ergänzt erfasste und wartende Kontakte und die Übersprungenen nach Grund. Die Zahlen sind innerhalb von
+5 Minuten aktuell. Pro erfasstem Kontakt wird kein Ereignis und kein Webhook gesendet.
+
+Pro Posteingang können höchstens 20 ausgelöste E-Mails gleichzeitig geplant, aktiv oder pausiert sein
+(`409 too_many_triggered`). Ein Merge-Feld ohne Fallback ist in der Prüfung nur eine Warnung, da die Kontakte noch
+nicht bekannt sind.
+
 ## Freigabe auf gehosteten Servern
 
 Ein Server, der die Anmeldung für alle öffnet (`YUVA_SIGNUP=open`), betreibt Broadcasts standardmäßig im
@@ -368,7 +482,7 @@ curl -X POST https://support.example.com/v1/broadcasts/BROADCAST-ID/schedule \
 
 | Endpunkt | Zweck |
 |---|---|
-| `GET`, `POST /v1/broadcasts` | Entwürfe auflisten (`inbox_id`, `state`) und anlegen. |
+| `GET`, `POST /v1/broadcasts` | Entwürfe auflisten (`inbox_id`, `state`, `kind`) und Entwürfe oder [ausgelöste E-Mails](#8-ausgelöste-e-mails) anlegen (`kind: "triggered"`, `trigger`). |
 | `GET`, `PATCH`, `DELETE /v1/broadcasts/{broadcastId}` | Lesen, einen Entwurf ändern (oder nur das Tempo eines geplanten oder laufenden), einen Entwurf oder beendeten Broadcast löschen. |
 | `POST /v1/broadcasts/{broadcastId}/audience` | Die Zielgruppe zählen: Empfänger, wer warum ausgelassen wird, Merge-Felder, die leer wären. |
 | `GET /v1/broadcasts/{broadcastId}/review` | Die Checkliste. |
@@ -377,6 +491,8 @@ curl -X POST https://support.example.com/v1/broadcasts/BROADCAST-ID/schedule \
 | `POST /v1/broadcasts/{broadcastId}/unschedule` | Zurück zum Entwurf, vor dem Start. |
 | `POST /v1/broadcasts/{broadcastId}/pause`, `resume`, `cancel` | Einen laufenden Broadcast steuern. |
 | `GET /v1/broadcasts/{broadcastId}/deliveries` | Die Empfänger (`state`, `q`, `replied`). |
+| `GET /v1/broadcasts/{broadcastId}/enrollments` | Die Kontakte einer ausgelösten E-Mail (`state`): wer wann wartet, wer die Mail bekam, wer übersprungen wurde. |
+| `DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId}` | Einen wartenden Kontakt aus einer ausgelösten E-Mail nehmen. |
 | `GET /v1/broadcasts/{broadcastId}/report` | Zahlen, Raten, Zeitleiste, Links und Antworten. |
 | `GET /v1/conversations?broadcast_id=` | Unterhaltungen, die Antworten auf einen Broadcast geöffnet haben. |
 | `PATCH /v1/workspace` | `broadcasts_by_keys`, der Schalter für Keys und Assistenten. |
@@ -395,8 +511,8 @@ den blockierenden `items`), `409 audience_changed`, `409 not_draft`, `409 invali
 
 | Scope | Bedeutung |
 |---|---|
-| `broadcasts:read` | Broadcasts, Zielgruppenzahlen, Prüfungen und Berichte lesen; die Empfängerliste braucht zusätzlich `contacts:read`. |
-| `broadcasts:write` | Entwürfe anlegen, ändern und löschen; Tests senden. |
+| `broadcasts:read` | Broadcasts, Zielgruppenzahlen, Prüfungen und Berichte lesen; die Empfängerliste und die erfassten Kontakte einer ausgelösten E-Mail brauchen zusätzlich `contacts:read`. |
+| `broadcasts:write` | Entwürfe anlegen, ändern und löschen; Tests senden; einen Kontakt aus einer ausgelösten E-Mail nehmen. |
 | `broadcasts:send` | Planen, Planung zurücknehmen, pausieren, fortsetzen und abbrechen. Nie impliziert. |
 
 Keys, die vor diesen Scopes angelegt wurden, bekommen sie nicht.
@@ -427,3 +543,6 @@ Antworten fügen der Zeitleiste der Unterhaltung einen Eintrag `broadcast_reply`
 | HTML | 90 KB Warnung, 102 KB blockiert, 500 KB abgelehnt |
 | Broadcasts pro Workspace | 1.000 auf einem `approval`-Server |
 | Empfängerliste aufbewahrt | 400 Tage nach dem Ende des Broadcasts |
+| Ausgelöste E-Mails pro Posteingang | 20 geplant, aktiv oder pausiert |
+| Verzögerung einer ausgelösten E-Mail | 0 Minuten bis 365 Tage |
+| Rückwirkung | 0 bis 30 Tage |

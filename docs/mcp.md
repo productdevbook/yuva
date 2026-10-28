@@ -201,6 +201,7 @@ with the role and scope each tool names in the [table below](#tools). Tools you 
   designs, and connections with `conversations:read`, see only offered designs. The rules, footers and limits for
   mail to someone who has not written yet are in [E-mail designs](designs.md#8-use-a-design-in-a-conversation).
 - **Running broadcasts.** `pause_broadcast`, `resume_broadcast`, `unschedule_broadcast` and `cancel_broadcast` are
+- **Triggered e-mails.** `create_triggered_email` makes a draft [triggered e-mail](broadcasts.md#8-triggered-e-mails) for an inbox: the event `contact_identified`, a `delay` with `delay_unit` (`minutes`, `hours` or `days`, at most 365 days) and a `basis`, `service` or `marketing` (`list_ids` only for `marketing`). Optional are languages, conditions, click tracking, the time zone and the sending hours. `update_broadcast` also takes `delay`, `delay_unit` and `backfill_days`. `get_broadcast` and `list_broadcasts` (with `kind`) show the `trigger`, the review and, for a started one, `enrolled`, `waiting` and `skipped_triggered`. Nothing is sent and nobody is enrolled until `schedule_broadcast` starts it, under the same rule as for broadcasts; then `confirm_recipients` is the back-fill count (0 without `backfill_days`) and a `service` one needs `confirm_service: true`, which you give only after the person you work for confirmed that the mail is about using the product and not advertising. `list_triggered_waiting` lists who waits, with when their mail goes out (`state` also `queued`, `skipped` or `cancelled`), and `remove_triggered_contact` takes one waiting contact off for good, only when you ask. `pause_broadcast`, `resume_broadcast` and `cancel_broadcast` also pause, resume and stop a triggered e-mail.
   listed under the same rule as `schedule_broadcast`. `cancel_broadcast` needs `confirm_name`, the broadcast's name as
   you confirmed it. `request_broadcast_approval` asks the operator to allow broadcasts; it is offered only to an owner
   signed in through OAuth, and the website and the descriptions of the sender and of how people agreed are yours, never
@@ -264,6 +265,8 @@ answers `insufficient_scope` with the scope to grant.
 | `list_broadcasts`, `get_broadcast` (with the review and, for a draft, the audience count), `get_broadcast_report` | `broadcasts:read` |
 | `list_email_templates`, `preview_design` (owners and admins) | `broadcasts:read` |
 | `create_design`, `update_design`, `create_broadcast_draft`, `update_broadcast`, `send_test_broadcast` (owners and admins) | `broadcasts:write` |
+| `create_triggered_email`, `remove_triggered_contact` (owners, admins, keys) | `broadcasts:write` |
+| `list_triggered_waiting` | `broadcasts:read` and `contacts:read` |
 | `schedule_broadcast` (only while the workspace allows keys and assistants to send broadcasts) | `broadcasts:send` |
 | `list_members` | `inboxes:read` |
 | `list_teams` | `inboxes:read` |

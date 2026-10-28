@@ -274,6 +274,116 @@ Göndermek, API anahtarlarının ve OAuth belirteçlerinin varsayılan olarak al
   Duraklatmak ve iptal etmek `broadcasts:send` ister ve bu anahtar tarafından engellenmez.
 - Bir [asistan](mcp.md#listeleri-tasarımları-ve-kurulumu-bir-asistanla-yapın) üzerinden `pause_broadcast`, `resume_broadcast`, `unschedule_broadcast` ve `cancel_broadcast`, `schedule_broadcast` gibi yalnızca anahtar açıkken listelenir.
 
+## 8. Tetiklenen e-postalar
+
+Tetiklenen e-posta, bir gelen kutusundaki her kişiye bir [tasarımı](designs.md) yalnızca bir kez gönderir; kişi orada
+ilk kez tanındıktan belirli bir süre sonra. Tanınma anı, bir uygulamanın ya da arka ucunuzun kişiye ilk harici
+kimliğini verdiği andır ([kimlik token'ı](identity.md), `POST /v1/contacts` ya da kimlik taşıyan bir form ile).
+Kayıttan bir gün sonra giden hoş geldin e-postası ya da bir hafta sonra gelen "nasıl gidiyor" notu için kullanın.
+Bu, `kind` değeri `triggered` olan bir bültendir; tasarım, dile göre konular, birleştirme alanları, gözden geçirme,
+deneme gönderimleri, tıklama takibi, hız, gönderim saatleri ve günlük sınır yukarıda anlatıldığı gibi çalışır.
+Hiçbir şey bir listeye bir anda gitmez: kişiler tanındıkça tek tek kaydedilir.
+
+### Kurulum
+
+Panelde gelen kutusunda tek seferlik bülten yerine tetiklenen e-posta oluşturun. API ile `kind: "triggered"` ve
+bir `trigger` verin:
+
+```sh
+curl -X POST https://support.example.com/v1/broadcasts \
+  -H "Authorization: Bearer $YUVA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inbox_id": "INBOX-ID",
+    "channel_id": "CHANNEL-ID",
+    "name": "Welcome",
+    "subject": "Welcome, {{ contact.first_name | \"there\" }}",
+    "design_id": "DESIGN-ID",
+    "kind": "triggered",
+    "trigger": { "event": "contact_identified", "delay_minutes": 1440, "basis": "service" }
+  }'
+```
+
+- **Olay.** Tek olay `contact_identified`.
+- **Gecikme.** Tetikten 0 dakika ile 365 gün sonrası. E-posta o kadar bekler, sonra bültenlerin hızı, gönderim
+  saatleri ve günlük sınırı altında gider; o an saatler kapalıysa açılmalarını bekler. Tetiklenen e-postalar,
+  aynı kanalın tek seferlik bültenlerinden önce gider.
+- **Gönderim saatleri.** `timezone` ve `send_window` [bültenlerdeki](#gönderim-hızı) gibi çalışır ve e-posta
+  çalışırken değiştirilebilir.
+- **Alıcılar.** Koşullar ve diller (en fazla 10 ve 20), kişinin tanındığı anda değil, gönderim zamanı geldiğinde
+  denetlenir. Artık uymayan kişi atlanır.
+
+### Pazarlama mı hizmet mi
+
+İzin dayanağı oluştururken seçilir ve sonra değişmez.
+
+| Dayanak | Kime gider | Alt bilgi | Gerekir |
+|---|---|---|---|
+| `marketing` | Yalnızca 1 ile 10 `audience.list_ids` listesine abone olan kişilere. | Listeden tek tıkla çıkış içeren olağan bülten alt bilgisi. | Listeler. |
+| `service` | Uyan her kişiye, liste yok. | Kişinin gelen kutusunun ürününü kullandığını belirten, posta adresinizi ve tek tıkla durdurmayı içeren alt bilgi. | Başlatırken `confirm_service: true`. |
+
+`service` dayanağını yalnızca ürünün kullanımıyla ilgili e-postalar için seçin: başlangıç, hesap, geri bildirim
+isteği. Reklam ve kampanyalar her zaman `marketing`'dir. `service` e-postada `list.name` birleştirme alanı
+kullanılamaz. `service` e-postayı `confirm_service: true` olmadan başlatmak `400 service_basis_unconfirmed` döndürür;
+Yuva onaylayanı ve zamanı saklar, denetim günlüğü başlatmayı kaydeder.
+
+Hizmet alt bilgisindeki tek tıkla durdurma, o kişiye gelen kutusunun hizmet amaçlı tetiklenen e-postalarını ve
+[tasarımlı iletileri](designs.md#8-konuşmada-tasarım-kullanma) durdurur; kişiyi hiçbir listeden çıkarmaz. Her iki dayanak da
+geri dönen ya da şikâyet edilen adresleri ve çalışma alanından gelen tüm e-postaya itiraz edenleri atlar.
+
+### Başlatma, geriye dönük kayıt ve durdurma
+
+Başlatma zamanlamaya benzer (`POST /v1/broadcasts/{broadcastId}/schedule`): `send_at` anında (o zamana kadar
+`scheduled`) ya da hemen `active` olur. Önce gözden geçirme geçmelidir. Bundan sonra tetiği gerçekleşen her kişi bir
+kez kaydedilir; hiç kimse iki kez kaydedilmez.
+
+Başlatmadan önce tanınan kişiler hiçbir şey almaz; **geriye dönük kayıt** yapmadıkça: `backfill_days` (0 ile 30,
+başlatırken ya da `trigger` içinde) başlatmadan önceki o kadar gün içinde tetiği gerçekleşen kişileri de kaydeder.
+Gecikme tetikten sayılır, ama kimse başlatmadan önce gönderilmez. Gözden geçirme bunları sayar ve
+`confirm_recipients` bu sayıya eşit olmalıdır (geriye dönük kayıt yoksa 0).
+
+Kendi arka ucunuzdan kopyaladığınız kişiler de bir tetiktir: ürünün zaten sahip olduğu bir kullanıcı "hoş geldin"
+e-postası alırdı. `POST /v1/contacts` ya da `PATCH /v1/contacts/{contactId}` ile `"skip_triggers": true` gönderin;
+yeni harici kimlik kimseyi kaydetmez. İçe aktarmalar, destek masası taşımaları ve birleştirmeler asla tetiklemez.
+
+| İşlem | Ne yapar |
+|---|---|
+| Duraklat (`POST .../pause`) | Göndermeyi durdurur. Yeni tetikler yine kaydedilir ve bekler. |
+| Sürdür (`POST .../resume`) | Gözden geçirmeyi yeniden çalıştırır ve tasarımı şimdi kayıtlı haliyle dondurur. Zamanı 7 günden fazla önce geçen kişiler `late` ile atlanır. |
+| Durdur (`POST .../cancel`) | Kalıcı olarak durdurur. Artık kayıt yapmaz ve bekleyenleri bırakır. Durdurulan e-posta yeniden başlatılamaz; yenisini oluşturun. |
+
+**Etkinken** hızı, saat dilimini, gönderim saatlerini, gecikmeyi (bekleyen herkesin zamanını kaydırır) ve tıklama
+takibini değiştirebilirsiniz. **Duraklatılmışken** ayrıca tasarımı, konuları, önizleme metnini, çevirileri, koşulları
+ve dilleri değiştirebilirsiniz; sürdürmek yeniden gözden geçirir. Olay, dayanak, listeler ve kanal taslaktan sonra
+asla değişmez; bunun için yeni e-posta oluşturun. Duraklatma, sürdürme ve durdurma `broadcasts:send` ister.
+
+### Kim bekliyor
+
+Bülten sayfası kaydettiği kişileri listeler: gönderim zamanıyla bekleyenler, e-posta gönderilenler ve nedeniyle
+atlananlar. API'de `GET /v1/broadcasts/{broadcastId}/enrollments` bunları listeler (`state`: `waiting`, `queued`,
+`skipped`, `cancelled`); `waiting` için zamanı önce gelen ilk sırada. Bekleyen bir kişinin e-postayı almamasını
+istiyorsanız `DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId}` onu listeden çıkarır: `removed` ile
+atlanır ve bir daha kaydedilmez. Yalnızca bekleyen kişi çıkarılabilir (aksi halde `409 invalid_state`).
+
+| Atlama nedeni | Anlamı |
+|---|---|
+| `no_address` | Kişinin e-posta adresi yok. |
+| `blocked` | Kişiyi engellediniz. |
+| `suppressed` | Adres geri döndü ya da şikâyet edildi. |
+| `opted_out` | Kişi çalışma alanından gelen tüm e-postaya itiraz etti. |
+| `stopped` | `service`: kişi gelen kutusunun bu tür e-postalarını durdurdu. |
+| `not_subscribed` | `marketing`: listelerinden hiçbirine abone değil. |
+| `not_matching` | Bir koşul ya da dil uymuyor. |
+| `late` | Zamanı, uzun bir duraklatma ya da günlük sınır nedeniyle, işlenebilmesinden 7 günden fazla önce geçti. |
+| `removed` | Bekleme listesinden çıkarıldı. |
+
+Rapor kaydedilen ve bekleyen kişileri ve atlananları nedenine göre ekler. Sayılar 5 dakika içinde güncellenir.
+Kaydedilen kişi başına olay ya da webhook gönderilmez.
+
+Bir gelen kutusunda en fazla 20 tetiklenen e-posta aynı anda zamanlanmış, etkin ya da duraklatılmış olabilir
+(`409 too_many_triggered`). Yedeği olmayan bir birleştirme alanı gözden geçirmede yalnızca uyarıdır, çünkü kişiler
+henüz bilinmez.
+
 ## Barındırılan sunucularda onay
 
 Herkese kayıt açan bir sunucu (`YUVA_SIGNUP=open`) bültenleri varsayılan olarak `approval` kipinde
@@ -352,7 +462,7 @@ curl -X POST https://support.example.com/v1/broadcasts/BROADCAST-ID/schedule \
 
 | Uç nokta | Kullanım |
 |---|---|
-| `GET`, `POST /v1/broadcasts` | Taslakları listeler (`inbox_id`, `state`) ve oluşturur. |
+| `GET`, `POST /v1/broadcasts` | Taslakları listeler (`inbox_id`, `state`, `kind`) ve taslak ya da [tetiklenen e-posta](#8-tetiklenen-e-postalar) oluşturur (`kind: "triggered"`, `trigger`). |
 | `GET`, `PATCH`, `DELETE /v1/broadcasts/{broadcastId}` | Okur, taslağı (ya da zamanlanmış veya çalışan bir bültenin yalnızca hızını) değiştirir, taslağı ya da bitmiş bülteni siler. |
 | `POST /v1/broadcasts/{broadcastId}/audience` | Alıcıları sayar: alıcılar, kimin neden dışarıda kaldığı, boş kalacak birleştirme alanları. |
 | `GET /v1/broadcasts/{broadcastId}/review` | Kontrol listesi. |
@@ -361,6 +471,8 @@ curl -X POST https://support.example.com/v1/broadcasts/BROADCAST-ID/schedule \
 | `POST /v1/broadcasts/{broadcastId}/unschedule` | Başlamadan önce taslağa döndürür. |
 | `POST /v1/broadcasts/{broadcastId}/pause`, `resume`, `cancel` | Çalışan bülteni yönetir. |
 | `GET /v1/broadcasts/{broadcastId}/deliveries` | Alıcılar (`state`, `q`, `replied`). |
+| `GET /v1/broadcasts/{broadcastId}/enrollments` | Tetiklenen e-postanın kişileri (`state`): kim ne zaman bekliyor, kime gönderildi, kim atlandı. |
+| `DELETE /v1/broadcasts/{broadcastId}/enrollments/{contactId}` | Bekleyen bir kişiyi tetiklenen e-postadan çıkarır. |
 | `GET /v1/broadcasts/{broadcastId}/report` | Sayılar, oranlar, zaman çizelgesi, bağlantılar ve yanıtlar. |
 | `GET /v1/conversations?broadcast_id=` | Bir bültene verilen yanıtların açtığı konuşmalar. |
 | `PATCH /v1/workspace` | `broadcasts_by_keys`, anahtarlar ve asistanlar için anahtar. |
@@ -378,8 +490,8 @@ hesabı kaldırır). Tam şekiller [API sözleşmesinde](../../openapi/openapi.y
 
 | Kapsam | Anlamı |
 |---|---|
-| `broadcasts:read` | Bültenleri, alıcı sayılarını, gözden geçirmeleri ve raporları okur; alıcı listesi ayrıca `contacts:read` ister. |
-| `broadcasts:write` | Taslak oluşturur, değiştirir ve siler; deneme gönderir. |
+| `broadcasts:read` | Bültenleri, alıcı sayılarını, gözden geçirmeleri ve raporları okur; alıcı listesi ve tetiklenen e-postanın kayıtlı kişileri ayrıca `contacts:read` ister. |
+| `broadcasts:write` | Taslak oluşturur, değiştirir ve siler; deneme gönderir; bir kişiyi tetiklenen e-postadan çıkarır. |
 | `broadcasts:send` | Zamanlar, zamanlamayı geri alır, duraklatır, sürdürür ve iptal eder. Hiçbir zaman örtük verilmez. |
 
 Bu kapsamlar var olmadan önce yapılmış anahtarlar bunları almaz.
@@ -410,3 +522,6 @@ konuşmanın zaman çizelgesine bir `broadcast_reply` girdisi ekler.
 | HTML | 90 KB uyarı, 102 KB engeller, 500 KB reddedilir |
 | Çalışma alanı başına bülten | `approval` sunucusunda 1.000 |
 | Alıcı listesinin saklanması | Bülten bittikten 400 gün |
+| Gelen kutusu başına tetiklenen e-posta | 20 zamanlanmış, etkin ya da duraklatılmış |
+| Tetiklenen e-postanın gecikmesi | 0 dakika ile 365 gün |
+| Geriye dönük kayıt | 0 ile 30 gün |
