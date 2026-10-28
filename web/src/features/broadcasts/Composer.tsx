@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, LockIcon, LoaderIcon, MailWarningIcon } from "lucide-react"
+import { CheckIcon, LockIcon, LoaderIcon, MailWarningIcon, TriangleAlertIcon } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
@@ -180,8 +180,30 @@ function openFields(b: Broadcast): (f: Field) => boolean {
   return (f) => open.includes(f)
 }
 
-export function SaveState({ saving, error, draft = true }: { saving: boolean; error: unknown; draft?: boolean }) {
+export function SaveState({
+  saving,
+  error,
+  draft = true,
+  held,
+}: {
+  saving: boolean
+  error: unknown
+  draft?: boolean
+  held?: React.ReactNode
+}) {
   if (error) return <ErrorLine error={error} className="text-small" />
+  if (held)
+    return (
+      <span
+        className="inline-flex items-center gap-1.5 text-small text-warning"
+        role="status"
+        data-testid="draft-save-state"
+        data-held
+      >
+        <TriangleAlertIcon className="size-3.5" />
+        {held}
+      </span>
+    )
   return (
     <span
       className="inline-flex items-center gap-1.5 text-small text-faint"
@@ -530,12 +552,31 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
     const body = { audience: audienceInput(audience) }
     set({ basis, audience }, !draft ? body : complete ? { ...body, trigger: { basis } } : {})
   }
+  const remembered = useRef<Pick<TriggerDraft, "list_id" | "condition">>({
+    list_id: b.trigger?.list_id,
+    condition: b.trigger?.condition,
+  })
   const setTrigger = (next: TriggerDraft) => {
     const { event } = next
+    if (next.list_id) remembered.current.list_id = next.list_id
+    if (next.condition) remembered.current.condition = next.condition
+    const switched = event !== d.trigger.event
+    const list_id =
+      switched && !(next.list_id && listNames.has(next.list_id))
+        ? remembered.current.list_id && listNames.has(remembered.current.list_id)
+          ? remembered.current.list_id
+          : undefined
+        : next.list_id
+    const condition =
+      switched && !next.condition
+        ? remembered.current.condition && conditionValid(remembered.current.condition)
+          ? remembered.current.condition
+          : undefined
+        : next.condition
     const trigger: TriggerDraft = {
       event,
-      ...(event === "subscribed" ? { list_id: next.list_id } : {}),
-      ...(event === "attribute_changed" ? { condition: next.condition } : {}),
+      ...(event === "subscribed" ? { list_id } : {}),
+      ...(event === "attribute_changed" ? { condition } : {}),
     }
     const complete =
       event === "contact_identified" ||
@@ -559,6 +600,16 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
     const minutes = delayMinutes(delay)
     set({ delay }, minutes === null ? {} : { trigger: { delay_minutes: minutes } })
   }
+  const held =
+    !draft || !triggered
+      ? null
+      : d.trigger.event === "subscribed" && !d.trigger.list_id
+        ? t`Pick a list to save the trigger`
+        : d.trigger.event === "attribute_changed" && !(d.trigger.condition && conditionValid(d.trigger.condition))
+          ? t`Complete the condition to save the trigger`
+          : d.basis === "marketing" && d.audience.list_ids.length === 0
+            ? t`Pick a list under Who gets it to save`
+            : null
   const inboxName = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)?.name ?? ""
   const setText = (field: "subject" | "preheader", value: string) => {
     if (!version) {
@@ -617,7 +668,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
           className="h-[34px] w-80 max-w-full border-transparent bg-transparent text-[15px] font-semibold hover:border-input focus-visible:border-ring"
           data-testid="broadcast-name"
         />
-        {!readOnly && <SaveState saving={auto.saving} error={auto.error} draft={draft} />}
+        {!readOnly && <SaveState saving={auto.saving} error={auto.error} draft={draft} held={held} />}
         <span className="flex-1" />
         {!readOnly && !draft && (
           <FrameButton ink render={<Link to={broadcastLink(b.id)} />} data-testid="triggered-done">
