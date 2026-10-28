@@ -83,6 +83,9 @@ func TestMCPReportIssueRemovesWhatIdentifiesTheProject(t *testing.T) {
 			t.Fatalf("the report lost %q:\n%s", kept, all)
 		}
 	}
+	if got := strings.Join(strs(report["redacted"]), "|"); !strings.Contains(got, `1 x name "Kestrel Support"`) || !strings.Contains(got, "<email>") || strings.Contains(got, "ayse") {
+		t.Fatalf("redacted list: %q", got)
+	}
 	if report["redactions"].(float64) < 8 || report["repository"] != "productdevbook/yuva" ||
 		!strings.HasPrefix(report["gh_command"].(string), "gh issue create --repo productdevbook/yuva") {
 		t.Fatalf("report: %v", report)
@@ -93,5 +96,27 @@ func TestMCPReportIssueRemovesWhatIdentifiesTheProject(t *testing.T) {
 	}
 	if _, errText := callTool(t, cs, "report_yuva_issue", map[string]any{"title": "x"}); !strings.Contains(errText, "what_happened") {
 		t.Fatalf("a report without what happened: %s", errText)
+	}
+}
+
+func TestMCPReportIssueKeepsProductWordsAndShortNames(t *testing.T) {
+	h := newHarness(t)
+	tm := newTeam(t, h)
+	tm.owner.expect(http.StatusOK, "PATCH", "/v1/inboxes/"+tm.inbox, map[string]any{"name": "Yuva"})
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "API", "slug": "api-desk"})
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Web", "slug": "web-desk"})
+	tm.owner.expect(http.StatusCreated, "POST", "/v1/inboxes", map[string]any{"name": "Kestrel", "slug": "kestrel-desk"})
+	cs := h.mcpSession(h.oauthToken(tm.agent, tm.ws, "Claude Code", testOrigin+"/mcp", []string{"conversations:read"}))
+	text := "Yuva identifies every signed-in user to Kestrel through the API; Yuva, panel and MCP tools list the inbox for the Web SDK and e-mail."
+	report, errText := callTool(t, cs, "report_yuva_issue", map[string]any{"title": "Yuva API", "what_happened": text})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	want := strings.ReplaceAll(text, "Kestrel", "<name>")
+	if !strings.Contains(report["body"].(string), want) {
+		t.Fatalf("body:\n%s\nwant it to contain\n%s", report["body"], want)
+	}
+	if report["title"] != "Yuva API" || report["redactions"] != 1.0 || strings.Join(strs(report["redacted"]), "|") != `1 x name "Kestrel"` {
+		t.Fatalf("report: %v", report)
 	}
 }

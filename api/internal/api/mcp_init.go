@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"uuid"
 
@@ -114,14 +115,15 @@ type reportIssueIn struct {
 }
 
 type reportIssueOut struct {
-	Repository string `json:"repository"`
-	Title      string `json:"title"`
-	Body       string `json:"body"`
-	Redactions int    `json:"redactions" jsonschema:"how many names, addresses, keys and ids were removed"`
-	SearchURL  string `json:"search_url" jsonschema:"existing issues with similar words; check it before opening a new one"`
-	NewIssue   string `json:"new_issue_url" jsonschema:"opens GitHub's new-issue form with the report filled in"`
-	GhCommand  string `json:"gh_command" jsonschema:"opens the issue with the GitHub CLI, as the person signed in to gh"`
-	Next       string `json:"next"`
+	Repository string   `json:"repository"`
+	Title      string   `json:"title"`
+	Body       string   `json:"body"`
+	Redactions int      `json:"redactions" jsonschema:"how many names, addresses, keys and ids were removed"`
+	Redacted   []string `json:"redacted" jsonschema:"what was removed, by kind and count; workspace names are shown as they were, so check that nothing needed stayed out of the text"`
+	SearchURL  string   `json:"search_url" jsonschema:"existing issues with similar words; check it before opening a new one"`
+	NewIssue   string   `json:"new_issue_url" jsonschema:"opens GitHub's new-issue form with the report filled in"`
+	GhCommand  string   `json:"gh_command" jsonschema:"opens the issue with the GitHub CLI, as the person signed in to gh"`
+	Next       string   `json:"next"`
 }
 
 var issueAreas = []any{"widget", "js-sdk", "swift-sdk", "kotlin-sdk", "go-sdk", "api", "mcp", "panel", "analytics", "email", "broadcasts", "migrations", "docs", "other"}
@@ -293,7 +295,7 @@ func (c *mcpCall) reportIssue(ctx context.Context, in reportIssueIn) (reportIssu
 	gh := fmt.Sprintf("gh issue create --repo %s --label %s --title %s --body-file - <<'YUVA_ISSUE_BODY'\n%sYUVA_ISSUE_BODY",
 		issueRepo, issueLabel, shellQuote(title), strings.ReplaceAll(body, "\nYUVA_ISSUE_BODY", "\nYUVA_ISSUE_BODY."))
 	return reportIssueOut{
-		Repository: issueRepo, Title: title, Body: body, Redactions: r.count, SearchURL: search, NewIssue: newIssue, GhCommand: gh,
+		Repository: issueRepo, Title: title, Body: body, Redactions: r.count, Redacted: r.summary(), SearchURL: search, NewIssue: newIssue, GhCommand: gh,
 		Next: "Show the person the title and body and ask before opening it. Then run gh_command if gh is signed in, or give them new_issue_url.",
 	}, nil
 }
@@ -356,9 +358,44 @@ func settingsHosts(raw []byte) []string {
 	return out
 }
 
+type redactName struct {
+	re   *regexp.Regexp
+	name string
+}
+
 type redactor struct {
-	names []*regexp.Regexp
-	count int
+	names  []redactName
+	count  int
+	kinds  []string
+	counts map[string]int
+}
+
+func (r *redactor) hit(kind string) {
+	r.count++
+	if r.counts == nil {
+		r.counts = map[string]int{}
+	}
+	if r.counts[kind] == 0 {
+		r.kinds = append(r.kinds, kind)
+	}
+	r.counts[kind]++
+}
+
+func (r *redactor) summary() []string {
+	out := make([]string, 0, len(r.kinds))
+	for _, k := range r.kinds {
+		out = append(out, strconv.Itoa(r.counts[k])+" x "+k)
+	}
+	return out
+}
+
+const redactMinName = 4
+
+// keptWords are never redacted, even when a workspace names an inbox or a contact after one.
+var keptWords = []string{
+	"yuva", "api", "mcp", "sdk", "panel", "inbox", "inboxes", "email", "e-mail", "emails", "e-mails", "chat", "live chat", "widget",
+	"channel", "conversation", "conversations", "contact", "contacts", "draft", "drafts", "broadcast", "broadcasts", "mailing list",
+	"help center", "changelog", "what's new", "roadmap", "status page", "analytics", "webhook", "webhooks", "migration", "support", "team",
 }
 
 var (
@@ -389,11 +426,11 @@ func newRedactor(names []string) *redactor {
 	for _, n := range names {
 		n = strings.TrimSpace(n)
 		key := strings.ToLower(n)
-		if len([]rune(n)) < 3 || seen[key] || slices.Contains(keptHosts, key) {
+		if len([]rune(n)) < redactMinName || seen[key] || slices.Contains(keptHosts, key) || slices.Contains(keptWords, key) {
 			continue
 		}
 		seen[key] = true
-		r.names = append(r.names, regexp.MustCompile(`(?i)(^|[^\pL\pN])`+regexp.QuoteMeta(n)+`($|[^\pL\pN])`))
+		r.names = append(r.names, redactName{regexp.MustCompile(`(?i)(^|[^\pL\pN])` + regexp.QuoteMeta(n) + `($|[^\pL\pN])`), n})
 	}
 	return r
 }
@@ -413,15 +450,16 @@ func (r *redactor) clean(s string) string {
 		if u, err := url.Parse(m); err == nil && keptHost(u.Hostname()) {
 			return m
 		}
-		r.count++
+		r.hit("<url>")
 		return "<url>"
 	})
 	for _, rule := range redactRules {
-		s = rule.re.ReplaceAllStringFunc(s, func(string) string { r.count++; return rule.with })
+		s = rule.re.ReplaceAllStringFunc(s, func(string) string { r.hit(rule.with); return rule.with })
 	}
-	for _, re := range r.names {
+	for _, n := range r.names {
+		re := n.re
 		s = re.ReplaceAllStringFunc(s, func(m string) string {
-			r.count++
+			r.hit(`name "` + n.name + `"`)
 			sub := re.FindStringSubmatch(m)
 			return sub[1] + "<name>" + sub[2]
 		})
@@ -430,7 +468,7 @@ func (r *redactor) clean(s string) string {
 		if keptHost(m) {
 			return m
 		}
-		r.count++
+		r.hit("<host>")
 		return "<host>"
 	})
 }
