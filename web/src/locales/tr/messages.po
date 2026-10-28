@@ -45,10 +45,30 @@ msgstr "{0, plural, one {# konuşma onunla birlikte silinir} other {# konuşma o
 msgid "{0, plural, one {# conversation} other {# conversations}}"
 msgstr "{0, plural, one {# konuşmada} other {# konuşmada}}"
 
+#. placeholder {0}: minutes / PER.days
+#: src/features/broadcasts/Trigger.tsx
+msgid "{0, plural, one {# day after someone confirms {list}} other {# days after someone confirms {list}}}"
+msgstr "{0, plural, one {biri {list} aboneliğini onayladıktan # gün sonra} other {biri {list} aboneliğini onayladıktan # gün sonra}}"
+
+#. placeholder {0}: minutes / PER.days
+#: src/features/broadcasts/Trigger.tsx
+msgid "{0, plural, one {# day after someone starts to match {match}} other {# days after someone starts to match {match}}}"
+msgstr "{0, plural, one {biri {match} koşuluna uymaya başladıktan # gün sonra} other {biri {match} koşuluna uymaya başladıktan # gün sonra}}"
+
 #. placeholder {0}: f.failed
 #: src/features/migrations/CopyStep.tsx
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# başarısız} other {# başarısız}}"
+
+#. placeholder {0}: minutes / PER.hours
+#: src/features/broadcasts/Trigger.tsx
+msgid "{0, plural, one {# hour after someone confirms {list}} other {# hours after someone confirms {list}}}"
+msgstr "{0, plural, one {biri {list} aboneliğini onayladıktan # saat sonra} other {biri {list} aboneliğini onayladıktan # saat sonra}}"
+
+#. placeholder {0}: minutes / PER.hours
+#: src/features/broadcasts/Trigger.tsx
+msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
+msgstr "{0, plural, one {biri {match} koşuluna uymaya başladıktan # saat sonra} other {biri {match} koşuluna uymaya başladıktan # saat sonra}}"
 
 #. placeholder {0}: l.fallback
 #: src/features/broadcasts/AudienceBuilder.tsx
@@ -344,6 +364,10 @@ msgid "{count, plural, one {# person who signed in before gets it too.} other {#
 msgstr "{count, plural, one {Daha önce giriş yapmış # kişi de bu postayı alır.} other {Daha önce giriş yapmış # kişi de bu postayı alır.}}"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "{count, plural, one {# person} other {# people}} who confirmed before would get it too, before anyone who bounced, left or does not match is left out."
+msgstr "{count, plural, one {# kişi} other {# kişi}}: daha önce aboneliğini onaylamış olanlar da alır. Geri dönen, ayrılan veya uymayanlar bu sayıdan önce elenir."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# kişi} other {# kişi}}: daha önce giriş yapmış olanlar da alır. Geri dönen, ayrılan veya uymayanlar bu sayıdan önce elenir."
 
@@ -410,6 +434,10 @@ msgstr "{date}: {newCount} yeni, {replyCount} ilk yanıt"
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
 msgstr "{days, plural, one {# gün} other {# gün}}"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{days, plural, one {people who confirmed a subscription during the last # day} other {people who confirmed a subscription during the last # days}}"
+msgstr "{days, plural, one {son # gün içinde aboneliğini onaylayanlar} other {son # gün içinde aboneliğini onaylayanlar}}"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "{days, plural, one {people who signed in during the last # day} other {people who signed in during the last # days}}"
@@ -580,8 +608,16 @@ msgid "{met} met, {breached} breached"
 msgstr "{met} karşılandı, {breached} aşıldı"
 
 #: src/features/broadcasts/Trigger.tsx
+msgid "{minutes, plural, one {# minute after someone confirms {list}} other {# minutes after someone confirms {list}}}"
+msgstr "{minutes, plural, one {biri {list} aboneliğini onayladıktan # dakika sonra} other {biri {list} aboneliğini onayladıktan # dakika sonra}}"
+
+#: src/features/broadcasts/Trigger.tsx
 msgid "{minutes, plural, one {# minute after someone first signs in to {inbox}} other {# minutes after someone first signs in to {inbox}}}"
 msgstr "{minutes, plural, one {biri {inbox} ürününe ilk kez giriş yaptıktan # dakika sonra} other {biri {inbox} ürününe ilk kez giriş yaptıktan # dakika sonra}}"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "{minutes, plural, one {# minute after someone starts to match {match}} other {# minutes after someone starts to match {match}}}"
+msgstr "{minutes, plural, one {biri {match} koşuluna uymaya başladıktan # dakika sonra} other {biri {match} koşuluna uymaya başladıktan # dakika sonra}}"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1190,8 +1226,8 @@ msgid "= {utcTime} UTC"
 msgstr "= {utcTime} UTC"
 
 #: src/features/broadcasts/Trigger.tsx
-msgid "0 sends it as soon as the person signs in. The longest delay is 365 days."
-msgstr "0 yazarsanız kişi giriş yapar yapmaz gönderilir. En uzun gecikme 365 gündür."
+msgid "0 sends it as soon as it starts. The longest delay is 365 days."
+msgstr "0, tetiklenir tetiklenmez gönderir. En uzun bekleme 365 gündür."
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -1285,6 +1321,10 @@ msgstr "Bir bülten en fazla 1.000.000 alıcıya gidebilir."
 #: src/features/broadcasts/Composer.tsx
 msgid "A broadcast goes out through an e-mail channel with an SMTP account, ideally a separate one for broadcasts so complaints never reach your support mail."
 msgstr "Bülten, SMTP hesabı olan bir e-posta kanalından gider. Şikâyetler destek e-postanıza hiç ulaşmasın diye en iyisi bültenler için ayrı bir hesaptır."
+
+#: src/components/common/text.ts
+msgid "A broadcast or triggered e-mail that is scheduled, running or paused still uses this list. Stop it or wait until it has finished, then delete the list."
+msgstr "Zamanlanmış, gönderilmekte olan veya duraklatılmış bir toplu gönderi ya da tetiklenen e-posta bu listeyi hâlâ kullanıyor. Onu durdurun ya da bitmesini bekleyin, sonra listeyi silin."
 
 #: src/features/broadcasts/BroadcastList.tsx
 msgid "A broadcast sends a design to one or more lists, now or later, and reports what happened."
@@ -1417,6 +1457,10 @@ msgstr "YYYY-MM-DD biçiminde bir gün, saat diliminize göre"
 #: src/features/conversation/messages/DesignLine.tsx
 msgid "a deleted design"
 msgstr "silinmiş bir tasarım"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "a deleted list"
+msgstr "silinmiş bir liste"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
@@ -1799,8 +1843,8 @@ msgid "A thread reply that starts with this goes to the customer. Any other repl
 msgstr "Bununla başlayan bir ileti yanıtı müşteriye gider. Diğer her yanıt not olur. Ünlem işareti ve 1 ile 20 arası küçük harf."
 
 #: src/features/broadcasts/TriggeredHome.tsx
-msgid "A triggered e-mail sends one design to each person a set time after they first sign in to your product, for example a welcome mail on day one and a tip on day three."
-msgstr "Tetiklemeli e-posta, kişiler ürününüze ilk kez giriş yaptıktan belirli bir süre sonra her birine bir tasarım gönderir; örneğin ilk gün bir karşılama postası, üçüncü gün bir ipucu."
+msgid "A triggered e-mail sends one design to each person a set time after they first sign in to your product, confirm a subscription to a list or start to match a condition, for example a welcome mail on day one and a tip on day three."
+msgstr "Tetiklenen e-posta, kişiler ürününüze ilk kez giriş yaptıktan, bir liste aboneliğini onayladıktan veya bir koşula uymaya başladıktan belirli bir süre sonra her birine bir tasarım gönderir; örneğin birinci gün bir karşılama postası, üçüncü gün bir ipucu."
 
 #: src/features/settings/channels/email/form.ts
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
@@ -2564,6 +2608,10 @@ msgstr "Uyarıları da gönder"
 #: src/features/settings/webhooks/events.tsx
 msgid "Also send message.created for members' internal notes. Internal events are never sent."
 msgstr "Üyelerin iç notları için de message.created gönderilir. İç olaylar hiçbir zaman gönderilmez."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Also send to people who confirmed a subscription during the last"
+msgstr "Şu kadar gün içinde aboneliğini onaylamış kişilere de gönder: son"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Also send to people who first signed in during the last"
@@ -4725,6 +4773,7 @@ msgstr "Etkilediği bileşenler"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "Bileşenler, geçmiş, olaylar ve güncellemeler de birlikte silinir."
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Condition"
 msgstr "Koşul"
@@ -5337,6 +5386,10 @@ msgstr "Sayılıyor…"
 #: src/features/contact/ContactsPage.tsx
 msgid "Country"
 msgstr "Ülke"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
+msgstr "Abonelik onaylandığında sayılır; kişinin onayını hâlâ bekleyen abonelik sayılmaz. İçe aktarmayla eklenen kişiler hiçbir zaman tetiklemez."
 
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
@@ -8023,6 +8076,7 @@ msgid "Go to the latest message"
 msgstr "Son mesaja git"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/broadcasts/Trigger.tsx
 msgid "Go to the lists"
 msgstr "Listelere git"
 
@@ -9811,6 +9865,7 @@ msgstr "Bağlantılar sizin alan adınız yerine bu sunucunun bağlantı alan ad
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/setup/NewsletterStep.tsx
 msgid "List"
 msgstr "Liste"
@@ -13023,8 +13078,16 @@ msgid "Only people subscribed to one of these lists get the mail. Fixed after th
 msgstr "Yalnızca bu listelerden birine abone olanlar postayı alır. Taslaktan sonra değiştirilemez."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Only people who confirm from now on get it."
+msgstr "Yalnızca bundan sonra onaylayanlar alır."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Only people who sign in from now on get it."
 msgstr "Yalnızca bundan sonra giriş yapanlar alır."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Only people who start to match from now on get it. Nobody who already matches is included."
+msgstr "Yalnızca bundan sonra koşula uymaya başlayanlar alır. Zaten uyanlar dahil değildir."
 
 #: src/features/migrations/ChooseStep.tsx
 msgid "Only read requests are sent. You can close this page; the scan goes on and the list in Settings shows when it is done."
@@ -14041,6 +14104,10 @@ msgstr "Bir alan seçin"
 #: src/components/common/LanguagePicker.tsx
 msgid "Pick a language"
 msgstr "Bir dil seçin"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Pick a list"
+msgstr "Bir liste seçin"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -17967,7 +18034,11 @@ msgstr "Bazı metinler çevrilmedi, bu yüzden {base} metin görünüyor: {langu
 msgid "Someone answers a forward"
 msgstr "Biri bir iletiyi yanıtladı"
 
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/Trigger.tsx
+msgid "Someone confirms a subscription to a list"
+msgstr "Biri bir liste aboneliğini onaylar"
+
+#: src/features/broadcasts/Trigger.tsx
 msgid "Someone first signs in"
 msgstr "Biri ilk kez giriş yapar"
 
@@ -17982,6 +18053,10 @@ msgstr "Alan adlarınızdan biri sağlayıcı üzerinden giriş yapar ve üye de
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Someone on several lists gets one mail, under the first list they are on in this order."
 msgstr "Birden çok listede olan biri tek e-posta alır; bu sıradaki ilk listesi adına."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Someone starts to match a condition"
+msgstr "Biri bir koşula uymaya başlar"
 
 #: src/components/common/text.ts
 msgid "Someone subscribed to a mailing list"
@@ -18202,9 +18277,13 @@ msgid "Starts on {local}"
 msgstr "{local} tarihinde başlar"
 
 #: src/features/broadcasts/BroadcastPage.tsx
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/Trigger.tsx
 msgid "Starts when"
 msgstr "Şu zaman başlar"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Starts when a change to the person’s attributes makes them match, and they did not match before. People who already match when you start it are not included."
+msgstr "Kişinin özelliklerindeki bir değişiklik onu koşula uygun hâle getirdiğinde ve daha önce uymuyorsa başlar. Başlattığınızda zaten uyanlar dahil değildir."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
@@ -19292,6 +19371,10 @@ msgstr "Listenin gönderebileceği bir e-posta kanalı henüz yok. SMTP hesabıy
 msgid "The list sends in this inbox's name, and replies to its mail land there."
 msgstr "Liste bu gelen kutusunun adıyla gönderir; e-postalarına gelen yanıtlar da buraya düşer."
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The list that starts this e-mail was deleted. Choose another list, or stop this triggered e-mail and create a new one."
+msgstr "Bu e-postayı başlatan liste silinmiş. Başka bir liste seçin ya da bu tetiklenen e-postayı durdurup yenisini oluşturun."
+
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Posta ulaştı."
@@ -20207,6 +20290,10 @@ msgstr "Bu gelen kutusunda henüz e-posta kanalı yok. Gelen kutusu ayarlarında
 msgid "This inbox has no e-mail channel. Add one with an SMTP account to send broadcasts."
 msgstr "Bu gelen kutusunun e-posta kanalı yok. Bülten göndermek için SMTP hesabı olan bir kanal ekleyin."
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "This inbox has no mailing list yet."
+msgstr "Bu gelen kutusunda henüz posta listesi yok."
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Bu gelen kutusunun henüz e-posta listesi yok. Bülten yalnızca bir listeye abone olan kişilere gider."
@@ -20298,6 +20385,10 @@ msgstr "Bu liste arşivlendi. Yeni abone almaz ve yayınlar onu seçemez."
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Bu liste özel olduğu için formlar onu sunmaz. Form kullanmak için ayarlardan herkese açık yapın."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "This list was deleted. Pick another list, or stop this triggered e-mail."
+msgstr "Bu liste silinmiş. Başka bir liste seçin ya da bu tetiklenen e-postayı durdurun."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "This mail is about using {inboxName}, not advertising."
@@ -22076,6 +22167,10 @@ msgstr "Ne zaman geri gelsin?"
 msgid "When should they come back?"
 msgstr "Ne zaman geri gelsinler?"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "when someone confirms {list}"
+msgstr "biri {list} aboneliğini onayladığında"
+
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
 msgstr "Başka biri onu sana atadığında."
@@ -22087,6 +22182,10 @@ msgstr "biri {inbox} ürününe ilk kez giriş yaptığında"
 #: src/features/feedback/FeedbackList.tsx
 msgid "When someone sends feedback, it will be in the list."
 msgstr "Biri geri bildirim gönderdiğinde listede görünür."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "when someone starts to match {match}"
+msgstr "biri {match} koşuluna uymaya başladığında"
 
 #: src/features/feedback/RoadmapCard.tsx
 msgid "When this idea ships, you can answer everyone linked to it in one reply."

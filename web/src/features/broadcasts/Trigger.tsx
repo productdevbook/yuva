@@ -3,10 +3,17 @@ import { Trans, useLingui } from "@lingui/react/macro"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
+import { Link } from "react-router"
+
+import { Skeleton } from "@/components/ui/skeleton"
+import { ConditionRow, useConditionText } from "@/features/broadcasts/AudienceBuilder"
+import { useLists } from "@/features/broadcasts/queries"
 import { Field } from "@/features/settings/ui"
-import type { Broadcast, BroadcastBasis } from "@/lib/api"
+import type { Broadcast, BroadcastBasis, BroadcastCondition, BroadcastTriggerEvent } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
+
+export type TriggerDraft = { event: BroadcastTriggerEvent; list_id?: string; condition?: BroadcastCondition }
 
 export type DelayUnit = "minutes" | "hours" | "days"
 export type DelayText = { value: string; unit: DelayUnit }
@@ -30,10 +37,60 @@ export function sentenceCase(s: string, locale: string) {
   return s.charAt(0).toLocaleUpperCase(locale) + s.slice(1)
 }
 
+export function useListNames(inboxId: string) {
+  const { t } = useLingui()
+  const open = useLists(inboxId, false)
+  const archived = useLists(inboxId, true)
+  const names = new Map(
+    [...(open.data?.pages ?? []), ...(archived.data?.pages ?? [])].flatMap((p) => p.items).map((l) => [l.id, l.name])
+  )
+  const pending = open.isPending || archived.isPending
+  return (id: string | undefined) => (id ? (names.get(id) ?? (pending ? "…" : t`a deleted list`)) : "…")
+}
+
 export function useTriggerSentence(b: Pick<Broadcast, "inbox_id" | "trigger">) {
   const { t } = useLingui()
   const inbox = useInboxes().data?.find((i) => i.id === b.inbox_id)?.name ?? ""
+  const listName = useListNames(b.inbox_id)
+  const conditionText = useConditionText()
   const minutes = b.trigger?.delay_minutes ?? 0
+  const event = b.trigger?.event ?? "contact_identified"
+  const list = listName(b.trigger?.list_id)
+  const match = b.trigger?.condition ? conditionText(b.trigger.condition) : "…"
+  if (event === "subscribed") {
+    if (minutes === 0) return t`when someone confirms ${list}`
+    if (minutes % PER.days === 0)
+      return plural(minutes / PER.days, {
+        one: `# day after someone confirms ${list}`,
+        other: `# days after someone confirms ${list}`,
+      })
+    if (minutes % PER.hours === 0)
+      return plural(minutes / PER.hours, {
+        one: `# hour after someone confirms ${list}`,
+        other: `# hours after someone confirms ${list}`,
+      })
+    return plural(minutes, {
+      one: `# minute after someone confirms ${list}`,
+      other: `# minutes after someone confirms ${list}`,
+    })
+  }
+  if (event === "attribute_changed") {
+    if (minutes === 0) return t`when someone starts to match ${match}`
+    if (minutes % PER.days === 0)
+      return plural(minutes / PER.days, {
+        one: `# day after someone starts to match ${match}`,
+        other: `# days after someone starts to match ${match}`,
+      })
+    if (minutes % PER.hours === 0)
+      return plural(minutes / PER.hours, {
+        one: `# hour after someone starts to match ${match}`,
+        other: `# hours after someone starts to match ${match}`,
+      })
+    return plural(minutes, {
+      one: `# minute after someone starts to match ${match}`,
+      other: `# minutes after someone starts to match ${match}`,
+    })
+  }
   if (minutes === 0) return t`when someone first signs in to ${inbox}`
   if (minutes % PER.days === 0) {
     const n = minutes / PER.days
@@ -55,6 +112,129 @@ export function useTriggerSentence(b: Pick<Broadcast, "inbox_id" | "trigger">) {
   })
 }
 
+export function useEventNames(): Record<BroadcastTriggerEvent, string> {
+  const { t } = useLingui()
+  return {
+    contact_identified: t`Someone first signs in`,
+    subscribed: t`Someone confirms a subscription to a list`,
+    attribute_changed: t`Someone starts to match a condition`,
+  }
+}
+
+export function TriggerEvent({
+  trigger,
+  inboxId,
+  disabled,
+  onChange,
+}: {
+  trigger: TriggerDraft
+  inboxId: string
+  disabled: boolean
+  onChange: (t: TriggerDraft) => void
+}) {
+  const { t } = useLingui()
+  const events = useEventNames()
+  const lists = useLists(inboxId, false)
+  const archived = useLists(inboxId, true)
+  const items = lists.data?.pages.flatMap((p) => p.items) ?? []
+  const gone =
+    !!trigger.list_id &&
+    !lists.isPending &&
+    !archived.isPending &&
+    !items.some((l) => l.id === trigger.list_id) &&
+    !archived.data?.pages.some((p) => p.items.some((l) => l.id === trigger.list_id))
+  const archivedPick = !!trigger.list_id && !items.some((l) => l.id === trigger.list_id) && !gone && !lists.isPending
+  const listItems = Object.fromEntries(items.map((l) => [l.id, l.name]))
+  const archivedName = archived.data?.pages.flatMap((p) => p.items).find((l) => l.id === trigger.list_id)?.name
+  return (
+    <>
+      <Field label={<Trans>Starts when</Trans>}>
+        <Select
+          value={trigger.event}
+          items={events}
+          disabled={disabled}
+          onValueChange={(v) => v && onChange({ ...trigger, event: v as BroadcastTriggerEvent })}
+        >
+          <SelectTrigger className="w-full min-w-0" aria-label={t`Starts when`} data-testid="trigger-event">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {(Object.keys(events) as BroadcastTriggerEvent[]).map((e) => (
+              <SelectItem key={e} value={e} data-testid={`trigger-event-${e}`}>
+                {events[e]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
+      {trigger.event === "subscribed" && (
+        <Field
+          label={<Trans>List</Trans>}
+          hint={
+            <Trans>
+              Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm.
+              People an import added never start it.
+            </Trans>
+          }
+          error={
+            gone ? <Trans>This list was deleted. Pick another list, or stop this triggered e-mail.</Trans> : undefined
+          }
+        >
+          {lists.isPending ? (
+            <Skeleton className="h-9 w-full" />
+          ) : items.length === 0 && !archivedPick ? (
+            <p className="text-body text-muted-foreground" data-testid="trigger-no-lists">
+              <Trans>This inbox has no mailing list yet.</Trans>{" "}
+              <Link to="/broadcasts/lists" className="text-brand underline-offset-4 hover:underline">
+                <Trans>Go to the lists</Trans>
+              </Link>
+            </p>
+          ) : (
+            <Select
+              value={trigger.list_id ?? null}
+              items={archivedPick && archivedName ? { ...listItems, [trigger.list_id!]: archivedName } : listItems}
+              disabled={disabled}
+              onValueChange={(v) => v && onChange({ ...trigger, list_id: v })}
+            >
+              <SelectTrigger className="w-full min-w-0" aria-label={t`List`} data-testid="trigger-list">
+                <SelectValue placeholder={t`Pick a list`} />
+              </SelectTrigger>
+              <SelectContent>
+                {items.map((l) => (
+                  <SelectItem key={l.id} value={l.id}>
+                    {l.name}
+                  </SelectItem>
+                ))}
+                {archivedPick && archivedName && <SelectItem value={trigger.list_id!}>{archivedName}</SelectItem>}
+              </SelectContent>
+            </Select>
+          )}
+        </Field>
+      )}
+      {trigger.event === "attribute_changed" && (
+        <Field
+          label={<Trans>Condition</Trans>}
+          hint={
+            <Trans>
+              Starts when a change to the person’s attributes makes them match, and they did not match before. People
+              who already match when you start it are not included.
+            </Trans>
+          }
+        >
+          <ul className="rounded-xl border" data-testid="trigger-condition">
+            <ConditionRow
+              c={trigger.condition ?? { attribute: "", op: "eq", value: "" }}
+              index={0}
+              disabled={disabled}
+              onChange={(condition) => onChange({ ...trigger, condition })}
+            />
+          </ul>
+        </Field>
+      )}
+    </>
+  )
+}
+
 export function DelayFields({
   value,
   onChange,
@@ -71,7 +251,7 @@ export function DelayFields({
     <Field
       label={<Trans>Send it after</Trans>}
       htmlFor="trigger-delay"
-      hint={<Trans>0 sends it as soon as the person signs in. The longest delay is 365 days.</Trans>}
+      hint={<Trans>0 sends it as soon as it starts. The longest delay is 365 days.</Trans>}
       error={bad ? <Trans>Use a whole number of at most 365 days.</Trans> : undefined}
     >
       <div className="flex items-center gap-2">

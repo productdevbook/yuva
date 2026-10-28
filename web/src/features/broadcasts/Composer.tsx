@@ -22,7 +22,15 @@ import {
 } from "@/features/broadcasts/broadcastQueries"
 import { keyHint, senderState, StatusNotice, useNumber, type SenderState } from "@/features/broadcasts/BroadcastParts"
 import { DesignPicker } from "@/features/broadcasts/DesignPicker"
-import { BasisChoice, DelayFields, delayMinutes, delayTextOf, type DelayText } from "@/features/broadcasts/Trigger"
+import {
+  BasisChoice,
+  DelayFields,
+  delayMinutes,
+  delayTextOf,
+  TriggerEvent,
+  type DelayText,
+  type TriggerDraft,
+} from "@/features/broadcasts/Trigger"
 import { useInboxChannels, useLists } from "@/features/broadcasts/queries"
 import { hasPace, PaceFields, paceInvalid, paceOf, paceTextOf, type PaceText } from "@/features/broadcasts/Pace"
 import { hoursInvalid, hoursOf, SendTimeFields, windowOf, type HoursText } from "@/features/broadcasts/SendTime"
@@ -67,6 +75,7 @@ type Draft = {
   design_id: string
   audience: Audience
   basis: BroadcastBasis
+  trigger: TriggerDraft
   delay: DelayText
   click_tracking: boolean
   utm: boolean
@@ -87,6 +96,11 @@ function draftOf(b: Broadcast): Draft {
     design_id: b.design_id ?? "",
     audience: b.audience,
     basis: b.trigger?.basis ?? "service",
+    trigger: {
+      event: b.trigger?.event ?? "contact_identified",
+      list_id: b.trigger?.list_id,
+      condition: b.trigger?.condition,
+    },
     delay: delayTextOf(b.trigger?.delay_minutes ?? 0),
     click_tracking: b.click_tracking,
     utm: b.utm,
@@ -128,7 +142,11 @@ function useAutosave(id: string) {
   }, [mutate])
   const save = useCallback(
     (patch: BroadcastUpdate, delay = 700) => {
-      pending.current = { ...pending.current, ...patch }
+      pending.current = {
+        ...pending.current,
+        ...patch,
+        ...(patch.trigger ? { trigger: { ...pending.current.trigger, ...patch.trigger } } : {}),
+      }
       setWaiting(true)
       clearTimeout(timer.current)
       timer.current = setTimeout(flush, delay)
@@ -142,6 +160,7 @@ function useAutosave(id: string) {
 type Field =
   | "name"
   | "channel"
+  | "event"
   | "basis"
   | "lists"
   | "delay"
@@ -511,6 +530,31 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
     const body = { audience: audienceInput(audience) }
     set({ basis, audience }, !draft ? body : complete ? { ...body, trigger: { basis } } : {})
   }
+  const setTrigger = (next: TriggerDraft) => {
+    const { event } = next
+    const trigger: TriggerDraft = {
+      event,
+      ...(event === "subscribed" ? { list_id: next.list_id } : {}),
+      ...(event === "attribute_changed" ? { condition: next.condition } : {}),
+    }
+    const complete =
+      event === "contact_identified" ||
+      (event === "subscribed" && !!trigger.list_id) ||
+      (event === "attribute_changed" && !!trigger.condition && conditionValid(trigger.condition))
+    set(
+      { trigger },
+      complete
+        ? {
+            trigger: {
+              event,
+              ...(trigger.list_id ? { list_id: trigger.list_id } : {}),
+              ...(trigger.condition ? { condition: trigger.condition } : {}),
+              ...(event === "attribute_changed" ? { backfill_days: 0 } : {}),
+            },
+          }
+        : {}
+    )
+  }
   const setDelay = (delay: DelayText) => {
     const minutes = delayMinutes(delay)
     set({ delay }, minutes === null ? {} : { trigger: { delay_minutes: minutes } })
@@ -643,26 +687,12 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
               {triggered && (
                 <Section title={<Trans>Trigger</Trans>}>
                   <Card id="broadcast-trigger">
-                    <Field label={<Trans>Starts when</Trans>}>
-                      <Select
-                        value="contact_identified"
-                        items={{ contact_identified: t`Someone first signs in` }}
-                        disabled={ro("basis")}
-                      >
-                        <SelectTrigger
-                          className="w-full min-w-0"
-                          aria-label={t`Starts when`}
-                          data-testid="trigger-event"
-                        >
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="contact_identified">
-                            <Trans>Someone first signs in</Trans>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </Field>
+                    <TriggerEvent
+                      trigger={d.trigger}
+                      inboxId={b.inbox_id}
+                      disabled={ro("event")}
+                      onChange={setTrigger}
+                    />
                     <DelayFields value={d.delay} onChange={setDelay} disabled={ro("delay")} />
                   </Card>
                 </Section>

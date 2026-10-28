@@ -451,6 +451,8 @@ export function useErrorText() {
       return t`First mails in a design need the operator’s approval for broadcasts. Ask in the workspace settings, or send without a design.`
     if (designed && err.code === "broadcasts_suspended")
       return t`This workspace may not send first mails in a design for now.`
+    if (err.code === "list_in_use")
+      return t`A broadcast or triggered e-mail that is scheduled, running or paused still uses this list. Stop it or wait until it has finished, then delete the list.`
     if (err.code === "from_not_allowed") return err.detail ?? t`You cannot send from this address through this channel.`
     if (err.code === "slack_not_configured") return t`This server has no Slack app set up.`
     if (err.code === "slack_not_connected") return t`Slack is not connected to this workspace.`

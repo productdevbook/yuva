@@ -28,7 +28,7 @@ const MAX_CONDITIONS = 10
 
 export type Audience = BroadcastAudience
 
-function useOpNames(): Record<BroadcastConditionOp, string> {
+export function useOpNames(): Record<BroadcastConditionOp, string> {
   const { t } = useLingui()
   return {
     eq: t`is`,
@@ -55,6 +55,14 @@ export function useExcludedNames(): Record<keyof BroadcastAudienceExcluded, stri
   }
 }
 
+export function useConditionText() {
+  const ops = useOpNames()
+  return (c: BroadcastCondition) => {
+    const what = c.op === "in" ? (c.values ?? []).join(", ") : (c.value ?? "")
+    return [c.attribute, ops[c.op], what].filter(Boolean).join(" ")
+  }
+}
+
 export function conditionValid(c: BroadcastCondition) {
   if (!ATTRIBUTE.test(c.attribute)) return false
   if (c.op === "exists" || c.op === "not_exists") return true
@@ -62,7 +70,7 @@ export function conditionValid(c: BroadcastCondition) {
   return (c.value ?? "") !== ""
 }
 
-function ConditionRow({
+export function ConditionRow({
   c,
   index,
   disabled,
@@ -73,7 +81,7 @@ function ConditionRow({
   index: number
   disabled: boolean
   onChange: (c: BroadcastCondition) => void
-  onRemove: () => void
+  onRemove?: () => void
 }) {
   const { t } = useLingui()
   const ops = useOpNames()
@@ -144,7 +152,7 @@ function ConditionRow({
           data-testid="condition-value"
         />
       ) : null}
-      {!disabled && (
+      {!disabled && onRemove && (
         <Button
           type="button"
           variant="ghost"

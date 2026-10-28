@@ -45,10 +45,30 @@ msgstr "{0, plural, one {# Unterhaltung wird mit ihm gelöscht} other {# Unterha
 msgid "{0, plural, one {# conversation} other {# conversations}}"
 msgstr "{0, plural, one {# Unterhaltung} other {# Unterhaltungen}}"
 
+#. placeholder {0}: minutes / PER.days
+#: src/features/broadcasts/Trigger.tsx
+msgid "{0, plural, one {# day after someone confirms {list}} other {# days after someone confirms {list}}}"
+msgstr "{0, plural, one {# Tag nachdem jemand das Abonnement von {list} bestätigt hat} other {# Tage nachdem jemand das Abonnement von {list} bestätigt hat}}"
+
+#. placeholder {0}: minutes / PER.days
+#: src/features/broadcasts/Trigger.tsx
+msgid "{0, plural, one {# day after someone starts to match {match}} other {# days after someone starts to match {match}}}"
+msgstr "{0, plural, one {# Tag nachdem jemand die Bedingung {match} erfüllt} other {# Tage nachdem jemand die Bedingung {match} erfüllt}}"
+
 #. placeholder {0}: f.failed
 #: src/features/migrations/CopyStep.tsx
 msgid "{0, plural, one {# failed} other {# failed}}"
 msgstr "{0, plural, one {# fehlgeschlagen} other {# fehlgeschlagen}}"
+
+#. placeholder {0}: minutes / PER.hours
+#: src/features/broadcasts/Trigger.tsx
+msgid "{0, plural, one {# hour after someone confirms {list}} other {# hours after someone confirms {list}}}"
+msgstr "{0, plural, one {# Stunde nachdem jemand das Abonnement von {list} bestätigt hat} other {# Stunden nachdem jemand das Abonnement von {list} bestätigt hat}}"
+
+#. placeholder {0}: minutes / PER.hours
+#: src/features/broadcasts/Trigger.tsx
+msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
+msgstr "{0, plural, one {# Stunde nachdem jemand die Bedingung {match} erfüllt} other {# Stunden nachdem jemand die Bedingung {match} erfüllt}}"
 
 #. placeholder {0}: l.fallback
 #: src/features/broadcasts/AudienceBuilder.tsx
@@ -344,6 +364,10 @@ msgid "{count, plural, one {# person who signed in before gets it too.} other {#
 msgstr "{count, plural, one {# Person, die sich vorher angemeldet hat, bekommt sie auch.} other {# Personen, die sich vorher angemeldet haben, bekommen sie auch.}}"
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "{count, plural, one {# person} other {# people}} who confirmed before would get it too, before anyone who bounced, left or does not match is left out."
+msgstr "{count, plural, one {# Person} other {# Personen}}, die ihr Abonnement vorher bestätigt haben, bekämen sie auch; Adressen mit Bounce, Abgemeldete und nicht passende Kontakte sind darin noch nicht abgezogen."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# Person} other {# Personen}}, die sich vorher angemeldet haben, bekämen sie auch; Adressen mit Bounce, Abgemeldete und nicht passende Kontakte sind darin noch nicht abgezogen."
 
@@ -410,6 +434,10 @@ msgstr "{date}: {newCount} neu, {replyCount} erste Antworten"
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
 msgstr "{days, plural, one {# Tag} other {# Tage}}"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{days, plural, one {people who confirmed a subscription during the last # day} other {people who confirmed a subscription during the last # days}}"
+msgstr "{days, plural, one {Personen, die ihr Abonnement in den letzten # Tag bestätigt haben} other {Personen, die ihr Abonnement in den letzten # Tagen bestätigt haben}}"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "{days, plural, one {people who signed in during the last # day} other {people who signed in during the last # days}}"
@@ -580,8 +608,16 @@ msgid "{met} met, {breached} breached"
 msgstr "{met} erfüllt, {breached} verletzt"
 
 #: src/features/broadcasts/Trigger.tsx
+msgid "{minutes, plural, one {# minute after someone confirms {list}} other {# minutes after someone confirms {list}}}"
+msgstr "{minutes, plural, one {# Minute nachdem jemand das Abonnement von {list} bestätigt hat} other {# Minuten nachdem jemand das Abonnement von {list} bestätigt hat}}"
+
+#: src/features/broadcasts/Trigger.tsx
 msgid "{minutes, plural, one {# minute after someone first signs in to {inbox}} other {# minutes after someone first signs in to {inbox}}}"
 msgstr "{minutes, plural, one {# Minute nachdem sich jemand zum ersten Mal bei {inbox} anmeldet} other {# Minuten nachdem sich jemand zum ersten Mal bei {inbox} anmeldet}}"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "{minutes, plural, one {# minute after someone starts to match {match}} other {# minutes after someone starts to match {match}}}"
+msgstr "{minutes, plural, one {# Minute nachdem jemand die Bedingung {match} erfüllt} other {# Minuten nachdem jemand die Bedingung {match} erfüllt}}"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
@@ -1190,8 +1226,8 @@ msgid "= {utcTime} UTC"
 msgstr "= {utcTime} UTC"
 
 #: src/features/broadcasts/Trigger.tsx
-msgid "0 sends it as soon as the person signs in. The longest delay is 365 days."
-msgstr "Bei 0 geht sie sofort raus, sobald sich die Person anmeldet. Die längste Verzögerung beträgt 365 Tage."
+msgid "0 sends it as soon as it starts. The longest delay is 365 days."
+msgstr "Bei 0 geht sie sofort nach dem Auslöser raus. Die längste Verzögerung beträgt 365 Tage."
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -1285,6 +1321,10 @@ msgstr "Ein Broadcast kann an höchstens 1.000.000 Empfänger gehen."
 #: src/features/broadcasts/Composer.tsx
 msgid "A broadcast goes out through an e-mail channel with an SMTP account, ideally a separate one for broadcasts so complaints never reach your support mail."
 msgstr "Ein Broadcast geht über einen E-Mail-Kanal mit SMTP-Konto raus, am besten ein eigenes für Broadcasts, damit Beschwerden nie Ihre Support-Mail erreichen."
+
+#: src/components/common/text.ts
+msgid "A broadcast or triggered e-mail that is scheduled, running or paused still uses this list. Stop it or wait until it has finished, then delete the list."
+msgstr "Ein geplanter, laufender oder pausierter Versand oder eine ausgelöste E-Mail nutzt diese Liste noch. Beende ihn oder warte, bis er fertig ist, und lösche die Liste dann."
 
 #: src/features/broadcasts/BroadcastList.tsx
 msgid "A broadcast sends a design to one or more lists, now or later, and reports what happened."
@@ -1417,6 +1457,10 @@ msgstr "ein Tag als YYYY-MM-DD, in Ihrer Zeitzone"
 #: src/features/conversation/messages/DesignLine.tsx
 msgid "a deleted design"
 msgstr "ein gelöschtes Design"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "a deleted list"
+msgstr "eine gelöschte Liste"
 
 #: src/features/docs/discussions/Bulk.tsx
 msgid "A deleted post cannot be brought back."
@@ -1799,8 +1843,8 @@ msgid "A thread reply that starts with this goes to the customer. Any other repl
 msgstr "Eine Antwort im Thread, die damit beginnt, geht an den Kunden. Jede andere Antwort wird zu einer Notiz. Ein Ausrufezeichen und 1 bis 20 Kleinbuchstaben."
 
 #: src/features/broadcasts/TriggeredHome.tsx
-msgid "A triggered e-mail sends one design to each person a set time after they first sign in to your product, for example a welcome mail on day one and a tip on day three."
-msgstr "Eine ausgelöste E-Mail sendet ein Design an jede Person, eine festgelegte Zeit nachdem sie sich zum ersten Mal bei Ihrem Produkt angemeldet hat, zum Beispiel eine Willkommens-E-Mail am ersten Tag und einen Tipp am dritten."
+msgid "A triggered e-mail sends one design to each person a set time after they first sign in to your product, confirm a subscription to a list or start to match a condition, for example a welcome mail on day one and a tip on day three."
+msgstr "Eine ausgelöste E-Mail sendet jeder Person ein Design eine festgelegte Zeit, nachdem sie sich zum ersten Mal in deinem Produkt anmeldet, ein Abonnement einer Liste bestätigt oder eine Bedingung zu erfüllen beginnt, zum Beispiel eine Willkommensmail am ersten Tag und einen Tipp am dritten."
 
 #: src/features/settings/channels/email/form.ts
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
@@ -2564,6 +2608,10 @@ msgstr "Auch Warnungen senden"
 #: src/features/settings/webhooks/events.tsx
 msgid "Also send message.created for members' internal notes. Internal events are never sent."
 msgstr "message.created auch für interne Notizen von Mitgliedern senden. Interne Ereignisse werden nie gesendet."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Also send to people who confirmed a subscription during the last"
+msgstr "Auch an Personen senden, die ihr Abonnement in den letzten"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Also send to people who first signed in during the last"
@@ -4725,6 +4773,7 @@ msgstr "Betroffene Komponenten"
 msgid "Components, history, incidents and updates are deleted with it."
 msgstr "Komponenten, Verlauf, Vorfälle und Updates werden mitgelöscht."
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ConditionRow.tsx
 msgid "Condition"
 msgstr "Bedingung"
@@ -5337,6 +5386,10 @@ msgstr "Wird gezählt…"
 #: src/features/contact/ContactsPage.tsx
 msgid "Country"
 msgstr "Land"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Counts when a subscription becomes confirmed, not when it is still waiting for the person to confirm. People an import added never start it."
+msgstr "Zählt, wenn ein Abonnement bestätigt wird, nicht solange es noch auf die Bestätigung der Person wartet. Personen aus einem Import lösen nie etwas aus."
 
 #: src/features/home/HomePage.tsx
 #: src/features/migrations/MapStep.tsx
@@ -8023,6 +8076,7 @@ msgid "Go to the latest message"
 msgstr "Zur neuesten Nachricht"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/broadcasts/Trigger.tsx
 msgid "Go to the lists"
 msgstr "Zu den Listen"
 
@@ -9811,6 +9865,7 @@ msgstr "Links verweisen auf die Link-Domain dieses Servers statt auf Ihre eigene
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/setup/NewsletterStep.tsx
 msgid "List"
 msgstr "Liste"
@@ -13023,8 +13078,16 @@ msgid "Only people subscribed to one of these lists get the mail. Fixed after th
 msgstr "Nur Abonnenten einer dieser Listen bekommen die E-Mail. Nach dem Entwurf nicht mehr änderbar."
 
 #: src/features/broadcasts/ReviewPanel.tsx
+msgid "Only people who confirm from now on get it."
+msgstr "Nur wer ab jetzt bestätigt, bekommt sie."
+
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Only people who sign in from now on get it."
 msgstr "Nur wer sich ab jetzt anmeldet, bekommt sie."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Only people who start to match from now on get it. Nobody who already matches is included."
+msgstr "Nur wer ab jetzt beginnt, die Bedingung zu erfüllen, bekommt sie. Wer sie schon erfüllt, ist nicht dabei."
 
 #: src/features/migrations/ChooseStep.tsx
 msgid "Only read requests are sent. You can close this page; the scan goes on and the list in Settings shows when it is done."
@@ -14041,6 +14104,10 @@ msgstr "Feld wählen"
 #: src/components/common/LanguagePicker.tsx
 msgid "Pick a language"
 msgstr "Sprache wählen"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Pick a list"
+msgstr "Liste wählen"
 
 #: src/features/mail/MailPage.tsx
 msgid "Pick a mail"
@@ -17967,7 +18034,11 @@ msgstr "Einige Texte sind nicht übersetzt, daher erscheint der Text auf {base}:
 msgid "Someone answers a forward"
 msgstr "Jemand antwortet auf eine Weiterleitung"
 
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/Trigger.tsx
+msgid "Someone confirms a subscription to a list"
+msgstr "Jemand bestätigt ein Listenabonnement"
+
+#: src/features/broadcasts/Trigger.tsx
 msgid "Someone first signs in"
 msgstr "Jemand meldet sich zum ersten Mal an"
 
@@ -17982,6 +18053,10 @@ msgstr "Wer aus Ihren Domains sich über den Anbieter anmeldet und noch kein Mit
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Someone on several lists gets one mail, under the first list they are on in this order."
 msgstr "Wer auf mehreren Listen steht, erhält eine Mail, unter der ersten Liste in dieser Reihenfolge."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Someone starts to match a condition"
+msgstr "Jemand beginnt, eine Bedingung zu erfüllen"
 
 #: src/components/common/text.ts
 msgid "Someone subscribed to a mailing list"
@@ -18202,9 +18277,13 @@ msgid "Starts on {local}"
 msgstr "Startet am {local}"
 
 #: src/features/broadcasts/BroadcastPage.tsx
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/Trigger.tsx
 msgid "Starts when"
 msgstr "Startet, wenn"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Starts when a change to the person’s attributes makes them match, and they did not match before. People who already match when you start it are not included."
+msgstr "Startet, wenn eine Änderung der Attribute einer Person die Bedingung erfüllt und sie sie vorher nicht erfüllte. Wer sie beim Start schon erfüllt, ist nicht dabei."
 
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
@@ -19292,6 +19371,10 @@ msgstr "Die Liste hat noch keinen E-Mail-Kanal zum Senden. Richten Sie E-Mail mi
 msgid "The list sends in this inbox's name, and replies to its mail land there."
 msgstr "Die Liste sendet im Namen dieses Postfachs, und Antworten auf ihre Mail landen dort."
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "The list that starts this e-mail was deleted. Choose another list, or stop this triggered e-mail and create a new one."
+msgstr "Die Liste, die diese E-Mail auslöst, wurde gelöscht. Wähle eine andere Liste oder beende diese ausgelöste E-Mail und lege eine neue an."
+
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "The mail arrived."
 msgstr "Die Mail ist angekommen."
@@ -20207,6 +20290,10 @@ msgstr "Dieses Postfach hat noch keinen E-Mail-Kanal. Fügen Sie in den Postfach
 msgid "This inbox has no e-mail channel. Add one with an SMTP account to send broadcasts."
 msgstr "Dieses Postfach hat keinen E-Mail-Kanal. Fügen Sie einen mit SMTP-Konto hinzu, um Broadcasts zu senden."
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "This inbox has no mailing list yet."
+msgstr "Dieser Posteingang hat noch keine Mailingliste."
+
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "This inbox has no mailing list yet. A broadcast goes only to people who subscribed to a list."
 msgstr "Dieses Postfach hat noch keine Mailingliste. Ein Broadcast geht nur an Personen, die eine Liste abonniert haben."
@@ -20298,6 +20385,10 @@ msgstr "Diese Liste ist archiviert. Sie nimmt keine neuen Abonnenten an, und Bro
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Diese Liste ist privat, daher bieten Formulare sie nicht an. Machen Sie sie in den Einstellungen öffentlich, um ein Formular zu nutzen."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "This list was deleted. Pick another list, or stop this triggered e-mail."
+msgstr "Diese Liste wurde gelöscht. Wähle eine andere Liste oder beende diese ausgelöste E-Mail."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "This mail is about using {inboxName}, not advertising."
@@ -22076,6 +22167,10 @@ msgstr "Wann soll sie wiederkommen?"
 msgid "When should they come back?"
 msgstr "Wann sollen sie zurückkommen?"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "when someone confirms {list}"
+msgstr "wenn jemand das Abonnement von {list} bestätigt"
+
 #: src/features/settings/notifications/events.ts
 msgid "When someone else assigns it to you."
 msgstr "Wenn jemand anderes sie Ihnen zuweist."
@@ -22087,6 +22182,10 @@ msgstr "wenn sich jemand zum ersten Mal bei {inbox} anmeldet"
 #: src/features/feedback/FeedbackList.tsx
 msgid "When someone sends feedback, it will be in the list."
 msgstr "Sobald jemand Feedback sendet, erscheint es in der Liste."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "when someone starts to match {match}"
+msgstr "wenn jemand die Bedingung {match} erfüllt"
 
 #: src/features/feedback/RoadmapCard.tsx
 msgid "When this idea ships, you can answer everyone linked to it in one reply."

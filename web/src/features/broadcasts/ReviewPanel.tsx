@@ -232,7 +232,9 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
       case "translations":
         return translationText()
       case "trigger":
-        return t`Choose what starts the e-mail and how long after it the mail goes out.`
+        return blocking && b.trigger?.event === "subscribed"
+          ? t`The list that starts this e-mail was deleted. Choose another list, or stop this triggered e-mail and create a new one.`
+          : t`Choose what starts the e-mail and how long after it the mail goes out.`
       case "basis":
         return b.trigger?.basis === "service"
           ? t`Service mail is only about using the product: onboarding, the person’s account, a request for feedback. Advertising, newsletters and offers need the marketing basis.`
@@ -427,18 +429,20 @@ export function ReviewDialog({
   const triggered = b.kind === "triggered"
   const service = triggered && b.trigger?.basis === "service"
   const stored = b.trigger?.backfill_days ?? 0
+  const event = b.trigger?.event ?? "contact_identified"
+  const backfill = triggered && event !== "attribute_changed"
   const [days, setDays] = useState(String(stored))
   const [serviceOk, setServiceOk] = useState(false)
   const daysValid = /^\d{1,2}$/.test(days) && Number(days) <= 30
-  const synced = daysValid && Number(days) === stored && !update.isPending && !fetching
+  const synced = (!backfill || (daysValid && Number(days) === stored)) && !update.isPending && !fetching
   const sentence = useTriggerSentence(b)
   const inboxName = useInboxes().data?.find((i) => i.id === b.inbox_id)?.name ?? ""
   const { mutate: save } = update
   useEffect(() => {
-    if (!triggered || !daysValid || Number(days) === stored) return
+    if (!backfill || !daysValid || Number(days) === stored) return
     const timer = setTimeout(() => save({ trigger: { backfill_days: Number(days) } }), 500)
     return () => clearTimeout(timer)
-  }, [triggered, daysValid, days, stored, save])
+  }, [backfill, daysValid, days, stored, save])
   const inboxZone = useInboxes().data?.find((i) => i.id === b.inbox_id)?.timezone
   const local = `${date}T${time}`
   const sendAt = mode === "later" && date && time ? localToInstant(local, zone) : null
@@ -532,40 +536,62 @@ export function ReviewDialog({
             )}
             {triggered && (
               <div className="flex flex-col gap-3 border-t pt-4" data-testid="start-backfill">
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="start-backfill-days">
-                    <Trans>Also send to people who first signed in during the last</Trans>
-                  </Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="start-backfill-days"
-                      inputMode="numeric"
-                      value={days}
-                      maxLength={2}
-                      aria-invalid={!daysValid || undefined}
-                      className="w-20"
-                      onChange={(e) => setDays(e.target.value.trim())}
-                      data-testid="start-backfill-days"
-                    />
-                    <span className="text-body text-muted-foreground">
-                      <Trans>days (0 to 30)</Trans>
-                    </span>
+                {backfill && (
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="start-backfill-days">
+                      {event === "subscribed" ? (
+                        <Trans>Also send to people who confirmed a subscription during the last</Trans>
+                      ) : (
+                        <Trans>Also send to people who first signed in during the last</Trans>
+                      )}
+                    </Label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        id="start-backfill-days"
+                        inputMode="numeric"
+                        value={days}
+                        maxLength={2}
+                        aria-invalid={!daysValid || undefined}
+                        className="w-20"
+                        onChange={(e) => setDays(e.target.value.trim())}
+                        data-testid="start-backfill-days"
+                      />
+                      <span className="text-body text-muted-foreground">
+                        <Trans>days (0 to 30)</Trans>
+                      </span>
+                    </div>
+                    <p className="text-small text-faint" data-testid="start-backfill-count" aria-live="polite">
+                      {!daysValid ? (
+                        <Trans>Use a whole number from 0 to 30.</Trans>
+                      ) : !synced ? (
+                        <Trans>Counting…</Trans>
+                      ) : count === 0 ? (
+                        event === "subscribed" ? (
+                          <Trans>Only people who confirm from now on get it.</Trans>
+                        ) : (
+                          <Trans>Only people who sign in from now on get it.</Trans>
+                        )
+                      ) : event === "subscribed" ? (
+                        <Trans>
+                          <Plural value={count} one="# person" other="# people" /> who confirmed before would get it
+                          too, before anyone who bounced, left or does not match is left out.
+                        </Trans>
+                      ) : (
+                        <Trans>
+                          <Plural value={count} one="# person" other="# people" /> who signed in before would get it
+                          too, before anyone who bounced, left or does not match is left out.
+                        </Trans>
+                      )}
+                    </p>
                   </div>
-                  <p className="text-small text-faint" data-testid="start-backfill-count" aria-live="polite">
-                    {!daysValid ? (
-                      <Trans>Use a whole number from 0 to 30.</Trans>
-                    ) : !synced ? (
-                      <Trans>Counting…</Trans>
-                    ) : count === 0 ? (
-                      <Trans>Only people who sign in from now on get it.</Trans>
-                    ) : (
-                      <Trans>
-                        <Plural value={count} one="# person" other="# people" /> who signed in before would get it too,
-                        before anyone who bounced, left or does not match is left out.
-                      </Trans>
-                    )}
+                )}
+                {!backfill && (
+                  <p className="text-small text-faint" data-testid="start-no-backfill">
+                    <Trans>
+                      Only people who start to match from now on get it. Nobody who already matches is included.
+                    </Trans>
                   </p>
-                </div>
+                )}
                 {service && (
                   <Label className="items-start gap-3 font-normal" data-testid="start-service">
                     <Checkbox checked={serviceOk} onCheckedChange={(on) => setServiceOk(on)} className="mt-0.5" />

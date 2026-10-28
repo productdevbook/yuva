@@ -104,8 +104,9 @@ function Empty({ filter, canCreate, onNew }: { filter: Filter; canCreate: boolea
       {first && (
         <p className="max-w-md">
           <Trans>
-            A triggered e-mail sends one design to each person a set time after they first sign in to your product, for
-            example a welcome mail on day one and a tip on day three.
+            A triggered e-mail sends one design to each person a set time after they first sign in to your product,
+            confirm a subscription to a list or start to match a condition, for example a welcome mail on day one and a
+            tip on day three.
           </Trans>
         </p>
       )}

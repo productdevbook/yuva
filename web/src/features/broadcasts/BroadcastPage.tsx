@@ -286,10 +286,15 @@ export function Summary({ b }: { b: Broadcast }) {
   if (triggered && days > 0 && !b.started_at)
     rows.push([
       t`Also sent to`,
-      plural(days, {
-        one: "people who signed in during the last # day",
-        other: "people who signed in during the last # days",
-      }),
+      b.trigger?.event === "subscribed"
+        ? plural(days, {
+            one: "people who confirmed a subscription during the last # day",
+            other: "people who confirmed a subscription during the last # days",
+          })
+        : plural(days, {
+            one: "people who signed in during the last # day",
+            other: "people who signed in during the last # days",
+          }),
     ])
   if (triggered && b.service_confirmed)
     rows.push([
