@@ -309,7 +309,7 @@ const broadcastUsesList = `-- name: BroadcastUsesList :one
 SELECT EXISTS (
     SELECT 1 FROM broadcasts
     WHERE workspace_id = $1 AND state IN ('scheduled', 'preparing', 'sending', 'active', 'paused')
-      AND audience -> 'list_ids' @> jsonb_build_array($2::text)
+      AND (audience -> 'list_ids' @> jsonb_build_array($2::text) OR trigger ->> 'list_id' = $2::text)
 ) AS used
 `
 

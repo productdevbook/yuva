@@ -492,3 +492,229 @@ func TestTriggeredPausedAtStart(t *testing.T) {
 		t.Fatalf("a contact back-filled from 12 days before goes out, not late: %v", enrollments(t, bt.owner, id, ""))
 	}
 }
+
+func (bt broadcastTeam) triggeredOn(t *testing.T, basis string, delay int, trigger map[string]any) string {
+	t.Helper()
+	trigger["delay_minutes"], trigger["basis"] = delay, basis
+	return bt.triggered(t, basis, delay, map[string]any{"trigger": trigger, "name": "On " + trigger["event"].(string) + " " + unique("t")})
+}
+
+func (bt broadcastTeam) identifyWith(t *testing.T, sub, addr string, attrs map[string]any) string {
+	t.Helper()
+	claims := map[string]any{"sub": sub, "email": addr, "email_verified": true, "name": "User " + sub, "attrs": attrs}
+	return bt.session(bt.h, map[string]any{"identity_token": bt.token(bt.h, claims)}).contactID
+}
+
+func broadcastMails(t *testing.T, bs *broadcastSender, addr string) []*enmime.Envelope {
+	t.Helper()
+	var out []*enmime.Envelope
+	for _, m := range envelopeTo(t, bs, addr) {
+		if m.GetHeader("List-Id") != "" {
+			out = append(out, m)
+		}
+	}
+	return out
+}
+
+func TestTriggeredSubscribed(t *testing.T) {
+	t.Parallel()
+	h, bs := newBroadcastHarness(t, func(d *api.Deps) { d.Imports.Resolver = importMX{} })
+	t0 := time.Date(2026, 10, 12, 9, 0, 0, 0, time.UTC)
+	setClock(h.clock, t0)
+	bt := newBroadcastTeam(t, h, bs)
+	other := newBroadcastTeam(t, h, bs)
+	base := map[string]any{"inbox_id": bt.chatInbox, "name": "Bad", "kind": "triggered", "audience": map[string]any{"list_ids": []string{bt.list}}}
+	for _, tc := range []struct {
+		code    string
+		trigger map[string]any
+	}{
+		{"trigger_invalid", map[string]any{"event": "subscribed"}},
+		{"trigger_invalid", map[string]any{"event": "subscribed", "list_id": bt.list, "condition": map[string]any{"attribute": "plan", "op": "eq", "value": "pro"}}},
+		{"trigger_invalid", map[string]any{"event": "contact_identified", "list_id": bt.list}},
+		{"validation_failed", map[string]any{"event": "subscribed", "list_id": other.list}},
+	} {
+		tc.trigger["delay_minutes"], tc.trigger["basis"] = 0, "marketing"
+		body := map[string]any{"trigger": tc.trigger}
+		for k, v := range base {
+			body[k] = v
+		}
+		bt.owner.expectProblem(http.StatusBadRequest, tc.code, "POST", "/v1/broadcasts", body)
+	}
+
+	early := unique("early") + "@example.org"
+	bt.subscribe(t, early)
+	setClock(h.clock, t0.Add(time.Hour))
+	first := bt.triggeredOn(t, "marketing", 0, map[string]any{"event": "subscribed", "list_id": bt.list})
+	if tr := bt.get(t, first)["trigger"].(map[string]any); tr["list_id"] != bt.list || tr["event"] != "subscribed" {
+		t.Fatalf("trigger: %v", tr)
+	}
+	if item := reviewItem(bt.owner.expect(http.StatusOK, "GET", "/v1/broadcasts/"+first+"/review", nil).body, "trigger"); !strings.Contains(item["detail"].(string), "subscribes to Product news") {
+		t.Fatalf("trigger review item: %v", item)
+	}
+	second := bt.triggeredOn(t, "marketing", 3*24*60, map[string]any{"event": "subscribed", "list_id": bt.list})
+	bt.owner.expect(http.StatusOK, "PATCH", "/v1/broadcasts/"+second, map[string]any{"trigger": map[string]any{"backfill_days": 1}})
+	if r := bt.owner.expect(http.StatusOK, "GET", "/v1/broadcasts/"+second+"/review", nil).body; r["recipients"] != float64(1) {
+		t.Fatalf("back-fill count of confirmed subscriptions: %v", r["recipients"])
+	}
+	bt.owner.expect(http.StatusOK, "PATCH", "/v1/broadcasts/"+second, map[string]any{"trigger": map[string]any{"backfill_days": 0}})
+	bt.start(t, first, nil)
+	bt.start(t, second, nil)
+	bt.owner.expectProblem(http.StatusConflict, "invalid_state", "PATCH", "/v1/broadcasts/"+first, map[string]any{"trigger": map[string]any{"list_id": other.list}})
+	if len(enrollments(t, bt.owner, first, "")) != 0 {
+		t.Fatal("a subscription from before the start enrolled")
+	}
+	bt.owner.expectProblem(http.StatusConflict, "list_in_use", "DELETE", "/v1/lists/"+bt.list, nil)
+	backdated := unique("backdated") + "@example.org"
+	bt.owner.expect(http.StatusCreated, "POST", "/v1/lists/"+bt.list+"/subscriptions", map[string]any{
+		"email": backdated, "consent": map[string]any{"confirmed": true, "obtained_at": h.clock.Now().Add(-20 * 24 * time.Hour).Format(time.RFC3339)},
+	})
+	bt.runTriggered(t)
+	if got := broadcastMails(t, bs, backdated); len(got) != 1 {
+		t.Fatalf("a subscription with an earlier consent time counts from the write, not as late: %d mails, %v", len(got), enrollments(t, bt.owner, first, ""))
+	}
+
+	c, token := bt.form(h)
+	addr := unique("reader") + "@example.org"
+	h.clock.Advance(3 * time.Second)
+	c.expect(http.StatusAccepted, "POST", "/client/v1/channels/"+bt.key+"/subscriptions", bt.subscribeBody(addr, token))
+	h.runListMail(bt.ws)
+	mails := envelopeTo(t, bs, addr)
+	if len(mails) != 1 {
+		t.Fatalf("confirmation mails: %d", len(mails))
+	}
+	bt.runTriggered(t)
+	if n := len(enrollments(t, bt.owner, first, "")); n != 1 || len(envelopeTo(t, bs, addr)) != 1 {
+		t.Fatalf("a pending subscription enrolled: %d", n)
+	}
+	if st, _ := pageAt(t, h, "POST", linkIn(t, mails[0], "s"), url.Values{"action": {"confirm"}}); st != http.StatusOK {
+		t.Fatalf("confirm: %d", st)
+	}
+	confirmedAt := h.clock.Now()
+	bt.runTriggered(t)
+	if got := broadcastMails(t, bs, addr); len(got) != 1 {
+		t.Fatalf("the first mail after confirming: %d", len(got))
+	}
+	w := enrollments(t, bt.owner, second, "waiting")
+	if len(w) != 2 || w[1]["contact"].(map[string]any)["email"] != addr || !timeOf(t, w[1]["triggered_at"]).Equal(confirmedAt) {
+		t.Fatalf("the second waits from the confirmation: %v", w)
+	}
+
+	cs := h.mcpSession(h.oauthToken(bt.owner, bt.ws, "Claude Code", testOrigin+"/mcp", []string{"lists:read", "lists:write", "broadcasts:read", "broadcasts:write", "contacts:read"}))
+	imported := unique("imported") + "@example.org"
+	imp, errText := callTool(t, cs, "create_list_import", map[string]any{
+		"list_id": bt.list, "csv": "email,name\n" + imported + ",Imp\n", "attestation": "They opted in.", "consent_source": "Sign-up form, 2026",
+	})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	runListImports(t, h, bt.ws)
+	if _, errText := callTool(t, cs, "start_list_import", map[string]any{"list_id": bt.list, "import_id": imp["id"], "confirm_count": 1}); errText != "" {
+		t.Fatal(errText)
+	}
+	runListImports(t, h, bt.ws)
+	if s := bt.subscription(t, imported); s["state"] != "subscribed" {
+		t.Fatalf("imported subscription: %v", s)
+	}
+	if n := len(enrollments(t, bt.owner, first, "")); n != 2 {
+		t.Fatalf("an import enrolled: %d enrollments", n)
+	}
+
+	setClock(h.clock, confirmedAt.Add(3*24*time.Hour+time.Minute))
+	bt.due(t, second)
+	if got := broadcastMails(t, bs, addr); len(got) != 2 {
+		t.Fatalf("the second mail 3 days later: %d", len(got))
+	}
+	if len(broadcastMails(t, bs, imported)) != 0 || len(broadcastMails(t, bs, early)) != 0 {
+		t.Fatal("an imported or earlier subscriber got a welcome mail")
+	}
+
+	cs = h.mcpSession(h.oauthToken(bt.owner, bt.ws, "Claude Code", testOrigin+"/mcp", []string{"broadcasts:read", "broadcasts:write"}))
+	att, errText := callTool(t, cs, "create_triggered_email", map[string]any{
+		"inbox_id": bt.chatInbox, "channel_id": bt.emailChannel, "name": "Pro welcome", "subject": "Welcome to Pro", "design_id": bt.design,
+		"event": "attribute_changed", "trigger_condition": map[string]any{"attribute": "plan", "op": "eq", "value": "pro"},
+		"delay": 0, "delay_unit": "minutes", "basis": "service",
+	})
+	if errText != "" {
+		t.Fatal(errText)
+	}
+	if tr := att["trigger"].(map[string]any); tr["event"] != "attribute_changed" || tr["condition"].(map[string]any)["value"] != "pro" {
+		t.Fatalf("create_triggered_email trigger: %v", tr)
+	}
+	sub, errText := callTool(t, cs, "create_triggered_email", map[string]any{
+		"inbox_id": bt.chatInbox, "name": "Welcome", "subject": "Welcome", "event": "subscribed", "trigger_list_id": bt.list,
+		"delay": 1, "delay_unit": "days", "basis": "marketing", "list_ids": []string{bt.list},
+	})
+	if errText != "" || sub["trigger"].(map[string]any)["list_id"] != bt.list {
+		t.Fatalf("create_triggered_email subscribed: %v %s", sub, errText)
+	}
+}
+
+func TestTriggeredAttributeChanged(t *testing.T) {
+	t.Parallel()
+	h, bs := newBroadcastHarness(t, nil)
+	setClock(h.clock, time.Date(2026, 10, 14, 9, 0, 0, 0, time.UTC))
+	bt := newBroadcastTeam(t, h, bs)
+	cond := map[string]any{"attribute": "plan", "op": "eq", "value": "pro"}
+	bt.owner.expectProblem(http.StatusBadRequest, "trigger_invalid", "POST", "/v1/broadcasts", map[string]any{
+		"inbox_id": bt.chatInbox, "name": "No condition", "kind": "triggered", "audience": map[string]any{"list_ids": []string{}},
+		"trigger": map[string]any{"event": "attribute_changed", "delay_minutes": 0, "basis": "service"},
+	})
+	id := bt.triggeredOn(t, "service", 0, map[string]any{"event": "attribute_changed", "condition": cond})
+	bt.owner.expectProblem(http.StatusBadRequest, "trigger_invalid", "PATCH", "/v1/broadcasts/"+id, map[string]any{"trigger": map[string]any{"backfill_days": 3}})
+	bt.owner.expectProblem(http.StatusBadRequest, "trigger_invalid", "POST", "/v1/broadcasts/"+id+"/schedule", map[string]any{"confirm_service": true, "backfill_days": 3})
+
+	alreadySub, alreadyAddr := unique("pro"), unique("pro")+"@example.org"
+	already := bt.identifyWith(t, alreadySub, alreadyAddr, map[string]any{"plan": "pro"})
+	bt.start(t, id, map[string]any{"confirm_service": true})
+	bt.identifyWith(t, alreadySub, alreadyAddr, map[string]any{"plan": "pro"})
+	bt.owner.expectProblem(http.StatusConflict, "not_draft", "POST", "/v1/broadcasts/"+id+"/schedule", map[string]any{"confirm_service": true, "backfill_days": 3})
+	if enrollmentOf(t, bt.owner, id, already) != nil {
+		t.Fatal("a contact already pro when it started was enrolled")
+	}
+
+	sub, addr := unique("u"), unique("u")+"@example.org"
+	user := bt.identifyWith(t, sub, addr, map[string]any{"plan": "free"})
+	if enrollmentOf(t, bt.owner, id, user) != nil {
+		t.Fatal("a contact not matching was enrolled")
+	}
+	bt.identifyWith(t, sub, addr, map[string]any{"plan": "pro"})
+	bt.runTriggered(t)
+	if got := envelopeTo(t, bs, addr); len(got) != 1 {
+		t.Fatalf("moving plan from free to pro: %d mails", len(got))
+	}
+	bt.identifyWith(t, sub, addr, map[string]any{"plan": "pro"})
+	bt.identifyWith(t, sub, addr, map[string]any{"plan": "free"})
+	bt.identifyWith(t, sub, addr, map[string]any{"plan": "pro"})
+	bt.runTriggered(t)
+	if got := envelopeTo(t, bs, addr); len(got) != 1 {
+		t.Fatalf("setting pro again: %d mails", len(got))
+	}
+
+	quiet := bt.identifyWith(t, unique("q"), unique("q")+"@example.org", map[string]any{"plan": "free"})
+	bt.owner.expect(http.StatusOK, "PATCH", "/v1/contacts/"+quiet, map[string]any{"attributes": map[string]any{"plan": "pro"}, "skip_triggers": true})
+	loud := bt.identifyWith(t, unique("l"), unique("l")+"@example.org", map[string]any{"plan": "free"})
+	bt.owner.expect(http.StatusOK, "PATCH", "/v1/contacts/"+loud, map[string]any{"attributes": map[string]any{"plan": "pro"}})
+	created := bt.owner.expect(http.StatusCreated, "POST", "/v1/contacts", map[string]any{
+		"name": "Pro from the start", "emails": []string{unique("c") + "@example.org"}, "attributes": map[string]any{"plan": "pro"},
+		"external_ids": []map[string]any{{"inbox_id": bt.chatInbox, "external_id": unique("c")}},
+	}).str("id")
+	outsider := bt.owner.expect(http.StatusCreated, "POST", "/v1/contacts", map[string]any{
+		"name": "Not of the inbox", "emails": []string{unique("o") + "@example.org"}, "attributes": map[string]any{"plan": "pro"},
+	}).str("id")
+	if enrollmentOf(t, bt.owner, id, quiet) != nil || enrollmentOf(t, bt.owner, id, outsider) != nil {
+		t.Fatalf("skip_triggers or a contact outside the inbox enrolled: %v", enrollments(t, bt.owner, id, ""))
+	}
+	if enrollmentOf(t, bt.owner, id, loud) == nil || enrollmentOf(t, bt.owner, id, created) == nil {
+		t.Fatalf("a /v1/contacts write that newly matches: %v", enrollments(t, bt.owner, id, ""))
+	}
+
+	other := newBroadcastTeam(t, h, bs)
+	other.owner.expectProblem(http.StatusNotFound, "not_found", "GET", "/v1/broadcasts/"+id+"/enrollments", nil)
+	foreign := other.owner.expect(http.StatusCreated, "POST", "/v1/contacts", map[string]any{
+		"name": "Elsewhere", "emails": []string{unique("f") + "@example.org"}, "attributes": map[string]any{"plan": "pro"},
+		"external_ids": []map[string]any{{"inbox_id": other.chatInbox, "external_id": unique("f")}},
+	}).str("id")
+	if enrollmentOf(t, bt.owner, id, foreign) != nil {
+		t.Fatal("a contact of another workspace enrolled")
+	}
+}

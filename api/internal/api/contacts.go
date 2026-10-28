@@ -538,6 +538,11 @@ func (s *Server) CreateContact(ctx context.Context, req oas.CreateContactRequest
 		if err := s.writeContactKeys(ctx, q, events, p.workspaceID, r.ID, in, true, true, !boolOr(b.SkipTriggers, false)); err != nil {
 			return err
 		}
+		if !boolOr(b.SkipTriggers, false) {
+			if err := s.attributesWritten(ctx, q, events, p.workspaceID, r.ID, nil, nil, r.Attributes); err != nil {
+				return err
+			}
+		}
 		out, err = s.contactBody(ctx, q, p.workspaceID, scopeOf(p), contactRow(r))
 		return err
 	})
@@ -666,6 +671,11 @@ func (s *Server) UpdateContact(ctx context.Context, req oas.UpdateContactRequest
 		}
 		if err := s.writeContactKeys(ctx, q, events, p.workspaceID, cur.ID, in, b.Emails != nil, b.ExternalIds != nil, !boolOr(b.SkipTriggers, false)); err != nil {
 			return err
+		}
+		if b.Attributes != nil && !boolOr(b.SkipTriggers, false) {
+			if err := s.attributesWritten(ctx, q, events, p.workspaceID, cur.ID, nil, cur.Attributes, r.Attributes); err != nil {
+				return err
+			}
 		}
 		if out, err = s.contactBodyAndEvent(ctx, q, p, events, contactRow(r)); err != nil {
 			return err

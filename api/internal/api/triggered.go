@@ -1,11 +1,13 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 	"uuid"
@@ -24,6 +26,8 @@ const (
 	basisService      = string(oas.BasisService)
 	basisMarketing    = string(oas.BasisMarketing)
 	triggerIdentified = string(oas.TriggerContactIdentified)
+	triggerSubscribed = string(oas.TriggerSubscribed)
+	triggerAttribute  = string(oas.TriggerAttributeChanged)
 
 	enrollWaiting  = string(oas.TriggeredEnrollmentStateWaiting)
 	enrollBackfill = string(oas.TriggeredEnrollmentSourceBackfill)
@@ -44,12 +48,22 @@ var (
 	errBasisLists         = problem(http.StatusBadRequest, "basis_lists", "marketing mail goes to 1 to 10 lists of the inbox; service mail goes to no list")
 	errTooManyTriggered   = problem(http.StatusConflict, "too_many_triggered", "an inbox has at most 20 triggered e-mails scheduled, active or paused")
 	errServiceUnconfirmed = problem(http.StatusBadRequest, "service_basis_unconfirmed", "confirm that this mail is about using the product, not advertising (confirm_service: true)")
+	errTriggerFields      = problem(http.StatusBadRequest, "trigger_invalid", "subscribed takes trigger.list_id, attribute_changed takes trigger.condition, contact_identified takes neither")
+	errTriggerBackfill    = problem(http.StatusBadRequest, "trigger_invalid", "attribute_changed takes no back-fill: backfill_days must be 0")
 	errEnrollmentGone     = problem(http.StatusNotFound, "not_found", "the triggered e-mail never enrolled this contact")
 	errNotTriggered       = errValidation("only a triggered e-mail has enrollments")
 )
 
 type bcTrigger struct {
-	Event string `json:"event"`
+	Event     string       `json:"event"`
+	ListID    *uuid.UUID   `json:"list_id,omitempty"`
+	Condition *bcCondition `json:"condition,omitempty"`
+}
+
+func triggerOf(b store.Broadcast) bcTrigger {
+	var t bcTrigger
+	_ = json.Unmarshal(b.Trigger, &t)
+	return t
 }
 
 func serviceBasis(b store.Broadcast) bool {
@@ -57,19 +71,22 @@ func serviceBasis(b store.Broadcast) bool {
 }
 
 func triggerEvent(b store.Broadcast) string {
-	var t bcTrigger
-	_ = json.Unmarshal(b.Trigger, &t)
-	return t.Event
+	return triggerOf(b).Event
 }
 
 func triggerBody(b store.Broadcast) *oas.BroadcastTrigger {
 	if b.Kind != bcTriggered || b.DelayMinutes == nil {
 		return nil
 	}
-	return &oas.BroadcastTrigger{
-		Event: oas.BroadcastTriggerEvent(triggerEvent(b)), DelayMinutes: *b.DelayMinutes,
+	t := triggerOf(b)
+	out := &oas.BroadcastTrigger{
+		Event: oas.BroadcastTriggerEvent(t.Event), ListId: t.ListID, DelayMinutes: *b.DelayMinutes,
 		Basis: oas.BroadcastBasis(deref(b.Basis)), BackfillDays: b.BackfillDays,
 	}
+	if t.Condition != nil {
+		out.Condition = new(conditionBody(*t.Condition))
+	}
+	return out
 }
 
 func delayOf(b store.Broadcast) time.Duration {
@@ -81,7 +98,44 @@ func delayOf(b store.Broadcast) time.Duration {
 
 type triggerDraft struct {
 	kind, event, basis string
+	listID             *uuid.UUID
+	condition          *bcCondition
 	delay, backfill    *int32
+}
+
+func draftOf(b store.Broadcast) triggerDraft {
+	t := triggerOf(b)
+	return triggerDraft{
+		kind: bcTriggered, event: t.Event, basis: deref(b.Basis), listID: t.ListID, condition: t.Condition,
+		delay: b.DelayMinutes, backfill: &b.BackfillDays,
+	}
+}
+
+func (d triggerDraft) stored() bcTrigger {
+	return bcTrigger{Event: d.event, ListID: d.listID, Condition: d.condition}
+}
+
+func (d triggerDraft) check() error {
+	switch d.event {
+	case triggerIdentified:
+		if d.listID != nil || d.condition != nil {
+			return errTriggerFields
+		}
+	case triggerSubscribed:
+		if d.listID == nil || d.condition != nil {
+			return errTriggerFields
+		}
+	case triggerAttribute:
+		if d.condition == nil || d.listID != nil {
+			return errTriggerFields
+		}
+		if d.backfill != nil && *d.backfill > 0 {
+			return errTriggerBackfill
+		}
+	default:
+		return errTriggerInvalid
+	}
+	return nil
 }
 
 func checkTrigger(kind *oas.BroadcastKind, in *oas.BroadcastTriggerInput) (triggerDraft, error) {
@@ -102,15 +156,31 @@ func checkTrigger(kind *oas.BroadcastKind, in *oas.BroadcastTriggerInput) (trigg
 		return d, errTriggerInvalid
 	}
 	d.backfill = new(int32(0))
-	return d, applyTrigger(&d, in)
+	if err := applyTrigger(&d, in); err != nil {
+		return d, err
+	}
+	return d, d.check()
 }
 
 func applyTrigger(d *triggerDraft, in *oas.BroadcastTriggerInput) error {
 	if in.Event != nil {
-		if *in.Event != oas.TriggerContactIdentified {
+		if !in.Event.Valid() {
 			return errTriggerInvalid
 		}
+		if string(*in.Event) != d.event {
+			d.listID, d.condition = nil, nil
+		}
 		d.event = string(*in.Event)
+	}
+	if in.ListId != nil {
+		d.listID = new(*in.ListId)
+	}
+	if in.Condition != nil {
+		c, err := checkBroadcastCondition(*in.Condition, "trigger.condition")
+		if err != nil {
+			return err
+		}
+		d.condition = &c
 	}
 	if in.Basis != nil {
 		if !in.Basis.Valid() {
@@ -133,6 +203,24 @@ func applyTrigger(d *triggerDraft, in *oas.BroadcastTriggerInput) error {
 	return nil
 }
 
+func checkTriggerList(ctx context.Context, q *store.Queries, ws, inboxID uuid.UUID, listID *uuid.UUID) error {
+	if listID == nil {
+		return nil
+	}
+	l, err := q.GetMailingList(ctx, store.GetMailingListParams{WorkspaceID: ws, ID: *listID})
+	switch {
+	case store.IsNotFound(err):
+		return errValidation("trigger.list_id names a list that does not exist")
+	case err != nil:
+		return err
+	case l.InboxID != inboxID:
+		return errValidation("trigger.list_id names a list of another inbox")
+	case l.Kind == listKindStatus:
+		return errValidation("trigger.list_id names a status page's subscriber list, which takes only incident notices")
+	}
+	return nil
+}
+
 func checkBasisLists(basis string, lists int) error {
 	if (basis == basisService && lists > 0) || (basis == basisMarketing && (lists == 0 || lists > maxBroadcastLists)) {
 		return errBasisLists
@@ -151,20 +239,28 @@ func (s *Server) checkLiveTriggered(ctx context.Context, q *store.Queries, ws, i
 	return nil
 }
 
-func updateTriggeredDraft(b *store.Broadcast, in *oas.BroadcastTriggerInput) error {
+func updateTriggeredDraft(ctx context.Context, q *store.Queries, b *store.Broadcast, in *oas.BroadcastTriggerInput) error {
 	if b.Kind != bcTriggered {
 		if in != nil {
 			return errTriggerInvalid
 		}
 		return nil
 	}
-	d := triggerDraft{kind: bcTriggered, event: triggerEvent(*b), basis: deref(b.Basis), delay: b.DelayMinutes, backfill: &b.BackfillDays}
+	d := draftOf(*b)
 	if in != nil {
 		if err := applyTrigger(&d, in); err != nil {
 			return err
 		}
 	}
-	b.Trigger, b.Basis, b.DelayMinutes, b.BackfillDays = mustJSON(bcTrigger{Event: d.event}), &d.basis, d.delay, *d.backfill
+	if err := d.check(); err != nil {
+		return err
+	}
+	if in != nil && in.ListId != nil {
+		if err := checkTriggerList(ctx, q, b.WorkspaceID, b.InboxID, d.listID); err != nil {
+			return err
+		}
+	}
+	b.Trigger, b.Basis, b.DelayMinutes, b.BackfillDays = mustJSON(d.stored()), &d.basis, d.delay, *d.backfill
 	return checkBasisLists(d.basis, len(parseAudience(b.Audience).ListIDs))
 }
 
@@ -181,15 +277,18 @@ func (s *Server) updateStartedTriggered(ctx context.Context, q *store.Queries, p
 			body.Audience != nil || (body.ClickTracking != nil && *body.ClickTracking)
 	}
 	if t := body.Trigger; t != nil {
-		refuse = refuse || t.Event != nil || t.Basis != nil || (t.BackfillDays != nil && b.State != bcScheduled)
+		refuse = refuse || t.Event != nil || t.Basis != nil || t.ListId != nil || t.Condition != nil || (t.BackfillDays != nil && b.State != bcScheduled)
 	}
 	if refuse {
 		return b, errBroadcastState
 	}
 	var err error
 	if t := body.Trigger; t != nil {
-		d := triggerDraft{delay: b.DelayMinutes, backfill: &b.BackfillDays}
+		d := draftOf(b)
 		if err := applyTrigger(&d, t); err != nil {
+			return b, err
+		}
+		if err := d.check(); err != nil {
 			return b, err
 		}
 		b.DelayMinutes, b.BackfillDays = d.delay, *d.backfill
@@ -259,9 +358,13 @@ func (s *Server) triggerContact(ctx context.Context, q *store.Queries, events *e
 		return nil
 	}
 	live, err := q.ListLiveTriggered(ctx, store.ListLiveTriggeredParams{WorkspaceID: ws, InboxID: inboxID, Event: event})
-	if err != nil || len(live) == 0 {
+	if err != nil {
 		return err
 	}
+	return s.enroll(ctx, q, events, ws, contactID, at, live)
+}
+
+func (s *Server) enroll(ctx context.Context, q *store.Queries, events *eventBatch, ws, contactID uuid.UUID, at time.Time, live []store.ListLiveTriggeredRow) error {
 	now := s.now()
 	for _, b := range live {
 		n, err := q.EnrollContact(ctx, store.EnrollContactParams{WorkspaceID: ws, BroadcastID: b.ID, ContactID: contactID, TriggeredAt: at, Now: now})
@@ -274,6 +377,44 @@ func (s *Server) triggerContact(ctx context.Context, q *store.Queries, events *e
 		}
 	}
 	return nil
+}
+
+func (s *Server) subscriptionConfirmed(ctx context.Context, q *store.Queries, events *eventBatch, list store.MailingList, sub store.ListSubscription, previous string) error {
+	if events.noTriggers || list.Kind == listKindStatus || sub.State != subSubscribed || previous == subSubscribed || sub.Source == string(oas.SubscriptionSourceImport) {
+		return nil
+	}
+	live, err := q.ListLiveTriggered(ctx, store.ListLiveTriggeredParams{
+		WorkspaceID: sub.WorkspaceID, InboxID: list.InboxID, Event: triggerSubscribed, ListKey: list.ID.String(),
+	})
+	if err != nil {
+		return err
+	}
+	return s.enroll(ctx, q, events, sub.WorkspaceID, sub.ContactID, s.now(), live)
+}
+
+// attributesWritten enrolls a contact whose attributes newly match an attribute_changed trigger of
+// an inbox it belongs to or was written through; previous is nil when the write created it.
+func (s *Server) attributesWritten(ctx context.Context, q *store.Queries, events *eventBatch, ws, contactID uuid.UUID, via []uuid.UUID, previous, attrs []byte) error {
+	if events.noTriggers || (previous != nil && bytes.Equal(previous, attrs)) {
+		return nil
+	}
+	if live, err := q.HasAttributeTriggered(ctx, ws); err != nil || !live {
+		return err
+	}
+	if via == nil {
+		via = []uuid.UUID{}
+	}
+	rows, err := q.ListAttributeTriggered(ctx, store.ListAttributeTriggeredParams{
+		WorkspaceID: ws, Attributes: attrs, Previous: previous, ViaInboxes: via, ContactID: contactID,
+	})
+	if err != nil || len(rows) == 0 {
+		return err
+	}
+	live := make([]store.ListLiveTriggeredRow, len(rows))
+	for i, r := range rows {
+		live[i] = store.ListLiveTriggeredRow(r)
+	}
+	return s.enroll(ctx, q, events, ws, contactID, s.now(), live)
 }
 
 // first says the caller knows the contact has no external id in the inbox yet.
@@ -594,10 +735,7 @@ func (s *Server) backfillTriggered(ctx context.Context, ws, id uuid.UUID, deadli
 			if cur.SnapshotAfter != nil {
 				after = *cur.SnapshotAfter
 			}
-			start := *cur.StartedAt
-			rows, err := q.BackfillIdentifiedPage(ctx, store.BackfillIdentifiedPageParams{
-				WorkspaceID: ws, InboxID: cur.InboxID, After: after, WindowFrom: start.AddDate(0, 0, -int(cur.BackfillDays)), WindowUntil: start, Lim: backfillPage,
-			})
+			rows, err := backfillPageOf(ctx, q, cur, after)
 			if err != nil {
 				return err
 			}
@@ -639,13 +777,41 @@ func (s *Server) backfillTriggered(ctx context.Context, ws, id uuid.UUID, deadli
 	}
 }
 
+func backfillPageOf(ctx context.Context, q *store.Queries, b store.Broadcast, after uuid.UUID) ([]store.BackfillIdentifiedPageRow, error) {
+	start := *b.StartedAt
+	from := start.AddDate(0, 0, -int(b.BackfillDays))
+	t := triggerOf(b)
+	switch {
+	case t.Event == triggerSubscribed && t.ListID != nil:
+		rows, err := q.BackfillSubscribedPage(ctx, store.BackfillSubscribedPageParams{
+			WorkspaceID: b.WorkspaceID, ListID: *t.ListID, After: after, WindowFrom: from, WindowUntil: start, Lim: backfillPage,
+		})
+		out := make([]store.BackfillIdentifiedPageRow, len(rows))
+		for i, r := range rows {
+			out[i] = store.BackfillIdentifiedPageRow(r)
+		}
+		return out, err
+	case t.Event == triggerIdentified:
+		return q.BackfillIdentifiedPage(ctx, store.BackfillIdentifiedPageParams{
+			WorkspaceID: b.WorkspaceID, InboxID: b.InboxID, After: after, WindowFrom: from, WindowUntil: start, Lim: backfillPage,
+		})
+	}
+	return nil, nil
+}
+
 func backfillCount(ctx context.Context, q *store.Queries, b store.Broadcast, now time.Time) (int64, error) {
 	if b.BackfillDays == 0 {
 		return 0, nil
 	}
-	return q.CountBackfillIdentified(ctx, store.CountBackfillIdentifiedParams{
-		WorkspaceID: b.WorkspaceID, InboxID: b.InboxID, WindowFrom: now.AddDate(0, 0, -int(b.BackfillDays)), WindowUntil: now,
-	})
+	from := now.AddDate(0, 0, -int(b.BackfillDays))
+	t := triggerOf(b)
+	switch {
+	case t.Event == triggerSubscribed && t.ListID != nil:
+		return q.CountBackfillSubscribed(ctx, store.CountBackfillSubscribedParams{WorkspaceID: b.WorkspaceID, ListID: *t.ListID, WindowFrom: from, WindowUntil: now})
+	case t.Event == triggerIdentified:
+		return q.CountBackfillIdentified(ctx, store.CountBackfillIdentifiedParams{WorkspaceID: b.WorkspaceID, InboxID: b.InboxID, WindowFrom: from, WindowUntil: now})
+	}
+	return 0, nil
 }
 
 // A back-filled contact is due no earlier than the start, so its trigger's age never makes it late.
@@ -772,16 +938,47 @@ func (s *Server) RemoveBroadcastEnrollment(ctx context.Context, req oas.RemoveBr
 	return oas.RemoveBroadcastEnrollment204Response{}, nil
 }
 
-func triggerSentence(b store.Broadcast, inbox string) string {
+func triggerSentence(b store.Broadcast, inbox, list string) string {
 	when := "right after"
 	if d := delayOf(b); d > 0 {
 		when = aboutDuration(d.Seconds()) + " after"
 	}
-	return when + " a contact first signs in to " + inbox + ", once each"
+	t := triggerOf(b)
+	what := " a contact first signs in to " + inbox
+	switch {
+	case t.Event == triggerSubscribed:
+		what = " a contact subscribes to " + list
+	case t.Event == triggerAttribute && t.Condition != nil:
+		c := t.Condition
+		what = " a contact newly matches " + c.Attribute + " " + c.Op
+		if c.Value != nil {
+			what += " " + strconv.Quote(*c.Value)
+		} else if len(c.Values) > 0 {
+			what += " " + strings.Join(c.Values, ", ")
+		}
+	}
+	return when + what + ", once each"
 }
 
-func (l *reviewList) triggered(b store.Broadcast, inbox store.Inbox, doc *design.Document, backfill int64) {
-	l.add(oas.BroadcastReviewKeyTrigger, oas.ReviewOk, triggerSentence(b, inbox.Name))
+// triggerList is the name of a subscribed trigger's list; ok is false when the list is gone.
+func triggerList(ctx context.Context, q *store.Queries, b store.Broadcast) (string, bool, error) {
+	t := triggerOf(b)
+	if t.Event != triggerSubscribed || t.ListID == nil {
+		return "", true, nil
+	}
+	l, err := q.GetMailingList(ctx, store.GetMailingListParams{WorkspaceID: b.WorkspaceID, ID: *t.ListID})
+	if store.IsNotFound(err) {
+		return "", false, nil
+	}
+	return l.Name, err == nil, err
+}
+
+func (l *reviewList) triggered(b store.Broadcast, inbox store.Inbox, list string, listOK bool, doc *design.Document, backfill int64) {
+	if listOK {
+		l.add(oas.BroadcastReviewKeyTrigger, oas.ReviewOk, triggerSentence(b, inbox.Name, list))
+	} else {
+		l.add(oas.BroadcastReviewKeyTrigger, oas.ReviewBlocking, "the list the trigger names was deleted: stop this triggered e-mail and create another")
+	}
 	var fields []design.Field
 	if doc != nil {
 		fields = doc.MergeFields()

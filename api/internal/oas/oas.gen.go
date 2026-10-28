@@ -2164,13 +2164,19 @@ func (e BroadcastState) Valid() bool {
 
 // Defines values for BroadcastTriggerEvent.
 const (
+	TriggerAttributeChanged  BroadcastTriggerEvent = "attribute_changed"
 	TriggerContactIdentified BroadcastTriggerEvent = "contact_identified"
+	TriggerSubscribed        BroadcastTriggerEvent = "subscribed"
 )
 
 // Valid indicates whether the value is a known member of the BroadcastTriggerEvent enum.
 func (e BroadcastTriggerEvent) Valid() bool {
 	switch e {
+	case TriggerAttributeChanged:
+		return true
 	case TriggerContactIdentified:
+		return true
+	case TriggerSubscribed:
 		return true
 	default:
 		return false
@@ -11465,8 +11471,12 @@ type BroadcastCreate struct {
 	// without a subject here goes out with `subject` (review warning `translations`). Draft only.
 	Translations *map[string]BroadcastTranslation `json:"translations,omitempty"`
 
-	// Trigger On create `event`, `delay_minutes` and `basis` are required. On update only the fields given
-	// change: all of them on a draft, `delay_minutes` alone while it is scheduled, active or
+	// Trigger On create `event`, `delay_minutes` and `basis` are required, with `list_id` for
+	// `subscribed` and `condition` for `attribute_changed` (`400 trigger_invalid` when missing,
+	// given to another event, or with `backfill_days` above 0 for `attribute_changed`; a
+	// `list_id` of another inbox or of a status page is `400 validation_failed`). On update only
+	// the fields given change: all of them on a draft (a new `event` drops the `list_id` and
+	// `condition` it does not take), `delay_minutes` alone while it is scheduled, active or
 	// paused (`409 invalid_state` for the others), and `backfill_days` while it has not started.
 	Trigger *BroadcastTriggerInput `json:"trigger,omitempty"`
 
@@ -11881,6 +11891,7 @@ type BroadcastReviewStatus string
 // BroadcastSchedule At most one of `send_at` and `send_at_local`; neither sends now.
 type BroadcastSchedule struct {
 	// BackfillDays Triggered e-mails only; replaces `trigger.backfill_days` before the review runs.
+	// `attribute_changed` takes only 0 (`400 trigger_invalid`).
 	BackfillDays *int32 `json:"backfill_days,omitempty"`
 
 	// ConfirmRecipients For a triggered e-mail, the back-fill count the review showed (0 without back-fill).
@@ -11991,7 +12002,8 @@ type BroadcastTranslation struct {
 // BroadcastTrigger defines model for BroadcastTrigger.
 type BroadcastTrigger struct {
 	// BackfillDays When it starts, also enroll contacts whose trigger happened in this many days before the
-	// start (their delay counts from then). 0 enrolls only triggers from the start on.
+	// start (their delay counts from then). 0 enrolls only triggers from the start on;
+	// `attribute_changed` takes only 0.
 	BackfillDays int32 `json:"backfill_days"`
 
 	// Basis Why the person may get the mail, chosen when the triggered e-mail is created and fixed after
@@ -12004,25 +12016,61 @@ type BroadcastTrigger struct {
 	// that stops the inbox's service triggered e-mails and designed outreach for them.
 	Basis BroadcastBasis `json:"basis"`
 
+	// Condition `attribute_changed` only: the condition a contact newly matching triggers it.
+	Condition *BroadcastCondition `json:"condition,omitempty"`
+
 	// DelayMinutes How long after the trigger the mail is due, 0 to 365 days. Changing it moves the due
 	// time of everyone still waiting.
 	DelayMinutes int32 `json:"delay_minutes"`
 
 	// Event `contact_identified`: the contact got its first external id in the inbox, from an identity
 	// token (widget, mobile SDKs, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` (unless
-	// `skip_triggers`), feedback or a subscription that carries an external id. Contact imports,
-	// help-desk migrations and merges never trigger.
+	// `skip_triggers`), feedback or a subscription that carries an external id; the trigger time
+	// is the external id's creation.
+	//
+	// `subscribed`: a subscription to the list `trigger.list_id` (a list of the inbox, not a
+	// status page's) became `subscribed`, from any source but `import`; a double opt-in counts
+	// when the person confirms it, never while it is pending. The trigger time is `consent_at`.
+	//
+	// `attribute_changed`: a write made the contact match `trigger.condition` when it did not
+	// before; creating a contact that matches counts. The writes are an identity token,
+	// `POST`/`PATCH /v1/contacts` (the panel's too, unless `skip_triggers`) and a subscription
+	// that creates its contact. It enrolls contacts of the inbox only: with an external id or a
+	// conversation in it, a subscription to one of its lists, or written through it (the identity
+	// token's inbox, the list's). The trigger time is the write; it takes no back-fill.
+	//
+	// Contact imports, help-desk migrations and merges never trigger.
 	Event BroadcastTriggerEvent `json:"event"`
+
+	// ListId `subscribed` only: the list whose confirmed subscriptions trigger it.
+	ListId *uuid.UUID `json:"list_id,omitempty"`
 }
 
 // BroadcastTriggerEvent `contact_identified`: the contact got its first external id in the inbox, from an identity
 // token (widget, mobile SDKs, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` (unless
-// `skip_triggers`), feedback or a subscription that carries an external id. Contact imports,
-// help-desk migrations and merges never trigger.
+// `skip_triggers`), feedback or a subscription that carries an external id; the trigger time
+// is the external id's creation.
+//
+// `subscribed`: a subscription to the list `trigger.list_id` (a list of the inbox, not a
+// status page's) became `subscribed`, from any source but `import`; a double opt-in counts
+// when the person confirms it, never while it is pending. The trigger time is `consent_at`.
+//
+// `attribute_changed`: a write made the contact match `trigger.condition` when it did not
+// before; creating a contact that matches counts. The writes are an identity token,
+// `POST`/`PATCH /v1/contacts` (the panel's too, unless `skip_triggers`) and a subscription
+// that creates its contact. It enrolls contacts of the inbox only: with an external id or a
+// conversation in it, a subscription to one of its lists, or written through it (the identity
+// token's inbox, the list's). The trigger time is the write; it takes no back-fill.
+//
+// Contact imports, help-desk migrations and merges never trigger.
 type BroadcastTriggerEvent string
 
-// BroadcastTriggerInput On create `event`, `delay_minutes` and `basis` are required. On update only the fields given
-// change: all of them on a draft, `delay_minutes` alone while it is scheduled, active or
+// BroadcastTriggerInput On create `event`, `delay_minutes` and `basis` are required, with `list_id` for
+// `subscribed` and `condition` for `attribute_changed` (`400 trigger_invalid` when missing,
+// given to another event, or with `backfill_days` above 0 for `attribute_changed`; a
+// `list_id` of another inbox or of a status page is `400 validation_failed`). On update only
+// the fields given change: all of them on a draft (a new `event` drops the `list_id` and
+// `condition` it does not take), `delay_minutes` alone while it is scheduled, active or
 // paused (`409 invalid_state` for the others), and `backfill_days` while it has not started.
 type BroadcastTriggerInput struct {
 	BackfillDays *int32 `json:"backfill_days,omitempty"`
@@ -12035,14 +12083,29 @@ type BroadcastTriggerInput struct {
 	// no lists; starting it needs `confirm_service`. Its footer says the person gets it because
 	// they use the inbox's product and carries the postal address and a one-click unsubscribe
 	// that stops the inbox's service triggered e-mails and designed outreach for them.
-	Basis        *BroadcastBasis `json:"basis,omitempty"`
-	DelayMinutes *int32          `json:"delay_minutes,omitempty"`
+	Basis        *BroadcastBasis     `json:"basis,omitempty"`
+	Condition    *BroadcastCondition `json:"condition,omitempty"`
+	DelayMinutes *int32              `json:"delay_minutes,omitempty"`
 
 	// Event `contact_identified`: the contact got its first external id in the inbox, from an identity
 	// token (widget, mobile SDKs, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` (unless
-	// `skip_triggers`), feedback or a subscription that carries an external id. Contact imports,
-	// help-desk migrations and merges never trigger.
-	Event *BroadcastTriggerEvent `json:"event,omitempty"`
+	// `skip_triggers`), feedback or a subscription that carries an external id; the trigger time
+	// is the external id's creation.
+	//
+	// `subscribed`: a subscription to the list `trigger.list_id` (a list of the inbox, not a
+	// status page's) became `subscribed`, from any source but `import`; a double opt-in counts
+	// when the person confirms it, never while it is pending. The trigger time is `consent_at`.
+	//
+	// `attribute_changed`: a write made the contact match `trigger.condition` when it did not
+	// before; creating a contact that matches counts. The writes are an identity token,
+	// `POST`/`PATCH /v1/contacts` (the panel's too, unless `skip_triggers`) and a subscription
+	// that creates its contact. It enrolls contacts of the inbox only: with an external id or a
+	// conversation in it, a subscription to one of its lists, or written through it (the identity
+	// token's inbox, the list's). The trigger time is the write; it takes no back-fill.
+	//
+	// Contact imports, help-desk migrations and merges never trigger.
+	Event  *BroadcastTriggerEvent `json:"event,omitempty"`
+	ListId *uuid.UUID             `json:"list_id,omitempty"`
 }
 
 // BroadcastUpdate defines model for BroadcastUpdate.
@@ -12073,8 +12136,12 @@ type BroadcastUpdate struct {
 	// whole; `{}` removes them. Draft only.
 	Translations *map[string]BroadcastTranslation `json:"translations,omitempty"`
 
-	// Trigger On create `event`, `delay_minutes` and `basis` are required. On update only the fields given
-	// change: all of them on a draft, `delay_minutes` alone while it is scheduled, active or
+	// Trigger On create `event`, `delay_minutes` and `basis` are required, with `list_id` for
+	// `subscribed` and `condition` for `attribute_changed` (`400 trigger_invalid` when missing,
+	// given to another event, or with `backfill_days` above 0 for `attribute_changed`; a
+	// `list_id` of another inbox or of a status page is `400 validation_failed`). On update only
+	// the fields given change: all of them on a draft (a new `event` drops the `list_id` and
+	// `condition` it does not take), `delay_minutes` alone while it is scheduled, active or
 	// paused (`409 invalid_state` for the others), and `backfill_days` while it has not started.
 	Trigger *BroadcastTriggerInput `json:"trigger,omitempty"`
 
@@ -14237,9 +14304,10 @@ type ContactCreate struct {
 	ExternalIds *[]ExternalId `json:"external_ids,omitempty"`
 	Name        *string       `json:"name,omitempty"`
 
-	// SkipTriggers An external id that is the contact's first in its inbox enrolls nobody in the inbox's
-	// triggered e-mails (`contact_identified`): for a host backend that copies in users the
-	// product already had.
+	// SkipTriggers The write enrolls nobody in triggered e-mails: neither an external id that is the
+	// contact's first in its inbox (`contact_identified`) nor attributes that newly match a
+	// condition (`attribute_changed`). For a host backend that copies in users the product
+	// already had.
 	SkipTriggers *bool `json:"skip_triggers,omitempty"`
 }
 
@@ -14475,8 +14543,9 @@ type ContactUpdate struct {
 	ExternalIds        *[]ExternalId `json:"external_ids,omitempty"`
 	Name               *string       `json:"name,omitempty"`
 
-	// SkipTriggers New external ids that are the contact's first in their inbox enroll nobody in that
-	// inbox's triggered e-mails (`contact_identified`).
+	// SkipTriggers The write enrolls nobody in triggered e-mails: neither new external ids that are the
+	// contact's first in their inbox (`contact_identified`) nor attributes that newly match a
+	// condition (`attribute_changed`).
 	SkipTriggers *bool `json:"skip_triggers,omitempty"`
 }
 

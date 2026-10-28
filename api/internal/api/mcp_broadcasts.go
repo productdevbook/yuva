@@ -25,7 +25,7 @@ var (
 	templateLocales        = []any{"en", "tr", "de"}
 	broadcastStates        = []any{"draft", "scheduled", "preparing", "sending", "active", "paused", "sent", "cancelled", "failed"}
 	broadcastKinds         = []any{"once", "triggered"}
-	triggerEvents          = []any{"contact_identified"}
+	triggerEvents          = []any{"contact_identified", "subscribed", "attribute_changed"}
 	triggerBases           = []any{"service", "marketing"}
 	delayUnits             = []any{"minutes", "hours", "days"}
 	enrollmentStates       = []any{"waiting", "queued", "skipped", "cancelled"}
@@ -581,14 +581,19 @@ func audienceIn(listIDs []uuid.UUID, locales []string, conditions []mcpBroadcast
 	if len(conditions) > 0 {
 		conds := make([]oas.BroadcastCondition, len(conditions))
 		for i, cd := range conditions {
-			conds[i] = oas.BroadcastCondition{Attribute: cd.Attribute, Op: oas.BroadcastConditionOp(cd.Op), Value: optString[string](cd.Value)}
-			if cd.Values != nil {
-				conds[i].Values = &cd.Values
-			}
+			conds[i] = conditionIn(cd)
 		}
 		aud.Conditions = &conds
 	}
 	return aud
+}
+
+func conditionIn(cd mcpBroadcastCondition) oas.BroadcastCondition {
+	out := oas.BroadcastCondition{Attribute: cd.Attribute, Op: oas.BroadcastConditionOp(cd.Op), Value: optString[string](cd.Value)}
+	if cd.Values != nil {
+		out.Values = &cd.Values
+	}
+	return out
 }
 
 type updateBroadcastIn struct {
@@ -703,7 +708,9 @@ type createTriggeredIn struct {
 	Preheader     string                    `json:"preheader,omitempty" jsonschema:"the line inboxes show after the subject"`
 	DesignID      *uuid.UUID                `json:"design_id,omitempty"`
 	Translations  []mcpBroadcastTranslation `json:"translations,omitempty" jsonschema:"subject and preheader for the design's other language versions"`
-	Event         string                    `json:"event" jsonschema:"contact_identified: the contact first signs in to the product (gets its first external id in the inbox)"`
+	Event         string                    `json:"event" jsonschema:"contact_identified: the contact first signs in to the product (gets its first external id in the inbox); subscribed: a subscription to trigger_list_id is confirmed (never an import); attribute_changed: a write makes the contact match trigger_condition when it did not before"`
+	TriggerList   *uuid.UUID                `json:"trigger_list_id,omitempty" jsonschema:"subscribed only: the list of the inbox whose confirmed subscriptions trigger it"`
+	TriggerCond   *mcpBroadcastCondition    `json:"trigger_condition,omitempty" jsonschema:"attribute_changed only: the attribute condition a contact newly matching triggers it"`
 	Delay         int32                     `json:"delay" jsonschema:"how long after the trigger the mail is due, in delay_unit; at most 365 days"`
 	DelayUnit     string                    `json:"delay_unit" jsonschema:"minutes, hours or days"`
 	Basis         string                    `json:"basis" jsonschema:"service: mail about using the product, to everyone who matches, no lists; marketing: only to subscribers of list_ids. Advertising and offers are always marketing"`
@@ -1070,8 +1077,8 @@ var mcpBroadcastTools = []mcpTool{
 			return c.broadcastOut(oas.Broadcast(res.(oas.ScheduleBroadcast200JSONResponse))), nil
 		}),
 	defineTool("create_triggered_email", "Create a draft triggered e-mail",
-		"Creates a draft triggered e-mail for an inbox: one design sent to each contact once, a set time after the trigger (contact_identified: the contact first signs in to the product). basis service is for mail about using the product, to everyone who matches, with no lists; marketing goes only to subscribers of list_ids and is the only basis for advertising and offers. Nothing is sent and nobody is enrolled until schedule_broadcast starts it; check it with get_broadcast. Owners, admins and keys only. Maps to POST /v1/broadcasts with kind triggered.",
-		additive, map[string][]any{"conditions.op": conditionOps, "event": triggerEvents, "basis": triggerBases, "delay_unit": delayUnits},
+		"Creates a draft triggered e-mail for an inbox: one design sent to each contact once, a set time after the trigger: contact_identified (the contact first signs in to the product), subscribed (a subscription to trigger_list_id is confirmed; imports never count) or attribute_changed (a write through an identity token or the contacts API makes a contact of the inbox match trigger_condition when it did not; no back-fill). basis service is for mail about using the product, to everyone who matches, with no lists; marketing goes only to subscribers of list_ids and is the only basis for advertising and offers. Nothing is sent and nobody is enrolled until schedule_broadcast starts it; check it with get_broadcast. Owners, admins and keys only. Maps to POST /v1/broadcasts with kind triggered.",
+		additive, map[string][]any{"conditions.op": conditionOps, "trigger_condition.op": conditionOps, "event": triggerEvents, "basis": triggerBases, "delay_unit": delayUnits},
 		mcpTool{ops: []string{"CreateBroadcast"}, allow: mayManageBroadcasts, denied: errNotBroadcastManager},
 		func(ctx context.Context, c *mcpCall, in createTriggeredIn) (mcpBroadcast, error) {
 			delay, err := delayMinutes(in.Delay, in.DelayUnit)
@@ -1083,7 +1090,10 @@ var mcpBroadcastTools = []mcpTool{
 			body := oas.BroadcastCreate{
 				InboxId: in.InboxID, ChannelId: in.ChannelID, Name: in.Name, Subject: &in.Subject, DesignId: in.DesignID,
 				Audience: &aud, ClickTracking: &in.ClickTracking, Kind: &kind,
-				Trigger: &oas.BroadcastTriggerInput{Event: &event, DelayMinutes: &delay, Basis: &basis},
+				Trigger: &oas.BroadcastTriggerInput{Event: &event, ListId: in.TriggerList, DelayMinutes: &delay, Basis: &basis},
+			}
+			if in.TriggerCond != nil {
+				body.Trigger.Condition = new(conditionIn(*in.TriggerCond))
 			}
 			if in.Preheader != "" {
 				body.Preheader = &in.Preheader

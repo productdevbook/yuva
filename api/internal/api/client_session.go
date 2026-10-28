@@ -278,7 +278,7 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 			return contactRow{}, err
 		}
 	}
-	addExternal, fillOnly := false, false
+	addExternal, fillOnly, created := false, false, false
 	id, err := q.GetContactIDByExternalID(ctx, store.GetContactIDByExternalIDParams{WorkspaceID: ws, InboxID: inbox.ID, ExternalID: c.sub})
 	if store.IsNotFound(err) && c.emailVerified {
 		owner, oerr := q.GetContactIDByEmail(ctx, store.GetContactIDByEmailParams{WorkspaceID: ws, Email: c.email})
@@ -303,7 +303,7 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 		if cerr != nil {
 			return contactRow{}, cerr
 		}
-		addExternal, id, err = true, r.ID, nil
+		addExternal, created, id, err = true, true, r.ID, nil
 	}
 	if err != nil {
 		return contactRow{}, err
@@ -384,6 +384,15 @@ func (s *Server) identifyContact(ctx context.Context, q *store.Queries, events *
 	r, err := q.SetContactIdentity(ctx, store.SetContactIdentityParams{WorkspaceID: ws, ID: id, Name: name, Locale: locale, Attributes: attrs, Now: now})
 	if err != nil {
 		return contactRow{}, err
+	}
+	if c.attrs != nil || created {
+		previous := cur.Attributes
+		if created {
+			previous = nil
+		}
+		if err := s.attributesWritten(ctx, q, events, ws, id, []uuid.UUID{inbox.ID}, previous, r.Attributes); err != nil {
+			return contactRow{}, err
+		}
 	}
 	if err := q.RefreshContactSearch(ctx, store.RefreshContactSearchParams{WorkspaceID: ws, ID: id}); err != nil {
 		return contactRow{}, err

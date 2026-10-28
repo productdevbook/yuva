@@ -1,7 +1,31 @@
 -- name: ListLiveTriggered :many
 SELECT id, delay_minutes::integer AS delay_minutes FROM broadcasts
 WHERE workspace_id = @workspace_id AND inbox_id = @inbox_id AND kind = 'triggered' AND state IN ('active', 'paused')
-  AND broadcasts.trigger ->> 'event' = @event::text;
+  AND broadcasts.trigger ->> 'event' = @event::text AND coalesce(broadcasts.trigger ->> 'list_id', '') = @list_key::text;
+
+-- name: HasAttributeTriggered :one
+SELECT EXISTS (
+    SELECT 1 FROM broadcasts
+    WHERE workspace_id = @workspace_id AND kind = 'triggered' AND state IN ('active', 'paused')
+      AND trigger ->> 'event' = 'attribute_changed'
+) AS live;
+
+-- previous is the contact's attributes before the write, NULL when the write created it.
+-- name: ListAttributeTriggered :many
+SELECT b.id, b.delay_minutes::integer AS delay_minutes FROM broadcasts b
+WHERE b.workspace_id = @workspace_id AND b.kind = 'triggered' AND b.state IN ('active', 'paused')
+  AND b.trigger ->> 'event' = 'attribute_changed'
+  AND broadcast_audience_matches(@attributes::jsonb, NULL, jsonb_build_array(b.trigger -> 'condition'), '{}'::text[])
+  AND (sqlc.narg(previous)::jsonb IS NULL
+       OR NOT broadcast_audience_matches(sqlc.narg(previous)::jsonb, NULL, jsonb_build_array(b.trigger -> 'condition'), '{}'::text[]))
+  AND (b.inbox_id = ANY(@via_inboxes::uuid[])
+       OR EXISTS (SELECT 1 FROM contact_external_ids x
+                  WHERE x.workspace_id = b.workspace_id AND x.inbox_id = b.inbox_id AND x.contact_id = @contact_id)
+       OR EXISTS (SELECT 1 FROM conversations cv
+                  WHERE cv.workspace_id = b.workspace_id AND cv.inbox_id = b.inbox_id AND cv.contact_id = @contact_id)
+       OR EXISTS (SELECT 1 FROM list_subscriptions s
+                  JOIN mailing_lists l ON l.workspace_id = s.workspace_id AND l.id = s.list_id
+                  WHERE s.workspace_id = b.workspace_id AND s.contact_id = @contact_id AND s.state = 'subscribed' AND l.inbox_id = b.inbox_id));
 
 -- name: CountLiveTriggered :one
 SELECT count(*) FROM broadcasts
@@ -33,6 +57,20 @@ SELECT count(*) FROM (
     GROUP BY x.contact_id
     HAVING min(coalesce(x.created_at, c.created_at)) >= @window_from::timestamptz AND min(coalesce(x.created_at, c.created_at)) < @window_until::timestamptz
 ) t;
+
+-- name: BackfillSubscribedPage :many
+SELECT s.contact_id, min(s.consent_at)::timestamptz AS triggered_at
+FROM list_subscriptions s
+WHERE s.workspace_id = @workspace_id AND s.list_id = @list_id AND s.state = 'subscribed' AND s.source <> 'import'
+  AND s.consent_at >= @window_from::timestamptz AND s.consent_at < @window_until::timestamptz AND s.contact_id > @after::uuid
+GROUP BY s.contact_id
+ORDER BY s.contact_id
+LIMIT @lim;
+
+-- name: CountBackfillSubscribed :one
+SELECT count(DISTINCT s.contact_id) FROM list_subscriptions s
+WHERE s.workspace_id = @workspace_id AND s.list_id = @list_id AND s.state = 'subscribed' AND s.source <> 'import'
+  AND s.consent_at >= @window_from::timestamptz AND s.consent_at < @window_until::timestamptz;
 
 -- name: InsertBackfillEnrollments :execrows
 INSERT INTO triggered_enrollments (workspace_id, broadcast_id, contact_id, triggered_at, source, created_at, updated_at)

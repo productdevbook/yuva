@@ -289,6 +289,9 @@ func (s *Server) newSubscription(ctx context.Context, q *store.Queries, events *
 	if err != nil {
 		return sub, err
 	}
+	if err := s.subscriptionConfirmed(ctx, q, events, list, sub, ""); err != nil {
+		return sub, err
+	}
 	return sub, emitSubscription(ctx, q, events, list, sub, nil)
 }
 
@@ -303,6 +306,9 @@ func (s *Server) saveSubscription(ctx context.Context, q *store.Queries, events 
 	}
 	if previous == out.State {
 		return out, nil
+	}
+	if err := s.subscriptionConfirmed(ctx, q, events, list, out, previous); err != nil {
+		return out, err
 	}
 	return out, emitSubscription(ctx, q, events, list, out, &previous)
 }
@@ -593,6 +599,9 @@ func (s *Server) subscriber(ctx context.Context, q *store.Queries, events *event
 			if err := s.addExternalID(ctx, q, events, ws, list.InboxID, c.ID, externalID, true); err != nil {
 				return uuid.Nil(), "", false, err
 			}
+		}
+		if err := s.attributesWritten(ctx, q, events, ws, c.ID, []uuid.UUID{list.InboxID}, nil, c.Attributes); err != nil {
+			return uuid.Nil(), "", false, err
 		}
 		if err := q.RefreshContactSearch(ctx, store.RefreshContactSearchParams{WorkspaceID: ws, ID: c.ID}); err != nil {
 			return uuid.Nil(), "", false, err

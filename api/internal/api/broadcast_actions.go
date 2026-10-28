@@ -132,7 +132,11 @@ func (s *Server) reviewBroadcast(ctx context.Context, q *store.Queries, b store.
 		if count.Recipients, err = backfillCount(ctx, q, b, s.now()); err != nil {
 			return out, err
 		}
-		l.triggered(b, in, doc, count.Recipients)
+		list, listOK, err := triggerList(ctx, q, b)
+		if err != nil {
+			return out, err
+		}
+		l.triggered(b, in, list, listOK, doc, count.Recipients)
 	} else {
 		if count, err = s.countAudience(ctx, q, b, doc, true); err != nil {
 			return out, err
@@ -516,6 +520,9 @@ func (s *Server) ScheduleBroadcast(ctx context.Context, req oas.ScheduleBroadcas
 	}
 	if b.State != bcDraft {
 		return nil, errBroadcastNotDraft
+	}
+	if triggerEvent(b) == triggerAttribute && b.BackfillDays > 0 {
+		return nil, errTriggerBackfill
 	}
 	confirmService := req.Body != nil && boolOr(req.Body.ConfirmService, false)
 	if serviceBasis(b) && !confirmService {

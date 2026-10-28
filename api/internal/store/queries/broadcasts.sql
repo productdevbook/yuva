@@ -110,7 +110,7 @@ SELECT * FROM broadcasts WHERE workspace_id = @workspace_id ORDER BY created_at 
 SELECT EXISTS (
     SELECT 1 FROM broadcasts
     WHERE workspace_id = @workspace_id AND state IN ('scheduled', 'preparing', 'sending', 'active', 'paused')
-      AND audience -> 'list_ids' @> jsonb_build_array(@list_id::text)
+      AND (audience -> 'list_ids' @> jsonb_build_array(@list_id::text) OR trigger ->> 'list_id' = @list_id::text)
 ) AS used;
 
 -- name: ListBroadcastSenderDomains :many

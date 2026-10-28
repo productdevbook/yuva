@@ -2568,8 +2568,11 @@ Decisions:
 - **Triggered e-mails (M40).** A broadcast of `kind` `triggered` sends its design once to each
   contact of its inbox, `delay_minutes` (0 to 365 days) after a trigger: `contact_identified` (the
   contact's first external id in the inbox, from an identity token, `/v1/contacts` or a form that
-  carries one), and from M40.3 `subscribed` (a list subscription confirmed, imports excluded) and
-  `attribute_changed` (a contact newly matching a condition). Lifecycle `draft` → `scheduled` →
+  carries one), and from M40.3 `subscribed` (a list subscription confirmed; a subscription an
+  import created never triggers, not even when it is confirmed later) and `attribute_changed` (a write through an identity
+  token, `/v1/contacts` or a subscription that creates its contact makes a contact newly match a
+  condition; only for inboxes the contact belongs to, by an external id, a conversation or a
+  subscribed list there, or the write came through; no back-fill). Lifecycle `draft` → `scheduled` →
   `active` ⇄ `paused` → `cancelled` (Stopped), never `sent`; pausing stops sending, not enrolling.
   The trigger's transaction inserts `triggered_enrollments (workspace, broadcast, contact,
   triggered_at, state waiting|queued|skipped|cancelled)`, whose primary key is the once-per-contact

@@ -317,14 +317,19 @@ func (c bcCounts) body(state string, triggered bool) oas.BroadcastCounts {
 	return out
 }
 
+func conditionBody(c bcCondition) oas.BroadcastCondition {
+	out := oas.BroadcastCondition{Attribute: c.Attribute, Op: oas.BroadcastConditionOp(c.Op), Value: c.Value}
+	if c.Values != nil {
+		out.Values = new(slices.Clone(c.Values))
+	}
+	return out
+}
+
 func (s *Server) broadcastBody(b store.Broadcast) oas.Broadcast {
 	a := parseAudience(b.Audience)
 	aud := oas.BroadcastAudience{ListIds: a.ListIDs, Conditions: make([]oas.BroadcastCondition, len(a.Conditions)), Locales: make([]oas.LanguageTag, len(a.Locales))}
 	for i, c := range a.Conditions {
-		aud.Conditions[i] = oas.BroadcastCondition{Attribute: c.Attribute, Op: oas.BroadcastConditionOp(c.Op), Value: c.Value}
-		if c.Values != nil {
-			aud.Conditions[i].Values = new(slices.Clone(c.Values))
-		}
+		aud.Conditions[i] = conditionBody(c)
 	}
 	for i, l := range a.Locales {
 		aud.Locales[i] = oas.LanguageTag(l)
@@ -523,6 +528,30 @@ func broadcastDesign(ctx context.Context, q *store.Queries, p principal, inboxID
 	return nil
 }
 
+func checkBroadcastCondition(c oas.BroadcastCondition, field string) (bcCondition, error) {
+	if !attributeName.MatchString(c.Attribute) {
+		return bcCondition{}, errValidation(field + ": attribute must be 1 to 64 letters, digits, '_', '.' or '-'")
+	}
+	if !c.Op.Valid() {
+		return bcCondition{}, errValidation(field + ": op must be eq, neq, exists, not_exists, contains, gt, lt or in")
+	}
+	bc := bcCondition{Attribute: c.Attribute, Op: string(c.Op)}
+	switch c.Op {
+	case oas.ConditionExists, oas.ConditionNotExists:
+	case oas.ConditionIn:
+		if c.Values == nil || len(*c.Values) == 0 || len(*c.Values) > 50 {
+			return bcCondition{}, errValidation(field + ": in needs 1 to 50 values")
+		}
+		bc.Values = slices.Clone(*c.Values)
+	default:
+		if c.Value == nil || len([]rune(*c.Value)) > 500 {
+			return bcCondition{}, errValidation(field + ": " + string(c.Op) + " needs a value of at most 500 characters")
+		}
+		bc.Value = new(*c.Value)
+	}
+	return bc, nil
+}
+
 func checkAudience(ctx context.Context, q *store.Queries, ws, inboxID uuid.UUID, in *oas.BroadcastAudienceInput) (bcAudience, error) {
 	out := bcAudience{ListIDs: []uuid.UUID{}, Conditions: []bcCondition{}, Locales: []string{}}
 	if in == nil {
@@ -558,25 +587,9 @@ func checkAudience(ctx context.Context, q *store.Queries, ws, inboxID uuid.UUID,
 			return out, errValidation("audience.conditions holds at most 10 conditions")
 		}
 		for _, c := range *in.Conditions {
-			if !attributeName.MatchString(c.Attribute) {
-				return out, errValidation("audience.conditions: attribute must be 1 to 64 letters, digits, '_', '.' or '-'")
-			}
-			if !c.Op.Valid() {
-				return out, errValidation("audience.conditions: op must be eq, neq, exists, not_exists, contains, gt, lt or in")
-			}
-			bc := bcCondition{Attribute: c.Attribute, Op: string(c.Op)}
-			switch c.Op {
-			case oas.ConditionExists, oas.ConditionNotExists:
-			case oas.ConditionIn:
-				if c.Values == nil || len(*c.Values) == 0 || len(*c.Values) > 50 {
-					return out, errValidation("audience.conditions: in needs 1 to 50 values")
-				}
-				bc.Values = slices.Clone(*c.Values)
-			default:
-				if c.Value == nil || len([]rune(*c.Value)) > 500 {
-					return out, errValidation("audience.conditions: " + string(c.Op) + " needs a value of at most 500 characters")
-				}
-				bc.Value = new(*c.Value)
+			bc, err := checkBroadcastCondition(c, "audience.conditions")
+			if err != nil {
+				return out, err
 			}
 			out.Conditions = append(out.Conditions, bc)
 		}
@@ -770,6 +783,9 @@ func (s *Server) insertBroadcast(ctx context.Context, q *store.Queries, p princi
 		if err := checkBasisLists(t.basis, len(aud.ListIDs)); err != nil {
 			return store.Broadcast{}, err
 		}
+		if err := checkTriggerList(ctx, q, p.workspaceID, in.ID, t.listID); err != nil {
+			return store.Broadcast{}, err
+		}
 		if err := s.checkLiveTriggered(ctx, q, p.workspaceID, in.ID, uuid.Nil()); err != nil {
 			return store.Broadcast{}, err
 		}
@@ -789,7 +805,7 @@ func (s *Server) insertBroadcast(ctx context.Context, q *store.Queries, p princi
 		Kind: t.kind, DelayMinutes: t.delay,
 	}
 	if t.kind == bcTriggered {
-		params.Trigger, params.Basis, params.BackfillDays = mustJSON(bcTrigger{Event: t.event}), &t.basis, *t.backfill
+		params.Trigger, params.Basis, params.BackfillDays = mustJSON(t.stored()), &t.basis, *t.backfill
 	}
 	if d.window != nil {
 		params.SendWindowStart, params.SendWindowEnd = &d.window[0], &d.window[1]
@@ -920,7 +936,7 @@ func (s *Server) UpdateBroadcast(ctx context.Context, req oas.UpdateBroadcastReq
 			}
 			b.Audience = mustJSON(aud)
 		}
-		if err := updateTriggeredDraft(&b, body.Trigger); err != nil {
+		if err := updateTriggeredDraft(ctx, q, &b, body.Trigger); err != nil {
 			return err
 		}
 		if body.ClickTracking != nil {

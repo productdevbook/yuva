@@ -65,6 +65,57 @@ func (q *Queries) BackfillIdentifiedPage(ctx context.Context, arg BackfillIdenti
 	return items, nil
 }
 
+const backfillSubscribedPage = `-- name: BackfillSubscribedPage :many
+SELECT s.contact_id, min(s.consent_at)::timestamptz AS triggered_at
+FROM list_subscriptions s
+WHERE s.workspace_id = $1 AND s.list_id = $2 AND s.state = 'subscribed' AND s.source <> 'import'
+  AND s.consent_at >= $3::timestamptz AND s.consent_at < $4::timestamptz AND s.contact_id > $5::uuid
+GROUP BY s.contact_id
+ORDER BY s.contact_id
+LIMIT $6
+`
+
+type BackfillSubscribedPageParams struct {
+	WorkspaceID uuid.UUID
+	ListID      uuid.UUID
+	WindowFrom  time.Time
+	WindowUntil time.Time
+	After       uuid.UUID
+	Lim         int32
+}
+
+type BackfillSubscribedPageRow struct {
+	ContactID   uuid.UUID
+	TriggeredAt time.Time
+}
+
+func (q *Queries) BackfillSubscribedPage(ctx context.Context, arg BackfillSubscribedPageParams) ([]BackfillSubscribedPageRow, error) {
+	rows, err := q.db.Query(ctx, backfillSubscribedPage,
+		arg.WorkspaceID,
+		arg.ListID,
+		arg.WindowFrom,
+		arg.WindowUntil,
+		arg.After,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []BackfillSubscribedPageRow
+	for rows.Next() {
+		var i BackfillSubscribedPageRow
+		if err := rows.Scan(&i.ContactID, &i.TriggeredAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const cancelWaitingEnrollments = `-- name: CancelWaitingEnrollments :exec
 UPDATE triggered_enrollments SET state = 'cancelled', updated_at = $1
 WHERE workspace_id = $2 AND broadcast_id = $3 AND state = 'waiting'
@@ -103,6 +154,31 @@ func (q *Queries) CountBackfillIdentified(ctx context.Context, arg CountBackfill
 	row := q.db.QueryRow(ctx, countBackfillIdentified,
 		arg.WorkspaceID,
 		arg.InboxID,
+		arg.WindowFrom,
+		arg.WindowUntil,
+	)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countBackfillSubscribed = `-- name: CountBackfillSubscribed :one
+SELECT count(DISTINCT s.contact_id) FROM list_subscriptions s
+WHERE s.workspace_id = $1 AND s.list_id = $2 AND s.state = 'subscribed' AND s.source <> 'import'
+  AND s.consent_at >= $3::timestamptz AND s.consent_at < $4::timestamptz
+`
+
+type CountBackfillSubscribedParams struct {
+	WorkspaceID uuid.UUID
+	ListID      uuid.UUID
+	WindowFrom  time.Time
+	WindowUntil time.Time
+}
+
+func (q *Queries) CountBackfillSubscribed(ctx context.Context, arg CountBackfillSubscribedParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countBackfillSubscribed,
+		arg.WorkspaceID,
+		arg.ListID,
 		arg.WindowFrom,
 		arg.WindowUntil,
 	)
@@ -230,6 +306,21 @@ func (q *Queries) EnrollmentExists(ctx context.Context, arg EnrollmentExistsPara
 	return found, err
 }
 
+const hasAttributeTriggered = `-- name: HasAttributeTriggered :one
+SELECT EXISTS (
+    SELECT 1 FROM broadcasts
+    WHERE workspace_id = $1 AND kind = 'triggered' AND state IN ('active', 'paused')
+      AND trigger ->> 'event' = 'attribute_changed'
+) AS live
+`
+
+func (q *Queries) HasAttributeTriggered(ctx context.Context, workspaceID uuid.UUID) (bool, error) {
+	row := q.db.QueryRow(ctx, hasAttributeTriggered, workspaceID)
+	var live bool
+	err := row.Scan(&live)
+	return live, err
+}
+
 const insertBackfillEnrollments = `-- name: InsertBackfillEnrollments :execrows
 INSERT INTO triggered_enrollments (workspace_id, broadcast_id, contact_id, triggered_at, source, created_at, updated_at)
 SELECT $1, $2, unnest($3::uuid[]), unnest($4::timestamptz[]), 'backfill', $5, $5
@@ -256,6 +347,63 @@ func (q *Queries) InsertBackfillEnrollments(ctx context.Context, arg InsertBackf
 		return 0, err
 	}
 	return result.RowsAffected(), nil
+}
+
+const listAttributeTriggered = `-- name: ListAttributeTriggered :many
+SELECT b.id, b.delay_minutes::integer AS delay_minutes FROM broadcasts b
+WHERE b.workspace_id = $1 AND b.kind = 'triggered' AND b.state IN ('active', 'paused')
+  AND b.trigger ->> 'event' = 'attribute_changed'
+  AND broadcast_audience_matches($2::jsonb, NULL, jsonb_build_array(b.trigger -> 'condition'), '{}'::text[])
+  AND ($3::jsonb IS NULL
+       OR NOT broadcast_audience_matches($3::jsonb, NULL, jsonb_build_array(b.trigger -> 'condition'), '{}'::text[]))
+  AND (b.inbox_id = ANY($4::uuid[])
+       OR EXISTS (SELECT 1 FROM contact_external_ids x
+                  WHERE x.workspace_id = b.workspace_id AND x.inbox_id = b.inbox_id AND x.contact_id = $5)
+       OR EXISTS (SELECT 1 FROM conversations cv
+                  WHERE cv.workspace_id = b.workspace_id AND cv.inbox_id = b.inbox_id AND cv.contact_id = $5)
+       OR EXISTS (SELECT 1 FROM list_subscriptions s
+                  JOIN mailing_lists l ON l.workspace_id = s.workspace_id AND l.id = s.list_id
+                  WHERE s.workspace_id = b.workspace_id AND s.contact_id = $5 AND s.state = 'subscribed' AND l.inbox_id = b.inbox_id))
+`
+
+type ListAttributeTriggeredParams struct {
+	WorkspaceID uuid.UUID
+	Attributes  []byte
+	Previous    []byte
+	ViaInboxes  []uuid.UUID
+	ContactID   uuid.UUID
+}
+
+type ListAttributeTriggeredRow struct {
+	ID           uuid.UUID
+	DelayMinutes int32
+}
+
+// previous is the contact's attributes before the write, NULL when the write created it.
+func (q *Queries) ListAttributeTriggered(ctx context.Context, arg ListAttributeTriggeredParams) ([]ListAttributeTriggeredRow, error) {
+	rows, err := q.db.Query(ctx, listAttributeTriggered,
+		arg.WorkspaceID,
+		arg.Attributes,
+		arg.Previous,
+		arg.ViaInboxes,
+		arg.ContactID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAttributeTriggeredRow
+	for rows.Next() {
+		var i ListAttributeTriggeredRow
+		if err := rows.Scan(&i.ID, &i.DelayMinutes); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listDueTriggered = `-- name: ListDueTriggered :many
@@ -376,13 +524,14 @@ func (q *Queries) ListEnrollments(ctx context.Context, arg ListEnrollmentsParams
 const listLiveTriggered = `-- name: ListLiveTriggered :many
 SELECT id, delay_minutes::integer AS delay_minutes FROM broadcasts
 WHERE workspace_id = $1 AND inbox_id = $2 AND kind = 'triggered' AND state IN ('active', 'paused')
-  AND broadcasts.trigger ->> 'event' = $3::text
+  AND broadcasts.trigger ->> 'event' = $3::text AND coalesce(broadcasts.trigger ->> 'list_id', '') = $4::text
 `
 
 type ListLiveTriggeredParams struct {
 	WorkspaceID uuid.UUID
 	InboxID     uuid.UUID
 	Event       string
+	ListKey     string
 }
 
 type ListLiveTriggeredRow struct {
@@ -391,7 +540,12 @@ type ListLiveTriggeredRow struct {
 }
 
 func (q *Queries) ListLiveTriggered(ctx context.Context, arg ListLiveTriggeredParams) ([]ListLiveTriggeredRow, error) {
-	rows, err := q.db.Query(ctx, listLiveTriggered, arg.WorkspaceID, arg.InboxID, arg.Event)
+	rows, err := q.db.Query(ctx, listLiveTriggered,
+		arg.WorkspaceID,
+		arg.InboxID,
+		arg.Event,
+		arg.ListKey,
+	)
 	if err != nil {
 		return nil, err
 	}

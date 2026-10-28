@@ -84,8 +84,8 @@ once-per-contact rule.
 | Event | Fires when | Trigger time | Back-fill | Step |
 |---|---|---|---|---|
 | `contact_identified` | the contact gets its first external id in the inbox: an identity token (widget, Swift, Kotlin, `/client/v1` sessions), `POST`/`PATCH /v1/contacts` with an external id of the inbox (unless `skip_triggers`), feedback or a subscription that carries an external id | the external id's `created_at` | contacts whose external id in the inbox (else, for rows from before this step, the contact) was created in the window | M40.1 |
-| `subscribed` | a subscription to the named list of the inbox becomes `subscribed`, from any source but `import` (a confirmed double opt-in counts when confirmed) | `consent_at` | subscriptions confirmed in the window | M40.3 |
-| `attribute_changed` | a write (identity token, `/v1/contacts`, the panel) makes the contact match the trigger's condition (a `BroadcastCondition`) when it did not before; creating a contact that matches counts | the write | none (`backfill_days` must be 0) | M40.3 |
+| `subscribed` | a subscription to the named list of the inbox (never a status page's) becomes `subscribed`, from any source but `import` (a confirmed double opt-in counts when confirmed; a subscription an import created never does, also when its person confirms it later) | `consent_at` | subscriptions of the list confirmed in the window, imports excluded | M40.3 |
+| `attribute_changed` | a write (identity token, `/v1/contacts`, the panel, a subscription that creates its contact with attributes) makes the contact match the trigger's condition (a `BroadcastCondition`) when it did not before; creating a contact that matches counts; `skip_triggers` applies. Only triggered e-mails of an inbox the contact belongs to (an external id or a conversation in it, a subscribed subscription to one of its lists) or the write came through (the identity token's inbox, the subscription's list's) | the write | none (`backfill_days` must be 0) | M40.3 |
 
 - An identity token without `email_verified` stores the address as `typed_email`, which is not a
   contact address: such contacts are skipped `no_address` at their due time. The guide says to send
@@ -247,8 +247,12 @@ Schemas:
 - `BroadcastTrigger` `{event: contact_identified (M40.1) | subscribed | attribute_changed (M40.3),
   list_id?, condition?: BroadcastCondition, delay_minutes: 0..525600, basis: service | marketing,
   backfill_days: 0..30}`; `Broadcast.trigger` (present for `triggered`), settable on create and on
-  update within the rules of section 4. `400 trigger_invalid` for a wrong combination;
-  `400 basis_lists` for `service` with lists or `marketing` without.
+  update within the rules of section 4. `400 trigger_invalid` for a wrong combination (`list_id`
+  only and always with `subscribed`, `condition` only and always with `attribute_changed`,
+  `backfill_days` above 0 with `attribute_changed`, also on `/schedule`); a `list_id` of another
+  inbox or of a status page is `400 validation_failed`; on a draft a new `event` drops the
+  `list_id` and `condition` it does not take. `400 basis_lists` for `service` with lists or
+  `marketing` without.
 - `BroadcastSchedule` gains `confirm_service: boolean` (required true for `service`:
   `400 service_basis_unconfirmed`); `Broadcast.service_confirmed {by, at}`.
 - `BroadcastCounts` gains `enrolled`, `waiting`, and `skipped` reasons `no_address`, `blocked`,
@@ -283,7 +287,8 @@ contact writes `broadcast.updated` with `enrollment_removed`.
 
 - `create_triggered_email` (`POST /v1/broadcasts` with `kind: triggered`): inbox, channel, name,
   design, subject and per-language subjects, trigger `{event, delay (minutes, hours or days), basis,
-  list_ids, conditions, locales}`; always a draft.
+  list_ids, conditions, locales}`, from M40.3 `trigger_list_id` (`subscribed`) and
+  `trigger_condition` (`attribute_changed`); always a draft.
 - `schedule_broadcast` starts a triggered e-mail too, with two optional inputs: `backfill_days` and
   `confirm_service` (must be true for `service`). Its `confirm_recipients` is, for a triggered
   e-mail, the back-fill count `get_broadcast` showed (0 without back-fill); a changed count
