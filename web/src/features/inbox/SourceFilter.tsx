@@ -138,7 +138,7 @@ function BroadcastChoices({
   v: SourceFilterValue
   update: (next: SourceFilterValue) => void
 }) {
-  const list = useBroadcasts(inboxId, ["sending", "paused", "sent", "cancelled"])
+  const list = useBroadcasts(inboxId, ["sending", "active", "paused", "sent", "cancelled"])
   const items = (list.data?.pages.flatMap((p) => p.items) ?? []).slice(0, 8).map((b) => ({ id: b.id, name: b.name }))
   if (v.broadcast && !items.some((b) => b.id === v.broadcast?.id)) items.unshift(v.broadcast)
   if (items.length === 0) return null

@@ -399,6 +399,7 @@ function refreshBroadcasts(qc: QueryClient, ws: string, id: string) {
       void qc.invalidateQueries({ queryKey: keys.broadcastReview(ws, id) })
       void qc.invalidateQueries({ queryKey: keys.broadcastReport(ws, id) })
       void qc.invalidateQueries({ queryKey: [...keys.broadcasts(ws), "deliveries", id] })
+      void qc.invalidateQueries({ queryKey: [...keys.broadcasts(ws), "enrollments", id] })
       void qc.invalidateQueries({ queryKey: keys.home(ws) })
     }, 400)
   )

@@ -1,12 +1,13 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { LoaderIcon, TriangleAlertIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
 import { ErrorLine, Notice, Segmented } from "@/components/common"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
 import { formatBytes, languageName } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -16,11 +17,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { problemOf, useSchedule, useUpdateBroadcast } from "@/features/broadcasts/broadcastQueries"
 import { paceGap, usePaceSummary } from "@/features/broadcasts/Pace"
 import { keyHint, useBroadcastsStatus, useNumber } from "@/features/broadcasts/BroadcastParts"
 import { ZonePicker } from "@/features/broadcasts/SendTime"
+import { useTriggerSentence } from "@/features/broadcasts/Trigger"
 import { footerInEnglish, missing, versions, type Doc } from "@/features/designs/doc"
 import { designLink, useDesign } from "@/features/designs/queries"
 import { channelLink, isChecking, useDeliverability } from "@/features/settings/channels/email/deliverability"
@@ -49,12 +52,14 @@ import {
 } from "@/lib/zones"
 import { cn } from "@/lib/utils"
 
-export type Spot = "sender" | "audience" | "content" | "options" | "pace" | "hours" | "test"
+export type Spot = "trigger" | "sender" | "audience" | "content" | "options" | "pace" | "hours" | "test"
 
 type Fix = { spot: Spot } | { to: string }
 
 const ORDER: BroadcastReviewKey[] = [
   "approval",
+  "trigger",
+  "basis",
   "sender_identity",
   "sender_ready",
   "deliverability",
@@ -127,6 +132,8 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
     ses_tenant: t`Amazon SES tenant`,
     translations: t`Languages`,
     message_block: t`Message block`,
+    trigger: t`Trigger`,
+    basis: t`Why they get this mail`,
   }
   const name = (tag: string) => languageName(tag, i18n.locale)
   const list = (xs: string[]) => new Intl.ListFormat(i18n.locale, { type: "conjunction" }).format(xs)
@@ -224,6 +231,12 @@ export function useItemText(b: Broadcast, review: BroadcastReview) {
         return t`Links will point at this server’s link domain instead of your own. Spam filters look at link domains.`
       case "translations":
         return translationText()
+      case "trigger":
+        return t`Choose what starts the e-mail and how long after it the mail goes out.`
+      case "basis":
+        return b.trigger?.basis === "service"
+          ? t`Service mail is only about using the product: onboarding, the person’s account, a request for feedback. Advertising, newsletters and offers need the marketing basis.`
+          : t`Pick the lists whose subscribers get this mail.`
       case "message_block":
         return t`This design has a message block, which holds the text of a conversation message. A broadcast would show it empty. Pick another design or take the block out.`
     }
@@ -235,6 +248,10 @@ export function fixOf(b: Broadcast, key: BroadcastReviewKey, doc?: Doc): Fix | n
   switch (key) {
     case "sender_identity":
       return { to: `/settings/inboxes/${b.inbox_id}` }
+    case "trigger":
+      return { spot: "trigger" }
+    case "basis":
+      return { spot: "audience" }
     case "sender_ready":
       return { spot: "sender" }
     case "deliverability":
@@ -282,6 +299,8 @@ export const PART_OF: Partial<Record<BroadcastReviewKey, Part>> = {
   deliverability: "sender",
   ses_tenant: "sender",
   audience_nonempty: "audience",
+  trigger: "audience",
+  basis: "audience",
   design: "content",
   merge_fields: "content",
   html_size: "content",
@@ -318,7 +337,7 @@ export function CheckState({ status, className }: { status: BroadcastReviewStatu
   )
 }
 
-function Checklist({
+export function Checklist({
   b,
   review,
   onFix,
@@ -380,6 +399,7 @@ export function ReviewDialog({
   b,
   review,
   reviewError,
+  fetching = false,
   from,
   onFix,
   onClose,
@@ -387,6 +407,7 @@ export function ReviewDialog({
   b: Broadcast
   review: BroadcastReview | undefined
   reviewError: unknown
+  fetching?: boolean
   from: string
   onFix: (spot: Spot) => void
   onClose: () => void
@@ -403,6 +424,21 @@ export function ReviewDialog({
   const [confirmed, setConfirmed] = useState<number | null>(null)
   const schedule = useSchedule(b.id)
   const update = useUpdateBroadcast(b.id)
+  const triggered = b.kind === "triggered"
+  const service = triggered && b.trigger?.basis === "service"
+  const stored = b.trigger?.backfill_days ?? 0
+  const [days, setDays] = useState(String(stored))
+  const [serviceOk, setServiceOk] = useState(false)
+  const daysValid = /^\d{1,2}$/.test(days) && Number(days) <= 30
+  const synced = daysValid && Number(days) === stored && !update.isPending && !fetching
+  const sentence = useTriggerSentence(b)
+  const inboxName = useInboxes().data?.find((i) => i.id === b.inbox_id)?.name ?? ""
+  const { mutate: save } = update
+  useEffect(() => {
+    if (!triggered || !daysValid || Number(days) === stored) return
+    const timer = setTimeout(() => save({ trigger: { backfill_days: Number(days) } }), 500)
+    return () => clearTimeout(timer)
+  }, [triggered, daysValid, days, stored, save])
   const inboxZone = useInboxes().data?.find((i) => i.id === b.inbox_id)?.timezone
   const local = `${date}T${time}`
   const sendAt = mode === "later" && date && time ? localToInstant(local, zone) : null
@@ -432,10 +468,17 @@ export function ReviewDialog({
   const pace = paceSummary(b.pace)
   const problem = problemOf(schedule.error)
   const changed = schedule.error instanceof ApiError && problem?.code === "audience_changed"
-  const sendTitle = keyHint(t`Review, then send or schedule`, BROADCAST_KEYS.send)
+  const sendTitle = keyHint(
+    triggered ? t`Review, then start or schedule` : t`Review, then send or schedule`,
+    BROADCAST_KEYS.send
+  )
   const submit = () => {
     schedule.mutate(
-      { send_at_local: mode === "later" && sendAt ? local : undefined, confirm_recipients: count },
+      {
+        send_at_local: mode === "later" && sendAt ? local : undefined,
+        confirm_recipients: count,
+        confirm_service: service ? true : undefined,
+      },
       {
         onSuccess: onClose,
         onError: (err) => {
@@ -453,7 +496,7 @@ export function ReviewDialog({
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3 pe-8">
                 <span className="min-w-0 flex-1">
-                  <Trans>Review and send</Trans>
+                  {triggered ? <Trans>Review and start</Trans> : <Trans>Review and send</Trans>}
                 </span>
                 {review && (
                   <span
@@ -465,7 +508,7 @@ export function ReviewDialog({
                 )}
               </DialogTitle>
               <DialogDescription className="sr-only">
-                <Trans>Review and send</Trans>
+                {triggered ? <Trans>Review and start</Trans> : <Trans>Review and send</Trans>}
               </DialogDescription>
             </DialogHeader>
             {review ? (
@@ -487,6 +530,57 @@ export function ReviewDialog({
                 <Skeleton className="h-8 w-full" />
               </div>
             )}
+            {triggered && (
+              <div className="flex flex-col gap-3 border-t pt-4" data-testid="start-backfill">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="start-backfill-days">
+                    <Trans>Also send to people who first signed in during the last</Trans>
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="start-backfill-days"
+                      inputMode="numeric"
+                      value={days}
+                      maxLength={2}
+                      aria-invalid={!daysValid || undefined}
+                      className="w-20"
+                      onChange={(e) => setDays(e.target.value.trim())}
+                      data-testid="start-backfill-days"
+                    />
+                    <span className="text-body text-muted-foreground">
+                      <Trans>days (0 to 30)</Trans>
+                    </span>
+                  </div>
+                  <p className="text-small text-faint" data-testid="start-backfill-count" aria-live="polite">
+                    {!daysValid ? (
+                      <Trans>Use a whole number from 0 to 30.</Trans>
+                    ) : !synced ? (
+                      <Trans>Counting…</Trans>
+                    ) : count === 0 ? (
+                      <Trans>Only people who sign in from now on get it.</Trans>
+                    ) : (
+                      <Trans>
+                        <Plural value={count} one="# person" other="# people" /> who signed in before would get it too,
+                        before anyone who bounced, left or does not match is left out.
+                      </Trans>
+                    )}
+                  </p>
+                </div>
+                {service && (
+                  <Label className="items-start gap-3 font-normal" data-testid="start-service">
+                    <Checkbox checked={serviceOk} onCheckedChange={(on) => setServiceOk(on)} className="mt-0.5" />
+                    <span className="flex min-w-0 flex-col">
+                      <span className="text-body font-medium">
+                        <Trans>This mail is about using {inboxName}, not advertising.</Trans>
+                      </span>
+                      <span className="text-small text-faint">
+                        <Trans>Who confirmed it and when is saved in the audit log.</Trans>
+                      </span>
+                    </span>
+                  </Label>
+                )}
+              </div>
+            )}
             <div className="flex flex-col gap-3 border-t pt-4">
               <Segmented
                 value={mode}
@@ -495,7 +589,7 @@ export function ReviewDialog({
                 className="w-full"
                 itemClassName="flex-1"
                 items={[
-                  { value: "now", label: t`Send now`, testId: "send-mode-now" },
+                  { value: "now", label: triggered ? t`Start now` : t`Send now`, testId: "send-mode-now" },
                   { value: "later", label: t`Schedule`, testId: "send-mode-later" },
                 ]}
               />
@@ -578,7 +672,7 @@ export function ReviewDialog({
                   setConfirmed(null)
                   setStep(2)
                 }}
-                disabled={!ready || !atValid || count === 0}
+                disabled={!ready || !atValid || (triggered ? !synced || (service && !serviceOk) : count === 0)}
                 title={sendTitle}
                 data-testid="open-send"
               >
@@ -590,7 +684,15 @@ export function ReviewDialog({
           <div data-testid="send-confirm" className="flex flex-col gap-4">
             <DialogHeader>
               <DialogTitle>
-                {mode === "now" ? (
+                {triggered ? (
+                  mode === "now" ? (
+                    <Trans>Start “{name}” now?</Trans>
+                  ) : (
+                    <Trans>
+                      Start “{name}” on {when}?
+                    </Trans>
+                  )
+                ) : mode === "now" ? (
                   <Trans>Send “{name}” now?</Trans>
                 ) : (
                   <Trans>
@@ -600,7 +702,19 @@ export function ReviewDialog({
               </DialogTitle>
               <DialogDescription className="flex flex-col gap-2">
                 <span className="font-medium text-foreground" data-testid="confirm-recipients">
-                  <Plural value={count} one="It goes to # recipient." other="It goes to # recipients." />
+                  {triggered ? (
+                    count === 0 ? (
+                      <Trans>Nobody who signed in before gets it.</Trans>
+                    ) : (
+                      <Plural
+                        value={count}
+                        one="# person who signed in before gets it too."
+                        other="# people who signed in before get it too."
+                      />
+                    )
+                  ) : (
+                    <Plural value={count} one="It goes to # recipient." other="It goes to # recipients." />
+                  )}
                 </span>
                 <span>
                   {from ? <Trans>From {from}</Trans> : null}
@@ -608,10 +722,17 @@ export function ReviewDialog({
                   {pace}
                 </span>
                 <span>
-                  <Trans>
-                    The recipients are taken when sending starts: people who subscribe later do not get it, and anyone
-                    who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends.
-                  </Trans>
+                  {triggered ? (
+                    <Trans>
+                      Mails go out {sentence}, once to each person. Pausing stops sending but keeps counting people who
+                      sign in, so nobody is missed. You can stop it for good at any time.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      The recipients are taken when sending starts: people who subscribe later do not get it, and anyone
+                      who unsubscribes before their mail goes out is skipped. You can pause or cancel while it sends.
+                    </Trans>
+                  )}
                 </span>
                 {mode === "later" && (
                   <span>
@@ -637,7 +758,15 @@ export function ReviewDialog({
               </Button>
               <Button onClick={submit} disabled={schedule.isPending} data-testid="confirm-send">
                 {schedule.isPending && <LoaderIcon className="animate-spin" />}
-                {mode === "now" ? <Trans>Send now</Trans> : <Trans>Schedule</Trans>}
+                {mode === "now" ? (
+                  triggered ? (
+                    <Trans>Start now</Trans>
+                  ) : (
+                    <Trans>Send now</Trans>
+                  )
+                ) : (
+                  <Trans>Schedule</Trans>
+                )}
               </Button>
             </DialogFooter>
           </div>

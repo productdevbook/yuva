@@ -5,7 +5,7 @@ import { Link } from "react-router"
 import { Notice } from "@/components/common"
 import { formatDateTime, formatRelative, useEnumText } from "@/components/common/text"
 import { keyLabel } from "@/components/common/ShortcutSheet"
-import type { Broadcast, BroadcastState, Channel, WorkspaceBroadcasts } from "@/lib/api"
+import type { Broadcast, BroadcastKind, BroadcastState, Channel, WorkspaceBroadcasts } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { clock, utcLine, zoneCity } from "@/lib/zones"
 import { cn } from "@/lib/utils"
@@ -28,13 +28,23 @@ const tones: Record<BroadcastState, string> = {
   scheduled: "border-blue-600/35 text-blue-600 dark:border-blue-400/35 dark:text-blue-400",
   preparing: "border-brand/35 text-brand",
   sending: "border-brand/35 text-brand",
+  active: "border-brand/35 text-brand",
   paused: "border-warning/40 text-warning",
   sent: "border-success/35 text-success",
   cancelled: "border-faint/40 text-faint",
   failed: "border-destructive/35 text-destructive",
 }
 
-export function StateBadge({ state, className }: { state: BroadcastState; className?: string }) {
+export function StateBadge({
+  state,
+  kind,
+  className,
+}: {
+  state: BroadcastState
+  kind?: BroadcastKind
+  className?: string
+}) {
+  const { t } = useLingui()
   const text = useEnumText()
   return (
     <span
@@ -46,10 +56,10 @@ export function StateBadge({ state, className }: { state: BroadcastState; classN
       data-testid="broadcast-state"
       data-state={state}
     >
-      {(state === "sending" || state === "preparing") && (
+      {(state === "sending" || state === "preparing" || state === "active") && (
         <span className="size-1.5 animate-pulse rounded-full bg-current" aria-hidden />
       )}
-      {text.broadcastState[state]}
+      {kind === "triggered" && state === "cancelled" ? t`Stopped` : text.broadcastState[state]}
     </span>
   )
 }

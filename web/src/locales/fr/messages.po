@@ -339,6 +339,14 @@ msgstr "{count, plural, one {# incident} other {# incidents}}"
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
 msgstr "{count, plural, one {# boîte aux lettres} other {# boîtes aux lettres}}"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "{count, plural, one {# person who signed in before gets it too.} other {# people who signed in before get it too.}}"
+msgstr "{count, plural, one {# person who signed in before gets it too.} other {# people who signed in before get it too.}}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
+msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# autorisation} other {# autorisations}}"
@@ -402,6 +410,10 @@ msgstr "{date} : {newCount} nouvelles, {replyCount} premières réponses"
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
 msgstr "{days, plural, one {# jour} other {# jours}}"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{days, plural, one {people who signed in during the last # day} other {people who signed in during the last # days}}"
+msgstr "{days, plural, one {people who signed in during the last # day} other {people who signed in during the last # days}}"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
@@ -567,6 +579,10 @@ msgstr "{mentions, plural, one {Mention de vous} other {Mentions de vous}}"
 msgid "{met} met, {breached} breached"
 msgstr "{met} respectés, {breached} dépassés"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "{minutes, plural, one {# minute after someone first signs in to {inbox}} other {# minutes after someone first signs in to {inbox}}}"
+msgstr "{minutes, plural, one {# minute after someone first signs in to {inbox}} other {# minutes after someone first signs in to {inbox}}}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {En attente depuis # minute} other {En attente depuis # minutes}}"
@@ -587,6 +603,10 @@ msgstr "{mxDomain} n’a pas d’enregistrement MX, donc les réponses aux envoi
 msgid "{n, plural, one {# app} other {# apps}}"
 msgstr "{n, plural, one {# app} other {# apps}}"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
 msgstr "{n, plural, one {# site de documentation} other {# sites de documentation}}"
@@ -594,6 +614,10 @@ msgstr "{n, plural, one {# site de documentation} other {# sites de documentatio
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# e-mail address} other {# e-mail addresses}}"
 msgstr "{n, plural, one {# adresse e-mail} other {# adresses e-mail}}"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "{n, plural, one {# hour after someone first signs in to {inbox}} other {# hours after someone first signs in to {inbox}}}"
+msgstr "{n, plural, one {# hour after someone first signs in to {inbox}} other {# hours after someone first signs in to {inbox}}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# mailing list} other {# mailing lists}}"
@@ -985,6 +1009,10 @@ msgstr "{satisfied} satisfaits"
 msgid "{sent} of {all} done"
 msgstr "{sent} sur {all} terminés"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{sent} sent"
+msgstr "{sent} sent"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{share} helpful"
 msgstr "{share} utiles"
@@ -1053,6 +1081,10 @@ msgstr "{up} utiles"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# mise à jour} other {# mises à jour}}"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "{utc} UTC. Nobody is counted until then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Nobody is counted until then; you can go back to the draft until it starts."
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
 msgstr "{utc} UTC. Les destinataires sont pris à ce moment-là ; vous pouvez revenir au brouillon jusqu’au départ."
@@ -1076,9 +1108,17 @@ msgstr "{views, plural, one {# vue} other {# vues}}"
 msgid "{votes} votes"
 msgstr "{votes} votes"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+
 #: src/features/home/HomePage.tsx
 msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
 msgstr "{waiting, plural, one {Ouvrir dans la boîte de réception} other {Les {total} dans la boîte de réception}}"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{waiting} waiting"
+msgstr "{waiting} waiting"
 
 #: src/features/status/StatusPages.tsx
 msgid "{watching, plural, one {Watched by # monitor} other {Watched by # monitors}}"
@@ -1148,6 +1188,10 @@ msgstr "= {mineTime} à votre heure ({mineName})"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "= {utcTime} UTC"
 msgstr "= {utcTime} UTC"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "0 sends it as soon as the person signs in. The longest delay is 365 days."
+msgstr "0 sends it as soon as the person signs in. The longest delay is 365 days."
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -1754,6 +1798,10 @@ msgstr "Un fil est pris en entier si son dernier message est dans la période."
 msgid "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
 msgstr "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "A triggered e-mail sends one design to each person a set time after they first sign in to your product, for example a welcome mail on day one and a tip on day three."
+msgstr "A triggered e-mail sends one design to each person a set time after they first sign in to your product, for example a welcome mail on day one and a tip on day three."
+
 #: src/features/settings/channels/email/form.ts
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 msgstr "Un nom d’utilisateur nécessite TLS ou STARTTLS : le mot de passe n’est jamais envoyé en clair."
@@ -1793,6 +1841,10 @@ msgstr "Environ {from} à {to}"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "about done by {end}"
 msgstr "terminé vers {end}"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "About using {inboxName}, sent to everyone who matches. Never advertising."
+msgstr "About using {inboxName}, sent to everyone who matches. Never advertising."
 
 #: src/features/status/SettingsTab.tsx
 msgid "Accent colour"
@@ -1863,6 +1915,8 @@ msgid "Actions only"
 msgstr "Actions seulement"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/text.ts
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2305,6 +2359,7 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -2509,6 +2564,14 @@ msgstr "Also post warnings"
 #: src/features/settings/webhooks/events.tsx
 msgid "Also send message.created for members' internal notes. Internal events are never sent."
 msgstr "Envoyer aussi message.created pour les notes internes des membres. Les événements internes ne sont jamais envoyés."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Also send to people who first signed in during the last"
+msgstr "Also send to people who first signed in during the last"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Also sent to"
+msgstr "Also sent to"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -3442,6 +3505,7 @@ msgstr "Retour aux colonnes"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "Retour au brouillon"
 
@@ -3566,6 +3630,10 @@ msgstr "Bloquer le contact"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Bloqué"
+
+#: src/components/common/text.ts
+msgid "Blocked contact"
+msgstr "Blocked contact"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Blocked contacts"
@@ -4337,6 +4405,10 @@ msgstr "Choisissez la région de votre compte Amazon SES."
 msgid "Choose the selected block’s image"
 msgstr "Choisir l’image du bloc sélectionné"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Choose what starts the e-mail and how long after it the mail goes out."
+msgstr "Choose what starts the e-mail and how long after it the mail goes out."
+
 #: src/features/migrations/Wizard.tsx
 msgid "Chosen in the Map step"
 msgstr "Choisi à l’étape Correspondance"
@@ -4707,6 +4779,10 @@ msgstr "E-mail de confirmation envoyé"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Confirmed"
 msgstr "Confirmé"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Confirmed by"
+msgstr "Confirmed by"
 
 #: src/features/broadcasts/Growth.tsx
 msgid "confirmed in the last {days} days"
@@ -5249,7 +5325,12 @@ msgstr "Compter les clics"
 msgid "Count visitors on your site"
 msgstr "Comptez les visiteurs de votre site"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "counted so far"
+msgstr "counted so far"
+
 #: src/components/common/Linked.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Counting…"
 msgstr "Comptage…"
 
@@ -5573,11 +5654,19 @@ msgstr "Date"
 msgid "Dates"
 msgstr "Dates"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "days"
+msgstr "days"
+
 #: src/features/broadcasts/Growth.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Jours"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "days (0 to 30)"
+msgstr "days (0 to 30)"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Days before it expires that the check fails. 0 only checks that it is valid."
@@ -5627,6 +5716,7 @@ msgstr "Délégués"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -5650,6 +5740,7 @@ msgstr "Supprimer"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Delete “{name}”?"
 msgstr "Supprimer « {name} » ?"
 
@@ -6295,6 +6386,7 @@ msgid "done"
 msgstr "fait"
 
 #: src/components/common/BulkReport.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -6412,6 +6504,7 @@ msgid "Draft:"
 msgstr "Brouillon :"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -6458,6 +6551,10 @@ msgstr "Échéance la plus proche d'abord"
 #: src/components/common/SlaBadge.tsx
 msgid "Due soon"
 msgstr "Bientôt dû"
+
+#: src/components/common/text.ts
+msgid "Due too long before it could be sent"
+msgstr "Due too long before it could be sent"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
@@ -6595,6 +6692,10 @@ msgstr "Chaque sonde définit l’état d’un composant tant qu’elle est en p
 msgid "Each new e-mail starts a conversation; replies continue it."
 msgstr "Chaque nouvel e-mail ouvre une conversation ; les réponses la poursuivent."
 
+#: src/features/broadcasts/Composer.tsx
+msgid "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
+msgstr "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Each product has its own name, branding, hours, team and channels"
 msgstr "Chaque produit a son propre nom, sa marque, ses horaires, son équipe et ses canaux"
@@ -6615,7 +6716,9 @@ msgstr "Chaque réponse est une conversation dans la boîte. Les 50 premières s
 msgid "Each with all its messages and notes"
 msgstr "Chacune avec tous ses messages et notes"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -7048,6 +7151,14 @@ msgstr "Toutes les personnes des listes. Les conditions ne gardent que les conta
 #: src/features/contact/ContactsPage.tsx
 msgid "Everyone who has written to your products"
 msgstr "Toutes les personnes qui ont écrit à vos produits"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Everyone who signed in while it was running, once each."
+msgstr "Everyone who signed in while it was running, once each."
+
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "Everyone who signs in. Conditions keep only contacts whose attributes match, all of them."
+msgstr "Everyone who signs in. Conditions keep only contacts whose attributes match, all of them."
 
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Everyone with access to the inbox reads it."
@@ -8260,6 +8371,7 @@ msgstr "Nom d'hôte"
 msgid "Hostname and certificate"
 msgstr "Nom d'hôte et certificat"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "hours"
 msgstr "heures"
@@ -8932,6 +9044,10 @@ msgstr "Il peut envoyer des e-mails et des réponses de chat aux clients en votr
 msgid "It can write drafts only. A member reviews and sends them; this workspace does not let assistants send."
 msgstr "Il ne peut écrire que des brouillons. Un membre les relit et les envoie ; cet espace de travail n’autorise pas les assistants à envoyer."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "It cannot resume yet:"
+msgstr "It cannot resume yet:"
+
 #: src/features/conversation/ChatView.tsx
 msgid "It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Elle disparaît pour votre équipe et pour le client. Vous pouvez la restaurer depuis la corbeille pendant 30 jours, après quoi elle est supprimée définitivement avec ses messages et ses fichiers."
@@ -8993,6 +9109,10 @@ msgstr "Elle apparaît ici dès qu’elle arrive dans Yuva."
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 msgid "It stays a draft until you send or schedule it. Replies come to the inbox you pick."
 msgstr "Elle reste un brouillon jusqu’à ce que vous l’envoyiez ou la programmiez. Les réponses arrivent dans la boîte que vous choisissez."
+
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "It stays a draft until you start it. Replies come to the inbox you pick."
+msgstr "It stays a draft until you start it. Replies come to the inbox you pick."
 
 #: src/features/migrations/parts.tsx
 msgid "It stops for good. What was imported stays, and the mailbox's credentials are deleted. Nothing changes in the mailbox."
@@ -9073,6 +9193,7 @@ msgstr "Ses membres perdent l'accès aux boîtes que l'équipe leur donnait, et 
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Its report and the list of recipients are deleted. Conversations opened by replies stay."
 msgstr "Son rapport et la liste des destinataires sont supprimés. Les conversations ouvertes par des réponses restent."
 
@@ -9482,6 +9603,7 @@ msgstr "Exclu de la page publique et de son état global."
 msgid "Left out"
 msgstr "Exclus"
 
+#: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Left out by a condition or language"
 msgstr "Exclus par une condition ou une langue"
@@ -9734,6 +9856,7 @@ msgstr "Liste des tickets…"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Lists"
@@ -9760,6 +9883,8 @@ msgstr "Charger les images"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -9953,6 +10078,10 @@ msgstr "Le courrier n’est pas signé avec une clé du propre domaine de l’ex
 msgid "Mail leaves at each broadcast’s pace, so providers accept it."
 msgstr "Les e-mails partent au rythme de chaque envoi, pour que les fournisseurs les acceptent."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "mail made"
+msgstr "mail made"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Mail only you read"
 msgstr "Courrier que vous seul lisez"
@@ -10037,6 +10166,10 @@ msgstr "Liste de diffusion (List-Id)"
 #: src/features/contact/ContactDetail.tsx
 msgid "Mailing lists"
 msgstr "Listes de diffusion"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Mails go out {sentence}, once to each person. Pausing stops sending but keeps counting people who sign in, so nobody is missed. You can stop it for good at any time."
+msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but keeps counting people who sign in, so nobody is missed. You can stop it for good at any time."
 
 #: src/features/broadcasts/SendTime.tsx
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
@@ -10221,9 +10354,17 @@ msgstr "Marqué comme réponse"
 msgid "Marked as unread"
 msgstr "Marqué comme non lu"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "Marketing"
+msgstr "Marketing"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Marketing content"
 msgstr "Contenu marketing"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Marketing, to list subscribers"
+msgstr "Marketing, to list subscribers"
 
 #: src/features/migrations/text.ts
 msgid "mbox files in a zip"
@@ -10492,6 +10633,7 @@ msgstr "Les miennes"
 msgid "Minor"
 msgstr "Mineur"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
@@ -10729,6 +10871,10 @@ msgstr "Parcourir les messages"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the status pages"
 msgstr "Parcourir les pages d’état"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the triggered e-mails"
+msgstr "Move through the triggered e-mails"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to a stage"
@@ -11250,6 +11396,12 @@ msgstr "Nouveaux abonnés ajoutés"
 msgid "New team"
 msgstr "Nouvelle équipe"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "New triggered e-mail"
+msgstr "New triggered e-mail"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
 msgstr "Nouvelle mise à jour · {stage}"
@@ -11601,6 +11753,10 @@ msgstr "Aucun brouillon."
 #: src/features/contact/ContactsPage.tsx
 msgid "no e-mail"
 msgstr "pas d’e-mail"
+
+#: src/components/common/text.ts
+msgid "No e-mail address"
+msgstr "No e-mail address"
 
 #: src/features/conversation/Feedback.tsx
 msgid "No e-mail address given"
@@ -12040,6 +12196,7 @@ msgstr "personne n’attend"
 msgid "Nobody is waiting for a reply."
 msgstr "Personne n’attend de réponse."
 
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/home/HomePage.tsx
 msgid "Nobody is waiting."
 msgstr "Personne n’attend."
@@ -12057,6 +12214,10 @@ msgstr "Personne n’a laissé de commentaire avec une note sur cette période."
 msgid "Nobody matches."
 msgstr "Personne ne correspond."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nobody new is counted, mail not sent yet is skipped, and it cannot start again. Mail that already went out stays sent."
+msgstr "Nobody new is counted, mail not sent yet is skipped, and it cannot start again. Mail that already went out stays sent."
+
 #: src/features/team/TeamPage.tsx
 msgid "Nobody on the team works on this product yet."
 msgstr "Personne dans l'équipe ne travaille encore sur ce produit."
@@ -12064,6 +12225,14 @@ msgstr "Personne dans l'équipe ne travaille encore sur ce produit."
 #: src/features/broadcasts/Report.tsx
 msgid "Nobody opened a link yet."
 msgstr "Personne n’a encore ouvert de lien."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nobody was left out."
+msgstr "Nobody was left out."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Nobody who signed in before gets it."
+msgstr "Nobody who signed in before gets it."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Nobody would get this mail. Pick lists with subscribers, or loosen the conditions."
@@ -12264,6 +12433,10 @@ msgstr "Pas du spam"
 msgid "Not spam ({0})"
 msgstr "Pas du spam ({0})"
 
+#: src/components/common/text.ts
+msgid "Not subscribed to the lists"
+msgstr "Not subscribed to the lists"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "Pas la même personne"
@@ -12366,6 +12539,7 @@ msgid "Nothing here"
 msgstr "Rien ici"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Nothing here."
 msgstr "Rien ici."
 
@@ -12412,6 +12586,10 @@ msgstr "Rien n’est perdu : à la reprise, la copie repart là où elle s’est
 #: src/features/feedback/FeedbackList.tsx
 msgid "Nothing is resolved yet."
 msgstr "Rien n'est encore résolu."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nothing is sent while it is paused, but people who sign in are still counted, so nobody is missed."
+msgstr "Nothing is sent while it is paused, but people who sign in are still counted, so nobody is missed."
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -12676,6 +12854,10 @@ msgstr "Une boîte"
 msgid "One mail every {every}"
 msgstr "Un e-mail toutes les {every}"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "One mail to each person, a set time after they sign in"
+msgstr "One mail to each person, a set time after they sign in"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Une par ligne, de 1 à 20. Seules les pages de ces origines peuvent utiliser le widget."
@@ -12836,6 +13018,14 @@ msgstr "Seuls les propriétaires peuvent supprimer l’espace de travail."
 msgid "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
 msgstr "Seules les pages de ces adresses peuvent ouvrir le chat. Saisissez le schéma et l’hôte, sans chemin."
 
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "Only people subscribed to one of these lists get the mail. Fixed after the draft."
+msgstr "Only people subscribed to one of these lists get the mail. Fixed after the draft."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Only people who sign in from now on get it."
+msgstr "Only people who sign in from now on get it."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "Only read requests are sent. You can close this page; the scan goes on and the list in Settings shows when it is done."
 msgstr "Seules des requêtes de lecture sont envoyées. Vous pouvez fermer cette page ; l’analyse continue et la liste dans Paramètres indique quand elle est terminée."
@@ -12880,6 +13070,10 @@ msgstr "Seuls leurs propriétaires les lisent. Vous voyez ce qu'elles contiennen
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
 msgstr "Seulement ceux qui ont répondu"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Only to people subscribed to the lists you pick. For news, offers and newsletters."
+msgstr "Only to people subscribed to the lists you pick. For news, offers and newsletters."
 
 #: src/features/contact/ContactVisits.tsx
 msgid "Only visits made after they agreed to a persistent id and signed in."
@@ -13194,6 +13388,10 @@ msgstr "Ouvrir la réponse"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Open the settings"
 msgstr "Ouvrir les réglages"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the triggered e-mail"
+msgstr "Open the triggered e-mail"
 
 #: src/features/team/TeamPage.tsx
 msgid "Open the unassigned queue"
@@ -13554,11 +13752,16 @@ msgstr "Collez ceci avant la balise de fermeture body de vos pages"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Pause"
 msgstr "Pause"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Pause or resume"
+msgstr "Pause or resume"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Pause or resume sending"
@@ -13575,6 +13778,7 @@ msgstr "en pause"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -13639,6 +13843,10 @@ msgstr "En attente"
 msgid "Pending deliveries are dropped with it."
 msgstr "Les livraisons en attente sont abandonnées avec lui."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "People"
+msgstr "People"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
 msgstr "Les personnes la rejoignent via un formulaire d’inscription ou sont ajoutées avec leur consentement. Les envois en masse vont aux listes."
@@ -13684,6 +13892,10 @@ msgstr "Personnes qui ont ouvert chaque lien au moins une fois. Les clics des sc
 #: src/features/broadcasts/ListForm.tsx
 msgid "People who sign up on a form confirm by clicking a link in a mail before they are subscribed."
 msgstr "Les personnes qui s’inscrivent via un formulaire confirment en cliquant sur un lien dans un e-mail avant d’être abonnées."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "People who signed in and whose mail is not due yet, the one due first on top."
+msgstr "People who signed in and whose mail is not due yet, the one due first on top."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "People who wrote to {product}"
@@ -13988,6 +14200,10 @@ msgstr "Choisissez les boîtes pour les conversations de {provider}, quel membre
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Pick the list the people join."
 msgstr "Choisissez la liste que les personnes rejoignent."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Pick the lists whose subscribers get this mail."
+msgstr "Pick the lists whose subscribers get this mail."
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Pick the one you use. Setup steps and scopes are on API & MCP."
@@ -14900,6 +15116,7 @@ msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Les images distantes peuvent indiquer à l’expéditeur que vous avez ouvert l’e-mail."
 
 #: src/components/common/DesignChoice.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -15219,6 +15436,7 @@ msgstr "a répondu"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Replied"
 msgstr "Répondu"
@@ -15440,6 +15658,7 @@ msgstr "Réponse à {to}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Report"
 msgstr "Rapport"
 
@@ -15608,6 +15827,7 @@ msgstr "Résultats, dernières 24 heures"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -15651,6 +15871,11 @@ msgstr "Relire et publier"
 msgid "Review and send"
 msgstr "Relire et envoyer"
 
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Review and start"
+msgstr "Review and start"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Review draft"
 msgstr "Relire le brouillon"
@@ -15664,6 +15889,12 @@ msgstr "Relire la clé"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Review, then send or schedule"
 msgstr "Relire, puis envoyer ou programmer"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Review, then start or schedule"
+msgstr "Review, then start or schedule"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Revisions"
@@ -15951,6 +16182,7 @@ msgstr "Enregistrer la liste comme vue"
 
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
@@ -16118,6 +16350,7 @@ msgstr "Captures d'écran jointes"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Search"
@@ -16373,6 +16606,10 @@ msgstr "Envoyer un article d’aide"
 msgid "Send a help article ({articleKey})"
 msgstr "Envoyer un article d’aide ({articleKey})"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Send a mail a set time after people sign up, once each"
+msgstr "Send a mail a set time after people sign up, once each"
+
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Send a mail to {address} from any mailbox."
 msgstr "Envoyez un e-mail à {address} depuis n’importe quelle boîte."
@@ -16392,6 +16629,7 @@ msgstr "Envoyer un nouveau code"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Send a test"
 msgstr "Envoyer un test"
 
@@ -16465,6 +16703,10 @@ msgstr "Envoyer avec un design d’e-mail"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Envoyer l'invitation"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Send it after"
+msgstr "Send it after"
 
 #: src/components/common/SendLater.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -16664,6 +16906,7 @@ msgid "Sending reputation of this product, kept apart from the others"
 msgstr "Réputation d’envoi de ce produit, séparée de celle des autres"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Sending stopped and cannot go on, for example because its channel was removed."
 msgstr "L’envoi s’est arrêté et ne peut pas continuer, par exemple parce que son canal a été retiré."
 
@@ -16684,6 +16927,10 @@ msgstr "Envoi, puis fermeture…"
 #: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Envoi…"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Sends"
+msgstr "Sends"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Sends {when}"
@@ -16730,8 +16977,11 @@ msgid "sent"
 msgstr "envoyés"
 
 #: src/components/common/Linked.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/status/Notices.tsx
 #: src/features/team/TeamPage.tsx
@@ -16846,6 +17096,18 @@ msgstr "Compte de service (JSON)"
 msgid "Service account set"
 msgstr "Compte de service enregistré"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "Service mail"
+msgstr "Service mail"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Service mail is only about using the product: onboarding, the person’s account, a request for feedback. Advertising, newsletters and offers need the marketing basis."
+msgstr "Service mail is only about using the product: onboarding, the person’s account, a request for feedback. Advertising, newsletters and offers need the marketing basis."
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Service mail, about using the product"
+msgstr "Service mail, about using the product"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "Tenant SES"
@@ -16934,6 +17196,7 @@ msgstr "Configuration…"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/ChannelState.tsx
@@ -17382,6 +17645,10 @@ msgstr "Appels HTTP signés vers votre backend pour les conversations, messages 
 msgid "Signed HTTP calls to your backend when conversations, messages, feedback or contacts change. Endpoints of the workspace receive every inbox; inbox endpoints only their inbox."
 msgstr "Appels HTTP signés vers votre backend quand des conversations, messages, avis ou contacts changent. Les points de terminaison de l’espace de travail reçoivent toutes les boîtes ; ceux d’une boîte uniquement la leur."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Signed in"
+msgstr "Signed in"
+
 #: src/features/migrations/text.ts
 msgid "Signed in to {provider}"
 msgstr "Connecté à {provider}"
@@ -17700,6 +17967,10 @@ msgstr "Certains textes ne sont pas traduits, le texte en {base} s’affiche don
 msgid "Someone answers a forward"
 msgstr "Quelqu’un répond à un transfert"
 
+#: src/features/broadcasts/Composer.tsx
+msgid "Someone first signs in"
+msgstr "Someone first signs in"
+
 #: src/features/settings/notifications/events.ts
 msgid "Someone mentions me in a note"
 msgstr "Quelqu’un me mentionne dans une note"
@@ -17849,6 +18120,14 @@ msgstr "Marque le mail d’une étoile pour vous."
 msgid "Start"
 msgstr "Démarrer"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start “{name}” now?"
+msgstr "Start “{name}” now?"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start “{name}” on {when}?"
+msgstr "Start “{name}” on {when}?"
+
 #: src/features/setup/previews.tsx
 msgid "Start a discussion"
 msgstr "Lancer une discussion"
@@ -17865,6 +18144,10 @@ msgstr "Démarrer la conversation"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Start migration"
 msgstr "Démarrer la migration"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start now"
+msgstr "Start now"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
@@ -17914,6 +18197,15 @@ msgstr "Début"
 msgid "Starts a public thread with the text below. The conversation stays private and unchanged; nothing else of it is shown."
 msgstr "Lance un fil public avec le texte ci-dessous. La conversation reste privée et inchangée ; rien d’autre n’en est affiché."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Starts on {local}"
+msgstr "Starts on {local}"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/Composer.tsx
+msgid "Starts when"
+msgstr "Starts when"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
@@ -17947,6 +18239,7 @@ msgstr "État en cas de chute"
 #: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -17995,9 +18288,14 @@ msgstr "Guide pas à pas"
 msgid "Steps"
 msgstr "Étapes"
 
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Stop"
 msgstr "Arrêter"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Stop “{name}”?"
+msgstr "Stop “{name}”?"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Stop overriding {name}"
@@ -18011,7 +18309,14 @@ msgstr "Arrêter la signature"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "Arrêtez d'accepter de nouveaux abonnés. Les justificatifs et les anciens rapports restent, et vous pouvez restaurer la liste."
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Stop the triggered e-mail"
+msgstr "Stop the triggered e-mail"
+
 #: src/components/common/SlaBadge.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Stopped"
 msgstr "Arrêté"
 
@@ -18022,6 +18327,10 @@ msgstr "Les assistants et les clés ne peuvent plus envoyer de messages aux clie
 #: src/features/settings/audit/sentence.ts
 msgid "Stopped keys and assistants from scheduling broadcasts"
 msgstr "Les clés et les assistants ne peuvent plus programmer de diffusions"
+
+#: src/components/common/text.ts
+msgid "Stopped this inbox’s mail of this kind"
+msgstr "Stopped this inbox’s mail of this kind"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
@@ -18235,6 +18544,18 @@ msgstr "Tags"
 #: src/features/home/HomePage.tsx
 msgid "take"
 msgstr "prendre"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Take {name} off the waiting list"
+msgstr "Take {name} off the waiting list"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Take {name} off the waiting list?"
+msgstr "Take {name} off the waiting list?"
+
+#: src/components/common/text.ts
+msgid "Taken off the waiting list"
+msgstr "Taken off the waiting list"
 
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Takes sign-ups again and brings the list back to the broadcast audience picker."
@@ -19636,6 +19957,10 @@ msgstr "Ils reçoivent un e-mail avec un lien et ne sont abonnés qu’après av
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Ils reçoivent un e-mail avec un lien et ne reçoivent d’avis qu’après avoir cliqué dessus."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "They get no mail from this triggered e-mail, and it never counts them again."
+msgstr "They get no mail from this triggered e-mail, and it never counts them again."
+
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
@@ -19973,6 +20298,10 @@ msgstr "Cette liste est archivée. Elle n'accepte plus d'abonnés et les diffusi
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Cette liste est privée, donc les formulaires ne la proposent pas. Rendez-la publique dans les paramètres pour utiliser un formulaire."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This mail is about using {inboxName}, not advertising."
+msgstr "This mail is about using {inboxName}, not advertising."
 
 #: src/features/mail/MailThread.tsx
 msgid "This mail is not available"
@@ -20377,9 +20706,28 @@ msgstr "Corbeille, jamais importée"
 msgid "Trends"
 msgstr "Tendances"
 
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Trigger"
 msgstr "Déclencheur"
+
+#: src/app/Sidebar.tsx
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Triggered"
+msgstr "Triggered"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Triggered e-mail"
+msgstr "Triggered e-mail"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Triggered e-mails"
+msgstr "Triggered e-mails"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
@@ -20388,6 +20736,7 @@ msgstr "Faire confiance à ce certificat pour ce serveur. Ne le faites que s’i
 #: src/app/Gate.tsx
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -20604,6 +20953,7 @@ msgstr "Ne plus suivre"
 msgid "Unfollowed"
 msgstr "Suivi arrêté"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "Unité"
@@ -20666,6 +21016,7 @@ msgstr "Déverrouillée"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
@@ -20963,9 +21314,17 @@ msgstr "Utilisez un port de 1 à 65535."
 msgid "Use a separate account for broadcasts"
 msgstr "Utiliser un compte distinct pour les envois en masse"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Use a whole number from 0 to 30."
+msgstr "Use a whole number from 0 to 30."
+
 #: src/features/status/SettingsTab.tsx
 msgid "Use a whole number from 7 to 90."
 msgstr "Utilisez un nombre entier de 7 à 90."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Use a whole number of at most 365 days."
+msgstr "Use a whole number of at most 365 days."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"
@@ -21263,7 +21622,10 @@ msgid "waiting"
 msgstr "en attente"
 
 #: src/components/common/Linked.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
@@ -21365,6 +21727,10 @@ msgstr "Waiting for the record"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "En attente des deux enregistrements DNS ci-dessous. Ajoutez-les là où vous gérez le domaine ; les changements DNS peuvent mettre du temps à se propager. Yuva vérifie toutes les 10 minutes, et la revendication prend fin s'ils ne sont pas trouvés en 7 jours."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "waiting for their time"
+msgstr "waiting for their time"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
@@ -21484,6 +21850,10 @@ msgstr "Mercredi"
 msgid "Weeks"
 msgstr "Semaines"
 
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "Welcome mail"
+msgstr "Welcome mail"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Accusé de bienvenue"
@@ -21541,6 +21911,10 @@ msgstr "À quoi sert cette boîte ?"
 msgid "What is this key for?"
 msgstr "À quoi sert cette clé ?"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "What it sends"
+msgstr "What it sends"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Que peut-elle faire ?"
@@ -21560,6 +21934,10 @@ msgstr "Que doivent voir les clients ?"
 #: src/features/migrations/ChooseStep.tsx
 msgid "What should Yuva bring?"
 msgstr "Qu’est-ce que Yuva doit importer ?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "What starts it, why people get it, its lists, its sender and its name stay as they are."
+msgstr "What starts it, why people get it, its lists, its sender and its name stay as they are."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the chat promises, and what it asks after closing"
@@ -21702,6 +22080,10 @@ msgstr "Quand doivent-ils revenir ?"
 msgid "When someone else assigns it to you."
 msgstr "Quand quelqu’un d’autre vous l’assigne."
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "when someone first signs in to {inbox}"
+msgstr "when someone first signs in to {inbox}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "When someone sends feedback, it will be in the list."
 msgstr "Quand quelqu'un enverra un retour, il apparaîtra dans la liste."
@@ -21786,6 +22168,10 @@ msgstr "Pour quel produit ?"
 msgid "Which sites will show the chat?"
 msgstr "Quels sites afficheront le chat ?"
 
+#: src/features/broadcasts/Composer.tsx
+msgid "While it is paused you can change the content, the conditions, the delay and the sending options. Resuming checks it again."
+msgstr "While it is paused you can change the content, the conditions, the delay and the sending options. Resuming checks it again."
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "While off, no deliveries are made."
 msgstr "Tant qu’il est désactivé, aucune livraison n’est effectuée."
@@ -21822,6 +22208,14 @@ msgstr "Qui a modifié les accès, les clés et les données"
 msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
 msgstr "Qui a modifié les membres, les accès, les clés, les webhooks, les comptes de messagerie, la conservation et les exports, du plus récent au plus ancien. Seuls les propriétaires le voient."
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Who confirmed it and when is saved in the audit log."
+msgstr "Who confirmed it and when is saved in the audit log."
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Who gets it"
+msgstr "Who gets it"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Who is it for?"
 msgstr "Pour qui ?"
@@ -21841,6 +22235,16 @@ msgstr "Qui doit la prendre ?"
 #: src/components/common/SettingsStrip.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Qui vous accompagnez : nom, horaires, équipe, expéditeur"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Why they get it"
+msgstr "Why they get it"
+
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/Trigger.tsx
+msgid "Why they get this mail"
+msgstr "Why they get this mail"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Windows-1252 (Western Excel)"
@@ -21936,6 +22340,7 @@ msgid "Work with conversations from Cursor's agent. It acts as you, with the acc
 msgstr "Travaillez avec les conversations depuis l’agent de Cursor. Il agit en votre nom, avec l’accès que vous autorisez."
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Working…"
 msgstr "En cours…"
 
@@ -22100,6 +22505,10 @@ msgstr "Vous avez demandé le {asked} à envoyer des messages groupés. Brouillo
 #: src/features/home/HomePage.tsx
 msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
 msgstr "Vous avez demandé à envoyer des messages groupés. Brouillons et programmations attendent la réponse de l’opérateur."
+
+#: src/features/broadcasts/Composer.tsx
+msgid "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
+msgstr "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
 
 #: src/features/account/ConnectPage.tsx
 msgid "You can close this window and go back to {host}."
@@ -22494,6 +22903,7 @@ msgid "Yuva could not read the provider's discovery document. Check the issuer U
 msgstr "Yuva could not read the provider's discovery document. Check the issuer URL."
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva compte les clics et les réponses. Il ne suit pas les ouvertures."
 

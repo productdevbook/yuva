@@ -1,3 +1,4 @@
+import { plural } from "@lingui/core/macro"
 import { Trans, useLingui } from "@lingui/react/macro"
 import { CircleAlertIcon, ClockIcon, GaugeIcon, LoaderIcon, PauseIcon } from "lucide-react"
 import { useState } from "react"
@@ -33,6 +34,7 @@ import { useInboxChannels, useLists } from "@/features/broadcasts/queries"
 import { Deliveries, Report, ReportStats } from "@/features/broadcasts/Report"
 import { paceGap, PaceDialog, usePaceSummary } from "@/features/broadcasts/Pace"
 import { SendTimeDialog } from "@/features/broadcasts/SendTime"
+import { useTriggerSentence } from "@/features/broadcasts/Trigger"
 import { designLink } from "@/features/designs/queries"
 import { Card, Section } from "@/features/settings/ui"
 import { FrameButton, FrameTabs, framePad, ProductTag } from "@/features/status/PageFrame"
@@ -254,7 +256,7 @@ function Banner({ b, at }: { b: Broadcast; at: number }) {
   )
 }
 
-function Summary({ b }: { b: Broadcast }) {
+export function Summary({ b }: { b: Broadcast }) {
   const { t, i18n } = useLingui()
   const { canManage } = useSession()
   const channel = useInboxChannels(b.inbox_id).data?.find((c) => c.id === b.channel_id)
@@ -266,14 +268,41 @@ function Summary({ b }: { b: Broadcast }) {
   const paceSummary = usePaceSummary()
   const members = useMemberMap()
   const by = b.scheduled_by ? members.get(b.scheduled_by) : undefined
+  const triggered = b.kind === "triggered"
+  const sentence = useTriggerSentence(b)
+  const days = b.trigger?.backfill_days ?? 0
+  const confirmer = b.service_confirmed?.by ? members.get(b.service_confirmed.by) : undefined
   const stamp = (iso: string) =>
     `${zonedDateTime(iso, b.timezone, i18n.locale)} ${zoneLabel(b.timezone, new Date(iso), i18n.locale)}`
-  const rows: [string, React.ReactNode][] = [
+  const rows: [string, React.ReactNode][] = triggered
+    ? [
+        [t`Starts when`, sentence],
+        [
+          t`Why they get it`,
+          b.trigger?.basis === "service" ? t`Service mail, about using the product` : t`Marketing, to list subscribers`,
+        ],
+      ]
+    : []
+  if (triggered && days > 0 && !b.started_at)
+    rows.push([
+      t`Also sent to`,
+      plural(days, {
+        one: "people who signed in during the last # day",
+        other: "people who signed in during the last # days",
+      }),
+    ])
+  if (triggered && b.service_confirmed)
+    rows.push([
+      t`Confirmed by`,
+      `${confirmer ? confirmer.name || confirmer.email : t`An API key or assistant`} · ${stamp(b.service_confirmed.at)}`,
+    ])
+  rows.push(
     [t`Subject`, b.subject || "—"],
     [t`Preview text`, b.preheader || t`The design’s own`],
-    [t`Sends from`, channel ? `${channel.name} · ${channel.email?.from_address || channel.email?.address}` : "—"],
-    [t`Lists`, b.audience.list_ids.map((id) => lists.get(id) ?? "…").join(", ") || "—"],
-  ]
+    [t`Sends from`, channel ? `${channel.name} · ${channel.email?.from_address || channel.email?.address}` : "—"]
+  )
+  if (!triggered || b.audience.list_ids.length)
+    rows.push([t`Lists`, b.audience.list_ids.map((id) => lists.get(id) ?? "…").join(", ") || "—"])
   if (b.audience.conditions.length) rows.push([t`Conditions`, String(b.audience.conditions.length)])
   if (b.audience.locales.length) rows.push([t`Languages`, b.audience.locales.join(", ")])
   rows.push([t`Sending pace`, paceSummary(b.pace)])
@@ -303,7 +332,17 @@ function Summary({ b }: { b: Broadcast }) {
   if (b.started_at) rows.push([t`Started`, stamp(b.started_at)])
   if (b.finished_at) rows.push([t`Finished`, stamp(b.finished_at)])
   return (
-    <Section title={b.started_at ? <Trans>What went out</Trans> : <Trans>What will go out</Trans>}>
+    <Section
+      title={
+        triggered ? (
+          <Trans>What it sends</Trans>
+        ) : b.started_at ? (
+          <Trans>What went out</Trans>
+        ) : (
+          <Trans>What will go out</Trans>
+        )
+      }
+    >
       <Card>
         <div className="flex flex-wrap items-start gap-5 phone:flex-col" data-testid="broadcast-summary">
           {b.design_id &&

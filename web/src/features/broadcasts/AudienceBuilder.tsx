@@ -250,11 +250,15 @@ export function AudienceBuilder({
   value,
   onChange,
   disabled,
+  listsLocked = disabled,
+  hideLists = false,
 }: {
   inboxId: string
   value: Audience
   onChange: (a: Audience) => void
   disabled: boolean
+  listsLocked?: boolean
+  hideLists?: boolean
 }) {
   const { t } = useLingui()
   const num = useNumber()
@@ -264,7 +268,7 @@ export function AudienceBuilder({
   const full = value.list_ids.length >= MAX_LISTS
   return (
     <div className="flex flex-col gap-5">
-      {lists.isPending ? (
+      {hideLists ? null : lists.isPending ? (
         <Skeleton className="h-24 rounded-xl" />
       ) : items.length === 0 ? (
         <Notice tone="warning" icon={UsersIcon} data-testid="audience-no-lists">
@@ -292,7 +296,7 @@ export function AudienceBuilder({
               <CheckItem
                 key={l.id}
                 checked={chosen.has(l.id)}
-                disabled={disabled || (!chosen.has(l.id) && full)}
+                disabled={listsLocked || (!chosen.has(l.id) && full)}
                 onChange={(on) =>
                   onChange({
                     ...value,
@@ -352,7 +356,11 @@ export function AudienceBuilder({
         )}
         <p className="text-small text-faint">
           {value.conditions.length === 0 ? (
-            <Trans>Everyone on the lists. Conditions keep only contacts whose attributes match, all of them.</Trans>
+            hideLists ? (
+              <Trans>Everyone who signs in. Conditions keep only contacts whose attributes match, all of them.</Trans>
+            ) : (
+              <Trans>Everyone on the lists. Conditions keep only contacts whose attributes match, all of them.</Trans>
+            )
           ) : (
             <Trans>
               A contact must match every condition. Without the attribute, only “is not” and “is not set” match.

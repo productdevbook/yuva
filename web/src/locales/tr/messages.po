@@ -339,6 +339,14 @@ msgstr "{count, plural, one {# sorun} other {# sorun}}"
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
 msgstr "{count, plural, one {# posta kutusu} other {# posta kutusu}}"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "{count, plural, one {# person who signed in before gets it too.} other {# people who signed in before get it too.}}"
+msgstr "{count, plural, one {Daha önce giriş yapmış # kişi de bu postayı alır.} other {Daha önce giriş yapmış # kişi de bu postayı alır.}}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
+msgstr "{count, plural, one {# kişi} other {# kişi}}: daha önce giriş yapmış olanlar da alır. Geri dönen, ayrılan veya uymayanlar bu sayıdan önce elenir."
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# kapsam} other {# kapsam}}"
@@ -402,6 +410,10 @@ msgstr "{date}: {newCount} yeni, {replyCount} ilk yanıt"
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
 msgstr "{days, plural, one {# gün} other {# gün}}"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{days, plural, one {people who signed in during the last # day} other {people who signed in during the last # days}}"
+msgstr "{days, plural, one {son # gün içinde giriş yapanlar} other {son # gün içinde giriş yapanlar}}"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
@@ -567,6 +579,10 @@ msgstr "{mentions, plural, one {Sizden bahsedilen not} other {Sizden bahsedilen 
 msgid "{met} met, {breached} breached"
 msgstr "{met} karşılandı, {breached} aşıldı"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "{minutes, plural, one {# minute after someone first signs in to {inbox}} other {# minutes after someone first signs in to {inbox}}}"
+msgstr "{minutes, plural, one {biri {inbox} ürününe ilk kez giriş yaptıktan # dakika sonra} other {biri {inbox} ürününe ilk kez giriş yaptıktan # dakika sonra}}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {# dakikadır bekliyor} other {# dakikadır bekliyor}}"
@@ -587,6 +603,10 @@ msgstr "{mxDomain} alan adının MX kaydı yok, bu yüzden bültenlere gelen yan
 msgid "{n, plural, one {# app} other {# apps}}"
 msgstr "{n, plural, one {# uygulama} other {# uygulama}}"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+msgstr "{n, plural, one {biri {inbox} ürününe ilk kez giriş yaptıktan # gün sonra} other {biri {inbox} ürününe ilk kez giriş yaptıktan # gün sonra}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
 msgstr "{n, plural, one {# dokümantasyon sitesi} other {# dokümantasyon sitesi}}"
@@ -594,6 +614,10 @@ msgstr "{n, plural, one {# dokümantasyon sitesi} other {# dokümantasyon sitesi
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# e-mail address} other {# e-mail addresses}}"
 msgstr "{n, plural, one {# e-posta adresi} other {# e-posta adresi}}"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "{n, plural, one {# hour after someone first signs in to {inbox}} other {# hours after someone first signs in to {inbox}}}"
+msgstr "{n, plural, one {biri {inbox} ürününe ilk kez giriş yaptıktan # saat sonra} other {biri {inbox} ürününe ilk kez giriş yaptıktan # saat sonra}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# mailing list} other {# mailing lists}}"
@@ -985,6 +1009,10 @@ msgstr "{satisfied} memnun"
 msgid "{sent} of {all} done"
 msgstr "{all} alıcıdan {sent} tamamlandı"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{sent} sent"
+msgstr "{sent} gönderildi"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{share} helpful"
 msgstr "{share} yararlı"
@@ -1053,6 +1081,10 @@ msgstr "{up} yararlı"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# güncelleme} other {# güncelleme}}"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "{utc} UTC. Nobody is counted until then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. O zamana kadar kimse sayılmaz; başlayana kadar taslağa dönebilirsiniz."
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
 msgstr "{utc} UTC. Alıcılar o anda belirlenir; başlayana kadar taslağa dönebilirsiniz."
@@ -1076,9 +1108,17 @@ msgstr "{views, plural, one {# görüntüleme} other {# görüntüleme}}"
 msgid "{votes} votes"
 msgstr "{votes} oy"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+msgstr "{waiting, plural, =0 {Bekleyen kimse yok.} one {# kişi bekliyor ve postayı almayacak.} other {# kişi bekliyor ve postayı almayacak.}}"
+
 #: src/features/home/HomePage.tsx
 msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
 msgstr "{waiting, plural, one {Gelen kutusunda aç} other {Gelen kutusundaki {total} konuşmanın tümü}}"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{waiting} waiting"
+msgstr "{waiting} bekliyor"
 
 #: src/features/status/StatusPages.tsx
 msgid "{watching, plural, one {Watched by # monitor} other {Watched by # monitors}}"
@@ -1148,6 +1188,10 @@ msgstr "= {mineTime} sizin saatinizle ({mineName})"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "= {utcTime} UTC"
 msgstr "= {utcTime} UTC"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "0 sends it as soon as the person signs in. The longest delay is 365 days."
+msgstr "0 yazarsanız kişi giriş yapar yapmaz gönderilir. En uzun gecikme 365 gündür."
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -1754,6 +1798,10 @@ msgstr "Son mesajı bu aralıkta olan bir yazışma bütünüyle alınır."
 msgid "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
 msgstr "Bununla başlayan bir ileti yanıtı müşteriye gider. Diğer her yanıt not olur. Ünlem işareti ve 1 ile 20 arası küçük harf."
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "A triggered e-mail sends one design to each person a set time after they first sign in to your product, for example a welcome mail on day one and a tip on day three."
+msgstr "Tetiklemeli e-posta, kişiler ürününüze ilk kez giriş yaptıktan belirli bir süre sonra her birine bir tasarım gönderir; örneğin ilk gün bir karşılama postası, üçüncü gün bir ipucu."
+
 #: src/features/settings/channels/email/form.ts
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 msgstr "Kullanıcı adı TLS ya da STARTTLS ister: parola hiçbir zaman şifresiz gönderilmez."
@@ -1793,6 +1841,10 @@ msgstr "Yaklaşık {from}–{to}"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "about done by {end}"
 msgstr "tahminen {end} itibarıyla biter"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "About using {inboxName}, sent to everyone who matches. Never advertising."
+msgstr "{inboxName} kullanımıyla ilgili, uyan herkese gider. Asla reklam değildir."
 
 #: src/features/status/SettingsTab.tsx
 msgid "Accent colour"
@@ -1863,6 +1915,8 @@ msgid "Actions only"
 msgstr "Yalnızca eylemler"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/text.ts
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2305,6 +2359,7 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -2509,6 +2564,14 @@ msgstr "Uyarıları da gönder"
 #: src/features/settings/webhooks/events.tsx
 msgid "Also send message.created for members' internal notes. Internal events are never sent."
 msgstr "Üyelerin iç notları için de message.created gönderilir. İç olaylar hiçbir zaman gönderilmez."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Also send to people who first signed in during the last"
+msgstr "Şu kadar gün içinde ilk kez giriş yapmış kişilere de gönder: son"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Also sent to"
+msgstr "Ayrıca gönderilir"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -3442,6 +3505,7 @@ msgstr "Sütunlara dön"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "Taslağa dön"
 
@@ -3566,6 +3630,10 @@ msgstr "Kişiyi engelle"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "Engelli"
+
+#: src/components/common/text.ts
+msgid "Blocked contact"
+msgstr "Engellenmiş kişi"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Blocked contacts"
@@ -4337,6 +4405,10 @@ msgstr "Amazon SES hesabınızın bölgesini seçin."
 msgid "Choose the selected block’s image"
 msgstr "Seçili bloğun görselini seç"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Choose what starts the e-mail and how long after it the mail goes out."
+msgstr "E-postayı neyin başlattığını ve ardından ne kadar sonra gideceğini seçin."
+
 #: src/features/migrations/Wizard.tsx
 msgid "Chosen in the Map step"
 msgstr "Eşleştir adımında seçilir"
@@ -4707,6 +4779,10 @@ msgstr "Onay e-postası gönderildi"
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Confirmed"
 msgstr "Onaylandı"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Confirmed by"
+msgstr "Onaylayan"
 
 #: src/features/broadcasts/Growth.tsx
 msgid "confirmed in the last {days} days"
@@ -5249,7 +5325,12 @@ msgstr "Tıklamaları say"
 msgid "Count visitors on your site"
 msgstr "Sitenizin ziyaretçilerini sayın"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "counted so far"
+msgstr "şimdiye kadar sayıldı"
+
 #: src/components/common/Linked.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Counting…"
 msgstr "Sayılıyor…"
 
@@ -5573,11 +5654,19 @@ msgstr "Tarih"
 msgid "Dates"
 msgstr "Tarihler"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "days"
+msgstr "gün"
+
 #: src/features/broadcasts/Growth.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "Günler"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "days (0 to 30)"
+msgstr "gün (0 ile 30 arası)"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Days before it expires that the check fails. 0 only checks that it is valid."
@@ -5627,6 +5716,7 @@ msgstr "Vekiller"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -5650,6 +5740,7 @@ msgstr "Sil"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Delete “{name}”?"
 msgstr "“{name}” silinsin mi?"
 
@@ -6295,6 +6386,7 @@ msgid "done"
 msgstr "yapıldı"
 
 #: src/components/common/BulkReport.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -6412,6 +6504,7 @@ msgid "Draft:"
 msgstr "Taslak:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -6458,6 +6551,10 @@ msgstr "Önce süresi dolacaklar"
 #: src/components/common/SlaBadge.tsx
 msgid "Due soon"
 msgstr "Süresi dolmak üzere"
+
+#: src/components/common/text.ts
+msgid "Due too long before it could be sent"
+msgstr "Zamanı gelmişti ama gönderilemeden çok uzun süre geçti"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
@@ -6595,6 +6692,10 @@ msgstr "Her monitör, kapalıyken bir bileşenin durumunu belirler."
 msgid "Each new e-mail starts a conversation; replies continue it."
 msgstr "Her yeni e-posta bir konuşma başlatır; yanıtlar aynı konuşmada sürer."
 
+#: src/features/broadcasts/Composer.tsx
+msgid "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
+msgstr "Her kişi, postasının zamanı geldiğinde bir kez kontrol edilir: ayrılan, geri dönen veya artık uymayan kişi hiçbir şey almaz."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Each product has its own name, branding, hours, team and channels"
 msgstr "Her ürünün kendi adı, markası, çalışma saatleri, ekibi ve kanalları vardır"
@@ -6615,7 +6716,9 @@ msgstr "Her yanıt gelen kutusunda bir konuşmadır. İlk 50 tanesi burada liste
 msgid "Each with all its messages and notes"
 msgstr "Her biri tüm mesajları ve notlarıyla"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -7048,6 +7151,14 @@ msgstr "Listelerdeki herkes. Koşullar yalnızca özellikleri hepsine uyan kişi
 #: src/features/contact/ContactsPage.tsx
 msgid "Everyone who has written to your products"
 msgstr "Ürünlerinize yazan herkes"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Everyone who signed in while it was running, once each."
+msgstr "Çalıştığı sürede giriş yapan herkes, her biri bir kez."
+
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "Everyone who signs in. Conditions keep only contacts whose attributes match, all of them."
+msgstr "Giriş yapan herkes. Koşullar yalnızca özellikleri uyan kişileri tutar; hepsi uymalıdır."
 
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Everyone with access to the inbox reads it."
@@ -8260,6 +8371,7 @@ msgstr "Ana makine adı"
 msgid "Hostname and certificate"
 msgstr "Ana makine adı ve sertifika"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "hours"
 msgstr "saat"
@@ -8932,6 +9044,10 @@ msgstr "Müşterilere sizin adınıza, incelenmeden e-posta ve sohbet yanıtı g
 msgid "It can write drafts only. A member reviews and sends them; this workspace does not let assistants send."
 msgstr "Yalnızca taslak yazabilir. Bir üye inceleyip gönderir; bu çalışma alanı asistanların göndermesine izin vermiyor."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "It cannot resume yet:"
+msgstr "Henüz devam ettirilemiyor:"
+
 #: src/features/conversation/ChatView.tsx
 msgid "It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "Ekibiniz ve müşteri için görünmez olur. 30 gün boyunca Çöp kutusundan geri alabilirsiniz; ardından mesajları ve dosyalarıyla birlikte kalıcı olarak silinir."
@@ -8993,6 +9109,10 @@ msgstr "Yuva'ya ulaştığı anda burada görünür."
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 msgid "It stays a draft until you send or schedule it. Replies come to the inbox you pick."
 msgstr "Gönderene ya da zamanlayana kadar taslak kalır. Yanıtlar seçtiğiniz gelen kutusuna gelir."
+
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "It stays a draft until you start it. Replies come to the inbox you pick."
+msgstr "Siz başlatana kadar taslak kalır. Yanıtlar seçtiğiniz gelen kutusuna düşer."
 
 #: src/features/migrations/parts.tsx
 msgid "It stops for good. What was imported stays, and the mailbox's credentials are deleted. Nothing changes in the mailbox."
@@ -9073,6 +9193,7 @@ msgstr "Üyeler, ekibin verdiği gelen kutusu erişimini kaybeder; ekibe atanmı
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Its report and the list of recipients are deleted. Conversations opened by replies stay."
 msgstr "Raporu ve alıcı listesi silinir. Yanıtlarla açılan konuşmalar kalır."
 
@@ -9482,6 +9603,7 @@ msgstr "Herkese açık sayfada ve genel durumda yer almaz."
 msgid "Left out"
 msgstr "Dışarıda kalanlar"
 
+#: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Left out by a condition or language"
 msgstr "Bir koşul ya da dil nedeniyle dışarıda"
@@ -9734,6 +9856,7 @@ msgstr "Talepler listeleniyor…"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Lists"
@@ -9760,6 +9883,8 @@ msgstr "Görselleri yükle"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -9953,6 +10078,10 @@ msgstr "E-postalar gönderenin kendi alan adının anahtarıyla imzalanmıyor; G
 msgid "Mail leaves at each broadcast’s pace, so providers accept it."
 msgstr "Posta, sağlayıcıların kabul etmesi için her bültenin kendi hızında gider."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "mail made"
+msgstr "oluşturulan posta"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Mail only you read"
 msgstr "Yalnızca sizin okuduğunuz posta"
@@ -10037,6 +10166,10 @@ msgstr "Posta listesi (List-Id)"
 #: src/features/contact/ContactDetail.tsx
 msgid "Mailing lists"
 msgstr "E-posta listeleri"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Mails go out {sentence}, once to each person. Pausing stops sending but keeps counting people who sign in, so nobody is missed. You can stop it for good at any time."
+msgstr "Postalar {sentence} gider, her kişiye bir kez. Duraklatmak göndermeyi durdurur ama giriş yapanları saymaya devam eder, böylece kimse atlanmaz. İstediğiniz zaman tamamen durdurabilirsiniz."
 
 #: src/features/broadcasts/SendTime.tsx
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
@@ -10221,9 +10354,17 @@ msgstr "Yanıt olarak işaretlendi"
 msgid "Marked as unread"
 msgstr "Okunmadı olarak işaretlendi"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "Marketing"
+msgstr "Pazarlama"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Marketing content"
 msgstr "Pazarlama içeriği"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Marketing, to list subscribers"
+msgstr "Pazarlama, liste aboneleri için"
 
 #: src/features/migrations/text.ts
 msgid "mbox files in a zip"
@@ -10492,6 +10633,7 @@ msgstr "Bana atanan"
 msgid "Minor"
 msgstr "Küçük"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
@@ -10729,6 +10871,10 @@ msgstr "Gönderiler arasında gezin"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the status pages"
 msgstr "Durum sayfalarında gezin"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the triggered e-mails"
+msgstr "Tetiklemeli e-postalar arasında gez"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to a stage"
@@ -11250,6 +11396,12 @@ msgstr "Eklenecek yeni aboneler"
 msgid "New team"
 msgstr "Yeni ekip"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "New triggered e-mail"
+msgstr "Yeni tetiklemeli e-posta"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
 msgstr "Yeni güncelleme · {stage}"
@@ -11601,6 +11753,10 @@ msgstr "Taslak yok."
 #: src/features/contact/ContactsPage.tsx
 msgid "no e-mail"
 msgstr "e-posta yok"
+
+#: src/components/common/text.ts
+msgid "No e-mail address"
+msgstr "E-posta adresi yok"
 
 #: src/features/conversation/Feedback.tsx
 msgid "No e-mail address given"
@@ -12040,6 +12196,7 @@ msgstr "bekleyen yok"
 msgid "Nobody is waiting for a reply."
 msgstr "Yanıt bekleyen kimse yok."
 
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/home/HomePage.tsx
 msgid "Nobody is waiting."
 msgstr "Bekleyen kimse yok."
@@ -12057,6 +12214,10 @@ msgstr "Bu dönemde puanla birlikte yorum bırakan olmadı."
 msgid "Nobody matches."
 msgstr "Eşleşen kimse yok."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nobody new is counted, mail not sent yet is skipped, and it cannot start again. Mail that already went out stays sent."
+msgstr "Yeni kimse sayılmaz, henüz gönderilmemiş postalar atlanır ve yeniden başlatılamaz. Giden postalar gönderilmiş kalır."
+
 #: src/features/team/TeamPage.tsx
 msgid "Nobody on the team works on this product yet."
 msgstr "Bu üründe henüz ekipten kimse çalışmıyor."
@@ -12064,6 +12225,14 @@ msgstr "Bu üründe henüz ekipten kimse çalışmıyor."
 #: src/features/broadcasts/Report.tsx
 msgid "Nobody opened a link yet."
 msgstr "Henüz kimse bir bağlantıyı açmadı."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nobody was left out."
+msgstr "Dışarıda bırakılan kimse yok."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Nobody who signed in before gets it."
+msgstr "Daha önce giriş yapmış kimse almaz."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Nobody would get this mail. Pick lists with subscribers, or loosen the conditions."
@@ -12264,6 +12433,10 @@ msgstr "Spam değil"
 msgid "Not spam ({0})"
 msgstr "Spam değil ({0})"
 
+#: src/components/common/text.ts
+msgid "Not subscribed to the lists"
+msgstr "Listelere abone değil"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "Aynı değil"
@@ -12366,6 +12539,7 @@ msgid "Nothing here"
 msgstr "Burada henüz bir şey yok"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Nothing here."
 msgstr "Burada bir şey yok."
 
@@ -12412,6 +12586,10 @@ msgstr "Hiçbir şey kaybolmaz: kopyalama sürdüğünde kaldığı yerden devam
 #: src/features/feedback/FeedbackList.tsx
 msgid "Nothing is resolved yet."
 msgstr "Henüz çözülen yok."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nothing is sent while it is paused, but people who sign in are still counted, so nobody is missed."
+msgstr "Duraklatıldığı sürece hiçbir şey gönderilmez, ancak giriş yapanlar sayılmaya devam eder; böylece kimse atlanmaz."
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -12676,6 +12854,10 @@ msgstr "Tek gelen kutusu"
 msgid "One mail every {every}"
 msgstr "{every} arayla bir posta"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "One mail to each person, a set time after they sign in"
+msgstr "Giriş yaptıktan belirli bir süre sonra her kişiye bir posta"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "Her satıra bir tane, 1 ile 20 arası. Sohbet penceresini yalnızca bu kaynaklardaki sayfalar kullanabilir."
@@ -12836,6 +13018,14 @@ msgstr "Çalışma alanını yalnızca sahipler silebilir."
 msgid "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
 msgstr "Sohbeti yalnızca bu adreslerdeki sayfalar açabilir. Yol olmadan, şema ve alan adını yazın."
 
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "Only people subscribed to one of these lists get the mail. Fixed after the draft."
+msgstr "Yalnızca bu listelerden birine abone olanlar postayı alır. Taslaktan sonra değiştirilemez."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Only people who sign in from now on get it."
+msgstr "Yalnızca bundan sonra giriş yapanlar alır."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "Only read requests are sent. You can close this page; the scan goes on and the list in Settings shows when it is done."
 msgstr "Yalnızca okuma istekleri gönderilir. Bu sayfayı kapatabilirsiniz; tarama sürer ve bittiğinde Ayarlar'daki liste bunu gösterir."
@@ -12880,6 +13070,10 @@ msgstr "Yalnızca sahipleri okur. İçinde ne olduğunu değil, ne barındırdı
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
 msgstr "Yalnızca yanıtlayanlar"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Only to people subscribed to the lists you pick. For news, offers and newsletters."
+msgstr "Yalnızca seçtiğiniz listelere abone olanlara. Haber, kampanya ve bültenler için."
 
 #: src/features/contact/ContactVisits.tsx
 msgid "Only visits made after they agreed to a persistent id and signed in."
@@ -13194,6 +13388,10 @@ msgstr "Yanıtı aç"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Open the settings"
 msgstr "Ayarları aç"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the triggered e-mail"
+msgstr "Tetiklemeli e-postayı aç"
 
 #: src/features/team/TeamPage.tsx
 msgid "Open the unassigned queue"
@@ -13554,11 +13752,16 @@ msgstr "Bunu sayfalarınızda kapanış body etiketinden önce yapıştırın"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Pause"
 msgstr "Duraklat"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Pause or resume"
+msgstr "Duraklat veya devam ettir"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Pause or resume sending"
@@ -13575,6 +13778,7 @@ msgstr "duraklatıldı"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -13639,6 +13843,10 @@ msgstr "Beklemede"
 msgid "Pending deliveries are dropped with it."
 msgstr "Bekleyen gönderimler de onunla birlikte silinir."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "People"
+msgstr "Kişiler"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
 msgstr "Kişiler listeye abonelik formundan katılır ya da izinleriyle eklenir. Bültenler listelere gider."
@@ -13684,6 +13892,10 @@ msgstr "Her bağlantıyı en az bir kez açan kişiler. Tarayıcı tıklamaları
 #: src/features/broadcasts/ListForm.tsx
 msgid "People who sign up on a form confirm by clicking a link in a mail before they are subscribed."
 msgstr "Formdan kaydolan kişiler, abone olmadan önce bir e-postadaki bağlantıya tıklayarak onaylar."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "People who signed in and whose mail is not due yet, the one due first on top."
+msgstr "Giriş yapmış ama postasının zamanı henüz gelmemiş kişiler; zamanı ilk gelen en üstte."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "People who wrote to {product}"
@@ -13988,6 +14200,10 @@ msgstr "{provider} konuşmalarının gideceği gelen kutularını, her temsilcin
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Pick the list the people join."
 msgstr "İnsanların katılacağı listeyi seçin."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Pick the lists whose subscribers get this mail."
+msgstr "Aboneleri bu postayı alacak listeleri seçin."
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Pick the one you use. Setup steps and scopes are on API & MCP."
@@ -14900,6 +15116,7 @@ msgid "Remote images can tell the sender that you opened the mail."
 msgstr "Uzak görseller, postayı açtığınızı gönderene bildirebilir."
 
 #: src/components/common/DesignChoice.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -15219,6 +15436,7 @@ msgstr "yanıtladı"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Replied"
 msgstr "Yanıtladı"
@@ -15440,6 +15658,7 @@ msgstr "Yanıtlanan: {to}"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Report"
 msgstr "Rapor"
 
@@ -15608,6 +15827,7 @@ msgstr "Sonuçlar, son 24 saat"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -15651,6 +15871,11 @@ msgstr "İncele ve yayımla"
 msgid "Review and send"
 msgstr "Gözden geçir ve gönder"
 
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Review and start"
+msgstr "İncele ve başlat"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Review draft"
 msgstr "Taslağı gözden geçir"
@@ -15664,6 +15889,12 @@ msgstr "Anahtarı gözden geçirin"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Review, then send or schedule"
 msgstr "Gözden geçir, sonra gönder ya da zamanla"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Review, then start or schedule"
+msgstr "İncele, sonra başlat veya zamanla"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Revisions"
@@ -15951,6 +16182,7 @@ msgstr "Listeyi görünüm olarak kaydet"
 
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
@@ -16118,6 +16350,7 @@ msgstr "Ekran görüntüsü eklendi"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Search"
@@ -16373,6 +16606,10 @@ msgstr "Yardım makalesi gönder"
 msgid "Send a help article ({articleKey})"
 msgstr "Yardım makalesi gönder ({articleKey})"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Send a mail a set time after people sign up, once each"
+msgstr "Kişiler kaydolduktan belirli bir süre sonra, her birine bir kez posta gönderin"
+
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Send a mail to {address} from any mailbox."
 msgstr "Herhangi bir posta kutusundan {address} adresine bir posta gönderin."
@@ -16392,6 +16629,7 @@ msgstr "Yeni kod gönder"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Send a test"
 msgstr "Deneme gönder"
 
@@ -16465,6 +16703,10 @@ msgstr "E-posta tasarımıyla gönder"
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "Daveti gönder"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Send it after"
+msgstr "Şu kadar sonra gönder"
 
 #: src/components/common/SendLater.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -16664,6 +16906,7 @@ msgid "Sending reputation of this product, kept apart from the others"
 msgstr "Bu ürünün gönderim itibarı, diğerlerinden ayrı tutulur"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Sending stopped and cannot go on, for example because its channel was removed."
 msgstr "Gönderim durdu ve devam edemiyor; örneğin kanalı kaldırıldığı için."
 
@@ -16684,6 +16927,10 @@ msgstr "Gönderiliyor, ardından bitirilecek…"
 #: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "Gönderiliyor…"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Sends"
+msgstr "Gönderilir"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Sends {when}"
@@ -16730,8 +16977,11 @@ msgid "sent"
 msgstr "gönderildi"
 
 #: src/components/common/Linked.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/status/Notices.tsx
 #: src/features/team/TeamPage.tsx
@@ -16846,6 +17096,18 @@ msgstr "Hizmet hesabı (JSON)"
 msgid "Service account set"
 msgstr "Hizmet hesabı tanımlı"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "Service mail"
+msgstr "Hizmet postası"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Service mail is only about using the product: onboarding, the person’s account, a request for feedback. Advertising, newsletters and offers need the marketing basis."
+msgstr "Hizmet postası yalnızca ürünün kullanımıyla ilgilidir: tanıtım turu, kişinin hesabı, geri bildirim isteği. Reklam, bülten ve kampanyalar pazarlama dayanağını gerektirir."
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Service mail, about using the product"
+msgstr "Hizmet postası, ürünün kullanımıyla ilgili"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES kiracısı"
@@ -16934,6 +17196,7 @@ msgstr "Kuruluyor…"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/ChannelState.tsx
@@ -17382,6 +17645,10 @@ msgstr "Bu gelen kutusunun konuşmaları, mesajları ve geri bildirimleri için 
 msgid "Signed HTTP calls to your backend when conversations, messages, feedback or contacts change. Endpoints of the workspace receive every inbox; inbox endpoints only their inbox."
 msgstr "Konuşmalar, mesajlar, geri bildirimler veya kişiler değiştiğinde arka ucunuza imzalı HTTP çağrıları. Çalışma alanı uç noktaları tüm gelen kutularını, gelen kutusu uç noktaları yalnızca kendi kutusunu alır."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Signed in"
+msgstr "Giriş yaptı"
+
 #: src/features/migrations/text.ts
 msgid "Signed in to {provider}"
 msgstr "{provider} hesabında oturum açıldı"
@@ -17700,6 +17967,10 @@ msgstr "Bazı metinler çevrilmedi, bu yüzden {base} metin görünüyor: {langu
 msgid "Someone answers a forward"
 msgstr "Biri bir iletiyi yanıtladı"
 
+#: src/features/broadcasts/Composer.tsx
+msgid "Someone first signs in"
+msgstr "Biri ilk kez giriş yapar"
+
 #: src/features/settings/notifications/events.ts
 msgid "Someone mentions me in a note"
 msgstr "Biri beni bir notta andığında"
@@ -17849,6 +18120,14 @@ msgstr "Postayı sizin için yıldızlar."
 msgid "Start"
 msgstr "Başla"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start “{name}” now?"
+msgstr "“{name}” şimdi başlatılsın mı?"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start “{name}” on {when}?"
+msgstr "“{name}” {when} tarihinde başlatılsın mı?"
+
 #: src/features/setup/previews.tsx
 msgid "Start a discussion"
 msgstr "Tartışma başlat"
@@ -17865,6 +18144,10 @@ msgstr "Konuşmayı başlat"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Start migration"
 msgstr "Taşımayı başlat"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start now"
+msgstr "Şimdi başlat"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
@@ -17914,6 +18197,15 @@ msgstr "Başlar"
 msgid "Starts a public thread with the text below. The conversation stays private and unchanged; nothing else of it is shown."
 msgstr "Aşağıdaki metinle herkese açık bir tartışma başlatır. Konuşma gizli ve olduğu gibi kalır; başka hiçbir kısmı gösterilmez."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Starts on {local}"
+msgstr "{local} tarihinde başlar"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/Composer.tsx
+msgid "Starts when"
+msgstr "Şu zaman başlar"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
@@ -17947,6 +18239,7 @@ msgstr "Düştüğündeki durum"
 #: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -17995,9 +18288,14 @@ msgstr "Adım adım rehber"
 msgid "Steps"
 msgstr "Adımlar"
 
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Stop"
 msgstr "Durdur"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Stop “{name}”?"
+msgstr "“{name}” durdurulsun mu?"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Stop overriding {name}"
@@ -18011,7 +18309,14 @@ msgstr "İmzalamayı durdur"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "Yeni aboneleri almayı durdurun. Kayıtlar ve geçmiş raporlar kalır, listeyi geri yükleyebilirsiniz."
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Stop the triggered e-mail"
+msgstr "Tetiklemeli e-postayı durdur"
+
 #: src/components/common/SlaBadge.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Stopped"
 msgstr "Durduruldu"
 
@@ -18022,6 +18327,10 @@ msgstr "Asistanların ve anahtarların müşterilere mesaj göndermesi durduruld
 #: src/features/settings/audit/sentence.ts
 msgid "Stopped keys and assistants from scheduling broadcasts"
 msgstr "Anahtarların ve asistanların toplu e-posta zamanlaması durduruldu"
+
+#: src/components/common/text.ts
+msgid "Stopped this inbox’s mail of this kind"
+msgstr "Bu gelen kutusunun bu türdeki postalarını durdurdu"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
@@ -18235,6 +18544,18 @@ msgstr "Talep etiketleri"
 #: src/features/home/HomePage.tsx
 msgid "take"
 msgstr "üstlen"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Take {name} off the waiting list"
+msgstr "{name} kişisini bekleme listesinden çıkar"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Take {name} off the waiting list?"
+msgstr "{name} bekleme listesinden çıkarılsın mı?"
+
+#: src/components/common/text.ts
+msgid "Taken off the waiting list"
+msgstr "Bekleme listesinden çıkarıldı"
 
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Takes sign-ups again and brings the list back to the broadcast audience picker."
@@ -19636,6 +19957,10 @@ msgstr "Bağlantılı bir e-posta alırlar ve ancak bağlantıya tıklayınca ab
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "Bir bağlantı içeren e-posta alırlar; bildirimleri yalnızca bağlantıya tıkladıktan sonra alırlar."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "They get no mail from this triggered e-mail, and it never counts them again."
+msgstr "Bu tetiklemeli e-postadan posta almazlar ve bir daha sayılmazlar."
+
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
@@ -19973,6 +20298,10 @@ msgstr "Bu liste arşivlendi. Yeni abone almaz ve yayınlar onu seçemez."
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "Bu liste özel olduğu için formlar onu sunmaz. Form kullanmak için ayarlardan herkese açık yapın."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This mail is about using {inboxName}, not advertising."
+msgstr "Bu posta {inboxName} kullanımıyla ilgilidir, reklam değildir."
 
 #: src/features/mail/MailThread.tsx
 msgid "This mail is not available"
@@ -20377,9 +20706,28 @@ msgstr "Çöp kutusu, hiç aktarılmaz"
 msgid "Trends"
 msgstr "Eğilimler"
 
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Trigger"
 msgstr "Tetikleyici"
+
+#: src/app/Sidebar.tsx
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Triggered"
+msgstr "Tetiklemeli"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Triggered e-mail"
+msgstr "Tetiklemeli e-posta"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Triggered e-mails"
+msgstr "Tetiklemeli e-postalar"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
@@ -20388,6 +20736,7 @@ msgstr "Bu sunucu için bu sertifikaya güven. Bunu yalnızca sunucu sizinse ve 
 #: src/app/Gate.tsx
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -20604,6 +20953,7 @@ msgstr "Takibi bırak"
 msgid "Unfollowed"
 msgstr "Takip bırakıldı"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "Birim"
@@ -20666,6 +21016,7 @@ msgstr "Kilit açıldı"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
@@ -20963,9 +21314,17 @@ msgstr "1 ile 65535 arası bir port girin."
 msgid "Use a separate account for broadcasts"
 msgstr "Bültenler için ayrı bir hesap kullan"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Use a whole number from 0 to 30."
+msgstr "0 ile 30 arasında bir tam sayı girin."
+
 #: src/features/status/SettingsTab.tsx
 msgid "Use a whole number from 7 to 90."
 msgstr "7 ile 90 arasında bir tam sayı kullanın."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Use a whole number of at most 365 days."
+msgstr "En fazla 365 gün olacak şekilde bir tam sayı girin."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"
@@ -21263,7 +21622,10 @@ msgid "waiting"
 msgstr "bekliyor"
 
 #: src/components/common/Linked.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
@@ -21365,6 +21727,10 @@ msgstr "Kayıt bekleniyor"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "Aşağıdaki iki DNS kaydı bekleniyor. Alan adınızı yönettiğiniz yerde ekleyin; DNS değişikliklerinin yayılması biraz sürebilir. Yuva her 10 dakikada bir bakar; kayıtlar 7 gün içinde bulunmazsa talep sona erer."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "waiting for their time"
+msgstr "zamanını bekliyor"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
@@ -21484,6 +21850,10 @@ msgstr "Çarşamba"
 msgid "Weeks"
 msgstr "Haftalar"
 
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "Welcome mail"
+msgstr "Karşılama postası"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "Hoş geldin e-postası"
@@ -21541,6 +21911,10 @@ msgstr "Bu gelen kutusu ne için?"
 msgid "What is this key for?"
 msgstr "Bu anahtar ne için?"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "What it sends"
+msgstr "Ne gönderir"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "Neler yapabilir?"
@@ -21560,6 +21934,10 @@ msgstr "Müşteriler hangi adı görsün?"
 #: src/features/migrations/ChooseStep.tsx
 msgid "What should Yuva bring?"
 msgstr "Yuva neleri getirsin?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "What starts it, why people get it, its lists, its sender and its name stay as they are."
+msgstr "Neyin başlattığı, kişilerin neden aldığı, listeleri, göndereni ve adı olduğu gibi kalır."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the chat promises, and what it asks after closing"
@@ -21702,6 +22080,10 @@ msgstr "Ne zaman geri gelsinler?"
 msgid "When someone else assigns it to you."
 msgstr "Başka biri onu sana atadığında."
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "when someone first signs in to {inbox}"
+msgstr "biri {inbox} ürününe ilk kez giriş yaptığında"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "When someone sends feedback, it will be in the list."
 msgstr "Biri geri bildirim gönderdiğinde listede görünür."
@@ -21786,6 +22168,10 @@ msgstr "Hangi ürün için?"
 msgid "Which sites will show the chat?"
 msgstr "Sohbet hangi sitelerde görünecek?"
 
+#: src/features/broadcasts/Composer.tsx
+msgid "While it is paused you can change the content, the conditions, the delay and the sending options. Resuming checks it again."
+msgstr "Duraklatılmışken içeriği, koşulları, gecikmeyi ve gönderim seçeneklerini değiştirebilirsiniz. Devam ettirirken yeniden denetlenir."
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "While off, no deliveries are made."
 msgstr "Kapalıyken hiçbir gönderim yapılmaz."
@@ -21822,6 +22208,14 @@ msgstr "Erişimi, anahtarları ve verileri kimin değiştirdiği"
 msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
 msgstr "Üyeleri, erişimi, anahtarları, webhook'ları, posta hesaplarını, saklama süresini ve dışa aktarmaları kimin değiştirdiği, en yeniden başlayarak. Yalnızca sahipler görür."
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Who confirmed it and when is saved in the audit log."
+msgstr "Kimin ne zaman onayladığı denetim kaydına yazılır."
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Who gets it"
+msgstr "Kim alır"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Who is it for?"
 msgstr "Kimin için?"
@@ -21841,6 +22235,16 @@ msgstr "Kime verelim?"
 #: src/components/common/SettingsStrip.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Kimi destekliyorsunuz: ad, saatler, ekip, gönderici"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Why they get it"
+msgstr "Neden alırlar"
+
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/Trigger.tsx
+msgid "Why they get this mail"
+msgstr "Bu postayı neden alırlar"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Windows-1252 (Western Excel)"
@@ -21936,6 +22340,7 @@ msgid "Work with conversations from Cursor's agent. It acts as you, with the acc
 msgstr "Cursor'ın ajanından konuşmalarla çalışın. Sizin adınıza, yalnızca izin verdiğiniz erişimle çalışır."
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Working…"
 msgstr "Çalışılıyor…"
 
@@ -22100,6 +22505,10 @@ msgstr "{asked} tarihinde bülten göndermek için izin istediniz. Taslaklar ve 
 #: src/features/home/HomePage.tsx
 msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
 msgstr "Bülten göndermek için izin istediniz. Taslaklar ve zamanlamalar yönetici yanıt verene kadar bekler."
+
+#: src/features/broadcasts/Composer.tsx
+msgid "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
+msgstr "Gecikmeyi, hızı ve gönderim saatlerini değiştirebilir, tıklama saymayı kapatabilirsiniz. İçeriği değiştirmek için önce duraklatın."
 
 #: src/features/account/ConnectPage.tsx
 msgid "You can close this window and go back to {host}."
@@ -22494,6 +22903,7 @@ msgid "Yuva could not read the provider's discovery document. Check the issuer U
 msgstr "Yuva sağlayıcının keşif belgesini okuyamadı. Veren (issuer) adresini kontrol edin."
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva tıklamaları ve yanıtları sayar. Açılmaları izlemez."
 

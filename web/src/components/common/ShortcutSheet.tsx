@@ -128,6 +128,13 @@ export const BROADCAST_KEYS = {
   hours: "h",
 } as const
 
+export const TRIGGERED_KEYS = {
+  create: "c",
+  waiting: "w",
+  edit: "E",
+  stop: "X",
+} as const
+
 export const LIST_KEYS = {
   create: "c",
   import: "i",
@@ -446,6 +453,23 @@ export function ShortcutSheet({
         [k(BROADCAST_KEYS.summary), t`Broadcast`],
         [k(BROADCAST_KEYS.pace), t`Change pace`],
         [k(BROADCAST_KEYS.hours), t`Change the sending hours`],
+      ],
+    },
+    {
+      title: t`Triggered e-mails`,
+      items: [
+        [["↑", "↓"], t`Move through the triggered e-mails`],
+        [["↵"], t`Open the triggered e-mail`],
+        [k(TRIGGERED_KEYS.create), t`New triggered e-mail`],
+        [k(BROADCAST_KEYS.test), t`Send a test`],
+        [k(BROADCAST_KEYS.send), t`Review, then start or schedule`],
+        [k(BROADCAST_KEYS.pause), t`Pause or resume`],
+        [k(TRIGGERED_KEYS.edit), t`Edit`],
+        [k(TRIGGERED_KEYS.stop), t`Stop the triggered e-mail`],
+        [k(BROADCAST_KEYS.report), t`Report`],
+        [k(TRIGGERED_KEYS.waiting), t`Waiting`],
+        [k(BROADCAST_KEYS.deliveries), t`Sent`],
+        [k(BROADCAST_KEYS.summary), t`Settings`],
       ],
     },
     {

@@ -203,4 +203,6 @@ export const keys = {
     replied: boolean,
     locale: string
   ) => ["ws", ws, "broadcasts", "deliveries", id, state, q, replied, locale] as const,
+  broadcastEnrollments: (ws: string, id: string, state: string) =>
+    ["ws", ws, "broadcasts", "enrollments", id, state] as const,
 }

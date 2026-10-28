@@ -339,6 +339,14 @@ msgstr "{count, plural, one {# சிக்கல்} other {# சிக்க�
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
 msgstr "{count, plural, one {# அஞ்சல்பெட்டி} other {# அஞ்சல்பெட்டிகள்}}"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "{count, plural, one {# person who signed in before gets it too.} other {# people who signed in before get it too.}}"
+msgstr "{count, plural, one {# person who signed in before gets it too.} other {# people who signed in before get it too.}}"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
+msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# அனுமதி} other {# அனுமதிகள்}}"
@@ -402,6 +410,10 @@ msgstr "{date}: {newCount} புதியவை, {replyCount} முதல் �
 #: src/features/status/StatusPages.tsx
 msgid "{days, plural, one {# day} other {# days}}"
 msgstr "{days, plural, one {# நாள்} other {# நாட்கள்}}"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "{days, plural, one {people who signed in during the last # day} other {people who signed in during the last # days}}"
+msgstr "{days, plural, one {people who signed in during the last # day} other {people who signed in during the last # days}}"
 
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{days, plural, one {Waiting for # day} other {Waiting for # days}}"
@@ -567,6 +579,10 @@ msgstr "{mentions, plural, one {உங்களைப் பற்றிய க�
 msgid "{met} met, {breached} breached"
 msgstr "{met} நிறைவேறின, {breached} மீறப்பட்டன"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "{minutes, plural, one {# minute after someone first signs in to {inbox}} other {# minutes after someone first signs in to {inbox}}}"
+msgstr "{minutes, plural, one {# minute after someone first signs in to {inbox}} other {# minutes after someone first signs in to {inbox}}}"
+
 #: src/features/conversation/ConversationStatus.tsx
 msgid "{minutes, plural, one {Waiting for # minute} other {Waiting for # minutes}}"
 msgstr "{minutes, plural, one {# நிமிடமாகக் காத்திருக்கிறது} other {# நிமிடங்களாகக் காத்திருக்கிறது}}"
@@ -587,6 +603,10 @@ msgstr "{mxDomain}-க்கு MX பதிவு இல்லை, எனவே
 msgid "{n, plural, one {# app} other {# apps}}"
 msgstr "{n, plural, one {# ஆப்} other {# ஆப்கள்}}"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
 msgstr "{n, plural, one {# ஆவணத் தளம்} other {# ஆவணத் தளங்கள்}}"
@@ -594,6 +614,10 @@ msgstr "{n, plural, one {# ஆவணத் தளம்} other {# ஆவணத�
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# e-mail address} other {# e-mail addresses}}"
 msgstr "{n, plural, one {# மின்னஞ்சல் முகவரி} other {# மின்னஞ்சல் முகவரிகள்}}"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "{n, plural, one {# hour after someone first signs in to {inbox}} other {# hours after someone first signs in to {inbox}}}"
+msgstr "{n, plural, one {# hour after someone first signs in to {inbox}} other {# hours after someone first signs in to {inbox}}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# mailing list} other {# mailing lists}}"
@@ -985,6 +1009,10 @@ msgstr "{satisfied} திருப்தி"
 msgid "{sent} of {all} done"
 msgstr "{all}-இல் {sent} முடிந்தது"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{sent} sent"
+msgstr "{sent} sent"
+
 #: src/features/docs/PagesTab.tsx
 msgid "{share} helpful"
 msgstr "{share} உதவியது"
@@ -1053,6 +1081,10 @@ msgstr "{up} உதவியது"
 msgid "{updates, plural, one {# update} other {# updates}}"
 msgstr "{updates, plural, one {# புதுப்பிப்பு} other {# புதுப்பிப்புகள்}}"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "{utc} UTC. Nobody is counted until then; you can go back to the draft until it starts."
+msgstr "{utc} UTC. Nobody is counted until then; you can go back to the draft until it starts."
+
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "{utc} UTC. The recipients are taken then; you can go back to the draft until it starts."
 msgstr "{utc} UTC. பெறுநர்கள் அப்போது தீர்மானிக்கப்படுவர்; தொடங்கும் வரை வரைவுக்குத் திரும்பலாம்."
@@ -1076,9 +1108,17 @@ msgstr "{views, plural, one {# பார்வை} other {# பார்வை�
 msgid "{votes} votes"
 msgstr "{votes} வாக்குகள்"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+
 #: src/features/home/HomePage.tsx
 msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
 msgstr "{waiting, plural, one {இன்பாக்ஸில் திற} other {இன்பாக்ஸில் அனைத்து {total}}}"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{waiting} waiting"
+msgstr "{waiting} waiting"
 
 #: src/features/status/StatusPages.tsx
 msgid "{watching, plural, one {Watched by # monitor} other {Watched by # monitors}}"
@@ -1148,6 +1188,10 @@ msgstr "= {mineTime} உங்கள் நேரத்தில் ({mineName})
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "= {utcTime} UTC"
 msgstr "= {utcTime} UTC"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "0 sends it as soon as the person signs in. The longest delay is 365 days."
+msgstr "0 sends it as soon as the person signs in. The longest delay is 365 days."
 
 #: src/features/settings/webhooks/parts.tsx
 msgid "1 attempt"
@@ -1754,6 +1798,10 @@ msgstr "திரியின் கடைசிச் செய்தி வர
 msgid "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
 msgstr "A thread reply that starts with this goes to the customer. Any other reply becomes a note. An exclamation mark and 1 to 20 lowercase letters."
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "A triggered e-mail sends one design to each person a set time after they first sign in to your product, for example a welcome mail on day one and a tip on day three."
+msgstr "A triggered e-mail sends one design to each person a set time after they first sign in to your product, for example a welcome mail on day one and a tip on day three."
+
 #: src/features/settings/channels/email/form.ts
 msgid "A username needs TLS or STARTTLS: the password is never sent unencrypted."
 msgstr "பயனர் பெயருக்கு TLS அல்லது STARTTLS தேவை: கடவுச்சொல் ஒருபோதும் குறியாக்கமின்றி அனுப்பப்படாது."
@@ -1793,6 +1841,10 @@ msgstr "சுமார் {from} முதல் {to} வரை"
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "about done by {end}"
 msgstr "{end}-க்குள் முடிந்துவிடும்"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "About using {inboxName}, sent to everyone who matches. Never advertising."
+msgstr "About using {inboxName}, sent to everyone who matches. Never advertising."
 
 #: src/features/status/SettingsTab.tsx
 msgid "Accent colour"
@@ -1863,6 +1915,8 @@ msgid "Actions only"
 msgstr "செயல்கள் மட்டும்"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/components/common/text.ts
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
 msgid "Active"
@@ -2305,6 +2359,7 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -2509,6 +2564,14 @@ msgstr "Also post warnings"
 #: src/features/settings/webhooks/events.tsx
 msgid "Also send message.created for members' internal notes. Internal events are never sent."
 msgstr "உறுப்பினர்களின் உள் குறிப்புகளுக்கும் message.created அனுப்பு. உள் நிகழ்வுகள் ஒருபோதும் அனுப்பப்படுவதில்லை."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Also send to people who first signed in during the last"
+msgstr "Also send to people who first signed in during the last"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Also sent to"
+msgstr "Also sent to"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -3442,6 +3505,7 @@ msgstr "நெடுவரிசைகளுக்குத் திரும�
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "வரைவுக்குத் திரும்பு"
 
@@ -3566,6 +3630,10 @@ msgstr "தொடர்பைத் தடு"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Blocked"
 msgstr "தடுக்கப்பட்டது"
+
+#: src/components/common/text.ts
+msgid "Blocked contact"
+msgstr "Blocked contact"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Blocked contacts"
@@ -4337,6 +4405,10 @@ msgstr "உங்கள் Amazon SES கணக்கின் பிராந�
 msgid "Choose the selected block’s image"
 msgstr "தேர்ந்தெடுத்த தொகுதியின் படத்தைத் தேர்ந்தெடுங்கள்"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Choose what starts the e-mail and how long after it the mail goes out."
+msgstr "Choose what starts the e-mail and how long after it the mail goes out."
+
 #: src/features/migrations/Wizard.tsx
 msgid "Chosen in the Map step"
 msgstr "வரைபடப் படியில் தேர்ந்தெடுக்கப்பட்டது"
@@ -4707,6 +4779,10 @@ msgstr "உறுதிப்படுத்தல் அஞ்சல் அன�
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "Confirmed"
 msgstr "உறுதிப்படுத்தப்பட்டது"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Confirmed by"
+msgstr "Confirmed by"
 
 #: src/features/broadcasts/Growth.tsx
 msgid "confirmed in the last {days} days"
@@ -5249,7 +5325,12 @@ msgstr "கிளிக்குகளை எண்ணு"
 msgid "Count visitors on your site"
 msgstr "உங்கள் தளத்தின் பார்வையாளர்களை எண்ணுங்கள்"
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "counted so far"
+msgstr "counted so far"
+
 #: src/components/common/Linked.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 msgid "Counting…"
 msgstr "எண்ணப்படுகிறது…"
 
@@ -5573,11 +5654,19 @@ msgstr "தேதி"
 msgid "Dates"
 msgstr "தேதிகள்"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "days"
+msgstr "days"
+
 #: src/features/broadcasts/Growth.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Days"
 msgstr "நாட்கள்"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "days (0 to 30)"
+msgstr "days (0 to 30)"
 
 #: src/features/status/MonitorHttpFields.tsx
 msgid "Days before it expires that the check fails. 0 only checks that it is valid."
@@ -5627,6 +5716,7 @@ msgstr "பிரதிநிதிகள்"
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/docs/discussions/Bulk.tsx
@@ -5650,6 +5740,7 @@ msgstr "நீக்கு"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Delete “{name}”?"
 msgstr "“{name}”-ஐ நீக்கவா?"
 
@@ -6295,6 +6386,7 @@ msgid "done"
 msgstr "முடிந்தது"
 
 #: src/components/common/BulkReport.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Import.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/conversation/ConversationStatus.tsx
@@ -6412,6 +6504,7 @@ msgid "Draft:"
 msgstr "வரைவு:"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/mail/MailDrafts.tsx
 #: src/features/migrations/parts.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -6458,6 +6551,10 @@ msgstr "முதலில் அருகிலுள்ள கெடு"
 #: src/components/common/SlaBadge.tsx
 msgid "Due soon"
 msgstr "விரைவில் கெடு"
+
+#: src/components/common/text.ts
+msgid "Due too long before it could be sent"
+msgstr "Due too long before it could be sent"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Duplicate the selected block"
@@ -6595,6 +6692,10 @@ msgstr "ஒவ்வொரு கண்காணிப்பும் செய�
 msgid "Each new e-mail starts a conversation; replies continue it."
 msgstr "ஒவ்வொரு புதிய மின்னஞ்சலும் உரையாடலைத் தொடங்கும்; பதில்கள் அதைத் தொடரும்."
 
+#: src/features/broadcasts/Composer.tsx
+msgid "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
+msgstr "Each person is checked once, when their mail is due: someone who left, bounced or no longer matches gets nothing."
+
 #: src/features/settings/ProductsPage.tsx
 msgid "Each product has its own name, branding, hours, team and channels"
 msgstr "ஒவ்வொரு தயாரிப்புக்கும் தனி பெயர், பிராண்டிங், நேரம், குழு, சேனல்கள் உண்டு"
@@ -6615,7 +6716,9 @@ msgstr "ஒவ்வொரு பதிலும் இன்பாக்ஸி�
 msgid "Each with all its messages and notes"
 msgstr "ஒவ்வொன்றும் அதன் அனைத்துச் செய்திகள், குறிப்புகளுடன்"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/OwnDraftCard.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -7048,6 +7151,14 @@ msgstr "பட்டியல்களில் உள்ள அனைவரு�
 #: src/features/contact/ContactsPage.tsx
 msgid "Everyone who has written to your products"
 msgstr "உங்கள் தயாரிப்புகளுக்கு எழுதிய அனைவரும்"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Everyone who signed in while it was running, once each."
+msgstr "Everyone who signed in while it was running, once each."
+
+#: src/features/broadcasts/AudienceBuilder.tsx
+msgid "Everyone who signs in. Conditions keep only contacts whose attributes match, all of them."
+msgstr "Everyone who signs in. Conditions keep only contacts whose attributes match, all of them."
 
 #: src/components/common/MailboxOwnerChoice.tsx
 msgid "Everyone with access to the inbox reads it."
@@ -8260,6 +8371,7 @@ msgstr "ஹோஸ்ட் பெயர்"
 msgid "Hostname and certificate"
 msgstr "ஹோஸ்ட் பெயரும் சான்றிதழும்"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "hours"
 msgstr "மணிநேரம்"
@@ -8932,6 +9044,10 @@ msgstr "இது மதிப்பாய்வு இல்லாமல் உ
 msgid "It can write drafts only. A member reviews and sends them; this workspace does not let assistants send."
 msgstr "இது வரைவுகளை மட்டுமே எழுத முடியும். ஒரு உறுப்பினர் அவற்றை மதிப்பாய்வு செய்து அனுப்புவார்; இந்தப் பணியிடம் உதவியாளர்களை அனுப்ப அனுமதிக்காது."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "It cannot resume yet:"
+msgstr "It cannot resume yet:"
+
 #: src/features/conversation/ChatView.tsx
 msgid "It disappears for your team and for the customer. You can restore it from the Trash for 30 days, then it is deleted for good with its messages and files."
 msgstr "இது உங்கள் குழுவுக்கும் வாடிக்கையாளருக்கும் மறைந்துவிடும். 30 நாட்களுக்கு குப்பையிலிருந்து மீட்டெடுக்கலாம்; அதன் பிறகு செய்திகள், கோப்புகளுடன் நிரந்தரமாக நீக்கப்படும்."
@@ -8993,6 +9109,10 @@ msgstr "இது Yuva-வை அடைந்ததும் இங்கே த
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 msgid "It stays a draft until you send or schedule it. Replies come to the inbox you pick."
 msgstr "நீங்கள் அனுப்பும் அல்லது திட்டமிடும் வரை இது வரைவாகவே இருக்கும். பதில்கள் நீங்கள் தேர்ந்த இன்பாக்ஸுக்கு வரும்."
+
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "It stays a draft until you start it. Replies come to the inbox you pick."
+msgstr "It stays a draft until you start it. Replies come to the inbox you pick."
 
 #: src/features/migrations/parts.tsx
 msgid "It stops for good. What was imported stays, and the mailbox's credentials are deleted. Nothing changes in the mailbox."
@@ -9073,6 +9193,7 @@ msgstr "அதன் உறுப்பினர்கள் குழு வழ
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Its report and the list of recipients are deleted. Conversations opened by replies stay."
 msgstr "இதன் அறிக்கையும் பெறுநர் பட்டியலும் நீக்கப்படும். பதில்களால் திறந்த உரையாடல்கள் இருக்கும்."
 
@@ -9482,6 +9603,7 @@ msgstr "பொதுப் பக்கத்திலும் அதன் ஒ
 msgid "Left out"
 msgstr "விடுபட்டது"
 
+#: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 msgid "Left out by a condition or language"
 msgstr "நிபந்தனை அல்லது மொழியால் விடுபட்டது"
@@ -9734,6 +9856,7 @@ msgstr "டிக்கெட்டுகளைப் பட்டியலி�
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Lists"
@@ -9760,6 +9883,8 @@ msgstr "படங்களை ஏற்று"
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactNotes.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -9953,6 +10078,10 @@ msgstr "அஞ்சல் அனுப்புநரின் சொந்த 
 msgid "Mail leaves at each broadcast’s pace, so providers accept it."
 msgstr "ஒவ்வொரு ஒளிபரப்பின் வேகத்தில் மெயில் செல்கிறது, அதனால் வழங்குநர்கள் அதை ஏற்கிறார்கள்."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "mail made"
+msgstr "mail made"
+
 #: src/features/settings/SettingsColumn.tsx
 msgid "Mail only you read"
 msgstr "நீங்கள் மட்டும் படிக்கும் அஞ்சல்"
@@ -10037,6 +10166,10 @@ msgstr "அஞ்சல் பட்டியல் (List-Id)"
 #: src/features/contact/ContactDetail.tsx
 msgid "Mailing lists"
 msgstr "அஞ்சல் பட்டியல்கள்"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Mails go out {sentence}, once to each person. Pausing stops sending but keeps counting people who sign in, so nobody is missed. You can stop it for good at any time."
+msgstr "Mails go out {sentence}, once to each person. Pausing stops sending but keeps counting people who sign in, so nobody is missed. You can stop it for good at any time."
 
 #: src/features/broadcasts/SendTime.tsx
 msgid "Mails go out between {start} and {end} {city} time ({utcStart}–{utcEnd} UTC) and continue the next day."
@@ -10221,9 +10354,17 @@ msgstr "தீர்வு எனக் குறிக்கப்பட்ட�
 msgid "Marked as unread"
 msgstr "படிக்காதது எனக் குறிக்கப்பட்டது"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "Marketing"
+msgstr "Marketing"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Marketing content"
 msgstr "சந்தைப்படுத்தல் உள்ளடக்கம்"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Marketing, to list subscribers"
+msgstr "Marketing, to list subscribers"
 
 #: src/features/migrations/text.ts
 msgid "mbox files in a zip"
@@ -10492,6 +10633,7 @@ msgstr "என்னுடையவை"
 msgid "Minor"
 msgstr "சிறிய"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "minutes"
@@ -10729,6 +10871,10 @@ msgstr "இடுகைகளில் நகருங்கள்"
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move through the status pages"
 msgstr "நிலைப் பக்கங்களுக்கிடையே செல்"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Move through the triggered e-mails"
+msgstr "Move through the triggered e-mails"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Move to a stage"
@@ -11250,6 +11396,12 @@ msgstr "புதிய சந்தாதாரர்கள் சேர்க�
 msgid "New team"
 msgstr "புதிய குழு"
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "New triggered e-mail"
+msgstr "New triggered e-mail"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "New update · {stage}"
 msgstr "புதிய புதுப்பிப்பு · {stage}"
@@ -11601,6 +11753,10 @@ msgstr "வரைவுகள் இல்லை."
 #: src/features/contact/ContactsPage.tsx
 msgid "no e-mail"
 msgstr "மின்னஞ்சல் இல்லை"
+
+#: src/components/common/text.ts
+msgid "No e-mail address"
+msgstr "No e-mail address"
 
 #: src/features/conversation/Feedback.tsx
 msgid "No e-mail address given"
@@ -12040,6 +12196,7 @@ msgstr "யாரும் காத்திருக்கவில்லை"
 msgid "Nobody is waiting for a reply."
 msgstr "யாரும் பதிலுக்காகக் காத்திருக்கவில்லை."
 
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/home/HomePage.tsx
 msgid "Nobody is waiting."
 msgstr "யாரும் காத்திருக்கவில்லை."
@@ -12057,6 +12214,10 @@ msgstr "இந்தக் காலத்தில் யாரும் மத
 msgid "Nobody matches."
 msgstr "யாரும் பொருந்தவில்லை."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nobody new is counted, mail not sent yet is skipped, and it cannot start again. Mail that already went out stays sent."
+msgstr "Nobody new is counted, mail not sent yet is skipped, and it cannot start again. Mail that already went out stays sent."
+
 #: src/features/team/TeamPage.tsx
 msgid "Nobody on the team works on this product yet."
 msgstr "குழுவில் இன்னும் யாரும் இந்தத் தயாரிப்பில் பணிபுரியவில்லை."
@@ -12064,6 +12225,14 @@ msgstr "குழுவில் இன்னும் யாரும் இந
 #: src/features/broadcasts/Report.tsx
 msgid "Nobody opened a link yet."
 msgstr "இன்னும் யாரும் இணைப்பைத் திறக்கவில்லை."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nobody was left out."
+msgstr "Nobody was left out."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Nobody who signed in before gets it."
+msgstr "Nobody who signed in before gets it."
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Nobody would get this mail. Pick lists with subscribers, or loosen the conditions."
@@ -12264,6 +12433,10 @@ msgstr "ஸ்பேம் அல்ல"
 msgid "Not spam ({0})"
 msgstr "ஸ்பேம் அல்ல ({0})"
 
+#: src/components/common/text.ts
+msgid "Not subscribed to the lists"
+msgstr "Not subscribed to the lists"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "ஒரே நபர் அல்ல"
@@ -12366,6 +12539,7 @@ msgid "Nothing here"
 msgstr "இங்கே இன்னும் எதுவும் இல்லை"
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Nothing here."
 msgstr "இங்கே எதுவும் இல்லை."
 
@@ -12412,6 +12586,10 @@ msgstr "எதுவும் இழக்கப்படாது: அது �
 #: src/features/feedback/FeedbackList.tsx
 msgid "Nothing is resolved yet."
 msgstr "Nothing is resolved yet."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Nothing is sent while it is paused, but people who sign in are still counted, so nobody is missed."
+msgstr "Nothing is sent while it is paused, but people who sign in are still counted, so nobody is missed."
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -12676,6 +12854,10 @@ msgstr "ஓர் இன்பாக்ஸ்"
 msgid "One mail every {every}"
 msgstr "ஒவ்வொரு {every}-க்கும் ஓர் அஞ்சல்"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "One mail to each person, a set time after they sign in"
+msgstr "One mail to each person, a set time after they sign in"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "One per line, 1 to 20. Only pages on these origins can use the widget."
 msgstr "ஒரு வரிக்கு ஒன்று, 1 முதல் 20 வரை. இந்த மூலங்களில் உள்ள பக்கங்கள் மட்டுமே விட்ஜெட்டைப் பயன்படுத்தலாம்."
@@ -12836,6 +13018,14 @@ msgstr "உரிமையாளர்கள் மட்டுமே பணி�
 msgid "Only pages on these addresses can open the chat. Enter scheme and host, without a path."
 msgstr "இந்த முகவரிகளில் உள்ள பக்கங்கள் மட்டுமே அரட்டையைத் திறக்கலாம். பாதை இல்லாமல் திட்டமும் ஹோஸ்ட்டும் உள்ளிடுங்கள்."
 
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "Only people subscribed to one of these lists get the mail. Fixed after the draft."
+msgstr "Only people subscribed to one of these lists get the mail. Fixed after the draft."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Only people who sign in from now on get it."
+msgstr "Only people who sign in from now on get it."
+
 #: src/features/migrations/ChooseStep.tsx
 msgid "Only read requests are sent. You can close this page; the scan goes on and the list in Settings shows when it is done."
 msgstr "படிக்கும் கோரிக்கைகள் மட்டுமே அனுப்பப்படும். இந்தப் பக்கத்தை மூடலாம்; ஸ்கேன் தொடரும், முடிந்ததும் Settings-இல் உள்ள பட்டியல் காட்டும்."
@@ -12880,6 +13070,10 @@ msgstr "அவற்றின் உரிமையாளர்கள் மட�
 #: src/features/broadcasts/Report.tsx
 msgid "Only those who replied"
 msgstr "பதிலளித்தவர்கள் மட்டும்"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Only to people subscribed to the lists you pick. For news, offers and newsletters."
+msgstr "Only to people subscribed to the lists you pick. For news, offers and newsletters."
 
 #: src/features/contact/ContactVisits.tsx
 msgid "Only visits made after they agreed to a persistent id and signed in."
@@ -13194,6 +13388,10 @@ msgstr "பதிலைத் திற"
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "Open the settings"
 msgstr "அமைப்புகளைத் திற"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Open the triggered e-mail"
+msgstr "Open the triggered e-mail"
 
 #: src/features/team/TeamPage.tsx
 msgid "Open the unassigned queue"
@@ -13554,11 +13752,16 @@ msgstr "இதை உங்கள் பக்கங்களின் body ம�
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Pause"
 msgstr "இடைநிறுத்து"
+
+#: src/components/common/ShortcutSheet.tsx
+msgid "Pause or resume"
+msgstr "Pause or resume"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Pause or resume sending"
@@ -13575,6 +13778,7 @@ msgstr "இடைநிறுத்தப்பட்டது"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/SlaBadge.tsx
 #: src/components/common/text.ts
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/channels/ChannelState.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -13639,6 +13843,10 @@ msgstr "நிலுவையில்"
 msgid "Pending deliveries are dropped with it."
 msgstr "நிலுவையில் உள்ள விநியோகங்கள் இதனுடன் கைவிடப்படும்."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "People"
+msgstr "People"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "People join it on a subscribe form or are added with their consent. Broadcasts go to lists."
 msgstr "மக்கள் சந்தா படிவத்தில் இதில் சேர்கின்றனர் அல்லது அவர்களின் ஒப்புதலுடன் சேர்க்கப்படுகின்றனர். ஒளிபரப்புகள் பட்டியல்களுக்குச் செல்லும்."
@@ -13684,6 +13892,10 @@ msgstr "ஒவ்வோர் இணைப்பையும் குறைந�
 #: src/features/broadcasts/ListForm.tsx
 msgid "People who sign up on a form confirm by clicking a link in a mail before they are subscribed."
 msgstr "படிவத்தில் பதிவு செய்பவர்கள் சந்தா செய்யப்படும் முன், அஞ்சலில் உள்ள இணைப்பைக் கிளிக் செய்து உறுதிப்படுத்துவர்."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "People who signed in and whose mail is not due yet, the one due first on top."
+msgstr "People who signed in and whose mail is not due yet, the one due first on top."
 
 #: src/features/contact/ContactsPage.tsx
 msgid "People who wrote to {product}"
@@ -13988,6 +14200,10 @@ msgstr "{provider}-இன் உரையாடல்களுக்கான �
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Pick the list the people join."
 msgstr "மக்கள் சேரும் பட்டியலைத் தேர்ந்தெடுக்கவும்."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Pick the lists whose subscribers get this mail."
+msgstr "Pick the lists whose subscribers get this mail."
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Pick the one you use. Setup steps and scopes are on API & MCP."
@@ -14900,6 +15116,7 @@ msgid "Remote images can tell the sender that you opened the mail."
 msgstr "தொலைநிலைப் படங்கள் நீங்கள் அஞ்சலைத் திறந்ததை அனுப்புநருக்குத் தெரிவிக்கலாம்."
 
 #: src/components/common/DesignChoice.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/settings/addresses/AddressesPage.tsx
@@ -15219,6 +15436,7 @@ msgstr "பதிலளித்தனர்"
 
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/reports/ReportPages.tsx
 msgid "Replied"
 msgstr "பதிலளித்தனர்"
@@ -15440,6 +15658,7 @@ msgstr "{to}-க்குப் பதிலளிக்கிறது"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Report"
 msgstr "அறிக்கை"
 
@@ -15608,6 +15827,7 @@ msgstr "முடிவுகள், கடந்த 24 மணி நேரம�
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -15651,6 +15871,11 @@ msgstr "மதிப்பாய்வு செய்து இடு"
 msgid "Review and send"
 msgstr "மதிப்பாய்வு செய்து அனுப்பு"
 
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Review and start"
+msgstr "Review and start"
+
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Review draft"
 msgstr "வரைவை மதிப்பாய்வு செய்"
@@ -15664,6 +15889,12 @@ msgstr "விசையை மதிப்பாய்வு செய்"
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Review, then send or schedule"
 msgstr "மதிப்பாய்வு செய்து, பிறகு அனுப்பு அல்லது திட்டமிடு"
+
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Review, then start or schedule"
+msgstr "Review, then start or schedule"
 
 #: src/components/common/ShortcutSheet.tsx
 msgid "Revisions"
@@ -15951,6 +16182,7 @@ msgstr "பட்டியலைக் காட்சியாகச் சே�
 
 #: src/components/common/SaveBar.tsx
 #: src/features/account/AccountPage.tsx
+#: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
@@ -16118,6 +16350,7 @@ msgstr "Screenshots attached"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Search"
@@ -16373,6 +16606,10 @@ msgstr "உதவிக் கட்டுரையை அனுப்பு"
 msgid "Send a help article ({articleKey})"
 msgstr "உதவிக் கட்டுரையை அனுப்பு ({articleKey})"
 
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Send a mail a set time after people sign up, once each"
+msgstr "Send a mail a set time after people sign up, once each"
+
 #: src/features/setup/email/EmailTestStep.tsx
 msgid "Send a mail to {address} from any mailbox."
 msgstr "எந்த அஞ்சல்பெட்டியிலிருந்தும் {address}-க்கு அஞ்சல் அனுப்புங்கள்."
@@ -16392,6 +16629,7 @@ msgstr "புதிய குறியீட்டை அனுப்பு"
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Send a test"
 msgstr "சோதனையை அனுப்பு"
 
@@ -16465,6 +16703,10 @@ msgstr "மின்னஞ்சல் வடிவமைப்பில் அ�
 #: src/features/team/TeamPage.tsx
 msgid "Send invite"
 msgstr "அழைப்பை அனுப்பு"
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Send it after"
+msgstr "Send it after"
 
 #: src/components/common/SendLater.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -16664,6 +16906,7 @@ msgid "Sending reputation of this product, kept apart from the others"
 msgstr "இந்த தயாரிப்பின் அனுப்பும் நற்பெயர், மற்றவற்றிலிருந்து தனியாக"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Sending stopped and cannot go on, for example because its channel was removed."
 msgstr "அனுப்புதல் நின்றுவிட்டது, தொடர முடியாது, எ.கா. அதன் சேனல் அகற்றப்பட்டதால்."
 
@@ -16684,6 +16927,10 @@ msgstr "அனுப்பிப் பிறகு மூடுகிறது�
 #: src/features/mail/MailThread.tsx
 msgid "Sending…"
 msgstr "அனுப்புகிறது…"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Sends"
+msgstr "Sends"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "Sends {when}"
@@ -16730,8 +16977,11 @@ msgid "sent"
 msgstr "அனுப்பப்பட்டது"
 
 #: src/components/common/Linked.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/status/Notices.tsx
 #: src/features/team/TeamPage.tsx
@@ -16846,6 +17096,18 @@ msgstr "சேவைக் கணக்கு (JSON)"
 msgid "Service account set"
 msgstr "சேவைக் கணக்கு அமைக்கப்பட்டது"
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "Service mail"
+msgstr "Service mail"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Service mail is only about using the product: onboarding, the person’s account, a request for feedback. Advertising, newsletters and offers need the marketing basis."
+msgstr "Service mail is only about using the product: onboarding, the person’s account, a request for feedback. Advertising, newsletters and offers need the marketing basis."
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Service mail, about using the product"
+msgstr "Service mail, about using the product"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "SES tenant"
 msgstr "SES டெனன்ட்"
@@ -16934,6 +17196,7 @@ msgstr "அமைக்கிறது…"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/ChannelState.tsx
@@ -17382,6 +17645,10 @@ msgstr "இந்த இன்பாக்ஸின் உரையாடல்�
 msgid "Signed HTTP calls to your backend when conversations, messages, feedback or contacts change. Endpoints of the workspace receive every inbox; inbox endpoints only their inbox."
 msgstr "உரையாடல்கள், செய்திகள், கருத்துகள் அல்லது தொடர்புகள் மாறும்போது உங்கள் பின்தளத்துக்குக் கையொப்பமிட்ட HTTP அழைப்புகள். பணியிட முனைகள் ஒவ்வோர் இன்பாக்ஸையும் பெறும்; இன்பாக்ஸ் முனைகள் தம் இன்பாக்ஸை மட்டும்."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Signed in"
+msgstr "Signed in"
+
 #: src/features/migrations/text.ts
 msgid "Signed in to {provider}"
 msgstr "{provider}-இல் உள்நுழைந்தது"
@@ -17700,6 +17967,10 @@ msgstr "சில உரைகள் மொழிபெயர்க்கப்�
 msgid "Someone answers a forward"
 msgstr "யாரோ ஒரு முன்னனுப்புதலுக்குப் பதிலளிக்கிறார்"
 
+#: src/features/broadcasts/Composer.tsx
+msgid "Someone first signs in"
+msgstr "Someone first signs in"
+
 #: src/features/settings/notifications/events.ts
 msgid "Someone mentions me in a note"
 msgstr "யாராவது குறிப்பில் என்னைக் குறிப்பிடுகிறார்"
@@ -17849,6 +18120,14 @@ msgstr "உங்களுக்காக மின்னஞ்சலுக்�
 msgid "Start"
 msgstr "தொடங்கு"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start “{name}” now?"
+msgstr "Start “{name}” now?"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start “{name}” on {when}?"
+msgstr "Start “{name}” on {when}?"
+
 #: src/features/setup/previews.tsx
 msgid "Start a discussion"
 msgstr "விவாதத்தைத் தொடங்கு"
@@ -17865,6 +18144,10 @@ msgstr "உரையாடலைத் தொடங்கு"
 #: src/features/migrations/ReviewStep.tsx
 msgid "Start migration"
 msgstr "இடம்பெயர்வைத் தொடங்கு"
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Start now"
+msgstr "Start now"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Start over"
@@ -17914,6 +18197,15 @@ msgstr "தொடக்கம்"
 msgid "Starts a public thread with the text below. The conversation stays private and unchanged; nothing else of it is shown."
 msgstr "கீழே உள்ள உரையுடன் பொது இழையைத் தொடங்கும். உரையாடல் தனிப்பட்டதாகவும் மாறாமலும் இருக்கும்; அதில் வேறு எதுவும் காட்டப்படாது."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Starts on {local}"
+msgstr "Starts on {local}"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/Composer.tsx
+msgid "Starts when"
+msgstr "Starts when"
+
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (போர்ட் 587)"
@@ -17947,6 +18239,7 @@ msgstr "செயலிழந்தால் நிலை"
 #: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
@@ -17995,9 +18288,14 @@ msgstr "படிப்படியான வழிகாட்டி"
 msgid "Steps"
 msgstr "படிகள்"
 
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/migrations/UploadStep.tsx
 msgid "Stop"
 msgstr "நிறுத்து"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Stop “{name}”?"
+msgstr "Stop “{name}”?"
 
 #: src/features/settings/notifications/InboxOverrides.tsx
 msgid "Stop overriding {name}"
@@ -18011,7 +18309,14 @@ msgstr "கையொப்பமிடுவதை நிறுத்து"
 msgid "Stop taking new subscribers. Records and past reports stay, and you can restore it."
 msgstr "புதிய சந்தாதாரர்களை ஏற்பதை நிறுத்து. பதிவுகளும் முந்தைய அறிக்கைகளும் இருக்கும், பட்டியலை மீட்டெடுக்கலாம்."
 
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Stop the triggered e-mail"
+msgstr "Stop the triggered e-mail"
+
 #: src/components/common/SlaBadge.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Stopped"
 msgstr "நிறுத்தப்பட்டது"
 
@@ -18022,6 +18327,10 @@ msgstr "உதவியாளர்களும் விசைகளும் �
 #: src/features/settings/audit/sentence.ts
 msgid "Stopped keys and assistants from scheduling broadcasts"
 msgstr "விசைகளும் உதவியாளர்களும் ஒளிபரப்புகளை அட்டவணையிடுவது தடுக்கப்பட்டது"
+
+#: src/components/common/text.ts
+msgid "Stopped this inbox’s mail of this kind"
+msgstr "Stopped this inbox’s mail of this kind"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "Storage"
@@ -18235,6 +18544,18 @@ msgstr "குறிச்சொற்கள்"
 #: src/features/home/HomePage.tsx
 msgid "take"
 msgstr "எடு"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Take {name} off the waiting list"
+msgstr "Take {name} off the waiting list"
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Take {name} off the waiting list?"
+msgstr "Take {name} off the waiting list?"
+
+#: src/components/common/text.ts
+msgid "Taken off the waiting list"
+msgstr "Taken off the waiting list"
 
 #: src/features/broadcasts/ListSettings.tsx
 msgid "Takes sign-ups again and brings the list back to the broadcast audience picker."
@@ -19636,6 +19957,10 @@ msgstr "அவர்களுக்கு இணைப்புடன் அஞ�
 msgid "They get a mail with a link and receive notices only after they click it."
 msgstr "அவர்களுக்கு இணைப்புடன் ஒரு அஞ்சல் வரும்; அதைக் கிளிக் செய்த பிறகே அறிவிப்புகளைப் பெறுவார்கள்."
 
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "They get no mail from this triggered e-mail, and it never counts them again."
+msgstr "They get no mail from this triggered e-mail, and it never counts them again."
+
 #: src/features/broadcasts/SubscriberBulk.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 msgid "They get no more mail from this list, and it is recorded that the team unsubscribed them. Only they can subscribe again, by confirming a mail."
@@ -19973,6 +20298,10 @@ msgstr "இந்தப் பட்டியல் காப்பகப்ப�
 #: src/features/broadcasts/FormSnippets.tsx
 msgid "This list is private, so forms do not offer it. Make it public in the settings to use a form."
 msgstr "இந்தப் பட்டியல் தனிப்பட்டது, எனவே படிவங்கள் அதை வழங்காது. படிவத்தைப் பயன்படுத்த அமைப்புகளில் அதைப் பொதுவாக்குங்கள்."
+
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "This mail is about using {inboxName}, not advertising."
+msgstr "This mail is about using {inboxName}, not advertising."
 
 #: src/features/mail/MailThread.tsx
 msgid "This mail is not available"
@@ -20377,9 +20706,28 @@ msgstr "குப்பை, ஒருபோதும் இறக்குமத
 msgid "Trends"
 msgstr "போக்குகள்"
 
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Trigger"
 msgstr "தூண்டி"
+
+#: src/app/Sidebar.tsx
+#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Triggered"
+msgstr "Triggered"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "Triggered e-mail"
+msgstr "Triggered e-mail"
+
+#: src/app/Palette.tsx
+#: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "Triggered e-mails"
+msgstr "Triggered e-mails"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Trust this certificate for this server. Do this only if it is your own server and the fingerprint matches."
@@ -20388,6 +20736,7 @@ msgstr "இந்தச் சேவையகத்துக்கு இந்�
 #: src/app/Gate.tsx
 #: src/features/account/AccountLayout.tsx
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/migrations/UploadStep.tsx
@@ -20604,6 +20953,7 @@ msgstr "பின்தொடர்வதை நிறுத்து"
 msgid "Unfollowed"
 msgstr "பின்தொடர்வது நிறுத்தப்பட்டது"
 
+#: src/features/broadcasts/Trigger.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Unit"
 msgstr "அலகு"
@@ -20666,6 +21016,7 @@ msgstr "திறக்கப்பட்டது"
 #: src/app/TeamMenu.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactBulk.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
@@ -20963,9 +21314,17 @@ msgstr "1 முதல் 65535 வரையிலான போர்ட்ட�
 msgid "Use a separate account for broadcasts"
 msgstr "ஒளிபரப்புகளுக்குத் தனிக் கணக்கைப் பயன்படுத்து"
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Use a whole number from 0 to 30."
+msgstr "Use a whole number from 0 to 30."
+
 #: src/features/status/SettingsTab.tsx
 msgid "Use a whole number from 7 to 90."
 msgstr "7 முதல் 90 வரையிலான முழு எண்ணைப் பயன்படுத்துங்கள்."
+
+#: src/features/broadcasts/Trigger.tsx
+msgid "Use a whole number of at most 365 days."
+msgstr "Use a whole number of at most 365 days."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"
@@ -21263,7 +21622,10 @@ msgid "waiting"
 msgstr "காத்திருக்கிறது"
 
 #: src/components/common/Linked.tsx
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/migrations/parts.tsx
@@ -21365,6 +21727,10 @@ msgstr "Waiting for the record"
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for the two DNS records below. Add them where you manage the domain; DNS changes can take a while to spread. Yuva looks every 10 minutes, and the claim ends if they are not found within 7 days."
 msgstr "கீழே உள்ள இரண்டு DNS பதிவுகளுக்காகக் காத்திருக்கிறது. நீங்கள் டொமைனை நிர்வகிக்கும் இடத்தில் அவற்றைச் சேர்க்கவும்; DNS மாற்றங்கள் பரவ நேரம் ஆகலாம். Yuva ஒவ்வொரு 10 நிமிடமும் பார்க்கும், 7 நாட்களுக்குள் கிடைக்காவிட்டால் உரிமைகோரல் முடிவடையும்."
+
+#: src/features/broadcasts/TriggeredPage.tsx
+msgid "waiting for their time"
+msgstr "waiting for their time"
 
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Waiting for validation"
@@ -21484,6 +21850,10 @@ msgstr "புதன்கிழமை"
 msgid "Weeks"
 msgstr "வாரங்கள்"
 
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+msgid "Welcome mail"
+msgstr "Welcome mail"
+
 #: src/features/broadcasts/ListForm.tsx
 msgid "Welcome receipt"
 msgstr "வரவேற்புப் பற்றுச்சீட்டு"
@@ -21541,6 +21911,10 @@ msgstr "இந்த இன்பாக்ஸ் எதற்கு?"
 msgid "What is this key for?"
 msgstr "இந்த விசை எதற்கு?"
 
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "What it sends"
+msgstr "What it sends"
+
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "What may it do?"
 msgstr "அது என்ன செய்யலாம்?"
@@ -21560,6 +21934,10 @@ msgstr "வாடிக்கையாளர்கள் என்ன பார�
 #: src/features/migrations/ChooseStep.tsx
 msgid "What should Yuva bring?"
 msgstr "Yuva எதைக் கொண்டுவர வேண்டும்?"
+
+#: src/features/broadcasts/Composer.tsx
+msgid "What starts it, why people get it, its lists, its sender and its name stay as they are."
+msgstr "What starts it, why people get it, its lists, its sender and its name stay as they are."
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "What the chat promises, and what it asks after closing"
@@ -21702,6 +22080,10 @@ msgstr "அவை எப்போது திரும்ப வேண்டு
 msgid "When someone else assigns it to you."
 msgstr "வேறு யாராவது அதை உங்களுக்கு ஒதுக்கும்போது."
 
+#: src/features/broadcasts/Trigger.tsx
+msgid "when someone first signs in to {inbox}"
+msgstr "when someone first signs in to {inbox}"
+
 #: src/features/feedback/FeedbackList.tsx
 msgid "When someone sends feedback, it will be in the list."
 msgstr "When someone sends feedback, it will be in the list."
@@ -21786,6 +22168,10 @@ msgstr "இது எந்தத் தயாரிப்புக்கு?"
 msgid "Which sites will show the chat?"
 msgstr "எந்தத் தளங்கள் அரட்டையைக் காட்டும்?"
 
+#: src/features/broadcasts/Composer.tsx
+msgid "While it is paused you can change the content, the conditions, the delay and the sending options. Resuming checks it again."
+msgstr "While it is paused you can change the content, the conditions, the delay and the sending options. Resuming checks it again."
+
 #: src/features/settings/webhooks/sections.tsx
 msgid "While off, no deliveries are made."
 msgstr "அணைந்திருக்கும்போது, விநியோகங்கள் எதுவும் நடக்காது."
@@ -21822,6 +22208,14 @@ msgstr "அணுகல், விசைகள், தரவை யார் ம
 msgid "Who changed members, access, keys, webhooks, mail accounts, retention and exports, newest first. Only owners see this."
 msgstr "உறுப்பினர்கள், அணுகல், விசைகள், வெப்ஹுக்குகள், அஞ்சல் கணக்குகள், சேமிப்பு, ஏற்றுமதிகளை யார் மாற்றினார், புதியவை முதலில். இதை உரிமையாளர்கள் மட்டுமே பார்ப்பார்கள்."
 
+#: src/features/broadcasts/ReviewPanel.tsx
+msgid "Who confirmed it and when is saved in the audit log."
+msgstr "Who confirmed it and when is saved in the audit log."
+
+#: src/features/broadcasts/Composer.tsx
+msgid "Who gets it"
+msgstr "Who gets it"
+
 #: src/features/inbox/ChatList.tsx
 msgid "Who is it for?"
 msgstr "இது யாருக்கு?"
@@ -21841,6 +22235,16 @@ msgstr "யார் இதை எடுக்க வேண்டும்?"
 #: src/components/common/SettingsStrip.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "நீங்கள் யாருக்கு ஆதரவு தருகிறீர்கள்: பெயர், நேரம், குழு, அனுப்புநர்"
+
+#: src/features/broadcasts/BroadcastPage.tsx
+msgid "Why they get it"
+msgstr "Why they get it"
+
+#: src/features/broadcasts/NewBroadcastDialog.tsx
+#: src/features/broadcasts/ReviewPanel.tsx
+#: src/features/broadcasts/Trigger.tsx
+msgid "Why they get this mail"
+msgstr "Why they get this mail"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Windows-1252 (Western Excel)"
@@ -21936,6 +22340,7 @@ msgid "Work with conversations from Cursor's agent. It acts as you, with the acc
 msgstr "Cursor-இன் முகவரிலிருந்து உரையாடல்களுடன் பணியாற்றுங்கள். நீங்கள் அனுமதிக்கும் அணுகலுடன் உங்களைப் போலவே செயல்படும்."
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/TriggeredPage.tsx
 msgid "Working…"
 msgstr "செயல்படுகிறது…"
 
@@ -22100,6 +22505,10 @@ msgstr "{asked} அன்று நீங்கள் ஒளிபரப்ப�
 #: src/features/home/HomePage.tsx
 msgid "You asked to send broadcasts. Drafts and schedules wait until the operator answers."
 msgstr "நீங்கள் ஒளிபரப்புகளை அனுப்பக் கோரினீர்கள். இயக்குநர் பதில் அளிக்கும் வரை வரைவுகளும் அட்டவணைகளும் காத்திருக்கும்."
+
+#: src/features/broadcasts/Composer.tsx
+msgid "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
+msgstr "You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change the content."
 
 #: src/features/account/ConnectPage.tsx
 msgid "You can close this window and go back to {host}."
@@ -22494,6 +22903,7 @@ msgid "Yuva could not read the provider's discovery document. Check the issuer U
 msgstr "Yuva could not read the provider's discovery document. Check the issuer URL."
 
 #: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 msgid "Yuva counts clicks and replies. It does not track opens."
 msgstr "Yuva கிளிக்குகளையும் பதில்களையும் எண்ணுகிறது. திறப்புகளைக் கண்காணிப்பதில்லை."
 

@@ -61,7 +61,7 @@ function Tiles({ b, report }: { b: Broadcast; report: BroadcastReport }) {
   ]
   if (b.click_tracking)
     tiles.push({ key: "clicked", value: c.clicked, label: t`clicked a link, roughly`, rate: r.clicked })
-  const skipped = c.skipped.suppressed + c.skipped.opted_out + c.skipped.unsubscribed + c.skipped.cancelled
+  const skipped = Object.values(c.skipped).reduce((n, v) => n + (v ?? 0), 0)
   const recipients = num(c.recipients)
   const failed = num(c.failed)
   const auto = num(c.auto_replied)

@@ -459,7 +459,7 @@ export function BroadcastsOverview() {
   const status = useBroadcastsStatus()
   const [inboxId] = useInboxFilter()
   const inboxes = useInboxes().data ?? []
-  const broadcasts = useBroadcasts(inboxId)
+  const broadcasts = useBroadcasts(inboxId, undefined, "once")
   const lists = useLists(inboxId, false)
   const archived = useLists(inboxId, true)
   const [creating, setCreating] = useState(false)

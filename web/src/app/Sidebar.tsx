@@ -259,9 +259,12 @@ function useBroadcastChildren(): Child[] {
     ? "lists"
     : pathname.startsWith("/broadcasts/designs")
       ? "designs"
-      : "broadcasts"
+      : pathname.startsWith("/broadcasts/triggered")
+        ? "triggered"
+        : "broadcasts"
   return [
     { key: "broadcasts", label: t`Broadcasts`, to: "/broadcasts" },
+    { key: "triggered", label: t`Triggered`, to: "/broadcasts/triggered" },
     { key: "lists", label: t`Lists`, to: "/broadcasts/lists" },
     { key: "designs", label: t`Designs`, to: "/broadcasts/designs" },
   ].map((c) => ({ ...c, current: pathname.startsWith("/broadcasts") && current === c.key }))

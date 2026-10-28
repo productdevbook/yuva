@@ -5,7 +5,11 @@ import {
   ApiError,
   unwrap,
   type Broadcast,
+  type BroadcastAudienceInput,
   type BroadcastBulkChange,
+  type BroadcastKind,
+  type BroadcastTriggerInput,
+  type TriggeredEnrollmentState,
   type BroadcastDeliveryState,
   type BroadcastProblem,
   type BroadcastState,
@@ -26,14 +30,14 @@ export function isActive(b: Broadcast) {
   return ACTIVE.includes(b.state)
 }
 
-export function useBroadcasts(inboxId: string, states?: BroadcastState[]) {
+export function useBroadcasts(inboxId: string, states?: BroadcastState[], kind?: BroadcastKind) {
   const { workspaceId: ws } = useSession()
   return useInfiniteQuery({
-    queryKey: keys.broadcastPages(ws, inboxId, states?.join(",") ?? ""),
+    queryKey: keys.broadcastPages(ws, inboxId, `${kind ?? ""}|${states?.join(",") ?? ""}`),
     queryFn: ({ pageParam }) =>
       unwrap(
         api.GET("/v1/broadcasts", {
-          params: { query: { inbox_id: inboxId || undefined, state: states, cursor: pageParam, limit: 100 } },
+          params: { query: { inbox_id: inboxId || undefined, kind, state: states, cursor: pageParam, limit: 100 } },
         })
       ),
     initialPageParam: undefined as string | undefined,
@@ -60,8 +64,14 @@ function useSet() {
 export function useCreateBroadcast() {
   const set = useSet()
   return useMutation({
-    mutationFn: (body: { inbox_id: string; name: string; channel_id?: string }) =>
-      unwrap(api.POST("/v1/broadcasts", { body })),
+    mutationFn: (body: {
+      inbox_id: string
+      name: string
+      channel_id?: string
+      kind?: BroadcastKind
+      trigger?: BroadcastTriggerInput
+      audience?: BroadcastAudienceInput
+    }) => unwrap(api.POST("/v1/broadcasts", { body })),
     onSuccess: set,
   })
 }
@@ -106,7 +116,7 @@ export function useAudienceCount(b: Broadcast, enabled: boolean) {
     queryKey: keys.broadcastAudience(ws, b.id, JSON.stringify([b.audience, b.design_id, b.subject, b.updated_at])),
     queryFn: () =>
       unwrap(api.POST("/v1/broadcasts/{broadcastId}/audience", { params: { path: { broadcastId: b.id } } })),
-    enabled: enabled && b.audience.list_ids.length > 0,
+    enabled: enabled && b.kind !== "triggered" && b.audience.list_ids.length > 0,
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   })
@@ -140,8 +150,12 @@ export function useSchedule(id: string) {
   const qc = useQueryClient()
   const { workspaceId: ws } = useSession()
   return useMutation({
-    mutationFn: (body: { send_at?: string; send_at_local?: string; confirm_recipients?: number }) =>
-      unwrap(api.POST("/v1/broadcasts/{broadcastId}/schedule", { params: { path: { broadcastId: id } }, body })),
+    mutationFn: (body: {
+      send_at?: string
+      send_at_local?: string
+      confirm_recipients?: number
+      confirm_service?: boolean
+    }) => unwrap(api.POST("/v1/broadcasts/{broadcastId}/schedule", { params: { path: { broadcastId: id } }, body })),
     onSuccess: set,
     onError: () => {
       void qc.invalidateQueries({ queryKey: keys.broadcast(ws, id) })
@@ -233,6 +247,43 @@ export function useRequestApproval() {
     onSuccess: (w) => {
       qc.setQueryData(keys.workspace(ws), w)
       void qc.invalidateQueries({ queryKey: meKey })
+    },
+  })
+}
+
+export function triggeredLink(tab?: string) {
+  return `/broadcasts/triggered${tab ? `?tab=${tab}` : ""}`
+}
+
+export function useEnrollments(id: string, state: TriggeredEnrollmentState) {
+  const { workspaceId: ws } = useSession()
+  return useInfiniteQuery({
+    queryKey: keys.broadcastEnrollments(ws, id, state),
+    queryFn: ({ pageParam }) =>
+      unwrap(
+        api.GET("/v1/broadcasts/{broadcastId}/enrollments", {
+          params: { path: { broadcastId: id }, query: { state, cursor: pageParam, limit: 50 } },
+        })
+      ),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (last) => last.next_cursor,
+    placeholderData: keepPreviousData,
+  })
+}
+
+export function useRemoveEnrollment(id: string) {
+  const qc = useQueryClient()
+  const { workspaceId: ws } = useSession()
+  return useMutation({
+    mutationFn: (contactId: string) =>
+      unwrap(
+        api.DELETE("/v1/broadcasts/{broadcastId}/enrollments/{contactId}", {
+          params: { path: { broadcastId: id, contactId } },
+        })
+      ),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: [...keys.broadcasts(ws), "enrollments", id] })
+      void qc.invalidateQueries({ queryKey: keys.broadcast(ws, id) })
     },
   })
 }

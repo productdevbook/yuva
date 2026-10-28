@@ -7,7 +7,9 @@ import { AccountPage } from "@/features/account/AccountPage"
 import { ConnectPage } from "@/features/account/ConnectPage"
 import { NewWorkspacePage } from "@/features/auth/CreateWorkspace"
 import { SignInPage } from "@/features/auth/SignInPage"
-import { BroadcastPage, BroadcastsHome } from "@/features/broadcasts/BroadcastPage"
+import { BroadcastsHome } from "@/features/broadcasts/BroadcastPage"
+import { BroadcastRoute } from "@/features/broadcasts/BroadcastRoute"
+import { TriggeredHome } from "@/features/broadcasts/TriggeredHome"
 import { ListPage, ListsHome } from "@/features/broadcasts/ListPage"
 import { ContactPage } from "@/features/contact/ContactPage"
 import { ContactsHome } from "@/features/contact/ContactsColumn"
@@ -195,6 +197,7 @@ export function AppRoutes() {
           <Route path="docs/discussions/queue" element={<DocsPage tab="queue" />} />
           <Route path="docs/discussions/:discussionId" element={<DocsPage tab="discussions" />} />
           <Route path="broadcasts" element={<BroadcastsHome />} />
+          <Route path="broadcasts/triggered" element={<TriggeredHome />} />
           <Route path="broadcasts/lists" element={<ListsHome />} />
           <Route path="broadcasts/lists/:listId" element={<ListPage />} />
           {["broadcasts/designs", "broadcasts/designs/new"].map((path) => (
@@ -208,7 +211,7 @@ export function AppRoutes() {
               }
             />
           ))}
-          <Route path="broadcasts/:broadcastId" element={<BroadcastPage />} />
+          <Route path="broadcasts/:broadcastId" element={<BroadcastRoute />} />
           <Route path="status" element={<StatusHome />} />
           <Route path="incidents" element={<IncidentsPage />} />
           <Route path="incidents/:pageId/:incidentId" element={<IncidentsPage />} />

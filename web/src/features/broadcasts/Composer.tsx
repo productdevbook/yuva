@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, LoaderIcon, MailWarningIcon } from "lucide-react"
+import { CheckIcon, LockIcon, LoaderIcon, MailWarningIcon } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { AudienceBuilder, AudienceCount, conditionValid, type Audience } from "@/features/broadcasts/AudienceBuilder"
 import {
+  broadcastLink,
   useAudienceCount,
   useDeleteBroadcast,
   useReview,
@@ -21,6 +22,7 @@ import {
 } from "@/features/broadcasts/broadcastQueries"
 import { keyHint, senderState, StatusNotice, useNumber, type SenderState } from "@/features/broadcasts/BroadcastParts"
 import { DesignPicker } from "@/features/broadcasts/DesignPicker"
+import { BasisChoice, DelayFields, delayMinutes, delayTextOf, type DelayText } from "@/features/broadcasts/Trigger"
 import { useInboxChannels, useLists } from "@/features/broadcasts/queries"
 import { hasPace, PaceFields, paceInvalid, paceOf, paceTextOf, type PaceText } from "@/features/broadcasts/Pace"
 import { hoursInvalid, hoursOf, SendTimeFields, windowOf, type HoursText } from "@/features/broadcasts/SendTime"
@@ -39,7 +41,14 @@ import { designLink, useDesign } from "@/features/designs/queries"
 import { Card, Field, Section, ToggleRow } from "@/features/settings/ui"
 import { FrameButton, framePad } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
-import type { Broadcast, BroadcastReview, BroadcastTranslation, BroadcastUpdate, Channel } from "@/lib/api"
+import type {
+  Broadcast,
+  BroadcastBasis,
+  BroadcastReview,
+  BroadcastTranslation,
+  BroadcastUpdate,
+  Channel,
+} from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
@@ -57,6 +66,8 @@ type Draft = {
   channel_id: string
   design_id: string
   audience: Audience
+  basis: BroadcastBasis
+  delay: DelayText
   click_tracking: boolean
   utm: boolean
   utm_campaign: string
@@ -75,6 +86,8 @@ function draftOf(b: Broadcast): Draft {
     channel_id: b.channel_id ?? "",
     design_id: b.design_id ?? "",
     audience: b.audience,
+    basis: b.trigger?.basis ?? "service",
+    delay: delayTextOf(b.trigger?.delay_minutes ?? 0),
     click_tracking: b.click_tracking,
     utm: b.utm,
     utm_campaign: b.utm_campaign,
@@ -126,7 +139,29 @@ function useAutosave(id: string) {
   return { save, flush, saving: waiting || update.isPending, error: update.error }
 }
 
-export function SaveState({ saving, error }: { saving: boolean; error: unknown }) {
+type Field =
+  | "name"
+  | "channel"
+  | "basis"
+  | "lists"
+  | "delay"
+  | "audience"
+  | "content"
+  | "clicks"
+  | "utm"
+  | "pace"
+  | "hours"
+
+const LIVE: Field[] = ["delay", "clicks", "pace", "hours"]
+const PAUSED: Field[] = [...LIVE, "audience", "content"]
+
+function openFields(b: Broadcast): (f: Field) => boolean {
+  if (b.state === "draft") return () => true
+  const open = b.state === "paused" ? PAUSED : LIVE
+  return (f) => open.includes(f)
+}
+
+export function SaveState({ saving, error, draft = true }: { saving: boolean; error: unknown; draft?: boolean }) {
   if (error) return <ErrorLine error={error} className="text-small" />
   return (
     <span
@@ -142,7 +177,7 @@ export function SaveState({ saving, error }: { saving: boolean; error: unknown }
       ) : (
         <>
           <CheckIcon className="size-3.5" />
-          <Trans>Draft saved</Trans>
+          {draft ? <Trans>Draft saved</Trans> : <Trans>Saved</Trans>}
         </>
       )}
     </span>
@@ -364,13 +399,15 @@ function Rail({
   const num = useNumber()
   const { titles, problem } = useItemText(b, review ?? { ready: false, recipients: 0, items: [] })
   const people = num(review?.recipients ?? 0)
+  const triggered = b.kind === "triggered"
   const parts: { part: Part; name: React.ReactNode }[] = [
     { part: "sender", name: <Trans>Sender</Trans> },
-    { part: "audience", name: <Trans>Audience</Trans> },
+    { part: "audience", name: triggered ? <Trans>Who gets it</Trans> : <Trans>Audience</Trans> },
     { part: "content", name: <Trans>Content</Trans> },
     { part: "subject", name: <Trans>Subject</Trans> },
   ]
   const spot: Record<Part, Spot> = { sender: "sender", audience: "audience", content: "content", subject: "content" }
+  if (b.state !== "draft") return <aside className="flex flex-col gap-4">{preview}</aside>
   return (
     <aside className="flex flex-col gap-4" data-testid="review-panel">
       {preview}
@@ -389,7 +426,7 @@ function Rail({
                 : part === "sender"
                   ? sender
                   : part === "audience"
-                    ? review.recipients > 0
+                    ? review.recipients > 0 && !triggered
                       ? t`${people} people`
                       : ""
                     : part === "content"
@@ -431,11 +468,15 @@ function Rail({
 export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   const { t, i18n } = useLingui()
   const navigate = useNavigate()
+  const triggered = b.kind === "triggered"
+  const draft = b.state === "draft"
+  const open = openFields(b)
+  const ro = (f: Field) => readOnly || !open(f)
   const [d, setD] = useState<Draft>(() => draftOf(b))
   const inboxZone = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)?.timezone
   const auto = useAutosave(b.id)
   const count = useAudienceCount(b, true)
-  const review = useReview(b, true)
+  const review = useReview(b, draft)
   const test = useTestSend(b.id)
   const remove = useDeleteBroadcast()
   const [confirm, confirmDialog] = useConfirm()
@@ -464,6 +505,17 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
     setD((x) => ({ ...x, ...patch }))
     if (!readOnly) auto.save(save, delay)
   }
+  const setWho = (basis: BroadcastBasis, audience: Audience) => {
+    const lists = audience.list_ids.length
+    const complete = basis === "service" ? lists === 0 : lists >= 1
+    const body = { audience: audienceInput(audience) }
+    set({ basis, audience }, !draft ? body : complete ? { ...body, trigger: { basis } } : {})
+  }
+  const setDelay = (delay: DelayText) => {
+    const minutes = delayMinutes(delay)
+    set({ delay }, minutes === null ? {} : { trigger: { delay_minutes: minutes } })
+  }
+  const inboxName = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)?.name ?? ""
   const setText = (field: "subject" | "preheader", value: string) => {
     if (!version) {
       set({ [field]: value }, { [field]: value })
@@ -491,31 +543,44 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   const campaignBad = !CAMPAIGN.test(d.utm_campaign)
   const from = channel?.email?.from_address || channel?.email?.address || ""
   const testTitle = keyHint(t`Send a test`, BROADCAST_KEYS.test)
-  const sendTitle = keyHint(t`Review, then send or schedule`, BROADCAST_KEYS.send)
+  const sendTitle = keyHint(
+    triggered ? t`Review, then start or schedule` : t`Review, then send or schedule`,
+    BROADCAST_KEYS.send
+  )
   const name = b.name
   useHotkeys(
     {
       ...(d.design_id ? { [BROADCAST_KEYS.design]: () => navigate(designLink(d.design_id)) } : {}),
-      ...(readOnly ? {} : { [BROADCAST_KEYS.test]: () => setTesting(true), [BROADCAST_KEYS.send]: openReview }),
+      ...(readOnly || !draft
+        ? {}
+        : { [BROADCAST_KEYS.test]: () => setTesting(true), [BROADCAST_KEYS.send]: openReview }),
     },
     !testing && !reviewing
   )
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="broadcast-page">
-      <PageBar back="/broadcasts" label={t`Broadcasts`}>
+      <PageBar
+        back={triggered ? (draft ? "/broadcasts/triggered" : broadcastLink(b.id)) : "/broadcasts"}
+        label={triggered ? (draft ? t`Triggered` : b.name) : t`Broadcasts`}
+      >
         <Input
           id="broadcast-name"
           aria-label={t`Name`}
           value={d.name}
           maxLength={200}
-          disabled={readOnly}
+          disabled={ro("name")}
           onChange={(e) => set({ name: e.target.value }, e.target.value.trim() ? { name: e.target.value.trim() } : {})}
           className="h-[34px] w-80 max-w-full border-transparent bg-transparent text-[15px] font-semibold hover:border-input focus-visible:border-ring"
           data-testid="broadcast-name"
         />
-        {!readOnly && <SaveState saving={auto.saving} error={auto.error} />}
+        {!readOnly && <SaveState saving={auto.saving} error={auto.error} draft={draft} />}
         <span className="flex-1" />
-        {!readOnly && (
+        {!readOnly && !draft && (
+          <FrameButton ink render={<Link to={broadcastLink(b.id)} />} data-testid="triggered-done">
+            <Trans>Done</Trans>
+          </FrameButton>
+        )}
+        {!readOnly && draft && (
           <>
             <FrameButton
               onClick={() =>
@@ -527,7 +592,10 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                     </Trans>
                   ),
                   confirm: <Trans>Delete</Trans>,
-                  run: () => remove.mutate(b.id, { onSuccess: () => navigate("/broadcasts") }),
+                  run: () =>
+                    remove.mutate(b.id, {
+                      onSuccess: () => navigate(triggered ? "/broadcasts/triggered" : "/broadcasts"),
+                    }),
                 })
               }
               data-testid="broadcast-delete"
@@ -538,7 +606,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
               <Trans>Send a test</Trans>
             </FrameButton>
             <FrameButton ink onClick={openReview} title={sendTitle} data-testid="open-review">
-              <Trans>Review and send</Trans>
+              {triggered ? <Trans>Review and start</Trans> : <Trans>Review and send</Trans>}
             </FrameButton>
           </>
         )}
@@ -547,36 +615,106 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
         <div className={cn(framePad, "max-w-[1200px]")}>
           <StatusNotice />
           <ErrorLine error={remove.error} />
+          {!draft && (
+            <Notice icon={LockIcon} data-testid="triggered-locked">
+              <p>
+                {b.state === "paused" ? (
+                  <Trans>
+                    While it is paused you can change the content, the conditions, the delay and the sending options.
+                    Resuming checks it again.
+                  </Trans>
+                ) : (
+                  <Trans>
+                    You can change the delay, the pace, the sending hours and turn click counting off. Pause it to
+                    change the content.
+                  </Trans>
+                )}
+              </p>
+              <p className="text-muted-foreground">
+                <Trans>What starts it, why people get it, its lists, its sender and its name stay as they are.</Trans>
+              </p>
+            </Notice>
+          )}
           <div
             className="grid grid-cols-[minmax(0,1fr)] items-start gap-6 @4xl:grid-cols-[minmax(0,1fr)_21rem]"
             data-testid="broadcast-composer"
           >
             <div className="flex min-w-0 flex-col gap-6">
+              {triggered && (
+                <Section title={<Trans>Trigger</Trans>}>
+                  <Card id="broadcast-trigger">
+                    <Field label={<Trans>Starts when</Trans>}>
+                      <Select
+                        value="contact_identified"
+                        items={{ contact_identified: t`Someone first signs in` }}
+                        disabled={ro("basis")}
+                      >
+                        <SelectTrigger
+                          className="w-full min-w-0"
+                          aria-label={t`Starts when`}
+                          data-testid="trigger-event"
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="contact_identified">
+                            <Trans>Someone first signs in</Trans>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                    <DelayFields value={d.delay} onChange={setDelay} disabled={ro("delay")} />
+                  </Card>
+                </Section>
+              )}
               <Section title={<Trans>Sender</Trans>}>
                 <Card id="broadcast-sender">
                   <SenderPicker
                     b={b}
                     value={d.channel_id}
-                    disabled={readOnly}
+                    disabled={ro("channel")}
                     onChange={(id) => set({ channel_id: id ?? "" }, { channel_id: id }, 0)}
                   />
                 </Card>
               </Section>
-              <Section title={<Trans>Audience</Trans>}>
+              <Section title={triggered ? <Trans>Who gets it</Trans> : <Trans>Audience</Trans>}>
                 <Card id="broadcast-audience">
+                  {triggered && (
+                    <BasisChoice
+                      value={d.basis}
+                      disabled={ro("basis")}
+                      inboxName={inboxName}
+                      onChange={(basis) =>
+                        setWho(basis, basis === "service" ? { ...d.audience, list_ids: [] } : d.audience)
+                      }
+                    />
+                  )}
                   <AudienceBuilder
                     inboxId={b.inbox_id}
                     value={d.audience}
-                    disabled={readOnly}
-                    onChange={(audience) => set({ audience }, { audience: audienceInput(audience) })}
+                    disabled={ro("audience")}
+                    listsLocked={ro("lists")}
+                    hideLists={triggered && d.basis === "service"}
+                    onChange={(audience) =>
+                      triggered ? setWho(d.basis, audience) : set({ audience }, { audience: audienceInput(audience) })
+                    }
                   />
-                  <AudienceCount
-                    count={d.audience.list_ids.length ? count.data : undefined}
-                    loading={count.isPending && d.audience.list_ids.length > 0}
-                    stale={auto.saving || count.isFetching}
-                    error={count.error ? <ErrorLine error={count.error} /> : null}
-                    listNames={listNames}
-                  />
+                  {triggered ? (
+                    <p className="text-small text-faint">
+                      <Trans>
+                        Each person is checked once, when their mail is due: someone who left, bounced or no longer
+                        matches gets nothing.
+                      </Trans>
+                    </p>
+                  ) : (
+                    <AudienceCount
+                      count={d.audience.list_ids.length ? count.data : undefined}
+                      loading={count.isPending && d.audience.list_ids.length > 0}
+                      stale={auto.saving || count.isFetching}
+                      error={count.error ? <ErrorLine error={count.error} /> : null}
+                      listNames={listNames}
+                    />
+                  )}
                 </Card>
               </Section>
               <Section title={<Trans>Content</Trans>}>
@@ -584,7 +722,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                   <DesignPicker
                     inboxId={b.inbox_id}
                     value={d.design_id}
-                    disabled={readOnly}
+                    disabled={ro("content")}
                     onChange={(id) => set({ design_id: id ?? "" }, { design_id: id }, 0)}
                   />
                   {tags.length > 1 && (
@@ -625,7 +763,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                       id="broadcast-subject"
                       value={subject}
                       maxLength={SUBJECT_MAX}
-                      disabled={readOnly}
+                      disabled={ro("content")}
                       placeholder={version ? d.subject : t`What is new in October`}
                       onChange={(e) => setText("subject", e.target.value)}
                       data-testid="broadcast-subject"
@@ -645,7 +783,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                       id="broadcast-preheader"
                       value={preheader}
                       maxLength={PREHEADER_MAX}
-                      disabled={readOnly}
+                      disabled={ro("content")}
                       placeholder={inherited || t`A line that makes people open it`}
                       onChange={(e) => setText("preheader", e.target.value)}
                       data-testid="broadcast-preheader"
@@ -667,7 +805,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                   >
                     <Switch
                       checked={d.click_tracking}
-                      disabled={readOnly}
+                      disabled={ro("clicks") || (!draft && b.state !== "paused" && !d.click_tracking)}
                       onCheckedChange={(on) => set({ click_tracking: on }, { click_tracking: on }, 0)}
                       aria-label={t`Count clicks`}
                       data-testid="broadcast-click-tracking"
@@ -685,7 +823,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                   >
                     <Switch
                       checked={d.utm}
-                      disabled={readOnly}
+                      disabled={ro("utm")}
                       onCheckedChange={(on) => set({ utm: on }, { utm: on }, 0)}
                       aria-label={t`Campaign in links`}
                       data-testid="broadcast-utm"
@@ -716,7 +854,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                         dir="ltr"
                         value={d.utm_campaign}
                         maxLength={100}
-                        disabled={readOnly}
+                        disabled={ro("utm")}
                         aria-invalid={campaignBad || undefined}
                         onChange={(e) => {
                           const v = e.target.value.toLowerCase().replace(/\s+/g, "-")
@@ -738,7 +876,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                     >
                       <Switch
                         checked={d.pace_on}
-                        disabled={readOnly}
+                        disabled={ro("pace")}
                         onCheckedChange={(on) =>
                           on
                             ? setD((x) => ({ ...x, pace_on: true }))
@@ -752,7 +890,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                       <>
                         <PaceFields
                           value={d.pace}
-                          disabled={readOnly}
+                          disabled={ro("pace")}
                           windowed={d.hours.on}
                           rate={channel?.email?.broadcast_rate}
                           onChange={(pace) =>
@@ -775,7 +913,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                       onHours={(hours) =>
                         set({ hours }, hoursInvalid(hours) ? {} : { send_window: hours.on ? windowOf(hours) : null })
                       }
-                      disabled={readOnly}
+                      disabled={ro("hours")}
                       inboxZone={inboxZone}
                       days={Math.ceil((review.data?.days ?? 1) + 7)}
                     />
@@ -807,7 +945,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
                       title={sendTitle}
                       data-testid="open-send"
                     >
-                      <Trans>Review and send</Trans>
+                      {triggered ? <Trans>Review and start</Trans> : <Trans>Review and send</Trans>}
                     </FrameButton>
                   )
                 }
@@ -816,12 +954,13 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
           </div>
         </div>
       </div>
-      {testing && <TestSendDialog b={b} state={test} disabled={readOnly} onClose={() => setTesting(false)} />}
+      {testing && draft && <TestSendDialog b={b} state={test} disabled={readOnly} onClose={() => setTesting(false)} />}
       {reviewing && (
         <ReviewDialog
           b={b}
           review={review.data}
           reviewError={review.error}
+          fetching={review.isFetching}
           from={from}
           onFix={fix}
           onClose={() => setReviewing(false)}

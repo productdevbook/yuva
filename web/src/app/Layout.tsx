@@ -168,6 +168,7 @@ export function Layout() {
     pathname === "/updates/changelogs" ||
     pathname === "/broadcasts" ||
     pathname === "/broadcasts/lists" ||
+    pathname === "/broadcasts/triggered" ||
     pathname === "/broadcasts/designs"
   ) {
     return (
