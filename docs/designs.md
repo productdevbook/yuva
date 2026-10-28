@@ -6,7 +6,8 @@ Yuva, and use it for your broadcasts. The server turns it into mail HTML that wo
 mail apps, with a plain-text part and a dark mode.
 
 Owners and admins make designs. API keys and OAuth tokens need the `broadcasts:read` or
-`broadcasts:write` scope. Assistants (agents) cannot use designs.
+`broadcasts:write` scope. Agents use only the designs offered in conversations
+(see [section 8](#8-use-a-design-in-a-conversation)).
 
 ## 1. Start from a template
 

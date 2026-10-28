@@ -6,7 +6,8 @@ Yuva mitbringt, und nutzen es für Ihre Broadcasts. Der Server macht daraus Mail
 gängigen Mail-Apps funktioniert, mit Nur-Text-Teil und Dark Mode.
 
 Designs erstellen Owner und Admins. API-Keys und OAuth-Tokens brauchen den Scope `broadcasts:read`
-oder `broadcasts:write`. Assistenten (Agents) können Designs nicht verwenden.
+oder `broadcasts:write`. Assistenten (Agents) verwenden nur
+Designs, die in Unterhaltungen angeboten werden ([Abschnitt 8](#8-ein-design-in-einer-unterhaltung-verwenden)).
 
 ## 1. Mit einer Vorlage starten
 

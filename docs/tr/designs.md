@@ -6,8 +6,8 @@ başlayabilirsiniz ve bültenlerinizde kullanırsınız. Sunucu tasarımı yayg�
 çalışan e-posta HTML'ine, düz metin kısmına ve koyu moda çevirir.
 
 Tasarımları sahipler ve yöneticiler hazırlar. API anahtarları ve OAuth belirteçleri
-`broadcasts:read` ya da `broadcasts:write` kapsamını ister. Asistanlar (agent) tasarımları
-kullanamaz.
+`broadcasts:read` ya da `broadcasts:write` kapsamını ister. Asistanlar (agent) yalnızca
+konuşmalarda sunulan tasarımları kullanır ([8. bölüm](#8-konuşmada-tasarım-kullanma)).
 
 ## 1. Şablonla başlayın
 
