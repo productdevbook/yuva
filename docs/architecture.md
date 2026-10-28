@@ -20,7 +20,9 @@ Not goals: a CRM, a marketing automation suite (journeys, A/B tests, lead scorin
 (WhatsApp, Instagram, …). They may come later; the model must not block them. Yuva does not host
 product documentation, but it collects feedback and questions on the documentation sites products already
 have (see "Documentation pages"). Since M13 it sends broadcasts (newsletters, announcements) to
-contacts who subscribed, and replies to them land in the inbox (see "Broadcasts and e-mail designs").
+contacts who subscribed, and replies to them land in the inbox (see "Broadcasts and e-mail designs"). Since M40 it sends
+triggered e-mails: one design to each contact once, a set time after a trigger; journeys with
+several steps, branches or goals stay out.
 Since M15 it measures the workspace's own websites and apps without cookies, for the team and in
 aggregate with support (see "Analytics"). Since M20 it hosts help centers, the support
 articles of a product next to the documentation on its own site (see "Help center").
@@ -2476,6 +2478,31 @@ Decisions:
   about missing texts and subjects. Gallery templates share block ids across languages, so one
   template becomes one design with several versions (`template.locales`). What's new broadcasts stay
   single-language.
+- **Designs in conversations (M13.10).** A design with exactly one `message` block (top level or in
+  a section, never in columns; no text, no translation entry) can be offered in conversations
+  (`email_designs.for_conversations`, set by owners and admins). An e-mailed outgoing message (a
+  reply, the first message after `start_conversation`, new mail with one `to` and no `cc`) may name
+  one (`design_id`, optional `design_locale`): the contact's version, chosen as for broadcasts, is
+  rendered when the message is handed to the outbox, with the body escaped into the `message` block
+  followed by the help cards and the signature, and stored on `message_emails` (`full_html`,
+  `full_text`, `design_id`, `design_version`, `design_locale`); the send job sends those parts
+  unchanged. The text part is the whole mail as text, so both alternative parts carry the same
+  content; `messages.body` stays what was written and is all the panel thread, widget, events and
+  webhooks show. Merge fields are the contact's; `list.name`, `unsubscribe_url` and
+  `preferences_url` are refused, and a field without fallback that is empty refuses the message.
+  Headers, recipients, threading, the SMTP account (the channel's support account) and the
+  provider's DKIM are a reply's. The footer has three modes: `list` (broadcasts), `reply` (the
+  contact has written in the conversation: the identity line only) and `outreach` (the contact has
+  not: the identity line, an unsubscribe link and `List-Unsubscribe` with one-click, whose POST
+  writes `inbox_mail_optouts` for the inbox and contact). Outreach with a design is refused for an
+  address with a suppression of either scope or an opt-out (`409 email_opted_out`), limited to 20
+  per member or key an hour and 200 per workspace a UTC day, and needs approved broadcasts on a
+  server in `approval` mode; replies with a design have no extra gate. Members who see the
+  design's inbox, and keys with `conversations:read`, list, read and preview offered designs
+  (`POST /v1/conversations/{id}/design-preview`); editing stays with owners, admins and
+  `broadcasts:write`. A broadcast's review blocks a design with a `message` block. Designs never go
+  into notes, chat or app conversations, continuity mail, forwards, rule replies, greetings or
+  rating requests.
 - **Images** are uploaded (PNG, JPEG, GIF, WebP; never SVG), re-encoded without metadata at most 1,200 px
   wide (WebP stored as PNG or JPEG) and served publicly at `/i/{token}` with immutable caching and nothing
   recorded per request: the one exception to "objects are never public". What's new entries (M22) keep
@@ -2538,6 +2565,36 @@ Decisions:
   and pace can change while scheduled, sending or paused. There is one zone per broadcast, not one per
   recipient: contacts have no time zone, and their language does not tell one. The server embeds the
   time zone database (`time/tzdata`), so every pod uses the same rules.
+- **Triggered e-mails (M40).** A broadcast of `kind` `triggered` sends its design once to each
+  contact of its inbox, `delay_minutes` (0 to 365 days) after a trigger: `contact_identified` (the
+  contact's first external id in the inbox, from an identity token, `/v1/contacts` or a form that
+  carries one), and from M40.3 `subscribed` (a list subscription confirmed, imports excluded) and
+  `attribute_changed` (a contact newly matching a condition). Lifecycle `draft` → `scheduled` →
+  `active` ⇄ `paused` → `cancelled` (Stopped), never `sent`; pausing stops sending, not enrolling.
+  The trigger's transaction inserts `triggered_enrollments (workspace, broadcast, contact,
+  triggered_at, state waiting|queued|skipped|cancelled)`, whose primary key is the once-per-contact
+  rule for as long as both exist, and queues `triggered_due` at the due time (unique per broadcast;
+  the 5-minute broadcast sweep re-queues it). `triggered_due` takes due enrollments 500 at a time,
+  decides each once (blocked, no address, more than 7 days late, suppressed, opted out, stopped,
+  not subscribed, not matching the audience conditions and locales) and creates the
+  `broadcast_deliveries` row the channel's `broadcast_send` sends, triggered e-mails before
+  one-off broadcasts, under the pace, sending hours, daily limit, warm-up and automatic pauses of
+  broadcasts. Only triggers while it is active or paused enroll; starting may back-fill contacts
+  triggered in the last 0 to 30 days, counted in the review; imports, help-desk migrations and
+  merges never trigger, and `/v1/contacts` writes with `skip_triggers` do not. The consent basis is
+  explicit and fixed after the draft: `marketing` mails only contacts subscribed to its lists, with
+  the broadcast footer and one-click from the list; `service` (mail about using the product) mails
+  every matching contact, needs `confirm_service` when started (stored and audited), and has a
+  footer saying the person uses the inbox's product, the postal address and a one-click
+  unsubscribe that writes `inbox_mail_optouts`, which stops the inbox's service triggered e-mails
+  and designed outreach. Both respect suppressions of either scope and opt-outs; complaints count
+  as about a broadcast. Design, subjects and preheaders per language, merge fields, review, test
+  sends, replies, click tracking and the per-language report are a broadcast's; the report adds
+  enrolled, waiting and skips by reason. Changeable while active: pace, zone, sending hours, delay;
+  while paused also the content and audience conditions (resume reviews and freezes again); never
+  the trigger, basis, lists, inbox or channel. At most 20 live per inbox. `GET
+  /v1/broadcasts/{id}/enrollments` lists who waits and why others were skipped; `DELETE
+  …/enrollments/{contactId}` drops one waiting contact. No event or webhook per enrollment.
 - **Amazon SES tenants.** On a shared SES account one inbox's bounces and complaints pause only its own
   SES tenant, never another inbox of the workspace or another workspace (M13.7). One tenant per inbox,
   not per workspace, because inboxes are where a workspace keeps its products. With

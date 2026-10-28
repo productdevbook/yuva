@@ -179,7 +179,8 @@ workspace or another reader is visible.
 ## M13 — Broadcasts and e-mail designs
 
 Status: M13.1–M13.5 done in `v0.0.9` and deployed on 2026-10-12 (#26–#30); M13.6 (#91) and M13.7 (#92)
-done in `v0.0.18`, verified on 2026-10-19; M13.8 planned; M13.9 (#203) in progress. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
+done in `v0.0.18`, verified on 2026-10-19; M13.8 planned; M13.9 (#203) in progress; M13.10
+(#209) planned, spec `docs/specs/conversation-designs.md`. Umbrella issue #25, decisions in `architecture.md` › Broadcasts and e-mail designs (M13).
 
 - **M13.1 Lists and subscribing:** mailing lists with recorded consent and double opt-in,
   `<yuva-subscribe>` (HTML, React, Nuxt, shadcn), unsubscribe and preference pages with one-click, an API
@@ -217,6 +218,18 @@ done in `v0.0.18`, verified on 2026-10-19; M13.8 planned; M13.9 (#203) in progre
   Accept: one broadcast to contacts in pt, es-MX, fr, tr and none sends Portuguese, Spanish,
   Turkish and the English fallback with one design; the report shows each language and the whole;
   clicks count per version and per URL.
+- **M13.10 Designs in conversations:** a `message` block that holds the text a member writes;
+  designs offered in conversations; a reply, the first message of `start_conversation` and new mail
+  sent with a design in the contact's language, body and signature inside it, the text part the
+  same mail as text, threading unchanged; footers for replies (identity only) and outreach
+  (identity and one-click unsubscribe), outreach limited and refused to people who objected; the
+  composer's design picker and preview; API and MCP.
+  Accept: a reply with a design to a contact in `es-MX` sends the Spanish version through the
+  conversation's channel, Mailpit shows the body inside the design in HTML and text, and the
+  contact's answer threads into the same conversation; a first message with a design carries
+  one-click unsubscribe and is refused to an address that unsubscribed from broadcasts; the
+  designer, the composer and the as-sent view match the preview in WebKit and Chromium at desktop,
+  phone and dark.
 
 Accept: a visitor subscribes through `<yuva-subscribe>` and confirms; a member designs a newsletter from a
 gallery template, sends a test and schedules it to the list; the deliverability check on one of our own
@@ -708,6 +721,27 @@ Status: done; items Y-198 to Y-200 in `backlog.md`. Independent of team mail; ra
 Accept: an owner empties a Trash of 250 conversations and deletes 30 selected contacts with one
 confirmation each, and the audit log has both; 20 help center articles are unpublished at once and
 the undo puts them back.
+
+## M40 — Triggered e-mails
+
+Status: planned (#205); spec `docs/specs/triggered-emails.md`, decisions in `architecture.md` ›
+Broadcasts and e-mail designs › Triggered e-mails (M40).
+
+- **M40.1 Server, API and MCP:** broadcasts of kind `triggered` on `contact_identified`, a delay,
+  the sending hours, pace and limits of broadcasts, once per contact, a `service` or `marketing`
+  basis, back-fill only when asked, the service footer in every footer language with its stop page,
+  the waiting list, reports, `skip_triggers` on contacts, MCP tools.
+- **M40.2 Panel:** Triggered under Broadcasts: the list, the editor, the start dialog with the
+  back-fill count and the service confirmation, the detail page with report and waiting list.
+- **M40.3 More triggers:** `subscribed` (a confirmed list subscription) and `attribute_changed`,
+  in the API, MCP and panel.
+
+Accept: an app identifies a new user with a verified address and `locale` `tr`; three days later a
+service triggered e-mail sends them the Turkish version once, with one-click unsubscribe and the
+postal address, and identifying them again sends nothing; users identified before it started get
+nothing unless the start back-filled them; a marketing one skips a contact not subscribed to its
+list; a reply becomes a conversation in the inbox; the report shows each language; a hosted
+workspace cannot start one before approval; another workspace sees none of it.
 
 ## Later
 
