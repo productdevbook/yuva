@@ -2923,6 +2923,10 @@ export interface paths {
          *     `starred` counts the open conversations the calling member starred (`0` for API keys),
          *     spam left out.
          *
+         *     `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
+         *     sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
+         *     the other counts too.
+         *
          *     Scope: `conversations:read`.
          */
         get: operations["getConversationCounts"];
@@ -3066,6 +3070,14 @@ export interface paths {
          *     conversation's team, and the team at the outcome for SLA. Figures with no member, team or
          *     channel kind go to a group without `key`. `label` groups count a conversation under each
          *     of its labels and leave out conversations without one.
+         *
+         *     Without `origin`, every figure counts conversations of both origins, replies to
+         *     broadcasts, triggered e-mails and outreach included, as before. `origin=support` gives
+         *     the support figures alone (first reply, resolution, SLA and the rest without the replies
+         *     to mail the team sent); `origin=outbound` only those replies. A conversation's origin is
+         *     the one it had when its period was last rolled up; periods rolled up before origins were
+         *     kept and not rebuilt since (older than 31 days at the upgrade) count every conversation
+         *     as `support`.
          *
          *     Scope: `reports:read`.
          */
@@ -16376,6 +16388,13 @@ export interface components {
              * @description Starred by the calling member (`0` for API keys).
              */
             starred: number;
+            /**
+             * Format: int64
+             * @description Open conversations that answer mail the team sent (`ConversationOrigin` `outbound`).
+             */
+            outbound: number;
+            /** @description Open conversations that answer mail the team sent, per inbox id; inboxes without any are left out. */
+            outbound_inboxes: components["schemas"]["CountByID"][];
         };
         /** @description The Home blocks; a block the member may not see is absent. */
         Home: {
@@ -19958,6 +19977,14 @@ export interface components {
          * @enum {string}
          */
         ConversationKind: "conversation" | "feedback";
+        /**
+         * @description Where a conversation came from. `outbound`: it answers mail the team sent, that is it has
+         *     a `broadcast_id` (a reply to a broadcast or a triggered e-mail) or it holds designed
+         *     outreach (an e-mail from a design sent to a contact who had not written in the
+         *     conversation). `support`: every other conversation.
+         * @enum {string}
+         */
+        ConversationOrigin: "support" | "outbound";
         /**
          * @description The key of one of the inbox's feedback categories (`InboxFeedbackCategory`). Every inbox
          *     starts with `bug`, `idea`, `praise` and `other`; owners and admins change the list.
@@ -28571,6 +28598,12 @@ export interface components {
         ReportTeamId: string;
         /** @description Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have). */
         ReportMemberId: string;
+        /**
+         * @description Only the figures of conversations of this origin (`ConversationOrigin`, as
+         *     `GET /v1/conversations` filters it): `support` leaves out replies to broadcasts,
+         *     triggered e-mails and outreach, `outbound` counts only those. Without it, both.
+         */
+        ReportOrigin: components["schemas"]["ConversationOrigin"];
         /** @description Page size, 1 to 100; 25 by default. */
         Limit: number;
         StatusPageId: string;
@@ -32699,6 +32732,13 @@ export interface operations {
                 /** @description Only conversations opened by replies to this broadcast. */
                 broadcast_id?: string;
                 /**
+                 * @description `outbound` lists only the conversations that answer mail the team sent (see
+                 *     `ConversationOrigin`): replies to any broadcast or triggered e-mail, and designed
+                 *     outreach. `support` lists every other conversation. Without it, both. Combines with
+                 *     every other filter, `broadcast_id` included.
+                 */
+                origin?: components["schemas"]["ConversationOrigin"];
+                /**
                  * @description Only the feedback linked to this roadmap idea. An idea of an inbox the caller cannot
                  *     see answers `404`.
                  */
@@ -32987,6 +33027,12 @@ export interface operations {
                 team_id?: components["parameters"]["ReportTeamId"];
                 /** @description Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have). */
                 member_id?: components["parameters"]["ReportMemberId"];
+                /**
+                 * @description Only the figures of conversations of this origin (`ConversationOrigin`, as
+                 *     `GET /v1/conversations` filters it): `support` leaves out replies to broadcasts,
+                 *     triggered e-mails and outreach, `outbound` counts only those. Without it, both.
+                 */
+                origin?: components["parameters"]["ReportOrigin"];
             };
             header?: {
                 /** @description The workspace to act on; see "Workspace selection". */
@@ -33043,6 +33089,12 @@ export interface operations {
                 team_id?: components["parameters"]["ReportTeamId"];
                 /** @description Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have). */
                 member_id?: components["parameters"]["ReportMemberId"];
+                /**
+                 * @description Only the figures of conversations of this origin (`ConversationOrigin`, as
+                 *     `GET /v1/conversations` filters it): `support` leaves out replies to broadcasts,
+                 *     triggered e-mails and outreach, `outbound` counts only those. Without it, both.
+                 */
+                origin?: components["parameters"]["ReportOrigin"];
             };
             header?: {
                 /** @description The workspace to act on; see "Workspace selection". */

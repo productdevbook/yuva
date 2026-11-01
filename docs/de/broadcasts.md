@@ -219,6 +219,16 @@ Broadcasts, markiert als „Reply to {Broadcast}“ und mit ihm verknüpft. Weit
 Unterhaltung fort. Im Posteingang zeigt der Filter nach Typ mit „Replies to a broadcast“ sie an, und der
 Bericht des Broadcasts listet die ersten 50.
 
+Antworten auf einen Broadcast, Antworten auf eine ausgelöste E-Mail und gestaltete Outreach-Mails (eine
+E-Mail aus einem Design an einen Kontakt, der nicht geschrieben hatte) sind die Unterhaltungen, die auf
+von Ihnen gesendete E-Mails antworten. Yuva nennt sie `outbound`; jede andere Unterhaltung ist `support`.
+Im Posteingang hat der Quellenfilter einen Abschnitt **Herkunft**: **Jede Unterhaltung**, **Nur Support** oder
+**Antworten auf von uns gesendete E-Mails**. **Antworten auf von uns gesendete E-Mails** ist auch ein
+Eintrag unter **Posteingang** in der Seitenleiste, mit der Zahl der offenen. In der API nimmt
+`GET /v1/conversations` `origin=support` oder `origin=outbound`, kombinierbar mit jedem anderen Filter,
+und `GET /v1/conversations/counts` liefert `outbound` und `outbound_inboxes`.
+[Berichte](reports.md#herkunft) lassen sich ebenfalls auf eine Herkunft begrenzen.
+
 Automatische Antworten (Abwesenheit) werden nicht als Unterhaltungen gespeichert: Sie werden nur als
 `auto_replied` gezählt, damit ein Versand den Posteingang nicht füllt. Mail von jemand anderem als dem
 Empfänger, etwa eine Weiterleitung, eröffnet eine eigene Unterhaltung.

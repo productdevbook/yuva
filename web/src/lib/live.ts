@@ -131,7 +131,15 @@ function updateLists(qc: QueryClient, ctx: LiveContext, c: Conversation, patch: 
       void qc.invalidateQueries({ queryKey: key, exact: true })
       continue
     }
-    if (f.q || f.fields || f.sent || f.scheduled || f.team === "mine" || (!base && matches(c, f, ctx.memberId))) {
+    if (
+      f.q ||
+      f.origin ||
+      f.fields ||
+      f.sent ||
+      f.scheduled ||
+      f.team === "mine" ||
+      (!base && matches(c, f, ctx.memberId))
+    ) {
       void qc.invalidateQueries({ queryKey: key, exact: true })
       continue
     }

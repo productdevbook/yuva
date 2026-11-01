@@ -7,7 +7,7 @@ oder Monat, aufgeschlüsselt nach Posteingang, Kanal, Label, Team oder Mitglied,
 
 ## Der Tab Trends
 
-Öffnen Sie Berichte › Trends. Wählen Sie einen Zeitraum (eine Vorgabe bis zu 12 Monaten oder eigene Daten bis zu 13 Monaten), Tag, Woche oder Monat und schlüsseln Sie die Zahlen nach Posteingang, Kanal, Label, Team oder Mitglied auf. Filter grenzen den Bericht auf einen Posteingang, Kanal, ein Label, Team oder Mitglied ein. Kennzahlenkacheln zeigen jede Zahl im Vergleich zum Vorzeitraum, Diagramme zeigen Volumen und Antwortzeiten, eine sortierbare Tabelle listet die Gruppen. Ein Hinweis „Daten bis“ sagt, wie weit die Zählungen reichen. **Als CSV exportieren** lädt herunter, was Sie sehen.
+Öffnen Sie Berichte › Trends. Wählen Sie einen Zeitraum (eine Vorgabe bis zu 12 Monaten oder eigene Daten bis zu 13 Monaten), Tag, Woche oder Monat und schlüsseln Sie die Zahlen nach Posteingang, Kanal, Label, Team oder Mitglied auf. Filter grenzen den Bericht auf einen Posteingang, Kanal, ein Label, Team oder Mitglied oder auf eine Herkunft ein. Kennzahlenkacheln zeigen jede Zahl im Vergleich zum Vorzeitraum, Diagramme zeigen Volumen und Antwortzeiten, eine sortierbare Tabelle listet die Gruppen. Ein Hinweis „Daten bis“ sagt, wie weit die Zählungen reichen. **Als CSV exportieren** lädt herunter, was Sie sehen.
 
 ## 1. Was gezählt wird
 
@@ -53,6 +53,18 @@ grenzen den Bericht auf je eines davon ein. `metrics` beschränkt ihn auf einige
 `reopened`, `replies`, `first_reply`, `resolution`, `sla` und `ratings`; ohne Angabe erhalten Sie alle.
 
 Labels und Team sind die, die eine Unterhaltung hatte, als ihr Zeitraum zuletzt gezählt wurde.
+
+### Herkunft
+
+`origin` teilt die Zahlen danach, woher eine Unterhaltung kam. `outbound` ist eine Unterhaltung, die auf
+E-Mails antwortet, die Sie gesendet haben: eine Antwort auf einen Broadcast oder eine ausgelöste E-Mail
+oder gestaltete Outreach-Mails. `support` ist jede andere Unterhaltung. `origin=support` liefert nur die
+Support-Zahlen, ohne Antworten auf von Ihnen gesendete E-Mails; `origin=outbound` nur diese Antworten.
+Ohne `origin` werden beide gezählt, wie bisher. Auf der Berichtsseite bietet **Herkunft** dieselbe Auswahl.
+
+Eine Unterhaltung zählt mit der Herkunft, die sie hatte, als ihr Zeitraum zuletzt gezählt wurde. Zeiträume,
+die gezählt wurden, bevor Herkünfte gespeichert wurden, und seitdem nicht neu aufgebaut wurden (beim Upgrade
+älter als 31 Tage), zählen jede Unterhaltung als `support`.
 
 ## 4. Wer was sieht
 
@@ -108,6 +120,7 @@ leere Zelle. Zellen, die mit `=`, `+`, `-`, `@`, Tab oder Wagenrücklauf beginne
 | `metrics` | Wiederholen oder mit Komma trennen; standardmäßig alle. |
 | `group_by` | `inbox`, `channel`, `label`, `team` oder `member`. |
 | `inbox_id`, `channel_kind`, `label_id`, `team_id`, `member_id` | Filter. |
+| `origin` | `support` oder `outbound`; ohne Angabe beide. Siehe [Herkunft](#herkunft). |
 
 ## 7. MCP
 

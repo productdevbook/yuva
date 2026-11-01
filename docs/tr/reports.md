@@ -7,7 +7,7 @@ ekip veya üyeye göre kırın ve CSV olarak indirin. Panelin Raporlar bölümü
 
 ## Eğilimler sekmesi
 
-Raporlar › Eğilimler'i açın. Bir dönem seçin (12 aya kadar hazır aralıklar veya 13 aya kadar özel tarihler), gün, hafta veya ay seçin ve rakamları gelen kutusu, kanal, etiket, ekip veya üyeye göre kırın. Süzgeçler raporu tek bir gelen kutusuna, kanala, etikete, ekibe veya üyeye daraltır. KPI kutuları her rakamı önceki dönemle karşılaştırarak gösterir, grafikler hacmi ve yanıt sürelerini gösterir, sıralanabilir bir tablo grupları listeler. "Verilerin güncel olduğu an" notu sayımların nereye kadar ulaştığını söyler. **CSV olarak dışa aktar** gördüğünüzü indirir.
+Raporlar › Eğilimler'i açın. Bir dönem seçin (12 aya kadar hazır aralıklar veya 13 aya kadar özel tarihler), gün, hafta veya ay seçin ve rakamları gelen kutusu, kanal, etiket, ekip veya üyeye göre kırın. Süzgeçler raporu tek bir gelen kutusuna, kanala, etikete, ekibe veya üyeye ya da tek bir köken'e daraltır. KPI kutuları her rakamı önceki dönemle karşılaştırarak gösterir, grafikler hacmi ve yanıt sürelerini gösterir, sıralanabilir bir tablo grupları listeler. "Verilerin güncel olduğu an" notu sayımların nereye kadar ulaştığını söyler. **CSV olarak dışa aktar** gördüğünüzü indirir.
 
 ## 1. Ne sayılır
 
@@ -50,6 +50,18 @@ raporu her birinden birine daraltır. `metrics` raporu `opened`, `closed`, `reop
 `first_reply`, `resolution`, `sla` ve `ratings` içinden bazılarıyla sınırlar; vermezseniz hepsini alırsınız.
 
 Etiketler ve ekip, bir konuşmanın dönemi en son sayıldığında sahip olduklarıdır.
+
+### Köken
+
+`origin` rakamları bir konuşmanın nereden geldiğine göre ayırır. `outbound`, sizin gönderdiğiniz postalara
+verilen yanıt olan konuşmadır: bir bültene ya da tetiklenen bir e-postaya gelen yanıt veya tasarlanmış
+ulaşım e-postası. `support` diğer tüm konuşmalardır. `origin=support` yalnızca destek rakamlarını verir,
+gönderdiğiniz postalara gelen yanıtlar olmadan; `origin=outbound` yalnızca bu yanıtları verir. `origin`
+verilmezse ikisi de sayılır, eskisi gibi. Raporlar sayfasındaki **Köken** aynı seçimi sunar.
+
+Bir konuşma, dönemi en son sayıldığında sahip olduğu kökenle sayılır. Kökenler tutulmadan önce sayılmış ve
+sonra yeniden kurulmamış dönemlerde (yükseltme sırasında 31 günden eski olanlar) her konuşma `support`
+sayılır.
 
 ## 4. Kim neyi görür
 
@@ -103,6 +115,7 @@ bir hesap tablosu onları çalıştırmaz.
 | `metrics` | Tekrarlayın veya virgülle ayırın; varsayılan hepsi. |
 | `group_by` | `inbox`, `channel`, `label`, `team` veya `member`. |
 | `inbox_id`, `channel_kind`, `label_id`, `team_id`, `member_id` | Süzgeçler. |
+| `origin` | `support` veya `outbound`; verilmezse ikisi de. Bkz. [Köken](#köken). |
 
 ## 7. MCP
 

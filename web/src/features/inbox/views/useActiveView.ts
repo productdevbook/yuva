@@ -9,13 +9,26 @@ export type ActiveView = {
   base: ConversationFilters | null
   q: string
   sla: boolean
-  clear: () => void
+  clear: (keepOrigin?: boolean) => void
 }
 
 export function useActiveView(): ActiveView {
   const [params, setParams] = useSearchParams()
   const id = params.get("view")
-  const clear = useCallback(() => setParams(new URLSearchParams(), { replace: true }), [setParams])
+  const clear = useCallback(
+    (keepOrigin?: boolean) => {
+      setParams(
+        (prev) => {
+          const next = new URLSearchParams()
+          const origin = prev.get("origin")
+          if (keepOrigin && origin) next.set("origin", origin)
+          return next
+        },
+        { replace: true }
+      )
+    },
+    [setParams]
+  )
   return useMemo(() => {
     if (!id) return { id: null, base: null, q: "", sla: false, clear }
     const rest = Object.fromEntries([...params].filter(([k]) => k !== "view"))

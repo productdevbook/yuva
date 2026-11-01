@@ -7,7 +7,7 @@ and download it as CSV. The panel's Reports section has a Trends tab for this; t
 
 ## The Trends tab
 
-Open Reports › Trends. Pick a period (a preset of up to 12 months, or custom dates up to 13 months), day, week or month, and break the figures down by inbox, channel, label, team or member. Filters narrow the report to one inbox, channel, label, team or member. KPI tiles show each figure with a comparison to the previous period, charts show volume and response times, and a sortable table lists the groups. A "data up to" note says how far the counts reach. **Export CSV** downloads what you see.
+Open Reports › Trends. Pick a period (a preset of up to 12 months, or custom dates up to 13 months), day, week or month, and break the figures down by inbox, channel, label, team or member. Filters narrow the report to one inbox, channel, label, team or member, or to one origin. KPI tiles show each figure with a comparison to the previous period, charts show volume and response times, and a sortable table lists the groups. A "data up to" note says how far the counts reach. **Export CSV** downloads what you see.
 
 ## 1. What is counted
 
@@ -50,6 +50,18 @@ the report to one of each. `metrics` limits it to some of `opened`, `closed`, `r
 `first_reply`, `resolution`, `sla` and `ratings`; without it you get all of them.
 
 Labels and the team are those a conversation had when its period was last counted.
+
+### Origin
+
+`origin` splits the figures by where a conversation came from. `outbound` is a conversation that answers
+mail you sent: a reply to a broadcast or a triggered e-mail, or designed outreach. `support` is every
+other conversation. `origin=support` gives the support figures alone, without replies to mail you sent;
+`origin=outbound` gives only those replies. Without `origin` both are counted, as before. On the Reports
+page, **Origin** offers the same choice.
+
+A conversation counts with the origin it had when its period was last counted. Periods counted before
+origins were kept and not rebuilt since (older than 31 days at the upgrade) count every conversation as
+`support`.
 
 ## 4. Who sees what
 
@@ -103,6 +115,7 @@ spreadsheet does not run them.
 | `metrics` | Repeat or comma-separate; all by default. |
 | `group_by` | `inbox`, `channel`, `label`, `team` or `member`. |
 | `inbox_id`, `channel_kind`, `label_id`, `team_id`, `member_id` | Filters. |
+| `origin` | `support` or `outbound`; both when absent. See [Origin](#origin). |
 
 ## 7. MCP
 

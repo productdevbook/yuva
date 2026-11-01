@@ -89,7 +89,7 @@ import { LabelTag, look } from "@/features/inbox/PageFrame"
 import { useListActions } from "@/features/inbox/memberState"
 import { setListQuery, useListSearch } from "@/features/inbox/listSearch"
 import { BulkFailuresDialog } from "@/features/fields/BulkFailures"
-import { SourceFilter, sourceFilters, useSourceFilter } from "@/features/inbox/SourceFilter"
+import { SourceFilter, sourceFilters, useOpenOnly, useOrigin, useSourceFilter } from "@/features/inbox/SourceFilter"
 import {
   useBulkTeam,
   useBulkUpdateConversations,
@@ -768,10 +768,14 @@ export function ChatList({
   const anchor = useRef<string | null>(null)
   const [linking, setLinking] = useState(false)
   const view = useActiveView()
-  const sort: Order = order ?? (view.id ? (view.sla ? "sla_due" : "newest") : chip === "waiting" ? "oldest" : "newest")
+  const openOnly = useOpenOnly()
+  const sort: Order =
+    order ?? (view.id ? (view.sla ? "sla_due" : "newest") : chip === "waiting" && !openOnly ? "oldest" : "newest")
 
   const [source, setSource] = useSourceFilter()
+  const [origin] = useOrigin()
   const narrowed =
+    !!origin ||
     !!source.source ||
     !!source.site ||
     !!source.broadcast ||
@@ -780,7 +784,7 @@ export function ChatList({
     !!labelId ||
     !!teamId ||
     !!chipInbox
-  const own = sourceFilters(source)
+  const own = { ...sourceFilters(source), origin }
   const filters: ConversationFilters = view.base
     ? {
         kind: ["conversation"],
@@ -800,7 +804,7 @@ export function ChatList({
       }
     : {
         kind: ["conversation"],
-        ...chipFilters[chip],
+        ...(openOnly ? { status: ["open" as const] } : chipFilters[chip]),
         ...own,
         inbox_id: inboxId || undefined,
         label_id: labelId || undefined,
@@ -814,7 +818,7 @@ export function ChatList({
   const loaded = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const pinnedLoaded = useMemo(() => pinnedList.data?.pages.flatMap((p) => p.items) ?? [], [pinnedList.data])
   const keep = (c: ConversationListItem) =>
-    (!unreadOnly || c.unread) && (view.id !== null || chip !== "waiting" || isWaiting(c))
+    (!unreadOnly || c.unread) && (view.id !== null || openOnly || chip !== "waiting" || isWaiting(c))
   const byTime = (a: ConversationListItem, b: ConversationListItem) =>
     (a.last_activity_at < b.last_activity_at ? 1 : -1) * (sort === "oldest" ? -1 : 1)
   const pinnedRows = [...pinnedLoaded, ...loaded.filter((c) => c.pinned_at && !pinnedLoaded.some((x) => x.id === c.id))]
@@ -827,6 +831,7 @@ export function ChatList({
   const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, active, scroller)
 
   const scope = [
+    origin,
     chip,
     view.id,
     q,
@@ -945,7 +950,7 @@ export function ChatList({
     scroller.current?.scrollTo({ top: 0 })
   }, [view.id, changeView])
   const setChip = (c: Chip) => {
-    view.clear()
+    view.clear(!view.id)
     rememberChip(c)
     setOwnChip(c)
     onChip?.(c)
@@ -1460,7 +1465,7 @@ export function ChatList({
       {!embedded && (
         <PhoneHeader>
           <ViewChips
-            value={view.id ? null : chip}
+            value={view.id || openOnly ? null : chip}
             onChange={setChip}
             label={t`Filter`}
             items={tabs.map((k) => ({
@@ -1484,7 +1489,7 @@ export function ChatList({
       {searchRow}
       {chips}
       <AwayBanner />
-      {!view.id && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
+      {!view.id && !openOnly && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
       {inTrash && canManage && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
       {trashTools.dialogs}
       <ImportBanner />

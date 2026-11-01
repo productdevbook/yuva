@@ -207,6 +207,15 @@ Bir bültene verilen yanıt, o kişiyle bültenin gelen kutusunda "{bülten} bü
 bültene bağlı bir konuşma açar. Sonraki yanıtlar konuşmaya eklenir. Gelen kutusunda tür süzgecinde
 "Bülten yanıtları" bunları gösterir; bültenin raporu ilk 50'sini listeler.
 
+Bir bültene verilen yanıtlar, tetiklenen bir e-postaya verilen yanıtlar ve tasarlanmış ulaşım e-postaları
+(yazmamış bir kişiye tasarımdan gönderilen e-posta), gönderdiğiniz postalara verilen yanıt olan
+konuşmalardır. Yuva bunlara `outbound` der; diğer tüm konuşmalar `support`'tur. Gelen kutusunda kaynak
+süzgecinin **Köken** bölümü vardır: **Tüm konuşmalar**, **Yalnızca destek** veya **Gönderdiğimiz postalara gelen
+yanıtlar**. **Gönderdiğimiz postalara gelen yanıtlar**, kenar çubuğunda **Gelen kutusu** altında da açık
+olanların sayısıyla birlikte bir girdidir. API'de `GET /v1/conversations`, diğer tüm süzgeçlerle birlikte
+kullanılabilen `origin=support` veya `origin=outbound` alır; `GET /v1/conversations/counts` `outbound` ve
+`outbound_inboxes` döndürür. [Raporlar](reports.md#köken) de tek bir köken'e sınırlanabilir.
+
 Otomatik yanıtlar (ofis dışında) konuşma olarak saklanmaz: yalnızca `auto_replied` olarak sayılır; böylece
 bir gönderim gelen kutusunu doldurmaz. Alıcıdan başkasından gelen e-posta, örneğin bir yönlendirme, kendi
 konuşmasını açar.

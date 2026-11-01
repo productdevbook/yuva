@@ -1,6 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { CheckIcon, ChevronDownIcon, ListFilterIcon, MegaphoneIcon } from "lucide-react"
-import { useMemo, useSyncExternalStore } from "react"
+import { useCallback, useMemo, useSyncExternalStore } from "react"
+import { useSearchParams } from "react-router"
 
 import { hostOf, SOURCE_FILTERS, SourceIcon, useSlaText, useSourceText } from "@/components/common"
 import { popupClass } from "@/components/ui/dropdown-menu"
@@ -12,7 +13,7 @@ import { FieldFilterSection, fieldFilterText } from "@/features/fields/FieldFilt
 import { useConversationFieldList } from "@/features/fields/ConversationFields"
 import { useBroadcasts } from "@/features/broadcasts/broadcastQueries"
 import { useDocsSites } from "@/features/docs/queries"
-import type { ChannelKind, SlaState } from "@/lib/api"
+import type { ChannelKind, ConversationOrigin, SlaState } from "@/lib/api"
 import type { ConversationFilters } from "@/lib/keys"
 import { cn } from "@/lib/utils"
 import { useChannelMap } from "@/lib/workspace"
@@ -43,6 +44,36 @@ export function useSourceFilter() {
     listeners.forEach((l) => l())
   }
   return [v, set] as const
+}
+
+export function useOrigin() {
+  const [params, setParams] = useSearchParams()
+  const raw = params.get("origin")
+  const origin: ConversationOrigin | undefined = raw === "support" || raw === "outbound" ? raw : undefined
+  const set = useCallback(
+    (next: ConversationOrigin | undefined) =>
+      setParams(
+        (prev) => {
+          const out = new URLSearchParams(prev)
+          if (next) out.set("origin", next)
+          else out.delete("origin")
+          return out
+        },
+        { replace: true }
+      ),
+    [setParams]
+  )
+  return [origin, set] as const
+}
+
+export function useOpenOnly() {
+  const [params] = useSearchParams()
+  return !params.get("view") && params.get("status") === "open"
+}
+
+export function resetSourceFilter() {
+  value = {}
+  listeners.forEach((l) => l())
 }
 
 export function sourceFilters(v: SourceFilterValue): ConversationFilters {
@@ -129,6 +160,38 @@ function SlaChoices({ v, update }: { v: SourceFilterValue; update: (next: Source
   )
 }
 
+function OriginChoices({
+  origin,
+  setOrigin,
+}: {
+  origin: ConversationOrigin | undefined
+  setOrigin: (next: ConversationOrigin | undefined) => void
+}) {
+  return (
+    <>
+      <Separator className="mx-1.5 my-1 w-auto" />
+      <p className="px-2.5 pt-1.5 pb-1 text-caption font-medium text-faint">
+        <Trans>Origin</Trans>
+      </p>
+      <Choice active={!origin} onClick={() => setOrigin(undefined)} testId="origin-any">
+        <span className="flex-1 text-start">
+          <Trans>Any conversation</Trans>
+        </span>
+      </Choice>
+      <Choice active={origin === "support"} onClick={() => setOrigin("support")} testId="origin-support">
+        <span className="flex-1 text-start">
+          <Trans>Support only</Trans>
+        </span>
+      </Choice>
+      <Choice active={origin === "outbound"} onClick={() => setOrigin("outbound")} testId="origin-outbound">
+        <span className="flex-1 text-start">
+          <Trans>Replies to mail we sent</Trans>
+        </span>
+      </Choice>
+    </>
+  )
+}
+
 function BroadcastChoices({
   inboxId,
   v,
@@ -181,15 +244,18 @@ export function SourceFilter({
   const text = useSourceText()
   const slaText = useSlaText()
   const [v, set] = useSourceFilter()
+  const [origin, setOrigin] = useOrigin()
+  const originText = { support: t`Support only`, outbound: t`Replies to mail we sent` }
   const sites = useSites(inboxId)
   const fields = useConversationFieldList()
   const update = (next: SourceFilterValue) => {
     set(next)
     onChange()
   }
-  const active = !!v.source || !!v.site || !!v.broadcast || !!v.field || !!v.sla
+  const active = !!origin || !!v.source || !!v.site || !!v.broadcast || !!v.field || !!v.sla
   const picked = v.field && fields.find((f) => f.key === v.field?.key)
   const summary = [
+    origin && originText[origin],
     v.source && text[v.source],
     v.site && hostOf(v.site),
     v.broadcast?.name,
@@ -276,6 +342,13 @@ export function SourceFilter({
             </p>
           </>
         )}
+        <OriginChoices
+          origin={origin}
+          setOrigin={(next) => {
+            setOrigin(next)
+            onChange()
+          }}
+        />
         <BroadcastChoices inboxId={inboxId} v={v} update={update} />
         <SlaChoices v={v} update={update} />
         <FieldFilterSection fields={fields} value={v.field} onChange={(field) => update({ ...v, field })} />

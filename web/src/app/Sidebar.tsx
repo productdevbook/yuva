@@ -11,10 +11,10 @@ import {
   XIcon,
 } from "lucide-react"
 import { Fragment, useCallback, useEffect, useRef, useState } from "react"
-import { Link, useLocation, useMatch, useNavigate } from "react-router"
+import { Link, useLocation, useMatch, useNavigate, useSearchParams } from "react-router"
 
 import { mainKeys, moveFocus, useEntries, useGo, useSection } from "@/app/Rail"
-import { useShell, type Section } from "@/app/shell"
+import { inboxRoot, isChats, useShell, type Section } from "@/app/shell"
 import { UserMenu } from "@/app/UserMenu"
 import { ViewsGroup } from "@/app/ViewsGroup"
 import { keyLabel, mod } from "@/components/common/ShortcutSheet"
@@ -53,6 +53,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useAnalyticsProperties } from "@/features/analytics/properties"
 import { useViewSearch } from "@/features/analytics/state"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { resetSourceFilter } from "@/features/inbox/SourceFilter"
+import { useCounts } from "@/features/inbox/queries"
 import { ProductScope, ProductSwitcher } from "@/features/inbox/ProductSwitcher"
 import { useVersion } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -239,7 +241,7 @@ function SearchButton() {
   )
 }
 
-export type Child = { key: string; label: string; to: string; current: boolean }
+export type Child = { key: string; label: string; to: string; current: boolean; count?: number; onSelect?: () => void }
 
 function useStatusChildren(): Child[] {
   const { t } = useLingui()
@@ -249,6 +251,28 @@ function useStatusChildren(): Child[] {
     { key: "pages", label: t`Pages`, to: "/status", current: !at("/incidents") && !at("/monitors") },
     { key: "incidents", label: t`Incidents`, to: "/incidents", current: at("/incidents") },
     { key: "monitors", label: t`Monitors`, to: "/monitors", current: at("/monitors") },
+  ]
+}
+
+function useConversationChildren(): Child[] | undefined {
+  const { t } = useLingui()
+  const { pathname } = useLocation()
+  const [params] = useSearchParams()
+  const { apart } = useSession()
+  const [inboxId] = useInboxFilter()
+  const counts = useCounts().data
+  const count = inboxId ? (counts?.outbound_inboxes.find((c) => c.id === inboxId)?.count ?? 0) : (counts?.outbound ?? 0)
+  const current = isChats(pathname, apart) && !params.get("view") && params.get("origin") === "outbound"
+  if (!count && !current) return undefined
+  return [
+    {
+      key: "outbound",
+      label: t`Replies to mail we sent`,
+      to: `${inboxRoot(apart)}?origin=outbound&status=open`,
+      onSelect: resetSourceFilter,
+      current,
+      count,
+    },
   ]
 }
 
@@ -366,6 +390,7 @@ export function useNavGroups(): NavGroup[] {
   const { t } = useLingui()
   const entries = useEntries()
   const children: Partial<Record<Section, Child[]>> = {
+    conversations: useConversationChildren(),
     status: useStatusChildren(),
     broadcasts: useBroadcastChildren(),
     analytics: useAnalyticsChildren(),
@@ -406,14 +431,22 @@ function Children({ section, items }: { section: string; items: Child[] }) {
       {items.map((c) => (
         <SidebarMenuSubItem key={c.key}>
           <SidebarMenuSubButton
-            render={<Link to={c.to} />}
+            render={<Link to={c.to} onClick={c.onSelect} />}
             isActive={c.current}
             aria-current={c.current ? "page" : undefined}
             className="relative h-[30px] translate-x-0 overflow-visible rounded-lg px-2.5 text-small text-sidebar-foreground in-data-[mobile=true]:h-11 in-data-[mobile=true]:text-base data-active:bg-transparent data-active:font-semibold data-active:text-brand-ink data-active:before:absolute data-active:before:inset-y-1.5 data-active:before:-start-3 data-active:before:w-0.5 data-active:before:rounded-full data-active:before:bg-brand data-active:hover:bg-sidebar-accent data-active:hover:text-brand-ink"
             data-rail-item
             data-testid={`rail-${section}-${c.key}`}
           >
-            <span>{c.label}</span>
+            <span className="min-w-0 flex-1 truncate">{c.label}</span>
+            {!!c.count && (
+              <span
+                className="ms-auto font-mono text-caption font-normal text-sidebar-muted"
+                data-testid={`rail-${section}-${c.key}-count`}
+              >
+                {c.count > 99 ? "99+" : c.count}
+              </span>
+            )}
           </SidebarMenuSubButton>
         </SidebarMenuSubItem>
       ))}

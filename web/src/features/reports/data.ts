@@ -5,6 +5,7 @@ import {
   unwrap,
   type ChannelKind,
   type ConversationListItem,
+  type ConversationOrigin,
   type ReportGranularity,
   type ReportGroupBy,
 } from "@/lib/api"
@@ -93,6 +94,7 @@ export type ReportQuery = {
   label_id?: string
   team_id?: string
   member_id?: string
+  origin?: ConversationOrigin
 }
 
 function reportParams(q: ReportQuery) {

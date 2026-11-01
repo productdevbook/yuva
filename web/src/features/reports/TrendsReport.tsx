@@ -17,7 +17,7 @@ import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { look } from "@/features/inbox/PageFrame"
 import { addDays, dayKey, daysBetween, downloadReport, useReport, type ReportQuery } from "@/features/reports/data"
 import { ActionsPortal, headClass, ReportSkeleton, SlaBar, ToolbarPortal } from "@/features/reports/parts"
-import type { ChannelKind, ReportGranularity, ReportGroupBy, ReportValues } from "@/lib/api"
+import type { ChannelKind, ConversationOrigin, ReportGranularity, ReportGroupBy, ReportValues } from "@/lib/api"
 import { useNow } from "@/hooks/use-now"
 import { cn } from "@/lib/utils"
 import { useInboxes, useLabels, useMembers, useTeams } from "@/lib/workspace"
@@ -215,8 +215,8 @@ function Controls({
   setGranularity: (g: ReportGranularity) => void
   group: ReportGroupBy | ""
   setGroup: (g: ReportGroupBy | "") => void
-  filters: { inbox: string; channel: string; label: string; team: string; member: string }
-  setFilter: (k: "inbox" | "channel" | "label" | "team" | "member", v: string) => void
+  filters: { inbox: string; channel: string; label: string; team: string; member: string; origin: string }
+  setFilter: (k: "inbox" | "channel" | "label" | "team" | "member" | "origin", v: string) => void
   invalid: boolean
   exporting: boolean
   onExport: () => void
@@ -367,6 +367,16 @@ function Controls({
                   {x.name}
                 </NativeSelectOption>
               ))}
+            </Filter>
+            <Filter
+              label={t`Origin`}
+              value={filters.origin}
+              onChange={(v) => setFilter("origin", v)}
+              testId="trends-filter-origin"
+            >
+              {all}
+              <NativeSelectOption value="support">{t`Support only`}</NativeSelectOption>
+              <NativeSelectOption value="outbound">{t`Replies to mail we sent`}</NativeSelectOption>
             </Filter>
             <Filter
               label={groupText.member}
@@ -799,6 +809,7 @@ export function TrendsReport() {
     label: params.get("label") ?? "",
     team: params.get("team") ?? "",
     member: params.get("member") ?? "",
+    origin: params.get("origin") === "support" || params.get("origin") === "outbound" ? params.get("origin")! : "",
   }
   const set = (changes: Record<string, string | undefined>) =>
     setParams(
@@ -821,6 +832,7 @@ export function TrendsReport() {
     label_id: filters.label,
     team_id: filters.team,
     member_id: filters.member,
+    origin: (filters.origin as ConversationOrigin) || undefined,
   }
   const prevTo = addDays(range.from, -1)
   const previous: ReportQuery = {

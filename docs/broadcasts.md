@@ -205,6 +205,15 @@ A reply to a broadcast opens a conversation with that contact in the broadcast's
 {broadcast}" and linked to it. Further replies continue the conversation. In the inbox, the filter by
 type has "Replies to a broadcast" to show them, and the broadcast's report lists the first 50.
 
+Replies to a broadcast, replies to a triggered e-mail and designed outreach (an e-mail from a design sent
+to a contact who had not written in) are the conversations that answer mail you sent. Yuva calls them
+`outbound`; every other conversation is `support`. In the inbox, the source filter has an **Origin**
+section: **Any conversation**, **Support only** or **Replies to mail we sent**. **Replies to mail we sent** is also an
+entry under **Inbox** in the sidebar, with the number of open ones. In the API, `GET /v1/conversations`
+takes `origin=support` or `origin=outbound`, combinable with every other filter, and
+`GET /v1/conversations/counts` returns `outbound` and `outbound_inboxes`. [Reports](reports.md#origin)
+can be limited to one origin too.
+
 Automatic replies (out of office) are not stored as conversations: they are only counted as
 `auto_replied`, so a send does not fill the inbox. Mail from someone other than the recipient, for
 example a forward, opens its own conversation.

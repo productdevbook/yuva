@@ -24,6 +24,7 @@ import {
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { ViewChips } from "@/features/inbox/ListHead"
 import { AssistantsPage } from "@/features/inbox/AssistantsPage"
+import { useOpenOnly } from "@/features/inbox/SourceFilter"
 import { MentionsPage } from "@/features/inbox/SidePanels"
 import { useCounts, useLoadedCount, useStats } from "@/features/inbox/queries"
 import { useActiveView } from "@/features/inbox/views/useActiveView"
@@ -145,6 +146,7 @@ function InboxPage({ id }: { id: string | null }) {
   const roomy = useMediaQuery("(min-width: 1200px)")
   const [panel, setPanel] = usePanel()
   const view = useActiveView()
+  const openOnly = useOpenOnly()
   const initialChip = useRememberedChip()
   const [chip, setChip] = useState<Chip>(initialChip)
   const [starting, setStarting] = useState(false)
@@ -231,9 +233,9 @@ function InboxPage({ id }: { id: string | null }) {
                 </header>
                 <ViewChips
                   label={t`Filter`}
-                  value={view.id ? null : chip}
+                  value={view.id || openOnly ? null : chip}
                   onChange={(k) => {
-                    view.clear()
+                    view.clear(!view.id)
                     rememberChip(k)
                     setChip(k)
                   }}
