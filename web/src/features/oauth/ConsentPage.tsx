@@ -2,7 +2,7 @@ import { Trans } from "@lingui/react/macro"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { ArrowUpRightIcon, BuildingIcon, ClockIcon, RefreshCwIcon } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Navigate, useLocation, useSearchParams } from "react-router"
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router"
 
 import { CheckItem, CheckList, ErrorLine, Notice } from "@/components/common"
 import { API_KEY_SCOPES, OPT_IN_SCOPES, useEnumText } from "@/components/common/text"
@@ -53,6 +53,8 @@ function Fact({ label, children, testId }: { label: React.ReactNode; children: R
 function Consent({ req, email }: { req: OAuthRequest; email: string }) {
   const text = useEnumText()
   const signOut = useSignOut()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [workspaceId, setWorkspaceId] = useState(req.workspaces[0]?.workspace_id ?? "")
   const workspace = req.workspaces.find((w) => w.workspace_id === workspaceId)
   const offered = API_KEY_SCOPES.filter((s) => workspace?.scopes.includes(s))
@@ -93,7 +95,10 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
           <Button
             variant="link"
             className="text-small text-muted-foreground underline hover:text-foreground"
-            onClick={() => void signOut()}
+            onClick={async () => {
+              await signOut()
+              navigate(signInPath(location.pathname, location.search), { replace: true })
+            }}
           >
             <Trans>Use another account</Trans>
           </Button>
