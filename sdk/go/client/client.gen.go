@@ -2769,6 +2769,24 @@ func (e ConversationMovedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationOrigin.
+const (
+	ConversationOriginOutbound ConversationOrigin = "outbound"
+	ConversationOriginSupport  ConversationOrigin = "support"
+)
+
+// Valid indicates whether the value is a known member of the ConversationOrigin enum.
+func (e ConversationOrigin) Valid() bool {
+	switch e {
+	case ConversationOriginOutbound:
+		return true
+	case ConversationOriginSupport:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationParticipantRole.
 const (
 	Cc        ConversationParticipantRole = "cc"
@@ -14809,6 +14827,12 @@ type ConversationCounts struct {
 	// MineTeams Assigned to any team of the calling member (`0` for API keys).
 	MineTeams int64 `json:"mine_teams"`
 
+	// Outbound Open conversations that answer mail the team sent (`ConversationOrigin` `outbound`).
+	Outbound int64 `json:"outbound"`
+
+	// OutboundInboxes Open conversations that answer mail the team sent, per inbox id; inboxes without any are left out.
+	OutboundInboxes []CountByID `json:"outbound_inboxes"`
+
 	// Spam Open conversations flagged as spam (not included in the other counts).
 	Spam int64 `json:"spam"`
 
@@ -15160,6 +15184,12 @@ type ConversationMovedEvent struct {
 
 // ConversationMovedEventType defines model for ConversationMovedEvent.Type.
 type ConversationMovedEventType string
+
+// ConversationOrigin Where a conversation came from. `outbound`: it answers mail the team sent, that is it has
+// a `broadcast_id` (a reply to a broadcast or a triggered e-mail) or it holds designed
+// outreach (an e-mail from a design sent to a contact who had not written in the
+// conversation). `support`: every other conversation.
+type ConversationOrigin string
 
 // ConversationPage defines model for ConversationPage.
 type ConversationPage struct {
@@ -26574,6 +26604,12 @@ type ReportMemberId = uuid.UUID
 // ReportMetrics defines model for ReportMetrics.
 type ReportMetrics = []ReportMetric
 
+// ReportOrigin Where a conversation came from. `outbound`: it answers mail the team sent, that is it has
+// a `broadcast_id` (a reply to a broadcast or a triggered e-mail) or it holds designed
+// outreach (an e-mail from a design sent to a contact who had not written in the
+// conversation). `support`: every other conversation.
+type ReportOrigin = ConversationOrigin
+
 // ReportTeamId defines model for ReportTeamId.
 type ReportTeamId = uuid.UUID
 
@@ -28024,6 +28060,12 @@ type ListConversationsParams struct {
 
 	// BroadcastId Only conversations opened by replies to this broadcast.
 	BroadcastId *uuid.UUID `form:"broadcast_id,omitempty" json:"broadcast_id,omitempty"`
+
+	// Origin `outbound` lists only the conversations that answer mail the team sent (see
+	// `ConversationOrigin`): replies to any broadcast or triggered e-mail, and designed
+	// outreach. `support` lists every other conversation. Without it, both. Combines with
+	// every other filter, `broadcast_id` included.
+	Origin *ConversationOrigin `form:"origin,omitempty" json:"origin,omitempty"`
 
 	// IdeaId Only the feedback linked to this roadmap idea. An idea of an inbox the caller cannot
 	// see answers `404`.
@@ -30016,6 +30058,11 @@ type GetReportParams struct {
 	// MemberId Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
 	MemberId *ReportMemberId `form:"member_id,omitempty" json:"member_id,omitempty"`
 
+	// Origin Only the figures of conversations of this origin (`ConversationOrigin`, as
+	// `GET /v1/conversations` filters it): `support` leaves out replies to broadcasts,
+	// triggered e-mails and outreach, `outbound` counts only those. Without it, both.
+	Origin *ReportOrigin `form:"origin,omitempty" json:"origin,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -30056,6 +30103,11 @@ type ExportReportParams struct {
 
 	// MemberId Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
 	MemberId *ReportMemberId `form:"member_id,omitempty" json:"member_id,omitempty"`
+
+	// Origin Only the figures of conversations of this origin (`ConversationOrigin`, as
+	// `GET /v1/conversations` filters it): `support` leaves out replies to broadcasts,
+	// triggered e-mails and outreach, `outbound` counts only those. Without it, both.
+	Origin *ReportOrigin `form:"origin,omitempty" json:"origin,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -40875,6 +40927,10 @@ type ClientInterface interface {
 	// `starred` counts the open conversations the calling member starred (`0` for API keys),
 	// spam left out.
 	//
+	// `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
+	// sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
+	// the other counts too.
+	//
 	// Scope: `conversations:read`.
 	//
 	// Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
@@ -46436,6 +46492,14 @@ type ClientInterface interface {
 	// conversation's team, and the team at the outcome for SLA. Figures with no member, team or
 	// channel kind go to a group without `key`. `label` groups count a conversation under each
 	// of its labels and leave out conversations without one.
+	//
+	// Without `origin`, every figure counts conversations of both origins, replies to
+	// broadcasts, triggered e-mails and outreach included, as before. `origin=support` gives
+	// the support figures alone (first reply, resolution, SLA and the rest without the replies
+	// to mail the team sent); `origin=outbound` only those replies. A conversation's origin is
+	// the one it had when its period was last rolled up; periods rolled up before origins were
+	// kept and not rebuilt since (older than 31 days at the upgrade) count every conversation
+	// as `support`.
 	//
 	// Scope: `reports:read`.
 	//
@@ -55575,6 +55639,10 @@ func (c *Client) BulkUpdateConversations(ctx context.Context, params *BulkUpdate
 // `starred` counts the open conversations the calling member starred (`0` for API keys),
 // spam left out.
 //
+// `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
+// sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
+// the other counts too.
+//
 // Scope: `conversations:read`.
 //
 // Corresponds with GET /v1/conversations/counts (the `GetConversationCounts` operationId).
@@ -64486,6 +64554,14 @@ func (c *Client) GetVapidPublicKey(ctx context.Context, reqEditors ...RequestEdi
 // conversation's team, and the team at the outcome for SLA. Figures with no member, team or
 // channel kind go to a group without `key`. `label` groups count a conversation under each
 // of its labels and leave out conversations without one.
+//
+// Without `origin`, every figure counts conversations of both origins, replies to
+// broadcasts, triggered e-mails and outreach included, as before. `origin=support` gives
+// the support figures alone (first reply, resolution, SLA and the rest without the replies
+// to mail the team sent); `origin=outbound` only those replies. A conversation's origin is
+// the one it had when its period was last rolled up; periods rolled up before origins were
+// kept and not rebuilt since (older than 31 days at the upgrade) count every conversation
+// as `support`.
 //
 // Scope: `reports:read`.
 //
@@ -80170,6 +80246,18 @@ func NewListConversationsRequest(server string, params *ListConversationsParams)
 		if params.BroadcastId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "broadcast_id", *params.BroadcastId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Origin != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "origin", *params.Origin, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -95995,6 +96083,18 @@ func NewGetReportRequest(server string, params *GetReportParams) (*http.Request,
 
 		}
 
+		if params.Origin != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "origin", *params.Origin, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if encoded := queryValues.Encode(); encoded != "" {
 			rawQueryFragments = append(rawQueryFragments, encoded)
 		}
@@ -96167,6 +96267,18 @@ func NewExportReportRequest(server string, params *ExportReportParams) (*http.Re
 		if params.MemberId != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "member_id", *params.MemberId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Origin != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "origin", *params.Origin, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -106964,6 +107076,10 @@ type ClientWithResponsesInterface interface {
 	// `starred` counts the open conversations the calling member starred (`0` for API keys),
 	// spam left out.
 	//
+	// `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
+	// sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
+	// the other counts too.
+	//
 	// Scope: `conversations:read`.
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -112835,6 +112951,14 @@ type ClientWithResponsesInterface interface {
 	// conversation's team, and the team at the outcome for SLA. Figures with no member, team or
 	// channel kind go to a group without `key`. `label` groups count a conversation under each
 	// of its labels and leave out conversations without one.
+	//
+	// Without `origin`, every figure counts conversations of both origins, replies to
+	// broadcasts, triggered e-mails and outreach included, as before. `origin=support` gives
+	// the support figures alone (first reply, resolution, SLA and the rest without the replies
+	// to mail the team sent); `origin=outbound` only those replies. A conversation's origin is
+	// the one it had when its period was last rolled up; periods rolled up before origins were
+	// kept and not rebuilt since (older than 31 days at the upgrade) count every conversation
+	// as `support`.
 	//
 	// Scope: `reports:read`.
 	//
@@ -158183,6 +158307,10 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithResponse(ctx context.Co
 // `starred` counts the open conversations the calling member starred (`0` for API keys),
 // spam left out.
 //
+// `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
+// sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
+// the other counts too.
+//
 // Scope: `conversations:read`.
 //
 // Returns a wrapper object for the known response body format(s).
@@ -166064,6 +166192,14 @@ func (c *ClientWithResponses) GetVapidPublicKeyWithResponse(ctx context.Context,
 // conversation's team, and the team at the outcome for SLA. Figures with no member, team or
 // channel kind go to a group without `key`. `label` groups count a conversation under each
 // of its labels and leave out conversations without one.
+//
+// Without `origin`, every figure counts conversations of both origins, replies to
+// broadcasts, triggered e-mails and outreach included, as before. `origin=support` gives
+// the support figures alone (first reply, resolution, SLA and the rest without the replies
+// to mail the team sent); `origin=outbound` only those replies. A conversation's origin is
+// the one it had when its period was last rolled up; periods rolled up before origins were
+// kept and not rebuilt since (older than 31 days at the upgrade) count every conversation
+// as `support`.
 //
 // Scope: `reports:read`.
 //

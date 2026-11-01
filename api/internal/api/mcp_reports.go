@@ -23,6 +23,7 @@ type reportIn struct {
 	LabelID     *uuid.UUID `json:"label_id,omitempty"`
 	TeamID      *uuid.UUID `json:"team_id,omitempty" jsonschema:"a team from list_teams"`
 	MemberID    *uuid.UUID `json:"member_id,omitempty" jsonschema:"a member from list_members"`
+	Origin      string     `json:"origin,omitempty" jsonschema:"support: leave out replies to broadcasts, triggered e-mails and outreach (support figures alone); outbound: only those; both when empty"`
 }
 
 type mcpTeamReportPeriod struct {
@@ -57,10 +58,11 @@ func mcpTeamReportSeries(in []oas.ReportPeriod) []mcpTeamReportPeriod {
 
 var mcpReportTools = []mcpTool{
 	defineTool("get_report", "Team report",
-		"Counts the team's work in the inboxes you can see per day, week or month of up to 13 months: conversations opened, closed and reopened, replies, first-reply and resolution times (median and p90 seconds), SLA targets met and breached, and ratings; optionally by inbox, channel kind, label, team or member, and narrowed to one of each. Maps to GET /v1/reports.",
+		"Counts the team's work in the inboxes you can see per day, week or month of up to 13 months: conversations opened, closed and reopened, replies, first-reply and resolution times (median and p90 seconds), SLA targets met and breached, and ratings; optionally by inbox, channel kind, label, team or member, and narrowed to one of each; origin support leaves out replies to mail the team sent. Maps to GET /v1/reports.",
 		readOnly, map[string][]any{
 			"granularity": {"day", "week", "month"}, "group_by": {"inbox", "channel", "label", "team", "member"},
 			"metrics": {"opened", "closed", "reopened", "replies", "first_reply", "resolution", "sla", "ratings"}, "channel_kind": {"email", "chat", "app", "api"},
+			"origin": {"support", "outbound"},
 		},
 		mcpTool{ops: []string{"GetReport"}},
 		func(ctx context.Context, c *mcpCall, in reportIn) (mcpTeamReport, error) {
@@ -73,7 +75,7 @@ var mcpReportTools = []mcpTool{
 				From: openapi_types.Date{Time: from}, To: openapi_types.Date{Time: to},
 				Timezone: optString[string](in.Timezone), Granularity: optString[oas.ReportGranularity](in.Granularity),
 				GroupBy: optString[oas.ReportGroupBy](in.GroupBy), ChannelKind: optString[oas.ChannelKind](in.ChannelKind),
-				InboxId: in.InboxID, LabelId: in.LabelID, TeamId: in.TeamID, MemberId: in.MemberID,
+				InboxId: in.InboxID, LabelId: in.LabelID, TeamId: in.TeamID, MemberId: in.MemberID, Origin: optString[oas.ReportOrigin](in.Origin),
 			}
 			if len(in.Metrics) > 0 {
 				m := []oas.ReportMetric{oas.ReportMetric(strings.Join(in.Metrics, ","))}

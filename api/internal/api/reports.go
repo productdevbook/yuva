@@ -76,6 +76,9 @@ func (s *Server) reportQuery(ctx context.Context, p principal, prm oas.GetReport
 	if prm.ChannelKind != nil && !prm.ChannelKind.Valid() {
 		return rq, errValidation("channel_kind must be email, chat, app or api")
 	}
+	if prm.Origin != nil && !prm.Origin.Valid() {
+		return rq, errValidation("origin must be support or outbound")
+	}
 	names, err := enumList(prm.Metrics, "metrics must be opened, closed, reopened, replies, first_reply, resolution, sla or ratings")
 	if err != nil {
 		return rq, err
@@ -141,6 +144,9 @@ func (s *Server) reportQuery(ctx context.Context, p principal, prm oas.GetReport
 		ck := string(*prm.ChannelKind)
 		rq.arg.ChannelKind = &ck
 	}
+	if prm.Origin != nil {
+		rq.arg.Outbound = new(*prm.Origin == oas.ConversationOriginOutbound)
+	}
 	rq.splitTotals = group == string(oas.ReportGroupByLabel) && prm.LabelId == nil
 	return rq, nil
 }
@@ -174,6 +180,7 @@ func (s *Server) reportTail(ctx context.Context, rq *reportQuery) error {
 		a.TailTeam = append(a.TailTeam, idText(k.team))
 		a.TailMember = append(a.TailMember, idText(k.member))
 		a.TailLabel = append(a.TailLabel, idText(k.label))
+		a.TailOutbound = append(a.TailOutbound, k.outbound)
 		a.TailMetric = append(a.TailMetric, k.metric)
 		a.TailBin = append(a.TailBin, k.bin)
 		a.TailN = append(a.TailN, n)

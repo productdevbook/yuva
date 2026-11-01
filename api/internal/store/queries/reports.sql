@@ -86,6 +86,11 @@ WHERE o.workspace_id = @workspace_id AND o.at >= @since::timestamptz AND o.at < 
 SELECT conversation_id, label_id FROM conversation_labels
 WHERE workspace_id = @workspace_id AND conversation_id = ANY (@conversation_ids::uuid[]);
 
+-- name: ListReportOutbound :many
+SELECT c.id FROM conversations c
+WHERE c.workspace_id = @workspace_id AND c.id = ANY (@conversation_ids::uuid[])
+  AND conversation_outbound(c.workspace_id, c.id, c.broadcast_id);
+
 -- name: ReportEarliestActivity :one
 -- The first instant anything reports count happened: a native conversation, a message that was not
 -- imported (a reply in an imported thread counts) or an SLA outcome.
@@ -120,17 +125,17 @@ DELETE FROM report_rollups WHERE workspace_id = @workspace_id AND bucket >= @sin
 -- period, group, metric and bin over the inboxes the viewer sees. Label rows answer only when
 -- by_label is set; deleted inboxes and labels drop out, deleted teams and members become none.
 WITH r AS (
-    SELECT rr.bucket, rr.inbox_id, rr.channel_kind, rr.team_id, rr.member_id, rr.label_id, rr.metric, rr.bin, rr.n
+    SELECT rr.bucket, rr.inbox_id, rr.channel_kind, rr.team_id, rr.member_id, rr.label_id, rr.outbound, rr.metric, rr.bin, rr.n
     FROM report_rollups rr
     WHERE rr.workspace_id = @workspace_id AND rr.bucket >= @since::timestamptz AND rr.bucket < @until::timestamptz
       AND rr.bucket < @built::timestamptz
     UNION ALL
     SELECT t.bucket, t.inbox_id, NULLIF(t.channel_kind, ''), NULLIF(t.team_id, '')::uuid, NULLIF(t.member_id, '')::uuid,
-        NULLIF(t.label_id, '')::uuid, t.metric, t.bin, t.n
+        NULLIF(t.label_id, '')::uuid, t.outbound, t.metric, t.bin, t.n
     FROM (
         SELECT unnest(@tail_bucket::timestamptz[]) AS bucket, unnest(@tail_inbox::uuid[]) AS inbox_id,
             unnest(@tail_channel::text[]) AS channel_kind, unnest(@tail_team::text[]) AS team_id,
-            unnest(@tail_member::text[]) AS member_id, unnest(@tail_label::text[]) AS label_id,
+            unnest(@tail_member::text[]) AS member_id, unnest(@tail_label::text[]) AS label_id, unnest(@tail_outbound::bool[]) AS outbound,
             unnest(@tail_metric::text[]) AS metric, unnest(@tail_bin::smallint[]) AS bin, unnest(@tail_n::integer[]) AS n
     ) t
 )
@@ -155,6 +160,7 @@ WHERE (r.label_id IS NOT NULL) = @by_label::bool AND (r.label_id IS NULL OR l.id
   AND (sqlc.narg(channel_kind)::text IS NULL OR r.channel_kind = sqlc.narg(channel_kind)::text)
   AND (sqlc.narg(team_id)::uuid IS NULL OR t.id = sqlc.narg(team_id)::uuid)
   AND (sqlc.narg(member_id)::uuid IS NULL OR mb.id = sqlc.narg(member_id)::uuid)
+  AND (sqlc.narg(outbound)::bool IS NULL OR r.outbound = sqlc.narg(outbound)::bool)
   AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = @workspace_id AND pmb.id = r.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
       WHERE iv.workspace_id = @workspace_id AND iv.inbox_id = r.inbox_id AND iv.viewer_id = @viewer_id::uuid))

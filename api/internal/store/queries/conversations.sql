@@ -48,6 +48,7 @@ WHERE c.workspace_id = @workspace_id
   AND (sqlc.narg(inbox_id)::uuid IS NULL OR c.inbox_id = sqlc.narg(inbox_id)::uuid)
   AND (sqlc.narg(contact_id)::uuid IS NULL OR c.contact_id = sqlc.narg(contact_id)::uuid)
   AND (sqlc.narg(broadcast_id)::uuid IS NULL OR c.broadcast_id = sqlc.narg(broadcast_id)::uuid)
+  AND (sqlc.narg(outbound)::bool IS NULL OR sqlc.narg(outbound)::bool = conversation_outbound(c.workspace_id, c.id, c.broadcast_id))
   AND (sqlc.narg(spam)::bool IS NULL OR c.spam = sqlc.narg(spam)::bool)
   AND (c.trashed_at IS NOT NULL) = @trashed::bool
   AND (NOT @trashed::bool OR NOT EXISTS (SELECT 1 FROM inboxes ti WHERE ti.workspace_id = c.workspace_id AND ti.id = c.inbox_id AND ti.personal AND ti.owner_member_id IS DISTINCT FROM sqlc.narg(trash_owner)::uuid))
@@ -296,7 +297,7 @@ CROSS JOIN LATERAL (
 WHERE c.workspace_id = @workspace_id AND c.id = ANY(@conversation_ids::uuid[]);
 
 -- name: CountOpenConversations :many
-SELECT c.inbox_id, c.assignee_id, c.team_id, c.spam, count(*) AS n
+SELECT c.inbox_id, c.assignee_id, c.team_id, c.spam, conversation_outbound(c.workspace_id, c.id, c.broadcast_id)::bool AS outbound, count(*) AS n
 FROM conversations c
 WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS NULL
   AND ((@all_inboxes::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = c.workspace_id AND pmb.id = c.inbox_id AND pmb.personal)) OR EXISTS (
@@ -307,7 +308,7 @@ WHERE c.workspace_id = @workspace_id AND c.status = 'open' AND c.trashed_at IS N
   AND (sqlc.narg(purpose)::text IS NULL OR EXISTS (
       SELECT 1 FROM inboxes pi
       WHERE pi.workspace_id = c.workspace_id AND pi.id = c.inbox_id AND pi.purpose = sqlc.narg(purpose)::text))
-GROUP BY 1, 2, 3, 4;
+GROUP BY 1, 2, 3, 4, 5;
 
 -- name: CountOpenConversationsByLabel :many
 SELECT cl.label_id, count(*) AS n

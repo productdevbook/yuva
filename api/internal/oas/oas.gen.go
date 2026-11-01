@@ -2771,6 +2771,24 @@ func (e ConversationMovedEventType) Valid() bool {
 	}
 }
 
+// Defines values for ConversationOrigin.
+const (
+	ConversationOriginOutbound ConversationOrigin = "outbound"
+	ConversationOriginSupport  ConversationOrigin = "support"
+)
+
+// Valid indicates whether the value is a known member of the ConversationOrigin enum.
+func (e ConversationOrigin) Valid() bool {
+	switch e {
+	case ConversationOriginOutbound:
+		return true
+	case ConversationOriginSupport:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConversationParticipantRole.
 const (
 	Cc        ConversationParticipantRole = "cc"
@@ -14763,6 +14781,12 @@ type ConversationCounts struct {
 	// MineTeams Assigned to any team of the calling member (`0` for API keys).
 	MineTeams int64 `json:"mine_teams"`
 
+	// Outbound Open conversations that answer mail the team sent (`ConversationOrigin` `outbound`).
+	Outbound int64 `json:"outbound"`
+
+	// OutboundInboxes Open conversations that answer mail the team sent, per inbox id; inboxes without any are left out.
+	OutboundInboxes []CountByID `json:"outbound_inboxes"`
+
 	// Spam Open conversations flagged as spam (not included in the other counts).
 	Spam int64 `json:"spam"`
 
@@ -15114,6 +15138,12 @@ type ConversationMovedEvent struct {
 
 // ConversationMovedEventType defines model for ConversationMovedEvent.Type.
 type ConversationMovedEventType string
+
+// ConversationOrigin Where a conversation came from. `outbound`: it answers mail the team sent, that is it has
+// a `broadcast_id` (a reply to a broadcast or a triggered e-mail) or it holds designed
+// outreach (an e-mail from a design sent to a contact who had not written in the
+// conversation). `support`: every other conversation.
+type ConversationOrigin string
 
 // ConversationPage defines model for ConversationPage.
 type ConversationPage struct {
@@ -26528,6 +26558,12 @@ type ReportMemberId = uuid.UUID
 // ReportMetrics defines model for ReportMetrics.
 type ReportMetrics = []ReportMetric
 
+// ReportOrigin Where a conversation came from. `outbound`: it answers mail the team sent, that is it has
+// a `broadcast_id` (a reply to a broadcast or a triggered e-mail) or it holds designed
+// outreach (an e-mail from a design sent to a contact who had not written in the
+// conversation). `support`: every other conversation.
+type ReportOrigin = ConversationOrigin
+
 // ReportTeamId defines model for ReportTeamId.
 type ReportTeamId = uuid.UUID
 
@@ -27924,6 +27960,12 @@ type ListConversationsParams struct {
 
 	// BroadcastId Only conversations opened by replies to this broadcast.
 	BroadcastId *uuid.UUID `form:"broadcast_id,omitempty" json:"broadcast_id,omitempty"`
+
+	// Origin `outbound` lists only the conversations that answer mail the team sent (see
+	// `ConversationOrigin`): replies to any broadcast or triggered e-mail, and designed
+	// outreach. `support` lists every other conversation. Without it, both. Combines with
+	// every other filter, `broadcast_id` included.
+	Origin *ConversationOrigin `form:"origin,omitempty" json:"origin,omitempty"`
 
 	// IdeaId Only the feedback linked to this roadmap idea. An idea of an inbox the caller cannot
 	// see answers `404`.
@@ -29916,6 +29958,11 @@ type GetReportParams struct {
 	// MemberId Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
 	MemberId *ReportMemberId `form:"member_id,omitempty" json:"member_id,omitempty"`
 
+	// Origin Only the figures of conversations of this origin (`ConversationOrigin`, as
+	// `GET /v1/conversations` filters it): `support` leaves out replies to broadcasts,
+	// triggered e-mails and outreach, `outbound` counts only those. Without it, both.
+	Origin *ReportOrigin `form:"origin,omitempty" json:"origin,omitempty"`
+
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
 }
@@ -29956,6 +30003,11 @@ type ExportReportParams struct {
 
 	// MemberId Only the figures of this member, attributed as `group_by=member` does (`404` for a member the workspace does not have).
 	MemberId *ReportMemberId `form:"member_id,omitempty" json:"member_id,omitempty"`
+
+	// Origin Only the figures of conversations of this origin (`ConversationOrigin`, as
+	// `GET /v1/conversations` filters it): `support` leaves out replies to broadcasts,
+	// triggered e-mails and outreach, `outbound` counts only those. Without it, both.
+	Origin *ReportOrigin `form:"origin,omitempty" json:"origin,omitempty"`
 
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
 	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
@@ -48304,6 +48356,19 @@ func (siw *ServerInterfaceWrapper) ListConversations(w http.ResponseWriter, r *h
 		return
 	}
 
+	// ------------- Optional query parameter "origin" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "origin", r.URL.Query(), &params.Origin, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "origin"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "origin", Err: err})
+		}
+		return
+	}
+
 	// ------------- Optional query parameter "idea_id" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "idea_id", r.URL.Query(), &params.IdeaId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
@@ -63088,6 +63153,19 @@ func (siw *ServerInterfaceWrapper) GetReport(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	// ------------- Optional query parameter "origin" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "origin", r.URL.Query(), &params.Origin, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "origin"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "origin", Err: err})
+		}
+		return
+	}
+
 	headers := r.Header
 
 	// ------------- Optional header parameter "Yuva-Workspace" -------------
@@ -63268,6 +63346,19 @@ func (siw *ServerInterfaceWrapper) ExportReport(w http.ResponseWriter, r *http.R
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "member_id"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "member_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "origin" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "origin", r.URL.Query(), &params.Origin, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "origin"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "origin", Err: err})
 		}
 		return
 	}

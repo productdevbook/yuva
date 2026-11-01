@@ -5029,6 +5029,15 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: origin
+          in: query
+          description: |
+            `outbound` lists only the conversations that answer mail the team sent (see
+            `ConversationOrigin`): replies to any broadcast or triggered e-mail, and designed
+            outreach. `support` lists every other conversation. Without it, both. Combines with
+            every other filter, `broadcast_id` included.
+          schema:
+            $ref: "#/components/schemas/ConversationOrigin"
         - name: idea_id
           in: query
           description: |
@@ -5297,6 +5306,10 @@ paths:
         `starred` counts the open conversations the calling member starred (`0` for API keys),
         spam left out.
 
+        `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
+        sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
+        the other counts too.
+
         Scope: `conversations:read`.
       tags: [conversations]
       parameters:
@@ -5493,6 +5506,14 @@ paths:
         channel kind go to a group without `key`. `label` groups count a conversation under each
         of its labels and leave out conversations without one.
 
+        Without `origin`, every figure counts conversations of both origins, replies to
+        broadcasts, triggered e-mails and outreach included, as before. `origin=support` gives
+        the support figures alone (first reply, resolution, SLA and the rest without the replies
+        to mail the team sent); `origin=outbound` only those replies. A conversation's origin is
+        the one it had when its period was last rolled up; periods rolled up before origins were
+        kept and not rebuilt since (older than 31 days at the upgrade) count every conversation
+        as `support`.
+
         Scope: `reports:read`.
       tags: [reports]
       parameters:
@@ -5508,6 +5529,7 @@ paths:
         - $ref: "#/components/parameters/ReportLabelId"
         - $ref: "#/components/parameters/ReportTeamId"
         - $ref: "#/components/parameters/ReportMemberId"
+        - $ref: "#/components/parameters/ReportOrigin"
       responses:
         "200":
           description: The report.
@@ -5557,6 +5579,7 @@ paths:
         - $ref: "#/components/parameters/ReportLabelId"
         - $ref: "#/components/parameters/ReportTeamId"
         - $ref: "#/components/parameters/ReportMemberId"
+        - $ref: "#/components/parameters/ReportOrigin"
       responses:
         "200":
           description: The report as CSV.
@@ -22145,6 +22168,15 @@ components:
       schema:
         type: string
         format: uuid
+    ReportOrigin:
+      name: origin
+      in: query
+      description: |
+        Only the figures of conversations of this origin (`ConversationOrigin`, as
+        `GET /v1/conversations` filters it): `support` leaves out replies to broadcasts,
+        triggered e-mails and outreach, `outbound` counts only those. Without it, both.
+      schema:
+        $ref: "#/components/schemas/ConversationOrigin"
     Limit:
       name: limit
       in: query
@@ -26893,7 +26925,7 @@ components:
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams, starred, trash]
+      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams, starred, trash, outbound, outbound_inboxes]
       properties:
         trash:
           type: integer
@@ -26954,6 +26986,15 @@ components:
           type: integer
           format: int64
           description: Starred by the calling member (`0` for API keys).
+        outbound:
+          type: integer
+          format: int64
+          description: Open conversations that answer mail the team sent (`ConversationOrigin` `outbound`).
+        outbound_inboxes:
+          type: array
+          description: Open conversations that answer mail the team sent, per inbox id; inboxes without any are left out.
+          items:
+            $ref: "#/components/schemas/CountByID"
     Home:
       type: object
       description: The Home blocks; a block the member may not see is absent.
@@ -32389,6 +32430,14 @@ components:
       description: |
         `feedback` conversations carry `feedback` metadata; everything else is `conversation`.
       enum: [conversation, feedback]
+    ConversationOrigin:
+      type: string
+      description: |
+        Where a conversation came from. `outbound`: it answers mail the team sent, that is it has
+        a `broadcast_id` (a reply to a broadcast or a triggered e-mail) or it holds designed
+        outreach (an e-mail from a design sent to a contact who had not written in the
+        conversation). `support`: every other conversation.
+      enum: [support, outbound]
     FeedbackCategory:
       type: string
       description: |

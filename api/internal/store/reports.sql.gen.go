@@ -101,6 +101,37 @@ func (q *Queries) ListReportLabels(ctx context.Context, arg ListReportLabelsPara
 	return items, nil
 }
 
+const listReportOutbound = `-- name: ListReportOutbound :many
+SELECT c.id FROM conversations c
+WHERE c.workspace_id = $1 AND c.id = ANY ($2::uuid[])
+  AND conversation_outbound(c.workspace_id, c.id, c.broadcast_id)
+`
+
+type ListReportOutboundParams struct {
+	WorkspaceID     uuid.UUID
+	ConversationIds []uuid.UUID
+}
+
+func (q *Queries) ListReportOutbound(ctx context.Context, arg ListReportOutboundParams) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, listReportOutbound, arg.WorkspaceID, arg.ConversationIds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []uuid.UUID
+	for rows.Next() {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const lockReportRollupState = `-- name: LockReportRollupState :one
 SELECT workspace_id, built_until, recomputed_on, recompute_at, updated_at FROM report_rollup_state WHERE workspace_id = $1 FOR UPDATE
 `
@@ -314,18 +345,18 @@ func (q *Queries) ReportNames(ctx context.Context, arg ReportNamesParams) ([]Rep
 
 const reportRows = `-- name: ReportRows :many
 WITH r AS (
-    SELECT rr.bucket, rr.inbox_id, rr.channel_kind, rr.team_id, rr.member_id, rr.label_id, rr.metric, rr.bin, rr.n
+    SELECT rr.bucket, rr.inbox_id, rr.channel_kind, rr.team_id, rr.member_id, rr.label_id, rr.outbound, rr.metric, rr.bin, rr.n
     FROM report_rollups rr
-    WHERE rr.workspace_id = $4 AND rr.bucket >= $14::timestamptz AND rr.bucket < $15::timestamptz
-      AND rr.bucket < $16::timestamptz
+    WHERE rr.workspace_id = $4 AND rr.bucket >= $15::timestamptz AND rr.bucket < $16::timestamptz
+      AND rr.bucket < $17::timestamptz
     UNION ALL
     SELECT t.bucket, t.inbox_id, NULLIF(t.channel_kind, ''), NULLIF(t.team_id, '')::uuid, NULLIF(t.member_id, '')::uuid,
-        NULLIF(t.label_id, '')::uuid, t.metric, t.bin, t.n
+        NULLIF(t.label_id, '')::uuid, t.outbound, t.metric, t.bin, t.n
     FROM (
-        SELECT unnest($17::timestamptz[]) AS bucket, unnest($18::uuid[]) AS inbox_id,
-            unnest($19::text[]) AS channel_kind, unnest($20::text[]) AS team_id,
-            unnest($21::text[]) AS member_id, unnest($22::text[]) AS label_id,
-            unnest($23::text[]) AS metric, unnest($24::smallint[]) AS bin, unnest($25::integer[]) AS n
+        SELECT unnest($18::timestamptz[]) AS bucket, unnest($19::uuid[]) AS inbox_id,
+            unnest($20::text[]) AS channel_kind, unnest($21::text[]) AS team_id,
+            unnest($22::text[]) AS member_id, unnest($23::text[]) AS label_id, unnest($24::bool[]) AS outbound,
+            unnest($25::text[]) AS metric, unnest($26::smallint[]) AS bin, unnest($27::integer[]) AS n
     ) t
 )
 SELECT date_trunc($1::text, r.bucket AT TIME ZONE $2::text)::date AS period,
@@ -349,38 +380,41 @@ WHERE (r.label_id IS NOT NULL) = $5::bool AND (r.label_id IS NULL OR l.id IS NOT
   AND ($9::text IS NULL OR r.channel_kind = $9::text)
   AND ($10::uuid IS NULL OR t.id = $10::uuid)
   AND ($11::uuid IS NULL OR mb.id = $11::uuid)
-  AND (($12::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = $4 AND pmb.id = r.inbox_id AND pmb.personal)) OR EXISTS (
+  AND ($12::bool IS NULL OR r.outbound = $12::bool)
+  AND (($13::bool AND NOT EXISTS (SELECT 1 FROM inboxes pmb WHERE pmb.workspace_id = $4 AND pmb.id = r.inbox_id AND pmb.personal)) OR EXISTS (
       SELECT 1 FROM inbox_viewers iv
-      WHERE iv.workspace_id = $4 AND iv.inbox_id = r.inbox_id AND iv.viewer_id = $13::uuid))
+      WHERE iv.workspace_id = $4 AND iv.inbox_id = r.inbox_id AND iv.viewer_id = $14::uuid))
 GROUP BY 1, 2, 3, 4
 `
 
 type ReportRowsParams struct {
-	Grain       string
-	Timezone    string
-	GroupBy     string
-	WorkspaceID uuid.UUID
-	ByLabel     bool
-	Metrics     []string
-	LabelID     *uuid.UUID
-	InboxID     *uuid.UUID
-	ChannelKind *string
-	TeamID      *uuid.UUID
-	MemberID    *uuid.UUID
-	AllInboxes  bool
-	ViewerID    uuid.UUID
-	Since       time.Time
-	Until       time.Time
-	Built       time.Time
-	TailBucket  []time.Time
-	TailInbox   []uuid.UUID
-	TailChannel []string
-	TailTeam    []string
-	TailMember  []string
-	TailLabel   []string
-	TailMetric  []string
-	TailBin     []int16
-	TailN       []int32
+	Grain        string
+	Timezone     string
+	GroupBy      string
+	WorkspaceID  uuid.UUID
+	ByLabel      bool
+	Metrics      []string
+	LabelID      *uuid.UUID
+	InboxID      *uuid.UUID
+	ChannelKind  *string
+	TeamID       *uuid.UUID
+	MemberID     *uuid.UUID
+	Outbound     *bool
+	AllInboxes   bool
+	ViewerID     uuid.UUID
+	Since        time.Time
+	Until        time.Time
+	Built        time.Time
+	TailBucket   []time.Time
+	TailInbox    []uuid.UUID
+	TailChannel  []string
+	TailTeam     []string
+	TailMember   []string
+	TailLabel    []string
+	TailOutbound []bool
+	TailMetric   []string
+	TailBin      []int16
+	TailN        []int32
 }
 
 type ReportRowsRow struct {
@@ -407,6 +441,7 @@ func (q *Queries) ReportRows(ctx context.Context, arg ReportRowsParams) ([]Repor
 		arg.ChannelKind,
 		arg.TeamID,
 		arg.MemberID,
+		arg.Outbound,
 		arg.AllInboxes,
 		arg.ViewerID,
 		arg.Since,
@@ -418,6 +453,7 @@ func (q *Queries) ReportRows(ctx context.Context, arg ReportRowsParams) ([]Repor
 		arg.TailTeam,
 		arg.TailMember,
 		arg.TailLabel,
+		arg.TailOutbound,
 		arg.TailMetric,
 		arg.TailBin,
 		arg.TailN,

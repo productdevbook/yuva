@@ -139,6 +139,7 @@ type searchConversationsIn struct {
 	ContactID *uuid.UUID        `json:"contact_id,omitempty"`
 	Spam      bool              `json:"spam,omitempty" jsonschema:"true lists only conversations flagged as spam"`
 	SLAState  string            `json:"sla_state,omitempty" jsonschema:"only conversations whose SLA is in this state"`
+	Origin    string            `json:"origin,omitempty" jsonschema:"outbound: only replies to mail the team sent (any broadcast, triggered e-mail or designed outreach); support: only the other conversations; both when empty"`
 	Sort      string            `json:"sort,omitempty" jsonschema:"last_activity (the default) or sla_due: the earliest SLA due time first, breached ones leading"`
 	Fields    map[string]string `json:"fields,omitempty" jsonschema:"custom field key from list_custom_fields to the exact value it must hold (a number, true or false, or the text); all must match"`
 	Cursor    string            `json:"cursor,omitempty"`
@@ -357,6 +358,8 @@ type mcpCounts struct {
 	Spam               int64              `json:"spam"`
 	Feedback           int64              `json:"feedback"`
 	Inboxes            []mcpCount         `json:"inboxes" jsonschema:"open conversations per inbox id"`
+	Outbound           int64              `json:"outbound" jsonschema:"open replies to mail the team sent (broadcasts, triggered e-mails, outreach), included in the other counts"`
+	OutboundInboxes    []mcpCount         `json:"outbound_inboxes" jsonschema:"open replies to mail the team sent per inbox id"`
 	Labels             []mcpCount         `json:"labels" jsonschema:"open conversations per label id"`
 	FeedbackCategories []mcpCategoryCount `json:"feedback_categories"`
 }
@@ -624,12 +627,13 @@ func mayDeliver(p principal) bool { return !(p.deliversAsBot() && !p.botsMaySend
 var mcpTools = append([]mcpTool{
 	defineTool("search_conversations", "Search conversations",
 		"Lists conversations in the inboxes you can see, most recent activity first, with filters and full-text search. Maps to GET /v1/conversations.",
-		readOnly, map[string][]any{"status": conversationStatuses, "sla_state": slaStates, "sort": {"last_activity", "sla_due"}}, mcpTool{ops: []string{"ListConversations"}},
+		readOnly, map[string][]any{"status": conversationStatuses, "sla_state": slaStates, "sort": {"last_activity", "sla_due"}, "origin": {"support", "outbound"}}, mcpTool{ops: []string{"ListConversations"}},
 		func(ctx context.Context, c *mcpCall, in searchConversationsIn) (mcpPage[mcpConversation], error) {
 			params := oas.ListConversationsParams{
 				InboxId: in.InboxID, ContactId: in.ContactID, LabelId: in.LabelID, Status: optList(optString[oas.ConversationStatus](in.Status)),
 				Assignee: optString[string](in.Assignee), TeamId: in.TeamID, Q: optString[string](in.Query), Cursor: optString[string](in.Cursor), Limit: optLimit(in.Limit),
 				SlaState: optList(optString[oas.SlaState](in.SLAState)), Sort: optString[oas.ListConversationsParamsSort](in.Sort),
+				Origin: optString[oas.ConversationOrigin](in.Origin),
 			}
 			if in.Spam {
 				params.Spam = &in.Spam
@@ -736,7 +740,7 @@ var mcpTools = append([]mcpTool{
 			return out, nil
 		}),
 	defineTool("get_counts", "Count open conversations",
-		"Counts open conversations you can see: all, assigned to you, unassigned, spam, feedback, per inbox and per label. Maps to GET /v1/conversations/counts.",
+		"Counts open conversations you can see: all, assigned to you, unassigned, spam, feedback, per inbox and per label, and the replies to mail the team sent (broadcasts, triggered e-mails, outreach) in all and per inbox. Maps to GET /v1/conversations/counts.",
 		readOnly, nil, mcpTool{ops: []string{"GetConversationCounts"}},
 		func(ctx context.Context, c *mcpCall, _ noInput) (mcpCounts, error) {
 			res, err := c.s.GetConversationCounts(ctx, oas.GetConversationCountsRequestObject{})
@@ -744,10 +748,13 @@ var mcpTools = append([]mcpTool{
 				return mcpCounts{}, err
 			}
 			r := res.(oas.GetConversationCounts200JSONResponse)
-			out := mcpCounts{All: r.All, Mine: r.Mine, Unassigned: r.Unassigned, Spam: r.Spam, Feedback: r.Feedback,
-				Inboxes: []mcpCount{}, Labels: []mcpCount{}, FeedbackCategories: []mcpCategoryCount{}}
+			out := mcpCounts{All: r.All, Mine: r.Mine, Unassigned: r.Unassigned, Spam: r.Spam, Feedback: r.Feedback, Outbound: r.Outbound,
+				Inboxes: []mcpCount{}, OutboundInboxes: []mcpCount{}, Labels: []mcpCount{}, FeedbackCategories: []mcpCategoryCount{}}
 			for _, x := range r.Inboxes {
 				out.Inboxes = append(out.Inboxes, mcpCount{ID: x.Id, Count: x.Count})
+			}
+			for _, x := range r.OutboundInboxes {
+				out.OutboundInboxes = append(out.OutboundInboxes, mcpCount{ID: x.Id, Count: x.Count})
 			}
 			for _, x := range r.Labels {
 				out.Labels = append(out.Labels, mcpCount{ID: x.Id, Count: x.Count})

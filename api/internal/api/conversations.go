@@ -547,6 +547,12 @@ func (s *Server) parseConversationFilter(ctx context.Context, q *store.Queries, 
 	if arg.Kinds, err = enumList(prm.Kind, "kind must be conversation or feedback"); err != nil {
 		return none, onParam("kind", err)
 	}
+	if prm.Origin != nil {
+		if !prm.Origin.Valid() {
+			return none, onParam("origin", errValidation("origin must be support or outbound"))
+		}
+		arg.Outbound = new(*prm.Origin == oas.ConversationOriginOutbound)
+	}
 	if arg.ChannelKinds, err = enumList(prm.ChannelKind, "channel_kind must be chat, email, app or api"); err != nil {
 		return none, onParam("channel_kind", err)
 	}
@@ -742,13 +748,13 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 	}
 	out := oas.GetConversationCounts200JSONResponse{
 		Inboxes: []oas.CountByID{}, Assignees: []oas.CountByID{}, Teams: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel)), FeedbackCategories: make([]oas.FeedbackCount, 0, len(feedback)),
-		Starred: starred,
+		OutboundInboxes: []oas.CountByID{}, Starred: starred,
 	}
 	for _, r := range feedback {
 		out.Feedback += r.N
 		out.FeedbackCategories = append(out.FeedbackCategories, oas.FeedbackCount{Category: oas.FeedbackCategory(r.Category), Count: r.N})
 	}
-	perInbox, perAssignee, perTeam := map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}
+	perInbox, perAssignee, perTeam, perOutbound := map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}
 	for _, r := range rows {
 		if r.Spam {
 			out.Spam += r.N
@@ -771,8 +777,12 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 			}
 		}
 		perInbox[r.InboxID] += r.N
+		if r.Outbound {
+			out.Outbound += r.N
+			perOutbound[r.InboxID] += r.N
+		}
 	}
-	out.Inboxes, out.Assignees, out.Teams = sortedCounts(perInbox), sortedCounts(perAssignee), sortedCounts(perTeam)
+	out.Inboxes, out.Assignees, out.Teams, out.OutboundInboxes = sortedCounts(perInbox), sortedCounts(perAssignee), sortedCounts(perTeam), sortedCounts(perOutbound)
 	for _, r := range byLabel {
 		out.Labels = append(out.Labels, oas.CountByID{Id: r.LabelID, Count: r.N})
 	}

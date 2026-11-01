@@ -46,14 +46,15 @@ func reportBinSeconds(bin int16) float64 {
 }
 
 type reportKey struct {
-	bucket  time.Time
-	inbox   uuid.UUID
-	channel string
-	team    uuid.UUID
-	member  uuid.UUID
-	label   uuid.UUID
-	metric  string
-	bin     int16
+	bucket   time.Time
+	inbox    uuid.UUID
+	channel  string
+	team     uuid.UUID
+	member   uuid.UUID
+	label    uuid.UUID
+	outbound bool
+	metric   string
+	bin      int16
 }
 
 func optID(id *uuid.UUID) uuid.UUID {
@@ -65,11 +66,12 @@ func optID(id *uuid.UUID) uuid.UUID {
 
 // reportCells adds facts up per quarter-hour bucket and dimension, once without a label and once
 // per label of the conversation.
-func reportCells(facts []store.ReportFactsRow, labels map[uuid.UUID][]uuid.UUID) map[reportKey]int32 {
+func reportCells(facts []store.ReportFactsRow, labels map[uuid.UUID][]uuid.UUID, outbound map[uuid.UUID]bool) map[reportKey]int32 {
 	out := map[reportKey]int32{}
 	for _, f := range facts {
 		k := reportKey{
-			bucket: f.At.UTC().Truncate(reportBucket), inbox: f.InboxID, team: optID(f.TeamID), member: optID(f.MemberID), metric: f.Metric,
+			bucket: f.At.UTC().Truncate(reportBucket), inbox: f.InboxID, team: optID(f.TeamID), member: optID(f.MemberID),
+			outbound: outbound[f.ConversationID], metric: f.Metric,
 		}
 		if f.ChannelKind != nil {
 			k.channel = *f.ChannelKind
@@ -102,7 +104,7 @@ func (s *Server) reportFacts(ctx context.Context, q *store.Queries, ws uuid.UUID
 			ids = append(ids, f.ConversationID)
 		}
 	}
-	labels := map[uuid.UUID][]uuid.UUID{}
+	labels, outbound := map[uuid.UUID][]uuid.UUID{}, map[uuid.UUID]bool{}
 	if len(ids) > 0 {
 		rows, err := q.ListReportLabels(ctx, store.ListReportLabelsParams{WorkspaceID: ws, ConversationIds: ids})
 		if err != nil {
@@ -111,8 +113,15 @@ func (s *Server) reportFacts(ctx context.Context, q *store.Queries, ws uuid.UUID
 		for _, r := range rows {
 			labels[r.ConversationID] = append(labels[r.ConversationID], r.LabelID)
 		}
+		out, err := q.ListReportOutbound(ctx, store.ListReportOutboundParams{WorkspaceID: ws, ConversationIds: ids})
+		if err != nil {
+			return nil, err
+		}
+		for _, id := range out {
+			outbound[id] = true
+		}
 	}
-	return reportCells(facts, labels), nil
+	return reportCells(facts, labels, outbound), nil
 }
 
 func nilID(id uuid.UUID) *uuid.UUID {
@@ -140,10 +149,10 @@ func (s *Server) rebuildReports(ctx context.Context, tx pgx.Tx, q *store.Queries
 	}
 	rows := make([][]any, 0, len(cells))
 	for k, n := range cells {
-		rows = append(rows, []any{ws, k.bucket, k.inbox, nilText(k.channel), nilID(k.team), nilID(k.member), nilID(k.label), k.metric, k.bin, n})
+		rows = append(rows, []any{ws, k.bucket, k.inbox, nilText(k.channel), nilID(k.team), nilID(k.member), nilID(k.label), k.outbound, k.metric, k.bin, n})
 	}
 	_, err = tx.CopyFrom(ctx, pgx.Identifier{"report_rollups"},
-		[]string{"workspace_id", "bucket", "inbox_id", "channel_kind", "team_id", "member_id", "label_id", "metric", "bin", "n"}, pgx.CopyFromRows(rows))
+		[]string{"workspace_id", "bucket", "inbox_id", "channel_kind", "team_id", "member_id", "label_id", "outbound", "metric", "bin", "n"}, pgx.CopyFromRows(rows))
 	return err
 }
 

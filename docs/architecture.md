@@ -420,7 +420,7 @@ Built in #147 (migration 00114). Reports answer from rollups, never by scanning 
 range, and agree with `/v1/stats` for today.
 
 - **Granularity: UTC quarter hours.** `report_rollups (workspace_id, bucket, inbox_id, channel_kind,
-  team_id, member_id, label_id, metric, bin, n)` holds sums per 15-minute UTC bucket, not per day or
+  team_id, member_id, label_id, outbound, metric, bin, n)` holds sums per 15-minute UTC bucket, not per day or
   hour: every offset in use today is a multiple of 15 minutes (India +5:30, Nepal +5:45, Chatham
   +12:45), so any local day, week or month is a whole number of buckets and a report in any IANA zone
   is exact. Reads sum buckets into `date_trunc(granularity, bucket AT TIME ZONE tz)`. Rows exist only
@@ -465,6 +465,28 @@ range, and agree with `/v1/stats` for today.
   `workspace_id`, `ON DELETE CASCADE`). Retention days do not apply to them; the nightly rebuild stops
   at the retention cutoff, so periods whose conversations retention deleted keep their counts.
   Conversations deleted or trashed inside the rebuild window drop out of it.
+
+### Conversation origin (#211)
+
+Support inboxes also send broadcasts, triggered e-mails and designed outreach, and replies to them
+open conversations next to support requests. A conversation's origin is derived, not stored:
+`outbound` when it has `broadcast_id` (a reply to a broadcast, triggered e-mails being broadcasts of
+kind `triggered`) or holds an e-mail with `message_emails.outreach` (a design sent to a contact who had
+not written in the conversation, #209); `support` otherwise. The SQL function
+`conversation_outbound(workspace_id, conversation_id, broadcast_id)` (migration 00145) is the one
+definition; the outreach check is an `EXISTS` over `message_emails_conversation_idx`.
+
+- **List.** `GET /v1/conversations?origin=support|outbound` combines with every other filter,
+  `broadcast_id` included; saved views take it like any list parameter. MCP `search_conversations`
+  takes `origin`.
+- **Counts.** `GET /v1/conversations/counts` adds `outbound` and `outbound_inboxes` (open, not spam,
+  per inbox), included in the other counts, for the panel's "Replies to mail we sent" entry under each
+  inbox. MCP `get_counts` returns them.
+- **Reports.** `report_rollups.outbound` is a rollup dimension, set per fact from the conversation's
+  origin when its bucket is built (`ListReportOutbound`, like labels). `GET /v1/reports`, its CSV
+  export and MCP `get_report` take `origin`; without it every figure counts both origins, as before.
+  Migration 00145 adds the column (older rows count as support) and clears `recomputed_on`, so the next
+  run rebuilds the last 31 days with origins; older periods stay `support`.
 
 ## Components
 

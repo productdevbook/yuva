@@ -2232,6 +2232,7 @@ type ReportRollup struct {
 	Metric      string
 	Bin         int16
 	N           int32
+	Outbound    bool
 }
 
 type ReportRollupState struct {
