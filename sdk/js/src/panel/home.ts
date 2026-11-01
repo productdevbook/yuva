@@ -107,12 +107,14 @@ export function buildHome(data: HomeData): HTMLElement {
     if (data.conversations.length > 1)
       talk.append(textButton(t(msg`All conversations`), "link brand", () => data.allConversations()))
   }
+  const resume = latest !== undefined && latest.status !== "closed"
   const send = el("button", "primary")
   send.type = "button"
-  send.append(t(msg`Send us a message`))
+  send.append(resume ? t(msg`Continue conversation`) : t(msg`Send us a message`))
   send.insertAdjacentHTML("beforeend", icons.arrow)
-  send.addEventListener("click", () => data.newConversation())
+  send.addEventListener("click", () => (resume ? data.openConversation(latest.id) : data.newConversation()))
   talk.append(send)
+  if (resume) talk.append(textButton(t(msg`Start a new conversation`), "link brand", () => data.newConversation()))
   page.append(talk)
 
   const tiles: { app: AppKind; icon: string; title: string; text: string; count?: number }[] = []
