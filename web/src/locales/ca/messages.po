@@ -7015,6 +7015,7 @@ msgstr "Torneu a introduir un testimoni només per canviar-lo."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Introdueix una adreça electrònica vàlida o deixa-ho buit."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Introdueix una adreça electrònica vàlida."
@@ -11126,6 +11127,10 @@ msgstr "Nom, correu electrònic o ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Nom, p. ex. Portàtil de feina"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Envia comentaris des d'una pàgina"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Envia des de"
 
@@ -19082,10 +19088,6 @@ msgstr "El domini {domain} ha perdut la verificació: falta el registre DNS, per
 msgid "The domain takes no mail"
 msgstr "El domini no accepta correu"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "El canal de correu és un captura-tot sense adreça De, de manera que no té cap adreça des de la qual enviar aquesta conversa. Defineix-ne una a la configuració de la safata."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "El canal de correu és a punt"
@@ -20023,6 +20025,10 @@ msgstr "Tema i vista de correu en aquest dispositiu"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Llavors"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "No hi ha cap adreça des de la qual enviar aquesta conversa. Introdueix una adreça de remitent del domini del canal o defineix l'adreça de remitent del canal a la configuració de la safata."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Fes servir un nombre enter de 7 a 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Fes servir una adreça de {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

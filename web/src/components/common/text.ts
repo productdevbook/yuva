@@ -499,7 +499,7 @@ export function useErrorText() {
     if (err.code === "no_email_channel")
       return t`The other inbox has no e-mail channel, so this e-mail conversation cannot move there. Add an e-mail channel to it first.`
     if (err.code === "email_no_sender")
-      return t`The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings.`
+      return t`There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings.`
     if (err.code === "not_redactable") return t`Drafts and timeline events cannot be removed.`
     if (err.code === "team_taken") return t`Another team already has this name.`
     if (err.code === "team_limit") return t`A team holds at most 500 members and 100 inboxes.`

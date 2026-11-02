@@ -15,7 +15,14 @@ import {
   type DesignPick,
 } from "@/components/common/designChoice"
 import { AddressChips } from "@/components/common/AddressChips"
-import { FromPicker, sendingAddress, useOwnSenders } from "@/components/common/FromPicker"
+import {
+  catchAllDomain,
+  FromField,
+  FromPicker,
+  fromProblem,
+  sendingAddress,
+  useOwnSenders,
+} from "@/components/common/FromPicker"
 import { OnBehalfNote } from "@/components/common/OnBehalf"
 import { formatWhen, SendLaterMenu } from "@/components/common/SendLater"
 import { alt, mod } from "@/components/common/ShortcutSheet"
@@ -51,6 +58,7 @@ type Draft = {
   signature: boolean
   clientId: string
   channelId?: string
+  from?: string
   design?: DesignPick
 }
 
@@ -66,6 +74,7 @@ function post({ files, ...d }: Draft) {
     draft: true,
     client_id: d.clientId,
     channel_id: d.channelId,
+    from_address: d.from || undefined,
     ...designFields(d.design),
   }
   if (files.length === 0) return unwrap(api.POST("/v1/conversations/mail", { body }))
@@ -88,6 +97,12 @@ function post({ files, ...d }: Draft) {
 function failedAddress(error: unknown) {
   if (!(error instanceof ApiError) || error.code !== "email_undeliverable") return undefined
   return EMAIL.exec(error.detail ?? "")?.[0].toLowerCase()
+}
+
+const FROM_ERRORS = ["from_not_allowed", "email_no_sender"]
+
+function fromError(error: unknown) {
+  return error instanceof ApiError && error.code && FROM_ERRORS.includes(error.code) ? error : undefined
 }
 
 function ComposeError({ error }: { error: unknown }) {
@@ -130,6 +145,7 @@ type Saved = {
   structure: string
   fields: string
   body: string
+  from: string
 }
 
 type SaveState = "idle" | "saving" | "saved" | "failed"
@@ -150,13 +166,24 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
   const [picked, setPicked] = useState<string | undefined>(draft?.conversation.inbox_id)
   const inboxId = picked ?? (options.find((i) => i.id === box) ?? options[0])?.id
   const [pickedFrom, setPickedFrom] = useState("")
+  const [fromTyped, setFromTyped] = useState<string | null>(draft?.draft.draft_from_address ?? null)
   const inboxChannels = useMemo(
     () => [...channels.values()].filter((c) => c.kind === "email" && c.inbox_id === inboxId),
     [channels, inboxId]
   )
-  const senders = useOwnSenders(inboxChannels.map((c) => c.id))
-  const sender = senders.find((a) => a.address === pickedFrom)
+  const sendChannel =
+    inboxChannels.find((c) => c.email?.smtp && !catchAllDomain(c)) ?? inboxChannels.find((c) => c.email?.smtp)
+  const domain = catchAllDomain(sendChannel)
+  const senders = useOwnSenders(sendChannel && domain ? [sendChannel.id] : inboxChannels.map((c) => c.id))
+  const sender = domain ? undefined : senders.find((a) => a.address === pickedFrom)
   const senderChannel = sender && inboxChannels.find((c) => sender.usable_channel_ids.includes(c.id))
+  const ownAddresses = senders.map((a) => a.address.toLowerCase())
+  const channelFrom = sendChannel?.email?.from_address?.toLowerCase() ?? ""
+  const keptFrom = domain ? (fromTyped ?? "").trim().toLowerCase() : ""
+  const fromIssue = domain ? fromProblem(keptFrom, domain, ownAddresses) : undefined
+  const fromMissing = !!domain && !keptFrom && !channelFrom
+  const fromOk = !fromIssue && !fromMissing
+  const fromOptions = [...new Set([...ownAddresses, channelFrom].filter(Boolean))]
   const [to, setTo] = useState<string[]>(
     () => draft?.draft.recipients?.to ?? (draft?.conversation.contact.email ? [draft.conversation.contact.email] : [])
   )
@@ -197,8 +224,10 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             draft.draft.recipients?.bcc ?? [],
             draft.conversation.subject.trim(),
             pickKey(pickOf(draft.draft)),
+            draft.draft.draft_from_address ?? "",
           ]),
           body: draft.draft.body.trim(),
+          from: draft.draft.draft_from_address ?? "",
         }
       : null
   )
@@ -210,13 +239,15 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
   const ready = !!inboxId && to.length > 0 && subject.trim() !== ""
   const designRecipients = !!design && (to.length > 1 || cc.length > 0)
   const designBlocked = useDesignBlocked(conversationId, design)
-  const saveable = ready && !designRecipients && (body.trim() !== "" || files.length > 0 || kept.length > 0)
+  const saveable = ready && fromOk && !designRecipients && (body.trim() !== "" || files.length > 0 || kept.length > 0)
   const canSend = saveable && !busy && !designBlocked
   const structure = JSON.stringify([inboxId, noSignature, files.map((f) => `${f.name}:${f.size}:${f.lastModified}`)])
-  const fields = JSON.stringify([to, cc, bcc, subject.trim(), pickKey(design)])
+  const fields = JSON.stringify([to, cc, bcc, subject.trim(), pickKey(design), fromTyped ?? ""])
   const latest = useLatest({
     inboxId,
     channelId: senderChannel?.id,
+    from: keptFrom,
+    catchAll: !!domain,
     to,
     cc,
     bcc,
@@ -246,11 +277,12 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
             cc: cur.cc,
             bcc: cur.bcc,
             subject: cur.subject.trim(),
+            ...(cur.catchAll && cur.from !== rec.from ? { from_address: cur.from || null } : {}),
             ...designPatch(cur.design),
           },
         })
       )
-      saved.current = { ...rec, body: text, fields: cur.fields }
+      saved.current = { ...rec, body: text, fields: cur.fields, from: cur.from }
       return
     }
     const made = await post({
@@ -264,6 +296,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
       signature: !cur.noSignature,
       clientId: newId(),
       channelId: cur.channelId,
+      from: cur.from,
       design: cur.design,
     })
     saved.current = {
@@ -273,6 +306,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
       structure: cur.structure,
       fields: cur.fields,
       body: text,
+      from: cur.from,
     }
     setConversationId(made.conversation.id)
     if (rec) await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: rec.id } } })
@@ -320,7 +354,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
       const sent = await unwrap(
         api.POST("/v1/messages/{messageId}/send", {
           params: { path: { messageId: rec.id } },
-          body: { from_address: sender?.address, send_at: at?.toISOString() },
+          body: { from_address: domain ? keptFrom || undefined : sender?.address, send_at: at?.toISOString() },
         })
       )
       saved.current = null
@@ -339,6 +373,10 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
     } finally {
       setBusy(false)
     }
+  }
+  const changeFrom = (value: string) => {
+    if (fromError(error)) setError(null)
+    setFromTyped(value)
   }
   const discard = async () => {
     clearTimeout(timer.current)
@@ -376,6 +414,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
     }
   }
 
+  const fromFailure = domain ? fromError(error) : undefined
   const flagged = failedAddress(error)
   const addFiles = (more: File[]) => setFiles((f) => [...f, ...more].slice(0, MAX_FILES))
   const sendKey = `${mod}↵`
@@ -464,14 +503,29 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
                 ))}
               </NativeSelect>
             )}
-            <FromPicker
-              className="min-w-40 flex-1"
-              channelAddress={sendingAddress(inboxChannels[0])}
-              senders={senders}
-              value={pickedFrom}
-              onChange={setPickedFrom}
-              testId="compose-send-as"
-            />
+            {domain ? (
+              <FromField
+                className="min-w-40 flex-1"
+                domain={domain}
+                value={fromTyped ?? channelFrom}
+                onChange={changeFrom}
+                placeholder={channelFrom || undefined}
+                suggestions={fromOptions}
+                problem={fromIssue}
+                missing={fromMissing}
+                error={fromFailure && !fromIssue ? errorText(fromFailure) : undefined}
+                testId="compose-from-field"
+              />
+            ) : (
+              <FromPicker
+                className="min-w-40 flex-1"
+                channelAddress={sendingAddress(inboxChannels[0])}
+                senders={senders}
+                value={pickedFrom}
+                onChange={setPickedFrom}
+                testId="compose-send-as"
+              />
+            )}
           </div>
           <OnBehalfNote inboxId={inboxId} />
         </Row>
@@ -633,7 +687,7 @@ export function Compose({ box, onClose, draft }: { box: string; onClose: () => v
         )}
       </div>
       <div className="flex flex-col gap-1.5 border-t border-border/60 px-4 py-3">
-        <ComposeError error={error} />
+        <ComposeError error={fromFailure ? null : error} />
         {asking ? (
           <div className="flex flex-wrap items-center gap-2" data-testid="compose-ask">
             <span className="flex-1 text-small phone:basis-full">

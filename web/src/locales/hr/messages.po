@@ -7015,6 +7015,7 @@ msgstr "Token ponovno unesite samo da biste ga promijenili."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Unesite valjanu e-adresu ili ostavite prazno."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Unesite valjanu e-adresu."
@@ -11126,6 +11127,10 @@ msgstr "Ime, e-adresa ili ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Naziv, npr. Poslovno prijenosno računalo"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Šalji povratne informacije sa stranice"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Pošalji s adrese"
 
@@ -19082,10 +19088,6 @@ msgstr "Domena {domain} izgubila je potvrdu: nedostaje njezin DNS zapis, pa jedi
 msgid "The domain takes no mail"
 msgstr "Domena ne prima poštu"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "E-poštni kanal je sveobuhvatni bez adrese Od pa nema adresu s koje bi poslao ovaj razgovor. Postavite je u postavkama pretinca."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "E-poštni kanal je spreman"
@@ -20023,6 +20025,10 @@ msgstr "Tema i prikaz e-pošte na ovom uređaju"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Zatim"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Nema adrese s koje bi se ovaj razgovor poslao. Unesite adresu pošiljatelja s domene kanala ili postavite adresu pošiljatelja kanala u postavkama pretinca."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Upotrijebite cijeli broj od 7 do 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Upotrijebite adresu na {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

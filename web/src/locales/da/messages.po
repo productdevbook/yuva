@@ -7015,6 +7015,7 @@ msgstr "Angiv kun et token igen for at ændre det."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Indtast en gyldig e-mailadresse, eller lad feltet stå tomt."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Indtast en gyldig e-mailadresse."
@@ -11126,6 +11127,10 @@ msgstr "Navn, e-mail eller ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Navn, fx Arbejdslaptop"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Send feedback fra en side"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Send fra"
 
@@ -19082,10 +19088,6 @@ msgstr "Domænet {domain} mistede sin verificering: DNS-posten mangler, så sing
 msgid "The domain takes no mail"
 msgstr "Domænet modtager ikke mail"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "E-mailkanalen er en catch-all uden afsenderadresse, så den har ingen adresse at sende denne samtale fra. Angiv en i postkassens indstillinger."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "E-mailkanalen er klar"
@@ -20023,6 +20025,10 @@ msgstr "Tema og e-mailvisning på denne enhed"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Så"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Der er ingen adresse at sende denne samtale fra. Angiv en afsenderadresse på kanalens domæne, eller angiv kanalens afsenderadresse i postkassens indstillinger."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Brug et helt tal fra 7 til 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Brug en adresse på {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

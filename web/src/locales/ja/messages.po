@@ -7015,6 +7015,7 @@ msgstr "変更する場合にのみトークンを入力し直してください
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "有効なメールアドレスを入力するか、空のままにしてください。"
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "有効なメールアドレスを入力してください。"
@@ -11126,6 +11127,10 @@ msgstr "名前、メール、または ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "名前(例: 仕事用ノートPC)"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "ページからフィードバックを送信"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "送信元"
 
@@ -19082,10 +19088,6 @@ msgstr "ドメイン {domain} の確認が失効しました: DNS レコード�
 msgid "The domain takes no mail"
 msgstr "ドメインはメールを受け付けません"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "このメールチャネルは From アドレスのないキャッチオールのため、この会話の送信元アドレスがありません。受信トレイの設定で指定してください。"
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "メールチャネルの準備ができました"
@@ -20023,6 +20025,10 @@ msgstr "このデバイスのテーマとメール表示"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "実行内容"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "この会話を送信できるアドレスがありません。チャンネルのドメインの送信元アドレスを入力するか、受信トレイの設定でチャンネルの送信元アドレスを設定してください。"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "7〜90 の整数を指定してください。"
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "{domain} のアドレスを使ってください。"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

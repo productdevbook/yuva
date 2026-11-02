@@ -7015,6 +7015,7 @@ msgstr "토큰을 바꿀 때만 다시 입력하세요."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "올바른 이메일 주소를 입력하거나 비워 두세요."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "올바른 이메일 주소를 입력하세요."
@@ -11126,6 +11127,10 @@ msgstr "이름, 이메일 또는 ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "이름(예: 업무용 노트북)"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "페이지에서 의견 보내기"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "보내는 주소"
 
@@ -19082,10 +19088,6 @@ msgstr "도메인 {domain}의 인증이 해제되었습니다: DNS 레코드가 
 msgid "The domain takes no mail"
 msgstr "도메인이 메일을 받지 않음"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "이 이메일 채널은 From 주소 없는 캐치올이라 이 대화를 보낼 주소가 없습니다. 받은 편지함 설정에서 지정하세요."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "이메일 채널이 준비되었습니다"
@@ -20023,6 +20025,10 @@ msgstr "이 기기의 테마와 이메일 보기"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "실행할 작업"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "이 대화를 보낼 주소가 없습니다. 채널 도메인의 보내는 주소를 입력하거나, 받은편지함 설정에서 채널의 보내는 주소를 지정하세요."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "7~90 사이의 정수를 사용하세요."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "{domain}의 주소를 사용하세요."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

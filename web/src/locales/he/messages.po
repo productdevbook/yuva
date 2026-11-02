@@ -7015,6 +7015,7 @@ msgstr "הזינו אסימון שוב רק כדי לשנות אותו."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "הזן כתובת אימייל תקינה, או השאר ריק."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "הזן כתובת אימייל תקינה."
@@ -11126,6 +11127,10 @@ msgstr "שם, אימייל או מזהה"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "שם, למשל מחשב עבודה"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "שלח משוב מדף"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "שליחה מ"
 
@@ -19082,10 +19088,6 @@ msgstr "הדומיין {domain} איבד את האימות: רשומת ה-DNS ח
 msgid "The domain takes no mail"
 msgstr "הדומיין לא מקבל דואר"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "ערוץ האימייל הוא קליטת הכול בלי כתובת שולח, ולכן אין לו כתובת לשלוח ממנה את השיחה הזאת. קבע אחת בהגדרות תיבת הדואר."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "ערוץ האימייל מוכן"
@@ -20023,6 +20025,10 @@ msgstr "ערכת נושא ותצוגת אימייל במכשיר הזה"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "אז"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "אין כתובת שממנה אפשר לשלוח את השיחה הזו. הזינו כתובת שולח בדומיין של הערוץ, או הגדירו את כתובת השולח של הערוץ בהגדרות תיבת הדואר."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "השתמשו במספר שלם מ-7 עד 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "השתמשו בכתובת בדומיין {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

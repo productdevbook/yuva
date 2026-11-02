@@ -7015,6 +7015,7 @@ msgstr "Chỉ nhập lại token khi muốn thay đổi."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Hãy nhập địa chỉ email hợp lệ, hoặc để trống."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Hãy nhập địa chỉ email hợp lệ."
@@ -11126,6 +11127,10 @@ msgstr "Tên, email hoặc ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Tên, ví dụ Laptop công ty"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Gửi phản hồi từ một trang"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Gửi từ"
 
@@ -19082,10 +19088,6 @@ msgstr "Tên miền {domain} mất xác minh: thiếu bản ghi DNS, nên đăng
 msgid "The domain takes no mail"
 msgstr "Tên miền không nhận thư"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Kênh email là catch-all không có địa chỉ From, nên không có địa chỉ để gửi cuộc trò chuyện này. Hãy đặt một địa chỉ trong cài đặt hộp thư."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Kênh email đã sẵn sàng"
@@ -20023,6 +20025,10 @@ msgstr "Giao diện và chế độ xem email trên thiết bị này"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Thì"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Không có địa chỉ nào để gửi cuộc trò chuyện này. Nhập địa chỉ người gửi thuộc miền của kênh, hoặc đặt địa chỉ người gửi của kênh trong phần cài đặt hộp thư."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Dùng một số nguyên từ 7 đến 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Hãy dùng một địa chỉ trên {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

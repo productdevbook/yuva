@@ -224,13 +224,24 @@ export function useDraftActions() {
     onSuccess: (data) => applyEvent(qc, live, { type: "message.created", data }),
   })
   const save = useMutation({
-    mutationFn: ({ m, body, design }: { m: Message; body: string; design?: DesignPick | null }) =>
+    mutationFn: ({
+      m,
+      body,
+      design,
+      from,
+    }: {
+      m: Message
+      body: string
+      design?: DesignPick | null
+      from?: string | null
+    }) =>
       unwrap(
         api.PATCH("/v1/messages/{messageId}", {
           ...path(m),
           body: {
             ...(m.html ? { body, html: null } : { body }),
             ...(design === undefined ? {} : designPatch(design ?? undefined)),
+            ...(from === undefined ? {} : { from_address: from }),
           },
         })
       ),

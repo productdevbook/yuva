@@ -7015,6 +7015,7 @@ msgstr "Вводьте токен знову, лише щоб змінити й�
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Введіть дійсну адресу електронної пошти або залиште поле порожнім."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Введіть дійсну адресу електронної пошти."
@@ -11126,6 +11127,10 @@ msgstr "Ім'я, e-mail або ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Ім'я, наприклад Робочий ноутбук"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Надіслати відгук зі сторінки"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Надіслати з адреси"
 
@@ -19082,10 +19088,6 @@ msgstr "Домен {domain} втратив підтвердження: брак�
 msgid "The domain takes no mail"
 msgstr "Домен не приймає пошту"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Поштовий канал — універсальна адреса без адреси відправника, тож у нього немає адреси, з якої надіслати цю розмову. Задайте її в налаштуваннях скриньки."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Поштовий канал готовий"
@@ -20023,6 +20025,10 @@ msgstr "Тема й вигляд листів на цьому пристрої"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Тоді"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Немає адреси, з якої можна надіслати цю розмову. Введіть адресу відправника на домені каналу або задайте адресу відправника каналу в налаштуваннях скриньки."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Використовуйте ціле число від 7 до 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Використайте адресу на {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

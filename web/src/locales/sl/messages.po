@@ -7015,6 +7015,7 @@ msgstr "Žeton znova vnesite le, če ga želite spremeniti."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Vnesite veljaven e-poštni naslov ali pustite prazno."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Vnesite veljaven e-poštni naslov."
@@ -11126,6 +11127,10 @@ msgstr "Ime, e-pošta ali ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Ime, npr. Službeni prenosnik"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Pošiljaj povratne informacije s strani"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Pošlji z naslova"
 
@@ -19082,10 +19088,6 @@ msgstr "Domena {domain} je izgubila preverjanje: manjka njen zapis DNS, zato eno
 msgid "The domain takes no mail"
 msgstr "Domena ne sprejema pošte"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "E-poštni kanal je zbirni brez naslova Od, zato nima naslova, s katerega bi poslal ta pogovor. Nastavite ga v nastavitvah nabiralnika."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "E-poštni kanal je pripravljen"
@@ -20023,6 +20025,10 @@ msgstr "Tema in pogled e-pošte na tej napravi"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Potem"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Ni naslova, s katerega bi lahko poslali ta pogovor. Vnesite naslov pošiljatelja na domeni kanala ali nastavite naslov pošiljatelja kanala v nastavitvah nabiralnika."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Uporabite celo število od 7 do 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Uporabite naslov na {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

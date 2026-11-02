@@ -7015,6 +7015,7 @@ msgstr "Tokent csak akkor adjon meg újra, ha módosítani szeretné."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Adj meg érvényes e-mail-címet, vagy hagyd üresen."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Adj meg érvényes e-mail-címet."
@@ -11126,6 +11127,10 @@ msgstr "Név, e-mail vagy azonosító"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Név, pl. Munkahelyi laptop"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Visszajelzés küldése egy oldalról"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Küldés innen"
 
@@ -19082,10 +19088,6 @@ msgstr "A(z) {domain} domain elvesztette az ellenőrzését: hiányzik a DNS-rek
 msgid "The domain takes no mail"
 msgstr "A domain nem fogad levelet"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Az e-mail-csatorna egy gyűjtőcsatorna Feladó cím nélkül, így nincs címe, amelyről ezt a beszélgetést küldhetné. Állíts be egyet a postafiók beállításaiban."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Az e-mail-csatorna kész"
@@ -20023,6 +20025,10 @@ msgstr "Téma és e-mail nézet ezen az eszközön"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Akkor"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Nincs olyan cím, amelyről ez a beszélgetés elküldhető. Adjon meg a csatorna tartományához tartozó feladói címet, vagy állítsa be a csatorna feladói címét a postafiók beállításaiban."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Használj 7 és 90 közötti egész számot."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Használjon a(z) {domain} tartományhoz tartozó címet."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

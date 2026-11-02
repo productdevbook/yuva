@@ -7015,6 +7015,7 @@ msgstr "ਟੋਕਨ ਦੁਬਾਰਾ ਸਿਰਫ਼ ਇਸਨੂੰ ਬਦ�
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "ਵੈਧ ਈ-ਮੇਲ ਪਤਾ ਦਿਓ, ਜਾਂ ਖਾਲੀ ਛੱਡੋ।"
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "ਵੈਧ ਈ-ਮੇਲ ਪਤਾ ਦਿਓ।"
@@ -11126,6 +11127,10 @@ msgstr "ਨਾਮ, ਈ-ਮੇਲ ਜਾਂ id"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "ਨਾਮ, ਜਿਵੇਂ ਦਫ਼ਤਰ ਦਾ ਲੈਪਟਾਪ"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "ਕਿਸੇ ਪੰਨੇ ਤੋਂ ਫੀਡਬੈਕ ਭੇਜੋ"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "ਇਸ ਤੋਂ ਭੇਜੋ"
 
@@ -19082,10 +19088,6 @@ msgstr "ਡੋਮੇਨ {domain} ਦੀ ਤਸਦੀਕ ਖਤਮ ਹੋ ਗਈ:
 msgid "The domain takes no mail"
 msgstr "ਡੋਮੇਨ ਮੇਲ ਨਹੀਂ ਲੈਂਦਾ"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "ਈ-ਮੇਲ ਚੈਨਲ From ਪਤੇ ਤੋਂ ਬਿਨਾਂ ਕੈਚ-ਆਲ ਹੈ, ਇਸ ਲਈ ਇਸ ਗੱਲਬਾਤ ਨੂੰ ਭੇਜਣ ਲਈ ਉਸ ਕੋਲ ਕੋਈ ਪਤਾ ਨਹੀਂ। ਇਨਬਾਕਸ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਇੱਕ ਸੈੱਟ ਕਰੋ।"
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "ਈ-ਮੇਲ ਚੈਨਲ ਤਿਆਰ ਹੈ"
@@ -20023,6 +20025,10 @@ msgstr "ਇਸ ਡਿਵਾਈਸ ਉੱਤੇ ਥੀਮ ਅਤੇ ਈ-ਮੇਲ
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "ਫਿਰ"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "ਇਸ ਗੱਲਬਾਤ ਨੂੰ ਭੇਜਣ ਲਈ ਕੋਈ ਪਤਾ ਨਹੀਂ ਹੈ। ਚੈਨਲ ਦੇ ਡੋਮੇਨ ਦਾ ਭੇਜਣ ਵਾਲੇ ਦਾ ਪਤਾ ਦਿਓ, ਜਾਂ ਇਨਬਾਕਸ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਚੈਨਲ ਦਾ ਭੇਜਣ ਵਾਲੇ ਦਾ ਪਤਾ ਸੈੱਟ ਕਰੋ।"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "7 ਤੋਂ 90 ਤੱਕ ਦਾ ਪੂਰਨ ਅੰਕ ਵਰਤੋ।"
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "{domain} ਦਾ ਕੋਈ ਪਤਾ ਵਰਤੋ।"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

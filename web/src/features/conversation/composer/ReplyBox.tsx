@@ -7,11 +7,13 @@ import { DesignBar, DesignButton } from "@/components/common/DesignChoice"
 import { pickKey, pickOf, useDesignBlocked, type DesignPick } from "@/components/common/designChoice"
 import { formatWhen, SendLaterMenu } from "@/components/common/SendLater"
 import { alt, keyLabel, mod, SHORTCUTS } from "@/components/common/ShortcutSheet"
-import { formatBytes } from "@/components/common/text"
+import { formatBytes, useErrorText } from "@/components/common/text"
 import { popupClass } from "@/components/ui/dropdown-menu"
 import {
+  clearSendFailure,
   firstName,
   readDraft,
+  useSendFailure,
   usePendingReplies,
   writeDraft,
   type ConversationActions,
@@ -25,7 +27,14 @@ import {
   useReplyChoices,
   type ReplyChoice,
 } from "@/features/conversation/composer/CannedMenu"
-import { FromPicker, sendingAddress, useOwnSenders } from "@/components/common/FromPicker"
+import {
+  catchAllDomain,
+  FromField,
+  FromPicker,
+  fromProblem,
+  sendingAddress,
+  useOwnSenders,
+} from "@/components/common/FromPicker"
 import { OnBehalfNote } from "@/components/common/OnBehalf"
 import { SignatureHtml } from "@/components/common/SignatureHtml"
 import { useMySignatures } from "@/features/settings/signature/queries"
@@ -42,9 +51,9 @@ import {
   useOwnDrafts,
   useReplyAutosave,
 } from "@/features/conversation/ownDraft"
-import { useDraftActions, useParticipants } from "@/features/conversation/queries"
+import { useDraftActions, useMessages, useParticipants } from "@/features/conversation/queries"
 import { useHelpCenters } from "@/features/help/queries"
-import type { Conversation, Member, Message } from "@/lib/api"
+import { ApiError, type Conversation, type Member, type Message } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { useTypingSender } from "@/lib/typing"
 import { cn } from "@/lib/utils"
@@ -76,6 +85,25 @@ export type ReplyHandle = {
 }
 
 export const MAX_FILES = 10
+
+function mailAddresses(items: Message[], domain?: string) {
+  if (!domain) return { sentFrom: "", wroteTo: "" }
+  const mails = items.filter((m) => !m.draft && m.kind === "message" && m.email)
+  const sent = mails.find((m) => m.direction === "out" && m.email?.from)
+  const received = mails.findLast(
+    (m) => m.direction !== "out" && m.email?.to.some((a) => a.toLowerCase().endsWith(`@${domain}`))
+  )
+  return {
+    sentFrom: sent?.email?.from.toLowerCase() ?? "",
+    wroteTo: received?.email?.to.find((a) => a.toLowerCase().endsWith(`@${domain}`))?.toLowerCase() ?? "",
+  }
+}
+
+const FROM_ERRORS = ["from_not_allowed", "email_no_sender"]
+
+function fromError(error: unknown) {
+  return error instanceof ApiError && error.code && FROM_ERRORS.includes(error.code) ? error : undefined
+}
 
 export function FileThumb({ file }: { file: File }) {
   const preview = useCallback(
@@ -159,7 +187,7 @@ export const ReplyBox = forwardRef<
   const [articleOpen, setArticleOpen] = useState(false)
   const [design, setDesign] = useState<DesignPick | undefined>(initial.design)
   const [designOpen, setDesignOpen] = useState(false)
-  const [linked, setLinked] = useState<string | null>(null)
+  const [linked, setLinked] = useState<string | null>(initial.suggestionId ?? null)
   const [caret, setCaret] = useState(0)
   const [pick, setPick] = useState(0)
   const [dismissed, setDismissed] = useState<number | null>(null)
@@ -174,6 +202,8 @@ export const ReplyBox = forwardRef<
   const [bccOpen, setBccOpen] = useState(false)
   const [noSignature, setNoSignature] = useState(false)
   const [pickedFrom, setPickedFrom] = useState("")
+  const [fromTyped, setFromTyped] = useState<string | null>(initial.from ?? null)
+  const stashFrom = useRef<string | null>(null)
   const [editing, setEditing] = useState<Message | null>(null)
   const [laterOpen, setLaterOpen] = useState(false)
   const stash = useRef("")
@@ -182,6 +212,7 @@ export const ReplyBox = forwardRef<
   const [restored, setRestored] = useState(false)
   const [adopting, setAdopting] = useState<{ draft: Message; unsigned: boolean } | null>(null)
   const fromSelect = useRef<HTMLSelectElement>(null)
+  const fromInput = useRef<HTMLInputElement>(null)
   const ccInput = useRef<HTMLInputElement>(null)
   const bccInput = useRef<HTMLInputElement>(null)
   const textarea = useRef<HTMLTextAreaElement>(null)
@@ -205,6 +236,26 @@ export const ReplyBox = forwardRef<
   const channel = useChannelMap().get(c.channel_id ?? "")
   const senders = useOwnSenders(emailTo && c.channel_id ? [c.channel_id] : [])
   const sender = senders.find((a) => a.address === pickedFrom)
+  const domain = catchAllDomain(channel)
+  const catchAll = !!domain && !!emailTo
+  const thread = useMessages(catchAll ? c.id : undefined)
+  const errorText = useErrorText()
+  const failure = useSendFailure(c.id)
+  const linkedDraft = suggestion && linked === suggestion.id ? suggestion : undefined
+  const { sentFrom, wroteTo } = mailAddresses(thread.data?.pages.flatMap((p) => p.items) ?? [], domain)
+  const draftFrom = editing
+    ? (editing.draft_from_address ?? "")
+    : (linkedDraft?.draft_from_address ?? adopting?.draft.draft_from_address ?? "")
+  const channelFrom = channel?.email?.from_address?.toLowerCase() ?? ""
+  const fallbackFrom = sentFrom || wroteTo || channelFrom
+  const chosenFrom = fromTyped !== null ? fromTyped.trim() : draftFrom
+  const ownAddresses = senders.map((a) => a.address.toLowerCase())
+  const fromIssue = catchAll && domain ? fromProblem(chosenFrom, domain, ownAddresses) : undefined
+  const fromMissing = catchAll && !chosenFrom && !fallbackFrom
+  const fromBlocked = !!fromIssue || fromMissing
+  const keptFrom = catchAll ? chosenFrom : ""
+  const fromOptions = [...new Set([...ownAddresses, sentFrom, wroteTo, channelFrom].filter(Boolean))]
+  const fromRow = !!emailTo && !note && !blocked && (catchAll || senders.length > 0)
   const articleKey = keyLabel(SHORTCUTS.article).join("")
   const signatureKey = keyLabel(SHORTCUTS.signature).join("")
   const editingWhen = editing?.scheduled_at ? formatWhen(editing.scheduled_at, i18n.locale) : ""
@@ -212,20 +263,36 @@ export const ReplyBox = forwardRef<
 
   const mailing = !!emailTo && !actions.chat
   const plainText = files.length === 0 && articles.length === 0 && !macro
-  const autosaveOn = mailing && !note && !blocked && plainText && !editing
+  const autosaveOn = mailing && !note && !blocked && plainText && !editing && !linkedDraft && !fromBlocked
   const designable = mailing && !note && !blocked
   const activeDesign = designable ? design : undefined
   const designBlocked = useDesignBlocked(c.id, activeDesign)
   const designKey = keyLabel(SHORTCUTS.design).join("")
   const unsigned = signed && noSignature
-  const autosave = useReplyAutosave(c.id, autosaveOn, body, unsigned, activeDesign)
+  const autosave = useReplyAutosave(c.id, autosaveOn, body, unsigned, activeDesign, keptFrom)
+  const fromFailure = fromRow ? (fromError(failure?.error) ?? fromError(autosave.error)) : undefined
+  const shownFailure = fromFailure ? undefined : failure
   const own = useOwnDrafts(c.id, mailing)
   const queued = usePendingReplies(c.id)
 
   useEffect(() => {
     if (editing) return
-    writeDraft(c.id, { body, mode, files, articles, macro, cc: ccEdit, bcc, design })
-  }, [c.id, body, mode, files, articles, macro, ccEdit, bcc, design, editing])
+    writeDraft(c.id, {
+      body,
+      mode,
+      files,
+      articles,
+      macro,
+      cc: ccEdit,
+      bcc,
+      design,
+      from: fromTyped ?? undefined,
+      suggestionId: linked ?? undefined,
+    })
+  }, [c.id, body, mode, files, articles, macro, ccEdit, bcc, design, fromTyped, linked, editing])
+  useEffect(() => {
+    if (!body.trim()) clearSendFailure(c.id)
+  }, [c.id, body])
   if (!restored && own.data && !own.isFetching && mySignatures.data) {
     setRestored(true)
     const mine = own.data.items
@@ -247,7 +314,14 @@ export const ReplyBox = forwardRef<
   }
   useEffect(() => {
     if (adopting)
-      adoptDraft(c.id, adopting.draft.id, adopting.draft.body, adopting.unsigned, pickKey(pickOf(adopting.draft)))
+      adoptDraft(
+        c.id,
+        adopting.draft.id,
+        adopting.draft.body,
+        adopting.unsigned,
+        pickKey(pickOf(adopting.draft)),
+        adopting.draft.draft_from_address ?? ""
+      )
   }, [adopting, c.id])
   const stopTyping = typing.stop
   useEffect(() => {
@@ -366,8 +440,9 @@ export const ReplyBox = forwardRef<
       if (signed && !activeDesign) setNoSignature((x) => !x)
     },
     sendAs: () => {
-      if (!emailTo || note || blocked || senders.length === 0) return
-      fromSelect.current?.focus()
+      if (!fromRow) return
+      if (catchAll) fromInput.current?.focus()
+      else fromSelect.current?.focus()
     },
     replyAll: (all) => {
       setCcEdit(all ? undefined : [])
@@ -378,8 +453,10 @@ export const ReplyBox = forwardRef<
       if (!editing) {
         stash.current = body
         stashDesign.current = design
+        stashFrom.current = fromTyped
       }
       setEditing(m)
+      setFromTyped(m.draft_from_address ?? null)
       setMode("message")
       setBody(m.body)
       setDesign(pickOf(m))
@@ -391,7 +468,8 @@ export const ReplyBox = forwardRef<
         setBody((b) => `${b.trimEnd()}\n\n${m.body}`)
         discard.mutate(m)
       } else {
-        adoptDraft(c.id, m.id, m.body, false, pickKey(pickOf(m)))
+        adoptDraft(c.id, m.id, m.body, false, pickKey(pickOf(m)), m.draft_from_address ?? "")
+        setFromTyped(m.draft_from_address ?? null)
         setBody(m.body)
         setDesign(pickOf(m))
       }
@@ -417,19 +495,27 @@ export const ReplyBox = forwardRef<
     setBccOpen(false)
     setNoSignature(false)
     setDesign(undefined)
+    setFromTyped(null)
   }
   const leaveEdit = () => {
     setBody(stash.current)
     setDesign(stashDesign.current)
+    setFromTyped(stashFrom.current)
     stash.current = ""
     stashDesign.current = undefined
+    stashFrom.current = null
     setEditing(null)
   }
+  const changeFrom = (value: string | null) => {
+    clearSendFailure(c.id)
+    setFromTyped(value)
+  }
   const commitEdit = (at?: Date) => {
-    if (!editing || !body.trim() || saveDraft.isPending || reschedule.isPending || designBlocked) return
+    if (!editing || !body.trim() || saveDraft.isPending || reschedule.isPending || designBlocked || fromBlocked) return
     setError(null)
+    const from = catchAll && chosenFrom !== (editing.draft_from_address ?? "") ? chosenFrom || null : undefined
     saveDraft
-      .mutateAsync({ m: editing, body, design: activeDesign ?? null })
+      .mutateAsync({ m: editing, body, design: activeDesign ?? null, from })
       .then((saved) => (at ? reschedule.mutateAsync({ m: saved, at }) : saved))
       .then((saved) => {
         leaveEdit()
@@ -439,13 +525,14 @@ export const ReplyBox = forwardRef<
       .catch(setError)
   }
   const send = async (close: boolean, sendAt?: Date) => {
-    if (!hasContent || note || blocked || designBlocked || sending.current) return
+    if (!hasContent || note || blocked || designBlocked || fromBlocked || sending.current) return
     if (editing) {
       commitEdit()
       return
     }
     sending.current = true
     typing.stop()
+    clearSendFailure(c.id)
     let draft: SendRequest["draft"]
     if (mailing) {
       let fresh = autosaveOn
@@ -453,8 +540,7 @@ export const ReplyBox = forwardRef<
       const id = takeSavedDraft(c.id)
       if (id) draft = { id, fresh }
     }
-    const linkedDraft = suggestion && linked === suggestion.id ? suggestion : undefined
-    const saved = { body, files, articles, macro, design: activeDesign }
+    const saved = { body, files, articles, macro, design: activeDesign, from: fromTyped, linked }
     const recipients = emailTo ? { cc: ccEdit, bcc: bcc.length ? bcc : undefined } : {}
     actions
       .send({
@@ -465,7 +551,8 @@ export const ReplyBox = forwardRef<
         articles,
         macro,
         signature: unsigned ? false : undefined,
-        fromAddress: sender?.address,
+        fromAddress: catchAll ? chosenFrom || undefined : sender?.address,
+        draftFrom: keptFrom,
         draft,
         sendAt,
         design: activeDesign,
@@ -477,6 +564,8 @@ export const ReplyBox = forwardRef<
         setArticles((a) => (a.length ? a : saved.articles))
         setMacro((m) => m ?? saved.macro)
         setDesign((d) => d ?? saved.design)
+        setFromTyped((f) => f ?? saved.from)
+        setLinked((l) => l ?? saved.linked)
       })
     reset()
     sending.current = false
@@ -619,20 +708,47 @@ export const ReplyBox = forwardRef<
           bccRef={bccInput}
         />
       )}
-      {recipientsShown && senders.length > 0 && (
-        <div className="flex items-center gap-1 px-3 pb-1.5" data-testid="composer-from">
-          <span className="min-w-7 shrink-0 pe-1 text-caption text-faint">
+      {fromRow && (
+        <div className="flex items-start gap-1 px-3 pb-1.5" data-testid="composer-from">
+          <span className="flex h-8 min-w-7 shrink-0 items-center pe-1 text-caption text-faint">
             <Trans>From</Trans>
           </span>
-          <FromPicker
-            ref={fromSelect}
-            className="min-w-0 max-w-full flex-1"
-            channelAddress={sendingAddress(channel)}
-            senders={senders}
-            value={pickedFrom}
-            onChange={setPickedFrom}
-            testId="composer-from-picker"
-          />
+          <div className="min-w-0 flex-1">
+            {catchAll && domain ? (
+              <FromField
+                ref={fromInput}
+                domain={domain}
+                value={fromTyped ?? (draftFrom || fallbackFrom)}
+                onChange={changeFrom}
+                placeholder={fallbackFrom || undefined}
+                suggestions={fromOptions}
+                problem={fromIssue}
+                missing={fromMissing}
+                error={fromFailure && !fromIssue ? errorText(fromFailure) : undefined}
+                testId="composer-from-field"
+              />
+            ) : (
+              <>
+                <FromPicker
+                  ref={fromSelect}
+                  className="w-full"
+                  channelAddress={sendingAddress(channel)}
+                  senders={senders}
+                  value={pickedFrom}
+                  onChange={(v) => {
+                    clearSendFailure(c.id)
+                    setPickedFrom(v)
+                  }}
+                  testId="composer-from-picker"
+                />
+                {fromFailure && (
+                  <p role="alert" className="pt-1 text-caption text-destructive" data-testid="composer-from-note">
+                    {errorText(fromFailure)}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
         </div>
       )}
       {!note && <OnBehalfNote inboxId={c.inbox_id} />}
@@ -768,7 +884,11 @@ export const ReplyBox = forwardRef<
         </ul>
       )}
       {macro && !note && <MacroChips pick={macro} onChange={setMacro} />}
-      <ErrorLine error={error} className="px-4 pb-2 text-caption" />
+      <ErrorLine
+        error={error ?? shownFailure?.error}
+        designed={!error && shownFailure?.designed}
+        className="px-4 pb-2 text-caption"
+      />
       <div className="relative flex flex-wrap items-center gap-1 px-2.5 pb-2.5">
         <input
           ref={fileInput}
@@ -939,7 +1059,7 @@ export const ReplyBox = forwardRef<
             </SendLaterMenu>
             <Button
               onClick={() => commitEdit()}
-              disabled={!body.trim() || saveDraft.isPending || designBlocked}
+              disabled={!body.trim() || saveDraft.isPending || designBlocked || fromBlocked}
               data-testid="composer-edit-save"
             >
               <Trans>Save</Trans>
@@ -959,7 +1079,7 @@ export const ReplyBox = forwardRef<
                   <Button
                     variant="outline"
                     size="icon"
-                    disabled={!hasContent || designBlocked}
+                    disabled={!hasContent || designBlocked || fromBlocked}
                     aria-label={t`Send later`}
                     title={t`Send later (${laterKey})`}
                     data-testid="composer-send-later"
@@ -973,7 +1093,7 @@ export const ReplyBox = forwardRef<
             <Button
               variant={actions.chat ? "default" : "outline"}
               onClick={() => void send(false)}
-              disabled={!hasContent || blocked || designBlocked}
+              disabled={!hasContent || blocked || designBlocked || fromBlocked}
               data-testid="composer-send"
             >
               <Trans>Send</Trans>
@@ -981,7 +1101,7 @@ export const ReplyBox = forwardRef<
             <Button
               variant={actions.chat ? "outline" : "default"}
               onClick={() => void send(true)}
-              disabled={!hasContent || blocked || designBlocked}
+              disabled={!hasContent || blocked || designBlocked || fromBlocked}
               data-testid="composer-send-close"
             >
               {c.kind === "feedback" ? (

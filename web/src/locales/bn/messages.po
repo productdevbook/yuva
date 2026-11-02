@@ -7015,6 +7015,7 @@ msgstr "শুধু বদলানোর জন্যই আবার টো�
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "একটি বৈধ ই-মেইল ঠিকানা দিন, অথবা খালি রাখুন।"
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "একটি বৈধ ই-মেইল ঠিকানা দিন।"
@@ -11126,6 +11127,10 @@ msgstr "নাম, ই-মেইল বা id"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "নাম, যেমন অফিসের ল্যাপটপ"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "একটি পেজ থেকে ফিডব্যাক পাঠান"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "যেখান থেকে পাঠাবেন"
 
@@ -19082,10 +19088,6 @@ msgstr "ডোমেন {domain}-এর যাচাই বাতিল হয�
 msgid "The domain takes no mail"
 msgstr "ডোমেন মেইল নেয় না"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "ই-মেইল চ্যানেল From ঠিকানা ছাড়া ক্যাচ-অল, তাই এই কথোপকথন পাঠানোর মতো এর কোনো ঠিকানা নেই। ইনবক্স সেটিংসে একটি সেট করুন।"
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "ই-মেইল চ্যানেল প্রস্তুত"
@@ -20023,6 +20025,10 @@ msgstr "এই ডিভাইসে থিম ও ই-মেইল ভিউ"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "তখন"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "এই কথোপকথন পাঠানোর মতো কোনো ঠিকানা নেই। চ্যানেলের ডোমেইনের একটি প্রেরকের ঠিকানা দিন, অথবা ইনবক্স সেটিংসে চ্যানেলের প্রেরকের ঠিকানা সেট করুন।"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "৭ থেকে ৯০-এর মধ্যে একটি পূর্
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "{domain}-এর একটি ঠিকানা ব্যবহার করুন।"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

@@ -7015,6 +7015,7 @@ msgstr "Εισαγάγετε ξανά διακριτικό μόνο για να 
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Εισαγάγετε μια έγκυρη διεύθυνση e-mail ή αφήστε το κενό."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Εισαγάγετε μια έγκυρη διεύθυνση e-mail."
@@ -11126,6 +11127,10 @@ msgstr "Όνομα, e-mail ή αναγνωριστικό"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Όνομα, π.χ. Φορητός εργασίας"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Αποστολή σχολίων από σελίδα"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Αποστολή από"
 
@@ -19082,10 +19088,6 @@ msgstr "Το domain {domain} έχασε την επαλήθευσή του: λε
 msgid "The domain takes no mail"
 msgstr "Ο τομέας δεν δέχεται αλληλογραφία"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Το κανάλι e-mail είναι catch-all χωρίς διεύθυνση From, οπότε δεν έχει διεύθυνση από την οποία να στείλει αυτή τη συνομιλία. Ορίστε μία στις ρυθμίσεις εισερχομένων."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Το κανάλι e-mail είναι έτοιμο"
@@ -20023,6 +20025,10 @@ msgstr "Θέμα και προβολή e-mail σε αυτή τη συσκευή"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Τότε"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Δεν υπάρχει διεύθυνση από την οποία να σταλεί αυτή η συνομιλία. Εισαγάγετε μια διεύθυνση αποστολέα στον τομέα του καναλιού ή ορίστε τη διεύθυνση αποστολέα του καναλιού στις ρυθμίσεις εισερχομένων."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Χρησιμοποιήστε έναν ακέραιο από 7 έως 90.
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Χρησιμοποιήστε μια διεύθυνση στο {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

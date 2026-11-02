@@ -20,7 +20,7 @@ export function isShownDraft(m: Message, memberId: string) {
   return isOwnDraft(m, memberId) && (!!m.scheduled_at || !!m.send_error)
 }
 
-type Saved = { id: string; unsigned: boolean; body: string; design: string }
+type Saved = { id: string; unsigned: boolean; body: string; design: string; from: string }
 
 const saved = new Map<string, Saved>()
 
@@ -34,13 +34,13 @@ export function takeSavedDraft(conversationId: string) {
   return rec?.id
 }
 
-export function adoptDraft(conversationId: string, id: string, body: string, unsigned = false, design = "") {
+export function adoptDraft(conversationId: string, id: string, body: string, unsigned = false, design = "", from = "") {
   const now = saved.get(conversationId)
   if (now && now.id !== id) {
     void api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: id } } }).catch(() => undefined)
     return
   }
-  saved.set(conversationId, { id, unsigned, body: body.trim(), design })
+  saved.set(conversationId, { id, unsigned, body: body.trim(), design, from })
 }
 
 export function useOwnDrafts(conversationId: string, enabled: boolean) {
@@ -62,15 +62,17 @@ export function useReplyAutosave(
   enabled: boolean,
   body: string,
   unsigned: boolean,
-  design?: DesignPick
+  design?: DesignPick,
+  from = ""
 ) {
   const [state, setState] = useState<SaveState>("idle")
+  const [error, setError] = useState<unknown>(null)
   const designId = pickKey(design)
-  const latest = useLatest({ body, unsigned, enabled, conversationId, design })
+  const latest = useLatest({ body, unsigned, enabled, conversationId, design, from })
   const chain = useRef<Promise<unknown>>(Promise.resolve())
 
   const run = useCallback(async () => {
-    const { body: raw, unsigned: noSig, conversationId: id, design: pick } = latest.current
+    const { body: raw, unsigned: noSig, conversationId: id, design: pick, from: keptFrom } = latest.current
     const dk = pickKey(pick)
     const text = raw.trim()
     const rec = saved.get(id)
@@ -81,14 +83,18 @@ export function useReplyAutosave(
       return
     }
     if (rec && rec.unsigned === noSig) {
-      if (rec.body === text && rec.design === dk) return
+      if (rec.body === text && rec.design === dk && rec.from === keptFrom) return
       await unwrap(
         api.PATCH("/v1/messages/{messageId}", {
           params: { path: { messageId: rec.id } },
-          body: { body: text, ...(rec.design === dk ? {} : designPatch(pick)) },
+          body: {
+            body: text,
+            ...(rec.design === dk ? {} : designPatch(pick)),
+            ...(rec.from === keptFrom ? {} : { from_address: keptFrom || null }),
+          },
         })
       )
-      saved.set(id, { ...rec, body: text, design: dk })
+      saved.set(id, { ...rec, body: text, design: dk, from: keptFrom })
       return
     }
     const created = await unwrap(
@@ -100,11 +106,12 @@ export function useReplyAutosave(
           draft: true,
           client_id: newId(),
           signature: noSig ? false : undefined,
+          from_address: keptFrom || undefined,
           ...designFields(pick),
         },
       })
     )
-    saved.set(id, { id: created.id, unsigned: noSig, body: text, design: dk })
+    saved.set(id, { id: created.id, unsigned: noSig, body: text, design: dk, from: keptFrom })
     if (rec) await api.DELETE("/v1/messages/{messageId}", { params: { path: { messageId: rec.id } } })
   }, [latest])
 
@@ -114,8 +121,12 @@ export function useReplyAutosave(
       .catch(() => undefined)
       .then(run)
       .then(
-        () => setState(saved.has(latest.current.conversationId) ? "saved" : "idle"),
+        () => {
+          setError(null)
+          setState(saved.has(latest.current.conversationId) ? "saved" : "idle")
+        },
         (e: unknown) => {
+          setError(e)
           setState("failed")
           throw e
         }
@@ -128,7 +139,8 @@ export function useReplyAutosave(
     if (!enabled) return
     const rec = saved.get(conversationId)
     if (body.trim() === "" && !rec) return
-    if (rec && rec.body === body.trim() && rec.unsigned === unsigned && rec.design === designId) return
+    if (rec && rec.body === body.trim() && rec.unsigned === unsigned && rec.design === designId && rec.from === from)
+      return
     const fire = () => {
       waiting.delete(conversationId)
       void save().catch(() => undefined)
@@ -136,7 +148,7 @@ export function useReplyAutosave(
     const timer = setTimeout(fire, AUTOSAVE_MS)
     waiting.set(conversationId, { timer, fire })
     return () => clearTimeout(timer)
-  }, [conversationId, enabled, body, unsigned, designId, save])
+  }, [conversationId, enabled, body, unsigned, designId, from, save])
 
   useEffect(
     () => () => {
@@ -159,5 +171,5 @@ export function useReplyAutosave(
     return saved.get(id)?.id
   }, [save, latest])
 
-  return { state, flush }
+  return { state, error, flush }
 }

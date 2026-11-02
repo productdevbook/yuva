@@ -27,6 +27,8 @@ export type ReplyDraft = {
   cc?: string[]
   bcc?: string[]
   design?: DesignPick
+  from?: string
+  suggestionId?: string
 }
 
 const drafts = new Map<string, ReplyDraft>()
@@ -52,6 +54,33 @@ export function writeDraft(id: string, d: ReplyDraft) {
   if (before !== d.body) draftListeners.forEach((l) => l())
 }
 
+type SendFailure = { error: unknown; designed: boolean }
+
+const failures = new Map<string, SendFailure>()
+const failureListeners = new Set<() => void>()
+
+function setFailure(id: string, failure?: SendFailure) {
+  if (failure) failures.set(id, failure)
+  else failures.delete(id)
+  failureListeners.forEach((l) => l())
+}
+
+export function clearSendFailure(id: string) {
+  if (failures.has(id)) setFailure(id)
+}
+
+export function useSendFailure(id: string) {
+  return useSyncExternalStore(
+    (l) => {
+      failureListeners.add(l)
+      return () => {
+        failureListeners.delete(l)
+      }
+    },
+    () => failures.get(id)
+  )
+}
+
 function restoreDraftOf(id: string, req: SendRequest) {
   const now = readDraft(id)
   writeDraft(id, {
@@ -63,8 +92,11 @@ function restoreDraftOf(id: string, req: SendRequest) {
     cc: now.cc ?? req.cc,
     bcc: now.bcc?.length ? now.bcc : req.bcc,
     design: now.design ?? req.design,
+    from: now.from ?? req.fromAddress,
+    suggestionId: now.suggestionId ?? req.suggestion?.id,
   })
-  if (req.draft) adoptDraft(id, req.draft.id, req.body, req.signature === false, pickKey(req.design))
+  if (req.draft)
+    adoptDraft(id, req.draft.id, req.body, req.signature === false, pickKey(req.design), req.draftFrom ?? "")
   revisions.set(id, (revisions.get(id) ?? 0) + 1)
   draftListeners.forEach((l) => l())
 }
@@ -180,6 +212,7 @@ export type SendRequest = {
   bcc?: string[]
   signature?: boolean
   fromAddress?: string
+  draftFrom?: string
   draft?: { id: string; fresh: boolean }
   sendAt?: Date
   design?: DesignPick
@@ -274,6 +307,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
     return sent
   }
   const notSent = (req: SendRequest, err: unknown) => {
+    setFailure(c.id, { error: err, designed: !!req.design })
     restoreDraftOf(c.id, req)
     toast(t`Your reply to ${first} was not sent. ${errorText(err, !!req.design)}`)
   }
@@ -323,6 +357,7 @@ export function useConversationActions(c: Conversation, contactName: string) {
         return inLine(c.id, () => deliver(req))
           .then(() => undefined)
           .catch((err) => {
+            setFailure(c.id, { error: err, designed: !!req.design })
             toast(t`Your reply to ${first} was not sent. ${errorText(err, !!req.design)}`)
             throw err
           })

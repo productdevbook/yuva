@@ -7015,6 +7015,7 @@ msgstr "Voer een token alleen opnieuw in om het te wijzigen."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Voer een geldig e-mailadres in, of laat het leeg."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Voer een geldig e-mailadres in."
@@ -11126,6 +11127,10 @@ msgstr "Naam, e-mail of ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Naam, bijv. Werklaptop"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Feedback vanaf een pagina verzenden"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Versturen vanaf"
 
@@ -19082,10 +19088,6 @@ msgstr "Het domein {domain} is niet meer geverifieerd: het DNS-record ontbreekt,
 msgid "The domain takes no mail"
 msgstr "Het domein neemt geen mail aan"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Het e-mailkanaal is een catch-all zonder afzenderadres, dus het heeft geen adres om dit gesprek vanaf te verzenden. Stel er een in bij de mailboxinstellingen."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Het e-mailkanaal is klaar"
@@ -20023,6 +20025,10 @@ msgstr "Thema en e-mailweergave op dit apparaat"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Dan"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Er is geen adres om dit gesprek vanaf te versturen. Vul een afzenderadres in op het domein van het kanaal, of stel het afzenderadres van het kanaal in bij de instellingen van de inbox."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Gebruik een geheel getal van 7 tot 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Gebruik een adres op {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

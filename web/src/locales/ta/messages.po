@@ -7015,6 +7015,7 @@ msgstr "டோக்கனை மாற்ற மட்டுமே மீண்
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "சரியான மின்னஞ்சல் முகவரியை உள்ளிடுங்கள், அல்லது காலியாக விடுங்கள்."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "சரியான மின்னஞ்சல் முகவரியை உள்ளிடுங்கள்."
@@ -11126,6 +11127,10 @@ msgstr "பெயர், மின்னஞ்சல் அல்லது ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "பெயர், எ.கா. அலுவலக மடிக்கணினி"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "பக்கத்திலிருந்து கருத்தை அனுப்புங்கள்"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "இதிலிருந்து அனுப்பு"
 
@@ -19082,10 +19088,6 @@ msgstr "{domain} டொமைன் சரிபார்ப்பை இழந�
 msgid "The domain takes no mail"
 msgstr "டொமைன் அஞ்சல் ஏற்காது"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "மின்னஞ்சல் சேனல் From முகவரி இல்லாத அனைத்தும் பிடிப்பான்; எனவே இந்த உரையாடலை அனுப்ப அதற்கு முகவரி இல்லை. இன்பாக்ஸ் அமைப்புகளில் ஒன்றை அமையுங்கள்."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "மின்னஞ்சல் சேனல் தயார்"
@@ -20023,6 +20025,10 @@ msgstr "இந்தச் சாதனத்தில் தீமும் ம
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "பிறகு"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "இந்த உரையாடலை அனுப்ப முகவரி இல்லை. சேனலின் டொமைனில் அனுப்புநர் முகவரியை உள்ளிடவும், அல்லது இன்பாக்ஸ் அமைப்புகளில் சேனலின் அனுப்புநர் முகவரியை அமைக்கவும்."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "7 முதல் 90 வரையிலான முழு எண்ண�
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "{domain} இல் உள்ள முகவரியைப் பயன்படுத்தவும்."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

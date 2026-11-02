@@ -7015,6 +7015,7 @@ msgstr "Belirteci yalnızca değiştirmek için yeniden girin."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Geçerli bir e-posta adresi girin ya da boş bırakın."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Geçerli bir e-posta adresi girin."
@@ -11126,6 +11127,10 @@ msgstr "Ad, e-posta veya kimlik"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Ad, ör. İş bilgisayarı"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Bir sayfadan geri bildirim gönderin"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Gönderen adres"
 
@@ -19082,10 +19088,6 @@ msgstr "{domain} alan adı doğrulamasını kaybetti: DNS kaydı eksik, bu yüzd
 msgid "The domain takes no mail"
 msgstr "Alan adı e-posta almıyor"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "E-posta kanalı alan adının tüm adreslerini (*@) alıyor ve gönderen adresi yok, bu yüzden bu konuşmayı gönderecek bir adres bulunamadı. Gelen kutusu ayarlarından bir gönderen adresi belirleyin."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "E-posta kanalı hazır"
@@ -20023,6 +20025,10 @@ msgstr "Bu cihazda tema ve e-posta görünümü"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Sonra"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Bu konuşmayı göndermek için bir adres yok. Kanalın alan adında bir gönderen adresi girin ya da gelen kutusu ayarlarından kanalın gönderen adresini belirleyin."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "7 ile 90 arasında bir tam sayı kullanın."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "En fazla 365 gün olacak şekilde bir tam sayı girin."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "{domain} alan adında bir adres kullanın."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

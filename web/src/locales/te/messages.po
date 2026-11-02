@@ -7015,6 +7015,7 @@ msgstr "టోకెన్‌ను మార్చడానికి మాత�
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "చెల్లుబాటయ్యే ఇమెయిల్ చిరునామాను నమోదు చేయండి, లేదా ఖాళీగా వదలండి."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "చెల్లుబాటయ్యే ఇమెయిల్ చిరునామాను నమోదు చేయండి."
@@ -11126,6 +11127,10 @@ msgstr "పేరు, ఇమెయిల్ లేదా ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "పేరు, ఉదా. ఆఫీస్ ల్యాప్‌టాప్"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "పేజీ నుండి అభిప్రాయాన్ని పంపండి"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "దీని నుండి పంపండి"
 
@@ -19082,10 +19088,6 @@ msgstr "డొమైన్ {domain} ధృవీకరణ కోల్పోయ�
 msgid "The domain takes no mail"
 msgstr "డొమైన్ మెయిల్ తీసుకోదు"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "ఇమెయిల్ ఛానెల్ From చిరునామా లేని క్యాచ్-ఆల్, కాబట్టి ఈ సంభాషణను పంపడానికి దానికి చిరునామా లేదు. ఇన్‌బాక్స్ సెట్టింగ్‌లలో ఒకదాన్ని సెట్ చేయండి."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "ఇమెయిల్ ఛానెల్ సిద్ధంగా ఉంది"
@@ -20023,6 +20025,10 @@ msgstr "ఈ పరికరంలో థీమ్ మరియు ఇమెయ�
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "అప్పుడు"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "ఈ సంభాషణను పంపడానికి చిరునామా లేదు. ఛానెల్ డొమైన్‌లోని పంపినవారి చిరునామాను నమోదు చేయండి, లేదా ఇన్‌బాక్స్ సెట్టింగ్‌లలో ఛానెల్ పంపినవారి చిరునామాను సెట్ చేయండి."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "7 నుండి 90 వరకు ఒక పూర్ణాంకాన�
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "{domain}లోని చిరునామాను ఉపయోగించండి."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

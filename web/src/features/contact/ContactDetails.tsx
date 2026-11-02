@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router"
 
 import { ChannelIcon, Dot, ErrorLine, toast } from "@/components/common"
 import { formatDate, formatDateTime, formatShort, useEnumText, useErrorText } from "@/components/common/text"
+import { catchAllDomain, FromField, fromProblem, useOwnSenders } from "@/components/common/FromPicker"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -22,7 +23,14 @@ import { useContactEntries } from "@/features/contact/entries"
 import { currentRating, RatingMark } from "@/features/conversation/rating"
 import { ViewChips } from "@/features/inbox/ListHead"
 import { useConversations } from "@/features/inbox/queries"
-import type { Contact, ContactSummary, ConversationListItem, ConversationStatus, UndeliverableEmail } from "@/lib/api"
+import {
+  ApiError,
+  type Contact,
+  type ContactSummary,
+  type ConversationListItem,
+  type ConversationStatus,
+  type UndeliverableEmail,
+} from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useChannelMap, useInboxes } from "@/lib/workspace"
@@ -436,6 +444,7 @@ export function NewConversationDialog({
   const [inboxId, setInboxId] = useState("")
   const [channelId, setChannelId] = useState("")
   const [subject, setSubject] = useState("")
+  const [fromAddress, setFromAddress] = useState("")
   const create = useCreateConversation()
   const text = useEnumText()
   const own = contact.inboxes.find((i) => inboxes.some((x) => x.id === i.id))?.id
@@ -444,7 +453,18 @@ export function NewConversationDialog({
   const preferred =
     channels.find((c) => (contact.emails.length ? c.kind === "email" : c.kind !== "email")) ?? channels[0]
   const channel = channels.some((c) => c.id === channelId) ? channelId : (preferred?.id ?? "")
-  const kind = channels.find((c) => c.id === channel)?.kind
+  const picked = channels.find((c) => c.id === channel)
+  const kind = picked?.kind
+  const domain = catchAllDomain(picked)
+  const senders = useOwnSenders(domain && picked ? [picked.id] : [])
+  const ownAddresses = senders.map((a) => a.address.toLowerCase())
+  const fromIssue = domain ? fromProblem(fromAddress, domain, ownAddresses) : undefined
+  const fromFailure =
+    domain &&
+    create.error instanceof ApiError &&
+    ["from_not_allowed", "email_no_sender"].includes(create.error.code ?? "")
+      ? create.error
+      : undefined
   const deliverable = contact.emails.filter((e) => !contact.undeliverable.some((u) => u.email === e))
   const inboxName = inboxes.find((i) => i.id === inbox)?.name ?? ""
   const warning =
@@ -473,12 +493,13 @@ export function NewConversationDialog({
           className="flex flex-col gap-4"
           onSubmit={(e) => {
             e.preventDefault()
-            if (!inbox || warning) return
+            if (!inbox || warning || fromIssue) return
             create.mutate(
               {
                 inbox_id: inbox,
                 contact_id: contact.id,
                 channel_id: channel || undefined,
+                from_address: domain && fromAddress.trim() ? fromAddress.trim().toLowerCase() : undefined,
                 subject: subject.trim() || undefined,
                 assignee_id: membership.member_id,
               },
@@ -489,7 +510,10 @@ export function NewConversationDialog({
                   if (onCreated) onCreated(c.id)
                   else navigate(`/conversations/${c.id}`)
                 },
-                onError: (err) => toast(errorText(err)),
+                onError: (err) => {
+                  if (!(err instanceof ApiError) || !["from_not_allowed", "email_no_sender"].includes(err.code ?? ""))
+                    toast(errorText(err))
+                },
               }
             )
           }}
@@ -502,7 +526,7 @@ export function NewConversationDialog({
               label={t`Inbox`}
               testId="new-conversation-inbox"
               value={inbox}
-              onChange={(v) => (setInboxId(v), setChannelId(""))}
+              onChange={(v) => (setInboxId(v), setChannelId(""), setFromAddress(""))}
               items={inboxes.map((i) => ({
                 value: i.id,
                 label: (
@@ -525,11 +549,28 @@ export function NewConversationDialog({
                 label={t`Channel`}
                 testId="new-conversation-channel"
                 value={channel}
-                onChange={setChannelId}
+                onChange={(v) => (setChannelId(v), setFromAddress(""))}
                 items={channels.map((c) => ({ value: c.id, label: `${c.name} · ${text.channel[c.kind]}` }))}
               />
             )}
           </div>
+          {domain && (
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="new-conversation-from">
+                <Trans>Send from</Trans>
+              </Label>
+              <FromField
+                id="new-conversation-from"
+                domain={domain}
+                value={fromAddress}
+                onChange={(v) => (create.reset(), setFromAddress(v))}
+                suggestions={ownAddresses}
+                problem={fromIssue}
+                error={fromFailure && !fromIssue ? errorText(fromFailure) : undefined}
+                testId="new-conversation-from"
+              />
+            </div>
+          )}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="new-conversation-subject">
               <Trans>Subject</Trans>
@@ -559,7 +600,7 @@ export function NewConversationDialog({
           <Button
             type="submit"
             form="new-conversation-form"
-            disabled={!inbox || !!warning || create.isPending}
+            disabled={!inbox || !!warning || !!fromIssue || create.isPending}
             data-testid="new-conversation-create"
           >
             <Trans>Start conversation</Trans>

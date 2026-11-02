@@ -7015,6 +7015,7 @@ msgstr "Masukkan token sekali lagi hanya untuk menukarnya."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Masukkan alamat e-mel yang sah, atau biarkan kosong."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Masukkan alamat e-mel yang sah."
@@ -11126,6 +11127,10 @@ msgstr "Nama, e-mel atau id"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Nama, cth. Komputer riba kerja"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Hantar maklum balas daripada halaman"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Hantar dari"
 
@@ -19082,10 +19088,6 @@ msgstr "Domain {domain} hilang pengesahannya: rekod DNS tiada, jadi log masuk tu
 msgid "The domain takes no mail"
 msgstr "Domain tidak menerima mel"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Saluran e-mel ialah tangkap semua tanpa alamat Daripada, jadi ia tiada alamat untuk menghantar perbualan ini. Tetapkan satu dalam tetapan peti masuk."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Saluran e-mel sedia"
@@ -20023,6 +20025,10 @@ msgstr "Tema dan paparan e-mel pada peranti ini"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Maka"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Tiada alamat untuk menghantar perbualan ini. Masukkan alamat penghantar pada domain saluran, atau tetapkan alamat penghantar saluran dalam tetapan peti masuk."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Gunakan nombor bulat dari 7 hingga 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Gunakan alamat pada {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

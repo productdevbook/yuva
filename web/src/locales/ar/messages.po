@@ -7015,6 +7015,7 @@ msgstr "لا تُدخل رمزًا مرة أخرى إلا لتغييره."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "أدخل عنوان بريد إلكتروني صالحًا، أو اتركه فارغًا."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "أدخل عنوان بريد إلكتروني صالحًا."
@@ -11126,6 +11127,10 @@ msgstr "الاسم أو البريد الإلكتروني أو المعرّف"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "الاسم، مثل حاسوب العمل"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "أرسل ملاحظات من صفحة"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "الإرسال من"
 
@@ -19082,10 +19088,6 @@ msgstr "فقد النطاق {domain} توثيقه: سجل DNS مفقود، لذ�
 msgid "The domain takes no mail"
 msgstr "النطاق لا يستقبل بريدًا"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "قناة البريد الإلكتروني هذه احتواء شامل بلا عنوان مرسِل، فليس لها عنوان لإرسال هذه المحادثة منه. عيّن واحدًا في إعدادات صندوق الوارد."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "قناة البريد الإلكتروني جاهزة"
@@ -20023,6 +20025,10 @@ msgstr "السمة وعرض البريد الإلكتروني على هذا ال
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "إذن"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "لا يوجد عنوان لإرسال هذه المحادثة منه. أدخل عنوان مرسِل ضمن نطاق القناة، أو عيّن عنوان المرسِل للقناة في إعدادات صندوق الوارد."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "استخدم عددًا صحيحًا من 7 إلى 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "استخدم عنوانًا على {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

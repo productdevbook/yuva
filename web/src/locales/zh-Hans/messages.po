@@ -7015,6 +7015,7 @@ msgstr "仅在要更改时再次输入令牌。"
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "请输入有效的电子邮件地址,或留空。"
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "请输入有效的电子邮件地址。"
@@ -11126,6 +11127,10 @@ msgstr "名称、电子邮件或 ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "名称,例如 工作笔记本"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "从页面发送反馈"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "发件人"
 
@@ -19082,10 +19088,6 @@ msgstr "域名 {domain} 的验证已失效：缺少 DNS 记录，因此单点登
 msgid "The domain takes no mail"
 msgstr "该域名不接收邮件"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "该邮件渠道是没有发件人地址的全部接收,因此没有地址来发送此对话。请在收件箱设置中设置一个。"
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "邮件渠道已就绪"
@@ -20023,6 +20025,10 @@ msgstr "此设备上的主题和邮件视图"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "则"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "没有可用来发送此对话的地址。请输入渠道域名下的发件地址，或在收件箱设置中设置渠道的发件地址。"
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "使用 7 到 90 之间的整数。"
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "请使用 {domain} 上的地址。"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

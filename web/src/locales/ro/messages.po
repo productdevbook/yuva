@@ -7015,6 +7015,7 @@ msgstr "Introduceți un token din nou doar pentru a-l schimba."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Introdu o adresă de e-mail validă sau lasă gol."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Introdu o adresă de e-mail validă."
@@ -11126,6 +11127,10 @@ msgstr "Nume, e-mail sau ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Nume, de ex. Laptop de serviciu"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Trimite feedback dintr-o pagină"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Trimite de la"
 
@@ -19082,10 +19088,6 @@ msgstr "Domeniul {domain} și-a pierdut verificarea: lipsește înregistrarea DN
 msgid "The domain takes no mail"
 msgstr "Domeniul nu primește e-mail"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Canalul de e-mail este un colector general fără adresă De la, deci nu are o adresă de la care să trimită această conversație. Setează una în setările căsuței."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Canalul de e-mail este gata"
@@ -20023,6 +20025,10 @@ msgstr "Tema și vizualizarea e-mailului pe acest dispozitiv"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Atunci"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Nu există nicio adresă de la care să se trimită această conversație. Introduceți o adresă de expeditor de pe domeniul canalului sau setați adresa de expeditor a canalului în setările căsuței."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Folosește un număr întreg de la 7 la 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Folosiți o adresă de pe {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

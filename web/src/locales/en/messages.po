@@ -7015,6 +7015,7 @@ msgstr "Enter a token again only to change it."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Enter a valid e-mail address, or leave it empty."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Enter a valid e-mail address."
@@ -11126,6 +11127,10 @@ msgstr "Name, e-mail or id"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Name, e.g. Work laptop"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Send feedback from a page"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Send from"
 
@@ -19082,10 +19088,6 @@ msgstr "The domain {domain} lost its verification: its DNS record is missing, so
 msgid "The domain takes no mail"
 msgstr "The domain takes no mail"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "The e-mail channel is ready"
@@ -20023,6 +20025,10 @@ msgstr "Theme and e-mail view on this device"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Then"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Use a whole number from 7 to 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Use an address on {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

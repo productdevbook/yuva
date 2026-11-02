@@ -7015,6 +7015,7 @@ msgstr "Token zadejte znovu jen tehdy, když ho chcete změnit."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Zadejte platnou e-mailovou adresu, nebo nechte prázdné."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Zadejte platnou e-mailovou adresu."
@@ -11126,6 +11127,10 @@ msgstr "Jméno, e-mail nebo ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Název, např. Pracovní notebook"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Posílat zpětnou vazbu ze stránky"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Odeslat z"
 
@@ -19082,10 +19088,6 @@ msgstr "Doména {domain} ztratila ověření: chybí její záznam DNS, proto u�
 msgid "The domain takes no mail"
 msgstr "Doména nepřijímá poštu"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "E-mailový kanál je zachytávací bez adresy Od, takže nemá adresu, ze které by tuto konverzaci odeslal. Nastavte ji v nastavení schránky."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "E-mailový kanál je připraven"
@@ -20023,6 +20025,10 @@ msgstr "Motiv a zobrazení e-mailu na tomto zařízení"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Pak"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Není žádná adresa, ze které by se tato konverzace odeslala. Zadejte adresu odesílatele z domény kanálu, nebo nastavte adresu odesílatele kanálu v nastavení schránky."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Použijte celé číslo od 7 do 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Použijte adresu na {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

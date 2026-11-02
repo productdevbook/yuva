@@ -7015,6 +7015,7 @@ msgstr "Entrez à nouveau un jeton seulement pour le changer."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Saisissez une adresse courriel valide, ou laissez vide."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Saisissez une adresse courriel valide."
@@ -11126,6 +11127,10 @@ msgstr "Nom, courriel ou ID"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Nom, p. ex. Portable du bureau"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Envoyer un avis depuis une page"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Envoyer depuis"
 
@@ -19082,10 +19088,6 @@ msgstr "Le domaine {domain} a perdu sa vérification : son enregistrement DNS es
 msgid "The domain takes no mail"
 msgstr "Le domaine ne reçoit pas de courrier"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Le canal courriel est un fourre-tout sans adresse d’expéditeur, il n’a donc pas d’adresse depuis laquelle envoyer cette conversation. Définissez-en une dans les paramètres de la boîte."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Le canal courriel est prêt"
@@ -20023,6 +20025,10 @@ msgstr "Thème et vue courriel sur cet appareil"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Alors"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Il n’y a pas d’adresse depuis laquelle envoyer cette conversation. Saisissez une adresse d’expéditeur du domaine du canal, ou définissez l’adresse d’expéditeur du canal dans les paramètres de la boîte."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Utilisez un nombre entier de 7 à 90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Utilisez une adresse de {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"

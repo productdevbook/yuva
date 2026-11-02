@@ -7015,6 +7015,7 @@ msgstr "Anna token uudelleen vain, jos haluat vaihtaa sen."
 msgid "Enter a valid e-mail address, or leave it empty."
 msgstr "Anna kelvollinen sähköpostiosoite tai jätä tyhjäksi."
 
+#: src/components/common/FromPicker.tsx
 #: src/features/settings/channels/email/form.ts
 msgid "Enter a valid e-mail address."
 msgstr "Anna kelvollinen sähköpostiosoite."
@@ -11126,6 +11127,10 @@ msgstr "Nimi, sähköposti tai tunnus"
 #: src/features/settings/profile/Passkeys.tsx
 msgid "Name, e.g. Work laptop"
 msgstr "Nimi, esim. Työkannettava"
+
+#: src/components/common/FromPicker.tsx
+msgid "name@{domain}"
+msgstr "name@{domain}"
 
 #: src/features/contact/ContactDetails.tsx
 msgid "name@example.com"
@@ -16781,6 +16786,7 @@ msgid "Send feedback from a page"
 msgstr "Lähetä palautetta sivulta"
 
 #: src/components/common/FromPicker.tsx
+#: src/features/contact/ContactDetails.tsx
 msgid "Send from"
 msgstr "Lähettäjä"
 
@@ -19082,10 +19088,6 @@ msgstr "Verkkotunnus {domain} menetti vahvistuksensa: sen DNS-tietue puuttuu, jo
 msgid "The domain takes no mail"
 msgstr "Verkkotunnus ei ota postia vastaan"
 
-#: src/components/common/text.ts
-msgid "The e-mail channel is a catch-all without a From address, so it has no address to send this conversation from. Set one in the inbox settings."
-msgstr "Sähköpostikanava on kaikki vastaanottava ilman Lähettäjä-osoitetta, joten sillä ei ole osoitetta, josta lähettää tämä keskustelu. Aseta sellainen postilaatikon asetuksissa."
-
 #: src/features/setup/email/EmailDoneStep.tsx
 msgid "The e-mail channel is ready"
 msgstr "Sähköpostikanava on valmis"
@@ -20023,6 +20025,10 @@ msgstr "Teema ja sähköpostinäkymä tällä laitteella"
 #: src/features/settings/automation/RuleDialog.tsx
 msgid "Then"
 msgstr "Sitten"
+
+#: src/components/common/text.ts
+msgid "There is no address to send this conversation from. Enter a From address on the channel's domain, or set the channel's From address in the inbox settings."
+msgstr "Osoitetta, josta tämä keskustelu voitaisiin lähettää, ei ole. Anna lähettäjän osoite kanavan verkkotunnuksesta tai aseta kanavan lähettäjän osoite postilaatikon asetuksissa."
 
 #: src/features/settings/workspace/DeleteWorkspace.tsx
 msgid "These cannot be undone"
@@ -21444,6 +21450,10 @@ msgstr "Käytä kokonaislukua väliltä 7–90."
 #: src/features/broadcasts/Trigger.tsx
 msgid "Use a whole number of at most 365 days."
 msgstr "Use a whole number of at most 365 days."
+
+#: src/components/common/FromPicker.tsx
+msgid "Use an address on {domain}."
+msgstr "Käytä osoitetta verkkotunnuksessa {domain}."
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "Use an app password"
