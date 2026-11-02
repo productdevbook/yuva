@@ -135,7 +135,7 @@ func (s *Server) CheckContinuity(ctx context.Context, workspaceID, conversationI
 		if err != nil || suppressed {
 			return err
 		}
-		plan, err := s.emailPlanFor(ctx, q, c, ech, to)
+		plan, err := s.emailPlanFor(ctx, q, c, ech, to, "")
 		if err != nil {
 			var apiErr *apiError
 			if errors.As(err, &apiErr) {

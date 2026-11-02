@@ -47,6 +47,16 @@ RETURNING *;
 SELECT * FROM member_addresses
 WHERE workspace_id = @workspace_id AND member_id = @member_id AND address = @address AND verified_at IS NOT NULL;
 
+-- name: IsOtherMemberAddress :one
+SELECT EXISTS (
+  SELECT 1 FROM member_addresses
+  WHERE workspace_id = @workspace_id AND address = @address AND verified_at IS NOT NULL
+    AND member_id IS DISTINCT FROM sqlc.narg(member_id)::uuid
+);
+
+-- name: MemberAddressOwner :one
+SELECT member_id FROM member_addresses WHERE workspace_id = @workspace_id AND address = @address;
+
 -- name: GetMemberAddressByID :one
 SELECT * FROM member_addresses WHERE workspace_id = @workspace_id AND id = @id;
 

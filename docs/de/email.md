@@ -285,6 +285,20 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
   --smtp-host smtp.example.com --smtp-username support@example.com --smtp-password-file -
 ```
 
+Weil das Konto für die ganze Domain sendet, dürfen Mitglieder, API-Schlüssel und Assistenten jede
+Adresse der Domain als `from_address` wählen, außer einer, die ein anderer Kanal des Workspace nutzt
+oder die ein anderes Mitglied als eigene bestätigt hat (`409 from_not_allowed`). Die nutzbare eigene
+Adresse eines Mitglieds bleibt sein persönlicher Absender. Bei `POST /v1/conversations` oder einer neuen
+E-Mail (`POST /v1/conversations/mail`) wird die Adresse zur Adresse der Unterhaltung: spätere Antworten
+gehen von ihr aus. Bei einer Antwort oder einem Entwurf gilt sie nur für diese eine Nachricht; ein
+Entwurf behält sie bis zum Senden, ob geplant oder nicht, und `PATCH /v1/messages/{id}` ändert oder
+entfernt sie. Wechselt die Unterhaltung des Entwurfs später den Kanal oder ist der Kanal kein Catch-all
+dieser Domain mehr, wird die gespeicherte Adresse beim Senden verworfen und der übliche Absender genutzt. Eine
+Nachricht oder ein Entwurf ohne Absenderadresse (keine Adresse, an die der Kontakt schrieb, keine
+`--from-address` und keine `from_address`) wird schon beim Schreiben mit `409 email_no_sender`
+abgewiesen, nicht erst beim Senden. Die MCP-Werkzeuge `start_conversation`, `compose_mail`,
+`draft_reply`, `send_reply`, `send_draft` und `update_draft` nehmen dieselbe `from_address`.
+
 ### So werden eingehende E-Mails verarbeitet
 
 | Thema | Verhalten |

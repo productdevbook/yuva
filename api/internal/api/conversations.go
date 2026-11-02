@@ -839,6 +839,7 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 		if err := visibleContact(ctx, q, p, b.ContactId); err != nil {
 			return err
 		}
+		var address *string
 		if b.ChannelId != nil {
 			ch, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: p.workspaceID, ID: *b.ChannelId})
 			if store.IsNotFound(err) || (err == nil && ch.InboxID != b.InboxId) {
@@ -847,6 +848,11 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 			if err != nil {
 				return err
 			}
+			if address, err = newConversationAddress(ctx, q, p, ch, (*string)(b.FromAddress)); err != nil {
+				return err
+			}
+		} else if b.FromAddress != nil {
+			return errFromNotCatchAll
 		}
 		if b.AssigneeId != nil {
 			ok, err := memberHasInbox(ctx, q, p.workspaceID, b.InboxId, *b.AssigneeId)
@@ -866,7 +872,7 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 		now := s.now()
 		c, err := q.CreateConversation(ctx, store.CreateConversationParams{
 			ID: newID(), WorkspaceID: p.workspaceID, InboxID: b.InboxId, ContactID: b.ContactId, ChannelID: b.ChannelId,
-			Subject: subject, Priority: string(priority), AssigneeID: b.AssigneeId, Now: now,
+			Subject: subject, Priority: string(priority), AssigneeID: b.AssigneeId, EmailAddress: address, Now: now,
 		})
 		if err != nil {
 			return err
@@ -894,6 +900,24 @@ func (s *Server) CreateConversation(ctx context.Context, req oas.CreateConversat
 		return nil, err
 	}
 	return oas.CreateConversation201JSONResponse(out), nil
+}
+
+func newConversationAddress(ctx context.Context, q *store.Queries, p principal, ch store.Channel, from *string) (*string, error) {
+	if from == nil {
+		return nil, nil
+	}
+	if ch.Kind != string(oas.ChannelKindEmail) {
+		return nil, errFromNotCatchAll
+	}
+	ech, err := q.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: p.workspaceID, ChannelID: ch.ID})
+	if store.IsNotFound(err) || (err == nil && !isCatchAll(ech.Address)) {
+		return nil, errFromNotCatchAll
+	}
+	if err != nil {
+		return nil, err
+	}
+	addr, err := domainSender(ctx, q, p, ech, *from)
+	return &addr, err
 }
 
 func (s *Server) GetConversation(ctx context.Context, req oas.GetConversationRequestObject) (oas.GetConversationResponseObject, error) {
@@ -1135,4 +1159,26 @@ func enumList[T interface {
 		}
 	}
 	return out, nil
+}
+
+func firstMessageSender(ctx context.Context, q *store.Queries, p principal, inboxID, channelID uuid.UUID) error {
+	if _, err := writableInbox(ctx, q, p, inboxID); err != nil {
+		return nil
+	}
+	ch, err := q.GetChannel(ctx, store.GetChannelParams{WorkspaceID: p.workspaceID, ID: channelID})
+	if store.IsNotFound(err) || (err == nil && ch.InboxID != inboxID) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	ech, err := q.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: p.workspaceID, ChannelID: channelID})
+	if store.IsNotFound(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	_, err = sendingAddress(ech, store.Conversation{})
+	return err
 }

@@ -120,9 +120,12 @@ func (s *Server) scheduleLocked(ctx context.Context, q *store.Queries, events *e
 			return messageRow{}, err
 		}
 		if from != nil {
-			if _, err := s.fromMemberAddress(ctx, q, p, ch, *from); err != nil {
+			choice, err := s.chooseFrom(ctx, q, p, ch, from)
+			if err != nil {
 				return messageRow{}, err
 			}
+			addr := choice.address()
+			from = &addr
 		}
 	}
 	if cc.set || bcc.set {
@@ -359,7 +362,7 @@ func (s *Server) SendScheduled(ctx context.Context, a ScheduledSendArgs, lastAtt
 	} else if err != nil {
 		return err
 	}
-	body := &oas.MessageSend{FromAddress: (*oas.Email)(sc.ScheduledFrom)}
+	body := &oas.MessageSend{}
 	if sc.ScheduledCc != nil {
 		body.Cc = emailsOf(sc.ScheduledCc)
 	}

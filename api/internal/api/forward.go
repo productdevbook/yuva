@@ -500,7 +500,7 @@ func (s *Server) sendForward(ctx context.Context, workspaceID uuid.UUID, msg mes
 		out.AlsoTo = append(out.AlsoTo, email.Address{Email: addr})
 	}
 	if msg.OnBehalfOfMemberID != nil {
-		if out.Sender, err = s.delegateSender(ctx, workspaceID, ch, conv, msg); err != nil {
+		if out.Sender, err = s.delegateSender(ctx, workspaceID, me.FromAddress, msg); err != nil {
 			return "", err
 		}
 	}

@@ -2795,6 +2795,15 @@ export interface paths {
         /**
          * Start a conversation
          * @description Scope: `conversations:write`.
+         *
+         *     On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+         *     `from_address` may be any address of the channel's domain: it becomes the conversation's
+         *     address, and its replies go out from it without naming it again. An address of another
+         *     domain, one another e-mail channel of the workspace receives at or sends from, or another
+         *     member's verified address answers `409 from_not_allowed`. `from_address` with any other
+         *     channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+         *     without it too; its first outgoing message then needs an address to go from (see
+         *     `createMessage`).
          */
         post: operations["createConversation"];
         delete?: never;
@@ -2820,8 +2829,11 @@ export interface paths {
          *
          *     `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
          *     SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-         *     channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-         *     without a `from_address` answers `409 email_no_sender`.
+         *     channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+         *     channel `from_address` may be any address of its domain, under the rules of
+         *     `createConversation`, and becomes the conversation's address, so replies go on from it;
+         *     without it the channel's `from_address` is used, and without either the mail, and a draft
+         *     of it, is refused with `409 email_no_sender`.
          *
          *     `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
          *     a valid address that this workspace neither receives nor sends mail for
@@ -2847,7 +2859,10 @@ export interface paths {
          *     dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
          *     address; the message is marked `failed` only when every `to` address bounced.
          *     `from_address` sends it from one of the calling member's own addresses usable for the channel,
-         *     under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+         *     under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+         *     (`draft_from_address`).
+         *     On a catch-all channel a member's own usable address is still taken first; any other address
+         *     of its domain is taken by every caller, a draft included, as described above.
          *
          *     The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
          *     inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -3485,8 +3500,10 @@ export interface paths {
          *     latest signature among them is added once. When the recipient address is undeliverable (bounced or
          *     complained) the reply is refused with `409 email_undeliverable`; when the channel has no
          *     SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-         *     address the contact wrote to; when the conversation has none and the channel has no
-         *     `from_address`, the reply is refused with `409 email_no_sender`.
+         *     conversation's address (the one the contact wrote to, or the one chosen when the conversation
+         *     was created), else the channel's `from_address`, unless the message names its own
+         *     `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+         *     refused with `409 email_no_sender`.
          *
          *     An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
          *     `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -3515,8 +3532,19 @@ export interface paths {
          *     sent: when the address was removed or the check no longer passes, the message fails
          *     (`delivery.state` `failed`) instead of going out from another address. API keys and
          *     connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-         *     `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-         *     replies that are not e-mailed.
+         *     `in` messages and replies that are not e-mailed. A draft keeps it for its send
+         *     (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+         *
+         *     In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+         *     member's own usable address is taken first, as above. Otherwise `from_address` may be any
+         *     address of the channel's domain, for members, API keys and connected apps alike: this
+         *     message alone goes `From` and `Reply-To` it, and the conversation's address does not
+         *     change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+         *     `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+         *     address included, has a sender and is not refused with `email_no_sender`; a member's own
+         *     address is then also the envelope sender. An address of another domain, one another e-mail channel of
+         *     the workspace receives at or sends from, or another member's verified address answers
+         *     `409 from_not_allowed`.
          *
          *     "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
          *     copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -4002,6 +4030,13 @@ export interface paths {
          *     `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
          *     draft answers `409 not_a_draft`; another member's draft answers `404`.
          *
+         *     `from_address` is the address the draft keeps and goes `From` when it is sent
+         *     (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+         *     addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+         *     It changes nothing on the conversation, and on a scheduled draft it changes what the
+         *     scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+         *     `400 validation_failed`.
+         *
          *     Scope: `messages:write`.
          */
         patch: operations["updateMessage"];
@@ -4032,7 +4067,12 @@ export interface paths {
          *     contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
          *     under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
          *     `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-         *     `createMessage`. A draft with a design is rendered now from the design's current version,
+         *     `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+         *     API keys and connected apps too, for this message only. Without it a draft goes from the
+         *     `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+         *     the conversation's channel (the conversation moved to another channel, the channel is no
+         *     longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+         *     ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
          *     under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
          *     is no longer offered).
          *
@@ -4041,7 +4081,8 @@ export interface paths {
          *     workspace's `bots_may_send` (`403 bot_sending_disabled`).
          *
          *     `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-         *     sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+         *     sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+         *     `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
          *     `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
          *     `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
          *     recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -4072,8 +4113,8 @@ export interface paths {
         post?: never;
         /**
          * Cancel a scheduled send
-         * @description Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
-         *     `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+         * @description Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc` and `bcc`
+         *     kept for the send, removed; `draft_from_address` stays); emits `draft.updated`. A draft that is not
          *     scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
          *     another member's draft answers `404`.
          *
@@ -14781,7 +14822,8 @@ export interface components {
              *     then mail reaches the channel only at its forwarding address. `*@example.com` makes a
              *     catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
              *     to every address of the domain that no other proven channel has, and replies go out from
-             *     the address the contact wrote to, so the SMTP account must be allowed to send from the
+             *     the conversation's address (the one the contact wrote to, or one of the domain chosen
+             *     with `from_address`), so the SMTP account must be allowed to send from the
              *     whole domain. `from_address` is then used only for conversations that have no such
              *     address and cannot itself be a catch-all. Changing the address starts its proof over.
              */
@@ -14868,7 +14910,8 @@ export interface components {
              *     then mail reaches the channel only at its forwarding address. `*@example.com` makes a
              *     catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
              *     to every address of the domain that no other proven channel has, and replies go out from
-             *     the address the contact wrote to, so the SMTP account must be allowed to send from the
+             *     the conversation's address (the one the contact wrote to, or one of the domain chosen
+             *     with `from_address`), so the SMTP account must be allowed to send from the
              *     whole domain. `from_address` is then used only for conversations that have no such
              *     address and cannot itself be a catch-all. Changing the address starts its proof over.
              */
@@ -15832,6 +15875,11 @@ export interface components {
              * @description A channel of the same inbox.
              */
             channel_id?: string;
+            /**
+             * @description Catch-all e-mail channels only: an address of the channel's domain that the
+             *     conversation's e-mail goes out from. See the operation.
+             */
+            from_address?: components["schemas"]["Email"];
             subject?: string;
             priority?: components["schemas"]["Priority"];
             /**
@@ -16910,6 +16958,14 @@ export interface components {
              * @description When a scheduled draft is sent; absent for drafts that are not scheduled and for sent messages.
              */
             scheduled_at?: string;
+            /**
+             * @description Drafts only: the `from_address` the draft keeps for its send, scheduled or not (one of
+             *     the member's own addresses, or an address of a catch-all channel's domain; set on
+             *     `createMessage`, `composeMail`, `PATCH /v1/messages/{id}` or a scheduling
+             *     `sendMessage`); absent when unset and on sent messages. When the draft is sent, a kept
+             *     address that no longer fits the conversation's channel is ignored.
+             */
+            draft_from_address?: components["schemas"]["Email"];
             send_error?: components["schemas"]["MessageSendError"];
             recipients?: components["schemas"]["DraftRecipients"];
             /** @description Who sent a draft (`member` or `bot`); absent for messages that were never drafts. */
@@ -17147,9 +17203,10 @@ export interface components {
             /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
             bcc?: components["schemas"]["Email"][];
             /**
-             * @description Member sessions only: send the e-mail `From` one of the member's verified addresses
-             *     usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-             *     `createMessage`.
+             * @description Member sessions: send the e-mail `From` one of the member's verified addresses usable
+             *     for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+             *     catch-all channel, for every caller: any address of the channel's domain, for this
+             *     message only. See `createMessage`.
              */
             from_address?: components["schemas"]["Email"];
             /**
@@ -17204,9 +17261,10 @@ export interface components {
             /** @description E-mailed replies only, hidden recipients. See `createMessage`. */
             bcc?: components["schemas"]["Email"][];
             /**
-             * @description Member sessions only: send the e-mail `From` one of the member's verified addresses
-             *     usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-             *     `createMessage`.
+             * @description Member sessions: send the e-mail `From` one of the member's verified addresses usable
+             *     for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+             *     catch-all channel, for every caller: any address of the channel's domain, for this
+             *     message only. See `createMessage`.
              */
             from_address?: components["schemas"]["Email"];
             /**
@@ -17244,9 +17302,10 @@ export interface components {
             /** @description Makes the request idempotent within the inbox. */
             client_id?: string;
             /**
-             * @description Member sessions only: send the e-mail `From` one of the member's verified addresses
-             *     usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-             *     `createMessage`.
+             * @description Member sessions: send the e-mail `From` one of the member's verified addresses usable
+             *     for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+             *     catch-all channel, for every caller: any address of the channel's domain, which becomes
+             *     the conversation's address. See `composeMail`.
              */
             from_address?: components["schemas"]["Email"];
             /**
@@ -17346,6 +17405,12 @@ export interface components {
             bcc?: components["schemas"]["Email"][];
             /** @description New mail drafts only; also the conversation's subject. */
             subject?: string;
+            /**
+             * Format: email
+             * @description Drafts in a conversation on a catch-all e-mail channel only: an address of the
+             *     channel's domain the draft is sent from; `null` removes it. See the operation.
+             */
+            from_address?: string | null;
             /**
              * Format: uuid
              * @description The e-mail design the draft is sent in, checked as on `createMessage`; `null` removes it.
@@ -32845,6 +32910,7 @@ export interface operations {
             401: components["responses"]["Problem"];
             403: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
     composeMail: {

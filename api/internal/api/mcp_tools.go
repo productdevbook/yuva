@@ -374,7 +374,19 @@ type draftReplyIn struct {
 	Body           string      `json:"body" jsonschema:"plain text"`
 	ArticleIDs     []uuid.UUID `json:"article_ids,omitempty" jsonschema:"up to 3 published help articles to send with the reply, from search_help_articles; the body ends with their titles and links"`
 	Signature      *bool       `json:"signature,omitempty" jsonschema:"e-mailed replies carry the member's signature for the inbox; false leaves it out"`
+	mcpFrom
 	mcpDesignChoice
+}
+
+type mcpFrom struct {
+	FromAddress string `json:"from_address,omitempty" jsonschema:"e-mail only: the address it goes out from; on a catch-all channel (*@domain) any address of its domain"`
+}
+
+func (f mcpFrom) from() *oas.Email {
+	if f.FromAddress == "" {
+		return nil
+	}
+	return new(oas.Email(f.FromAddress))
 }
 
 type mcpDesignChoice struct {
@@ -392,6 +404,7 @@ func (d mcpDesignChoice) locale() *oas.LanguageTag {
 type sendDraftIn struct {
 	MessageID uuid.UUID `json:"message_id" jsonschema:"the id draft_reply returned"`
 	mcpCopies
+	mcpFrom
 }
 
 type sendReplyIn struct {
@@ -399,6 +412,7 @@ type sendReplyIn struct {
 	Body           string    `json:"body" jsonschema:"plain text"`
 	Signature      *bool     `json:"signature,omitempty" jsonschema:"e-mailed replies carry the member's signature for the inbox; false leaves it out"`
 	mcpCopies
+	mcpFrom
 	mcpDesignChoice
 }
 
@@ -434,6 +448,7 @@ type composeMailIn struct {
 	Subject   string     `json:"subject"`
 	Body      string     `json:"body" jsonschema:"plain text"`
 	Signature *bool      `json:"signature,omitempty" jsonschema:"the member's signature for the inbox is added; false leaves it out"`
+	mcpFrom
 	mcpDesignChoice
 }
 
@@ -782,18 +797,18 @@ var mcpTools = append([]mcpTool{
 		}),
 
 	defineTool("draft_reply", "Draft a reply",
-		"Stores a reply to the contact as a draft. Nothing is delivered: a member reviews, edits and sends it in Yuva. article_ids attaches help articles from search_help_articles as cards (up to 3). Maps to POST /v1/conversations/{id}/messages with draft: true.",
+		"Stores a reply to the contact as a draft. Nothing is delivered: a member reviews, edits and sends it in Yuva. article_ids attaches help articles from search_help_articles as cards (up to 3). from_address chooses the From address; on a catch-all channel (*@domain) it may be any address of the domain. Maps to POST /v1/conversations/{id}/messages with draft: true.",
 		additive, nil, mcpTool{ops: []string{"CreateMessage"}, scopes: []oas.ApiKeyScope{oas.MessagesWrite}},
 		func(ctx context.Context, c *mcpCall, in draftReplyIn) (mcpMessage, error) {
 			b := oas.MessageCreate{Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, Draft: boolPtr(true), Signature: in.Signature,
-				DesignId: in.DesignID, DesignLocale: in.locale()}
+				FromAddress: in.from(), DesignId: in.DesignID, DesignLocale: in.locale()}
 			if len(in.ArticleIDs) > 0 {
 				b.ArticleIds = &in.ArticleIDs
 			}
 			return c.createMessage(ctx, in.ConversationID, b)
 		}),
 	defineTool("send_reply", "Send a reply",
-		"Sends a new reply to the contact now, by e-mail or chat. Prefer draft_reply unless the person you work for asked to send; to send a draft that exists, use send_draft. An e-mail copies the conversation's participants unless cc is given; bcc adds hidden recipients. Maps to POST /v1/conversations/{id}/messages.",
+		"Sends a new reply to the contact now, by e-mail or chat. Prefer draft_reply unless the person you work for asked to send; to send a draft that exists, use send_draft. An e-mail copies the conversation's participants unless cc is given; bcc adds hidden recipients. from_address chooses the From address; on a catch-all channel (*@domain) it may be any address of the domain. Maps to POST /v1/conversations/{id}/messages.",
 		delivering, nil, mcpTool{ops: []string{"CreateMessage"}, scopes: []oas.ApiKeyScope{oas.MessagesWrite}, allow: mayDeliver, denied: errBotSendingDisabled},
 		func(ctx context.Context, c *mcpCall, in sendReplyIn) (mcpMessage, error) {
 			if err := c.noPendingDraft(ctx, in.ConversationID); err != nil {
@@ -802,17 +817,17 @@ var mcpTools = append([]mcpTool{
 			cc, bcc := in.lists()
 			return c.createMessage(ctx, in.ConversationID, oas.MessageCreate{
 				Kind: oas.MessageCreateKindMessage, Direction: new(oas.Out), Body: &in.Body, Cc: cc, Bcc: bcc, Signature: in.Signature,
-				DesignId: in.DesignID, DesignLocale: in.locale(),
+				FromAddress: in.from(), DesignId: in.DesignID, DesignLocale: in.locale(),
 			})
 		}),
 	defineTool("compose_mail", "Write a new e-mail",
-		"Starts a new e-mail conversation and sends its first message now to up to 50 To, Cc and Bcc recipients from the inbox's e-mail channel. The first To address becomes the conversation's contact; the other To and the Cc addresses become participants whose answers join it. Use it only when the person you work for asked to send a new mail. Maps to POST /v1/conversations/mail.",
+		"Starts a new e-mail conversation and sends its first message now to up to 50 To, Cc and Bcc recipients from the inbox's e-mail channel. The first To address becomes the conversation's contact; the other To and the Cc addresses become participants whose answers join it. Use it only when the person you work for asked to send a new mail. from_address chooses the From address; on a catch-all channel (*@domain) it may be any address of the domain. Maps to POST /v1/conversations/mail.",
 		delivering, nil, mcpTool{ops: []string{"ComposeMail"}, scopes: []oas.ApiKeyScope{oas.ConversationsWrite, oas.MessagesWrite, oas.ContactsWrite}, allow: mayDeliver, denied: errBotSendingDisabled},
 		func(ctx context.Context, c *mcpCall, in composeMailIn) (composeMailOut, error) {
 			cc, bcc := emailList(in.Cc), emailList(in.Bcc)
 			res, err := c.s.ComposeMail(ctx, oas.ComposeMailRequestObject{JSONBody: &oas.ComposeMail{
 				InboxId: in.InboxID, ChannelId: in.ChannelID, To: emailList(in.To), Cc: &cc, Bcc: &bcc,
-				Subject: in.Subject, Body: &in.Body, Signature: in.Signature, DesignId: in.DesignID, DesignLocale: in.locale(),
+				Subject: in.Subject, Body: &in.Body, Signature: in.Signature, FromAddress: in.from(), DesignId: in.DesignID, DesignLocale: in.locale(),
 			}})
 			if err != nil {
 				return composeMailOut{}, err
@@ -829,11 +844,11 @@ var mcpTools = append([]mcpTool{
 			return composeMailOut{Conversation: conversationOut(m.Conversation), Message: messageOut(m.Message)}, nil
 		}),
 	defineTool("send_draft", "Send a draft",
-		"Delivers a draft that already exists, by e-mail or chat, so the conversation keeps one message instead of the draft and a copy. Use it when the person you work for asks to send a draft from draft_reply; never send_reply with the same text. Maps to POST /v1/messages/{id}/send.",
+		"Delivers a draft that already exists, by e-mail or chat, so the conversation keeps one message instead of the draft and a copy. Use it when the person you work for asks to send a draft from draft_reply; never send_reply with the same text. from_address chooses the From address; on a catch-all channel (*@domain) it may be any address of the domain. Maps to POST /v1/messages/{id}/send.",
 		delivering, nil, mcpTool{ops: []string{"SendMessage"}, allow: mayDeliver, denied: errBotSendingDisabled},
 		func(ctx context.Context, c *mcpCall, in sendDraftIn) (mcpMessage, error) {
 			cc, bcc := in.lists()
-			res, err := c.s.SendMessage(ctx, oas.SendMessageRequestObject{MessageId: in.MessageID, Body: &oas.MessageSend{Cc: cc, Bcc: bcc}})
+			res, err := c.s.SendMessage(ctx, oas.SendMessageRequestObject{MessageId: in.MessageID, Body: &oas.MessageSend{Cc: cc, Bcc: bcc, FromAddress: in.from()}})
 			if err != nil {
 				return mcpMessage{}, err
 			}

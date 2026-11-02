@@ -136,6 +136,21 @@ func (s *Server) UpdateMessage(ctx context.Context, req oas.UpdateMessageRequest
 		if forward && b.Html.IsSpecified() && !b.Html.IsNull() {
 			return errForwardNoteFormat
 		}
+		if b.FromAddress.IsSpecified() {
+			if cur.Kind != string(oas.MessageKindMessage) || (cur.Direction != nil && *cur.Direction != string(oas.Out)) {
+				return errFromNotEmailed
+			}
+			var kept *string
+			if !b.FromAddress.IsNull() {
+				v := string(b.FromAddress.MustGet())
+				if kept, err = s.draftFrom(ctx, q, p, c, &v); err != nil {
+					return err
+				}
+			}
+			if err := q.SetDraftFrom(ctx, store.SetDraftFromParams{WorkspaceID: p.workspaceID, ID: cur.ID, DraftFrom: kept}); err != nil {
+				return err
+			}
+		}
 		if b.Html.IsSpecified() {
 			html = nil
 			if !b.Html.IsNull() {
@@ -444,9 +459,6 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 		cc, bcc = copiesOf(req.Body.Cc), copiesOf(req.Body.Bcc)
 		from = (*string)(req.Body.FromAddress)
 	}
-	if from != nil && (p.isKey() || p.deliversAsBot()) {
-		return nil, errFromNotMember
-	}
 	if req.Body != nil && req.Body.SendAt != nil {
 		return s.scheduleDraft(ctx, p, req.MessageId, *req.Body.SendAt, cc, bcc, from)
 	}
@@ -455,14 +467,6 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 			return nil, errValidation("a forward goes from the channel's address and takes no from_address")
 		}
 		return s.sendForwardDraft(ctx, p, req)
-	} else if err == nil && m.Draft {
-		if _, err := s.st.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: m.ID}); err == nil {
-			if from != nil {
-				if err := s.checkDraftFrom(ctx, p, m.ConversationID, *from); err != nil {
-					return nil, err
-				}
-			}
-		}
 	}
 	var out oas.Message
 	var inbox uuid.UUID
@@ -472,14 +476,30 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 			return err
 		}
 		inbox = c.InboxID
+		from, stored := from, false
+		if from == nil {
+			if from, err = q.GetDraftFrom(ctx, store.GetDraftFromParams{WorkspaceID: p.workspaceID, ID: req.MessageId}); err != nil {
+				return err
+			}
+			if from != nil {
+				stored = true
+				ok, err := s.storedFromApplies(ctx, q, p, c, *from)
+				if err != nil {
+					return err
+				}
+				if !ok {
+					from = nil
+				}
+			}
+		}
 		var plan *emailPlan
 		composed, err := q.GetComposedDraft(ctx, store.GetComposedDraftParams{WorkspaceID: p.workspaceID, MessageID: req.MessageId})
 		isComposed := err == nil
 		switch {
 		case isComposed:
-			plan, err = s.composedDraftPlan(ctx, q, c, composed, cc, bcc)
+			plan, err = s.composedDraftPlan(ctx, q, p, c, composed, cc, bcc, from)
 		case store.IsNotFound(err):
-			plan, err = s.planEmail(ctx, q, c)
+			plan, err = s.planEmailFrom(ctx, q, p, c, from)
 		}
 		if err != nil {
 			return err
@@ -498,13 +518,8 @@ func (s *Server) SendMessage(ctx context.Context, req oas.SendMessageRequestObje
 		} else if cc.set || bcc.set {
 			return errCopiesNotEmailed
 		}
-		if plan == nil && from != nil {
+		if plan == nil && from != nil && !stored {
 			return errFromNotEmailed
-		}
-		if plan != nil {
-			if err := s.applyFromAddress(ctx, q, p, plan, from); err != nil {
-				return err
-			}
 		}
 		now := s.now()
 		arg := store.SendDraftParams{WorkspaceID: p.workspaceID, ID: req.MessageId, Now: now, SentVia: p.viaClient()}
@@ -637,23 +652,4 @@ func (s *Server) ListDrafts(ctx context.Context, req oas.ListDraftsRequestObject
 		items[i] = oas.DraftItem{Draft: msgs[i], Conversation: convs[r.ConversationID], Composed: composed[r.ID]}
 	}
 	return oas.ListDrafts200JSONResponse{Items: items, NextCursor: next, Total: total}, nil
-}
-
-func (s *Server) checkDraftFrom(ctx context.Context, p principal, conv uuid.UUID, from string) error {
-	c, err := s.st.GetConversation(ctx, store.GetConversationParams{WorkspaceID: p.workspaceID, ID: conv})
-	if err != nil {
-		return err
-	}
-	if c.ChannelID == nil {
-		return errComposeNoChannel
-	}
-	ch, err := s.st.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: p.workspaceID, ChannelID: *c.ChannelID})
-	if store.IsNotFound(err) {
-		return errComposeNoChannel
-	}
-	if err != nil {
-		return err
-	}
-	_, err = s.fromMemberAddress(ctx, s.st.Queries, p, ch, from)
-	return err
 }

@@ -107,8 +107,8 @@ func (s *Server) takeComposeRecipients(ctx context.Context, p principal, n int) 
 
 // composedPlan is the plan of a new mail: every To in To, the Cc, the Bcc only in the envelope,
 // the subject as written and no parent.
-func (s *Server) composedPlan(ctx context.Context, q *store.Queries, c store.Conversation, ch store.EmailChannel, subject string, to, cc, bcc []string) (*emailPlan, error) {
-	plan, err := s.emailPlanFor(ctx, q, c, ch, to[0])
+func (s *Server) composedPlan(ctx context.Context, q *store.Queries, c store.Conversation, ch store.EmailChannel, subject string, to, cc, bcc []string, from fromChoice) (*emailPlan, error) {
+	plan, err := s.planFor(ctx, q, c, ch, to[0], from)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,7 @@ func composedDraftLists(d store.ComposedMail, cc, bcc copyList) ([]string, []str
 }
 
 // composedDraftPlan is the plan for sending a composed draft, its recipients checked again.
-func (s *Server) composedDraftPlan(ctx context.Context, q *store.Queries, c store.Conversation, d store.ComposedMail, cc, bcc copyList) (*emailPlan, error) {
+func (s *Server) composedDraftPlan(ctx context.Context, q *store.Queries, p principal, c store.Conversation, d store.ComposedMail, cc, bcc copyList, from *string) (*emailPlan, error) {
 	if c.ChannelID == nil {
 		return nil, errComposeNoChannel
 	}
@@ -149,11 +149,15 @@ func (s *Server) composedDraftPlan(ctx context.Context, q *store.Queries, c stor
 	if len(toIn) == 0 {
 		return nil, errComposeNoRecipient
 	}
+	choice, err := s.chooseFrom(ctx, q, p, ch, from)
+	if err != nil {
+		return nil, err
+	}
 	to, ccList, bccList, err := s.composeRecipients(ctx, q, c.WorkspaceID, toIn, ccIn, bccIn)
 	if err != nil {
 		return nil, err
 	}
-	return s.composedPlan(ctx, q, c, ch, d.Subject, to, ccList, bccList)
+	return s.composedPlan(ctx, q, c, ch, d.Subject, to, ccList, bccList, choice)
 }
 
 // addComposedRecipients makes the further To and the Cc of a new mail contacts when unknown and
@@ -328,15 +332,10 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 	if err != nil {
 		return nil, err
 	}
-	if len(in.files) > 0 || (in.from != nil && !in.draft) {
+	if len(in.files) > 0 {
 		ch, err := composeChannel(ctx, s.st.Queries, p.workspaceID, inboxID, channelID)
 		if err != nil {
 			return nil, err
-		}
-		if in.from != nil {
-			if _, err := s.fromMemberAddress(ctx, s.st.Queries, p, ch, *in.from); err != nil {
-				return nil, err
-			}
 		}
 		limits, err := s.channelLimits(ctx, s.st.Queries, p.workspaceID, &ch.ChannelID)
 		if err != nil {
@@ -353,11 +352,6 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 	}
 	if err := s.rateLimit(ctx, rateCheck{"compose:" + p.viewerID().String(), limitComposePerActor}); err != nil {
 		return nil, err
-	}
-	if !in.draft {
-		if err := s.takeComposeRecipients(ctx, p, len(to)+len(cc)+len(bcc)); err != nil {
-			return nil, err
-		}
 	}
 	var stored []string
 	for _, f := range in.files {
@@ -377,6 +371,19 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		if err != nil {
 			return err
 		}
+		choice, err := s.chooseFrom(ctx, q, p, ch, in.from)
+		if err != nil {
+			return err
+		}
+		var address *string
+		if addr := choice.domain; addr != "" {
+			address, choice = &addr, fromChoice{}
+		}
+		if !in.draft {
+			if err := s.takeComposeRecipients(ctx, p, len(to)+len(cc)+len(bcc)); err != nil {
+				return err
+			}
+		}
 		now := s.now()
 		contactID, err := contactByAddress(ctx, q, p.workspaceID, to[0], now)
 		if err != nil {
@@ -390,9 +397,12 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		chID := ch.ChannelID
 		c, err := q.CreateConversation(ctx, store.CreateConversationParams{
 			ID: newID(), WorkspaceID: p.workspaceID, InboxID: inbox.ID, ContactID: contactID, ChannelID: &chID,
-			Subject: subject, Priority: string(oas.Normal), AssigneeID: assignee, Now: now,
+			Subject: subject, Priority: string(oas.Normal), AssigneeID: assignee, EmailAddress: address, Now: now,
 		})
 		if err != nil {
+			return err
+		}
+		if _, err := sendingAddress(ch, c); err != nil && choice.member == nil {
 			return err
 		}
 		authorType, _, _ := authorFor(p)
@@ -428,10 +438,7 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		}
 		var plan *emailPlan
 		if !in.draft {
-			if plan, err = s.composedPlan(ctx, q, c, ch, subject, to, cc, bcc); err != nil {
-				return err
-			}
-			if err := s.applyFromAddress(ctx, q, p, plan, in.from); err != nil {
+			if plan, err = s.composedPlan(ctx, q, c, ch, subject, to, cc, bcc, choice); err != nil {
 				return err
 			}
 		}
@@ -459,6 +466,13 @@ func (s *Server) ComposeMail(ctx context.Context, req oas.ComposeMailRequestObje
 		msg, err := q.CreateMessage(ctx, arg)
 		if err != nil {
 			return err
+		}
+		if in.draft && choice.member != nil {
+			addr := choice.member.Address
+			if err := q.SetDraftFrom(ctx, store.SetDraftFromParams{WorkspaceID: p.workspaceID, ID: msg.ID, DraftFrom: &addr}); err != nil {
+				return err
+			}
+			msg.DraftFrom = &addr
 		}
 		if in.draft && in.designID != nil {
 			if err := s.checkDraftDesign(ctx, q, c, *in.designID, in.locale, to[0], msg); err != nil {

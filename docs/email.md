@@ -264,6 +264,19 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
   --smtp-host smtp.example.com --smtp-username support@example.com --smtp-password-file -
 ```
 
+Because the account sends for the whole domain, members, API keys and assistants may pick any address
+of the domain as `from_address`, except one another channel of the workspace uses or another member has
+verified as their own (`409 from_not_allowed`). A member's own usable address is still used as their
+personal From. On `POST /v1/conversations` or a new mail (`POST /v1/conversations/mail`) the address
+becomes the conversation's: later replies go from it. On a reply or a draft it applies to that one
+message only; a draft keeps it until it is sent, scheduled or not, and `PATCH /v1/messages/{id}`
+changes or clears it. If the draft's conversation later moves to another channel, or the channel is no
+longer a catch-all of that domain, the kept address is dropped at send and the usual sender is used.
+A message or draft that would have nothing to go from (no address the contact wrote to, no
+`--from-address` and no `from_address`) is refused with `409 email_no_sender` when it is written, not
+only when it is sent. The MCP tools `start_conversation`, `compose_mail`, `draft_reply`, `send_reply`,
+`send_draft` and `update_draft` take the same `from_address`.
+
 ### How inbound mail is handled
 
 | Topic | Behaviour |

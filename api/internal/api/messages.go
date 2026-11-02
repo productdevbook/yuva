@@ -163,13 +163,8 @@ func (s *Server) validateMessage(p principal, in *messageInput) error {
 	if in.hasCopies() && in.draft && !scheduled {
 		return errValidation("cc and bcc are set when the draft is sent")
 	}
-	if in.from != nil {
-		if p.isKey() || p.deliversAsBot() {
-			return errFromNotMember
-		}
-		if in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out) || (in.draft && !scheduled) {
-			return errFromNotEmailed
-		}
+	if in.from != nil && (in.kind != string(oas.MessageKindMessage) || in.direction != string(oas.Out)) {
+		return errFromNotEmailed
 	}
 	if len(in.cc.addrs) > maxCopies || len(in.bcc.addrs) > maxCopies {
 		return errValidation("cc and bcc can name at most 50 addresses each")
@@ -505,6 +500,9 @@ func messageBody(m messageRow, atts []store.Attachment) oas.Message {
 		out.SignatureHtml = m.SignatureHtml
 	}
 	out.ScheduledAt = m.ScheduledAt
+	if m.Draft && m.DraftFrom != nil {
+		out.DraftFromAddress = (*oas.Email)(m.DraftFrom)
+	}
 	out.Design = messageDesign(m)
 	if len(m.SendError) > 0 {
 		var e oas.MessageSendError
@@ -714,17 +712,21 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 			macro = &m
 		}
 		now := s.now()
-		deliver := in.kind == string(oas.MessageKindMessage) && in.direction == string(oas.Out) && !in.draft
+		outgoing := in.kind == string(oas.MessageKindMessage) && in.direction == string(oas.Out)
+		var keptFrom *string
+		if outgoing && in.draft {
+			if keptFrom, err = s.draftFrom(ctx, q, p, c, in.from); err != nil {
+				return err
+			}
+		}
+		deliver := outgoing && !in.draft
 		var plan *emailPlan
 		if deliver {
-			if plan, err = s.planEmail(ctx, q, c); err != nil {
+			if plan, err = s.planEmailFrom(ctx, q, p, c, in.from); err != nil {
 				return err
 			}
 			if plan != nil {
 				if err := s.setCopies(ctx, q, c, plan, in.cc, in.bcc); err != nil {
-					return err
-				}
-				if err := s.applyFromAddress(ctx, q, p, plan, in.from); err != nil {
 					return err
 				}
 			}
@@ -732,7 +734,7 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		if plan == nil && in.hasCopies() && in.sendAt == nil {
 			return errCopiesNotEmailed
 		}
-		if plan == nil && in.from != nil && in.sendAt == nil {
+		if plan == nil && in.from != nil && !in.draft {
 			return errFromNotEmailed
 		}
 		for _, id := range in.mentions {
@@ -787,6 +789,12 @@ func (s *Server) CreateMessage(ctx context.Context, req oas.CreateMessageRequest
 		}
 		if msg, err = q.CreateMessage(ctx, arg); err != nil {
 			return err
+		}
+		if keptFrom != nil {
+			if err := q.SetDraftFrom(ctx, store.SetDraftFromParams{WorkspaceID: p.workspaceID, ID: msg.ID, DraftFrom: keptFrom}); err != nil {
+				return err
+			}
+			msg.DraftFrom = keptFrom
 		}
 		if in.draft && in.designID != nil {
 			if err := s.checkDraftDesign(ctx, q, c, *in.designID, in.locale, "", msg); err != nil {

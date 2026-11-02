@@ -14107,9 +14107,10 @@ type ComposeMail struct {
 	// Draft Stores the message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
-	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
-	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-	// `createMessage`.
+	// FromAddress Member sessions: send the e-mail `From` one of the member's verified addresses usable
+	// for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+	// catch-all channel, for every caller: any address of the channel's domain, which becomes
+	// the conversation's address. See `composeMail`.
 	FromAddress *Email `json:"from_address,omitempty"`
 
 	// Html Sanitized before it is stored.
@@ -14809,12 +14810,16 @@ type ConversationCreate struct {
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
 
 	// ChannelId A channel of the same inbox.
-	ChannelId *uuid.UUID   `json:"channel_id,omitempty"`
-	ContactId uuid.UUID    `json:"contact_id"`
-	InboxId   uuid.UUID    `json:"inbox_id"`
-	Labels    *[]uuid.UUID `json:"labels,omitempty"`
-	Priority  *Priority    `json:"priority,omitempty"`
-	Subject   *string      `json:"subject,omitempty"`
+	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+	ContactId uuid.UUID  `json:"contact_id"`
+
+	// FromAddress Catch-all e-mail channels only: an address of the channel's domain that the
+	// conversation's e-mail goes out from. See the operation.
+	FromAddress *Email       `json:"from_address,omitempty"`
+	InboxId     uuid.UUID    `json:"inbox_id"`
+	Labels      *[]uuid.UUID `json:"labels,omitempty"`
+	Priority    *Priority    `json:"priority,omitempty"`
+	Subject     *string      `json:"subject,omitempty"`
 }
 
 // ConversationDelete defines model for ConversationDelete.
@@ -16229,7 +16234,8 @@ type EmailChannel struct {
 	// then mail reaches the channel only at its forwarding address. `*@example.com` makes a
 	// catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
 	// to every address of the domain that no other proven channel has, and replies go out from
-	// the address the contact wrote to, so the SMTP account must be allowed to send from the
+	// the conversation's address (the one the contact wrote to, or one of the domain chosen
+	// with `from_address`), so the SMTP account must be allowed to send from the
 	// whole domain. `from_address` is then used only for conversations that have no such
 	// address and cannot itself be a catch-all. Changing the address starts its proof over.
 	//
@@ -16289,7 +16295,8 @@ type EmailChannelInput struct {
 	// then mail reaches the channel only at its forwarding address. `*@example.com` makes a
 	// catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
 	// to every address of the domain that no other proven channel has, and replies go out from
-	// the address the contact wrote to, so the SMTP account must be allowed to send from the
+	// the conversation's address (the one the contact wrote to, or one of the domain chosen
+	// with `from_address`), so the SMTP account must be allowed to send from the
 	// whole domain. `from_address` is then used only for conversations that have no such
 	// address and cannot itself be a catch-all. Changing the address starts its proof over.
 	//
@@ -20373,6 +20380,13 @@ type Message struct {
 	// draft is shown only to its author.
 	Draft bool `json:"draft"`
 
+	// DraftFromAddress Drafts only: the `from_address` the draft keeps for its send, scheduled or not (one of
+	// the member's own addresses, or an address of a catch-all channel's domain; set on
+	// `createMessage`, `composeMail`, `PATCH /v1/messages/{id}` or a scheduling
+	// `sendMessage`); absent when unset and on sent messages. When the draft is sent, a kept
+	// address that no longer fits the conversation's channel is ignored.
+	DraftFromAddress *Email `json:"draft_from_address,omitempty"`
+
 	// Email Set on messages that came or went by e-mail. `body` and `html` of the message show the new
 	// text only; `quoted` tells whether quoted history or a signature was hidden, which
 	// `GET /v1/messages/{id}/email` returns in full.
@@ -20519,9 +20533,10 @@ type MessageCreate struct {
 	// Draft Stores an outgoing message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
-	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
-	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-	// `createMessage`.
+	// FromAddress Member sessions: send the e-mail `From` one of the member's verified addresses usable
+	// for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+	// catch-all channel, for every caller: any address of the channel's domain, for this
+	// message only. See `createMessage`.
 	FromAddress *Email `json:"from_address,omitempty"`
 
 	// Html Sanitized before it is stored.
@@ -20840,9 +20855,10 @@ type MessageSend struct {
 	// participants; `[]` copies no one. See `createMessage`.
 	Cc *[]Email `json:"cc,omitempty"`
 
-	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
-	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-	// `createMessage`.
+	// FromAddress Member sessions: send the e-mail `From` one of the member's verified addresses usable
+	// for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+	// catch-all channel, for every caller: any address of the channel's domain, for this
+	// message only. See `createMessage`.
 	FromAddress *Email `json:"from_address,omitempty"`
 
 	// SendAt Member sessions only: schedule the draft instead of sending it now, at least 1 minute
@@ -20875,6 +20891,10 @@ type MessageUpdate struct {
 
 	// DesignLocale One of the design's versions; `null` goes back to the contact's. Absent keeps it, unless `design_id` names another design.
 	DesignLocale nullable.Nullable[string] `json:"design_locale,omitempty"`
+
+	// FromAddress Drafts in a conversation on a catch-all e-mail channel only: an address of the
+	// channel's domain the draft is sent from; `null` removes it. See the operation.
+	FromAddress nullable.Nullable[openapi_types.Email] `json:"from_address,omitempty"`
 
 	// Html Sanitized before it is stored; `null` removes it.
 	Html nullable.Nullable[string] `json:"html,omitempty"`
@@ -89356,6 +89376,20 @@ func (response CreateConversation404ApplicationProblemPlusJSONResponse) VisitCre
 	}
 	w.Header().Set("Content-Type", "application/problem+json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateConversation409ApplicationProblemPlusJSONResponse Problem
+
+func (response CreateConversation409ApplicationProblemPlusJSONResponse) VisitCreateConversationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }

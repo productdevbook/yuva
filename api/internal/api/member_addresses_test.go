@@ -253,7 +253,11 @@ func TestSendingAsTheMember(t *testing.T) {
 	key := et.apiKey(h)
 	key.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/"+convID+"/messages", map[string]any{"kind": "message", "body": "B", "draft": true, "from_address": mine})
 	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/"+convID+"/messages", map[string]any{"kind": "note", "body": "B", "from_address": mine})
-	et.owner.expectProblem(http.StatusBadRequest, "validation_failed", "POST", "/v1/conversations/"+convID+"/messages", map[string]any{"kind": "message", "body": "B", "draft": true, "from_address": mine})
+	kept := et.owner.expect(http.StatusCreated, "POST", "/v1/conversations/"+convID+"/messages", map[string]any{"kind": "message", "body": "B", "draft": true, "from_address": mine})
+	if kept.str("draft_from_address") != mine {
+		t.Fatalf("draft keeping the member's address: %s", kept.raw)
+	}
+	et.owner.expect(http.StatusNoContent, "DELETE", "/v1/messages/"+kept.str("id"), nil)
 
 	blank := et.owner.uploadFields("/v1/conversations/"+convID+"/messages", []formField{{"kind", "message"}, {"body", "Blank."}, {"from_address", " "}}, nil)
 	if blank.status != http.StatusCreated {

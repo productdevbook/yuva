@@ -424,14 +424,14 @@ WITH m AS (
             $21::jsonb, $22, $23, $24,
             $25::uuid, $26::text)
     ON CONFLICT (workspace_id, conversation_id, client_id) DO NOTHING
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale),
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale, draft_from),
 seen AS (
     UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, m.created_at), m.created_at)
     FROM m WHERE contacts.workspace_id = m.workspace_id AND contacts.id = m.author_contact_id)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -506,6 +506,7 @@ type CreateMessageRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -581,6 +582,7 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (C
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -757,6 +759,22 @@ func (q *Queries) GetComposedMail(ctx context.Context, arg GetComposedMailParams
 	return message_id, err
 }
 
+const getDraftFrom = `-- name: GetDraftFrom :one
+SELECT draft_from FROM messages WHERE workspace_id = $1 AND id = $2
+`
+
+type GetDraftFromParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) GetDraftFrom(ctx context.Context, arg GetDraftFromParams) (*string, error) {
+	row := q.db.QueryRow(ctx, getDraftFrom, arg.WorkspaceID, arg.ID)
+	var draft_from *string
+	err := row.Scan(&draft_from)
+	return draft_from, err
+}
+
 const getLatestMessagePosition = `-- name: GetLatestMessagePosition :one
 SELECT id, created_at FROM messages WHERE workspace_id = $1 AND conversation_id = $2
 ORDER BY created_at DESC, id DESC
@@ -808,7 +826,7 @@ const getMessage = `-- name: GetMessage :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -860,6 +878,7 @@ type GetMessageRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -908,6 +927,7 @@ func (q *Queries) GetMessage(ctx context.Context, arg GetMessageParams) (GetMess
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -923,7 +943,7 @@ const getMessageByClientID = `-- name: GetMessageByClientID :one
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -978,6 +998,7 @@ type GetMessageByClientIDRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -1031,6 +1052,7 @@ func (q *Queries) GetMessageByClientID(ctx context.Context, arg GetMessageByClie
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -1266,7 +1288,7 @@ const listDrafts = `-- name: ListDrafts :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -1346,6 +1368,7 @@ type ListDraftsRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -1413,6 +1436,7 @@ func (q *Queries) ListDrafts(ctx context.Context, arg ListDraftsParams) ([]ListD
 			&i.SignatureText,
 			&i.ScheduledAt,
 			&i.SendError,
+			&i.DraftFrom,
 			&i.OnBehalfOfMemberID,
 			&i.EmailDesignID,
 			&i.EmailDesignLocale,
@@ -1618,7 +1642,7 @@ const listMessages = `-- name: ListMessages :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -1679,6 +1703,7 @@ type ListMessagesRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -1740,6 +1765,7 @@ func (q *Queries) ListMessages(ctx context.Context, arg ListMessagesParams) ([]L
 			&i.SignatureText,
 			&i.ScheduledAt,
 			&i.SendError,
+			&i.DraftFrom,
 			&i.OnBehalfOfMemberID,
 			&i.EmailDesignID,
 			&i.EmailDesignLocale,
@@ -1762,7 +1788,7 @@ const listMessagesDesc = `-- name: ListMessagesDesc :many
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -1823,6 +1849,7 @@ type ListMessagesDescRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -1884,6 +1911,7 @@ func (q *Queries) ListMessagesDesc(ctx context.Context, arg ListMessagesDescPara
 			&i.SignatureText,
 			&i.ScheduledAt,
 			&i.SendError,
+			&i.DraftFrom,
 			&i.OnBehalfOfMemberID,
 			&i.EmailDesignID,
 			&i.EmailDesignLocale,
@@ -2067,11 +2095,11 @@ WITH m AS (
         delivery_error = CASE WHEN delivery_state = 'queued' THEN 'removed before it was sent' ELSE delivery_error END,
         delivery_updated_at = CASE WHEN delivery_state = 'queued' THEN $1::timestamptz ELSE delivery_updated_at END
     WHERE messages.workspace_id = $4 AND messages.id = $5 AND messages.redacted_at IS NULL
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale, draft_from)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -2125,6 +2153,7 @@ type RedactMessageRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -2179,6 +2208,7 @@ func (q *Queries) RedactMessage(ctx context.Context, arg RedactMessageParams) (R
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -2227,11 +2257,11 @@ const rescheduleDraft = `-- name: RescheduleDraft :one
 WITH m AS (
     UPDATE messages SET scheduled_at = $1::timestamptz, scheduled_by = $2::uuid, send_error = NULL
     WHERE messages.workspace_id = $3 AND messages.id = $4 AND draft
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale, draft_from)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -2284,6 +2314,7 @@ type RescheduleDraftRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -2337,6 +2368,7 @@ func (q *Queries) RescheduleDraft(ctx context.Context, arg RescheduleDraftParams
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -2351,14 +2383,15 @@ func (q *Queries) RescheduleDraft(ctx context.Context, arg RescheduleDraftParams
 const scheduleDraft = `-- name: ScheduleDraft :one
 WITH m AS (
     UPDATE messages SET scheduled_at = $1::timestamptz, scheduled_by = $2::uuid,
-        scheduled_cc = $3::text[], scheduled_bcc = $4::text[], scheduled_from = $5::text,
+        scheduled_cc = $3::text[], scheduled_bcc = $4::text[], scheduled_from = NULL,
+        draft_from = coalesce($5::text, draft_from),
         send_error = NULL
     WHERE messages.workspace_id = $6 AND messages.id = $7 AND draft
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale, draft_from)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -2414,6 +2447,7 @@ type ScheduleDraftRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -2470,6 +2504,7 @@ func (q *Queries) ScheduleDraft(ctx context.Context, arg ScheduleDraftParams) (S
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -2508,13 +2543,14 @@ WITH m AS (
         sent_via = $4,
         delivery_state = $5,
         delivery_updated_at = CASE WHEN $5::text IS NULL THEN NULL ELSE $1::timestamptz END,
-        scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL, send_error = NULL
+        scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL, send_error = NULL,
+        draft_from = NULL
     WHERE messages.workspace_id = $6 AND messages.id = $7 AND draft
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale, draft_from)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -2570,6 +2606,7 @@ type SendDraftRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -2626,6 +2663,7 @@ func (q *Queries) SendDraft(ctx context.Context, arg SendDraftParams) (SendDraft
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -2637,15 +2675,31 @@ func (q *Queries) SendDraft(ctx context.Context, arg SendDraftParams) (SendDraft
 	return i, err
 }
 
+const setDraftFrom = `-- name: SetDraftFrom :exec
+UPDATE messages SET draft_from = $1::text, scheduled_from = NULL
+WHERE workspace_id = $2 AND id = $3 AND draft
+`
+
+type SetDraftFromParams struct {
+	DraftFrom   *string
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) SetDraftFrom(ctx context.Context, arg SetDraftFromParams) error {
+	_, err := q.db.Exec(ctx, setDraftFrom, arg.DraftFrom, arg.WorkspaceID, arg.ID)
+	return err
+}
+
 const setMessageDelivery = `-- name: SetMessageDelivery :one
 WITH m AS (
     UPDATE messages SET delivery_state = $1::text, delivery_error = $2, delivery_updated_at = $3::timestamptz
     WHERE messages.workspace_id = $4 AND messages.id = $5
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale, draft_from)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -2699,6 +2753,7 @@ type SetMessageDeliveryRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -2753,6 +2808,7 @@ func (q *Queries) SetMessageDelivery(ctx context.Context, arg SetMessageDelivery
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -2806,11 +2862,11 @@ WITH m AS (
     UPDATE messages SET scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL,
         send_error = $1::jsonb
     WHERE messages.workspace_id = $2 AND messages.id = $3 AND draft
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale, draft_from)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -2862,6 +2918,7 @@ type UnscheduleDraftRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -2910,6 +2967,7 @@ func (q *Queries) UnscheduleDraft(ctx context.Context, arg UnscheduleDraftParams
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,
@@ -2965,11 +3023,11 @@ const updateDraft = `-- name: UpdateDraft :one
 WITH m AS (
     UPDATE messages SET body = $1, html = $2
     WHERE messages.workspace_id = $3 AND messages.id = $4 AND draft
-    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale)
+    RETURNING id, workspace_id, conversation_id, kind, direction, author_type, author_member_id, author_contact_id, body, html, client_id, event, search, created_at, delivery_state, delivery_error, delivery_updated_at, author_api_key_id, draft, sent_by_member_id, sent_by_api_key_id, via, sent_via, mentions, imported_at, imported_author, help_cards, redacted_at, redacted_by_member_id, redacted_by_api_key_id, rule, forward, signature_html, signature_text, scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from, send_error, on_behalf_of_member_id, email_design_id, email_design_locale, draft_from)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -3022,6 +3080,7 @@ type UpdateDraftRow struct {
 	SignatureText      *string
 	ScheduledAt        *time.Time
 	SendError          []byte
+	DraftFrom          *string
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
@@ -3075,6 +3134,7 @@ func (q *Queries) UpdateDraft(ctx context.Context, arg UpdateDraftParams) (Updat
 		&i.SignatureText,
 		&i.ScheduledAt,
 		&i.SendError,
+		&i.DraftFrom,
 		&i.OnBehalfOfMemberID,
 		&i.EmailDesignID,
 		&i.EmailDesignLocale,

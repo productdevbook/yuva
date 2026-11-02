@@ -1818,6 +1818,7 @@ type Message struct {
 	OnBehalfOfMemberID *uuid.UUID
 	EmailDesignID      *uuid.UUID
 	EmailDesignLocale  *string
+	DraftFrom          *string
 }
 
 type MessageEmail struct {

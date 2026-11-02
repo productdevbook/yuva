@@ -279,6 +279,19 @@ yuva channel create-email --workspace Example --inbox support --name "Everything
   --smtp-host smtp.example.com --smtp-username support@example.com --smtp-password-file -
 ```
 
+Hesap tüm alan adı adına gönderdiği için üyeler, API anahtarları ve asistanlar `from_address` olarak
+alan adının herhangi bir adresini seçebilir; başka bir kanalın kullandığı ya da başka bir üyenin kendi
+adresi olarak doğruladığı adres hariç (`409 from_not_allowed`). Bir üyenin kullanılabilir kendi adresi
+yine onun kişisel gönderen adresi olarak kullanılır. `POST /v1/conversations` veya yeni bir e-postada
+(`POST /v1/conversations/mail`) adres konuşmanın adresi olur: sonraki yanıtlar ondan gider. Bir yanıtta
+ya da taslakta yalnızca o mesaja uygulanır; taslak onu, zamanlanmış olsun ya da olmasın, gönderilene
+kadar saklar ve `PATCH /v1/messages/{id}` onu değiştirir ya da kaldırır. Taslağın konuşması sonradan
+başka bir kanala taşınırsa ya da kanal artık o alan adının catch-all kanalı değilse, saklanan adres
+gönderimde bırakılır ve olağan gönderen kullanılır. Gönderilecek adresi olmayan (kişinin yazdığı
+adres, `--from-address` ve `from_address` yok) bir mesaj ya da taslak, yalnızca gönderilirken değil
+yazılırken `409 email_no_sender` ile reddedilir. MCP araçları `start_conversation`, `compose_mail`,
+`draft_reply`, `send_reply`, `send_draft` ve `update_draft` aynı `from_address` parametresini alır.
+
 ### Gelen e-posta nasıl işlenir
 
 | Konu | Davranış |

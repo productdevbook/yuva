@@ -5,6 +5,7 @@ import (
 	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"math/big"
 	"net/http"
@@ -41,6 +42,7 @@ var (
 	errApprovalNotNeeded  = problem(http.StatusConflict, "approval_not_needed", "this address is verified by the code mailed to it")
 	errFromNotMember      = errValidation("from_address: only a member's own session sends from the member's address")
 	errFromNotEmailed     = errValidation("from_address is only for e-mailed replies; send a draft with POST /v1/messages/{id}/send and from_address")
+	errFromNotCatchAll    = errValidation("from_address names the address a conversation on a catch-all e-mail channel goes out from; other channels take it when a message is sent")
 )
 
 func errFromNotAllowed(why string) *apiError {
@@ -542,19 +544,158 @@ func memberName(ctx context.Context, q *store.Queries, ws, member uuid.UUID) (st
 	return strings.TrimSpace(names[0].Name), nil
 }
 
-func (s *Server) applyFromAddress(ctx context.Context, q *store.Queries, p principal, plan *emailPlan, from *string) error {
-	if from == nil {
-		return nil
+func domainFrom(ch store.EmailChannel, from string) (string, bool) {
+	addr := strings.ToLower(strings.TrimSpace(from))
+	if !isCatchAll(ch.Address) || isCatchAll(addr) || email.Domain(addr) != email.Domain(ch.Address) || !plainAddress.MatchString(addr) {
+		return "", false
 	}
-	a, err := s.fromMemberAddress(ctx, q, p, plan.channel, *from)
+	return addr, true
+}
+
+// A catch-all's SMTP account sends from the whole domain, but not as another channel or member.
+func domainSender(ctx context.Context, q *store.Queries, p principal, ch store.EmailChannel, from string) (string, error) {
+	addr, ok := domainFrom(ch, from)
+	if !ok {
+		return "", errFromNotAllowed(strings.ToLower(strings.TrimSpace(from)) + " is not an address of the channel's domain " + email.Domain(ch.Address))
+	}
+	if ch.FromAddress == nil || *ch.FromAddress != addr {
+		taken, err := q.IsEmailChannelSender(ctx, store.IsEmailChannelSenderParams{WorkspaceID: p.workspaceID, Address: addr})
+		if err != nil {
+			return "", err
+		}
+		if taken {
+			return "", errFromNotAllowed(addr + " belongs to another e-mail channel of the workspace")
+		}
+	}
+	taken, err := q.IsOtherMemberAddress(ctx, store.IsOtherMemberAddressParams{WorkspaceID: p.workspaceID, Address: addr, MemberID: p.memberRef()})
 	if err != nil {
-		return err
+		return "", err
 	}
+	if taken {
+		return "", errFromNotAllowed(addr + " is another member's verified address")
+	}
+	return addr, nil
+}
+
+type fromChoice struct {
+	member *store.MemberAddress
+	domain string
+}
+
+func (s *Server) chooseFrom(ctx context.Context, q *store.Queries, p principal, ch store.EmailChannel, from *string) (fromChoice, error) {
+	if from == nil {
+		return fromChoice{}, nil
+	}
+	member := !p.isKey() && !p.deliversAsBot() && p.memberID != uuid.Nil()
+	if !member && !isCatchAll(ch.Address) {
+		return fromChoice{}, errFromNotMember
+	}
+	if member {
+		mine, err := ownAddress(ctx, q, p, ch, *from)
+		if err != nil {
+			return fromChoice{}, err
+		}
+		if mine || !isCatchAll(ch.Address) {
+			a, err := s.fromMemberAddress(ctx, q, p, ch, *from)
+			if err != nil {
+				return fromChoice{}, err
+			}
+			return fromChoice{member: &a}, nil
+		}
+	}
+	addr, err := domainSender(ctx, q, p, ch, *from)
+	return fromChoice{domain: addr}, err
+}
+
+func (c fromChoice) address() string {
+	if c.member != nil {
+		return c.member.Address
+	}
+	return c.domain
+}
+
+// ownAddress reports an address, in any state, of the member or of the mailbox owner they write for.
+func ownAddress(ctx context.Context, q *store.Queries, p principal, ch store.EmailChannel, from string) (bool, error) {
+	owner, err := q.MemberAddressOwner(ctx, store.MemberAddressOwnerParams{WorkspaceID: p.workspaceID, Address: strings.ToLower(strings.TrimSpace(from))})
+	if store.IsNotFound(err) || (err == nil && owner == p.memberID) {
+		return err == nil, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	box, err := channelMailboxOwner(ctx, q, p.workspaceID, ch.ChannelID)
+	return box != nil && *box == owner, err
+}
+
+func (s *Server) planFor(ctx context.Context, q *store.Queries, c store.Conversation, ch store.EmailChannel, to string, choice fromChoice) (*emailPlan, error) {
+	fromAddr := choice.domain
+	if choice.member != nil && isCatchAll(ch.Address) {
+		if _, err := sendingAddress(ch, c); err != nil {
+			fromAddr = choice.member.Address
+		}
+	}
+	plan, err := s.emailPlanFor(ctx, q, c, ch, to, fromAddr)
+	if err != nil || choice.member == nil {
+		return plan, err
+	}
+	a := *choice.member
 	name, err := memberName(ctx, q, a.WorkspaceID, a.MemberID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	plan.from = email.Address{Name: name, Email: a.Address}
 	plan.memberAddressID = &a.ID
-	return nil
+	return plan, nil
+}
+
+func conversationEmailChannel(ctx context.Context, q *store.Queries, c store.Conversation) (store.EmailChannel, bool, error) {
+	if c.ChannelID == nil {
+		return store.EmailChannel{}, false, nil
+	}
+	ch, err := q.GetEmailChannel(ctx, store.GetEmailChannelParams{WorkspaceID: c.WorkspaceID, ChannelID: *c.ChannelID})
+	if store.IsNotFound(err) {
+		return ch, false, nil
+	}
+	return ch, err == nil, err
+}
+
+func (s *Server) draftFrom(ctx context.Context, q *store.Queries, p principal, c store.Conversation, from *string) (*string, error) {
+	ch, ok, err := conversationEmailChannel(ctx, q, c)
+	if err != nil {
+		return nil, err
+	}
+	if !ok {
+		if from != nil {
+			return nil, errFromNotEmailed
+		}
+		return nil, nil
+	}
+	if from != nil {
+		choice, err := s.chooseFrom(ctx, q, p, ch, from)
+		if err != nil {
+			return nil, err
+		}
+		addr := choice.address()
+		return &addr, nil
+	}
+	if isCatchAll(ch.Address) {
+		if _, err := sendingAddress(ch, c); err != nil {
+			return nil, err
+		}
+	}
+	return nil, nil
+}
+
+// storedFromApplies drops a draft's kept from_address once the conversation's channel can no longer take it.
+func (s *Server) storedFromApplies(ctx context.Context, q *store.Queries, p principal, c store.Conversation, from string) (bool, error) {
+	ch, ok, err := conversationEmailChannel(ctx, q, c)
+	if err != nil || !ok {
+		return false, err
+	}
+	_, err = s.chooseFrom(ctx, q, p, ch, &from)
+	var refused *apiError
+	if errors.As(err, &refused) {
+		return false, nil
+	}
+	return err == nil, err
 }

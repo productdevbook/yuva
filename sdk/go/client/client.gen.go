@@ -14153,9 +14153,10 @@ type ComposeMail struct {
 	// Draft Stores the message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
-	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
-	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-	// `createMessage`.
+	// FromAddress Member sessions: send the e-mail `From` one of the member's verified addresses usable
+	// for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+	// catch-all channel, for every caller: any address of the channel's domain, which becomes
+	// the conversation's address. See `composeMail`.
 	FromAddress *Email `json:"from_address,omitempty"`
 
 	// Html Sanitized before it is stored.
@@ -14855,12 +14856,16 @@ type ConversationCreate struct {
 	AssigneeId *uuid.UUID `json:"assignee_id,omitempty"`
 
 	// ChannelId A channel of the same inbox.
-	ChannelId *uuid.UUID   `json:"channel_id,omitempty"`
-	ContactId uuid.UUID    `json:"contact_id"`
-	InboxId   uuid.UUID    `json:"inbox_id"`
-	Labels    *[]uuid.UUID `json:"labels,omitempty"`
-	Priority  *Priority    `json:"priority,omitempty"`
-	Subject   *string      `json:"subject,omitempty"`
+	ChannelId *uuid.UUID `json:"channel_id,omitempty"`
+	ContactId uuid.UUID  `json:"contact_id"`
+
+	// FromAddress Catch-all e-mail channels only: an address of the channel's domain that the
+	// conversation's e-mail goes out from. See the operation.
+	FromAddress *Email       `json:"from_address,omitempty"`
+	InboxId     uuid.UUID    `json:"inbox_id"`
+	Labels      *[]uuid.UUID `json:"labels,omitempty"`
+	Priority    *Priority    `json:"priority,omitempty"`
+	Subject     *string      `json:"subject,omitempty"`
 }
 
 // ConversationDelete defines model for ConversationDelete.
@@ -16275,7 +16280,8 @@ type EmailChannel struct {
 	// then mail reaches the channel only at its forwarding address. `*@example.com` makes a
 	// catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
 	// to every address of the domain that no other proven channel has, and replies go out from
-	// the address the contact wrote to, so the SMTP account must be allowed to send from the
+	// the conversation's address (the one the contact wrote to, or one of the domain chosen
+	// with `from_address`), so the SMTP account must be allowed to send from the
 	// whole domain. `from_address` is then used only for conversations that have no such
 	// address and cannot itself be a catch-all. Changing the address starts its proof over.
 	//
@@ -16335,7 +16341,8 @@ type EmailChannelInput struct {
 	// then mail reaches the channel only at its forwarding address. `*@example.com` makes a
 	// catch-all channel (one per domain, proven by the domain's TXT record): it receives mail
 	// to every address of the domain that no other proven channel has, and replies go out from
-	// the address the contact wrote to, so the SMTP account must be allowed to send from the
+	// the conversation's address (the one the contact wrote to, or one of the domain chosen
+	// with `from_address`), so the SMTP account must be allowed to send from the
 	// whole domain. `from_address` is then used only for conversations that have no such
 	// address and cannot itself be a catch-all. Changing the address starts its proof over.
 	//
@@ -20419,6 +20426,13 @@ type Message struct {
 	// draft is shown only to its author.
 	Draft bool `json:"draft"`
 
+	// DraftFromAddress Drafts only: the `from_address` the draft keeps for its send, scheduled or not (one of
+	// the member's own addresses, or an address of a catch-all channel's domain; set on
+	// `createMessage`, `composeMail`, `PATCH /v1/messages/{id}` or a scheduling
+	// `sendMessage`); absent when unset and on sent messages. When the draft is sent, a kept
+	// address that no longer fits the conversation's channel is ignored.
+	DraftFromAddress *Email `json:"draft_from_address,omitempty"`
+
 	// Email Set on messages that came or went by e-mail. `body` and `html` of the message show the new
 	// text only; `quoted` tells whether quoted history or a signature was hidden, which
 	// `GET /v1/messages/{id}/email` returns in full.
@@ -20565,9 +20579,10 @@ type MessageCreate struct {
 	// Draft Stores an outgoing message as a draft instead of delivering it.
 	Draft *bool `json:"draft,omitempty"`
 
-	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
-	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-	// `createMessage`.
+	// FromAddress Member sessions: send the e-mail `From` one of the member's verified addresses usable
+	// for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+	// catch-all channel, for every caller: any address of the channel's domain, for this
+	// message only. See `createMessage`.
 	FromAddress *Email `json:"from_address,omitempty"`
 
 	// Html Sanitized before it is stored.
@@ -20886,9 +20901,10 @@ type MessageSend struct {
 	// participants; `[]` copies no one. See `createMessage`.
 	Cc *[]Email `json:"cc,omitempty"`
 
-	// FromAddress Member sessions only: send the e-mail `From` one of the member's verified addresses
-	// usable for the channel (`GET /v1/me/addresses`) instead of the channel's address. See
-	// `createMessage`.
+	// FromAddress Member sessions: send the e-mail `From` one of the member's verified addresses usable
+	// for the channel (`GET /v1/me/addresses`) instead of the channel's address. On a
+	// catch-all channel, for every caller: any address of the channel's domain, for this
+	// message only. See `createMessage`.
 	FromAddress *Email `json:"from_address,omitempty"`
 
 	// SendAt Member sessions only: schedule the draft instead of sending it now, at least 1 minute
@@ -20921,6 +20937,10 @@ type MessageUpdate struct {
 
 	// DesignLocale One of the design's versions; `null` goes back to the contact's. Absent keeps it, unless `design_id` names another design.
 	DesignLocale nullable.Nullable[string] `json:"design_locale,omitempty"`
+
+	// FromAddress Drafts in a conversation on a catch-all e-mail channel only: an address of the
+	// channel's domain the draft is sent from; `null` removes it. See the operation.
+	FromAddress nullable.Nullable[openapi_types.Email] `json:"from_address,omitempty"`
 
 	// Html Sanitized before it is stored; `null` removes it.
 	Html nullable.Nullable[string] `json:"html,omitempty"`
@@ -40844,6 +40864,15 @@ type ClientInterface interface {
 	//
 	// Scope: `conversations:write`.
 	//
+	// On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+	// `from_address` may be any address of the channel's domain: it becomes the conversation's
+	// address, and its replies go out from it without naming it again. An address of another
+	// domain, one another e-mail channel of the workspace receives at or sends from, or another
+	// member's verified address answers `409 from_not_allowed`. `from_address` with any other
+	// channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+	// without it too; its first outgoing message then needs an address to go from (see
+	// `createMessage`).
+	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with POST /v1/conversations (the `CreateConversation` operationId).
@@ -40852,6 +40881,15 @@ type ClientInterface interface {
 	// CreateConversation Start a conversation
 	//
 	// Scope: `conversations:write`.
+	//
+	// On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+	// `from_address` may be any address of the channel's domain: it becomes the conversation's
+	// address, and its replies go out from it without naming it again. An address of another
+	// domain, one another e-mail channel of the workspace receives at or sends from, or another
+	// member's verified address answers `409 from_not_allowed`. `from_address` with any other
+	// channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+	// without it too; its first outgoing message then needs an address to go from (see
+	// `createMessage`).
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -40994,8 +41032,11 @@ type ClientInterface interface {
 	//
 	// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
 	// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-	// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-	// without a `from_address` answers `409 email_no_sender`.
+	// channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+	// channel `from_address` may be any address of its domain, under the rules of
+	// `createConversation`, and becomes the conversation's address, so replies go on from it;
+	// without it the channel's `from_address` is used, and without either the mail, and a draft
+	// of it, is refused with `409 email_no_sender`.
 	//
 	// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
 	// a valid address that this workspace neither receives nor sends mail for
@@ -41021,7 +41062,10 @@ type ClientInterface interface {
 	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 	// address; the message is marked `failed` only when every `to` address bounced.
 	// `from_address` sends it from one of the calling member's own addresses usable for the channel,
-	// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+	// under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+	// (`draft_from_address`).
+	// On a catch-all channel a member's own usable address is still taken first; any other address
+	// of its domain is taken by every caller, a draft included, as described above.
 	//
 	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -41081,8 +41125,11 @@ type ClientInterface interface {
 	//
 	// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
 	// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-	// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-	// without a `from_address` answers `409 email_no_sender`.
+	// channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+	// channel `from_address` may be any address of its domain, under the rules of
+	// `createConversation`, and becomes the conversation's address, so replies go on from it;
+	// without it the channel's `from_address` is used, and without either the mail, and a draft
+	// of it, is refused with `409 email_no_sender`.
 	//
 	// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
 	// a valid address that this workspace neither receives nor sends mail for
@@ -41108,7 +41155,10 @@ type ClientInterface interface {
 	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 	// address; the message is marked `failed` only when every `to` address bounced.
 	// `from_address` sends it from one of the calling member's own addresses usable for the channel,
-	// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+	// under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+	// (`draft_from_address`).
+	// On a catch-all channel a member's own usable address is still taken first; any other address
+	// of its domain is taken by every caller, a draft included, as described above.
 	//
 	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -41642,8 +41692,10 @@ type ClientInterface interface {
 	// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 	// complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-	// address the contact wrote to; when the conversation has none and the channel has no
-	// `from_address`, the reply is refused with `409 email_no_sender`.
+	// conversation's address (the one the contact wrote to, or the one chosen when the conversation
+	// was created), else the channel's `from_address`, unless the message names its own
+	// `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+	// refused with `409 email_no_sender`.
 	//
 	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -41672,8 +41724,19 @@ type ClientInterface interface {
 	// sent: when the address was removed or the check no longer passes, the message fails
 	// (`delivery.state` `failed`) instead of going out from another address. API keys and
 	// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-	// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-	// replies that are not e-mailed.
+	// `in` messages and replies that are not e-mailed. A draft keeps it for its send
+	// (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+	//
+	// In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+	// member's own usable address is taken first, as above. Otherwise `from_address` may be any
+	// address of the channel's domain, for members, API keys and connected apps alike: this
+	// message alone goes `From` and `Reply-To` it, and the conversation's address does not
+	// change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+	// `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+	// address included, has a sender and is not refused with `email_no_sender`; a member's own
+	// address is then also the envelope sender. An address of another domain, one another e-mail channel of
+	// the workspace receives at or sends from, or another member's verified address answers
+	// `409 from_not_allowed`.
 	//
 	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -41773,8 +41836,10 @@ type ClientInterface interface {
 	// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 	// complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-	// address the contact wrote to; when the conversation has none and the channel has no
-	// `from_address`, the reply is refused with `409 email_no_sender`.
+	// conversation's address (the one the contact wrote to, or the one chosen when the conversation
+	// was created), else the channel's `from_address`, unless the message names its own
+	// `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+	// refused with `409 email_no_sender`.
 	//
 	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -41803,8 +41868,19 @@ type ClientInterface interface {
 	// sent: when the address was removed or the check no longer passes, the message fails
 	// (`delivery.state` `failed`) instead of going out from another address. API keys and
 	// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-	// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-	// replies that are not e-mailed.
+	// `in` messages and replies that are not e-mailed. A draft keeps it for its send
+	// (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+	//
+	// In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+	// member's own usable address is taken first, as above. Otherwise `from_address` may be any
+	// address of the channel's domain, for members, API keys and connected apps alike: this
+	// message alone goes `From` and `Reply-To` it, and the conversation's address does not
+	// change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+	// `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+	// address included, has a sender and is not refused with `email_no_sender`; a member's own
+	// address is then also the envelope sender. An address of another domain, one another e-mail channel of
+	// the workspace receives at or sends from, or another member's verified address answers
+	// `409 from_not_allowed`.
 	//
 	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -45511,6 +45587,13 @@ type ClientInterface interface {
 	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
+	// `from_address` is the address the draft keeps and goes `From` when it is sent
+	// (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+	// addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+	// It changes nothing on the conversation, and on a scheduled draft it changes what the
+	// scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+	// `400 validation_failed`.
+	//
 	// Scope: `messages:write`.
 	//
 	// Takes any type of body and a specified content type.
@@ -45525,6 +45608,13 @@ type ClientInterface interface {
 	// `bcc` and `subject`, or with
 	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
+	//
+	// `from_address` is the address the draft keeps and goes `From` when it is sent
+	// (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+	// addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+	// It changes nothing on the conversation, and on a scheduled draft it changes what the
+	// scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+	// `400 validation_failed`.
 	//
 	// Scope: `messages:write`.
 	//
@@ -45602,8 +45692,8 @@ type ClientInterface interface {
 
 	// UnscheduleMessage Cancel a scheduled send
 	//
-	// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
-	// `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+	// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc` and `bcc`
+	// kept for the send, removed; `draft_from_address` stays); emits `draft.updated`. A draft that is not
 	// scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
 	// another member's draft answers `404`.
 	//
@@ -45628,7 +45718,12 @@ type ClientInterface interface {
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-	// `createMessage`. A draft with a design is rendered now from the design's current version,
+	// `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+	// API keys and connected apps too, for this message only. Without it a draft goes from the
+	// `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+	// the conversation's channel (the conversation moved to another channel, the channel is no
+	// longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+	// ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
 	// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
 	// is no longer offered).
 	//
@@ -45637,7 +45732,8 @@ type ClientInterface interface {
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
 	//
 	// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-	// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+	// sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+	// `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
 	// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
 	// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
 	// recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -45670,7 +45766,12 @@ type ClientInterface interface {
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-	// `createMessage`. A draft with a design is rendered now from the design's current version,
+	// `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+	// API keys and connected apps too, for this message only. Without it a draft goes from the
+	// `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+	// the conversation's channel (the conversation moved to another channel, the channel is no
+	// longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+	// ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
 	// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
 	// is no longer offered).
 	//
@@ -45679,7 +45780,8 @@ type ClientInterface interface {
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
 	//
 	// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-	// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+	// sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+	// `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
 	// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
 	// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
 	// recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -55516,6 +55618,15 @@ func (c *Client) ListConversations(ctx context.Context, params *ListConversation
 //
 // Scope: `conversations:write`.
 //
+// On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+// `from_address` may be any address of the channel's domain: it becomes the conversation's
+// address, and its replies go out from it without naming it again. An address of another
+// domain, one another e-mail channel of the workspace receives at or sends from, or another
+// member's verified address answers `409 from_not_allowed`. `from_address` with any other
+// channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+// without it too; its first outgoing message then needs an address to go from (see
+// `createMessage`).
+//
 // Takes any type of body and a specified content type.
 //
 // Corresponds with POST /v1/conversations (the `CreateConversation` operationId).
@@ -55534,6 +55645,15 @@ func (c *Client) CreateConversationWithBody(ctx context.Context, params *CreateC
 // CreateConversation Start a conversation
 //
 // Scope: `conversations:write`.
+//
+// On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+// `from_address` may be any address of the channel's domain: it becomes the conversation's
+// address, and its replies go out from it without naming it again. An address of another
+// domain, one another e-mail channel of the workspace receives at or sends from, or another
+// member's verified address answers `409 from_not_allowed`. `from_address` with any other
+// channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+// without it too; its first outgoing message then needs an address to go from (see
+// `createMessage`).
 //
 // Takes a body of the `application/json` content type.
 //
@@ -55736,8 +55856,11 @@ func (c *Client) DeleteConversations(ctx context.Context, params *DeleteConversa
 //
 // `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
 // SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-// without a `from_address` answers `409 email_no_sender`.
+// channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+// channel `from_address` may be any address of its domain, under the rules of
+// `createConversation`, and becomes the conversation's address, so replies go on from it;
+// without it the channel's `from_address` is used, and without either the mail, and a draft
+// of it, is refused with `409 email_no_sender`.
 //
 // `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
 // a valid address that this workspace neither receives nor sends mail for
@@ -55763,7 +55886,10 @@ func (c *Client) DeleteConversations(ctx context.Context, params *DeleteConversa
 // dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 // address; the message is marked `failed` only when every `to` address bounced.
 // `from_address` sends it from one of the calling member's own addresses usable for the channel,
-// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+// under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+// (`draft_from_address`).
+// On a catch-all channel a member's own usable address is still taken first; any other address
+// of its domain is taken by every caller, a draft included, as described above.
 //
 // The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 // inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -55833,8 +55959,11 @@ func (c *Client) ComposeMailWithBody(ctx context.Context, params *ComposeMailPar
 //
 // `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
 // SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-// without a `from_address` answers `409 email_no_sender`.
+// channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+// channel `from_address` may be any address of its domain, under the rules of
+// `createConversation`, and becomes the conversation's address, so replies go on from it;
+// without it the channel's `from_address` is used, and without either the mail, and a draft
+// of it, is refused with `409 email_no_sender`.
 //
 // `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
 // a valid address that this workspace neither receives nor sends mail for
@@ -55860,7 +55989,10 @@ func (c *Client) ComposeMailWithBody(ctx context.Context, params *ComposeMailPar
 // dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 // address; the message is marked `failed` only when every `to` address bounced.
 // `from_address` sends it from one of the calling member's own addresses usable for the channel,
-// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+// under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+// (`draft_from_address`).
+// On a catch-all channel a member's own usable address is still taken first; any other address
+// of its domain is taken by every caller, a draft included, as described above.
 //
 // The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 // inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -56584,8 +56716,10 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // latest signature among them is added once. When the recipient address is undeliverable (bounced or
 // complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-// address the contact wrote to; when the conversation has none and the channel has no
-// `from_address`, the reply is refused with `409 email_no_sender`.
+// conversation's address (the one the contact wrote to, or the one chosen when the conversation
+// was created), else the channel's `from_address`, unless the message names its own
+// `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+// refused with `409 email_no_sender`.
 //
 // An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 // `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -56614,8 +56748,19 @@ func (c *Client) ListMessages(ctx context.Context, conversationId ConversationId
 // sent: when the address was removed or the check no longer passes, the message fails
 // (`delivery.state` `failed`) instead of going out from another address. API keys and
 // connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-// replies that are not e-mailed.
+// `in` messages and replies that are not e-mailed. A draft keeps it for its send
+// (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+//
+// In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+// member's own usable address is taken first, as above. Otherwise `from_address` may be any
+// address of the channel's domain, for members, API keys and connected apps alike: this
+// message alone goes `From` and `Reply-To` it, and the conversation's address does not
+// change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+// `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+// address included, has a sender and is not refused with `email_no_sender`; a member's own
+// address is then also the envelope sender. An address of another domain, one another e-mail channel of
+// the workspace receives at or sends from, or another member's verified address answers
+// `409 from_not_allowed`.
 //
 // "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 // copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -56725,8 +56870,10 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // latest signature among them is added once. When the recipient address is undeliverable (bounced or
 // complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-// address the contact wrote to; when the conversation has none and the channel has no
-// `from_address`, the reply is refused with `409 email_no_sender`.
+// conversation's address (the one the contact wrote to, or the one chosen when the conversation
+// was created), else the channel's `from_address`, unless the message names its own
+// `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+// refused with `409 email_no_sender`.
 //
 // An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 // `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -56755,8 +56902,19 @@ func (c *Client) CreateMessageWithBody(ctx context.Context, conversationId Conve
 // sent: when the address was removed or the check no longer passes, the message fails
 // (`delivery.state` `failed`) instead of going out from another address. API keys and
 // connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-// replies that are not e-mailed.
+// `in` messages and replies that are not e-mailed. A draft keeps it for its send
+// (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+//
+// In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+// member's own usable address is taken first, as above. Otherwise `from_address` may be any
+// address of the channel's domain, for members, API keys and connected apps alike: this
+// message alone goes `From` and `Reply-To` it, and the conversation's address does not
+// change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+// `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+// address included, has a sender and is not refused with `email_no_sender`; a member's own
+// address is then also the envelope sender. An address of another domain, one another e-mail channel of
+// the workspace receives at or sends from, or another member's verified address answers
+// `409 from_not_allowed`.
 //
 // "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 // copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -63083,6 +63241,13 @@ func (c *Client) DeleteMessage(ctx context.Context, messageId MessageId, params 
 // `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
+// `from_address` is the address the draft keeps and goes `From` when it is sent
+// (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+// addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+// It changes nothing on the conversation, and on a scheduled draft it changes what the
+// scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+// `400 validation_failed`.
+//
 // Scope: `messages:write`.
 //
 // Takes any type of body and a specified content type.
@@ -63107,6 +63272,13 @@ func (c *Client) UpdateMessageWithBody(ctx context.Context, messageId MessageId,
 // `bcc` and `subject`, or with
 // `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
+//
+// `from_address` is the address the draft keeps and goes `From` when it is sent
+// (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+// addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+// It changes nothing on the conversation, and on a scheduled draft it changes what the
+// scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+// `400 validation_failed`.
 //
 // Scope: `messages:write`.
 //
@@ -63234,8 +63406,8 @@ func (c *Client) RedactMessage(ctx context.Context, messageId MessageId, params 
 
 // UnscheduleMessage Cancel a scheduled send
 //
-// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
-// `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc` and `bcc`
+// kept for the send, removed; `draft_from_address` stays); emits `draft.updated`. A draft that is not
 // scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
 // another member's draft answers `404`.
 //
@@ -63270,7 +63442,12 @@ func (c *Client) UnscheduleMessage(ctx context.Context, messageId MessageId, par
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-// `createMessage`. A draft with a design is rendered now from the design's current version,
+// `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+// API keys and connected apps too, for this message only. Without it a draft goes from the
+// `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+// the conversation's channel (the conversation moved to another channel, the channel is no
+// longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+// ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
 // under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
 // is no longer offered).
 //
@@ -63279,7 +63456,8 @@ func (c *Client) UnscheduleMessage(ctx context.Context, messageId MessageId, par
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
 //
 // `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+// sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+// `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
 // `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
 // `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
 // recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -63322,7 +63500,12 @@ func (c *Client) SendMessageWithBody(ctx context.Context, messageId MessageId, p
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-// `createMessage`. A draft with a design is rendered now from the design's current version,
+// `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+// API keys and connected apps too, for this message only. Without it a draft goes from the
+// `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+// the conversation's channel (the conversation moved to another channel, the channel is no
+// longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+// ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
 // under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
 // is no longer offered).
 //
@@ -63331,7 +63514,8 @@ func (c *Client) SendMessageWithBody(ctx context.Context, messageId MessageId, p
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
 //
 // `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+// sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+// `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
 // `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
 // `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
 // recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -106993,6 +107177,15 @@ type ClientWithResponsesInterface interface {
 	//
 	// Scope: `conversations:write`.
 	//
+	// On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+	// `from_address` may be any address of the channel's domain: it becomes the conversation's
+	// address, and its replies go out from it without naming it again. An address of another
+	// domain, one another e-mail channel of the workspace receives at or sends from, or another
+	// member's verified address answers `409 from_not_allowed`. `from_address` with any other
+	// channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+	// without it too; its first outgoing message then needs an address to go from (see
+	// `createMessage`).
+	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /v1/conversations (the `CreateConversation` operationId).
@@ -107001,6 +107194,15 @@ type ClientWithResponsesInterface interface {
 	// CreateConversationWithResponse Start a conversation
 	//
 	// Scope: `conversations:write`.
+	//
+	// On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+	// `from_address` may be any address of the channel's domain: it becomes the conversation's
+	// address, and its replies go out from it without naming it again. An address of another
+	// domain, one another e-mail channel of the workspace receives at or sends from, or another
+	// member's verified address answers `409 from_not_allowed`. `from_address` with any other
+	// channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+	// without it too; its first outgoing message then needs an address to go from (see
+	// `createMessage`).
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -107145,8 +107347,11 @@ type ClientWithResponsesInterface interface {
 	//
 	// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
 	// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-	// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-	// without a `from_address` answers `409 email_no_sender`.
+	// channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+	// channel `from_address` may be any address of its domain, under the rules of
+	// `createConversation`, and becomes the conversation's address, so replies go on from it;
+	// without it the channel's `from_address` is used, and without either the mail, and a draft
+	// of it, is refused with `409 email_no_sender`.
 	//
 	// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
 	// a valid address that this workspace neither receives nor sends mail for
@@ -107172,7 +107377,10 @@ type ClientWithResponsesInterface interface {
 	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 	// address; the message is marked `failed` only when every `to` address bounced.
 	// `from_address` sends it from one of the calling member's own addresses usable for the channel,
-	// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+	// under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+	// (`draft_from_address`).
+	// On a catch-all channel a member's own usable address is still taken first; any other address
+	// of its domain is taken by every caller, a draft included, as described above.
 	//
 	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -107232,8 +107440,11 @@ type ClientWithResponsesInterface interface {
 	//
 	// `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
 	// SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-	// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-	// without a `from_address` answers `409 email_no_sender`.
+	// channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+	// channel `from_address` may be any address of its domain, under the rules of
+	// `createConversation`, and becomes the conversation's address, so replies go on from it;
+	// without it the channel's `from_address` is used, and without either the mail, and a draft
+	// of it, is refused with `409 email_no_sender`.
 	//
 	// `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
 	// a valid address that this workspace neither receives nor sends mail for
@@ -107259,7 +107470,10 @@ type ClientWithResponsesInterface interface {
 	// dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 	// address; the message is marked `failed` only when every `to` address bounced.
 	// `from_address` sends it from one of the calling member's own addresses usable for the channel,
-	// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+	// under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+	// (`draft_from_address`).
+	// On a catch-all channel a member's own usable address is still taken first; any other address
+	// of its domain is taken by every caller, a draft included, as described above.
 	//
 	// The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 	// inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -107805,8 +108019,10 @@ type ClientWithResponsesInterface interface {
 	// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 	// complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-	// address the contact wrote to; when the conversation has none and the channel has no
-	// `from_address`, the reply is refused with `409 email_no_sender`.
+	// conversation's address (the one the contact wrote to, or the one chosen when the conversation
+	// was created), else the channel's `from_address`, unless the message names its own
+	// `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+	// refused with `409 email_no_sender`.
 	//
 	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -107835,8 +108051,19 @@ type ClientWithResponsesInterface interface {
 	// sent: when the address was removed or the check no longer passes, the message fails
 	// (`delivery.state` `failed`) instead of going out from another address. API keys and
 	// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-	// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-	// replies that are not e-mailed.
+	// `in` messages and replies that are not e-mailed. A draft keeps it for its send
+	// (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+	//
+	// In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+	// member's own usable address is taken first, as above. Otherwise `from_address` may be any
+	// address of the channel's domain, for members, API keys and connected apps alike: this
+	// message alone goes `From` and `Reply-To` it, and the conversation's address does not
+	// change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+	// `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+	// address included, has a sender and is not refused with `email_no_sender`; a member's own
+	// address is then also the envelope sender. An address of another domain, one another e-mail channel of
+	// the workspace receives at or sends from, or another member's verified address answers
+	// `409 from_not_allowed`.
 	//
 	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -107936,8 +108163,10 @@ type ClientWithResponsesInterface interface {
 	// latest signature among them is added once. When the recipient address is undeliverable (bounced or
 	// complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 	// SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-	// address the contact wrote to; when the conversation has none and the channel has no
-	// `from_address`, the reply is refused with `409 email_no_sender`.
+	// conversation's address (the one the contact wrote to, or the one chosen when the conversation
+	// was created), else the channel's `from_address`, unless the message names its own
+	// `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+	// refused with `409 email_no_sender`.
 	//
 	// An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 	// `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -107966,8 +108195,19 @@ type ClientWithResponsesInterface interface {
 	// sent: when the address was removed or the check no longer passes, the message fails
 	// (`delivery.state` `failed`) instead of going out from another address. API keys and
 	// connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-	// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-	// replies that are not e-mailed.
+	// `in` messages and replies that are not e-mailed. A draft keeps it for its send
+	// (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+	//
+	// In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+	// member's own usable address is taken first, as above. Otherwise `from_address` may be any
+	// address of the channel's domain, for members, API keys and connected apps alike: this
+	// message alone goes `From` and `Reply-To` it, and the conversation's address does not
+	// change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+	// `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+	// address included, has a sender and is not refused with `email_no_sender`; a member's own
+	// address is then also the envelope sender. An address of another domain, one another e-mail channel of
+	// the workspace receives at or sends from, or another member's verified address answers
+	// `409 from_not_allowed`.
 	//
 	// "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 	// copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -111918,6 +112158,13 @@ type ClientWithResponsesInterface interface {
 	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
 	//
+	// `from_address` is the address the draft keeps and goes `From` when it is sent
+	// (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+	// addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+	// It changes nothing on the conversation, and on a scheduled draft it changes what the
+	// scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+	// `400 validation_failed`.
+	//
 	// Scope: `messages:write`.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -111932,6 +112179,13 @@ type ClientWithResponsesInterface interface {
 	// `bcc` and `subject`, or with
 	// `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 	// draft answers `409 not_a_draft`; another member's draft answers `404`.
+	//
+	// `from_address` is the address the draft keeps and goes `From` when it is sent
+	// (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+	// addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+	// It changes nothing on the conversation, and on a scheduled draft it changes what the
+	// scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+	// `400 validation_failed`.
 	//
 	// Scope: `messages:write`.
 	//
@@ -112017,8 +112271,8 @@ type ClientWithResponsesInterface interface {
 
 	// UnscheduleMessageWithResponse Cancel a scheduled send
 	//
-	// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
-	// `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+	// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc` and `bcc`
+	// kept for the send, removed; `draft_from_address` stays); emits `draft.updated`. A draft that is not
 	// scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
 	// another member's draft answers `404`.
 	//
@@ -112045,7 +112299,12 @@ type ClientWithResponsesInterface interface {
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-	// `createMessage`. A draft with a design is rendered now from the design's current version,
+	// `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+	// API keys and connected apps too, for this message only. Without it a draft goes from the
+	// `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+	// the conversation's channel (the conversation moved to another channel, the channel is no
+	// longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+	// ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
 	// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
 	// is no longer offered).
 	//
@@ -112054,7 +112313,8 @@ type ClientWithResponsesInterface interface {
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
 	//
 	// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-	// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+	// sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+	// `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
 	// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
 	// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
 	// recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -112087,7 +112347,12 @@ type ClientWithResponsesInterface interface {
 	// contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 	// under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 	// `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-	// `createMessage`. A draft with a design is rendered now from the design's current version,
+	// `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+	// API keys and connected apps too, for this message only. Without it a draft goes from the
+	// `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+	// the conversation's channel (the conversation moved to another channel, the channel is no
+	// longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+	// ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
 	// under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
 	// is no longer offered).
 	//
@@ -112096,7 +112361,8 @@ type ClientWithResponsesInterface interface {
 	// workspace's `bots_may_send` (`403 bot_sending_disabled`).
 	//
 	// `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-	// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+	// sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+	// `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
 	// `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
 	// `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
 	// recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -128604,6 +128870,8 @@ type CreateConversationResponse struct {
 	ApplicationproblemJSON403 *Problem
 	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
 	ApplicationproblemJSON404 *Problem
+	// ApplicationproblemJSON409 the response for an HTTP 409 `application/problem+json` response
+	ApplicationproblemJSON409 *Problem
 }
 
 // GetJSON201 returns the response for an HTTP 201 `application/json` response
@@ -128629,6 +128897,11 @@ func (r CreateConversationResponse) GetApplicationproblemJSON403() *Problem {
 // GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
 func (r CreateConversationResponse) GetApplicationproblemJSON404() *Problem {
 	return r.ApplicationproblemJSON404
+}
+
+// GetApplicationproblemJSON409 returns the response for an HTTP 409 `application/problem+json` response
+func (r CreateConversationResponse) GetApplicationproblemJSON409() *Problem {
+	return r.ApplicationproblemJSON409
 }
 
 // GetBody returns the raw response body bytes
@@ -158200,6 +158473,15 @@ func (c *ClientWithResponses) ListConversationsWithResponse(ctx context.Context,
 //
 // Scope: `conversations:write`.
 //
+// On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+// `from_address` may be any address of the channel's domain: it becomes the conversation's
+// address, and its replies go out from it without naming it again. An address of another
+// domain, one another e-mail channel of the workspace receives at or sends from, or another
+// member's verified address answers `409 from_not_allowed`. `from_address` with any other
+// channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+// without it too; its first outgoing message then needs an address to go from (see
+// `createMessage`).
+//
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /v1/conversations (the `CreateConversation` operationId).
@@ -158214,6 +158496,15 @@ func (c *ClientWithResponses) CreateConversationWithBodyWithResponse(ctx context
 // CreateConversationWithResponse Start a conversation
 //
 // Scope: `conversations:write`.
+//
+// On a catch-all e-mail channel (`*@domain`), whose SMTP account sends from the whole domain,
+// `from_address` may be any address of the channel's domain: it becomes the conversation's
+// address, and its replies go out from it without naming it again. An address of another
+// domain, one another e-mail channel of the workspace receives at or sends from, or another
+// member's verified address answers `409 from_not_allowed`. `from_address` with any other
+// channel, or without `channel_id`, answers `400 validation_failed`. A conversation is created
+// without it too; its first outgoing message then needs an address to go from (see
+// `createMessage`).
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -158394,8 +158685,11 @@ func (c *ClientWithResponses) DeleteConversationsWithResponse(ctx context.Contex
 //
 // `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
 // SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-// without a `from_address` answers `409 email_no_sender`.
+// channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+// channel `from_address` may be any address of its domain, under the rules of
+// `createConversation`, and becomes the conversation's address, so replies go on from it;
+// without it the channel's `from_address` is used, and without either the mail, and a draft
+// of it, is refused with `409 email_no_sender`.
 //
 // `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
 // a valid address that this workspace neither receives nor sends mail for
@@ -158421,7 +158715,10 @@ func (c *ClientWithResponses) DeleteConversationsWithResponse(ctx context.Contex
 // dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 // address; the message is marked `failed` only when every `to` address bounced.
 // `from_address` sends it from one of the calling member's own addresses usable for the channel,
-// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+// under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+// (`draft_from_address`).
+// On a catch-all channel a member's own usable address is still taken first; any other address
+// of its domain is taken by every caller, a draft included, as described above.
 //
 // The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 // inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -158487,8 +158784,11 @@ func (c *ClientWithResponses) ComposeMailWithBodyWithResponse(ctx context.Contex
 //
 // `channel_id` names the e-mail channel; without it the inbox's first e-mail channel with an
 // SMTP account is used, an exact address before a catch-all. An inbox without one, or a
-// channel without an SMTP account, answers `409 email_not_configured`; a catch-all channel
-// without a `from_address` answers `409 email_no_sender`.
+// channel without an SMTP account, answers `409 email_not_configured`. On a catch-all
+// channel `from_address` may be any address of its domain, under the rules of
+// `createConversation`, and becomes the conversation's address, so replies go on from it;
+// without it the channel's `from_address` is used, and without either the mail, and a draft
+// of it, is refused with `409 email_no_sender`.
 //
 // `to` (1 to 50), `cc` and `bcc` (up to 50 each) are checked like a reply's `cc`: each must be
 // a valid address that this workspace neither receives nor sends mail for
@@ -158514,7 +158814,10 @@ func (c *ClientWithResponses) ComposeMailWithBodyWithResponse(ctx context.Contex
 // dropped from its list. A hard bounce or complaint reported for one recipient suppresses that
 // address; the message is marked `failed` only when every `to` address bounced.
 // `from_address` sends it from one of the calling member's own addresses usable for the channel,
-// under the rules of `createMessage` (`409 from_not_allowed`); a draft takes it when it is sent.
+// under the rules of `createMessage` (`409 from_not_allowed`); a draft keeps it for its send
+// (`draft_from_address`).
+// On a catch-all channel a member's own usable address is still taken first; any other address
+// of its domain is taken by every caller, a draft included, as described above.
 //
 // The conversation has `channel_kind` `email`, status `open`, the subject, and in a `mail`
 // inbox the calling member as assignee (API keys assign no one). `conversation.created` and
@@ -159174,8 +159477,10 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // latest signature among them is added once. When the recipient address is undeliverable (bounced or
 // complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-// address the contact wrote to; when the conversation has none and the channel has no
-// `from_address`, the reply is refused with `409 email_no_sender`.
+// conversation's address (the one the contact wrote to, or the one chosen when the conversation
+// was created), else the channel's `from_address`, unless the message names its own
+// `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+// refused with `409 email_no_sender`.
 //
 // An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 // `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -159204,8 +159509,19 @@ func (c *ClientWithResponses) ListMessagesWithResponse(ctx context.Context, conv
 // sent: when the address was removed or the check no longer passes, the message fails
 // (`delivery.state` `failed`) instead of going out from another address. API keys and
 // connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-// replies that are not e-mailed.
+// `in` messages and replies that are not e-mailed. A draft keeps it for its send
+// (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+//
+// In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+// member's own usable address is taken first, as above. Otherwise `from_address` may be any
+// address of the channel's domain, for members, API keys and connected apps alike: this
+// message alone goes `From` and `Reply-To` it, and the conversation's address does not
+// change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+// `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+// address included, has a sender and is not refused with `email_no_sender`; a member's own
+// address is then also the envelope sender. An address of another domain, one another e-mail channel of
+// the workspace receives at or sends from, or another member's verified address answers
+// `409 from_not_allowed`.
 //
 // "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 // copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -159311,8 +159627,10 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // latest signature among them is added once. When the recipient address is undeliverable (bounced or
 // complained) the reply is refused with `409 email_undeliverable`; when the channel has no
 // SMTP account, with `409 email_not_configured`. A catch-all channel (`*@domain`) sends from the
-// address the contact wrote to; when the conversation has none and the channel has no
-// `from_address`, the reply is refused with `409 email_no_sender`.
+// conversation's address (the one the contact wrote to, or the one chosen when the conversation
+// was created), else the channel's `from_address`, unless the message names its own
+// `from_address`; when there is none of these, the reply, or the draft when it is stored, is
+// refused with `409 email_no_sender`.
 //
 // An e-mailed reply goes `To` the contact and, unless `cc` is sent, `Cc` the conversation's
 // `active` participants (`GET /v1/conversations/{id}/participants`), leaving out those whose
@@ -159341,8 +159659,19 @@ func (c *ClientWithResponses) CreateMessageWithBodyWithResponse(ctx context.Cont
 // sent: when the address was removed or the check no longer passes, the message fails
 // (`delivery.state` `failed`) instead of going out from another address. API keys and
 // connected apps other than Yuva's own get `400 validation_failed` for it, and so do notes,
-// `in` messages, drafts (send them with `POST /v1/messages/{id}/send` and `from_address`) and
-// replies that are not e-mailed.
+// `in` messages and replies that are not e-mailed. A draft keeps it for its send
+// (`draft_from_address`; `PATCH /v1/messages/{id}` changes it).
+//
+// In a conversation on a catch-all channel, whose SMTP account sends from the whole domain, a
+// member's own usable address is taken first, as above. Otherwise `from_address` may be any
+// address of the channel's domain, for members, API keys and connected apps alike: this
+// message alone goes `From` and `Reply-To` it, and the conversation's address does not
+// change. A draft keeps it for its send (`PATCH /v1/messages/{id}` changes it,
+// `sendMessage` may replace it). A draft that keeps a `from_address`, the member's own
+// address included, has a sender and is not refused with `email_no_sender`; a member's own
+// address is then also the envelope sender. An address of another domain, one another e-mail channel of
+// the workspace receives at or sends from, or another member's verified address answers
+// `409 from_not_allowed`.
 //
 // "Reply" and "Reply all" are the same call: `cc: []` answers the contact alone, no `cc`
 // copies every `active` participant, and a `cc` list chooses who is copied. A conversation
@@ -164865,6 +165194,13 @@ func (c *ClientWithResponses) DeleteMessageWithResponse(ctx context.Context, mes
 // `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
 //
+// `from_address` is the address the draft keeps and goes `From` when it is sent
+// (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+// addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+// It changes nothing on the conversation, and on a scheduled draft it changes what the
+// scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+// `400 validation_failed`.
+//
 // Scope: `messages:write`.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -164885,6 +165221,13 @@ func (c *ClientWithResponses) UpdateMessageWithBodyWithResponse(ctx context.Cont
 // `bcc` and `subject`, or with
 // `send_at` (member sessions only) schedules it or moves its time; emits `draft.updated`. It works while the draft is scheduled. Anything that is not a
 // draft answers `409 not_a_draft`; another member's draft answers `404`.
+//
+// `from_address` is the address the draft keeps and goes `From` when it is sent
+// (`draft_from_address`), under the rules of `createMessage`: one of the member's own usable
+// addresses or, on a catch-all e-mail channel, any address of its domain; `null` removes it.
+// It changes nothing on the conversation, and on a scheduled draft it changes what the
+// scheduled send goes from. Forwards and other drafts that are not e-mailed replies answer
+// `400 validation_failed`.
 //
 // Scope: `messages:write`.
 //
@@ -165000,8 +165343,8 @@ func (c *ClientWithResponses) RedactMessageWithResponse(ctx context.Context, mes
 
 // UnscheduleMessageWithResponse Cancel a scheduled send
 //
-// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc`, `bcc` and
-// `from_address` kept for the send, removed); emits `draft.updated`. A draft that is not
+// Turns a scheduled draft back into a plain draft (`scheduled_at`, and the `cc` and `bcc`
+// kept for the send, removed; `draft_from_address` stays); emits `draft.updated`. A draft that is not
 // scheduled is returned as it is. Anything that is not a draft answers `409 not_a_draft`;
 // another member's draft answers `404`.
 //
@@ -165034,7 +165377,12 @@ func (c *ClientWithResponses) UnscheduleMessageWithResponse(ctx context.Context,
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-// `createMessage`. A draft with a design is rendered now from the design's current version,
+// `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+// API keys and connected apps too, for this message only. Without it a draft goes from the
+// `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+// the conversation's channel (the conversation moved to another channel, the channel is no
+// longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+// ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
 // under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
 // is no longer offered).
 //
@@ -165043,7 +165391,8 @@ func (c *ClientWithResponses) UnscheduleMessageWithResponse(ctx context.Context,
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
 //
 // `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+// sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+// `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
 // `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
 // `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
 // recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -165082,7 +165431,12 @@ func (c *ClientWithResponses) SendMessageWithBodyWithResponse(ctx context.Contex
 // contacts and participants when it is sent. A `forward` draft goes to its `forward.to`
 // under the rules and limits of `forwardConversation` and takes neither `cc`, `bcc` nor
 // `from_address`. `from_address` sends the mail from one of the member's own addresses, as on
-// `createMessage`. A draft with a design is rendered now from the design's current version,
+// `createMessage`; on a catch-all channel it may be any address of the channel's domain, for
+// API keys and connected apps too, for this message only. Without it a draft goes from the
+// `from_address` it kept (`draft_from_address`), if any; a kept address that no longer fits
+// the conversation's channel (the conversation moved to another channel, the channel is no
+// longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+// ignored and the usual sender is used. A draft with a design is rendered now from the design's current version,
 // under the rules of `createMessage` (`409 design_unavailable` when the design was archived or
 // is no longer offered).
 //
@@ -165091,7 +165445,8 @@ func (c *ClientWithResponses) SendMessageWithBodyWithResponse(ctx context.Contex
 // workspace's `bots_may_send` (`403 bot_sending_disabled`).
 //
 // `send_at` (member sessions only; API keys and connected apps `400`) schedules instead of
-// sending: the member's own draft keeps the `cc`, `bcc` and `from_address` given here, gets
+// sending: the member's own draft keeps the `cc` and `bcc` given here and takes the
+// `from_address` given here as its `draft_from_address`, which `PATCH` can still change, gets
 // `scheduled_at` and goes at that time (at least 1 minute and at most 366 days ahead, else
 // `400 invalid_send_at`), exactly once, as if the member sent it then: signature, sender,
 // recipients and the checks above are applied at that moment. It emits `draft.updated` now
@@ -179842,6 +180197,13 @@ func ParseCreateConversationResponse(rsp *http.Response) (*CreateConversationRes
 			return nil, err
 		}
 		response.ApplicationproblemJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON409 = &dest
 
 	}
 

@@ -38,7 +38,7 @@ const (
 var (
 	errEmailUndeliverable = problem(http.StatusConflict, "email_undeliverable", "the contact's e-mail address bounced or complained; clear it on the contact to send again")
 	errEmailNotConfigured = problem(http.StatusConflict, "email_not_configured", "the conversation's e-mail channel has no SMTP account")
-	errEmailNoSender      = problem(http.StatusConflict, "email_no_sender", "the catch-all channel has no address to send this conversation from; set its from_address")
+	errEmailNoSender      = problem(http.StatusConflict, "email_no_sender", "the catch-all channel has no address to send this conversation from; give a from_address of its domain or set the channel's from_address")
 )
 
 type emailPlan struct {
@@ -68,6 +68,10 @@ func (p *emailPlan) recipients() []string {
 // planEmail decides whether an outgoing message in c goes out by e-mail and prepares its headers.
 // It returns nil when the conversation is not an e-mail conversation or the contact has no address.
 func (s *Server) planEmail(ctx context.Context, q *store.Queries, c store.Conversation) (*emailPlan, error) {
+	return s.planEmailFrom(ctx, q, principal{}, c, nil)
+}
+
+func (s *Server) planEmailFrom(ctx context.Context, q *store.Queries, p principal, c store.Conversation, from *string) (*emailPlan, error) {
 	if c.ChannelID == nil {
 		return nil, nil
 	}
@@ -101,7 +105,11 @@ func (s *Server) planEmail(ctx context.Context, q *store.Queries, c store.Conver
 	if suppressed {
 		return nil, errEmailUndeliverable
 	}
-	return s.emailPlanFor(ctx, q, c, ch, to)
+	choice, err := s.chooseFrom(ctx, q, p, ch, from)
+	if err != nil {
+		return nil, err
+	}
+	return s.planFor(ctx, q, c, ch, to, choice)
 }
 
 // sendingAddress is the From address of mail in c: for a catch-all channel the address of its
@@ -124,10 +132,12 @@ func sendingAddress(ch store.EmailChannel, c store.Conversation) (string, error)
 
 // emailPlanFor prepares the headers of a message to `to` in c, sent through the e-mail channel ch
 // and threaded with the conversation's earlier mail.
-func (s *Server) emailPlanFor(ctx context.Context, q *store.Queries, c store.Conversation, ch store.EmailChannel, to string) (*emailPlan, error) {
-	fromAddr, err := sendingAddress(ch, c)
-	if err != nil {
-		return nil, err
+func (s *Server) emailPlanFor(ctx context.Context, q *store.Queries, c store.Conversation, ch store.EmailChannel, to, fromAddr string) (*emailPlan, error) {
+	if fromAddr == "" {
+		var err error
+		if fromAddr, err = sendingAddress(ch, c); err != nil {
+			return nil, err
+		}
 	}
 	token, err := q.SetConversationEmailToken(ctx, store.SetConversationEmailTokenParams{
 		WorkspaceID: c.WorkspaceID, ID: c.ID, Token: email.NewConversationToken(),
@@ -572,7 +582,7 @@ func (s *Server) sendQueued(ctx context.Context, workspaceID uuid.UUID, msgs []m
 		AutoSubmitted: me.Auto,
 	}
 	if msg.OnBehalfOfMemberID != nil {
-		if out.Sender, err = s.delegateSender(ctx, workspaceID, ch, conv, msg); err != nil {
+		if out.Sender, err = s.delegateSender(ctx, workspaceID, envelope, msg); err != nil {
 			return "", err
 		}
 	}
@@ -657,14 +667,10 @@ func fromMember(msg messageRow) *uuid.UUID {
 
 // delegateSender names the delegate who wrote msg, with the channel's own sending address so the
 // Sender: stays on the From: domain and never shows the delegate's own address.
-func (s *Server) delegateSender(ctx context.Context, ws uuid.UUID, ch store.EmailChannel, conv store.Conversation, msg messageRow) (email.Address, error) {
+func (s *Server) delegateSender(ctx context.Context, ws uuid.UUID, addr string, msg messageRow) (email.Address, error) {
 	member := sendingMember(msg)
 	if member == nil {
 		return email.Address{}, nil
-	}
-	addr, err := sendingAddress(ch, conv)
-	if err != nil {
-		return email.Address{}, &email.PermanentError{Err: err}
 	}
 	name, err := memberName(ctx, s.st.Queries, ws, *member)
 	return email.Address{Name: name, Email: addr}, err
@@ -718,6 +724,9 @@ func (s *Server) memberSender(ctx context.Context, ws uuid.UUID, ch store.EmailC
 		return "", "", &email.PermanentError{Err: errors.New("the sending address " + a.Address + " may no longer send through this channel: " + why)}
 	}
 	envelope, err := sendingAddress(ch, conv)
+	if err != nil && isCatchAll(ch.Address) {
+		envelope, err = a.Address, nil
+	}
 	if err != nil {
 		return "", "", &email.PermanentError{Err: err}
 	}

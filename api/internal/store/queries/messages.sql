@@ -19,7 +19,7 @@ seen AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -32,7 +32,7 @@ LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -50,7 +50,7 @@ SELECT EXISTS (SELECT 1 FROM messages WHERE workspace_id = @workspace_id AND con
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -69,7 +69,7 @@ LIMIT @lim;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -116,7 +116,7 @@ WHERE a.workspace_id = @workspace_id AND a.id = @id
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -137,7 +137,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -154,7 +154,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -170,13 +170,14 @@ WITH m AS (
         sent_via = sqlc.narg(sent_via),
         delivery_state = sqlc.narg(delivery_state),
         delivery_updated_at = CASE WHEN sqlc.narg(delivery_state)::text IS NULL THEN NULL ELSE @now::timestamptz END,
-        scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL, send_error = NULL
+        scheduled_at = NULL, scheduled_by = NULL, scheduled_cc = NULL, scheduled_bcc = NULL, scheduled_from = NULL, send_error = NULL,
+        draft_from = NULL
     WHERE messages.workspace_id = @workspace_id AND messages.id = @id AND draft
     RETURNING *)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -203,7 +204,7 @@ LIMIT 1;
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -313,7 +314,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -407,14 +408,15 @@ RETURNING *;
 -- name: ScheduleDraft :one
 WITH m AS (
     UPDATE messages SET scheduled_at = @send_at::timestamptz, scheduled_by = @member_id::uuid,
-        scheduled_cc = sqlc.narg(cc)::text[], scheduled_bcc = sqlc.narg(bcc)::text[], scheduled_from = sqlc.narg(from_address)::text,
+        scheduled_cc = sqlc.narg(cc)::text[], scheduled_bcc = sqlc.narg(bcc)::text[], scheduled_from = NULL,
+        draft_from = coalesce(sqlc.narg(from_address)::text, draft_from),
         send_error = NULL
     WHERE messages.workspace_id = @workspace_id AND messages.id = @id AND draft
     RETURNING *)
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -431,7 +433,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -449,7 +451,7 @@ WITH m AS (
 SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_type, m.author_member_id,
        m.author_contact_id, m.body, m.html, m.client_id, m.event, m.created_at, m.delivery_state, m.delivery_error,
        m.delivery_updated_at, m.author_api_key_id, m.draft, m.sent_by_member_id, m.sent_by_api_key_id, m.via, m.sent_via, m.mentions, m.imported_at, m.imported_author, m.help_cards,
-       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.on_behalf_of_member_id,
+       m.redacted_at, m.redacted_by_member_id, m.redacted_by_api_key_id, m.rule, m.forward, m.signature_html, m.signature_text, m.scheduled_at, m.send_error, m.draft_from, m.on_behalf_of_member_id,
        m.email_design_id, m.email_design_locale,
        coalesce((SELECT ed.name FROM email_designs ed WHERE ed.workspace_id = m.workspace_id AND ed.id = m.email_design_id), '')::text AS email_design_name,
        coalesce(ak.bot_name, ak.name, '')::text AS bot_name, coalesce(ak.bot_avatar_url, '')::text AS bot_avatar_url,
@@ -457,6 +459,13 @@ SELECT m.id, m.workspace_id, m.conversation_id, m.kind, m.direction, m.author_ty
 FROM m
 LEFT JOIN api_keys ak ON ak.workspace_id = m.workspace_id AND ak.id = m.author_api_key_id
 LEFT JOIN api_keys sk ON sk.workspace_id = m.workspace_id AND sk.id = m.sent_by_api_key_id;
+
+-- name: SetDraftFrom :exec
+UPDATE messages SET draft_from = sqlc.narg(draft_from)::text, scheduled_from = NULL
+WHERE workspace_id = @workspace_id AND id = @id AND draft;
+
+-- name: GetDraftFrom :one
+SELECT draft_from FROM messages WHERE workspace_id = @workspace_id AND id = @id;
 
 -- name: GetScheduledSend :one
 SELECT scheduled_at, scheduled_by, scheduled_cc, scheduled_bcc, scheduled_from FROM messages

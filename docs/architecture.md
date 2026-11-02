@@ -1255,6 +1255,31 @@ Inbound:
    from that address (`From` and `Reply-To`), so its SMTP account must be allowed to send from the
    whole domain; its `from_address` is used only for a conversation without such an address
    (a chat that continues by e-mail), and without either the reply is refused (`email_no_sender`).
+   Because that account sends from the whole domain, `from_address` on `createConversation`,
+   `composeMail`, `createMessage` (drafts too), `PATCH /v1/messages/{id}` (drafts) and `sendMessage`
+   may name any plain address of the catch-all's domain, for members, API keys and connected apps
+   alike (MCP `start_conversation`, `compose_mail`, `draft_reply`, `send_reply`, `send_draft`,
+   `update_draft`). An address that is one of the caller's own member addresses (below), or the
+   mailbox owner's, in any state, goes through the member flow only and gets its answer; any other
+   address goes through the domain rule, which refuses an address another e-mail channel of the workspace receives at or sends from
+   or another member of the workspace has verified (`409 from_not_allowed`, as is another domain).
+   Only creating a conversation (`createConversation`, `composeMail`) stores it as the
+   conversation's address (`conversations.email_address`), which later replies go from. On
+   `createMessage` and `sendMessage` it applies to that one message, resolved when it is sent; a
+   draft keeps any accepted `from_address`, the member's own included, in `messages.draft_from`
+   (changed or cleared with `PATCH /v1/messages/{id}`, replaced by a `from_address` given to
+   `sendMessage`). It is the one source of the From for scheduled drafts too: scheduling writes its
+   `from_address` there, `PATCH` on a scheduled draft changes it, unscheduling keeps it and the
+   scheduled job sends without its own `from_address`, so `draft_from_address` is what goes out.
+   At send a kept address that no longer fits (the conversation moved channel, the channel is no
+   longer a catch-all of that domain, the address is refused, or the reply is not e-mailed) is
+   ignored and the usual sender used; an explicit `from_address` on `sendMessage` is still refused.
+   A member's own address with no conversation address on the catch-all is also the envelope
+   sender. Writing an outgoing e-mail message or draft that has nothing to send from (no
+   conversation address on the domain, no channel `from_address`, no `from_address` for it) is
+   refused with `email_no_sender` at once; a conversation created without a message, notes and
+   other channels are never refused for it. MCP `start_conversation` checks this before it creates
+   the conversation.
    An inbox's chat continuity prefers an exact-address channel over a catch-all. Threading uses `In-Reply-To` and `References` against stored Message-IDs of the inbox
    (at most the first five `In-Reply-To` ids, and the first and the last 49 `References` ids; ids longer
    than 998 bytes dropped, read from at most 64 KiB at each end of the header);
@@ -1521,7 +1546,8 @@ DKIM pass and DMARC `pass`, was started at most 30 days ago and after the channe
 (`usable_channel_ids`, each channel's check read once per request). A blank `from_address` form field
 counts as absent, and `from_address` is checked before the recipient quota of a new mail is taken. `from_address` on `createMessage` (and its form), `sendMessage` and
 `composeMail` picks one for the mail (`409 from_not_allowed` naming the reason; keys and connected
-apps `400`; drafts take it when sent; MCP has none). The message's e-mail row keeps it as
+apps `400`, MCP tools included; a draft keeps it in `messages.draft_from` for its send). Catch-all channels also take any address of
+their domain from every caller, as described under e-mail ingress, without a member address row. The message's e-mail row keeps it as
 `from_address` with `member_address_id`; the mail goes `From` the member's name and address,
 `Reply-To` the channel's address, the envelope sender stays the channel's sending address so bounces
 reach the channel, the Message-ID carries the conversation token on the same domain, and the signature
