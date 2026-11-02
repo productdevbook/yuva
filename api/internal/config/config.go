@@ -37,6 +37,7 @@ type Config struct {
 	SignupOpen                bool
 	SignupWorkspacesPerPerson int
 	SignupWorkspacesPerIP     int
+	SignupBlockedDomains      []string
 
 	OperatorEmails []string
 
@@ -406,6 +407,7 @@ func Load(version string) (Config, error) {
 	if c.SignupWorkspacesPerIP, err = strconv.Atoi(env("YUVA_SIGNUP_WORKSPACES_PER_IP", "5")); err != nil || c.SignupWorkspacesPerIP < 1 {
 		return c, errors.New("YUVA_SIGNUP_WORKSPACES_PER_IP must be a positive number of workspaces")
 	}
+	c.SignupBlockedDomains = list(env("YUVA_SIGNUP_BLOCKED_DOMAINS", ""))
 	for _, v := range list(env("YUVA_OPERATOR_EMAIL", "")) {
 		a, err := mail.ParseAddress(v)
 		if err != nil {

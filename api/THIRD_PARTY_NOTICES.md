@@ -149,6 +149,13 @@ FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
 ```
 
+### Disposable e-mail domains (`internal/signupguard/disposable_email_blocklist.conf`)
+
+`disposable_email_blocklist.conf` from https://github.com/disposable-email-domains/disposable-email-domains
+(commit fe48a3092fd7749893732f1c089730acccd78817), used under `YUVA_SIGNUP=open` to refuse sign-up from
+throwaway domains. The list is released into the public domain under CC0 1.0 Universal
+(https://creativecommons.org/publicdomain/zero/1.0/); no attribution is required.
+
 ## Downloaded at run time
 
 ### DB-IP IP to City Lite

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/productdevbook/yuva/api/internal/api"
+	"github.com/productdevbook/yuva/api/internal/signupguard"
 )
 
 func openSignup(perPerson, perIP int) func(*api.Deps) {
@@ -208,5 +209,28 @@ func TestOperatorDigestOff(t *testing.T) {
 	}
 	if n != 0 {
 		t.Fatalf("%d notices recorded with no operator address", n)
+	}
+}
+
+func TestSignupRefusesBlockedDomain(t *testing.T) {
+	h := newHarnessWith(t, func(d *api.Deps) {
+		openSignup(2, 10)(d)
+		d.Auth.Signup.Guard = signupguard.New([]string{"blocked.example"}, nil)
+	})
+	c := h.client()
+	for _, domain := range []string{"mailinator.com", "sub.blocked.example"} {
+		addr := unique("fake") + "@" + domain
+		c.expect(http.StatusAccepted, "POST", "/v1/auth/code", map[string]any{"email": addr})
+		if n := len(h.mail.to(addr)); n != 0 {
+			t.Fatalf("%d mails sent to %s", n, addr)
+		}
+		if n := h.count("SELECT count(*) FROM login_codes WHERE email = $1", addr); n != 0 {
+			t.Fatalf("%d login_codes rows for %s", n, addr)
+		}
+	}
+	ok := unique("real") + "@example.com"
+	c.expect(http.StatusAccepted, "POST", "/v1/auth/code", map[string]any{"email": ok})
+	if n := len(h.mail.to(ok)); n != 1 {
+		t.Fatalf("%d mails sent to %s", n, ok)
 	}
 }

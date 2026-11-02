@@ -58,6 +58,7 @@ An empty variable means unset and takes the default, except for `YUVA_METRICS_AD
 | `YUVA_SIGNUP` | `invite` | `invite`: only existing people and invited addresses get a sign-in code; workspaces come from `yuva bootstrap`. `open`: anyone can sign in with a code and create workspaces in the panel. |
 | `YUVA_SIGNUP_WORKSPACES_PER_PERSON` | `3` | With `open` sign-up, workspaces one person may have created and not deleted; more get `403`. |
 | `YUVA_SIGNUP_WORKSPACES_PER_IP` | `5` | With `open` sign-up, workspaces created from one IP address (IPv6 /64) in 24 hours; more get `429`. |
+| `YUVA_SIGNUP_BLOCKED_DOMAINS` | empty | With `open` sign-up, comma-separated domains that get no sign-in code when the address has no person and no invite (subdomains included), on top of the built-in list of disposable e-mail domains. Domains without a mail server (no MX record, or a null MX) are refused too. A refused address gets the same `202` and no mail. |
 | `YUVA_OPERATOR_EMAIL` | unset | Addresses, comma-separated, that get an e-mail when a new person signs up with a code (readers marked as such) or creates a workspace: the address, the workspace name, the time and the country (behind Cloudflare, with `YUVA_CLIENT_IP_HEADER=CF-Connecting-IP`) or else the IP address. At most one e-mail every 5 minutes, listing everything since the previous one. In English, through the server's SMTP. It also lists broadcast [approval requests, suspensions and automatic pauses](operations.md#broadcasts-on-a-hosted-server). Unset means off. |
 
 ## Server e-mail

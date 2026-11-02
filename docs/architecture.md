@@ -2031,6 +2031,13 @@ remote images, http(s)):
   A code request carries the sign-in page's `locale`, kept on the code row: for an address with
   no person and no invite it is the code mail's language and the new person's locale; a person
   keeps their own and an invite's locale wins.
+  Under `open`, an address with no person and no invite (a reader's too, since a reader may create
+  a workspace) is also refused when its domain (or a parent domain) is on the embedded
+  disposable-domain list (CC0, disposable-email-domains) or in `YUVA_SIGNUP_BLOCKED_DOMAINS`
+  (comma-separated), or when it has no MX record or only a null MX (`.`); a DNS lookup that times
+  out or fails temporarily lets the address through. A refused
+  address gets the same `202` after the same fixed delay, no code row and no mail, and only the
+  domain is logged.
   `YUVA_OPERATOR_EMAIL` (comma-separated, unset = off) tells the server's operator about
   growth: a new person created by verifying a code (no person, no invite; readers marked) and a
   workspace created with `POST /v1/workspaces` are written as an `operator_notices` row in the

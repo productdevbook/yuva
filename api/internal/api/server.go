@@ -31,6 +31,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/push"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/secret"
+	"github.com/productdevbook/yuva/api/internal/signupguard"
 	"github.com/productdevbook/yuva/api/internal/slack"
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
@@ -244,6 +245,8 @@ type SignupSettings struct {
 	Open                bool
 	WorkspacesPerPerson int
 	WorkspacesPerIP     int
+	// Guard refuses sign-up from throwaway and mail-less domains; nil means no check.
+	Guard *signupguard.Guard
 }
 
 func sleepCtx(ctx context.Context, d time.Duration) error {

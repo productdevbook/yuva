@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"net"
 	"net/http"
 	netmail "net/mail"
 	"os"
@@ -30,6 +31,7 @@ import (
 	"github.com/productdevbook/yuva/api/internal/push"
 	"github.com/productdevbook/yuva/api/internal/realtime"
 	"github.com/productdevbook/yuva/api/internal/secret"
+	"github.com/productdevbook/yuva/api/internal/signupguard"
 	"github.com/productdevbook/yuva/api/internal/storage"
 	"github.com/productdevbook/yuva/api/internal/store"
 	"github.com/productdevbook/yuva/api/internal/telemetry"
@@ -273,6 +275,7 @@ func serve(ctx context.Context, cfg config.Config, log *slog.Logger, args []stri
 				Open:                cfg.SignupOpen,
 				WorkspacesPerPerson: cfg.SignupWorkspacesPerPerson,
 				WorkspacesPerIP:     cfg.SignupWorkspacesPerIP,
+				Guard:               signupguard.New(cfg.SignupBlockedDomains, net.DefaultResolver),
 			},
 		},
 		Secrets: masterKey,

@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
+	"log/slog"
 	"math/big"
 	"net/http"
 	"net/mail"
@@ -15,6 +16,7 @@ import (
 
 	yuvamail "github.com/productdevbook/yuva/api/internal/mail"
 	"github.com/productdevbook/yuva/api/internal/oas"
+	"github.com/productdevbook/yuva/api/internal/signupguard"
 	"github.com/productdevbook/yuva/api/internal/store"
 )
 
@@ -99,6 +101,12 @@ func (s *Server) RequestSignInCode(ctx context.Context, req oas.RequestSignInCod
 	known, err := s.st.SignInTarget(ctx, store.SignInTargetParams{Email: email, Now: now})
 	if err != nil {
 		return nil, err
+	}
+	if s.auth.Signup.Open && s.auth.Signup.Guard != nil && (known == nil || !*known) {
+		if s.auth.Signup.Guard.Refuses(ctx, email) {
+			s.log.InfoContext(ctx, "sign-up refused", slog.String("domain", signupguard.Domain(email)))
+			return oas.RequestSignInCode202Response{}, nil
+		}
 	}
 	var pageLocale *string
 	if l := req.Body.Locale; l != nil {
