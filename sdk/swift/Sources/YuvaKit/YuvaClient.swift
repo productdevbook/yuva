@@ -5,17 +5,19 @@ public struct YuvaConfiguration: Sendable {
     public var channelKey: String
     public var identityToken: (@Sendable () async throws -> String?)?
     public var maxAttachmentSize: Int
+    public var sendsClientInfo: Bool
 
     public static let defaultMaxAttachmentSize = 25 * 1024 * 1024
 
     public init(
         serverURL: URL, channelKey: String, identityToken: (@Sendable () async throws -> String?)? = nil,
-        maxAttachmentSize: Int = YuvaConfiguration.defaultMaxAttachmentSize
+        maxAttachmentSize: Int = YuvaConfiguration.defaultMaxAttachmentSize, sendsClientInfo: Bool = true
     ) {
         self.serverURL = serverURL
         self.channelKey = channelKey
         self.identityToken = identityToken
         self.maxAttachmentSize = maxAttachmentSize
+        self.sendsClientInfo = sendsClientInfo
     }
 }
 
@@ -308,11 +310,11 @@ public actor YuvaClient {
                 return saved
             } catch let error as YuvaError where error.status == 401 || error.status == 403 {}
         }
-        var fields = ["channel_key": configuration.channelKey]
-        fields["identity_token"] = identity
-        fields["visitor_id"] = stored.visitorId
+        let clientInfo = configuration.sendsClientInfo ? await YuvaClientInfo.current() : nil
+        let request = SessionRequest(
+            channelKey: configuration.channelKey, identityToken: identity, visitorId: stored.visitorId, clientInfo: clientInfo)
         let created: SessionResponse = try await decode(
-            raw("POST", "client/v1/session", query: [], body: Body(json: fields), token: nil))
+            raw("POST", "client/v1/session", query: [], body: Body(json: request), token: nil))
         apply(created.session, token: created.token, subject: subject, stored: &stored)
         return created.token
     }

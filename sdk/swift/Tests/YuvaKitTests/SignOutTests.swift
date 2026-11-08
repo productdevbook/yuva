@@ -140,7 +140,8 @@ final class StubProtocol: URLProtocol, @unchecked Sendable {
                 data.append(buffer, count: count)
             }
         }
-        return (try? JSONSerialization.jsonObject(with: data) as? [String: String]) ?? [:]
+        let object = (try? JSONSerialization.jsonObject(with: data) as? [String: Any]) ?? [:]
+        return object.compactMapValues { $0 as? String }
     }
 }
 
