@@ -63,6 +63,7 @@ class YuvaConfiguration(
     val channelKey: String,
     val identityToken: (suspend () -> String?)? = null,
     val maxAttachmentSize: Long = DEFAULT_MAX_ATTACHMENT_SIZE,
+    val sendsClientInfo: Boolean = true,
 ) {
     companion object {
         const val DEFAULT_MAX_ATTACHMENT_SIZE: Long = 25L * 1024 * 1024
@@ -319,12 +320,19 @@ class YuvaClient internal constructor(
                 "POST",
                 "client/v1/session",
                 emptyList(),
-                Body(mapOf("channel_key" to configuration.channelKey, "identity_token" to identity, "visitor_id" to stored.visitorId)),
+                Body(json = sessionRequest(identity, stored.visitorId)),
                 null,
             ),
         )
         apply(created.session, created.token, subject, stored)
         return created.token
+    }
+
+    private fun sessionRequest(identity: String?, visitorId: String?): JsonElement = buildJsonObject {
+        put("channel_key", configuration.channelKey)
+        identity?.let { put("identity_token", it) }
+        visitorId?.let { put("visitor_id", it) }
+        if (configuration.sendsClientInfo && context != null) put("client_info", ClientInfo.current(context))
     }
 
     private fun apply(info: YuvaSession, newToken: String, subject: String?, stored: StoredSession) {
