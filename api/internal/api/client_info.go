@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"strings"
 	"time"
 
 	"github.com/productdevbook/yuva/api/internal/oas"
@@ -39,6 +40,9 @@ func cleanClientInfo(in *oas.ClientInfo) ([]byte, error) {
 	} {
 		if f.src == nil {
 			continue
+		}
+		if strings.ContainsRune(*f.src, 0) {
+			return nil, errValidation(f.name + " must not contain NUL characters")
 		}
 		v, err := trimmed(*f.src, 0, f.max, f.name)
 		if err != nil {
@@ -95,19 +99,35 @@ func (s *Server) useClientInfo(ctx context.Context, cp *contactPrincipal, info [
 	if err := s.st.SetContactSessionClientInfo(ctx, store.SetContactSessionClientInfoParams{WorkspaceID: cp.workspaceID, ID: cp.sessionID, ClientInfo: info}); err != nil {
 		return err
 	}
-	cp.clientInfo = info
+	cp.clientInfo, cp.ownInfo = info, true
 	return nil
 }
 
 // writeClientInfo keeps the session's client_info on the conversation and, when newer, on its
 // contact. A conversation that existed before hears conversation.updated when the value changed.
+// Without a value of its own the request reads the session's now, since another request may have
+// refreshed it after this one was authenticated.
 func (s *Server) writeClientInfo(ctx context.Context, q *store.Queries, events *eventBatch, cp contactPrincipal, c store.Conversation, isNew bool) (store.Conversation, error) {
-	if cp.clientInfo == nil {
+	info := cp.clientInfo
+	if !cp.ownInfo {
+		var err error
+		info, err = q.GetContactSessionClientInfo(ctx, store.GetContactSessionClientInfoParams{WorkspaceID: cp.workspaceID, ID: cp.sessionID})
+		if store.IsNotFound(err) {
+			return c, nil
+		}
+		if err != nil {
+			return c, err
+		}
+	}
+	if info == nil {
 		return c, nil
 	}
 	updated, err := q.SetConversationClientInfo(ctx, store.SetConversationClientInfoParams{
-		WorkspaceID: cp.workspaceID, ID: c.ID, ClientInfo: cp.clientInfo, Now: s.now(),
+		WorkspaceID: cp.workspaceID, ID: c.ID, ClientInfo: info, Now: s.now(),
 	})
+	if store.IsNotFound(err) {
+		return c, nil
+	}
 	if err != nil {
 		return c, err
 	}

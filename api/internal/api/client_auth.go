@@ -39,6 +39,7 @@ type contactPrincipal struct {
 	chat        store.ChatChannel
 	attach      attachLimits
 	clientInfo  []byte
+	ownInfo     bool
 }
 
 const (

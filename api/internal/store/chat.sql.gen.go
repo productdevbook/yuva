@@ -680,6 +680,22 @@ func (q *Queries) GetContactSessionByTokenHash(ctx context.Context, arg GetConta
 	return i, err
 }
 
+const getContactSessionClientInfo = `-- name: GetContactSessionClientInfo :one
+SELECT client_info FROM contact_sessions WHERE workspace_id = $1 AND id = $2
+`
+
+type GetContactSessionClientInfoParams struct {
+	WorkspaceID uuid.UUID
+	ID          uuid.UUID
+}
+
+func (q *Queries) GetContactSessionClientInfo(ctx context.Context, arg GetContactSessionClientInfoParams) ([]byte, error) {
+	row := q.db.QueryRow(ctx, getContactSessionClientInfo, arg.WorkspaceID, arg.ID)
+	var client_info []byte
+	err := row.Scan(&client_info)
+	return client_info, err
+}
+
 const getEmailConfirmation = `-- name: GetEmailConfirmation :one
 SELECT contact_id, inbox_id, email FROM email_confirmations
 WHERE workspace_id = $1 AND token_hash = $2 AND expires_at > $3
@@ -2331,6 +2347,7 @@ const setConversationClientInfo = `-- name: SetConversationClientInfo :one
 WITH c AS (
     UPDATE conversations SET client_info = $1::jsonb, client_info_at = $2::timestamptz
     WHERE conversations.workspace_id = $3 AND conversations.id = $4
+      AND (conversations.client_info_at IS NULL OR conversations.client_info_at <= $2::timestamptz)
     RETURNING id, workspace_id, inbox_id, contact_id, channel_id, subject, status, snooze_until, priority, assignee_id, last_message_at, last_activity_at, created_at, updated_at, spam, email_token, related_conversation_id, continuity_through, continuity_sent_at, kind, feedback, email_address, closed_at, rating, rating_comment, rated_at, rating_requested_at, last_read_by_contact_at, page_url, page_title, channel_kind, broadcast_id, migration_id, imported_at, feedback_progress, help_article_id, trashed_at, trashed_by_member_id, trashed_by_api_key_id, push_through, push_sent_at, team_id, fields, sla_due_at, snooze_rule_id, assign_waiting_since, assign_after_rules, draft_of, client_info, client_info_at),
 ct AS (
     UPDATE contacts SET client_info = c.client_info, client_info_at = c.client_info_at

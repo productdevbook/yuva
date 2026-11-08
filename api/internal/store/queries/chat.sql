@@ -409,12 +409,16 @@ WHERE workspace_id = @workspace_id AND id = @id;
 WITH c AS (
     UPDATE conversations SET client_info = @client_info::jsonb, client_info_at = @now::timestamptz
     WHERE conversations.workspace_id = @workspace_id AND conversations.id = @id
+      AND (conversations.client_info_at IS NULL OR conversations.client_info_at <= @now::timestamptz)
     RETURNING *),
 ct AS (
     UPDATE contacts SET client_info = c.client_info, client_info_at = c.client_info_at
     FROM c WHERE contacts.workspace_id = c.workspace_id AND contacts.id = c.contact_id
       AND (contacts.client_info_at IS NULL OR contacts.client_info_at <= c.client_info_at))
 SELECT * FROM c;
+
+-- name: GetContactSessionClientInfo :one
+SELECT client_info FROM contact_sessions WHERE workspace_id = @workspace_id AND id = @id;
 
 -- name: ListContactClientInfo :many
 SELECT id, client_info, client_info_at FROM contacts
