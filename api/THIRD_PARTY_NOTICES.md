@@ -156,6 +156,42 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 throwaway domains. The list is released into the public domain under CC0 1.0 Universal
 (https://creativecommons.org/publicdomain/zero/1.0/); no attribution is required.
 
+### SAML service provider (`third_party/saml/`)
+
+The `saml`, `logger` and `xmlenc` packages of https://github.com/crewjam/saml v0.5.1, without its
+tests, examples and the `samlsp`, `samlidp` and `testsaml` packages. `go.mod` replaces
+`github.com/crewjam/saml` with this directory. It is patched for GO-2026-6909, as upstream did in
+https://github.com/crewjam/saml/pull/679: `schema.go` is the one from v0.5.2, which binds assertion
+elements to the SAML assertion namespace, and `validateAssertion` and `validateLogoutResponse` in
+`service_provider.go` return an error for a missing `Subject`, `Conditions`,
+`SubjectConfirmationData` or LogoutResponse `Issuer` instead of panicking.
+
+```
+Copyright (c) 2015, Ross Kinder
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+
 ## Downloaded at run time
 
 ### DB-IP IP to City Lite

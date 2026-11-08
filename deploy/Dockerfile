@@ -14,6 +14,7 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
 FROM --platform=$BUILDPLATFORM golang:1.27.3-trixie AS build
 WORKDIR /src/api
 COPY api/go.mod api/go.sum ./
+COPY api/third_party/saml/go.mod api/third_party/saml/go.sum ./third_party/saml/
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
 COPY api/ ./
 COPY --from=web /src/web/dist /tmp/web-dist

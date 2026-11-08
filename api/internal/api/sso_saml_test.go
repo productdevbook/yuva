@@ -127,6 +127,7 @@ type samlAnswer struct {
 	signAssertion, signResponse                                        bool
 	signer                                                             *samlKey
 	attrs                                                              map[string]string
+	shape                                                              func(assertion *etree.Element)
 	edit                                                               func(resp, assertion *etree.Element)
 }
 
@@ -202,6 +203,9 @@ func (idp *fakeSAMLIdP) answer(a samlAnswer) string {
 		email = a.nameID
 	}
 	as := idp.assertion(a, a.assertionID, email)
+	if a.shape != nil {
+		a.shape(as)
+	}
 	if a.signAssertion {
 		as = idp.sign(as, k)
 	}
@@ -411,6 +415,25 @@ func TestSAMLRefusesBadResponses(t *testing.T) {
 			}
 		}, "invalid_token"},
 		{"unclaimed domain", func(a *samlAnswer) { a.email = "owner@" + unique("other") + ".test" }, "domain_not_claimed"},
+		{"signed assertion without a Subject", func(a *samlAnswer) {
+			a.shape = func(as *etree.Element) { as.RemoveChild(as.SelectElement("saml:Subject")) }
+		}, "invalid_token"},
+		{"signed assertion without Conditions", func(a *samlAnswer) {
+			a.shape = func(as *etree.Element) { as.RemoveChild(as.SelectElement("saml:Conditions")) }
+		}, "invalid_token"},
+		{"signed assertion without SubjectConfirmationData", func(a *samlAnswer) {
+			a.shape = func(as *etree.Element) {
+				sc := as.SelectElement("saml:Subject").SelectElement("saml:SubjectConfirmation")
+				sc.RemoveChild(sc.SelectElement("saml:SubjectConfirmationData"))
+			}
+		}, "invalid_token"},
+		{"signed assertion with the NameID in a foreign namespace", func(a *samlAnswer) {
+			a.shape = func(as *etree.Element) {
+				nid := as.SelectElement("saml:Subject").SelectElement("saml:NameID")
+				nid.Space = "x"
+				nid.CreateAttr("xmlns:x", "urn:other")
+			}
+		}, "email_unverified"},
 	}
 	for _, tc := range cases {
 		c := e.h.client()
@@ -464,6 +487,48 @@ func TestSAMLRefusesBadResponses(t *testing.T) {
 		if r["details"].(map[string]any)["protocol"] != "saml" {
 			t.Fatalf("refusal: %v", r)
 		}
+	}
+}
+
+func TestSAMLLibraryRefusesSignedAssertionsMissingElements(t *testing.T) {
+	idp := newFakeSAMLIdP(t)
+	var md saml.EntityDescriptor
+	if err := xml.Unmarshal([]byte(idp.metadata()), &md); err != nil {
+		t.Fatal(err)
+	}
+	acs, _ := url.Parse("https://sp.example/auth/saml/acs")
+	sp := saml.ServiceProvider{EntityID: "https://sp.example/metadata", AcsURL: *acs, IDPMetadata: &md}
+	answer := func(shape func(*etree.Element)) []byte {
+		return []byte(idp.answer(samlAnswer{inResponseTo: "_req", email: "owner@sp.example", audience: sp.EntityID, recipient: acs.String(),
+			destination: acs.String(), assertionID: "_a1", notOnOrAfter: time.Now().Add(5 * time.Minute), signAssertion: true, shape: shape}))
+	}
+	parse := func(doc []byte) (a *saml.Assertion, err error, panicked any) {
+		defer func() { panicked = recover() }()
+		a, err = sp.ParseXMLResponse(doc, []string{"_req"}, *acs)
+		return a, err, nil
+	}
+	if a, err, p := parse(answer(nil)); err != nil || p != nil || a.Subject.NameID == nil || a.Subject.NameID.Value != "owner@sp.example" {
+		t.Fatalf("good response: %v %v", err, p)
+	}
+	for name, shape := range map[string]func(*etree.Element){
+		"Subject":    func(as *etree.Element) { as.RemoveChild(as.SelectElement("saml:Subject")) },
+		"Conditions": func(as *etree.Element) { as.RemoveChild(as.SelectElement("saml:Conditions")) },
+		"SubjectConfirmationData": func(as *etree.Element) {
+			sc := as.SelectElement("saml:Subject").SelectElement("saml:SubjectConfirmation")
+			sc.RemoveChild(sc.SelectElement("saml:SubjectConfirmationData"))
+		},
+	} {
+		if _, err, p := parse(answer(shape)); p != nil || err == nil {
+			t.Fatalf("assertion without %s: err %v, panic %v", name, err, p)
+		}
+	}
+	a, err, p := parse(answer(func(as *etree.Element) {
+		nid := as.SelectElement("saml:Subject").SelectElement("saml:NameID")
+		nid.Space = "x"
+		nid.CreateAttr("xmlns:x", "urn:other")
+	}))
+	if err != nil || p != nil || a.Subject.NameID != nil {
+		t.Fatalf("foreign NameID: err %v, panic %v, assertion %+v", err, p, a)
 	}
 }
 
