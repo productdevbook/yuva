@@ -8,10 +8,12 @@ import { formatRelative, formatShort, useEnumText } from "@/components/common/te
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { languageName, NewConversationDialog, useContactConversations } from "@/features/contact/ContactDetails"
+import { DeviceInfo } from "@/features/contact/DeviceInfo"
 import { ContactNotes } from "@/features/contact/ContactNotes"
 import { ConversationMedia } from "@/features/contact/ConversationMedia"
 import { ConversationFields, useConversationFieldList } from "@/features/fields/ConversationFields"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
+import { useConversation } from "@/features/conversation/queries"
 import { Participants } from "@/features/conversation/Participants"
 import { useContact, useContactPresence } from "@/features/contact/queries"
 import { useContactEntries } from "@/features/contact/entries"
@@ -185,6 +187,7 @@ export function ContactAside({
   const { canManage } = useSession()
   const contact = useContact(contactId)
   const conversations = useContactConversations(contactId)
+  const conversation = useConversation(conversationId)
   const [merging, setMerging] = useState(false)
   const [starting, setStarting] = useState(false)
   const [media, setMedia] = useState(false)
@@ -262,6 +265,11 @@ export function ContactAside({
       {(c.locale || Object.keys(c.attributes ?? {}).length > 0) && (
         <CardSection title={<Trans>Details</Trans>}>
           <DetailRows contact={c} />
+        </CardSection>
+      )}
+      {(c.client_info || conversation.data?.client_info) && (
+        <CardSection title={<Trans>Device</Trans>} testId="device-section">
+          <DeviceInfo contact={c} conversationId={conversationId} />
         </CardSection>
       )}
       <CardSection title={<Trans>Before</Trans>}>

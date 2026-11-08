@@ -3088,6 +3088,7 @@ msgid "API token"
 msgstr "API ਟੋਕਨ"
 
 #: src/components/common/Source.tsx
+#: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/oauth/ConsentPage.tsx
@@ -3101,6 +3102,10 @@ msgstr "ਪੁਰਾਣੀ ਕੁੰਜੀ ਵਾਲੇ ਐਪ ਬਿਲਡ ਨ�
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "App ID"
 msgstr "ਐਪ ID"
+
+#: src/features/contact/DeviceInfo.tsx
+msgid "App language"
+msgstr "ਐਪ ਦੀ ਭਾਸ਼ਾ"
 
 #: src/features/migrations/ConnectStep.tsx
 msgid "App password"
@@ -5259,6 +5264,7 @@ msgid "Conversations, attachments and raw e-mails stay until someone deletes the
 msgstr "ਗੱਲਬਾਤਾਂ, ਅਟੈਚਮੈਂਟਾਂ ਅਤੇ ਕੱਚੀਆਂ ਈ-ਮੇਲਾਂ ਉਦੋਂ ਤੱਕ ਰਹਿੰਦੀਆਂ ਹਨ ਜਦੋਂ ਤੱਕ ਕੋਈ ਮਿਟਾ ਨਾ ਦੇਵੇ।"
 
 #: src/components/common/CopyButton.tsx
+#: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Copied"
@@ -5269,6 +5275,7 @@ msgid "copied address"
 msgstr "ਕਾਪੀ ਵਿੱਚ ਪਤਾ"
 
 #: src/components/common/CopyButton.tsx
+#: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/messages/MessageActions.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Copy"
@@ -5281,6 +5288,10 @@ msgstr "ਆਪਣੇ ਐਡਮਿਨ ਲਈ ਸੁਨੇਹਾ ਕਾਪੀ ਕ�
 #: src/features/contact/ContactDetail.tsx
 msgid "Copy contact id"
 msgstr "ਸੰਪਰਕ ਆਈਡੀ ਕਾਪੀ ਕਰੋ"
+
+#: src/features/contact/DeviceInfo.tsx
+msgid "Copy device details"
+msgstr "ਡੀਵਾਈਸ ਦੇ ਵੇਰਵੇ ਕਾਪੀ ਕਰੋ"
 
 #: src/features/migrations/text.ts
 msgid "Copy it and paste it below."
@@ -6222,9 +6233,15 @@ msgstr "ਵੇਰਵੇ"
 msgid "Developers"
 msgstr "ਡਿਵੈਲਪਰ"
 
+#: src/features/contact/ContactCard.tsx
+#: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "ਡਿਵਾਈਸ"
+
+#: src/features/contact/DeviceInfo.tsx
+msgid "Device language"
+msgstr "ਡੀਵਾਈਸ ਦੀ ਭਾਸ਼ਾ"
 
 #: src/app/Sidebar.tsx
 msgid "Devices"
@@ -7878,6 +7895,10 @@ msgstr "ਡੋਮੇਨ ਦੀ ਮੇਲ ਸੈਟਿੰਗਾਂ ਫ਼ਾਈ�
 #: src/features/migrations/MapStep.tsx
 msgid "Found in your Sent folders"
 msgstr "ਤੁਹਾਡੇ Sent ਫੋਲਡਰਾਂ ਵਿੱਚ ਮਿਲਿਆ"
+
+#: src/features/contact/DeviceInfo.tsx
+msgid "Free storage"
+msgstr "ਖਾਲੀ ਸਟੋਰੇਜ"
 
 #: src/components/common/text.ts
 msgid "Friday"
@@ -16427,6 +16448,7 @@ msgstr "ਸਕੋਪ, ਇਨਬਾਕਸ ਅਤੇ ਮਿਆਦ ਜਿਵੇਂ 
 msgid "Score {score} out of 5"
 msgstr "5 ਵਿੱਚੋਂ {score} ਅੰਕ"
 
+#: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Screen"
 msgstr "ਸਕ੍ਰੀਨ"
@@ -16442,6 +16464,10 @@ msgstr "ਸਕ੍ਰੀਨਸ਼ਾਟ"
 #: src/features/feedback/FeedbackList.tsx
 msgid "Screenshots attached"
 msgstr "Screenshots attached"
+
+#: src/features/contact/DeviceInfo.tsx
+msgid "SDK"
+msgstr "SDK"
 
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -18636,6 +18662,7 @@ msgid "Syncing"
 msgstr "ਸਿੰਕ ਹੋ ਰਿਹਾ ਹੈ"
 
 #: src/app/UserMenu.tsx
+#: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
@@ -20685,6 +20712,7 @@ msgstr "ਸਮਾਂ"
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/broadcasts/SendTime.tsx
+#: src/features/contact/DeviceInfo.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/NameStep.tsx
 #: src/features/status/SettingsTab.tsx
@@ -21324,6 +21352,10 @@ msgstr "ਅੱਪਡੇਟ ਦੀ ਲਿਖਤ"
 #: src/features/inbox/views/ViewsMenu.tsx
 msgid "Update the view from this list"
 msgstr "ਇਸ ਸੂਚੀ ਤੋਂ ਵਿਊ ਅੱਪਡੇਟ ਕਰੋ"
+
+#: src/features/contact/DeviceInfo.tsx
+msgid "Updated {seen}"
+msgstr "ਅੱਪਡੇਟ ਕੀਤਾ {seen}"
 
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
