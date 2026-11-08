@@ -190,7 +190,7 @@ class YuvaClient internal constructor(
     ): YuvaConversationStarted = request(
         "POST",
         "client/v1/conversations",
-        body = Body(mapOf("body" to body, "client_id" to clientId, "subject" to subject), attachments),
+        body = Body(mapOf("body" to body, "client_id" to clientId, "subject" to subject), attachments, clientInfo = clientInfo()),
     )
 
     suspend fun sendMessage(
@@ -201,7 +201,7 @@ class YuvaClient internal constructor(
     ): YuvaMessage = request(
         "POST",
         "client/v1/conversations/$conversationId/messages",
-        body = Body(mapOf("body" to body, "client_id" to clientId), attachments),
+        body = Body(mapOf("body" to body, "client_id" to clientId), attachments, clientInfo = clientInfo()),
     )
 
     suspend fun markRead(conversationId: String, messageId: String? = null): YuvaReadState =
@@ -328,11 +328,15 @@ class YuvaClient internal constructor(
         return created.token
     }
 
+    private val clientInfoValue: JsonElement? by lazy { context?.let(ClientInfo::current) }
+
+    private fun clientInfo(): JsonElement? = if (configuration.sendsClientInfo) clientInfoValue else null
+
     private fun sessionRequest(identity: String?, visitorId: String?): JsonElement = buildJsonObject {
         put("channel_key", configuration.channelKey)
         identity?.let { put("identity_token", it) }
         visitorId?.let { put("visitor_id", it) }
-        if (configuration.sendsClientInfo && context != null) put("client_info", ClientInfo.current(context))
+        clientInfo()?.let { put("client_info", it) }
     }
 
     private fun apply(info: YuvaSession, newToken: String, subject: String?, stored: StoredSession) {
@@ -415,14 +419,19 @@ class YuvaClient internal constructor(
         val fields: Map<String, String?> = emptyMap(),
         val files: List<YuvaUpload> = emptyList(),
         val json: JsonElement? = null,
+        val clientInfo: JsonElement? = null,
     ) {
         fun toRequestBody(): RequestBody {
             if (files.isEmpty()) {
-                val element = json ?: JsonObject(fields.filterValues { it != null }.mapValues { JsonPrimitive(it.value) })
+                val element = json ?: JsonObject(
+                    fields.filterValues { it != null }.mapValues<String, String?, JsonElement> { JsonPrimitive(it.value) } +
+                        (clientInfo?.let { mapOf("client_info" to it) } ?: emptyMap()),
+                )
                 return element.toString().toRequestBody(JSON_TYPE)
             }
             val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
             fields.forEach { (name, value) -> if (value != null) builder.addFormDataPart(name, value) }
+            clientInfo?.let { builder.addFormDataPart("client_info", it.toString()) }
             files.forEach { file ->
                 builder.addFormDataPart("files", file.filename, file.data.toRequestBody(file.contentType.toMediaType()))
             }
