@@ -39,6 +39,7 @@ public actor YuvaClient {
     private let store: any SessionStorage
     private var token: String?
     private var identityEnabled = true
+    private var cachedClientInfo: YuvaClientInfo?
     private var sessionBusy = false
     private var sessionWaiters: [CheckedContinuation<Void, Never>] = []
     private var subscribers: [UUID: AsyncStream<YuvaEvent>.Continuation] = [:]
@@ -154,7 +155,9 @@ public actor YuvaClient {
     ) async throws -> YuvaConversationStarted {
         var fields = ["body": body, "client_id": clientId]
         fields["subject"] = subject
-        return try await request("POST", "client/v1/conversations", body: Body(fields: fields, files: attachments))
+        return try await request(
+            "POST", "client/v1/conversations",
+            body: Body(fields: fields, files: attachments, clientInfo: await clientInfoData()))
     }
 
     public func sendMessage(
@@ -162,7 +165,7 @@ public actor YuvaClient {
     ) async throws -> YuvaMessage {
         try await request(
             "POST", "client/v1/conversations/\(conversationId)/messages",
-            body: Body(fields: ["body": body, "client_id": clientId], files: attachments))
+            body: Body(fields: ["body": body, "client_id": clientId], files: attachments, clientInfo: await clientInfoData()))
     }
 
     @discardableResult
@@ -248,6 +251,18 @@ public actor YuvaClient {
 
     // MARK: Session
 
+    private func clientInfo() async -> YuvaClientInfo? {
+        guard configuration.sendsClientInfo else { return nil }
+        if let cachedClientInfo { return cachedClientInfo }
+        let info = await YuvaClientInfo.current()
+        cachedClientInfo = info
+        return info
+    }
+
+    private func clientInfoData() async -> Data? {
+        await clientInfo().flatMap { try? YuvaJSON.encoder.encode($0) }
+    }
+
     private func lockSession() async {
         guard sessionBusy else {
             sessionBusy = true
@@ -310,7 +325,7 @@ public actor YuvaClient {
                 return saved
             } catch let error as YuvaError where error.status == 401 || error.status == 403 {}
         }
-        let clientInfo = configuration.sendsClientInfo ? await YuvaClientInfo.current() : nil
+        let clientInfo = await clientInfo()
         let request = SessionRequest(
             channelKey: configuration.channelKey, identityToken: identity, visitorId: stored.visitorId, clientInfo: clientInfo)
         let created: SessionResponse = try await decode(
@@ -397,10 +412,17 @@ public actor YuvaClient {
             self.json = try? YuvaJSON.encoder.encode(json)
         }
 
-        init(fields: [String: String], files: [YuvaUpload]) {
+        init(fields: [String: String], files: [YuvaUpload], clientInfo: Data? = nil) {
+            var fields = fields
+            if files.isEmpty {
+                var object: [String: Any] = fields
+                if let clientInfo, let info = try? JSONSerialization.jsonObject(with: clientInfo) { object["client_info"] = info }
+                json = try? JSONSerialization.data(withJSONObject: object)
+            } else if let clientInfo {
+                fields["client_info"] = String(decoding: clientInfo, as: UTF8.self)
+            }
             self.fields = fields
             self.files = files
-            if files.isEmpty { json = try? YuvaJSON.encoder.encode(fields) }
         }
     }
 
