@@ -2,6 +2,7 @@ import type { components } from "../schema.gen"
 
 type Schemas = components["schemas"]
 export type ClientSession = Schemas["ClientSession"]
+export type ClientInfo = Schemas["ClientInfo"]
 export type ClientSessionInfo = Schemas["ClientSessionInfo"]
 export type ClientInbox = Schemas["ClientInbox"]
 export type ClientAttachmentLimits = Schemas["ClientAttachmentLimits"]

@@ -19,7 +19,7 @@ async function chunk(entry: string, name: string, extra: Record<string, string> 
     target: "browser",
     minify: true,
     naming: `${name}-[hash].[ext]`,
-    define: { "process.env.NODE_ENV": '"production"', ...extra },
+    define: { "process.env.NODE_ENV": '"production"', YUVA_VERSION: JSON.stringify(pkg.version), ...extra },
     plugins: [linguiMacro],
   })
   check(result)
@@ -42,6 +42,7 @@ const chatApps = await chunk("src/apps/apps.ts", "yuva-chat-apps", {
 
 const define = {
   "process.env.NODE_ENV": '"production"',
+  YUVA_VERSION: JSON.stringify(pkg.version),
   YUVA_DOCS_THREAD: JSON.stringify(thread),
   YUVA_SUBSCRIBE_CLIENT: JSON.stringify(subscribeClient),
   YUVA_CHAT_APPS: JSON.stringify(chatApps),
@@ -96,7 +97,7 @@ check(
     minify: { syntax: true, whitespace: true },
     naming: { chunk: "[name]-[hash].js" },
     external: [...Object.keys(pkg.dependencies), ...Object.keys(pkg.peerDependencies)],
-    define: { "process.env.NODE_ENV": '"production"' },
+    define: { "process.env.NODE_ENV": '"production"', YUVA_VERSION: JSON.stringify(pkg.version) },
     plugins: [linguiMacro],
   })
 )

@@ -41,6 +41,7 @@ import {
   type ClientReadState,
   type ClientRealtimeMessage,
   type ClientSession,
+  type ClientInfo,
   type ClientSessionInfo,
   type PageRatingCreate,
   type Rating,
@@ -64,6 +65,7 @@ export interface YuvaClientOptions {
   fetch?: Fetch
   WebSocket?: typeof WebSocket
   idempotencyKeys?: boolean
+  clientInfo?: ClientInfo | false
 }
 
 export interface StoredState {
@@ -217,6 +219,35 @@ function multipart(fields: [string, string][], files: Blob[], boundary: string):
   return new Blob(parts)
 }
 
+declare const YUVA_VERSION: string | undefined
+
+async function detectClientInfo(): Promise<ClientInfo> {
+  const nav = globalThis.navigator as
+    | (Navigator & {
+        userAgentData?: {
+          platform?: string
+          getHighEntropyValues(hints: string[]): Promise<{ platformVersion?: string }>
+        }
+      })
+    | undefined
+  const info: ClientInfo = {
+    sdk_name: "yuva-js",
+    sdk_version: typeof YUVA_VERSION === "string" ? YUVA_VERSION : undefined,
+    platform: "web",
+  }
+  if (!nav) return info
+  info.device_locale = nav.language
+  info.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const screen = globalThis.screen
+  if (screen) info.screen = `${screen.width}x${screen.height}`
+  const data = nav.userAgentData
+  if (data?.platform) info.os = data.platform
+  try {
+    info.os_version = (await data?.getHighEntropyValues(["platformVersion"]))?.platformVersion
+  } catch {}
+  return info
+}
+
 export class YuvaClient {
   readonly server: string
   readonly channel: string
@@ -225,6 +256,7 @@ export class YuvaClient {
   #storage: YuvaStorage
   #identity: IdentityTokenSource | null
   #idempotencyKeys: boolean
+  #clientInfo: ClientInfo | false
   #token: string | null = null
   #session: ClientSessionInfo | null = null
   #starting: Promise<ClientSessionInfo> | null = null
@@ -250,6 +282,7 @@ export class YuvaClient {
     this.#socketClass = options.WebSocket ?? globalThis.WebSocket
     this.#storage = options.storage ?? defaultStorage()
     this.#identity = options.identityToken ?? null
+    this.#clientInfo = options.clientInfo ?? {}
     // Servers up to 0.0.3 do not list Idempotency-Key in their /client/v1 CORS headers, so browsers would fail the preflight.
     this.#idempotencyKeys =
       options.idempotencyKeys ?? typeof (globalThis as { document?: unknown }).document === "undefined"
@@ -686,9 +719,15 @@ export class YuvaClient {
         if (!(error instanceof ApiError) || (error.status !== 401 && error.status !== 403)) throw error
       }
     }
+    const client_info = this.#clientInfo === false ? undefined : { ...(await detectClientInfo()), ...this.#clientInfo }
     const session = await this.#call<ClientSession>("/client/v1/session", {
       method: "POST",
-      json: { channel_key: this.channel, identity_token: identity ?? undefined, visitor_id: stored.visitor_id },
+      json: {
+        channel_key: this.channel,
+        identity_token: identity ?? undefined,
+        visitor_id: stored.visitor_id,
+        client_info,
+      },
     })
     const { token, ...info } = session
     return this.#apply(info, token, subject)

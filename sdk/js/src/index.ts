@@ -68,6 +68,7 @@ export {
   type ClientReadState,
   type ClientRealtimeMessage,
   type ClientSession,
+  type ClientInfo,
   type ClientSessionInfo,
   type ClientSubscription,
   type ClientSubscriptionAccepted,

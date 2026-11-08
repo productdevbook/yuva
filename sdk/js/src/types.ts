@@ -3,6 +3,7 @@ import type { components } from "./schema.gen"
 
 export type { IdentityTokenSource }
 export type Rating = components["schemas"]["Rating"]
+export type ClientInfo = components["schemas"]["ClientInfo"]
 export type ClientConversation = components["schemas"]["ClientConversation"]
 
 export type Layout = "launcher" | "embedded"
@@ -30,6 +31,7 @@ export interface ChatConfig {
   server: string
   layout: Layout
   locale: string
+  clientInfo: ClientInfo | false
 }
 
 export interface PanelHost {

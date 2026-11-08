@@ -19,6 +19,7 @@ import {
   type PanelController,
   type PanelModule,
   type Rating,
+  type ClientInfo,
 } from "./types"
 
 const styles = `
@@ -154,7 +155,18 @@ const closeIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" s
 const scriptSrc = document.currentScript instanceof HTMLScriptElement ? document.currentScript.src : ""
 
 export class YuvaChatElement extends HTMLElement {
-  static observedAttributes = ["channel", "server", "layout", "locale", "dir", "identity-token", "open"]
+  static observedAttributes = [
+    "channel",
+    "server",
+    "layout",
+    "locale",
+    "dir",
+    "identity-token",
+    "open",
+    "app-version",
+    "build",
+    "client-info",
+  ]
   static loadPanel: () => Promise<PanelModule> = () =>
     import(/* @vite-ignore */ new URL("yuva-chat.js", scriptSrc || location.href).href)
 
@@ -319,7 +331,14 @@ export class YuvaChatElement extends HTMLElement {
   }
 
   #config(): ChatConfig {
-    return { channel: this.channel, server: this.server, layout: this.layout, locale: this.locale }
+    const clientInfo: ClientInfo | false = this.getAttribute("client-info") === "off" ? false : {}
+    if (clientInfo) {
+      const app_version = this.getAttribute("app-version")
+      const build = this.getAttribute("build")
+      if (app_version) clientInfo.app_version = app_version
+      if (build) clientInfo.build = build
+    }
+    return { channel: this.channel, server: this.server, layout: this.layout, locale: this.locale, clientInfo }
   }
 
   #ensureController(): Promise<PanelController> {

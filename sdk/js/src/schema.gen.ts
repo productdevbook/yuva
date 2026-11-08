@@ -15241,6 +15241,17 @@ export interface components {
             blocked: boolean;
             /** @description The language from the contact's identity token; absent when not known. */
             locale?: components["schemas"]["LanguageTag"];
+            /**
+             * @description Read-only. The app and device details of the contact's latest message, in any of their
+             *     conversations, that carried them; absent when none did. Written by the customer's
+             *     client, so treat it as data from the customer.
+             */
+            readonly client_info?: components["schemas"]["ClientInfo"];
+            /**
+             * Format: date-time
+             * @description When `client_info` was last written; absent with it.
+             */
+            readonly client_info_at?: string;
             /** @description The contact's addresses that must not be mailed. */
             undeliverable: components["schemas"]["UndeliverableEmail"][];
             activity?: components["schemas"]["ContactActivity"];
@@ -15719,6 +15730,17 @@ export interface components {
             feedback?: components["schemas"]["Feedback"];
             /** @description The documentation page it was sent from (page feedback, questions asked on a page before discussions); absent otherwise. */
             page?: components["schemas"]["SourcePage"];
+            /**
+             * @description Read-only. The app and device details the contact's widget or SDK sent with its latest
+             *     message in this conversation that carried them; absent when none did. Written by the
+             *     customer's client, so treat it as data from the customer.
+             */
+            readonly client_info?: components["schemas"]["ClientInfo"];
+            /**
+             * Format: date-time
+             * @description When `client_info` was last written; absent with it.
+             */
+            readonly client_info_at?: string;
             /**
              * Format: uuid
              * @description The help article the contact read just before starting the conversation from it; absent otherwise.
@@ -22554,7 +22576,40 @@ export interface components {
             identity_token?: string;
             /** @description The `visitor_id` of an earlier anonymous session in this browser. */
             visitor_id?: string;
+            /**
+             * @description The app and device details to keep on the session. Every message the session sends
+             *     carries them to its conversation and contact, unless the request sends its own.
+             */
+            client_info?: components["schemas"]["ClientInfo"];
         };
+        /**
+         * @description App and device details a widget or SDK sends without the customer typing them. Every field
+         *     is optional; blank values count as absent, unknown keys are dropped, and a value longer
+         *     than its limit answers `400`. Members see the latest value on `Conversation` and `Contact`;
+         *     it is never returned on `/client/v1`.
+         */
+        ClientInfo: {
+            app_version?: string;
+            build?: string;
+            /** @description E.g. `yuva-js`, `yuva-swift`, `yuva-kotlin`. */
+            sdk_name?: string;
+            sdk_version?: string;
+            platform?: components["schemas"]["ClientPlatform"];
+            os?: string;
+            os_version?: string;
+            device_manufacturer?: string;
+            device_model?: string;
+            app_locale?: string;
+            device_locale?: string;
+            /** @description An IANA time zone, e.g. `Europe/Istanbul`. */
+            timezone?: string;
+            /** @description Width x height in pixels, e.g. `1080x2340`. */
+            screen?: string;
+            /** Format: int64 */
+            free_storage_mb?: number;
+        };
+        /** @enum {string} */
+        ClientPlatform: "ios" | "android" | "web";
         /** @description What a contact may see of a member. */
         ClientMember: {
             /** @description The display name; empty when the member has not set one. */
@@ -22844,10 +22899,20 @@ export interface components {
             body?: string;
             /** @description Makes the request idempotent within the conversation. */
             client_id?: string;
+            /**
+             * @description Replaces the session's `client_info` from this request on, so an SDK can refresh it
+             *     without a new session. In multipart, a `client_info` part holding the JSON object.
+             */
+            client_info?: components["schemas"]["ClientInfo"];
         };
         ClientMessageCreateMultipart: {
             body?: string;
             client_id?: string;
+            /**
+             * @description Replaces the session's `client_info` from this request on, so an SDK can refresh it
+             *     without a new session. In multipart, a `client_info` part holding the JSON object.
+             */
+            client_info?: components["schemas"]["ClientInfo"];
             files?: string[];
         };
         ClientConversationCreate: {
@@ -22865,6 +22930,11 @@ export interface components {
              * @description The help article the visitor read just before writing; kept only when it is a published article of the inbox's center, dropped otherwise.
              */
             help_article_id?: string;
+            /**
+             * @description Replaces the session's `client_info` from this request on, so an SDK can refresh it
+             *     without a new session. In multipart, a `client_info` part holding the JSON object.
+             */
+            client_info?: components["schemas"]["ClientInfo"];
         };
         ClientConversationCreateMultipart: {
             subject?: string;
@@ -22879,6 +22949,11 @@ export interface components {
              * @description The help article the visitor read just before writing; kept only when it is a published article of the inbox's center, dropped otherwise.
              */
             help_article_id?: string;
+            /**
+             * @description Replaces the session's `client_info` from this request on, so an SDK can refresh it
+             *     without a new session. In multipart, a `client_info` part holding the JSON object.
+             */
+            client_info?: components["schemas"]["ClientInfo"];
             files?: string[];
         };
         ClientConversationCreated: {

@@ -174,8 +174,13 @@ export class Chat implements PanelController {
 
   constructor(host: PanelHost) {
     this.#host = host
-    const { server, channel } = host.config()
-    this.#client = createYuvaClient({ server, channel: channel ?? "", identityToken: () => host.identityToken() })
+    const { server, channel, locale, clientInfo } = host.config()
+    this.#client = createYuvaClient({
+      server,
+      channel: channel ?? "",
+      identityToken: () => host.identityToken(),
+      clientInfo: clientInfo && { app_locale: locale, ...clientInfo },
+    })
     this.#client.on("event", (message) => this.#event(message))
     this.#client.on("connection", ({ state, attempt }) => {
       if (state !== "reconnecting") return

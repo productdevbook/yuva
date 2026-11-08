@@ -20,7 +20,9 @@ test("createYuvaClient opens a session and sends messages without a DOM", () => 
 
   const [start, send] = result.requests
   expect(start?.path).toBe("/client/v1/session")
-  expect(JSON.parse(start?.body ?? "{}")).toEqual({ channel_key: "pk_test" })
+  const body = JSON.parse(start?.body ?? "{}")
+  expect(body.channel_key).toBe("pk_test")
+  expect(body.client_info).toMatchObject({ sdk_name: "yuva-js", platform: "web" })
   expect(result.visitor).toBe("v1")
   expect(result.stored.visitor_id).toBe("v1")
 
@@ -36,7 +38,7 @@ test("createYuvaClient opens a session and sends messages without a DOM", () => 
     "POST /client/v1/session ",
     "POST /client/v1/conversations/c9/messages Bearer t2",
   ])
-  expect(JSON.parse(result.requests[3]?.body ?? "{}")).toEqual({ channel_key: "pk_test", visitor_id: "v1" })
+  expect(JSON.parse(result.requests[3]?.body ?? "{}")).toMatchObject({ channel_key: "pk_test", visitor_id: "v1" })
   expect(result.sessions).toBe(2)
   expect(result.token).toBe("t2")
   expect(result.stored.session?.token).toBe("t2")
