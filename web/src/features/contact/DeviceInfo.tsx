@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { languageName } from "@/features/contact/ContactDetails"
 import { look } from "@/features/inbox/PageFrame"
 import { useConversation } from "@/features/conversation/queries"
+import { cn } from "@/lib/utils"
 import type { Contact } from "@/lib/api"
 
 type Info = NonNullable<Contact["client_info"]>
@@ -59,17 +60,16 @@ export function DeviceInfo({ contact, conversationId }: { contact: Contact; conv
           </div>
         ))}
       </dl>
-      <div className="mt-3 flex items-center gap-2">
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
         {at && (
-          <span className="min-w-0 flex-1 truncate text-caption text-faint">
+          <span className="min-w-0 flex-1 text-caption text-faint">
             <Trans>Updated {seen}</Trans>
           </span>
         )}
-        <span className="flex-1" />
         <Button
           type="button"
           variant="outline"
-          className={look.btnSm}
+          className={cn(look.btnSm, "ms-auto")}
           onClick={() => void copy(text)}
           aria-label={t`Copy device details`}
           data-testid="device-info-copy"

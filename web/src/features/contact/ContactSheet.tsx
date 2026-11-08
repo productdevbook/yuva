@@ -19,9 +19,11 @@ import {
 } from "@/features/contact/ContactDetails"
 import { ContactAside } from "@/features/contact/ContactCard"
 import { ConversationMedia } from "@/features/contact/ConversationMedia"
+import { useConversation } from "@/features/conversation/queries"
 import { ConversationFields, useConversationFieldList } from "@/features/fields/ConversationFields"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { Presence } from "@/features/contact/Presence"
+import { DeviceInfo } from "@/features/contact/DeviceInfo"
 import { ContactNotes, useNoteCount } from "@/features/contact/ContactNotes"
 import { useContact, useContactSummary } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
@@ -52,6 +54,7 @@ function Body({
   const [merging, setMerging] = useState(false)
   const [starting, setStarting] = useState(false)
   const hasFields = useConversationFieldList().length > 0
+  const conversation = useConversation(conversationId)
   const c = contact.data
   const fmt = new Intl.NumberFormat(i18n.locale)
 
@@ -194,6 +197,14 @@ function Body({
                   <Trans>Details</Trans>
                 </SectionTitle>
                 <Attributes contact={c} />
+              </section>
+            )}
+            {(c.client_info || conversation.data?.client_info) && (
+              <section data-testid="device-section">
+                <SectionTitle>
+                  <Trans>Device</Trans>
+                </SectionTitle>
+                <DeviceInfo contact={c} conversationId={conversationId} />
               </section>
             )}
             {summary && summary.ratings.good + summary.ratings.bad > 0 && (
