@@ -25225,6 +25225,18 @@ components:
         locale:
           $ref: "#/components/schemas/LanguageTag"
           description: The language from the contact's identity token; absent when not known.
+        client_info:
+          $ref: "#/components/schemas/ClientInfo"
+          readOnly: true
+          description: |
+            Read-only. The app and device details of the contact's latest message, in any of their
+            conversations, that carried them; absent when none did. Written by the customer's
+            client, so treat it as data from the customer.
+        client_info_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When `client_info` was last written; absent with it.
         undeliverable:
           type: array
           description: The contact's addresses that must not be mailed.
@@ -26007,6 +26019,18 @@ components:
         page:
           $ref: "#/components/schemas/SourcePage"
           description: The documentation page it was sent from (page feedback, questions asked on a page before discussions); absent otherwise.
+        client_info:
+          $ref: "#/components/schemas/ClientInfo"
+          readOnly: true
+          description: |
+            Read-only. The app and device details the contact's widget or SDK sent with its latest
+            message in this conversation that carried them; absent when none did. Written by the
+            customer's client, so treat it as data from the customer.
+        client_info_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: When `client_info` was last written; absent with it.
         help_article_id:
           type: string
           format: uuid
@@ -36254,6 +36278,68 @@ components:
           type: string
           maxLength: 200
           description: The `visitor_id` of an earlier anonymous session in this browser.
+        client_info:
+          $ref: "#/components/schemas/ClientInfo"
+          description: |
+            The app and device details to keep on the session. Every message the session sends
+            carries them to its conversation and contact, unless the request sends its own.
+    ClientInfo:
+      type: object
+      description: |
+        App and device details a widget or SDK sends without the customer typing them. Every field
+        is optional; blank values count as absent, unknown keys are dropped, and a value longer
+        than its limit answers `400`. Members see the latest value on `Conversation` and `Contact`;
+        it is never returned on `/client/v1`.
+      properties:
+        app_version:
+          type: string
+          maxLength: 50
+        build:
+          type: string
+          maxLength: 50
+        sdk_name:
+          type: string
+          maxLength: 50
+          description: E.g. `yuva-js`, `yuva-swift`, `yuva-kotlin`.
+        sdk_version:
+          type: string
+          maxLength: 50
+        platform:
+          $ref: "#/components/schemas/ClientPlatform"
+        os:
+          type: string
+          maxLength: 50
+        os_version:
+          type: string
+          maxLength: 50
+        device_manufacturer:
+          type: string
+          maxLength: 100
+        device_model:
+          type: string
+          maxLength: 100
+        app_locale:
+          type: string
+          maxLength: 35
+        device_locale:
+          type: string
+          maxLength: 35
+        timezone:
+          type: string
+          maxLength: 64
+          description: An IANA time zone, e.g. `Europe/Istanbul`.
+        screen:
+          type: string
+          maxLength: 50
+          description: Width x height in pixels, e.g. `1080x2340`.
+        free_storage_mb:
+          type: integer
+          format: int64
+          minimum: 0
+    ClientPlatform:
+      type: string
+      enum: [ios, android, web]
+      x-enum-varnames: [ClientPlatformIos, ClientPlatformAndroid, ClientPlatformWeb]
     ClientMember:
       type: object
       description: What a contact may see of a member.
@@ -36678,6 +36764,11 @@ components:
           minLength: 1
           maxLength: 200
           description: Makes the request idempotent within the conversation.
+        client_info:
+          $ref: "#/components/schemas/ClientInfo"
+          description: |
+            Replaces the session's `client_info` from this request on, so an SDK can refresh it
+            without a new session. In multipart, a `client_info` part holding the JSON object.
     ClientMessageCreateMultipart:
       type: object
       properties:
@@ -36688,6 +36779,11 @@ components:
           type: string
           minLength: 1
           maxLength: 200
+        client_info:
+          $ref: "#/components/schemas/ClientInfo"
+          description: |
+            Replaces the session's `client_info` from this request on, so an SDK can refresh it
+            without a new session. In multipart, a `client_info` part holding the JSON object.
         files:
           type: array
           maxItems: 10
@@ -36721,6 +36817,11 @@ components:
           type: string
           format: uuid
           description: The help article the visitor read just before writing; kept only when it is a published article of the inbox's center, dropped otherwise.
+        client_info:
+          $ref: "#/components/schemas/ClientInfo"
+          description: |
+            Replaces the session's `client_info` from this request on, so an SDK can refresh it
+            without a new session. In multipart, a `client_info` part holding the JSON object.
     ClientConversationCreateMultipart:
       type: object
       properties:
@@ -36746,6 +36847,11 @@ components:
           type: string
           format: uuid
           description: The help article the visitor read just before writing; kept only when it is a published article of the inbox's center, dropped otherwise.
+        client_info:
+          $ref: "#/components/schemas/ClientInfo"
+          description: |
+            Replaces the session's `client_info` from this request on, so an SDK can refresh it
+            without a new session. In multipart, a `client_info` part holding the JSON object.
         files:
           type: array
           maxItems: 10

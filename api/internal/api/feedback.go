@@ -260,6 +260,9 @@ func (s *Server) CreateClientFeedback(ctx context.Context, req oas.CreateClientF
 		if err != nil {
 			return err
 		}
+		if c, err = s.writeClientInfo(ctx, q, events, cp, c, true); err != nil {
+			return err
+		}
 		msg, _, err := s.addContactMessage(ctx, q, events, cp, c, in, true)
 		if err != nil {
 			return err

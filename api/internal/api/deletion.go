@@ -407,6 +407,9 @@ func forgetContact(ctx context.Context, q *store.Queries, workspaceID, contactID
 // mergeContactCopies forgets the events and webhook deliveries about a contact merged into
 // another, and hands the target those of the messages that move with its conversations.
 func mergeContactCopies(ctx context.Context, q *store.Queries, workspaceID, from, to uuid.UUID) error {
+	if err := q.MergeContactClientInfo(ctx, store.MergeContactClientInfoParams{WorkspaceID: workspaceID, FromContact: from, ToContact: to}); err != nil {
+		return err
+	}
 	if err := forgetContact(ctx, q, workspaceID, from, true); err != nil {
 		return err
 	}

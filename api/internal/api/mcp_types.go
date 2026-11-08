@@ -13,6 +13,7 @@ type mcpConversationContent struct {
 	ContactEmail string            `json:"contact_email,omitempty" jsonschema:"the contact's first e-mail address"`
 	LastMessage  string            `json:"last_message,omitempty" jsonschema:"a preview of the last message"`
 	Feedback     map[string]string `json:"feedback,omitempty" jsonschema:"what the customer's app reported with feedback: app version, device, screen and so on"`
+	ClientInfo   *oas.ClientInfo   `json:"client_info,omitempty" jsonschema:"app and device details the contact's widget or SDK sent with its latest message here: app version and build, SDK, platform, OS, device, locales, timezone, screen"`
 }
 
 type mcpConversation struct {
@@ -38,6 +39,7 @@ type mcpConversation struct {
 	CreatedAt          time.Time              `json:"created_at"`
 	LastActivityAt     time.Time              `json:"last_activity_at"`
 	SLA                *oas.ConversationSla   `json:"sla,omitempty" jsonschema:"the SLA policy that applies: state (on_track, due_soon, breached, met or paused), due_at and its targets; absent when none applies"`
+	ClientInfoAt       *time.Time             `json:"client_info_at,omitempty" jsonschema:"when customer_content.client_info was last written"`
 	CustomerContent    mcpConversationContent `json:"customer_content"`
 }
 
@@ -79,7 +81,7 @@ func conversationOut(c oas.Conversation) mcpConversation {
 		IdeaID: idea, ID: c.Id, InboxID: c.InboxId, ContactID: c.ContactId, Kind: string(c.Kind), Status: string(c.Status),
 		Priority: string(c.Priority), AssigneeID: c.AssigneeId, TeamID: c.TeamId, AssignWaitingSince: c.AssignWaitingSince, Labels: labels, Spam: c.Spam, SnoozeUntil: c.SnoozeUntil,
 		FeedbackCategory: cat, FeedbackScore: score, FeedbackProgress: progress, CreatedAt: c.CreatedAt, LastActivityAt: c.LastActivityAt,
-		SLA: c.Sla, CustomerContent: mcpConversationContent{Subject: c.Subject, Feedback: fb}, Fields: c.Fields,
+		SLA: c.Sla, CustomerContent: mcpConversationContent{Subject: c.Subject, Feedback: fb, ClientInfo: c.ClientInfo}, Fields: c.Fields, ClientInfoAt: c.ClientInfoAt,
 	}
 }
 
@@ -243,6 +245,7 @@ type mcpContactContent struct {
 	Emails      []string        `json:"emails"`
 	ExternalIDs []mcpExternalID `json:"external_ids" jsonschema:"the contact's ids in the host apps, per inbox"`
 	Attributes  map[string]any  `json:"attributes" jsonschema:"attributes the host app or the contact set"`
+	ClientInfo  *oas.ClientInfo `json:"client_info,omitempty" jsonschema:"app and device details of the contact's latest message, in any conversation, that carried them"`
 }
 
 type mcpContact struct {
@@ -252,13 +255,15 @@ type mcpContact struct {
 	UndeliverableAddress int               `json:"undeliverable_addresses" jsonschema:"how many of the contact's addresses bounced or complained"`
 	CreatedAt            time.Time         `json:"created_at"`
 	UpdatedAt            time.Time         `json:"updated_at"`
+	ClientInfoAt         *time.Time        `json:"client_info_at,omitempty" jsonschema:"when customer_content.client_info was last written"`
 	CustomerContent      mcpContactContent `json:"customer_content"`
 }
 
 func contactOut(c oas.Contact) mcpContact {
 	out := mcpContact{
 		ID: c.Id, Blocked: c.Blocked, UndeliverableAddress: len(c.Undeliverable), CreatedAt: c.CreatedAt, UpdatedAt: c.UpdatedAt,
-		CustomerContent: mcpContactContent{Name: c.Name, Emails: []string{}, ExternalIDs: []mcpExternalID{}, Attributes: map[string]any{}},
+		CustomerContent: mcpContactContent{Name: c.Name, Emails: []string{}, ExternalIDs: []mcpExternalID{}, Attributes: map[string]any{}, ClientInfo: c.ClientInfo},
+		ClientInfoAt:    c.ClientInfoAt,
 	}
 	if c.Locale != nil {
 		out.Locale = *c.Locale

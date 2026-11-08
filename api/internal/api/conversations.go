@@ -231,6 +231,7 @@ func conversationFields(c store.Conversation, labels []uuid.UUID) oas.Conversati
 		out.TrashedBy = &oas.ConversationTrashedBy{MemberId: c.TrashedByMemberID, ApiKeyId: c.TrashedByApiKeyID}
 		out.DeletesAt = new(trashExpiry(*c.TrashedAt))
 	}
+	out.ClientInfo, out.ClientInfoAt = decodeClientInfo(c.ClientInfo, c.ClientInfoAt)
 	return out
 }
 

@@ -83,6 +83,14 @@ func (s *Server) contactBodies(ctx context.Context, q *store.Queries, workspaceI
 	for _, x := range inboxes {
 		byInbox[x.ContactID] = append(byInbox[x.ContactID], oas.ContactInbox{Id: x.InboxID, Name: x.Name})
 	}
+	infos, err := q.ListContactClientInfo(ctx, store.ListContactClientInfoParams{WorkspaceID: workspaceID, ContactIds: ids})
+	if err != nil {
+		return nil, err
+	}
+	byInfo := map[uuid.UUID]store.ListContactClientInfoRow{}
+	for _, x := range infos {
+		byInfo[x.ID] = x
+	}
 	byExternal := map[uuid.UUID][]oas.ExternalId{}
 	for _, x := range externals {
 		byExternal[x.ContactID] = append(byExternal[x.ContactID], oas.ExternalId{InboxId: x.InboxID, ExternalId: x.ExternalID})
@@ -108,6 +116,9 @@ func (s *Server) contactBodies(ctx context.Context, q *store.Queries, workspaceI
 			c.ExternalIds = []oas.ExternalId{}
 		}
 		_ = json.Unmarshal(r.Attributes, &c.Attributes)
+		if x, ok := byInfo[r.ID]; ok {
+			c.ClientInfo, c.ClientInfoAt = decodeClientInfo(x.ClientInfo, x.ClientInfoAt)
+		}
 		out[i] = c
 	}
 	return out, nil

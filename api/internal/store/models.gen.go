@@ -817,6 +817,8 @@ type Contact struct {
 	DiscussionsBlockedAt *time.Time
 	MigrationID          *uuid.UUID
 	CreatedBy            *uuid.UUID
+	ClientInfo           []byte
+	ClientInfoAt         *time.Time
 }
 
 type ContactEmail struct {
@@ -864,6 +866,7 @@ type ContactSession struct {
 	ExpiresAt    time.Time
 	LastSeenAt   time.Time
 	FirstEventID int64
+	ClientInfo   []byte
 }
 
 type Conversation struct {
@@ -915,6 +918,8 @@ type Conversation struct {
 	AssignWaitingSince    *time.Time
 	AssignAfterRules      bool
 	DraftOf               *uuid.UUID
+	ClientInfo            []byte
+	ClientInfoAt          *time.Time
 }
 
 type ConversationLabel struct {

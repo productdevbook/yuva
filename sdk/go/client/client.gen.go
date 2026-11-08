@@ -2544,6 +2544,27 @@ func (e ClientMessageEventType) Valid() bool {
 	}
 }
 
+// Defines values for ClientPlatform.
+const (
+	ClientPlatformAndroid ClientPlatform = "android"
+	ClientPlatformIos     ClientPlatform = "ios"
+	ClientPlatformWeb     ClientPlatform = "web"
+)
+
+// Valid indicates whether the value is a known member of the ClientPlatform enum.
+func (e ClientPlatform) Valid() bool {
+	switch e {
+	case ClientPlatformAndroid:
+		return true
+	case ClientPlatformIos:
+		return true
+	case ClientPlatformWeb:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ClientPresenceEventType.
 const (
 	Presence ClientPresenceEventType = "presence"
@@ -13169,6 +13190,10 @@ type ClientConversationCreate struct {
 	// ClientId The first message's `client_id`.
 	ClientId *string `json:"client_id,omitempty"`
 
+	// ClientInfo Replaces the session's `client_info` from this request on, so an SDK can refresh it
+	// without a new session. In multipart, a `client_info` part holding the JSON object.
+	ClientInfo *ClientInfo `json:"client_info,omitempty"`
+
 	// HelpArticleId The help article the visitor read just before writing; kept only when it is a published article of the inbox's center, dropped otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
 
@@ -13182,9 +13207,13 @@ type ClientConversationCreate struct {
 
 // ClientConversationCreateMultipart defines model for ClientConversationCreateMultipart.
 type ClientConversationCreateMultipart struct {
-	Body     *string               `json:"body,omitempty"`
-	ClientId *string               `json:"client_id,omitempty"`
-	Files    *[]openapi_types.File `json:"files,omitempty"`
+	Body     *string `json:"body,omitempty"`
+	ClientId *string `json:"client_id,omitempty"`
+
+	// ClientInfo Replaces the session's `client_info` from this request on, so an SDK can refresh it
+	// without a new session. In multipart, a `client_info` part holding the JSON object.
+	ClientInfo *ClientInfo           `json:"client_info,omitempty"`
+	Files      *[]openapi_types.File `json:"files,omitempty"`
 
 	// HelpArticleId The help article the visitor read just before writing; kept only when it is a published article of the inbox's center, dropped otherwise.
 	HelpArticleId *uuid.UUID `json:"help_article_id,omitempty"`
@@ -13721,6 +13750,33 @@ type ClientInboxWhatsNew struct {
 	Url string `json:"url"`
 }
 
+// ClientInfo App and device details a widget or SDK sends without the customer typing them. Every field
+// is optional; blank values count as absent, unknown keys are dropped, and a value longer
+// than its limit answers `400`. Members see the latest value on `Conversation` and `Contact`;
+// it is never returned on `/client/v1`.
+type ClientInfo struct {
+	AppLocale          *string         `json:"app_locale,omitempty"`
+	AppVersion         *string         `json:"app_version,omitempty"`
+	Build              *string         `json:"build,omitempty"`
+	DeviceLocale       *string         `json:"device_locale,omitempty"`
+	DeviceManufacturer *string         `json:"device_manufacturer,omitempty"`
+	DeviceModel        *string         `json:"device_model,omitempty"`
+	FreeStorageMb      *int64          `json:"free_storage_mb,omitempty"`
+	Os                 *string         `json:"os,omitempty"`
+	OsVersion          *string         `json:"os_version,omitempty"`
+	Platform           *ClientPlatform `json:"platform,omitempty"`
+
+	// Screen Width x height in pixels, e.g. `1080x2340`.
+	Screen *string `json:"screen,omitempty"`
+
+	// SdkName E.g. `yuva-js`, `yuva-swift`, `yuva-kotlin`.
+	SdkName    *string `json:"sdk_name,omitempty"`
+	SdkVersion *string `json:"sdk_version,omitempty"`
+
+	// Timezone An IANA time zone, e.g. `Europe/Istanbul`.
+	Timezone *string `json:"timezone,omitempty"`
+}
+
 // ClientMailingList defines model for ClientMailingList.
 type ClientMailingList struct {
 	Description string    `json:"description"`
@@ -13792,13 +13848,21 @@ type ClientMessageCreate struct {
 
 	// ClientId Makes the request idempotent within the conversation.
 	ClientId *string `json:"client_id,omitempty"`
+
+	// ClientInfo Replaces the session's `client_info` from this request on, so an SDK can refresh it
+	// without a new session. In multipart, a `client_info` part holding the JSON object.
+	ClientInfo *ClientInfo `json:"client_info,omitempty"`
 }
 
 // ClientMessageCreateMultipart defines model for ClientMessageCreateMultipart.
 type ClientMessageCreateMultipart struct {
-	Body     *string               `json:"body,omitempty"`
-	ClientId *string               `json:"client_id,omitempty"`
-	Files    *[]openapi_types.File `json:"files,omitempty"`
+	Body     *string `json:"body,omitempty"`
+	ClientId *string `json:"client_id,omitempty"`
+
+	// ClientInfo Replaces the session's `client_info` from this request on, so an SDK can refresh it
+	// without a new session. In multipart, a `client_info` part holding the JSON object.
+	ClientInfo *ClientInfo           `json:"client_info,omitempty"`
+	Files      *[]openapi_types.File `json:"files,omitempty"`
 }
 
 // ClientMessageEvent A message was added or changed. `message.redacted`: a member removed its content; `data`
@@ -13835,6 +13899,9 @@ type ClientMessagePreview struct {
 	// Text The plain-text body on one line, cut to 140 characters with `...` when longer.
 	Text string `json:"text"`
 }
+
+// ClientPlatform defines model for ClientPlatform.
+type ClientPlatform string
 
 // ClientPresence Who can answer now, in a `live` inbox.
 type ClientPresence struct {
@@ -13967,6 +14034,10 @@ type ClientSession struct {
 type ClientSessionCreate struct {
 	// ChannelKey The chat or app channel's `public_key`.
 	ChannelKey string `json:"channel_key"`
+
+	// ClientInfo The app and device details to keep on the session. Every message the session sends
+	// carries them to its conversation and contact, unless the request sends its own.
+	ClientInfo *ClientInfo `json:"client_info,omitempty"`
 
 	// IdentityToken A JWT (HS256) from the host backend; see `sdk/go`.
 	IdentityToken *string `json:"identity_token,omitempty"`
@@ -14312,11 +14383,19 @@ type Contact struct {
 	Attributes Attributes `json:"attributes"`
 
 	// Blocked Mail and chat from a blocked contact are refused.
-	Blocked     bool         `json:"blocked"`
-	CreatedAt   time.Time    `json:"created_at"`
-	Emails      []Email      `json:"emails"`
-	ExternalIds []ExternalId `json:"external_ids"`
-	Id          uuid.UUID    `json:"id"`
+	Blocked bool `json:"blocked"`
+
+	// ClientInfo Read-only. The app and device details of the contact's latest message, in any of their
+	// conversations, that carried them; absent when none did. Written by the customer's
+	// client, so treat it as data from the customer.
+	ClientInfo *ClientInfo `json:"client_info,omitempty"`
+
+	// ClientInfoAt When `client_info` was last written; absent with it.
+	ClientInfoAt *time.Time   `json:"client_info_at,omitempty"`
+	CreatedAt    time.Time    `json:"created_at"`
+	Emails       []Email      `json:"emails"`
+	ExternalIds  []ExternalId `json:"external_ids"`
+	Id           uuid.UUID    `json:"id"`
 
 	// Inboxes The inboxes (products) where the contact has a conversation or an external id, limited
 	// to those the caller can see, sorted by name. Webhook payloads list all of them; realtime
@@ -14647,6 +14726,14 @@ type Conversation struct {
 	// ChannelKind Read-only: the kind of the channel it started on, kept when that channel is removed or
 	// the conversation moves to another inbox. Absent when it started without a channel.
 	ChannelKind *ChannelKind `json:"channel_kind,omitempty"`
+
+	// ClientInfo Read-only. The app and device details the contact's widget or SDK sent with its latest
+	// message in this conversation that carried them; absent when none did. Written by the
+	// customer's client, so treat it as data from the customer.
+	ClientInfo *ClientInfo `json:"client_info,omitempty"`
+
+	// ClientInfoAt When `client_info` was last written; absent with it.
+	ClientInfoAt *time.Time `json:"client_info_at,omitempty"`
 
 	// ClosedAt When it was last closed; absent when it never was.
 	ClosedAt  *time.Time `json:"closed_at,omitempty"`
@@ -15041,6 +15128,14 @@ type ConversationListItem struct {
 	// ChannelKind Read-only: the kind of the channel it started on, kept when that channel is removed or
 	// the conversation moves to another inbox. Absent when it started without a channel.
 	ChannelKind *ChannelKind `json:"channel_kind,omitempty"`
+
+	// ClientInfo Read-only. The app and device details the contact's widget or SDK sent with its latest
+	// message in this conversation that carried them; absent when none did. Written by the
+	// customer's client, so treat it as data from the customer.
+	ClientInfo *ClientInfo `json:"client_info,omitempty"`
+
+	// ClientInfoAt When `client_info` was last written; absent with it.
+	ClientInfoAt *time.Time `json:"client_info_at,omitempty"`
 
 	// ClosedAt When it was last closed; absent when it never was.
 	ClosedAt *time.Time `json:"closed_at,omitempty"`
@@ -24295,6 +24390,14 @@ type StatusIncidentConversation struct {
 	// ChannelKind Read-only: the kind of the channel it started on, kept when that channel is removed or
 	// the conversation moves to another inbox. Absent when it started without a channel.
 	ChannelKind *ChannelKind `json:"channel_kind,omitempty"`
+
+	// ClientInfo Read-only. The app and device details the contact's widget or SDK sent with its latest
+	// message in this conversation that carried them; absent when none did. Written by the
+	// customer's client, so treat it as data from the customer.
+	ClientInfo *ClientInfo `json:"client_info,omitempty"`
+
+	// ClientInfoAt When `client_info` was last written; absent with it.
+	ClientInfoAt *time.Time `json:"client_info_at,omitempty"`
 
 	// ClosedAt When it was last closed; absent when it never was.
 	ClosedAt *time.Time `json:"closed_at,omitempty"`

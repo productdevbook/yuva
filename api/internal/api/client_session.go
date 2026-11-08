@@ -67,6 +67,10 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 	} else if !ch.AllowAnonymous {
 		return nil, errAnonymousForbidden
 	}
+	info, err := cleanClientInfo(b.ClientInfo)
+	if err != nil {
+		return nil, err
+	}
 	var visitor string
 	if b.VisitorId != nil {
 		visitor = strings.TrimSpace(*b.VisitorId)
@@ -74,7 +78,7 @@ func (s *Server) CreateClientSession(ctx context.Context, req oas.CreateClientSe
 	chat := chatChannelOf(ch)
 	var out oas.ClientSession
 	for attempt := 0; ; attempt++ {
-		out, err = s.startContactSession(ctx, chat, s.effectiveLimits(ch.AttachmentMaxBytes, ch.AttachmentTypes), inbox, claims, visitor)
+		out, err = s.startContactSession(ctx, chat, s.effectiveLimits(ch.AttachmentMaxBytes, ch.AttachmentTypes), inbox, claims, visitor, info)
 		if err == nil || attempt == 1 || !store.IsUniqueViolation(err) {
 			break
 		}
@@ -129,7 +133,7 @@ func (s *Server) GetClientChannel(ctx context.Context, req oas.GetClientChannelR
 	return oas.GetClientChannel200JSONResponse(out), nil
 }
 
-func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel, limits attachLimits, inbox store.Inbox, claims *identityClaims, visitor string) (oas.ClientSession, error) {
+func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel, limits attachLimits, inbox store.Inbox, claims *identityClaims, visitor string, info []byte) (oas.ClientSession, error) {
 	ws := chat.WorkspaceID
 	var (
 		out     oas.ClientSession
@@ -164,7 +168,7 @@ func (s *Server) startContactSession(ctx context.Context, chat store.ChatChannel
 		token := contactTokenPrefix + randomToken(32)
 		sess, err := q.CreateContactSession(ctx, store.CreateContactSessionParams{
 			ID: newID(), WorkspaceID: ws, ChannelID: chat.ChannelID, InboxID: inbox.ID, ContactID: contact.ID,
-			TokenHash: hashSecret(token), Identified: claims != nil, Now: now, ExpiresAt: now.Add(contactSessionTTL),
+			TokenHash: hashSecret(token), Identified: claims != nil, Now: now, ExpiresAt: now.Add(contactSessionTTL), ClientInfo: info,
 		})
 		if err != nil {
 			return err

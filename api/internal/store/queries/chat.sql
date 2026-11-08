@@ -44,9 +44,9 @@ SELECT EXISTS (
 -- name: CreateContactSession :one
 WITH s AS (
     INSERT INTO contact_sessions (id, workspace_id, channel_id, inbox_id, contact_id, token_hash, identified,
-                                  created_at, expires_at, last_seen_at, first_event_id)
+                                  created_at, expires_at, last_seen_at, first_event_id, client_info)
     VALUES (@id, @workspace_id, @channel_id, @inbox_id, @contact_id, @token_hash, @identified, @now, @expires_at, @now,
-            (SELECT coalesce(max(e.id), 0) FROM events e WHERE e.workspace_id = @workspace_id))
+            (SELECT coalesce(max(e.id), 0) FROM events e WHERE e.workspace_id = @workspace_id), sqlc.narg(client_info)::jsonb)
     RETURNING *),
 seen AS (
     UPDATE contacts SET last_active_at = greatest(coalesce(contacts.last_active_at, s.last_seen_at), s.last_seen_at)
@@ -400,3 +400,28 @@ SELECT contact_id::uuid AS contact_id FROM realtime_connections
 WHERE workspace_id = @workspace_id AND contact_id IS NOT NULL
 GROUP BY contact_id
 HAVING max(seen_at) <= @fresh_after::timestamptz AND max(seen_at) > @lapsed_after::timestamptz;
+
+-- name: SetContactSessionClientInfo :exec
+UPDATE contact_sessions SET client_info = @client_info::jsonb
+WHERE workspace_id = @workspace_id AND id = @id;
+
+-- name: SetConversationClientInfo :one
+WITH c AS (
+    UPDATE conversations SET client_info = @client_info::jsonb, client_info_at = @now::timestamptz
+    WHERE conversations.workspace_id = @workspace_id AND conversations.id = @id
+    RETURNING *),
+ct AS (
+    UPDATE contacts SET client_info = c.client_info, client_info_at = c.client_info_at
+    FROM c WHERE contacts.workspace_id = c.workspace_id AND contacts.id = c.contact_id
+      AND (contacts.client_info_at IS NULL OR contacts.client_info_at <= c.client_info_at))
+SELECT * FROM c;
+
+-- name: ListContactClientInfo :many
+SELECT id, client_info, client_info_at FROM contacts
+WHERE workspace_id = @workspace_id AND id = ANY(@contact_ids::uuid[]) AND client_info IS NOT NULL;
+
+-- name: MergeContactClientInfo :exec
+UPDATE contacts t SET client_info = f.client_info, client_info_at = f.client_info_at
+FROM contacts f
+WHERE t.workspace_id = @workspace_id AND t.id = @to_contact AND f.workspace_id = @workspace_id AND f.id = @from_contact
+  AND f.client_info IS NOT NULL AND (t.client_info_at IS NULL OR t.client_info_at < f.client_info_at);

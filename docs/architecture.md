@@ -71,6 +71,22 @@ A feedback may carry a `score`, an integer 1 to 5 (`POST /client/v1/feedback`, `
 feedback is: the conversation and feedback listings, `feedback.score` in webhook payloads and `feedback_score` in
 the MCP `list_feedback` tool. Feedback sent without one, or before it existed, has none.
 
+Client details (migration 00147). Widgets and SDKs send app and device details the customer never
+types (`ClientInfo`: app version and build, SDK name and version, platform `ios`/`android`/`web`,
+OS and version, device maker and model, app and device locale, IANA timezone, screen, free storage;
+every field optional, trimmed, length-checked with `400`, unknown keys dropped) as `client_info` on
+`POST /client/v1/sessions`, kept on `contact_sessions.client_info`. `client_info` on a new
+conversation or message (JSON, or a multipart part holding the JSON object) replaces the session's
+value from that request on, so an SDK refreshes it without a new session. Every conversation,
+message and feedback the session writes copies the session's value to `conversations.client_info`
+(with `client_info_at`) and to the contact when it is not older than the contact's, so the contact
+holds the latest across their conversations; a contact merge keeps the newer one. A conversation
+that existed before hears `conversation.updated` when the value changed. Feedback keeps its own
+`FeedbackFields` unchanged. `/v1` returns read-only `client_info` and `client_info_at` on
+`Conversation` and `Contact` (and so in events and webhooks that carry them), absent when none;
+MCP returns `client_info` inside `customer_content` since the customer's client wrote it.
+`/client/v1` never returns it.
+
 Feedback has its own place (M18). It stays a conversation, so replies, notes, assignment, e-mail
 fallback, events and webhooks are the ones every conversation has; only where it is shown and what it
 is called change. Decisions:
@@ -1723,6 +1739,8 @@ inline thread inside a product's own panel.
   refused by CORS). App channels share the chat channels' settings table, with no origins.
 - The host app gets an identity token from its own backend and opens Yuva's screens or drives its
   own UI from the client.
+- The SDKs send the app's and device's details as `client_info` with the session and refresh them
+  on later conversations and messages; see "Client details" under Feedback.
 - Push: Yuva sends `message.created` webhooks to the host backend, which already holds the device
   tokens and APNs/FCM keys. The payload's `contact.online` says whether the contact had a live
   `/client/v1/realtime` connection (seen in the last 75 seconds) when the webhook was prepared;

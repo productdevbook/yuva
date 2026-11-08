@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	clientMessageFields      = []string{"body", "client_id"}
-	clientConversationFields = []string{"subject", "body", "client_id", "page_url", "page_title", "help_article_id"}
+	clientMessageFields      = []string{"body", "client_id", "client_info"}
+	clientConversationFields = []string{"subject", "body", "client_id", "page_url", "page_title", "help_article_id", "client_info"}
 )
 
 func clientAttachmentBody(a store.Attachment) oas.ClientAttachment {
@@ -387,6 +387,7 @@ func (s *Server) CreateClientConversation(ctx context.Context, req oas.CreateCli
 	var in *messageInput
 	var rawPage, rawTitle *string
 	var rawArticle *uuid.UUID
+	var info []byte
 	switch {
 	case req.JSONBody != nil:
 		b := req.JSONBody
@@ -395,10 +396,20 @@ func (s *Server) CreateClientConversation(ctx context.Context, req oas.CreateCli
 			in.body = *b.Body
 		}
 		rawPage, rawTitle, rawArticle = b.PageUrl, b.PageTitle, b.HelpArticleId
+		var err error
+		if info, err = cleanClientInfo(b.ClientInfo); err != nil {
+			return nil, err
+		}
 	case req.MultipartBody != nil:
 		var err error
 		if in, err = s.readMultipart(req.MultipartBody, cp.workspaceID, clientConversationFields, cp.attach); err != nil {
 			return nil, err
+		}
+		if v, ok := in.extra["client_info"]; ok {
+			if info, err = parseClientInfoField(v); err != nil {
+				in.close()
+				return nil, err
+			}
 		}
 		if v, ok := in.extra["page_url"]; ok {
 			rawPage = &v
@@ -416,6 +427,9 @@ func (s *Server) CreateClientConversation(ctx context.Context, req oas.CreateCli
 	}
 	defer in.close()
 	if err := s.validateClientInput(in); err != nil {
+		return nil, err
+	}
+	if err := s.useClientInfo(ctx, &cp, info); err != nil {
 		return nil, err
 	}
 	page, title := startPage(cp, rawPage, rawTitle)
@@ -462,6 +476,9 @@ func (s *Server) CreateClientConversation(ctx context.Context, req oas.CreateCli
 			Subject: subject, Priority: string(oas.Normal), PageUrl: page, PageTitle: title, HelpArticleID: article, Now: s.now(),
 		})
 		if err != nil {
+			return err
+		}
+		if c, err = s.writeClientInfo(ctx, q, events, cp, c, true); err != nil {
 			return err
 		}
 		body, err := conversationBody(ctx, q, c, nil)
@@ -536,6 +553,7 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 		return nil, err
 	}
 	var in *messageInput
+	var info []byte
 	switch {
 	case req.JSONBody != nil:
 		b := req.JSONBody
@@ -543,16 +561,29 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 		if b.Body != nil {
 			in.body = *b.Body
 		}
+		var err error
+		if info, err = cleanClientInfo(b.ClientInfo); err != nil {
+			return nil, err
+		}
 	case req.MultipartBody != nil:
 		var err error
 		if in, err = s.readMultipart(req.MultipartBody, cp.workspaceID, clientMessageFields, cp.attach); err != nil {
 			return nil, err
+		}
+		if v, ok := in.extra["client_info"]; ok {
+			if info, err = parseClientInfoField(v); err != nil {
+				in.close()
+				return nil, err
+			}
 		}
 	default:
 		return nil, errValidation("send application/json or multipart/form-data")
 	}
 	defer in.close()
 	if err := s.validateClientInput(in); err != nil {
+		return nil, err
+	}
+	if err := s.useClientInfo(ctx, &cp, info); err != nil {
 		return nil, err
 	}
 	stored, err := s.putUploads(ctx, in)
@@ -591,6 +622,9 @@ func (s *Server) CreateClientMessage(ctx context.Context, req oas.CreateClientMe
 			}
 		}
 		mark := len(events.items)
+		if c, err = s.writeClientInfo(ctx, q, events, cp, c, isNew); err != nil {
+			return err
+		}
 		if msg, atts, err = s.addContactMessage(ctx, q, events, cp, c, in, isNew); err != nil || !isNew {
 			return err
 		}
