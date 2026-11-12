@@ -309,6 +309,10 @@ msgstr "{author}、送信者: {by}"
 msgid "{available} of {total}"
 msgstr "{available} / {total}"
 
+#: src/features/team/TeamPage.tsx
+msgid "{available} of {total} available now"
+msgstr "{total} 人中 {available} 人が対応可能"
+
 #: src/features/home/HomePage.tsx
 msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
 msgstr "{bad, plural, other {低評価 # 件}}"
@@ -1773,6 +1777,7 @@ msgid "A real address where you receive post"
 msgstr "郵便物を受け取れる実際の住所"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "A reply and its actions in one step"
 msgstr "返信とそのアクションをひとつの操作で"
 
@@ -2545,6 +2550,7 @@ msgstr "すべてのプロダクト"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -2554,6 +2560,7 @@ msgstr "すべてのプロダクト"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "すべてのプロダクト"
 
@@ -3116,8 +3123,10 @@ msgstr "API"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API と MCP"
@@ -3137,6 +3146,7 @@ msgstr "API キー"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API キー"
 
@@ -3188,6 +3198,7 @@ msgstr "営業時間内のみオンライン表示にする"
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Appearance"
 msgstr "外観"
 
@@ -3558,6 +3569,7 @@ msgstr "オーディエンス"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "監査ログ"
 
@@ -3590,6 +3602,7 @@ msgstr "自動メールが自動返信のきっかけになることはありま
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "オートメーション"
 
@@ -3608,6 +3621,7 @@ msgstr "{until} まで利用可能"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "不在"
 
@@ -3616,6 +3630,7 @@ msgstr "不在"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "戻る"
 
@@ -3840,6 +3855,7 @@ msgstr "このワークスペースではボットの送信が許可されてお
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "このワークスペースではボットは送信できません。キーはドラフトを書き、メンバーが送信します。"
 
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Bots may send"
 msgstr "ボットの送信を許可"
@@ -3894,6 +3910,7 @@ msgid "Breached, met late at {at}"
 msgstr "違反、{at} に遅れて達成"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Gmail、Yandex、または任意の IMAP サーバーからメールボックスの履歴を取り込む"
 
@@ -4135,6 +4152,7 @@ msgstr "キャンセルしました。それまでに追加された分は残り
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "定型返信"
 
@@ -4341,6 +4359,7 @@ msgstr "チャンネル設定"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Channels"
@@ -4349,6 +4368,10 @@ msgstr "チャネル"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Channels and inboxes"
 msgstr "チャンネルと受信トレイ"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Channels needing attention: {attention}"
+msgstr "要確認のチャネル: {attention}"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -4977,6 +5000,7 @@ msgid "Connect an assistant"
 msgstr "アシスタントを接続"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Claude や ChatGPT などのアシスタントを接続"
 
@@ -5006,6 +5030,7 @@ msgid "Connect your iOS or Android app"
 msgstr "iOS または Android アプリを接続"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "サーバーとボットを Yuva に接続"
 
@@ -5048,6 +5073,7 @@ msgstr "{created} に接続"
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "接続済みアプリ"
@@ -5194,6 +5220,7 @@ msgid "contains"
 msgstr "を含む"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "コンテンツ"
 
@@ -5283,6 +5310,7 @@ msgstr "会話"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "会話"
 
@@ -5731,6 +5759,7 @@ msgstr "カスタムフィールド"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "カスタムフィールド"
 
@@ -6327,10 +6356,12 @@ msgstr "このサイトのデスクトップ通知はブラウザーの設定で
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Details"
 msgstr "詳細"
 
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Developers"
 msgstr "開発者"
 
@@ -7497,6 +7528,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -8162,6 +8194,7 @@ msgstr "チーム「{team}」に {inbox} へのアクセスを付与"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
 msgstr "全般"
@@ -8336,6 +8369,7 @@ msgid "Groups claim"
 msgstr "Groups claim"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Groups of members and the inboxes they cover"
 msgstr "メンバーのグループと、その対象の受信トレイ"
 
@@ -8648,6 +8682,7 @@ msgid "How mail reaches Yuva"
 msgstr "メールが Yuva に届く仕組み"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "メッセージの届き方：チャット、メール、アプリ"
 
@@ -8845,6 +8880,7 @@ msgid "Import steps"
 msgstr "インポートの手順"
 
 #: src/components/common/ImportedChip.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "インポート済み"
@@ -9251,6 +9287,7 @@ msgstr "Issue address"
 #: src/app/Palette.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Issue trackers"
 msgstr "Issue trackers"
 
@@ -9592,6 +9629,7 @@ msgstr "ラベルのみ: メールは「すべてのメール」から取り込�
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "ラベル"
@@ -9879,6 +9917,7 @@ msgid "Let your team sign in through your company's identity provider. Their e-m
 msgstr "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Let your team sign in through your identity provider"
 msgstr "Let your team sign in through your identity provider"
 
@@ -10257,6 +10296,7 @@ msgstr "マクロ"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "マクロ"
 
@@ -10689,6 +10729,7 @@ msgstr "メンバー"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -11192,8 +11233,10 @@ msgstr "ゴミ箱に移動 ({0})"
 msgid "Move to the Trash (#)"
 msgstr "ゴミ箱に移動 (#)"
 
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Move to Yuva"
 msgstr "Yuva に移行"
 
@@ -11288,6 +11331,7 @@ msgstr "自分のビュー"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -12940,6 +12984,7 @@ msgstr "購読者への通知"
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Notifications"
 msgstr "通知"
 
@@ -12990,8 +13035,10 @@ msgstr "オフ"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
@@ -13034,6 +13081,7 @@ msgstr "登録フォームと設定ページに表示されます。非公開リ
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "オフライン"
 
@@ -13075,7 +13123,9 @@ msgid "Oldest wait"
 msgstr "最長の待ち時間"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "オン"
@@ -14663,6 +14713,7 @@ msgid "Post an update ({updateKey})"
 msgstr "更新を投稿（{updateKey}）"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Post conversations to a channel and answer from it"
 msgstr "Post conversations to a channel and answer from it"
 
@@ -14849,6 +14900,7 @@ msgstr "本番バックエンド"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
@@ -14857,6 +14909,7 @@ msgstr "製品"
 #: src/app/Palette.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Profile"
 msgstr "プロフィール"
 
@@ -15259,6 +15312,11 @@ msgstr "チームのアドレスを提案するために読み取ります。メ
 #: src/components/common/text.ts
 msgid "Read What's new changelogs and their entries"
 msgstr "「新着情報」の変更履歴とそのエントリを読み取る"
+
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
+msgid "Read-only"
+msgstr "読み取り専用"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
@@ -15912,6 +15970,7 @@ msgid "Reply and resolution targets for the conversations a policy matches. The 
 msgstr "ポリシーに一致する会話の返信目標と解決目標です。会話に一致する最初の有効なポリシーが適用されるため、より限定的なものを上に置いてください。目標は各受信トレイの営業時間で数えられます。"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Reply and resolution targets with due times"
 msgstr "期限付きの返信目標と解決目標"
 
@@ -16287,6 +16346,7 @@ msgid "Right after subscribing, people get a short mail that confirms it, with a
 msgstr "登録直後に、確認用の短いメールが配信停止リンク付きで届きます。"
 
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "現在"
 
@@ -16299,6 +16359,7 @@ msgstr "現在"
 msgid "Roadmap"
 msgstr "ロードマップ"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "ロール"
@@ -16388,6 +16449,7 @@ msgstr "ルール {rule} が実行されました。変更の必要はありま�
 msgid "Rule {rule} ran: {done}"
 msgstr "ルール {rule} が実行されました: {done}"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "ルール"
@@ -16397,6 +16459,7 @@ msgid "Rules react to a conversation changing: they label, assign, reply, snooze
 msgstr "ルールは会話の変化に反応して、ラベル付け、割り当て、返信、スヌーズ、Webhook の呼び出しを行います。このリストの順に、トリガーごとに最大1回だけ実行され、ルールが行った変更が別のルールを起動することはありません。"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "ラベル付け、割り当て、返信、Webhook 呼び出しを行うルール"
 
@@ -16726,6 +16789,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "検索"
@@ -16870,6 +16934,10 @@ msgstr "Secret set"
 #: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "セクション"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Security"
+msgstr "セキュリティ"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
@@ -17062,6 +17130,7 @@ msgid "Send events"
 msgstr "イベントを送信"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send events to your own server"
 msgstr "自分のサーバーにイベントを送信"
 
@@ -17105,6 +17174,7 @@ msgid "Send later, in an e-mail reply"
 msgstr "あとで送信、メール返信で"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send mail from your own address"
 msgstr "自分のアドレスからメールを送信"
 
@@ -17588,6 +17658,7 @@ msgstr "設定中…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
@@ -18022,6 +18093,7 @@ msgstr "春のフェアでの申込用紙"
 #: src/app/Palette.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Signature"
 msgstr "Signature"
@@ -18101,6 +18173,7 @@ msgstr "シングルオプトイン"
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18204,6 +18277,7 @@ msgstr "SLA 達成 / 違反"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "SLA policies"
 msgstr "SLA ポリシー"
 
@@ -18212,6 +18286,7 @@ msgid "SLA targets (W)"
 msgstr "SLA の目標 (W)"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Slack"
 msgstr "Slack"
@@ -18414,6 +18489,7 @@ msgid "Sort conversations by topic. Each label also gets its own view in the sid
 msgstr "会話をトピックごとに整理します。各ラベルにはサイドバーに専用のビューもできます。"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Sort conversations your way"
 msgstr "会話を自分好みに整理"
 
@@ -18621,6 +18697,7 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS(ポート 587)"
 
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18665,6 +18742,7 @@ msgstr "ダウン時の状態"
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "ステータス"
 
@@ -18699,6 +18777,7 @@ msgid "Stay under your provider’s sending rate. Support replies are never slow
 msgstr "プロバイダーの送信レート内に収めます。サポートへの返信が一斉配信で遅くなることはありません。"
 
 #: src/components/common/Wizard.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Step {step} of {count}"
 msgstr "手順 {step} / {count}"
 
@@ -19097,7 +19176,9 @@ msgstr "teammate@company.com"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Teams"
 msgstr "チーム"
 
@@ -20287,6 +20368,7 @@ msgid "The workspace may not send bulk mail now"
 msgstr "現在、ワークスペースは一括メールを送信できません"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "The workspace: labels, replies, data"
 msgstr "ワークスペース：ラベル、返信、データ"
 
@@ -20339,6 +20421,7 @@ msgid "Theme"
 msgstr "テーマ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "このデバイスのテーマとメール表示"
 
@@ -21069,6 +21152,7 @@ msgstr "宛先: {who}"
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Today"
 msgstr "今日"
 
@@ -21226,6 +21310,7 @@ msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's
 msgstr "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Turn feedback into GitHub or Linear issues"
 msgstr "Turn feedback into GitHub or Linear issues"
 
@@ -21310,6 +21395,7 @@ msgid "Type your e-mail address to confirm"
 msgstr "確認のため、メールアドレスを入力してください"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Typed values on conversations and contacts"
 msgstr "会話と連絡先の型付きの値"
 
@@ -21988,6 +22074,10 @@ msgstr "Verify"
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "信頼する前にすべてのリクエストを検証してください。<0>webhook-signature</0> ヘッダーは <1>Standard Webhooks</1> 仕様に従っているため、そのライブラリであればどれでも、エンドポイントのシークレットで検証できます。Go のバックエンドでは、Yuva リポジトリの <2>sdk/go/webhook</2> パッケージを使えます。"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Version"
+msgstr "バージョン"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
 msgstr "バージョン"
@@ -22289,6 +22379,7 @@ msgstr "Webhook secret for {revealName}"
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhooks"
@@ -22469,10 +22560,12 @@ msgid "What will you use Yuva for?"
 msgstr "Yuva を何に使いますか?"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What you write often"
 msgstr "よく書く内容"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What your e-mailed replies end with"
 msgstr "What your e-mailed replies end with"
 
@@ -22586,6 +22679,7 @@ msgid "When to notify me"
 msgstr "通知するタイミング"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "When we let you know"
 msgstr "お知らせするタイミング"
 
@@ -22690,6 +22784,7 @@ msgid "Who can use it"
 msgstr "使える人"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who changed access, keys and data"
 msgstr "アクセス、キー、データを変更した人"
 
@@ -22723,6 +22818,7 @@ msgid "Who should take it?"
 msgstr "誰が担当しますか?"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "サポート対象：名前、営業時間、チーム、送信者"
 
@@ -22841,6 +22937,7 @@ msgstr "作業中…"
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
@@ -22957,6 +23054,7 @@ msgstr "昨日"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "You"
 msgstr "あなた"
 
@@ -23168,6 +23266,7 @@ msgstr "Your account is not in a group that may use Yuva. Ask your administrator
 
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "あなたのアドレス"
 

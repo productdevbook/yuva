@@ -1,9 +1,11 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 
+import { TopPortal } from "@/components/common"
 import { SettingsStrip } from "@/components/common/SettingsStrip"
 import { useMigrations } from "@/features/migrations/queries"
 import { useAutomationRules } from "@/features/settings/automation/queries"
-import { PageHeader, PageTabs, type PageTab } from "@/features/settings/ui"
+import { useSettingsNames } from "@/features/settings/SettingsFrame"
+import { PageHeader, PageTabs, useFlatSettings, type PageTab } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
 import { useCannedReplies, useCustomFields, useLabels, useMacros, useSlaPolicies, useTeams } from "@/lib/workspace"
 
@@ -100,16 +102,24 @@ export function useGeneralTabItems(): PageTab[] {
 
 export function GeneralTabs({ current }: { current: Tab }) {
   const { t } = useLingui()
-  return <PageTabs label={t`General`} current={current} items={useGeneralTabItems()} />
+  const items = useGeneralTabItems()
+  const flat = useFlatSettings()
+  if (flat) return null
+  return <PageTabs label={t`General`} current={current} items={items} />
 }
 
 export function GeneralHeader({ current }: { current: Tab }) {
+  const names = useSettingsNames()
+  const flat = useFlatSettings()
+  const page = current === "workspace" ? undefined : names.place[current]
   return (
     <>
       <PageHeader
-        title={<Trans>General</Trans>}
+        title={flat && page ? page : <Trans>General</Trans>}
         description={
-          <Trans>The workspace itself: name, retention, labels, canned replies, moving in and the audit log</Trans>
+          !(flat && page) && (
+            <Trans>The workspace itself: name, retention, labels, canned replies, moving in and the audit log</Trans>
+          )
         }
         tabs={<GeneralTabs current={current} />}
       />
@@ -119,10 +129,13 @@ export function GeneralHeader({ current }: { current: Tab }) {
 }
 
 export function Intro({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
+  const flat = useFlatSettings()
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-      <p className="min-w-0 flex-1 basis-64 text-muted-foreground">{children}</p>
-      {action}
+      <p className="min-w-0 flex-1 basis-64 text-muted-foreground in-data-flat:max-w-[680px] in-data-flat:text-reading">
+        {children}
+      </p>
+      {action && (flat ? <TopPortal>{action}</TopPortal> : action)}
     </div>
   )
 }

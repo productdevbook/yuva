@@ -309,6 +309,10 @@ msgstr "{author}, enviat per {by}"
 msgid "{available} of {total}"
 msgstr "{available} de {total}"
 
+#: src/features/team/TeamPage.tsx
+msgid "{available} of {total} available now"
+msgstr "{available} de {total} disponibles ara"
+
 #: src/features/home/HomePage.tsx
 msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
 msgstr "{bad, plural, one {# valoració negativa} other {# valoracions negatives}}"
@@ -1773,6 +1777,7 @@ msgid "A real address where you receive post"
 msgstr "Una adreça real on rebis correu postal"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "A reply and its actions in one step"
 msgstr "Una resposta i les seves accions en un sol pas"
 
@@ -2545,6 +2550,7 @@ msgstr "tots els productes"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -2554,6 +2560,7 @@ msgstr "tots els productes"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "Tots els productes"
 
@@ -3116,8 +3123,10 @@ msgstr "API"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API i MCP"
@@ -3137,6 +3146,7 @@ msgstr "Clau d’API"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "Claus d'API"
 
@@ -3188,6 +3198,7 @@ msgstr "Apareix en línia només en horari laboral"
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Appearance"
 msgstr "Aspecte"
 
@@ -3558,6 +3569,7 @@ msgstr "Públic"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Registre d'auditoria"
 
@@ -3590,6 +3602,7 @@ msgstr "El correu automàtic mai no desencadena una resposta automàtica."
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Automatització"
 
@@ -3608,6 +3621,7 @@ msgstr "Disponible fins al {until}"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "Absent"
 
@@ -3616,6 +3630,7 @@ msgstr "Absent"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "Enrere"
 
@@ -3840,6 +3855,7 @@ msgstr "Els bots no poden enviar en aquest espai de treball, i aquesta resposta 
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "Els bots no poden enviar en aquest espai de treball: la clau escriu esborranys i un membre els envia."
 
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Bots may send"
 msgstr "Els bots poden enviar"
@@ -3894,6 +3910,7 @@ msgid "Breached, met late at {at}"
 msgstr "Incomplert, complert amb retard a les {at}"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Porta l'historial d'una bústia de Gmail, Yandex o qualsevol servidor IMAP"
 
@@ -4135,6 +4152,7 @@ msgstr "Cancel·lat. El que s'havia afegit abans es queda."
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Respostes predefinides"
 
@@ -4341,6 +4359,7 @@ msgstr "Configuració del canal"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Channels"
@@ -4349,6 +4368,10 @@ msgstr "Canals"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Channels and inboxes"
 msgstr "Canals i safates d'entrada"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Channels needing attention: {attention}"
+msgstr "Canals que necessiten atenció: {attention}"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -4977,6 +5000,7 @@ msgid "Connect an assistant"
 msgstr "Connecta un assistent"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Connecta un assistent com Claude o ChatGPT"
 
@@ -5006,6 +5030,7 @@ msgid "Connect your iOS or Android app"
 msgstr "Connecta la teva app d’iOS o Android"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "Connecta els teus servidors i bots a Yuva"
 
@@ -5048,6 +5073,7 @@ msgstr "Connectat {created}"
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "Aplicacions connectades"
@@ -5194,6 +5220,7 @@ msgid "contains"
 msgstr "conté"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "Contingut"
 
@@ -5283,6 +5310,7 @@ msgstr "converses"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "Converses"
 
@@ -5731,6 +5759,7 @@ msgstr "Camp personalitzat"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "Camps personalitzats"
 
@@ -6327,10 +6356,12 @@ msgstr "Les notificacions d'escriptori estan bloquejades per a aquest lloc a la 
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Details"
 msgstr "Detalls"
 
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Developers"
 msgstr "Desenvolupadors"
 
@@ -7497,6 +7528,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -8162,6 +8194,7 @@ msgstr "Ha donat a l'equip {team} accés a {inbox}"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
 msgstr "General"
@@ -8336,6 +8369,7 @@ msgid "Groups claim"
 msgstr "Groups claim"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Groups of members and the inboxes they cover"
 msgstr "Grups de membres i les safates que cobreixen"
 
@@ -8648,6 +8682,7 @@ msgid "How mail reaches Yuva"
 msgstr "Com arriba el correu a Yuva"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "Com arriben els missatges: xat, correu, aplicacions"
 
@@ -8845,6 +8880,7 @@ msgid "Import steps"
 msgstr "Passos d'importació"
 
 #: src/components/common/ImportedChip.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "Importat"
@@ -9251,6 +9287,7 @@ msgstr "Issue address"
 #: src/app/Palette.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Issue trackers"
 msgstr "Issue trackers"
 
@@ -9592,6 +9629,7 @@ msgstr "Només etiqueta: el seu correu ve de Tot el correu i les seves converses
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "Etiquetes"
@@ -9879,6 +9917,7 @@ msgid "Let your team sign in through your company's identity provider. Their e-m
 msgstr "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Let your team sign in through your identity provider"
 msgstr "Let your team sign in through your identity provider"
 
@@ -10257,6 +10296,7 @@ msgstr "Macro"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Macros"
 
@@ -10689,6 +10729,7 @@ msgstr "Membre"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -11192,8 +11233,10 @@ msgstr "Mou a la paperera ({0})"
 msgid "Move to the Trash (#)"
 msgstr "Mou a la paperera (#)"
 
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Move to Yuva"
 msgstr "Passa a Yuva"
 
@@ -11288,6 +11331,7 @@ msgstr "Les meves vistes"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -12940,6 +12984,7 @@ msgstr "Avisos als subscriptors"
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Notifications"
 msgstr "Notificacions"
 
@@ -12990,8 +13035,10 @@ msgstr "desactivat"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
@@ -13034,6 +13081,7 @@ msgstr "S'ofereix als formularis de subscripció i a la pàgina de preferències
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "Fora de línia"
 
@@ -13075,7 +13123,9 @@ msgid "Oldest wait"
 msgstr "Espera més llarga"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "Activat"
@@ -14663,6 +14713,7 @@ msgid "Post an update ({updateKey})"
 msgstr "Publica una actualització ({updateKey})"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Post conversations to a channel and answer from it"
 msgstr "Post conversations to a channel and answer from it"
 
@@ -14849,6 +14900,7 @@ msgstr "Backend de producció"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
@@ -14857,6 +14909,7 @@ msgstr "Productes"
 #: src/app/Palette.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Profile"
 msgstr "Perfil"
 
@@ -15259,6 +15312,11 @@ msgstr "Es llegeix per suggerir les adreces del teu equip: el seu correu ve de T
 #: src/components/common/text.ts
 msgid "Read What's new changelogs and their entries"
 msgstr "Llegeix els registres de canvis de Novetats i les seves entrades"
+
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
+msgid "Read-only"
+msgstr "Només lectura"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
@@ -15912,6 +15970,7 @@ msgid "Reply and resolution targets for the conversations a policy matches. The 
 msgstr "Objectius de resposta i resolució per a les converses amb què coincideix una política. S'aplica la primera política activada que coincideix amb una conversa, així que deixeu les més específiques a dalt. Els objectius compten dins l'horari laboral de cada safata."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Reply and resolution targets with due times"
 msgstr "Objectius de resposta i resolució amb venciments"
 
@@ -16287,6 +16346,7 @@ msgid "Right after subscribing, people get a short mail that confirms it, with a
 msgstr "Just després de subscriure's, les persones reben un correu breu que ho confirma, amb un enllaç de baixa."
 
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "Ara mateix"
 
@@ -16299,6 +16359,7 @@ msgstr "Ara mateix"
 msgid "Roadmap"
 msgstr "Full de ruta"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "Rol"
@@ -16388,6 +16449,7 @@ msgstr "La regla {rule} s'ha executat, no hi havia res per canviar"
 msgid "Rule {rule} ran: {done}"
 msgstr "La regla {rule} s'ha executat: {done}"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Regles"
@@ -16397,6 +16459,7 @@ msgid "Rules react to a conversation changing: they label, assign, reply, snooze
 msgstr "Les regles reaccionen quan una conversa canvia: etiqueten, assignen, responen, ajornen o criden un webhook. S'executen en l'ordre d'aquesta llista, com a màxim una vegada per disparador, i el que una regla canvia no inicia mai una altra regla."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "Regles que etiqueten, assignen, responen i criden webhooks"
 
@@ -16726,6 +16789,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "Cerca"
@@ -16870,6 +16934,10 @@ msgstr "Secret set"
 #: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "Seccions"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Security"
+msgstr "Seguretat"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
@@ -17062,6 +17130,7 @@ msgid "Send events"
 msgstr "Envia esdeveniments"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send events to your own server"
 msgstr "Envia esdeveniments al teu propi servidor"
 
@@ -17105,6 +17174,7 @@ msgid "Send later, in an e-mail reply"
 msgstr "Envia més tard, en una resposta per correu"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send mail from your own address"
 msgstr "Envia correu des de la teva adreça"
 
@@ -17588,6 +17658,7 @@ msgstr "Configurant…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
@@ -18022,6 +18093,7 @@ msgstr "Full de registre a la fira de primavera"
 #: src/app/Palette.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Signature"
 msgstr "Signature"
@@ -18101,6 +18173,7 @@ msgstr "Confirmació simple"
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18204,6 +18277,7 @@ msgstr "SLA complerts / incomplerts"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "SLA policies"
 msgstr "Polítiques d'SLA"
 
@@ -18212,6 +18286,7 @@ msgid "SLA targets (W)"
 msgstr "Objectius d'SLA (W)"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Slack"
 msgstr "Slack"
@@ -18414,6 +18489,7 @@ msgid "Sort conversations by topic. Each label also gets its own view in the sid
 msgstr "Ordena les converses per tema. Cada etiqueta també té la seva pròpia vista a la barra lateral."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Sort conversations your way"
 msgstr "Ordena les converses a la teva manera"
 
@@ -18621,6 +18697,7 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
 
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18665,6 +18742,7 @@ msgstr "Estat en caure"
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "Estat"
 
@@ -18699,6 +18777,7 @@ msgid "Stay under your provider’s sending rate. Support replies are never slow
 msgstr "Mantén-te per sota de la velocitat d'enviament del teu proveïdor. Les respostes de suport mai no les alenteix un enviament massiu."
 
 #: src/components/common/Wizard.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Step {step} of {count}"
 msgstr "Pas {step} de {count}"
 
@@ -19097,7 +19176,9 @@ msgstr "company@empresa.com"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Teams"
 msgstr "Equips"
 
@@ -20287,6 +20368,7 @@ msgid "The workspace may not send bulk mail now"
 msgstr "L'espai de treball ara no pot enviar correu massiu"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "The workspace: labels, replies, data"
 msgstr "L’espai de treball: etiquetes, respostes, dades"
 
@@ -20339,6 +20421,7 @@ msgid "Theme"
 msgstr "Tema"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Tema i vista de correu en aquest dispositiu"
 
@@ -21069,6 +21152,7 @@ msgstr "Per a: {who}"
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Today"
 msgstr "Avui"
 
@@ -21226,6 +21310,7 @@ msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's
 msgstr "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Turn feedback into GitHub or Linear issues"
 msgstr "Turn feedback into GitHub or Linear issues"
 
@@ -21310,6 +21395,7 @@ msgid "Type your e-mail address to confirm"
 msgstr "Escriu la teva adreça electrònica per confirmar"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Typed values on conversations and contacts"
 msgstr "Valors amb tipus a converses i contactes"
 
@@ -21988,6 +22074,10 @@ msgstr "Verify"
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Verifica cada sol·licitud abans de fiar-te'n: la capçalera <0>webhook-signature</0> segueix l'especificació <1>Standard Webhooks</1>, de manera que qualsevol de les seves biblioteques la pot comprovar amb el secret de l'endpoint. Els backends en Go poden fer servir el paquet <2>sdk/go/webhook</2> del repositori de Yuva."
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Version"
+msgstr "Versió"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
 msgstr "Versions"
@@ -22289,6 +22379,7 @@ msgstr "Webhook secret for {revealName}"
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhooks"
@@ -22469,10 +22560,12 @@ msgid "What will you use Yuva for?"
 msgstr "Per a què faràs servir Yuva?"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What you write often"
 msgstr "El que escrius sovint"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What your e-mailed replies end with"
 msgstr "What your e-mailed replies end with"
 
@@ -22586,6 +22679,7 @@ msgid "When to notify me"
 msgstr "Quan avisar-me"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "When we let you know"
 msgstr "Quan t'avisem"
 
@@ -22690,6 +22784,7 @@ msgid "Who can use it"
 msgstr "Qui la pot fer servir"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who changed access, keys and data"
 msgstr "Qui ha canviat accessos, claus i dades"
 
@@ -22723,6 +22818,7 @@ msgid "Who should take it?"
 msgstr "Qui se n'ha d'encarregar?"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "A qui dones suport: nom, horari, equip, remitent"
 
@@ -22841,6 +22937,7 @@ msgstr "Treballant…"
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
@@ -22957,6 +23054,7 @@ msgstr "Ahir"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "You"
 msgstr "Tu"
 
@@ -23168,6 +23266,7 @@ msgstr "Your account is not in a group that may use Yuva. Ask your administrator
 
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "Les teves adreces"
 

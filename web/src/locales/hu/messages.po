@@ -309,6 +309,10 @@ msgstr "{author}, küldte: {by}"
 msgid "{available} of {total}"
 msgstr "{available} / {total}"
 
+#: src/features/team/TeamPage.tsx
+msgid "{available} of {total} available now"
+msgstr "{available}/{total} elérhető most"
+
 #: src/features/home/HomePage.tsx
 msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
 msgstr "{bad, plural, one {# rossz értékelés} other {# rossz értékelés}}"
@@ -1773,6 +1777,7 @@ msgid "A real address where you receive post"
 msgstr "Valódi cím, ahol postát fogadsz"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "A reply and its actions in one step"
 msgstr "Egy válasz és műveletei egy lépésben"
 
@@ -2545,6 +2550,7 @@ msgstr "minden termék"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -2554,6 +2560,7 @@ msgstr "minden termék"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "Minden termék"
 
@@ -3116,8 +3123,10 @@ msgstr "API"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API és MCP"
@@ -3137,6 +3146,7 @@ msgstr "API-kulcs"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API-kulcsok"
 
@@ -3188,6 +3198,7 @@ msgstr "Csak munkaidőben jelenjen meg online"
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Appearance"
 msgstr "Megjelenés"
 
@@ -3558,6 +3569,7 @@ msgstr "Közönség"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Naplózás"
 
@@ -3590,6 +3602,7 @@ msgstr "Az automatikus levél soha nem vált ki automatikus választ."
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Automatizálás"
 
@@ -3608,6 +3621,7 @@ msgstr "Elérhető eddig: {until}"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "Távol"
 
@@ -3616,6 +3630,7 @@ msgstr "Távol"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "Vissza"
 
@@ -3840,6 +3855,7 @@ msgstr "A botok ebben a munkaterületben nem küldhetnek, és ezt a választ nem
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "A botok ebben a munkaterületben nem küldhetnek: a kulcs piszkozatokat ír, és egy tag küldi el őket."
 
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Bots may send"
 msgstr "Botok küldhetnek"
@@ -3894,6 +3910,7 @@ msgid "Breached, met late at {at}"
 msgstr "Sérült, késve teljesült: {at}"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Hozd át egy postafiók előzményeit a Gmailből, Yandexből vagy bármely IMAP-szerverről"
 
@@ -4135,6 +4152,7 @@ msgstr "Megszakítva. Ami előtte hozzáadódott, megmarad."
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Gyorsválaszok"
 
@@ -4341,6 +4359,7 @@ msgstr "Csatorna beállításai"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Channels"
@@ -4349,6 +4368,10 @@ msgstr "Csatornák"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Channels and inboxes"
 msgstr "Csatornák és postaládák"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Channels needing attention: {attention}"
+msgstr "Figyelmet igénylő csatornák: {attention}"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -4977,6 +5000,7 @@ msgid "Connect an assistant"
 msgstr "Asszisztens csatlakoztatása"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Csatlakoztass egy asszisztenst, például a Claude-ot vagy a ChatGPT-t"
 
@@ -5006,6 +5030,7 @@ msgid "Connect your iOS or Android app"
 msgstr "Kapcsold be az iOS- vagy Android-alkalmazásodat"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "Csatlakoztasd a szervereidet és botjaidat a Yuvához"
 
@@ -5048,6 +5073,7 @@ msgstr "Csatlakoztatva: {created}"
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "Csatlakoztatott alkalmazások"
@@ -5194,6 +5220,7 @@ msgid "contains"
 msgstr "tartalmazza"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "Tartalom"
 
@@ -5283,6 +5310,7 @@ msgstr "beszélgetés"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "Beszélgetések"
 
@@ -5731,6 +5759,7 @@ msgstr "Egyéni mező"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "Egyéni mezők"
 
@@ -6327,10 +6356,12 @@ msgstr "Az asztali értesítések le vannak tiltva ennél a webhelynél a böng�
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Details"
 msgstr "Részletek"
 
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Developers"
 msgstr "Fejlesztők"
 
@@ -7497,6 +7528,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -8162,6 +8194,7 @@ msgstr "Hozzáférést adott a(z) {team} csapatnak ide: {inbox}"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
 msgstr "Általános"
@@ -8336,6 +8369,7 @@ msgid "Groups claim"
 msgstr "Groups claim"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Groups of members and the inboxes they cover"
 msgstr "Tagok csoportjai és az általuk lefedett postafiókok"
 
@@ -8648,6 +8682,7 @@ msgid "How mail reaches Yuva"
 msgstr "Hogyan érkeznek a levelek a Yuvába"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "Hogyan érkeznek az üzenetek: csevegés, e-mail, alkalmazások"
 
@@ -8845,6 +8880,7 @@ msgid "Import steps"
 msgstr "Importálási lépések"
 
 #: src/components/common/ImportedChip.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "Importálva"
@@ -9251,6 +9287,7 @@ msgstr "Issue address"
 #: src/app/Palette.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Issue trackers"
 msgstr "Issue trackers"
 
@@ -9592,6 +9629,7 @@ msgstr "Csak címke: a levelei az Összes levélből jönnek, és a beszélgeté
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "Címkék"
@@ -9879,6 +9917,7 @@ msgid "Let your team sign in through your company's identity provider. Their e-m
 msgstr "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Let your team sign in through your identity provider"
 msgstr "Let your team sign in through your identity provider"
 
@@ -10257,6 +10296,7 @@ msgstr "Makró"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Makrók"
 
@@ -10689,6 +10729,7 @@ msgstr "Tag"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -11192,8 +11233,10 @@ msgstr "Kukába helyezés ({0})"
 msgid "Move to the Trash (#)"
 msgstr "Áthelyezés a kukába (#)"
 
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Move to Yuva"
 msgstr "Költözés a Yuvába"
 
@@ -11288,6 +11331,7 @@ msgstr "Saját nézeteim"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -12940,6 +12984,7 @@ msgstr "Értesítések a feliratkozóknak"
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Notifications"
 msgstr "Értesítések"
 
@@ -12990,8 +13035,10 @@ msgstr "ki"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
@@ -13034,6 +13081,7 @@ msgstr "Feliratkozási űrlapokon és a beállítások oldalon kínáljuk fel. A
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "Offline"
 
@@ -13075,7 +13123,9 @@ msgid "Oldest wait"
 msgstr "Leghosszabb várakozás"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "Be"
@@ -14663,6 +14713,7 @@ msgid "Post an update ({updateKey})"
 msgstr "Frissítés közzététele ({updateKey})"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Post conversations to a channel and answer from it"
 msgstr "Post conversations to a channel and answer from it"
 
@@ -14849,6 +14900,7 @@ msgstr "Éles háttérrendszer"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
@@ -14857,6 +14909,7 @@ msgstr "Termékek"
 #: src/app/Palette.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Profile"
 msgstr "Profil"
 
@@ -15259,6 +15312,11 @@ msgstr "Beolvasva a csapatod címeinek javaslatához: a levelei az Összes levé
 #: src/components/common/text.ts
 msgid "Read What's new changelogs and their entries"
 msgstr "Az Újdonságok változásnaplóinak és bejegyzéseinek olvasása"
+
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
+msgid "Read-only"
+msgstr "Csak olvasható"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
@@ -15912,6 +15970,7 @@ msgid "Reply and resolution targets for the conversations a policy matches. The 
 msgstr "Válasz- és megoldási célok azokhoz a beszélgetésekhez, amelyekre egy szabály illik. Az első bekapcsolt, a beszélgetésre illő szabály érvényes, ezért a legpontosabbakat tartsa legfelül. A célok az egyes postafiókok munkaidejében telnek."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Reply and resolution targets with due times"
 msgstr "Válasz- és megoldási célok határidőkkel"
 
@@ -16287,6 +16346,7 @@ msgid "Right after subscribing, people get a short mail that confirms it, with a
 msgstr "Közvetlenül a feliratkozás után az emberek kapnak egy rövid levelet, amely megerősíti, leiratkozási linkkel."
 
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "Épp most"
 
@@ -16299,6 +16359,7 @@ msgstr "Épp most"
 msgid "Roadmap"
 msgstr "Útiterv"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "Szerep"
@@ -16388,6 +16449,7 @@ msgstr "A(z) {rule} szabály lefutott, nem kellett semmit módosítani"
 msgid "Rule {rule} ran: {done}"
 msgstr "A(z) {rule} szabály lefutott: {done}"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "Szabályok"
@@ -16397,6 +16459,7 @@ msgid "Rules react to a conversation changing: they label, assign, reply, snooze
 msgstr "A szabályok egy beszélgetés változására reagálnak: címkéznek, hozzárendelnek, válaszolnak, elnapolnak vagy webhookot hívnak. A lista sorrendjében futnak, indítónként legfeljebb egyszer, és amit egy szabály módosít, az soha nem indít el másik szabályt."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "Szabályok, amelyek címkéznek, hozzárendelnek, válaszolnak és webhookot hívnak"
 
@@ -16726,6 +16789,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "Keresés"
@@ -16870,6 +16934,10 @@ msgstr "Secret set"
 #: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "Szakaszok"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Security"
+msgstr "Biztonság"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
@@ -17062,6 +17130,7 @@ msgid "Send events"
 msgstr "Események küldése"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send events to your own server"
 msgstr "Események küldése a saját szervered felé"
 
@@ -17105,6 +17174,7 @@ msgid "Send later, in an e-mail reply"
 msgstr "Küldés később, e-mailes válaszban"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send mail from your own address"
 msgstr "Küldj levelet a saját címedről"
 
@@ -17588,6 +17658,7 @@ msgstr "Beállítás…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
@@ -18022,6 +18093,7 @@ msgstr "Jelentkezési lap a tavaszi vásáron"
 #: src/app/Palette.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Signature"
 msgstr "Signature"
@@ -18101,6 +18173,7 @@ msgstr "Egyszeri opt-in"
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18204,6 +18277,7 @@ msgstr "SLA teljesítve / sérült"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "SLA policies"
 msgstr "SLA-szabályok"
 
@@ -18212,6 +18286,7 @@ msgid "SLA targets (W)"
 msgstr "SLA-célok (W)"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Slack"
 msgstr "Slack"
@@ -18414,6 +18489,7 @@ msgid "Sort conversations by topic. Each label also gets its own view in the sid
 msgstr "Rendezd a beszélgetéseket téma szerint. Minden címke saját nézetet is kap az oldalsávban."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Sort conversations your way"
 msgstr "Rendezd a beszélgetéseket a saját módodon"
 
@@ -18621,6 +18697,7 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (587-es port)"
 
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18665,6 +18742,7 @@ msgstr "Állapot leálláskor"
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "Állapot"
 
@@ -18699,6 +18777,7 @@ msgid "Stay under your provider’s sending rate. Support replies are never slow
 msgstr "Maradj a szolgáltatód küldési sebessége alatt. A támogatási válaszokat a tömeges levél soha nem lassítja."
 
 #: src/components/common/Wizard.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Step {step} of {count}"
 msgstr "{step}. lépés / {count}"
 
@@ -19097,7 +19176,9 @@ msgstr "kollega@ceg.hu"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Teams"
 msgstr "Csapatok"
 
@@ -20287,6 +20368,7 @@ msgid "The workspace may not send bulk mail now"
 msgstr "A munkaterület jelenleg nem küldhet tömeges levelet"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "The workspace: labels, replies, data"
 msgstr "A munkaterület: címkék, válaszok, adatok"
 
@@ -20339,6 +20421,7 @@ msgid "Theme"
 msgstr "Téma"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Téma és e-mail nézet ezen az eszközön"
 
@@ -21069,6 +21152,7 @@ msgstr "Címzett: {who}"
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Today"
 msgstr "Ma"
 
@@ -21226,6 +21310,7 @@ msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's
 msgstr "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Turn feedback into GitHub or Linear issues"
 msgstr "Turn feedback into GitHub or Linear issues"
 
@@ -21310,6 +21395,7 @@ msgid "Type your e-mail address to confirm"
 msgstr "A megerősítéshez írd be az e-mail-címedet"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Typed values on conversations and contacts"
 msgstr "Típusos értékek beszélgetéseken és kapcsolatokon"
 
@@ -21988,6 +22074,10 @@ msgstr "Verify"
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "Minden kérést ellenőrizz, mielőtt megbízol benne: a <0>webhook-signature</0> fejléc a <1>Standard Webhooks</1> specifikációt követi, így bármelyik könyvtára ellenőrizheti a végpont titkával. A Go-háttérrendszerek használhatják a Yuva-tárház <2>sdk/go/webhook</2> csomagját."
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Version"
+msgstr "Verzió"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
 msgstr "Verziók"
@@ -22289,6 +22379,7 @@ msgstr "Webhook secret for {revealName}"
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhooks"
@@ -22469,10 +22560,12 @@ msgid "What will you use Yuva for?"
 msgstr "Mire fogja használni a Yuvát?"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What you write often"
 msgstr "Amit gyakran írsz"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What your e-mailed replies end with"
 msgstr "What your e-mailed replies end with"
 
@@ -22586,6 +22679,7 @@ msgid "When to notify me"
 msgstr "Mikor értesítsen"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "When we let you know"
 msgstr "Mikor szólunk"
 
@@ -22690,6 +22784,7 @@ msgid "Who can use it"
 msgstr "Ki használhatja"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who changed access, keys and data"
 msgstr "Ki módosította a hozzáféréseket, kulcsokat és adatokat"
 
@@ -22723,6 +22818,7 @@ msgid "Who should take it?"
 msgstr "Ki vegye át?"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "Kit támogatsz: név, nyitvatartás, csapat, feladó"
 
@@ -22841,6 +22937,7 @@ msgstr "Dolgozik…"
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
@@ -22957,6 +23054,7 @@ msgstr "Tegnap"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "You"
 msgstr "Te"
 
@@ -23168,6 +23266,7 @@ msgstr "Your account is not in a group that may use Yuva. Ask your administrator
 
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "A címeid"
 

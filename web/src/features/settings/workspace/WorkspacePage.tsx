@@ -3,10 +3,13 @@ import { BuildingIcon, CompassIcon, MailIcon, TriangleAlertIcon, ChevronRightIco
 import { useState } from "react"
 import { Link } from "react-router"
 
+import { InfoSection, KV, PageHeading, PageTop as PageTopLine } from "@/components/common"
 import { formatDate, useEnumText } from "@/components/common/text"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PageTop, look } from "@/features/inbox/PageFrame"
 import { useGeneralTabItems } from "@/features/settings/GeneralTabs"
+import { SettingsAside } from "@/features/settings/SettingsFrame"
+import { useFlatSettings } from "@/features/settings/ui"
 import { BroadcastsSettings } from "@/features/settings/workspace/BroadcastsSettings"
 import { DeleteWorkspace } from "@/features/settings/workspace/DeleteWorkspace"
 import { FocusForm } from "@/features/settings/workspace/FocusForm"
@@ -121,7 +124,43 @@ function FactsStrip() {
   )
 }
 
+function FlatWorkspace() {
+  const { t } = useLingui()
+  const { membership } = useSession()
+  const flat = useFlatSettings()!
+  const facts = useFacts()
+  return (
+    <div className="@container flex flex-col" data-flat="" data-testid="settings">
+      <PageTopLine slot={flat.slot}>{flat.trail}</PageTopLine>
+      <div className="mt-3 flex max-w-[760px] min-w-0 flex-col gap-7">
+        <PageHeading
+          title={<Trans>General</Trans>}
+          lede={
+            <Trans>Your workspace name, how long closed conversations are kept, and who may send broadcasts.</Trans>
+          }
+        />
+        <RetentionForm key={`r${membership.workspace.retention_days ?? 0}`} />
+        <FocusForm key={`f${membership.workspace.focus ?? ""}`} />
+        <BroadcastsSettings />
+        <DeleteWorkspace />
+      </div>
+      <SettingsAside>
+        <InfoSection title={t`Details`} testId="workspace-facts">
+          {facts.map((f) => (
+            <KV key={f.key} label={f.label} value={f.value} />
+          ))}
+        </InfoSection>
+      </SettingsAside>
+    </div>
+  )
+}
+
 export function WorkspacePage() {
+  const flat = useFlatSettings()
+  return flat ? <FlatWorkspace /> : <StackedWorkspace />
+}
+
+function StackedWorkspace() {
   const { t } = useLingui()
   const { membership } = useSession()
   const tabs = useGeneralTabItems()

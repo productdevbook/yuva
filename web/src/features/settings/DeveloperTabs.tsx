@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useGrants } from "@/features/settings/connected-apps/queries"
-import { headButton, PageTabs } from "@/features/settings/ui"
+import { headButton, PageTabs, useFlatSettings } from "@/features/settings/ui"
 import { api, unwrap } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -27,12 +27,13 @@ export function DeveloperTabs({ current }: { current: Tab }) {
     enabled: canManage,
   })
   const grants = useGrants()
+  const flat = useFlatSettings()
   const hooks = useQuery({
     queryKey: keys.webhookList(ws, ""),
     queryFn: () => unwrap(api.GET("/v1/webhooks", { params: { query: {} } })).then((r) => r.items),
     enabled: canManage,
   })
-  if (!canManage) return null
+  if (!canManage || flat) return null
   return (
     <PageTabs
       label={t`API & MCP`}

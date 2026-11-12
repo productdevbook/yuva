@@ -5,7 +5,25 @@ import { useLayoutEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
 
 import { byPresence, useMemberStatus } from "@/app/TeamMenu"
-import { colorFor, Dot, ErrorLine } from "@/components/common"
+import {
+  colorFor,
+  Dot,
+  ErrorLine,
+  FlatEmpty,
+  FlatTag,
+  InfoSection,
+  KV,
+  ListRow,
+  NavGroup,
+  PageHeading,
+  PageTop as PageTopLine,
+  ProductsGroup,
+  SectionPage,
+  topButton,
+  topInk,
+  TopSep,
+  type NavItem,
+} from "@/components/common"
 import { formatDate, initials, ROLES, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,19 +41,23 @@ import { ConversationRows } from "@/features/contact/ContactDetails"
 import { rememberChip } from "@/features/inbox/ChatList"
 import { KpiTile } from "@/features/analytics/Overview"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { useListCursor } from "@/features/inbox/listCursor"
 import { FrameTabs, look, Overline, PageTop } from "@/features/inbox/PageFrame"
 import { LoadProblem, Tiles } from "@/features/reports/parts"
 import { useConversations, useCounts, useStats } from "@/features/inbox/queries"
 import { Chip, Field } from "@/features/settings/ui"
 import { MemberAddresses } from "@/features/team/MemberAddresses"
 import { RemoveMemberDialog } from "@/features/team/RemoveMemberDialog"
+import { SHORTCUTS } from "@/components/common/ShortcutSheet"
+import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { useNow } from "@/hooks/use-now"
 import { locales } from "@/i18n"
 import { api, ApiError, unwrap, type Invite, type Locale, type Member, type Role } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useAllInboxes, useInboxes, useMembers } from "@/lib/workspace"
+import { useAllInboxes, useInboxes, useMembers, useTeams } from "@/lib/workspace"
 
 type Presence = "here" | "away" | "offline"
 
@@ -233,7 +255,7 @@ function InviteRow({ invite }: { invite: Invite }) {
   const expired = new Date(invite.expires_at).getTime() < now
   return (
     <li
-      className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-4 py-3 last:border-b-0"
+      className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-4 py-3 last:border-b-0 in-data-flat:border-line-soft in-data-flat:px-1 in-data-flat:last:border-b"
       data-testid="invite-row"
     >
       <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground">
@@ -335,7 +357,10 @@ function InvitesTab({ invites, onInvite }: { invites: ReturnType<typeof useInvit
                 </Button>
               </div>
             ) : (
-              <ul className="overflow-hidden rounded-[14px] border bg-card" data-testid="invites">
+              <ul
+                className="overflow-hidden rounded-[14px] border bg-card in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-b-0 in-data-flat:border-line-soft in-data-flat:bg-transparent"
+                data-testid="invites"
+              >
                 {(invites.data ?? []).map((inv) => (
                   <InviteRow key={inv.id} invite={inv} />
                 ))}
@@ -381,8 +406,13 @@ function DetailSection({
   last?: boolean
 }) {
   return (
-    <section className={cn("flex flex-col gap-2.5 px-5 py-4", !last && "border-b")}>
-      <Overline className="flex items-center gap-2">
+    <section
+      className={cn(
+        "flex flex-col gap-2.5 px-5 py-4 in-data-flat:mt-6 in-data-flat:border-t-0 in-data-flat:border-b-0 in-data-flat:px-0 in-data-flat:py-0",
+        !last && "border-b"
+      )}
+    >
+      <Overline className="flex items-center gap-2 in-data-flat:text-caption in-data-flat:font-medium in-data-flat:tracking-normal in-data-flat:text-muted2 in-data-flat:normal-case">
         {title}
         {count !== undefined && (
           <span className="rounded-full bg-muted px-1.5 text-[11px] leading-4 font-medium tracking-normal text-muted-foreground tabular-nums">
@@ -395,7 +425,7 @@ function DetailSection({
   )
 }
 
-function MemberDetail({ member: m, load, products }: Detail) {
+function MemberDetail({ member: m, load, products, flat }: Detail & { flat?: boolean }) {
   const { t, i18n } = useLingui()
   const text = useEnumText()
   const hint = useRoleHint()
@@ -448,53 +478,75 @@ function MemberDetail({ member: m, load, products }: Detail) {
       ? t`An owner cannot be removed. Change their role first.`
       : t`Their conversations stay; they lose access at once.`
   const removable = canManage && !you && m.role !== "owner"
+  const viewing = s.conversationId && !you && (
+    <Button
+      variant="outline"
+      className={cn(look.btn, "justify-between bg-card", flat && "self-start")}
+      render={<Link to={`/conversations/${s.conversationId}`} />}
+      data-testid="member-viewing"
+    >
+      <Trans>Open what they see</Trans>
+      <ArrowUpRightIcon />
+    </Button>
+  )
   return (
-    <div className="flex min-w-0 flex-col" data-testid="member-page">
-      <div className="flex flex-col gap-4 border-b px-5 pt-5 pb-4">
-        <div className="flex items-start gap-3.5">
-          <PresenceFace m={m} className="size-14 text-[18px]" />
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5 leading-[1.35]">
-            <h2 className="text-[18px] leading-6 font-semibold break-words" data-testid="member-name">
-              {you ? t`${name} (you)` : name}
-            </h2>
-            {m.title && (
-              <span className="text-small text-muted-foreground" data-testid="member-title">
-                {m.title}
+    <div className="flex min-w-0 flex-col" data-flat={flat ? "" : undefined} data-testid="member-page">
+      {flat ? (
+        <div className="mt-3 flex flex-col gap-3">
+          <div className="flex items-start gap-3.5">
+            <PresenceFace m={m} className="size-12 text-[16px]" />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <h1 className="m-0 text-page leading-[34px] break-words" data-testid="member-name">
+                {you ? t`${name} (you)` : name}
+              </h1>
+              <p className="m-0 mt-0.5 text-reading text-muted-foreground">
+                {m.title && <span data-testid="member-title">{m.title} · </span>}
+                <bdi>{m.email}</bdi>
+              </p>
+              <span className={cn("text-small text-muted-foreground", s.conversationId && "text-ok")}>
+                {text.role[m.role]} · {s.text}
               </span>
-            )}
-            <bdi className="text-small break-words text-faint">{m.email}</bdi>
-            <span className={cn("text-caption text-faint", s.conversationId && "text-success")}>
-              {text.role[m.role]} · {s.text}
-            </span>
+            </div>
+          </div>
+          {viewing}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4 border-b px-5 pt-5 pb-4">
+          <div className="flex items-start gap-3.5">
+            <PresenceFace m={m} className="size-14 text-[18px]" />
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5 leading-[1.35]">
+              <h2 className="text-[18px] leading-6 font-semibold break-words" data-testid="member-name">
+                {you ? t`${name} (you)` : name}
+              </h2>
+              {m.title && (
+                <span className="text-small text-muted-foreground" data-testid="member-title">
+                  {m.title}
+                </span>
+              )}
+              <bdi className="text-small break-words text-faint">{m.email}</bdi>
+              <span className={cn("text-caption text-faint", s.conversationId && "text-success")}>
+                {text.role[m.role]} · {s.text}
+              </span>
+            </div>
+          </div>
+          {viewing}
+          <div
+            className="grid grid-cols-3 divide-x rounded-xl border bg-card rtl:divide-x-reverse"
+            data-testid="member-tiles"
+          >
+            {[
+              { v: fmt.format(load), l: <Trans>open, assigned</Trans> },
+              { v: today ? fmt.format(today.replies) : "–", l: <Trans>replies today</Trans> },
+              { v: today ? fmt.format(today.closed) : "–", l: <Trans>closed today</Trans> },
+            ].map((x, i) => (
+              <div key={i} className="flex min-w-0 flex-col gap-0.5 px-3 py-2.5">
+                <b className="text-[18px] leading-6 font-semibold tabular-nums">{x.v}</b>
+                <span className="text-caption text-faint">{x.l}</span>
+              </div>
+            ))}
           </div>
         </div>
-        {s.conversationId && !you && (
-          <Button
-            variant="outline"
-            className={cn(look.btn, "justify-between bg-card")}
-            render={<Link to={`/conversations/${s.conversationId}`} />}
-            data-testid="member-viewing"
-          >
-            <Trans>Open what they see</Trans>
-            <ArrowUpRightIcon />
-          </Button>
-        )}
-        <div
-          className="grid grid-cols-3 divide-x rounded-xl border bg-card rtl:divide-x-reverse"
-          data-testid="member-tiles"
-        >
-          {[
-            { v: fmt.format(load), l: <Trans>open, assigned</Trans> },
-            { v: today ? fmt.format(today.replies) : "–", l: <Trans>replies today</Trans> },
-            { v: today ? fmt.format(today.closed) : "–", l: <Trans>closed today</Trans> },
-          ].map((x, i) => (
-            <div key={i} className="flex min-w-0 flex-col gap-0.5 px-3 py-2.5">
-              <b className="text-[18px] leading-6 font-semibold tabular-nums">{x.v}</b>
-              <span className="text-caption text-faint">{x.l}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
       <DetailSection title={<Trans>Role</Trans>}>
         {canManage ? (
           <RoleChips
@@ -512,20 +564,22 @@ function MemberDetail({ member: m, load, products }: Detail) {
         {canManage && roleNote && <span className="text-caption text-faint">{roleNote}</span>}
         <ErrorLine error={setRole.error} />
       </DetailSection>
-      <DetailSection title={<Trans>Products</Trans>}>
-        <div className="flex flex-wrap gap-x-3.5 gap-y-1.5">
-          {products.map((p) => (
-            <span
-              key={p.id}
-              className="inline-flex min-w-0 items-center gap-[5px] text-small"
-              data-testid="product-tag"
-            >
-              <Dot color={p.color} className="size-2 rounded-[3px]" />
-              <span className="truncate">{p.name}</span>
-            </span>
-          ))}
-        </div>
-      </DetailSection>
+      {products.length > 0 && (
+        <DetailSection title={<Trans>Products</Trans>}>
+          <div className="flex flex-wrap gap-x-3.5 gap-y-1.5">
+            {products.map((p) => (
+              <span
+                key={p.id}
+                className="inline-flex min-w-0 items-center gap-[5px] text-small"
+                data-testid="product-tag"
+              >
+                <Dot color={p.color} className="size-2 rounded-[3px]" />
+                <span className="truncate">{p.name}</span>
+              </span>
+            ))}
+          </div>
+        </DetailSection>
+      )}
       <DetailSection
         title={<Trans>Open conversations assigned</Trans>}
         count={open.isPending ? undefined : items.length}
@@ -544,8 +598,8 @@ function MemberDetail({ member: m, load, products }: Detail) {
       </DetailSection>
       {canManage && <MemberAddresses memberId={m.id} name={name} />}
       {canManage && (
-        <section className="px-5 py-4">
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-destructive/30 bg-card px-4 py-3.5">
+        <section className="px-5 py-4 in-data-flat:mt-8 in-data-flat:px-0">
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-destructive/30 bg-card px-4 py-3.5 in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-b-0 in-data-flat:bg-transparent in-data-flat:px-0">
             <span className="flex min-w-48 flex-1 flex-col leading-[1.35]">
               <span className="text-[13.5px] font-semibold">
                 <Trans>Remove from the workspace</Trans>
@@ -713,10 +767,8 @@ function ListSkeleton() {
   )
 }
 
-export function TeamPage({ tab = "members" }: { tab?: "members" | "invites" }) {
-  const { t, i18n } = useLingui()
-  const frame = useRef<HTMLElement>(null)
-  const single = useNarrow(frame, 900)
+function useTeam(tab: "members" | "invites") {
+  const { i18n } = useLingui()
   const { memberId } = useParams()
   const { canManage, workspaceId: ws } = useSession()
   const members = useMembers()
@@ -768,6 +820,54 @@ export function TeamPage({ tab = "members" }: { tab?: "members" | "invites" }) {
   const assigned = unassigned !== undefined && openTotal !== undefined ? Math.max(0, openTotal - unassigned) : undefined
   const num = (n: number | undefined) => (n === undefined ? "–" : fmt.format(n))
   const tabKey = canManage ? tab : "members"
+  return {
+    memberId,
+    members,
+    stats,
+    inviting,
+    setInviting,
+    invites,
+    load,
+    where,
+    order,
+    peak,
+    available,
+    total,
+    unassigned,
+    assigned,
+    num,
+    tabKey,
+  }
+}
+
+export function TeamPage({ tab = "members" }: { tab?: "members" | "invites" }) {
+  const phone = useIsPhone()
+  return phone ? <StackedTeam tab={tab} /> : <FlatTeam tab={tab} />
+}
+
+function StackedTeam({ tab }: { tab: "members" | "invites" }) {
+  const { t } = useLingui()
+  const frame = useRef<HTMLElement>(null)
+  const single = useNarrow(frame, 900)
+  const { canManage } = useSession()
+  const {
+    memberId,
+    members,
+    stats,
+    inviting,
+    setInviting,
+    invites,
+    load,
+    where,
+    order,
+    peak,
+    available,
+    total,
+    unassigned,
+    assigned,
+    num,
+    tabKey,
+  } = useTeam(tab)
   const current = memberId ? order.find((m) => m.id === memberId) : single ? undefined : order[0]
   const missing = !!memberId && members.data !== undefined && !current
 
@@ -964,5 +1064,379 @@ export function TeamPage({ tab = "members" }: { tab?: "members" | "invites" }) {
       )}
       {canManage && <InviteDialog open={inviting} onOpenChange={setInviting} />}
     </main>
+  )
+}
+
+const FLAT_GRID =
+  "grid grid-cols-[minmax(0,1fr)_88px] items-center gap-x-3.5 @min-[620px]/team:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_88px_88px]"
+const flatWide = "hidden @min-[620px]/team:flex"
+
+function FlatMemberRow({
+  m,
+  load,
+  peak,
+  replies,
+  cursor,
+  products,
+}: {
+  m: Member
+  load: number
+  peak: number
+  replies: number | undefined
+  cursor: boolean
+  products: { id: string; name: string; color?: string }[]
+}) {
+  const { t, i18n } = useLingui()
+  const status = useMemberStatus()
+  const { membership } = useSession()
+  const text = useEnumText()
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const name = m.name || m.email
+  const s = status(m)
+  return (
+    <li data-testid="team-member" data-row-id={m.id}>
+      <ListRow
+        to={`/team/${m.id}`}
+        className={cn(FLAT_GRID, cursor && "bg-subtle shadow-[inset_2px_0_0_var(--brand)]")}
+      >
+        <span className="flex min-w-0 items-center gap-3">
+          <PresenceFace m={m} className="size-8 text-[11px]" />
+          <span className="flex min-w-0 flex-col leading-5">
+            <span className="flex min-w-0 items-center gap-1.5">
+              <span className="truncate font-medium text-foreground">
+                {m.id === membership.member_id ? t`${name} (you)` : name}
+              </span>
+              <FlatTag>{text.role[m.role]}</FlatTag>
+            </span>
+            <span className={cn("truncate text-small text-muted-foreground", s.conversationId && "text-ok")}>
+              {s.text}
+            </span>
+          </span>
+        </span>
+        <span className={cn(flatWide, "min-w-0 flex-wrap gap-x-2.5 gap-y-1 overflow-hidden")}>
+          {products.slice(0, 3).map((p) => (
+            <span key={p.id} className="inline-flex min-w-0 items-center gap-[5px] text-small text-muted-foreground">
+              <Dot color={p.color} className="size-[7px] rounded-full" />
+              <span className="truncate">{p.name}</span>
+            </span>
+          ))}
+        </span>
+        <span
+          className={cn("flex items-center justify-end gap-2 font-mono text-xs tabular-nums", !load && "text-muted2")}
+          data-testid="team-load"
+        >
+          <span
+            className="hidden h-1 max-w-10 flex-1 overflow-hidden rounded-full bg-line-soft @min-[620px]/team:block"
+            aria-hidden
+          >
+            <i
+              className="block h-full rounded-full bg-brand"
+              style={{ width: `${peak ? Math.round((load / peak) * 100) : 0}%` }}
+            />
+          </span>
+          {fmt.format(load)}
+        </span>
+        <span className={cn(flatWide, "justify-end font-mono text-xs text-muted-foreground tabular-nums")}>
+          {replies === undefined ? "–" : fmt.format(replies)}
+        </span>
+      </ListRow>
+    </li>
+  )
+}
+
+function TeamTrail({ view, name }: { view: string; name?: string }) {
+  const { t } = useLingui()
+  const [inboxId] = useInboxFilter()
+  const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
+  return (
+    <>
+      <span className="font-medium text-foreground">{t`Team`}</span>
+      <TopSep />
+      <span className="truncate">{view}</span>
+      <TopSep />
+      <span className="truncate normal-case">{name ?? product ?? t`All products`}</span>
+    </>
+  )
+}
+
+function FlatTeam({ tab }: { tab: "members" | "invites" }) {
+  const { t, i18n } = useLingui()
+  const navigate = useNavigate()
+  const text = useEnumText()
+  const status = useMemberStatus()
+  const { canManage, membership } = useSession()
+  const teams = useTeams().data
+  const team = useTeam(tab)
+  const { memberId, members, stats, inviting, setInviting, invites, load, where, order, peak } = team
+  const { available, total, unassigned, assigned, num, tabKey } = team
+  const listRef = useRef<HTMLUListElement>(null)
+  const current = memberId ? order.find((m) => m.id === memberId) : undefined
+  const missing = !!memberId && members.data !== undefined && !current
+  const detail = !!memberId
+  const { cursorId } = useListCursor(
+    order,
+    null,
+    (id) => navigate(`/team/${id}`),
+    !detail && tabKey === "members" && !inviting,
+    listRef,
+    true,
+    true
+  )
+  const step = (d: 1 | -1) => {
+    const at = order.findIndex((m) => m.id === memberId)
+    const next = order[at + d]
+    if (at >= 0 && next) navigate(`/team/${next.id}`)
+  }
+  useHotkeys(
+    { Escape: () => navigate("/team"), [SHORTCUTS.next]: () => step(1), [SHORTCUTS.previous]: () => step(-1) },
+    detail
+  )
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const presence = (p: Presence) => order.filter((m) => presenceOf(m) === p).length
+  const names = { members: t`Members`, invites: t`Invites` }
+  const nav: NavItem[] = [
+    {
+      key: "members",
+      label: names.members,
+      to: "/team",
+      count: members.data ? order.length : undefined,
+      current: tabKey === "members",
+      testId: "team-tab-members",
+    },
+    ...(canManage
+      ? [
+          {
+            key: "invites",
+            label: names.invites,
+            to: "/team/invites",
+            count: invites.data?.length,
+            hot: true,
+            current: tabKey === "invites",
+            testId: "team-tab-invites",
+          },
+          {
+            key: "teams",
+            label: t`Teams`,
+            to: "/settings/teams",
+            count: teams?.length,
+            testId: "team-nav-teams",
+          },
+        ]
+      : []),
+  ]
+  const today = current ? stats?.members.find((x) => x.member_id === current.id) : undefined
+  const aside = current ? (
+    <>
+      <InfoSection title={current.name || current.email} testId="member-info">
+        <KV label={t`Role`} value={text.role[current.role]} />
+        <KV label={t`Status`} value={status(current).text} tone={presenceOf(current) === "here" ? "ok" : undefined} />
+      </InfoSection>
+      <InfoSection title={t`Today`} testId="member-tiles">
+        <KV
+          label={<span className="first-letter:uppercase">{t`open, assigned`}</span>}
+          value={fmt.format(load.get(current.id) ?? 0)}
+        />
+        <KV
+          label={<span className="first-letter:uppercase">{t`replies today`}</span>}
+          value={today ? fmt.format(today.replies) : "–"}
+        />
+        <KV
+          label={<span className="first-letter:uppercase">{t`closed today`}</span>}
+          value={today ? fmt.format(today.closed) : "–"}
+        />
+      </InfoSection>
+    </>
+  ) : (
+    <>
+      <InfoSection title={t`Right now`} testId="team-summary">
+        <KV
+          label={<span className="first-letter:uppercase">{t`available now`}</span>}
+          value={members.data ? t`${available} of ${total}` : "–"}
+          tone="ok"
+        />
+        <KV label={t`Away`} value={fmt.format(presence("away"))} />
+        <KV label={t`Offline`} value={fmt.format(presence("offline"))} />
+      </InfoSection>
+      <InfoSection title={t`Conversations`}>
+        <KV
+          label={<span className="first-letter:uppercase">{t`open, unassigned`}</span>}
+          value={num(unassigned)}
+          tone={unassigned ? "brand" : undefined}
+        />
+        <KV label={<span className="first-letter:uppercase">{t`open, assigned`}</span>} value={num(assigned)} />
+        <Link
+          to="/conversations"
+          onClick={() => rememberChip("unassigned")}
+          className="mt-1 inline-block rounded-sm text-small text-fg2 underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+          data-testid="team-queue"
+        >
+          <Trans>Open the unassigned queue</Trans>
+        </Link>
+      </InfoSection>
+      <InfoSection title={t`Role`}>
+        <p className="m-0 text-small leading-5 text-muted-foreground">
+          <Trans>
+            Owners and admins see every inbox; agents see the inboxes they were given. Only owners and admins can
+            invite, change roles or remove members.
+          </Trans>
+        </p>
+      </InfoSection>
+    </>
+  )
+  return (
+    <SectionPage
+      title={t`Team`}
+      nav={
+        <>
+          <NavGroup items={nav} />
+          {canManage && <ProductsGroup />}
+        </>
+      }
+      aside={aside}
+      testId="team-home"
+    >
+      <PageTopLine
+        back={detail ? { label: names.members, to: "/team" } : undefined}
+        actions={
+          canManage && (
+            <Button className={topInk} onClick={() => setInviting(true)} data-testid="team-invite-open">
+              <Trans>Invite</Trans>
+            </Button>
+          )
+        }
+      >
+        <TeamTrail view={names[tabKey]} name={current ? current.name || current.email : undefined} />
+      </PageTopLine>
+      <div className="@container/team flex max-w-[980px] min-w-0 flex-col" data-flat="">
+        {tabKey === "invites" ? (
+          <>
+            <div className="mt-3">
+              <PageHeading
+                title={names.invites}
+                lede={
+                  <Trans>
+                    An invite is accepted when the person signs in with a code sent to that address. It expires after 7
+                    days.
+                  </Trans>
+                }
+              />
+            </div>
+            <div className="mt-6">
+              {invites.isPending ? (
+                <Skeleton className="h-10 w-full" />
+              ) : invites.error && !invites.data ? (
+                <LoadProblem error={invites.error} onRetry={() => void invites.refetch()} testId="invites-error" />
+              ) : invites.data?.length === 0 ? (
+                <FlatEmpty testId="invites">
+                  <p className="m-0 font-semibold text-foreground">
+                    <Trans>No pending invites.</Trans>
+                  </p>
+                  <Button variant="outline" className={topButton} onClick={() => setInviting(true)}>
+                    <Trans>Invite a teammate</Trans>
+                  </Button>
+                </FlatEmpty>
+              ) : (
+                <>
+                  <ErrorLine error={invites.error} />
+                  <ul className="m-0 flex list-none flex-col border-t border-line-soft p-0" data-testid="invites">
+                    {(invites.data ?? []).map((inv) => (
+                      <InviteRow key={inv.id} invite={inv} />
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          </>
+        ) : detail ? (
+          current ? (
+            <div className="max-w-[720px]">
+              <MemberDetail
+                key={current.id}
+                member={current}
+                load={load.get(current.id) ?? 0}
+                products={where(current)}
+                flat
+              />
+            </div>
+          ) : missing ? (
+            <p className="mt-6 text-body text-muted-foreground">
+              <Trans>This member is not in the workspace any more.</Trans>
+            </p>
+          ) : (
+            <Skeleton className="mt-6 h-40 w-full" />
+          )
+        ) : (
+          <>
+            <div className="mt-3">
+              <PageHeading
+                title={names.members}
+                lede={
+                  <span data-testid="team-lede">
+                    {members.data ? (
+                      <Trans>
+                        {available} of {total} available now
+                      </Trans>
+                    ) : (
+                      <Trans>Who answers, where, and who is online</Trans>
+                    )}
+                    {" · "}
+                    {membership.workspace.name}
+                  </span>
+                }
+              />
+            </div>
+            <div className="mt-7" data-testid="team-panel">
+              <div
+                className={cn(
+                  FLAT_GRID,
+                  "hidden px-1 pb-2 text-caption font-medium text-muted2 @min-[620px]/team:grid"
+                )}
+                aria-hidden
+              >
+                <span>
+                  <Trans>Person</Trans>
+                </span>
+                <span>
+                  <Trans>Products</Trans>
+                </span>
+                <span className="text-end first-letter:uppercase">
+                  <Trans>open, assigned</Trans>
+                </span>
+                <span className="text-end first-letter:uppercase">
+                  <Trans>replies today</Trans>
+                </span>
+              </div>
+              {members.isPending ? (
+                <ListSkeleton />
+              ) : members.error && !members.data ? (
+                <LoadProblem error={members.error} onRetry={() => void members.refetch()} testId="team-error" />
+              ) : order.length === 0 ? (
+                <FlatEmpty>
+                  <Trans>Nobody on the team works on this product yet.</Trans>
+                </FlatEmpty>
+              ) : (
+                <>
+                  <ErrorLine error={members.error} className="py-2" />
+                  <ul ref={listRef} className="m-0 flex list-none flex-col p-0" data-testid="team-members">
+                    {order.map((m) => (
+                      <FlatMemberRow
+                        key={m.id}
+                        m={m}
+                        load={load.get(m.id) ?? 0}
+                        peak={peak}
+                        replies={stats?.members.find((x) => x.member_id === m.id)?.replies}
+                        cursor={m.id === cursorId}
+                        products={where(m)}
+                      />
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+      {canManage && <InviteDialog open={inviting} onOpenChange={setInviting} />}
+    </SectionPage>
   )
 }

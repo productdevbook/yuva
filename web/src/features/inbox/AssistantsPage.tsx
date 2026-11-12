@@ -3,7 +3,21 @@ import { CheckIcon, PlugIcon, SparklesIcon } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router"
 
-import { ContactAvatar, ErrorLine, useConfirm } from "@/components/common"
+import {
+  ContactAvatar,
+  ErrorLine,
+  InfoSection,
+  KV,
+  NavGroup,
+  PageHeading,
+  PageTop as PageTopLine,
+  ProductsGroup,
+  SectionPage,
+  topInk,
+  TopSep,
+  useConfirm,
+  type NavItem,
+} from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { CopyButton } from "@/components/common/CopyButton"
 import { API_KEY_SCOPES, formatDate, formatRelative } from "@/components/common/text"
@@ -12,6 +26,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { InboxPicker } from "@/features/inbox/InboxPicker"
 import { Ago, FrameTabs, look, PageBody, PageTop } from "@/features/inbox/PageFrame"
@@ -30,7 +45,7 @@ import { LoadProblem } from "@/features/reports/parts"
 import type { DraftAuthorKind, DraftItem, OAuthGrant } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useMemberMap } from "@/lib/workspace"
+import { useInboxes, useMemberMap } from "@/lib/workspace"
 
 type AuthorChip = "all" | DraftAuthorKind
 type AssistantTab = "drafts" | "apps"
@@ -53,7 +68,10 @@ function DraftCard({ item }: { item: DraftItem }) {
   const to = messageLink(item.conversation.id, d.id)
   const long = d.body.length > 150 || d.body.split("\n").length > 2
   return (
-    <li className="flex flex-col gap-2.5 rounded-[14px] border bg-card p-4" data-testid="draft-row">
+    <li
+      className="flex flex-col gap-2.5 rounded-[14px] border bg-card p-4 in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-b-0 in-data-flat:border-line-soft in-data-flat:bg-transparent in-data-flat:px-1 in-data-flat:py-4"
+      data-testid="draft-row"
+    >
       <div className="flex items-start gap-3">
         <ContactAvatar
           id={item.conversation.contact.id}
@@ -243,7 +261,7 @@ function AppRow({ g, onRevoke }: { g: OAuthGrant; onRevoke: () => void }) {
   const by = g.member_id === membership.member_id ? null : member ? member.name || member.email : null
   return (
     <li
-      className="flex items-start gap-3 border-t px-4 py-3.5 first:border-t-0 @max-xl:flex-wrap"
+      className="flex items-start gap-3 border-t px-4 py-3.5 first:border-t-0 in-data-flat:border-line-soft in-data-flat:px-1 @max-xl:flex-wrap"
       data-testid="assistant-grant-row"
     >
       <AppTile icon={a?.icon ?? PlugIcon} className="size-9 rounded-[10px]" />
@@ -333,7 +351,10 @@ function Apps({ onConnect }: { onConnect: () => void }) {
         </EmptyBox>
       )}
       {apps.length > 0 && (
-        <ul className="overflow-hidden rounded-[14px] border bg-card" data-testid="assistant-grants">
+        <ul
+          className="overflow-hidden rounded-[14px] border bg-card in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-line-soft in-data-flat:bg-transparent"
+          data-testid="assistant-grants"
+        >
           {apps.map((g) => (
             <AppRow key={g.id} g={g} onRevoke={() => revoker.ask(g)} />
           ))}
@@ -541,21 +562,21 @@ function useDraftsView() {
 
 type DraftsView = ReturnType<typeof useDraftsView>
 
-function DraftsColumn({ view }: { view: DraftsView }) {
+function DraftsColumn({ view, flat }: { view: DraftsView; flat?: boolean }) {
   const { t } = useLingui()
   const { author, setAuthor, drafts, items, total, chips, fmt, workspace } = view
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
-        <h2 className="text-[15px] leading-5 font-semibold">
+        <h2 className={cn("text-[15px] leading-5 font-semibold", flat && "sr-only")}>
           <Trans>Drafts waiting</Trans>
         </h2>
-        {drafts.data && (
+        {drafts.data && !flat && (
           <span className="min-w-[18px] rounded-full bg-note px-1.5 text-center text-[11px] leading-[18px] font-semibold text-note-ink tabular-nums">
             {fmt.format(total)}
           </span>
         )}
-        <span className="flex-1" />
+        <span className={cn("flex-1", flat && "hidden")} />
         <AuthorSeg value={author} onChange={setAuthor} items={chips} label={t`Draft author`} />
         <span className="sr-only" data-testid="drafts-total">
           {total}
@@ -631,7 +652,7 @@ function DraftsColumn({ view }: { view: DraftsView }) {
           <Trans>Nothing from this kind of author is waiting for review.</Trans>
         </EmptyBox>
       )}
-      <ul className="flex flex-col gap-2.5" data-testid="draft-list">
+      <ul className="flex flex-col gap-2.5 in-data-flat:gap-0" data-testid="draft-list">
         {items.map((x) => (
           <DraftCard key={x.draft.id} item={x} />
         ))}
@@ -642,6 +663,139 @@ function DraftsColumn({ view }: { view: DraftsView }) {
 }
 
 export function AssistantsPage() {
+  return useIsPhone() ? <StackedAssistants /> : <FlatAssistants />
+}
+
+function FlatAssistants() {
+  const { t, i18n } = useLingui()
+  const { canManage } = useSession()
+  const [tab, setTab] = useState<AssistantTab>("drafts")
+  const [connect, setConnect] = useState(false)
+  const view = useDraftsView()
+  const grants = useGrants()
+  const nameOf = useAssistantName()
+  const [inboxId] = useInboxFilter()
+  const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
+  const apps = grants.data ?? []
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const names = { drafts: t`Drafts waiting`, apps: t`Connected apps` }
+  const nav: NavItem[] = [
+    {
+      key: "drafts",
+      label: names.drafts,
+      count: view.drafts.data ? view.total : undefined,
+      hot: true,
+      current: tab === "drafts",
+      onSelect: () => setTab("drafts"),
+      testId: "assistants-tab-drafts",
+    },
+    {
+      key: "apps",
+      label: names.apps,
+      count: grants.data?.length,
+      current: tab === "apps",
+      onSelect: () => setTab("apps"),
+      testId: "assistants-tab-apps",
+    },
+  ]
+  return (
+    <SectionPage
+      title={t`Assistants`}
+      nav={
+        <>
+          <NavGroup items={nav} />
+          {canManage && <ProductsGroup />}
+        </>
+      }
+      aside={
+        <>
+          {tab === "drafts" && (
+            <InfoSection title={names.drafts} testId="assistants-info">
+              {view.chips.map(([k, label, n]) => (
+                <KV key={k} label={label} value={fmt.format(n)} tone={k === "all" && n > 0 ? "brand" : undefined} />
+              ))}
+            </InfoSection>
+          )}
+          <InfoSection
+            title={names.apps}
+            action={
+              tab === "drafts" &&
+              apps.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setTab("apps")}
+                  className="rounded-sm text-caption font-normal text-fg2 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Trans>Manage</Trans>
+                </button>
+              )
+            }
+            testId="assistants-connections"
+          >
+            {apps.length === 0 ? (
+              <p className="m-0 text-small leading-5 text-muted-foreground" data-testid="assistants-connections-empty">
+                <Trans>No assistant is connected yet</Trans>
+              </p>
+            ) : (
+              apps.map((g) => {
+                const a = ASSISTANTS.find((x) => x.matches(g))
+                const used = g.last_used_at ? formatRelative(g.last_used_at, i18n.locale) : t`Not used yet`
+                return <KV key={g.id} label={a ? nameOf(a) : g.client.name} value={used} />
+              })
+            )}
+          </InfoSection>
+          {view.workspace.data && (
+            <InfoSection title={t`API & MCP`}>
+              <KV
+                label={t`Bots may send`}
+                value={view.workspace.data.bots_may_send ? t`On` : t`Off`}
+                to="/settings/api-keys"
+              />
+            </InfoSection>
+          )}
+        </>
+      }
+      testId="assistants-panel"
+    >
+      <PageTopLine
+        actions={
+          <Button className={topInk} onClick={() => setConnect(true)} data-testid="assistants-connect">
+            <Trans>Connect</Trans>
+          </Button>
+        }
+      >
+        <span className="font-medium text-foreground">{t`Assistants`}</span>
+        <TopSep />
+        <span className="truncate">{names[tab]}</span>
+        <TopSep />
+        <span className="truncate normal-case">{product ?? t`All products`}</span>
+      </PageTopLine>
+      <div className="@container flex max-w-[860px] min-w-0 flex-col gap-4" data-flat="">
+        <div className="mt-3">
+          <PageHeading
+            title={names[tab]}
+            lede={
+              tab === "drafts" ? (
+                <Trans>
+                  Replies an assistant, a bot or a teammate drafts show up here until someone sends or discards them.
+                </Trans>
+              ) : (
+                <Trans>
+                  Connect Claude, ChatGPT, Cursor or another MCP client to let it read conversations and draft replies
+                  for you to review.
+                </Trans>
+              )
+            }
+          />
+        </div>
+        {tab === "drafts" ? <DraftsColumn view={view} flat /> : <Apps onConnect={() => setConnect(true)} />}
+      </div>
+      {connect && <ConnectDialog grants={apps} onClose={() => setConnect(false)} />}
+    </SectionPage>
+  )
+}
+
+function StackedAssistants() {
   const { t } = useLingui()
   const [tab, setTab] = useState<AssistantTab>("drafts")
   const [connect, setConnect] = useState(false)

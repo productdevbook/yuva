@@ -33,7 +33,9 @@ import { useAutomationRules } from "@/features/settings/automation/queries"
 import { useSlack } from "@/features/settings/slack/queries"
 import { useIssueIntegrations } from "@/features/issues/queries"
 import { ProductsHome } from "@/features/settings/ProductsPage"
+import { SettingsLayout } from "@/features/settings/SettingsFrame"
 import { Page, RowIcon, RowText } from "@/features/settings/ui"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { api, unwrap } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
@@ -65,17 +67,27 @@ function isWide(pathname: string) {
 
 export function SettingsPane() {
   const { pathname } = useLocation()
-  if (pathname === "/settings/workspace" || /^\/settings\/inboxes\/[^/]+\/channels\/[^/]+$/.test(pathname))
-    return <Outlet />
-  return (
+  const phone = useIsPhone()
+  const own = pathname === "/settings/workspace" || /^\/settings\/inboxes\/[^/]+\/channels\/[^/]+$/.test(pathname)
+  const body = own ? (
+    <Outlet />
+  ) : (
     <Page testId="settings" width={isWide(pathname) ? "full" : "form"}>
       <Outlet />
     </Page>
   )
+  return phone ? body : <SettingsLayout>{body}</SettingsLayout>
 }
 
 export function SettingsHome() {
-  return <ProductsHome />
+  const phone = useIsPhone()
+  return phone ? (
+    <ProductsHome />
+  ) : (
+    <SettingsLayout>
+      <ProductsHome />
+    </SettingsLayout>
+  )
 }
 
 function Group({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {

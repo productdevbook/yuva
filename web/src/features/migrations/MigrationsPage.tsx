@@ -11,7 +11,7 @@ import {
 import { useState } from "react"
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router"
 
-import { ErrorLine, Notice, useConfirm } from "@/components/common"
+import { ErrorLine, InfoSection, KV, Notice, useConfirm } from "@/components/common"
 import { formatDate } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
@@ -39,9 +39,10 @@ import {
   WaitingLine,
 } from "@/features/migrations/parts"
 import { useDeleteMigration, useMigrations, useMigrationStep, usePresets } from "@/features/migrations/queries"
-import { guideUrl } from "@/features/migrations/text"
+import { guideUrl, useMigrationText } from "@/features/migrations/text"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { GeneralHeader, Intro } from "@/features/settings/GeneralTabs"
+import { SettingsAside } from "@/features/settings/SettingsFrame"
 import { Card, ChoiceSelect, Field, headButton, RowIcon, Rows, Section } from "@/features/settings/ui"
 import type { Migration } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -185,7 +186,38 @@ export function MigrationsPage() {
         </Card>
       </Section>
       {creating && <NewMigrationDialog onClose={() => setCreating(false)} />}
+      {items.length > 0 && <Summary items={items} />}
     </>
+  )
+}
+
+function Summary({ items }: { items: Migration[] }) {
+  const { t } = useLingui()
+  const num = useNumber()
+  const text = useMigrationText()
+  const states = [...new Set(items.map((m) => m.state))]
+  const imported = items.reduce((n, m) => n + m.counts.imported, 0)
+  const failed = items.reduce((n, m) => n + m.counts.failed, 0)
+  return (
+    <SettingsAside>
+      <InfoSection title={t`State`} testId="migrations-summary">
+        {states.map((s) => (
+          <KV
+            key={s}
+            label={text.state[s]}
+            value={num(items.filter((m) => m.state === s).length)}
+            tone={s === "needs_attention" ? "warn" : s === "copying" || s === "syncing" ? "brand" : undefined}
+          />
+        ))}
+        <KV label={t`Imported`} value={num(imported)} />
+        {failed > 0 && <KV label={t`Failed`} value={num(failed)} tone="bad" />}
+      </InfoSection>
+      <InfoSection title={t`Read-only`}>
+        <p className="m-0 text-small leading-5 text-muted-foreground">
+          <Trans>Yuva only reads the source; nothing there is changed.</Trans>
+        </p>
+      </InfoSection>
+    </SettingsAside>
   )
 }
 
@@ -238,7 +270,7 @@ function MigrationRow({ m }: { m: Migration }) {
   const showBar = PROGRESS_STATES.includes(m.state) && c.total > 0
   const actions = useRowActions(m)
   return (
-    <li className="flex flex-col gap-2.5 px-4 py-3" data-testid="migration-row" data-id={m.id}>
+    <li className="flex flex-col gap-2.5 px-4 py-3 in-data-flat:px-1" data-testid="migration-row" data-id={m.id}>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <RowIcon>
           <MailIcon />

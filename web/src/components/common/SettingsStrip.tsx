@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/react/macro"
 import { Link } from "react-router"
 
+import { useFlatSettings } from "@/features/settings/ui"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
@@ -8,6 +9,8 @@ export type SettingsArea = "products" | "channels" | "developer" | "general"
 
 export function SettingsStrip({ current }: { current: SettingsArea }) {
   const { canManage } = useSession()
+  const flat = useFlatSettings()
+  if (flat) return null
   const items: { key: SettingsArea; to: string; title: React.ReactNode; detail: React.ReactNode }[] = [
     {
       key: "products",

@@ -31,7 +31,7 @@ export function PageLayout({
       data-testid={testId}
     >
       <div aria-hidden className="h-0.5 shrink-0 bg-brand max-md:hidden" />
-      <div className="mx-auto flex w-full max-w-[1440px] items-stretch">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-1 items-stretch">
         {sidebar}
         <main aria-label={label} className="min-w-0 flex-[999_1_560px] ps-8 pe-7 pb-16 max-md:px-6 phone:px-4">
           {children}
@@ -430,7 +430,15 @@ export function KV({
   const body = (
     <>
       <span className="shrink-0 whitespace-nowrap text-muted-foreground">{label}</span>
-      <span className={cn("min-w-0 flex-1 text-end [overflow-wrap:anywhere]", tone && toneClass[tone])}>{value}</span>
+      <span
+        className={cn(
+          "min-w-0 flex-1 text-end [overflow-wrap:anywhere]",
+          typeof value === "string" && value.length <= 24 && "whitespace-nowrap",
+          tone && toneClass[tone]
+        )}
+      >
+        {value}
+      </span>
     </>
   )
   const className = "flex justify-between gap-3 py-[3px] text-small leading-5"

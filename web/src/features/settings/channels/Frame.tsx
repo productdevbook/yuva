@@ -3,7 +3,7 @@ import { ChevronRightIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
-import { ChannelIcon } from "@/components/common"
+import { ChannelIcon, InfoSection, KV } from "@/components/common"
 import { formatDate, useEnumText } from "@/components/common/text"
 import { look } from "@/features/inbox/PageFrame"
 import type { Channel } from "@/lib/api"
@@ -120,6 +120,24 @@ export function FactsStrip({ ch, productName }: { ch: Channel; productName?: str
         </div>
       ))}
     </dl>
+  )
+}
+
+export function ChannelInfo({ ch, productName }: { ch: Channel; productName?: string }) {
+  const facts = useFacts(ch, productName)
+  return (
+    <>
+      <InfoSection title={ch.name} testId="channel-aside">
+        {facts.map((f) => (
+          <KV key={f.key} label={f.label} value={f.value} />
+        ))}
+      </InfoSection>
+      <InfoSection title={<Trans>Elsewhere in settings</Trans>}>
+        <KV label={<Trans>Product settings</Trans>} value="" to={`/settings/inboxes/${ch.inbox_id}`} />
+        <KV label={<Trans>Webhooks</Trans>} value="" to={`/settings/inboxes/${ch.inbox_id}/webhooks`} />
+        <KV label={<Trans>Channels</Trans>} value="" to="/settings?view=channels" />
+      </InfoSection>
+    </>
   )
 }
 

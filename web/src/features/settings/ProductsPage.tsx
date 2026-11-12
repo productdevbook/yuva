@@ -126,8 +126,11 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
   const domain = channelDomain(channels)
   const scheduled = openNow(inbox.business_hours, inbox.timezone)
   return (
-    <li className="flex flex-col overflow-hidden rounded-xl border bg-card" data-testid="product-card">
-      <div className="flex items-center gap-3 border-b px-[18px] py-4">
+    <li
+      className="flex flex-col overflow-hidden rounded-xl border bg-card in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-b-0 in-data-flat:border-line-soft in-data-flat:bg-transparent in-data-flat:pb-3"
+      data-testid="product-card"
+    >
+      <div className="flex items-center gap-3 border-b px-[18px] py-4 in-data-flat:border-b-0 in-data-flat:px-1 in-data-flat:pb-2">
         <InboxMark name={inbox.name} color={inbox.branding.color} className="size-10 rounded-[10px] text-[18px]" />
         <div className="flex min-w-0 flex-1 flex-col leading-[1.3]">
           <span className="truncate text-[16px] font-semibold">{inbox.name}</span>
@@ -153,7 +156,7 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
           </Button>
         )}
       </div>
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-[18px] pt-3.5 pb-3">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-[18px] pt-3.5 pb-3 in-data-flat:px-1 in-data-flat:pt-1 in-data-flat:lg:grid-cols-4">
         <Fact label={<Trans>Language</Trans>}>{language(inbox.default_locale, i18n.locale)}</Fact>
         <Fact label={<Trans>Hours</Trans>}>
           {scheduled && <span aria-hidden className="size-2 shrink-0 rounded-full bg-success" />}
@@ -178,7 +181,7 @@ function ProductCard({ inbox, channels }: { inbox: Inbox; channels?: Channel[] }
           </Fact>
         )}
       </dl>
-      <div className="mt-auto flex flex-col gap-2 border-t bg-surface/50 px-[18px] py-3.5">
+      <div className="mt-auto flex flex-col gap-2 border-t bg-surface/50 px-[18px] py-3.5 in-data-flat:border-t-0 in-data-flat:bg-transparent in-data-flat:px-1 in-data-flat:pt-1">
         {channels === undefined ? (
           <Skeleton className="h-5 w-24" />
         ) : channels.length === 0 ? (
@@ -239,7 +242,7 @@ function ChannelGroup({ inbox, channels, only }: { inbox: Inbox; channels?: Chan
             return (
               <li
                 key={ch.id}
-                className="flex items-center gap-3 border-b px-4 py-[11px] last:border-b-0"
+                className="flex items-center gap-3 border-b px-4 py-[11px] last:border-b-0 in-data-flat:border-line-soft in-data-flat:px-1"
                 data-testid="channel-row"
               >
                 <span className="grid size-8 shrink-0 place-items-center rounded-lg border bg-surface text-muted-foreground">
@@ -384,7 +387,10 @@ export function ProductsHome() {
               </div>
             </Notice>
           )}
-          <ul className="grid gap-4 lg:grid-cols-2" data-testid="settings-products">
+          <ul
+            className="grid gap-4 lg:grid-cols-2 in-data-flat:gap-0 in-data-flat:lg:grid-cols-1"
+            data-testid="settings-products"
+          >
             {inboxes.map(({ inbox, channels }) => (
               <ProductCard key={inbox.id} inbox={inbox} channels={channels} />
             ))}

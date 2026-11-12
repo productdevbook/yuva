@@ -152,9 +152,6 @@ export function AppRoutes() {
         <Route path="setup/:inboxId/:channelId/wait" element={<SetupPage flow="wait" />} />
         <Route path="setup/:inboxId/:channelId/test" element={<SetupPage flow="test" />} />
         <Route path="setup/:inboxId/:channelId/done" element={<SetupPage flow="done" />} />
-        <Route path="migrations/new" element={<NewMigrationPage />} />
-        <Route path="migrations/:migrationId" element={<MigrationPage />} />
-        <Route path="migrations/:migrationId/:step" element={<MigrationPage />} />
         <Route
           path="broadcasts/designs/:designId"
           element={
@@ -166,6 +163,9 @@ export function AppRoutes() {
         <Route element={<Layout />}>
           <Route index element={<IndexPage />} />
           <Route path="home" element={<HomeRoute />} />
+          <Route path="migrations/new" element={<NewMigrationPage />} />
+          <Route path="migrations/:migrationId" element={<MigrationPage />} />
+          <Route path="migrations/:migrationId/:step" element={<MigrationPage />} />
           <Route path="conversations" element={<ChatsPage />} />
           <Route path="conversations/:conversationId" element={<ChatsPage />} />
           <Route path="mail" element={<MailPage />} />

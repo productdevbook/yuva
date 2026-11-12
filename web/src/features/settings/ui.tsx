@@ -1,18 +1,29 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react"
 import { createContext, useContext } from "react"
-import { Link, type To } from "react-router"
+import { Link, useNavigate, type To } from "react-router"
 
-import { colorFor, ErrorLine } from "@/components/common"
+import { colorFor, ErrorLine, PageHeading, PageTop } from "@/components/common"
 import { OverflowTabs, pageTabClass } from "@/components/common/OverflowTabs"
 import { useSaveBarEntry } from "@/components/common/SaveBar"
 import { initials } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { useHotkeys } from "@/hooks/use-hotkeys"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 
 const Band = createContext(false)
+
+export type FlatFrame = { trail: React.ReactNode; slot: (el: HTMLElement | null) => void }
+
+const Flat = createContext<FlatFrame | null>(null)
+
+export const FlatSettingsProvider = Flat.Provider
+
+export function useFlatSettings() {
+  return useContext(Flat)
+}
 
 export function Page({
   testId,
@@ -25,6 +36,21 @@ export function Page({
   className?: string
   children: React.ReactNode
 }) {
+  const flat = useContext(Flat)
+  if (flat)
+    return (
+      <div
+        className={cn(
+          "flex w-full flex-col gap-4",
+          width === "form" ? "[&>:not([data-page-header])]:max-w-[760px]" : "max-w-[1100px]",
+          className
+        )}
+        data-flat=""
+        data-testid={testId}
+      >
+        {children}
+      </div>
+    )
   return (
     <main className="min-h-0 flex-1 bg-background in-data-frame:overflow-y-auto" data-testid={testId}>
       <Band.Provider value>
@@ -66,7 +92,28 @@ export function PageHeader({
 }) {
   const { t } = useLingui()
   const band = useContext(Band)
+  const flat = useContext(Flat)
+  const navigate = useNavigate()
   const to = back === undefined ? { to: "/settings", label: t`Settings` } : back
+  useHotkeys({ Escape: () => back && navigate(back.to) }, !!flat && !!back)
+  if (flat)
+    return (
+      <div data-page-header className="contents">
+        <PageTop
+          back={back ? { label: back.label, to: back.to, testId: "settings-back" } : undefined}
+          actions={action}
+          slot={flat.slot}
+        >
+          {flat.trail}
+        </PageTop>
+        <div data-page-header className="mt-3 flex flex-col gap-3">
+          {eyebrow && <p className="m-0 text-small text-muted-foreground">{eyebrow}</p>}
+          <PageHeading title={title} lede={description} />
+          {tabs && <div className="mt-2">{tabs}</div>}
+          {children}
+        </div>
+      </div>
+    )
   return (
     <header
       data-page-header
@@ -115,7 +162,9 @@ export type PageTab = {
 export { pageTabClass }
 
 export function PageTabs({ items, current, label }: { items: PageTab[]; current: string; label: string }) {
-  const band = useContext(Band)
+  const inBand = useContext(Band)
+  const flat = useContext(Flat)
+  const band = inBand && !flat
   return <OverflowTabs label={label} current={current} items={items} className={cn(!band && "border-b")} />
 }
 
@@ -137,7 +186,11 @@ export function StatTile({
   hintClassName?: string
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1 rounded-xl border bg-card p-4" title={title} data-testid={testId}>
+    <div
+      className="flex min-w-0 flex-col gap-1 rounded-xl border bg-card p-4 in-data-flat:rounded-none in-data-flat:border-0 in-data-flat:border-t in-data-flat:border-line-soft in-data-flat:bg-transparent in-data-flat:px-1"
+      title={title}
+      data-testid={testId}
+    >
       <span className="flex min-w-0 items-center gap-1.5 text-body text-muted-foreground">
         {live && <span className="size-2 shrink-0 rounded-full bg-success" aria-hidden />}
         <span className="truncate">{label}</span>
@@ -150,7 +203,7 @@ export function StatTile({
 
 export function CardHead({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="flex min-h-11 items-center gap-2 border-b px-4 py-2.5">
+    <div className="flex min-h-11 items-center gap-2 border-b px-4 py-2.5 in-data-flat:border-line-soft in-data-flat:px-1">
       <h2 className="flex min-w-0 flex-1 items-center gap-2 truncate text-body font-semibold">{children}</h2>
       {action}
     </div>
@@ -346,16 +399,19 @@ export function Block({
 }) {
   const body = (
     <>
-      <div className="flex flex-col border-b px-[18px] py-3.5 leading-[1.3]">
+      <div className="flex flex-col border-b px-[18px] py-3.5 leading-[1.3] in-data-flat:border-line-soft in-data-flat:px-1">
         <h2 className="font-semibold">{title}</h2>
         {description && <p className="text-caption text-faint">{description}</p>}
       </div>
       {children}
-      {footer && <div className="flex flex-wrap items-center justify-end gap-3 px-[18px] py-3">{footer}</div>}
+      {footer && (
+        <div className="flex flex-wrap items-center justify-end gap-3 px-[18px] py-3 in-data-flat:px-1">{footer}</div>
+      )}
     </>
   )
   const cls = cn(
     "flex flex-col overflow-hidden rounded-xl border bg-card",
+    flatBox,
     tone === "danger" && "border-destructive/30"
   )
   return onSubmit ? (
@@ -388,7 +444,7 @@ export function BlockRow({
   children: React.ReactNode
 }) {
   return (
-    <div className="grid grid-cols-[200px_minmax(0,1fr)] items-center gap-4 border-b px-[18px] py-3 phone:grid-cols-1 phone:gap-1.5">
+    <div className="grid grid-cols-[200px_minmax(0,1fr)] items-center gap-4 border-b px-[18px] py-3 in-data-flat:border-line-soft in-data-flat:px-1 phone:grid-cols-1 phone:gap-1.5">
       <Label htmlFor={htmlFor} className="font-medium">
         {label}
       </Label>
@@ -435,9 +491,13 @@ type CardProps = {
   className?: string
 }
 
+const flatBox =
+  "in-data-flat:overflow-visible in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-line-soft in-data-flat:bg-transparent"
+
 const cardClass = (p: CardProps) =>
   cn(
     "flex flex-col overflow-hidden rounded-xl border bg-card",
+    flatBox,
     p.tone === "danger" && "border-destructive/30",
     p.className
   )
@@ -445,9 +505,9 @@ const cardClass = (p: CardProps) =>
 function CardBody(p: CardProps) {
   return (
     <>
-      <div className={cn(!p.flush && "flex flex-col gap-5 p-4")}>{p.children}</div>
+      <div className={cn(!p.flush && "flex flex-col gap-5 p-4 in-data-flat:px-1")}>{p.children}</div>
       {p.footer && (
-        <div className="flex flex-wrap items-center gap-3 border-t px-4 py-3 [&:not(:has(>:not([hidden])))]:hidden">
+        <div className="flex flex-wrap items-center gap-3 border-t px-4 py-3 in-data-flat:border-line-soft in-data-flat:px-1 [&:not(:has(>:not([hidden])))]:hidden">
           {p.footer}
         </div>
       )}
@@ -573,7 +633,7 @@ export function ToggleRow({
 
 export function Rows({ children, className, ...props }: React.ComponentProps<"ul">) {
   return (
-    <ul className={cn("divide-y", className)} {...props}>
+    <ul className={cn("divide-y in-data-flat:divide-line-soft", className)} {...props}>
       {children}
     </ul>
   )
@@ -581,7 +641,7 @@ export function Rows({ children, className, ...props }: React.ComponentProps<"ul
 
 export function Row({ children, className, ...props }: React.ComponentProps<"li">) {
   return (
-    <li className={cn("flex min-h-[52px] items-center gap-3 px-4 py-3", className)} {...props}>
+    <li className={cn("flex min-h-[52px] items-center gap-3 px-4 py-3 in-data-flat:px-1", className)} {...props}>
       {children}
     </li>
   )
@@ -605,7 +665,7 @@ export function LinkRow({
       <Link
         to={to}
         state={state}
-        className="flex min-h-[52px] items-center gap-3 px-4 py-3 transition-colors hover:bg-muted"
+        className="flex min-h-[52px] items-center gap-3 px-4 py-3 transition-colors hover:bg-muted in-data-flat:px-1 in-data-flat:hover:bg-subtle"
         data-testid={testId}
       >
         {children}
@@ -626,7 +686,7 @@ export function RowText({ title, detail }: { title: React.ReactNode; detail?: Re
 }
 
 export function EmptyRow({ children }: { children: React.ReactNode }) {
-  return <p className="px-4 py-5 text-body text-faint">{children}</p>
+  return <p className="px-4 py-5 text-body text-faint in-data-flat:px-1">{children}</p>
 }
 
 export function StatusTag({
@@ -674,7 +734,7 @@ export function SettingRow({
   htmlFor?: string
 }) {
   return (
-    <li className="flex min-h-[52px] items-center gap-3 px-4 py-3 phone:flex-wrap">
+    <li className="flex min-h-[52px] items-center gap-3 px-4 py-3 in-data-flat:px-1 phone:flex-wrap">
       <Label htmlFor={htmlFor} className="block min-w-0 flex-1 font-normal phone:min-w-[55%]">
         {title}
         {hint && <small className="mt-px block text-small text-faint">{hint}</small>}

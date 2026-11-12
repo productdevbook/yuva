@@ -309,6 +309,10 @@ msgstr "{author}, {by} ਵੱਲੋਂ ਭੇਜਿਆ"
 msgid "{available} of {total}"
 msgstr "{total} ਵਿੱਚੋਂ {available}"
 
+#: src/features/team/TeamPage.tsx
+msgid "{available} of {total} available now"
+msgstr "{total} ਵਿੱਚੋਂ {available} ਹੁਣ ਉਪਲਬਧ"
+
 #: src/features/home/HomePage.tsx
 msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
 msgstr "{bad, plural, one {# ਮਾੜੀ ਰੇਟਿੰਗ} other {# ਮਾੜੀਆਂ ਰੇਟਿੰਗਾਂ}}"
@@ -1773,6 +1777,7 @@ msgid "A real address where you receive post"
 msgstr "ਇੱਕ ਅਸਲੀ ਪਤਾ ਜਿੱਥੇ ਤੁਹਾਨੂੰ ਡਾਕ ਮਿਲਦੀ ਹੈ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "A reply and its actions in one step"
 msgstr "ਇੱਕ ਜਵਾਬ ਅਤੇ ਉਸਦੀਆਂ ਕਾਰਵਾਈਆਂ ਇੱਕੋ ਕਦਮ ਵਿੱਚ"
 
@@ -2545,6 +2550,7 @@ msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -2554,6 +2560,7 @@ msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 
@@ -3116,8 +3123,10 @@ msgstr "API"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API ਅਤੇ MCP"
@@ -3137,6 +3146,7 @@ msgstr "API ਕੁੰਜੀ"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API ਕੁੰਜੀਆਂ"
 
@@ -3188,6 +3198,7 @@ msgstr "ਸਿਰਫ਼ ਕੰਮ ਦੇ ਘੰਟਿਆਂ ਵਿੱਚ ਆਨ�
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Appearance"
 msgstr "ਦਿੱਖ"
 
@@ -3558,6 +3569,7 @@ msgstr "ਆਡੀਅੰਸ"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "ਆਡਿਟ ਲੌਗ"
 
@@ -3590,6 +3602,7 @@ msgstr "ਆਟੋਮੈਟਿਕ ਮੇਲ ਕਦੇ ਆਟੋਮੈਟਿਕ �
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "ਆਟੋਮੇਸ਼ਨ"
 
@@ -3608,6 +3621,7 @@ msgstr "{until} ਤੱਕ ਉਪਲਬਧ"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "ਦੂਰ"
 
@@ -3616,6 +3630,7 @@ msgstr "ਦੂਰ"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "ਪਿੱਛੇ"
 
@@ -3840,6 +3855,7 @@ msgstr "ਇਸ ਵਰਕਸਪੇਸ ਵਿੱਚ ਬੌਟਾਂ ਨੂੰ ਭ�
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "ਇਸ ਵਰਕਸਪੇਸ ਵਿੱਚ ਬੋਟ ਨਹੀਂ ਭੇਜ ਸਕਦੇ: ਕੁੰਜੀ ਡਰਾਫਟ ਲਿਖਦੀ ਹੈ ਅਤੇ ਮੈਂਬਰ ਉਹਨਾਂ ਨੂੰ ਭੇਜਦਾ ਹੈ।"
 
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Bots may send"
 msgstr "ਬੋਟ ਭੇਜ ਸਕਦੇ ਹਨ"
@@ -3894,6 +3910,7 @@ msgid "Breached, met late at {at}"
 msgstr "ਉਲੰਘਣਾ, {at} ਵਜੇ ਦੇਰ ਨਾਲ ਪੂਰਾ ਹੋਇਆ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Gmail, Yandex ਜਾਂ ਕਿਸੇ ਵੀ IMAP ਸਰਵਰ ਤੋਂ ਮੇਲਬਾਕਸ ਦਾ ਇਤਿਹਾਸ ਲਿਆਓ"
 
@@ -4135,6 +4152,7 @@ msgstr "ਰੱਦ ਕੀਤਾ ਗਿਆ। ਪਹਿਲਾਂ ਜੋ ਜੋੜ�
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "ਕੈਂਡ ਰਿਪਲਾਈ"
 
@@ -4341,6 +4359,7 @@ msgstr "ਚੈਨਲ ਸੈਟਿੰਗਾਂ"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Channels"
@@ -4349,6 +4368,10 @@ msgstr "ਚੈਨਲ"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Channels and inboxes"
 msgstr "ਚੈਨਲ ਅਤੇ ਇਨਬਾਕਸ"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Channels needing attention: {attention}"
+msgstr "ਧਿਆਨ ਮੰਗਦੇ ਚੈਨਲ: {attention}"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -4977,6 +5000,7 @@ msgid "Connect an assistant"
 msgstr "ਅਸਿਸਟੈਂਟ ਕਨੈਕਟ ਕਰੋ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Claude ਜਾਂ ChatGPT ਵਰਗਾ ਅਸਿਸਟੈਂਟ ਕਨੈਕਟ ਕਰੋ"
 
@@ -5006,6 +5030,7 @@ msgid "Connect your iOS or Android app"
 msgstr "ਆਪਣੀ iOS ਜਾਂ Android ਐਪ ਜੋੜੋ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "ਆਪਣੇ ਸਰਵਰ ਅਤੇ ਬੋਟ Yuva ਨਾਲ ਕਨੈਕਟ ਕਰੋ"
 
@@ -5048,6 +5073,7 @@ msgstr "{created} ਨੂੰ ਕਨੈਕਟ ਹੋਇਆ"
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "ਕਨੈਕਟ ਕੀਤੀਆਂ ਐਪਾਂ"
@@ -5194,6 +5220,7 @@ msgid "contains"
 msgstr "ਸ਼ਾਮਲ ਹੈ"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "ਸਮੱਗਰੀ"
 
@@ -5283,6 +5310,7 @@ msgstr "ਗੱਲਬਾਤਾਂ"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "ਗੱਲਬਾਤਾਂ"
 
@@ -5731,6 +5759,7 @@ msgstr "ਕਸਟਮ ਫੀਲਡ"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "ਕਸਟਮ ਫੀਲਡ"
 
@@ -6327,10 +6356,12 @@ msgstr "ਬ੍ਰਾਊਜ਼ਰ ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਵਿੱ
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Details"
 msgstr "ਵੇਰਵੇ"
 
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Developers"
 msgstr "ਡਿਵੈਲਪਰ"
 
@@ -7497,6 +7528,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -8162,6 +8194,7 @@ msgstr "ਟੀਮ {team} ਨੂੰ {inbox} ਤੱਕ ਪਹੁੰਚ ਦਿੱ�
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
 msgstr "ਆਮ"
@@ -8336,6 +8369,7 @@ msgid "Groups claim"
 msgstr "Groups claim"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Groups of members and the inboxes they cover"
 msgstr "ਮੈਂਬਰਾਂ ਦੇ ਗਰੁੱਪ ਅਤੇ ਉਹ ਇਨਬਾਕਸ ਜੋ ਉਹ ਸੰਭਾਲਦੇ ਹਨ"
 
@@ -8648,6 +8682,7 @@ msgid "How mail reaches Yuva"
 msgstr "ਮੇਲ Yuva ਤੱਕ ਕਿਵੇਂ ਪਹੁੰਚਦੀ ਹੈ"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "ਸੁਨੇਹੇ ਕਿਵੇਂ ਪਹੁੰਚਦੇ ਹਨ: ਚੈਟ, ਈ-ਮੇਲ, ਐਪਾਂ"
 
@@ -8845,6 +8880,7 @@ msgid "Import steps"
 msgstr "ਇੰਪੋਰਟ ਦੇ ਕਦਮ"
 
 #: src/components/common/ImportedChip.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "ਇੰਪੋਰਟ ਹੋਇਆ"
@@ -9251,6 +9287,7 @@ msgstr "Issue address"
 #: src/app/Palette.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Issue trackers"
 msgstr "Issue trackers"
 
@@ -9592,6 +9629,7 @@ msgstr "ਸਿਰਫ਼ ਲੇਬਲ: ਇਸਦੀ ਮੇਲ All mail ਤੋਂ 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "ਲੇਬਲ"
@@ -9879,6 +9917,7 @@ msgid "Let your team sign in through your company's identity provider. Their e-m
 msgstr "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Let your team sign in through your identity provider"
 msgstr "Let your team sign in through your identity provider"
 
@@ -10257,6 +10296,7 @@ msgstr "ਮੈਕਰੋ"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "ਮੈਕਰੋ"
 
@@ -10689,6 +10729,7 @@ msgstr "ਮੈਂਬਰ"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -11192,8 +11233,10 @@ msgstr "ਟ੍ਰੈਸ਼ ਵਿੱਚ ਭੇਜੋ ({0})"
 msgid "Move to the Trash (#)"
 msgstr "ਰੱਦੀ ਵਿੱਚ ਭੇਜੋ (#)"
 
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Move to Yuva"
 msgstr "Yuva ਵਿੱਚ ਆਓ"
 
@@ -11288,6 +11331,7 @@ msgstr "ਮੇਰੇ ਵਿਊ"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -12940,6 +12984,7 @@ msgstr "ਗਾਹਕਾਂ ਨੂੰ ਨੋਟਿਸ"
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Notifications"
 msgstr "ਨੋਟੀਫਿਕੇਸ਼ਨ"
 
@@ -12990,8 +13035,10 @@ msgstr "ਬੰਦ"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
@@ -13034,6 +13081,7 @@ msgstr "ਸਬਸਕ੍ਰਾਈਬ ਫਾਰਮਾਂ ਅਤੇ ਪਸੰਦ �
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "ਆਫ਼ਲਾਈਨ"
 
@@ -13075,7 +13123,9 @@ msgid "Oldest wait"
 msgstr "ਸਭ ਤੋਂ ਲੰਬੀ ਉਡੀਕ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "ਚਾਲੂ"
@@ -14663,6 +14713,7 @@ msgid "Post an update ({updateKey})"
 msgstr "ਅੱਪਡੇਟ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ ({updateKey})"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Post conversations to a channel and answer from it"
 msgstr "Post conversations to a channel and answer from it"
 
@@ -14849,6 +14900,7 @@ msgstr "ਪ੍ਰੋਡਕਸ਼ਨ ਬੈਕਐਂਡ"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
@@ -14857,6 +14909,7 @@ msgstr "ਉਤਪਾਦ"
 #: src/app/Palette.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Profile"
 msgstr "ਪ੍ਰੋਫ਼ਾਈਲ"
 
@@ -15259,6 +15312,11 @@ msgstr "ਤੁਹਾਡੀ ਟੀਮ ਦੇ ਪਤੇ ਸੁਝਾਉਣ ਲਈ 
 #: src/components/common/text.ts
 msgid "Read What's new changelogs and their entries"
 msgstr "\"ਨਵਾਂ ਕੀ ਹੈ\" ਦੇ ਚੇਂਜਲੌਗ ਅਤੇ ਉਨ੍ਹਾਂ ਦੀਆਂ ਐਂਟਰੀਆਂ ਪੜ੍ਹੋ"
+
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
+msgid "Read-only"
+msgstr "ਸਿਰਫ਼ ਪੜ੍ਹਨ ਲਈ"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
@@ -15912,6 +15970,7 @@ msgid "Reply and resolution targets for the conversations a policy matches. The 
 msgstr "ਉਹਨਾਂ ਗੱਲਬਾਤਾਂ ਲਈ ਜਵਾਬ ਅਤੇ ਹੱਲ ਦੇ ਟੀਚੇ ਜਿਨ੍ਹਾਂ ਨਾਲ ਕੋਈ ਨੀਤੀ ਮੇਲ ਖਾਂਦੀ ਹੈ। ਗੱਲਬਾਤ ਨਾਲ ਮੇਲ ਖਾਂਦੀ ਪਹਿਲੀ ਚਾਲੂ ਨੀਤੀ ਲਾਗੂ ਹੁੰਦੀ ਹੈ, ਇਸ ਲਈ ਸਭ ਤੋਂ ਖਾਸ ਨੀਤੀਆਂ ਉੱਪਰ ਰੱਖੋ। ਟੀਚੇ ਹਰ ਇਨਬਾਕਸ ਦੇ ਕੰਮ ਦੇ ਘੰਟਿਆਂ ਵਿੱਚ ਗਿਣੇ ਜਾਂਦੇ ਹਨ।"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Reply and resolution targets with due times"
 msgstr "ਮਿਆਦ ਸਮੇਤ ਜਵਾਬ ਅਤੇ ਹੱਲ ਦੇ ਟੀਚੇ"
 
@@ -16287,6 +16346,7 @@ msgid "Right after subscribing, people get a short mail that confirms it, with a
 msgstr "ਸਬਸਕ੍ਰਾਈਬ ਕਰਨ ਤੋਂ ਤੁਰੰਤ ਬਾਅਦ ਲੋਕਾਂ ਨੂੰ ਇਸਦੀ ਪੁਸ਼ਟੀ ਕਰਦੀ ਇੱਕ ਛੋਟੀ ਮੇਲ ਮਿਲਦੀ ਹੈ, ਅਨਸਬਸਕ੍ਰਾਈਬ ਲਿੰਕ ਨਾਲ।"
 
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "ਇਸ ਵੇਲੇ"
 
@@ -16299,6 +16359,7 @@ msgstr "ਇਸ ਵੇਲੇ"
 msgid "Roadmap"
 msgstr "ਰੋਡਮੈਪ"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "ਭੂਮਿਕਾ"
@@ -16388,6 +16449,7 @@ msgstr "ਨਿਯਮ {rule} ਚੱਲਿਆ, ਕੁਝ ਬਦਲਣ ਦੀ ਲ�
 msgid "Rule {rule} ran: {done}"
 msgstr "ਨਿਯਮ {rule} ਚੱਲਿਆ: {done}"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "ਨਿਯਮ"
@@ -16397,6 +16459,7 @@ msgid "Rules react to a conversation changing: they label, assign, reply, snooze
 msgstr "ਗੱਲਬਾਤ ਬਦਲਣ ’ਤੇ ਨਿਯਮ ਪ੍ਰਤੀਕਿਰਿਆ ਦਿੰਦੇ ਹਨ: ਲੇਬਲ ਲਾਉਂਦੇ ਹਨ, ਸੌਂਪਦੇ ਹਨ, ਜਵਾਬ ਦਿੰਦੇ ਹਨ, ਸਨੂਜ਼ ਕਰਦੇ ਹਨ ਜਾਂ ਵੈੱਬਹੁੱਕ ਬੁਲਾਉਂਦੇ ਹਨ। ਉਹ ਇਸ ਸੂਚੀ ਦੇ ਕ੍ਰਮ ਵਿੱਚ, ਹਰ ਟ੍ਰਿਗਰ ’ਤੇ ਵੱਧ ਤੋਂ ਵੱਧ ਇੱਕ ਵਾਰ ਚੱਲਦੇ ਹਨ, ਅਤੇ ਇੱਕ ਨਿਯਮ ਜੋ ਬਦਲਦਾ ਹੈ ਉਹ ਕਦੇ ਦੂਜੇ ਨਿਯਮ ਨੂੰ ਸ਼ੁਰੂ ਨਹੀਂ ਕਰਦਾ।"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "ਲੇਬਲ ਲਾਉਣ, ਸੌਂਪਣ, ਜਵਾਬ ਦੇਣ ਅਤੇ ਵੈੱਬਹੁੱਕ ਬੁਲਾਉਣ ਵਾਲੇ ਨਿਯਮ"
 
@@ -16726,6 +16789,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "ਖੋਜੋ"
@@ -16870,6 +16934,10 @@ msgstr "Secret set"
 #: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "ਸੈਕਸ਼ਨ"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Security"
+msgstr "ਸੁਰੱਖਿਆ"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
@@ -17062,6 +17130,7 @@ msgid "Send events"
 msgstr "ਇਵੈਂਟ ਭੇਜੋ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send events to your own server"
 msgstr "ਆਪਣੇ ਸਰਵਰ ਉੱਤੇ ਇਵੈਂਟ ਭੇਜੋ"
 
@@ -17105,6 +17174,7 @@ msgid "Send later, in an e-mail reply"
 msgstr "ਬਾਅਦ ਵਿੱਚ ਭੇਜੋ, ਈਮੇਲ ਜਵਾਬ ਵਿੱਚ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send mail from your own address"
 msgstr "ਆਪਣੇ ਪਤੇ ਤੋਂ ਮੇਲ ਭੇਜੋ"
 
@@ -17588,6 +17658,7 @@ msgstr "ਸੈੱਟ ਅੱਪ ਹੋ ਰਿਹਾ ਹੈ…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
@@ -18022,6 +18093,7 @@ msgstr "ਬਸੰਤ ਮੇਲੇ ਵਿੱਚ ਸਾਈਨ-ਅੱਪ ਸ਼ੀ�
 #: src/app/Palette.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Signature"
 msgstr "Signature"
@@ -18101,6 +18173,7 @@ msgstr "ਸਿੰਗਲ ਔਪਟ-ਇਨ"
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18204,6 +18277,7 @@ msgstr "SLA ਪੂਰੇ / ਉਲੰਘਣਾ"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "SLA policies"
 msgstr "SLA ਨੀਤੀਆਂ"
 
@@ -18212,6 +18286,7 @@ msgid "SLA targets (W)"
 msgstr "SLA ਟੀਚੇ (W)"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Slack"
 msgstr "Slack"
@@ -18414,6 +18489,7 @@ msgid "Sort conversations by topic. Each label also gets its own view in the sid
 msgstr "ਗੱਲਬਾਤਾਂ ਨੂੰ ਵਿਸ਼ੇ ਮੁਤਾਬਕ ਛਾਂਟੋ। ਹਰ ਲੇਬਲ ਨੂੰ ਸਾਈਡਬਾਰ ਵਿੱਚ ਆਪਣਾ ਵਿਊ ਵੀ ਮਿਲਦਾ ਹੈ।"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Sort conversations your way"
 msgstr "ਗੱਲਬਾਤਾਂ ਆਪਣੇ ਤਰੀਕੇ ਨਾਲ ਛਾਂਟੋ"
 
@@ -18621,6 +18697,7 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (ਪੋਰਟ 587)"
 
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18665,6 +18742,7 @@ msgstr "ਬੰਦ ਹੋਣ 'ਤੇ ਹਾਲਤ"
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "ਸਥਿਤੀ"
 
@@ -18699,6 +18777,7 @@ msgid "Stay under your provider’s sending rate. Support replies are never slow
 msgstr "ਆਪਣੇ ਪ੍ਰਦਾਤਾ ਦੀ ਭੇਜਣ ਦੀ ਦਰ ਦੇ ਅੰਦਰ ਰਹੋ। ਬ੍ਰਾਡਕਾਸਟ ਨਾਲ ਸਹਾਇਤਾ ਦੇ ਜਵਾਬ ਕਦੇ ਹੌਲੀ ਨਹੀਂ ਹੁੰਦੇ।"
 
 #: src/components/common/Wizard.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Step {step} of {count}"
 msgstr "ਕਦਮ {step} / {count}"
 
@@ -19097,7 +19176,9 @@ msgstr "teammate@company.com"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Teams"
 msgstr "ਟੀਮਾਂ"
 
@@ -20287,6 +20368,7 @@ msgid "The workspace may not send bulk mail now"
 msgstr "ਵਰਕਸਪੇਸ ਹੁਣ ਬਲਕ ਮੇਲ ਨਹੀਂ ਭੇਜ ਸਕਦਾ"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "The workspace: labels, replies, data"
 msgstr "ਵਰਕਸਪੇਸ: ਲੇਬਲ, ਜਵਾਬ, ਡਾਟਾ"
 
@@ -20339,6 +20421,7 @@ msgid "Theme"
 msgstr "ਥੀਮ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "ਇਸ ਡਿਵਾਈਸ ਉੱਤੇ ਥੀਮ ਅਤੇ ਈ-ਮੇਲ ਵਿਊ"
 
@@ -21069,6 +21152,7 @@ msgstr "ਵੱਲ: {who}"
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Today"
 msgstr "ਅੱਜ"
 
@@ -21226,6 +21310,7 @@ msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's
 msgstr "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Turn feedback into GitHub or Linear issues"
 msgstr "Turn feedback into GitHub or Linear issues"
 
@@ -21310,6 +21395,7 @@ msgid "Type your e-mail address to confirm"
 msgstr "ਪੁਸ਼ਟੀ ਲਈ ਆਪਣਾ ਈ-ਮੇਲ ਪਤਾ ਟਾਈਪ ਕਰੋ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Typed values on conversations and contacts"
 msgstr "ਗੱਲਬਾਤਾਂ ਅਤੇ ਸੰਪਰਕਾਂ ਉੱਤੇ ਕਿਸਮ ਵਾਲੇ ਮੁੱਲ"
 
@@ -21988,6 +22074,10 @@ msgstr "Verify"
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "ਭਰੋਸਾ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਹਰ ਬੇਨਤੀ ਦੀ ਤਸਦੀਕ ਕਰੋ: <0>webhook-signature</0> ਹੈਡਰ <1>Standard Webhooks</1> ਵਿਸ਼ੇਸ਼ਤਾ ਦੀ ਪਾਲਣਾ ਕਰਦਾ ਹੈ, ਇਸ ਲਈ ਇਸਦੀ ਕੋਈ ਵੀ ਲਾਇਬ੍ਰੇਰੀ ਇਸਨੂੰ ਐਂਡਪੁਆਇੰਟ ਦੇ ਸੀਕ੍ਰੇਟ ਨਾਲ ਜਾਂਚ ਸਕਦੀ ਹੈ। Go ਬੈਕਐਂਡ Yuva ਰਿਪੋਜ਼ਟਰੀ ਦਾ <2>sdk/go/webhook</2> ਪੈਕੇਜ ਵਰਤ ਸਕਦੇ ਹਨ।"
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Version"
+msgstr "ਵਰਜਨ"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
 msgstr "ਵਰਜਨ"
@@ -22289,6 +22379,7 @@ msgstr "Webhook secret for {revealName}"
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhooks"
@@ -22469,10 +22560,12 @@ msgid "What will you use Yuva for?"
 msgstr "ਤੁਸੀਂ Yuva ਨੂੰ ਕਿਸ ਲਈ ਵਰਤੋਗੇ?"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What you write often"
 msgstr "ਜੋ ਤੁਸੀਂ ਅਕਸਰ ਲਿਖਦੇ ਹੋ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What your e-mailed replies end with"
 msgstr "What your e-mailed replies end with"
 
@@ -22586,6 +22679,7 @@ msgid "When to notify me"
 msgstr "ਮੈਨੂੰ ਕਦੋਂ ਸੂਚਿਤ ਕਰਨਾ ਹੈ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "When we let you know"
 msgstr "ਅਸੀਂ ਤੁਹਾਨੂੰ ਕਦੋਂ ਦੱਸਦੇ ਹਾਂ"
 
@@ -22690,6 +22784,7 @@ msgid "Who can use it"
 msgstr "ਕੌਣ ਵਰਤ ਸਕਦਾ ਹੈ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who changed access, keys and data"
 msgstr "ਪਹੁੰਚ, ਕੁੰਜੀਆਂ ਅਤੇ ਡੇਟਾ ਕਿਸ ਨੇ ਬਦਲਿਆ"
 
@@ -22723,6 +22818,7 @@ msgid "Who should take it?"
 msgstr "ਇਸਨੂੰ ਕੌਣ ਲਵੇਗਾ?"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "ਤੁਸੀਂ ਕਿਸਦੀ ਮਦਦ ਕਰਦੇ ਹੋ: ਨਾਮ, ਸਮਾਂ, ਟੀਮ, ਭੇਜਣ ਵਾਲਾ"
 
@@ -22841,6 +22937,7 @@ msgstr "ਕੰਮ ਹੋ ਰਿਹਾ ਹੈ…"
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
@@ -22957,6 +23054,7 @@ msgstr "ਕੱਲ੍ਹ"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "You"
 msgstr "ਤੁਸੀਂ"
 
@@ -23168,6 +23266,7 @@ msgstr "Your account is not in a group that may use Yuva. Ask your administrator
 
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "ਤੁਹਾਡੇ ਪਤੇ"
 

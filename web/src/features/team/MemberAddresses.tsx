@@ -51,8 +51,8 @@ export function MemberAddresses({ memberId, name }: { memberId: string; name: st
   const items = list.data ?? []
   if (!list.isPending && !list.error && items.length === 0) return null
   return (
-    <section className="flex flex-col gap-2.5 border-b px-5 py-4">
-      <Overline>
+    <section className="flex flex-col gap-2.5 border-b px-5 py-4 in-data-flat:mt-6 in-data-flat:border-b-0 in-data-flat:px-0 in-data-flat:py-0">
+      <Overline className="in-data-flat:text-caption in-data-flat:font-medium in-data-flat:tracking-normal in-data-flat:text-muted2 in-data-flat:normal-case">
         <Trans>Addresses to send from</Trans>
       </Overline>
       <p className="text-caption text-faint">

@@ -40,10 +40,11 @@ export function Sec({
   )
 }
 
-export const secCard = "overflow-hidden rounded-[14px] border bg-card"
+export const secCard =
+  "overflow-hidden rounded-[14px] border bg-card in-data-flat:rounded-none in-data-flat:border-x-0 in-data-flat:border-line-soft in-data-flat:bg-transparent"
 
 export function SecBody({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn("flex flex-col gap-4 p-5 @max-[760px]:p-4", className)}>{children}</div>
+  return <div className={cn("flex flex-col gap-4 p-5 in-data-flat:px-1 @max-[760px]:p-4", className)}>{children}</div>
 }
 
 export function SecFoot({
@@ -68,7 +69,7 @@ export function SecFoot({
   return (
     <div
       className={cn(
-        "flex min-h-14 flex-wrap items-center gap-x-3 gap-y-2 border-t bg-surface px-5 py-2.5 @max-[760px]:px-4",
+        "flex min-h-14 flex-wrap items-center gap-x-3 gap-y-2 border-t bg-surface px-5 py-2.5 in-data-flat:border-line-soft in-data-flat:bg-transparent in-data-flat:px-1 @max-[760px]:px-4",
         dirty && "bg-brand-wash"
       )}
       data-dirty={dirty || undefined}

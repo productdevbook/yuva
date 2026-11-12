@@ -1,8 +1,9 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowDownIcon, LifeBuoyIcon, MailIcon, ShieldCheckIcon } from "lucide-react"
+import { ArrowDownIcon, CheckIcon, LifeBuoyIcon, MailIcon, ShieldCheckIcon } from "lucide-react"
+import { useEffect, useRef } from "react"
 import { Link, Navigate, useParams, useSearchParams } from "react-router"
 
-import { ErrorLine, SummaryList, WizardFrame, YuvaMark } from "@/components/common"
+import { BackArrow, ErrorLine, InfoSection, KV, PageTop, SummaryList, WizardFrame, YuvaMark } from "@/components/common"
 import { formatDate } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { useNumber } from "@/features/broadcasts/BroadcastParts"
@@ -19,9 +20,12 @@ import { SourceStep } from "@/features/migrations/SourceStep"
 import { SwitchStep } from "@/features/migrations/SwitchStep"
 import { isHelpdesk, useFormatName, useMigrationText } from "@/features/migrations/text"
 import { UploadStep } from "@/features/migrations/UploadStep"
+import { SettingsAside, SettingsLayout, SettingsTrail } from "@/features/settings/SettingsFrame"
 import { PreviewCaption } from "@/features/setup/previews"
+import { useIsPhone } from "@/hooks/use-media-query"
 import type { Migration, MigrationPreset } from "@/lib/api"
 import { useSession } from "@/lib/session"
+import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
 export const STEPS = ["source", "connect", "choose", "map", "review", "copy", "switch", "done"] as const
@@ -87,7 +91,28 @@ function useStepNames() {
   } satisfies Record<StepKey, string>
 }
 
-export function WizardLayout({
+export function WizardLayout(props: {
+  step: StepKey
+  m?: Migration
+  preset?: MigrationPreset
+  address?: string
+  children: React.ReactNode
+}) {
+  const phone = useIsPhone()
+  return phone ? <StackedWizard {...props} /> : <FlatWizard {...props} />
+}
+
+function useStepLinks(step: StepKey, m?: Migration, preset?: MigrationPreset) {
+  const names = useStepNames()
+  const steps = stepsFor(isFile(m, preset))
+  const index = steps.indexOf(step)
+  const prev = index > 0 ? steps[index - 1] : undefined
+  const back = m && prev && reachable(prev, m) ? `/migrations/${m.id}/${prev}` : undefined
+  const href = (key: StepKey) => (m && reachable(key, m) ? `/migrations/${m.id}/${key}` : undefined)
+  return { names, steps, index, back, href }
+}
+
+function StackedWizard({
   step,
   m,
   preset,
@@ -101,16 +126,12 @@ export function WizardLayout({
   children: React.ReactNode
 }) {
   const { t } = useLingui()
-  const names = useStepNames()
-  const steps = stepsFor(isFile(m, preset))
-  const index = steps.indexOf(step)
-  const prev = index > 0 ? steps[index - 1] : undefined
-  const back = m && prev && reachable(prev, m) ? `/migrations/${m.id}/${prev}` : undefined
+  const { names, steps, back, href } = useStepLinks(step, m, preset)
   return (
     <WizardFrame
       current={step}
       steps={steps.map((s) => ({ key: s, label: names[s] }))}
-      stepHref={(key) => (m && reachable(key as StepKey, m) ? `/migrations/${m.id}/${key}` : undefined)}
+      stepHref={(key) => href(key as StepKey)}
       stepsLabel={t`Migration steps`}
       back={back ?? (step === "source" ? "/settings/migrations" : undefined)}
       leave={
@@ -125,7 +146,120 @@ export function WizardLayout({
   )
 }
 
-function Journey({ m, preset, address }: { m?: Migration; preset?: MigrationPreset; address?: string }) {
+function FlatWizard({
+  step,
+  m,
+  preset,
+  address,
+  children,
+}: {
+  step: StepKey
+  m?: Migration
+  preset?: MigrationPreset
+  address?: string
+  children: React.ReactNode
+}) {
+  const { t } = useLingui()
+  const { names, steps, index, back, href } = useStepLinks(step, m, preset)
+  const journey = useJourney(m, preset, address ?? m?.source_address)
+  const main = useRef<HTMLDivElement>(null)
+  const first = useRef(true)
+  useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    const active = document.activeElement
+    if (active && active !== document.body && main.current?.contains(active)) return
+    main.current?.querySelector<HTMLElement>("[data-wizard-heading]")?.focus({ preventScroll: true })
+  }, [step])
+  return (
+    <SettingsLayout>
+      <PageTop back={{ label: t`Move to Yuva`, to: "/settings/migrations", testId: "migration-close" }}>
+        <SettingsTrail place="migrations" name={journey.from} />
+      </PageTop>
+      <div ref={main} className="mt-3 flex max-w-[720px] min-w-0 flex-col" data-testid="setup">
+        <p className="sr-only" data-testid="setup-step">
+          <StepOf step={index + 1} count={steps.length} />
+          {" · "}
+          {names[step]}
+        </p>
+        <ol
+          aria-label={t`Migration steps`}
+          className="m-0 mb-8 flex list-none flex-wrap gap-x-5 gap-y-1 border-b border-line p-0"
+        >
+          {steps.map((s, i) => {
+            const link = i < index ? href(s) : undefined
+            const cls = cn(
+              "-mb-px inline-flex h-10 items-center gap-2 border-b-2 border-transparent text-body text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              i === index && "border-brand font-medium text-foreground",
+              i < index && "text-fg2",
+              link && "hover:text-foreground"
+            )
+            const body = (
+              <>
+                <span
+                  className={cn(
+                    "font-mono text-[11px] text-muted2",
+                    i === index && "text-brand",
+                    i < index && "text-ok"
+                  )}
+                >
+                  {i < index ? <CheckIcon aria-hidden className="size-3" /> : i + 1}
+                </span>
+                {names[s]}
+              </>
+            )
+            return (
+              <li key={s} aria-current={i === index ? "step" : undefined}>
+                {link ? (
+                  <Link to={link} className={cls}>
+                    {body}
+                  </Link>
+                ) : (
+                  <span className={cls}>{body}</span>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+        {back && (
+          <Link
+            to={back}
+            className="mb-5 inline-flex w-fit items-center gap-1.5 text-small text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            data-testid="setup-back"
+          >
+            <BackArrow className="size-3.5" />
+            <Trans>Back</Trans>
+          </Link>
+        )}
+        <div className="max-w-[640px]">{children}</div>
+      </div>
+      <SettingsAside>
+        <InfoSection title={journey.provider} testId="migration-journey">
+          <KV label={t`Source`} value={journey.from} />
+          <KV label={t`Yuva inbox`} value={journey.to} />
+          {journey.facts.map(([label, value]) => (
+            <KV key={label} label={label} value={value} />
+          ))}
+        </InfoSection>
+        <InfoSection title={t`Read-only`}>
+          <p className="m-0 text-small leading-5 text-muted-foreground">{journey.note}</p>
+        </InfoSection>
+      </SettingsAside>
+    </SettingsLayout>
+  )
+}
+
+function StepOf({ step, count }: { step: number; count: number }) {
+  return (
+    <Trans>
+      Step {step} of {count}
+    </Trans>
+  )
+}
+
+function useJourney(m?: Migration, preset?: MigrationPreset, address?: string) {
   const { t, i18n } = useLingui()
   const num = useNumber()
   const text = useMigrationText()
@@ -158,6 +292,24 @@ function Journey({ m, preset, address }: { m?: Migration; preset?: MigrationPres
       facts.push([t`Dry run`, t`${conversations} conversations, ${messages} messages`])
     }
   }
+  const note = file
+    ? t`Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no notifications, no auto-replies.`
+    : desk
+      ? t`Yuva only reads the help desk. History arrives quietly: no notifications, no auto-replies.`
+      : t`Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies.`
+  return {
+    file,
+    desk,
+    provider,
+    from: address || (desk ? t`Your support address` : t`Your mailbox`),
+    to: inbox?.name ?? t`Chosen in the Map step`,
+    facts,
+    note,
+  }
+}
+
+function Journey({ m, preset, address }: { m?: Migration; preset?: MigrationPreset; address?: string }) {
+  const { file, desk, provider, from, to, facts, note } = useJourney(m, preset, address)
   return (
     <>
       <div
@@ -170,9 +322,7 @@ function Journey({ m, preset, address }: { m?: Migration; preset?: MigrationPres
           </span>
           <span className="min-w-0">
             <span className="block text-caption text-faint">{provider}</span>
-            <span className="block truncate font-medium">
-              {address || (desk ? t`Your support address` : t`Your mailbox`)}
-            </span>
+            <span className="block truncate font-medium">{from}</span>
           </span>
         </div>
         <ArrowDownIcon className="ms-3 size-4 text-faint" aria-hidden="true" />
@@ -184,7 +334,7 @@ function Journey({ m, preset, address }: { m?: Migration; preset?: MigrationPres
             <span className="block text-caption text-faint">
               <Trans>Yuva inbox</Trans>
             </span>
-            <span className="block truncate font-medium">{inbox?.name ?? t`Chosen in the Map step`}</span>
+            <span className="block truncate font-medium">{to}</span>
           </span>
         </div>
         {facts.length > 0 && <SummaryList items={facts} className="border-t pt-4" />}
@@ -193,18 +343,7 @@ function Journey({ m, preset, address }: { m?: Migration; preset?: MigrationPres
           {file ? <Trans>Access to your mailbox: none</Trans> : <Trans>Changes made to {provider}: none</Trans>}
         </p>
       </div>
-      <PreviewCaption>
-        {file ? (
-          <Trans>
-            Yuva reads only the file you upload and deletes it when the migration ends. History arrives quietly: no
-            notifications, no auto-replies.
-          </Trans>
-        ) : desk ? (
-          <Trans>Yuva only reads the help desk. History arrives quietly: no notifications, no auto-replies.</Trans>
-        ) : (
-          <Trans>Yuva only reads the mailbox. History arrives quietly: no notifications, no auto-replies.</Trans>
-        )}
-      </PreviewCaption>
+      <PreviewCaption>{note}</PreviewCaption>
     </>
   )
 }
@@ -233,7 +372,7 @@ export function MigrationPage() {
         </Button>
       </WizardLayout>
     )
-  if (!m || !presets.data) return <div className="min-h-svh bg-background" />
+  if (!m || !presets.data) return <div className="min-h-svh bg-background" data-testid="migration-loading" />
   const wanted = stepsFor(isFile(m)).includes(step as StepKey) ? (step as StepKey) : currentStep(m)
   if (!reachable(wanted, m)) return <Navigate to={`/migrations/${m.id}/${currentStep(m)}`} replace />
   if (!step) return <Navigate to={`/migrations/${m.id}/${wanted}`} replace />

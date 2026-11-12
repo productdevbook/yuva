@@ -309,6 +309,10 @@ msgstr "{author}, {by} ಮೂಲಕ ಕಳುಹಿಸಲಾಗಿದೆ"
 msgid "{available} of {total}"
 msgstr "{total} ರಲ್ಲಿ {available}"
 
+#: src/features/team/TeamPage.tsx
+msgid "{available} of {total} available now"
+msgstr "{total} ರಲ್ಲಿ {available} ಈಗ ಲಭ್ಯ"
+
 #: src/features/home/HomePage.tsx
 msgid "{bad, plural, one {# bad rating} other {# bad ratings}}"
 msgstr "{bad, plural, one {# ಕೆಟ್ಟ ರೇಟಿಂಗ್} other {# ಕೆಟ್ಟ ರೇಟಿಂಗ್‌ಗಳು}}"
@@ -1773,6 +1777,7 @@ msgid "A real address where you receive post"
 msgstr "ನೀವು ಅಂಚೆ ಪಡೆಯುವ ನಿಜವಾದ ವಿಳಾಸ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "A reply and its actions in one step"
 msgstr "ಒಂದು ಉತ್ತರ ಮತ್ತು ಅದರ ಕ್ರಿಯೆಗಳು ಒಂದೇ ಹಂತದಲ್ಲಿ"
 
@@ -2545,6 +2550,7 @@ msgstr "ಎಲ್ಲಾ ಉತ್ಪನ್ನಗಳು"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -2554,6 +2560,7 @@ msgstr "ಎಲ್ಲಾ ಉತ್ಪನ್ನಗಳು"
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "All products"
 msgstr "ಎಲ್ಲ ಉತ್ಪನ್ನಗಳು"
 
@@ -3116,8 +3123,10 @@ msgstr "API"
 
 #: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
 msgstr "API ಮತ್ತು MCP"
@@ -3137,6 +3146,7 @@ msgstr "API ಕೀ"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "API ಕೀಲಿಗಳು"
 
@@ -3188,6 +3198,7 @@ msgstr "ಕೆಲಸದ ಸಮಯದಲ್ಲಿ ಮಾತ್ರ ಆನ್‌ಲ
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Appearance"
 msgstr "ಗೋಚರತೆ"
 
@@ -3558,6 +3569,7 @@ msgstr "ಪ್ರೇಕ್ಷಕರು"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "ಆಡಿಟ್ ಲಾಗ್"
 
@@ -3590,6 +3602,7 @@ msgstr "ಸ್ವಯಂಚಾಲಿತ ಮೇಲ್ ಎಂದಿಗೂ ಸ್ವ
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "ಸ್ವಯಂಚಾಲನ"
 
@@ -3608,6 +3621,7 @@ msgstr "{until} ವರೆಗೆ ಲಭ್ಯ"
 #: src/app/TeamMenu.tsx
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Away"
 msgstr "ದೂರವಿದ್ದಾರೆ"
 
@@ -3616,6 +3630,7 @@ msgstr "ದೂರವಿದ್ದಾರೆ"
 #: src/features/auth/CreateWorkspace.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/contact/MergeContactDialog.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Back"
 msgstr "ಹಿಂದೆ"
 
@@ -3840,6 +3855,7 @@ msgstr "ಈ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನಲ್ಲಿ ಬಾಟ್�
 msgid "Bots may not send in this workspace: the key writes drafts and a member sends them."
 msgstr "ಈ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನಲ್ಲಿ ಬಾಟ್‌ಗಳು ಕಳುಹಿಸುವಂತಿಲ್ಲ: ಕೀಲಿ ಡ್ರಾಫ್ಟ್‌ಗಳನ್ನು ಬರೆಯುತ್ತದೆ ಮತ್ತು ಸದಸ್ಯರು ಅವನ್ನು ಕಳುಹಿಸುತ್ತಾರೆ."
 
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Bots may send"
 msgstr "ಬಾಟ್‌ಗಳು ಕಳುಹಿಸಬಹುದು"
@@ -3894,6 +3910,7 @@ msgid "Breached, met late at {at}"
 msgstr "ಉಲ್ಲಂಘಿಸಲಾಗಿದೆ, {at} ಕ್ಕೆ ತಡವಾಗಿ ಪೂರೈಸಲಾಗಿದೆ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Gmail, Yandex ಅಥವಾ ಯಾವುದೇ IMAP ಸರ್ವರ್‌ನಿಂದ ಮೇಲ್‌ಬಾಕ್ಸ್‌ನ ಇತಿಹಾಸವನ್ನು ತನ್ನಿ"
 
@@ -4135,6 +4152,7 @@ msgstr "ರದ್ದುಪಡಿಸಲಾಗಿದೆ. ಮೊದಲು ಸೇರ
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "ಸಿದ್ಧ ಉತ್ತರಗಳು"
 
@@ -4341,6 +4359,7 @@ msgstr "ಚಾನಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/ProductsPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Channels"
@@ -4349,6 +4368,10 @@ msgstr "ಚಾನಲ್‌ಗಳು"
 #: src/features/settings/audit/AuditLogPage.tsx
 msgid "Channels and inboxes"
 msgstr "ಚಾನೆಲ್‌ಗಳು ಮತ್ತು ಇನ್‌ಬಾಕ್ಸ್‌ಗಳು"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Channels needing attention: {attention}"
+msgstr "ಗಮನ ಬೇಕಾದ ಚಾನೆಲ್‌ಗಳು: {attention}"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Chat"
@@ -4977,6 +5000,7 @@ msgid "Connect an assistant"
 msgstr "ಸಹಾಯಕವನ್ನು ಸಂಪರ್ಕಿಸಿ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Claude ಅಥವಾ ChatGPT ನಂತಹ ಸಹಾಯಕವನ್ನು ಸಂಪರ್ಕಿಸಿ"
 
@@ -5006,6 +5030,7 @@ msgid "Connect your iOS or Android app"
 msgstr "ನಿಮ್ಮ iOS ಅಥವಾ Android ಆ್ಯಪ್ ಸಂಪರ್ಕಿಸಿ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "ನಿಮ್ಮ ಸರ್ವರ್‌ಗಳು ಮತ್ತು ಬಾಟ್‌ಗಳನ್ನು Yuva ಗೆ ಸಂಪರ್ಕಿಸಿ"
 
@@ -5048,6 +5073,7 @@ msgstr "{created} ಸಂಪರ್ಕಗೊಂಡಿದೆ"
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
 msgstr "ಸಂಪರ್ಕಿತ ಆ್ಯಪ್‌ಗಳು"
@@ -5194,6 +5220,7 @@ msgid "contains"
 msgstr "ಒಳಗೊಂಡಿದೆ"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Content"
 msgstr "ವಿಷಯ"
 
@@ -5283,6 +5310,7 @@ msgstr "ಸಂಭಾಷಣೆಗಳು"
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Conversations"
 msgstr "ಸಂಭಾಷಣೆಗಳು"
 
@@ -5731,6 +5759,7 @@ msgstr "ಕಸ್ಟಮ್ ಕ್ಷೇತ್ರ"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "ಕಸ್ಟಮ್ ಕ್ಷೇತ್ರಗಳು"
 
@@ -6327,10 +6356,12 @@ msgstr "ಬ್ರೌಸರ್‌ನ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್�
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
+#: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Details"
 msgstr "ವಿವರಗಳು"
 
 #: src/features/settings/inboxes/InboxPage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Developers"
 msgstr "ಡೆವಲಪರ್‌ಗಳು"
 
@@ -7497,6 +7528,7 @@ msgstr "Extra scopes"
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
 #: src/features/migrations/ConnectStep.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/email/EmailDoneStep.tsx
 #: src/features/status/MonitorChecks.tsx
@@ -8162,6 +8194,7 @@ msgstr "{team} ತಂಡಕ್ಕೆ {inbox} ಪ್ರವೇಶ ನೀಡಿದ�
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
 msgstr "ಸಾಮಾನ್ಯ"
@@ -8336,6 +8369,7 @@ msgid "Groups claim"
 msgstr "Groups claim"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Groups of members and the inboxes they cover"
 msgstr "ಸದಸ್ಯರ ಗುಂಪುಗಳು ಮತ್ತು ಅವು ನೋಡಿಕೊಳ್ಳುವ ಇನ್‌ಬಾಕ್ಸ್‌ಗಳು"
 
@@ -8648,6 +8682,7 @@ msgid "How mail reaches Yuva"
 msgstr "ಮೇಲ್ Yuva ಗೆ ಹೇಗೆ ತಲುಪುತ್ತದೆ"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "How messages arrive: chat, e-mail, apps"
 msgstr "ಸಂದೇಶಗಳು ಹೇಗೆ ಬರುತ್ತವೆ: ಚಾಟ್, ಇಮೇಲ್, ಆ್ಯಪ್‌ಗಳು"
 
@@ -8845,6 +8880,7 @@ msgid "Import steps"
 msgstr "ಆಮದು ಹಂತಗಳು"
 
 #: src/components/common/ImportedChip.tsx
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 msgid "Imported"
 msgstr "ಆಮದು ಮಾಡಲಾಗಿದೆ"
@@ -9251,6 +9287,7 @@ msgstr "Issue address"
 #: src/app/Palette.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Issue trackers"
 msgstr "Issue trackers"
 
@@ -9592,6 +9629,7 @@ msgstr "ಲೇಬಲ್ ಮಾತ್ರ: ಅದರ ಮೇಲ್ ಎಲ್ಲಾ 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
 msgstr "ಲೇಬಲ್‌ಗಳು"
@@ -9879,6 +9917,7 @@ msgid "Let your team sign in through your company's identity provider. Their e-m
 msgstr "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Let your team sign in through your identity provider"
 msgstr "Let your team sign in through your identity provider"
 
@@ -10257,6 +10296,7 @@ msgstr "ಮ್ಯಾಕ್ರೋ"
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "ಮ್ಯಾಕ್ರೋಗಳು"
 
@@ -10689,6 +10729,7 @@ msgstr "ಸದಸ್ಯ"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/teams/TeamsPage.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -11192,8 +11233,10 @@ msgstr "ಟ್ರ್ಯಾಶ್‌ಗೆ ಸರಿಸಿ ({0})"
 msgid "Move to the Trash (#)"
 msgstr "ಕಸದ ಬುಟ್ಟಿಗೆ ಸರಿಸಿ (#)"
 
+#: src/features/migrations/Wizard.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Move to Yuva"
 msgstr "Yuva ಗೆ ಸರಿಸಿ"
 
@@ -11288,6 +11331,7 @@ msgstr "ನನ್ನ ವೀಕ್ಷಣೆಗಳು"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/settings/profile/ProfileForm.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sso/SsoPage.tsx
 #: src/features/settings/teams/TeamDialog.tsx
@@ -12940,6 +12984,7 @@ msgstr "ಚಂದಾದಾರರಿಗೆ ಸೂಚನೆಗಳು"
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Notifications"
 msgstr "ಅಧಿಸೂಚನೆಗಳು"
 
@@ -12990,8 +13035,10 @@ msgstr "ಆಫ್"
 
 #: src/components/common/AssignmentFields.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
@@ -13034,6 +13081,7 @@ msgstr "ಚಂದಾದಾರಿಕೆ ಫಾರ್ಮ್‌ಗಳು ಮತ್�
 #: src/app/UserMenu.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Offline"
 msgstr "ಆಫ್‌ಲೈನ್"
 
@@ -13075,7 +13123,9 @@ msgid "Oldest wait"
 msgstr "ಅತಿ ದೀರ್ಘ ಕಾಯುವಿಕೆ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "ಆನ್"
@@ -14663,6 +14713,7 @@ msgid "Post an update ({updateKey})"
 msgstr "ಅಪ್‌ಡೇಟ್ ಪ್ರಕಟಿಸಿ ({updateKey})"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Post conversations to a channel and answer from it"
 msgstr "Post conversations to a channel and answer from it"
 
@@ -14849,6 +14900,7 @@ msgstr "ಪ್ರೊಡಕ್ಷನ್ ಬ್ಯಾಕೆಂಡ್"
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Products"
@@ -14857,6 +14909,7 @@ msgstr "ಉತ್ಪನ್ನಗಳು"
 #: src/app/Palette.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/profile/ProfilePage.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Profile"
 msgstr "ಪ್ರೊಫೈಲ್"
 
@@ -15259,6 +15312,11 @@ msgstr "ನಿಮ್ಮ ತಂಡದ ವಿಳಾಸಗಳನ್ನು ಸೂಚ
 #: src/components/common/text.ts
 msgid "Read What's new changelogs and their entries"
 msgstr "\"ಹೊಸದೇನಿದೆ\" ಚೇಂಜ್‌ಲಾಗ್‌ಗಳು ಮತ್ತು ಅವುಗಳ ನಮೂದುಗಳನ್ನು ಓದಿ"
+
+#: src/features/migrations/MigrationsPage.tsx
+#: src/features/migrations/Wizard.tsx
+msgid "Read-only"
+msgstr "ಓದಲು ಮಾತ್ರ"
 
 #: src/components/common/DiscussionAuthor.tsx
 #: src/features/account/ConnectPage.tsx
@@ -15912,6 +15970,7 @@ msgid "Reply and resolution targets for the conversations a policy matches. The 
 msgstr "ನೀತಿ ಹೊಂದಿಕೆಯಾಗುವ ಸಂಭಾಷಣೆಗಳಿಗೆ ಉತ್ತರ ಮತ್ತು ಪರಿಹಾರದ ಗುರಿಗಳು. ಸಂಭಾಷಣೆಗೆ ಹೊಂದಿಕೆಯಾಗುವ ಮೊದಲ ಸಕ್ರಿಯ ನೀತಿ ಅನ್ವಯಿಸುತ್ತದೆ, ಆದ್ದರಿಂದ ಅತ್ಯಂತ ನಿರ್ದಿಷ್ಟವಾದವುಗಳನ್ನು ಮೇಲೆ ಇರಿಸಿ. ಗುರಿಗಳು ಪ್ರತಿ ಇನ್‌ಬಾಕ್ಸ್‌ನ ಕೆಲಸದ ಸಮಯದಲ್ಲಿ ಲೆಕ್ಕಹಾಕಲ್ಪಡುತ್ತವೆ."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Reply and resolution targets with due times"
 msgstr "ಗಡುವುಗಳೊಂದಿಗೆ ಉತ್ತರ ಮತ್ತು ಪರಿಹಾರದ ಗುರಿಗಳು"
 
@@ -16287,6 +16346,7 @@ msgid "Right after subscribing, people get a short mail that confirms it, with a
 msgstr "ಚಂದಾದಾರರಾದ ತಕ್ಷಣ, ಜನರಿಗೆ ಅದನ್ನು ದೃಢೀಕರಿಸುವ, ಚಂದಾದಾರಿಕೆ ರದ್ದತಿ ಲಿಂಕ್‌ವುಳ್ಳ ಚಿಕ್ಕ ಮೇಲ್ ಸಿಗುತ್ತದೆ."
 
 #: src/features/home/HomePage.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Right now"
 msgstr "ಈಗ"
 
@@ -16299,6 +16359,7 @@ msgstr "ಈಗ"
 msgid "Roadmap"
 msgstr "ರೋಡ್‌ಮ್ಯಾಪ್"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Role"
 msgstr "ಪಾತ್ರ"
@@ -16388,6 +16449,7 @@ msgstr "ನಿಯಮ {rule} ಚಲಿಸಿತು, ಬದಲಿಸಲು ಏನ�
 msgid "Rule {rule} ran: {done}"
 msgstr "ನಿಯಮ {rule} ಚಲಿಸಿತು: {done}"
 
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Rules"
 msgstr "ನಿಯಮಗಳು"
@@ -16397,6 +16459,7 @@ msgid "Rules react to a conversation changing: they label, assign, reply, snooze
 msgstr "ಸಂಭಾಷಣೆ ಬದಲಾದಾಗ ನಿಯಮಗಳು ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತವೆ: ಲೇಬಲ್ ಹಚ್ಚುತ್ತವೆ, ನಿಯೋಜಿಸುತ್ತವೆ, ಉತ್ತರಿಸುತ್ತವೆ, ಸ್ನೂಜ್ ಮಾಡುತ್ತವೆ ಅಥವಾ ವೆಬ್‌ಹುಕ್ ಕರೆಯುತ್ತವೆ. ಅವು ಈ ಪಟ್ಟಿಯ ಕ್ರಮದಲ್ಲಿ, ಪ್ರತಿ ಟ್ರಿಗರ್‌ಗೆ ಗರಿಷ್ಠ ಒಮ್ಮೆ ಚಲಿಸುತ್ತವೆ, ಮತ್ತು ಒಂದು ನಿಯಮ ಬದಲಿಸುವುದು ಎಂದಿಗೂ ಇನ್ನೊಂದು ನಿಯಮವನ್ನು ಪ್ರಾರಂಭಿಸುವುದಿಲ್ಲ."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "ಲೇಬಲ್ ಹಚ್ಚುವ, ನಿಯೋಜಿಸುವ, ಉತ್ತರಿಸುವ ಮತ್ತು ವೆಬ್‌ಹುಕ್ ಕರೆಯುವ ನಿಯಮಗಳು"
 
@@ -16726,6 +16789,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "ಹುಡುಕಿ"
@@ -16870,6 +16934,10 @@ msgstr "Secret set"
 #: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "ವಿಭಾಗಗಳು"
+
+#: src/features/settings/SettingsFrame.tsx
+msgid "Security"
+msgstr "ಭದ್ರತೆ"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "See all mentions"
@@ -17062,6 +17130,7 @@ msgid "Send events"
 msgstr "ಈವೆಂಟ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send events to your own server"
 msgstr "ನಿಮ್ಮ ಸ್ವಂತ ಸರ್ವರ್‌ಗೆ ಈವೆಂಟ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
 
@@ -17105,6 +17174,7 @@ msgid "Send later, in an e-mail reply"
 msgstr "ನಂತರ ಕಳುಹಿಸಿ, ಇಮೇಲ್ ಉತ್ತರದಲ್ಲಿ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Send mail from your own address"
 msgstr "ನಿಮ್ಮ ಸ್ವಂತ ವಿಳಾಸದಿಂದ ಮೇಲ್ ಕಳುಹಿಸಿ"
 
@@ -17588,6 +17658,7 @@ msgstr "ಹೊಂದಿಸಲಾಗುತ್ತಿದೆ…"
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 #: src/features/status/StatusFrame.tsx
@@ -18022,6 +18093,7 @@ msgstr "ವಸಂತ ಮೇಳದಲ್ಲಿ ಸೈನ್-ಅಪ್ ಶೀಟ�
 #: src/app/Palette.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Signature"
 msgstr "Signature"
@@ -18101,6 +18173,7 @@ msgstr "ಸಿಂಗಲ್ ಆಪ್ಟ್-ಇನ್"
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
 msgstr "Single sign-on"
@@ -18204,6 +18277,7 @@ msgstr "SLA ಪೂರೈಸಿದ / ಉಲ್ಲಂಘಿಸಿದ"
 
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "SLA policies"
 msgstr "SLA ನೀತಿಗಳು"
 
@@ -18212,6 +18286,7 @@ msgid "SLA targets (W)"
 msgstr "SLA ಗುರಿಗಳು (W)"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Slack"
 msgstr "Slack"
@@ -18414,6 +18489,7 @@ msgid "Sort conversations by topic. Each label also gets its own view in the sid
 msgstr "ಸಂಭಾಷಣೆಗಳನ್ನು ವಿಷಯದ ಪ್ರಕಾರ ವಿಂಗಡಿಸಿ. ಪ್ರತಿ ಲೇಬಲ್‌ಗೂ ಸೈಡ್‌ಬಾರ್‌ನಲ್ಲಿ ತನ್ನದೇ ನೋಟ ಸಿಗುತ್ತದೆ."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Sort conversations your way"
 msgstr "ಸಂಭಾಷಣೆಗಳನ್ನು ನಿಮ್ಮ ರೀತಿಯಲ್ಲಿ ವಿಂಗಡಿಸಿ"
 
@@ -18621,6 +18697,7 @@ msgstr "Starts when a change to the person’s attributes makes them match, and 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (ಪೋರ್ಟ್ 587)"
 
+#: src/features/migrations/MigrationsPage.tsx
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
 #: src/features/status/IncidentDetail.tsx
@@ -18665,6 +18742,7 @@ msgstr "ಸ್ಥಗಿತಗೊಂಡಾಗ ಸ್ಥಿತಿ"
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
 #: src/features/status/StatusFrame.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Status"
 msgstr "ಸ್ಥಿತಿ"
 
@@ -18699,6 +18777,7 @@ msgid "Stay under your provider’s sending rate. Support replies are never slow
 msgstr "ನಿಮ್ಮ ಪೂರೈಕೆದಾರರ ಕಳುಹಿಸುವ ದರದ ಕೆಳಗೆ ಇರಿ. ಬೆಂಬಲ ಉತ್ತರಗಳನ್ನು ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಎಂದಿಗೂ ನಿಧಾನಗೊಳಿಸುವುದಿಲ್ಲ."
 
 #: src/components/common/Wizard.tsx
+#: src/features/migrations/Wizard.tsx
 msgid "Step {step} of {count}"
 msgstr "{count} ರಲ್ಲಿ ಹಂತ {step}"
 
@@ -19097,7 +19176,9 @@ msgstr "teammate@company.com"
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Teams"
 msgstr "ತಂಡಗಳು"
 
@@ -20287,6 +20368,7 @@ msgid "The workspace may not send bulk mail now"
 msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್ ಈಗ ಬೃಹತ್ ಮೇಲ್ ಕಳುಹಿಸುವಂತಿಲ್ಲ"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "The workspace: labels, replies, data"
 msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್: ಲೇಬಲ್‌ಗಳು, ಉತ್ತರಗಳು, ಡೇಟಾ"
 
@@ -20339,6 +20421,7 @@ msgid "Theme"
 msgstr "ಥೀಮ್"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "ಈ ಸಾಧನದಲ್ಲಿ ಥೀಮ್ ಮತ್ತು ಇಮೇಲ್ ನೋಟ"
 
@@ -21069,6 +21152,7 @@ msgstr "ಇವರಿಗೆ: {who}"
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
+#: src/features/team/TeamPage.tsx
 msgid "Today"
 msgstr "ಇಂದು"
 
@@ -21226,6 +21310,7 @@ msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's
 msgstr "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Turn feedback into GitHub or Linear issues"
 msgstr "Turn feedback into GitHub or Linear issues"
 
@@ -21310,6 +21395,7 @@ msgid "Type your e-mail address to confirm"
 msgstr "ದೃಢೀಕರಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸ ಟೈಪ್ ಮಾಡಿ"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Typed values on conversations and contacts"
 msgstr "ಸಂಭಾಷಣೆ ಮತ್ತು ಸಂಪರ್ಕಗಳಲ್ಲಿ ಪ್ರಕಾರವಿರುವ ಮೌಲ್ಯಗಳು"
 
@@ -21988,6 +22074,10 @@ msgstr "Verify"
 msgid "Verify every request before trusting it: the <0>webhook-signature</0> header follows the <1>Standard Webhooks</1> specification, so any of its libraries can check it with the endpoint's secret. Go backends can use the <2>sdk/go/webhook</2> package of the Yuva repository."
 msgstr "ನಂಬುವ ಮೊದಲು ಪ್ರತಿ ವಿನಂತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ: <0>webhook-signature</0> ಹೆಡರ್ <1>Standard Webhooks</1> ವಿಶೇಷಣವನ್ನು ಅನುಸರಿಸುತ್ತದೆ, ಹಾಗಾಗಿ ಅದರ ಯಾವುದೇ ಲೈಬ್ರರಿ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ನ ಸೀಕ್ರೆಟ್‌ನಿಂದ ಅದನ್ನು ಪರಿಶೀಲಿಸಬಹುದು. Go ಬ್ಯಾಕೆಂಡ್‌ಗಳು Yuva ರೆಪೊಸಿಟರಿಯ <2>sdk/go/webhook</2> ಪ್ಯಾಕೇಜ್ ಬಳಸಬಹುದು."
 
+#: src/features/settings/SettingsFrame.tsx
+msgid "Version"
+msgstr "ಆವೃತ್ತಿ"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Versions"
 msgstr "ಆವೃತ್ತಿಗಳು"
@@ -22289,6 +22379,7 @@ msgstr "Webhook secret for {revealName}"
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/DeveloperTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
 msgid "Webhooks"
@@ -22469,10 +22560,12 @@ msgid "What will you use Yuva for?"
 msgstr "ನೀವು Yuva ಅನ್ನು ಯಾವುದಕ್ಕಾಗಿ ಬಳಸುತ್ತೀರಿ?"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What you write often"
 msgstr "ನೀವು ಆಗಾಗ ಬರೆಯುವುದು"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "What your e-mailed replies end with"
 msgstr "What your e-mailed replies end with"
 
@@ -22586,6 +22679,7 @@ msgid "When to notify me"
 msgstr "ನನಗೆ ಯಾವಾಗ ತಿಳಿಸಬೇಕು"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "When we let you know"
 msgstr "ನಾವು ನಿಮಗೆ ಯಾವಾಗ ತಿಳಿಸುತ್ತೇವೆ"
 
@@ -22690,6 +22784,7 @@ msgid "Who can use it"
 msgstr "ಯಾರು ಬಳಸಬಹುದು"
 
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who changed access, keys and data"
 msgstr "ಪ್ರವೇಶ, ಕೀಗಳು ಮತ್ತು ಡೇಟಾವನ್ನು ಯಾರು ಬದಲಾಯಿಸಿದರು"
 
@@ -22723,6 +22818,7 @@ msgid "Who should take it?"
 msgstr "ಯಾರು ಇದನ್ನು ತೆಗೆದುಕೊಳ್ಳಬೇಕು?"
 
 #: src/components/common/SettingsStrip.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Who you support: name, hours, team, sender"
 msgstr "ನೀವು ಯಾರಿಗೆ ಬೆಂಬಲ ನೀಡುತ್ತೀರಿ: ಹೆಸರು, ಸಮಯ, ತಂಡ, ಕಳುಹಿಸುವವರು"
 
@@ -22841,6 +22937,7 @@ msgstr "ಕೆಲಸ ಮಾಡುತ್ತಿದೆ…"
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Workspace"
@@ -22957,6 +23054,7 @@ msgstr "ನಿನ್ನೆ"
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "You"
 msgstr "ನೀವು"
 
@@ -23168,6 +23266,7 @@ msgstr "Your account is not in a group that may use Yuva. Ask your administrator
 
 #: src/features/settings/addresses/AddressesPage.tsx
 #: src/features/settings/SettingsColumn.tsx
+#: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "ನಿಮ್ಮ ವಿಳಾಸಗಳು"
 
