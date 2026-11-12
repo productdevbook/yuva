@@ -171,7 +171,7 @@ export function SignInForm({
             </p>
           )}
           <ErrorLine error={request.error} className={alert} />
-          <div className="flex flex-wrap items-center justify-between gap-2 border-t pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line-soft pt-4">
             <Button
               type="button"
               variant="ghost"
@@ -220,7 +220,7 @@ export function SignInForm({
               autoFocus
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              className="h-12 text-center font-mono text-title tracking-[0.5em] md:text-title"
+              className="h-13 rounded-md text-center font-mono text-title tracking-[0.5em] md:text-title"
               data-testid="sign-in-code"
             />
           </div>
@@ -233,7 +233,7 @@ export function SignInForm({
           <Button type="submit" disabled={verify.isPending || code.length !== 6} size="lg">
             <Trans>Sign in</Trans>
           </Button>
-          <div className="flex flex-wrap items-center justify-between gap-2 border-t pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line-soft pt-4">
             <Button
               type="button"
               variant="ghost"

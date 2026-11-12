@@ -4,18 +4,16 @@ import { useCallback, useEffect } from "react"
 import { Link, Navigate, useLocation, useNavigate } from "react-router"
 
 import { AppShell } from "@/app/AppShell"
-import { EmptyState } from "@/components/common"
+import { EmptyState, ListRow } from "@/components/common"
 import { Button } from "@/components/ui/button"
-import { AuthLayout } from "@/features/auth/AuthLayout"
+import { AuthHeading, AuthLayout } from "@/features/auth/AuthLayout"
 import { DeleteAccountButton } from "@/features/auth/DeleteAccountButton"
 import { CreateWorkspace } from "@/features/auth/CreateWorkspace"
 import { activate, i18n } from "@/i18n"
 import { useVersion, type Me } from "@/lib/api"
 import { signInPath } from "@/lib/next"
 import { pickMembership, SessionProvider, useMe, useSignOut, useWorkspaceChoice } from "@/lib/session"
-import { Item } from "@/components/ui/item"
 
-const heading = "text-page"
 const LINK_PARAMS = ["workspace", "workspace_id"]
 
 function NoWorkspace({ email }: { email: string }) {
@@ -23,18 +21,12 @@ function NoWorkspace({ email }: { email: string }) {
   const navigate = useNavigate()
   return (
     <AuthLayout>
-      <span className="mb-5 grid size-11 place-items-center rounded-full border text-faint">
-        <BuildingIcon className="size-5" />
-      </span>
-      <h1 className={heading}>
-        <Trans>You are not in a workspace yet</Trans>
-      </h1>
-      <p className="mt-3 text-muted-foreground">
+      <AuthHeading icon={<BuildingIcon />} tone="muted" title={<Trans>You are not in a workspace yet</Trans>}>
         <Trans>
           Yuva on this server is invite only. Ask an owner or admin of your team's workspace for an invitation.
         </Trans>
-      </p>
-      <p className="mt-4 rounded-xl bg-surface px-3.5 py-2.5 text-body break-words">{email}</p>
+      </AuthHeading>
+      <p className="border-y border-line-soft py-3 font-mono text-small break-words text-fg2">{email}</p>
       <div className="mt-8 flex flex-wrap items-center gap-2">
         <Button
           type="button"
@@ -50,7 +42,7 @@ function NoWorkspace({ email }: { email: string }) {
         </Button>
         <DeleteAccountButton email={email} size="lg" />
       </div>
-      <p className="mt-8 text-body text-muted-foreground">
+      <p className="mt-8 border-t border-line-soft pt-5 text-small text-muted-foreground">
         <Trans>Here to follow discussions on documentation sites?</Trans>{" "}
         <Link to="/account" className="inline-flex items-center gap-1 text-brand underline-offset-4 hover:underline">
           <UserRoundIcon className="size-3.5" />
@@ -64,24 +56,15 @@ function NoWorkspace({ email }: { email: string }) {
 function WorkspacePicker({ me, onChoose }: { me: Me; onChoose: (id: string) => void }) {
   return (
     <AuthLayout>
-      <h1 className={`mb-6 ${heading}`}>
-        <Trans>Choose a workspace</Trans>
-      </h1>
-      <ul className="flex flex-col gap-2">
+      <AuthHeading title={<Trans>Choose a workspace</Trans>} />
+      <div className="border-b border-line-soft">
         {me.memberships.map((m) => (
-          <li key={m.workspace.id}>
-            <Item
-              render={<button type="button" />}
-              variant="outline"
-              className="flex-nowrap hover:bg-muted [button]:hover:bg-muted"
-              onClick={() => onChoose(m.workspace.id)}
-            >
-              <span className="flex-1 truncate font-medium">{m.workspace.name}</span>
-              <ChevronRightIcon className="size-4 text-faint" />
-            </Item>
-          </li>
+          <ListRow key={m.workspace.id} onClick={() => onChoose(m.workspace.id)}>
+            <span className="min-w-0 flex-1 truncate font-medium text-foreground">{m.workspace.name}</span>
+            <ChevronRightIcon className="size-4 shrink-0 text-muted2 rtl:rotate-180" />
+          </ListRow>
         ))}
-      </ul>
+      </div>
     </AuthLayout>
   )
 }

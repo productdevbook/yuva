@@ -1,11 +1,12 @@
 import { Radio as RadioPrimitive } from "@base-ui/react/radio"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronRightIcon } from "lucide-react"
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router"
 
 import { YuvaMark } from "@/components/common/Logo"
 import { LanguageMenu } from "@/components/common/LanguageMenu"
+import { ThemeToggle } from "@/components/common/PageLayout"
 import { Button } from "@/components/ui/button"
 import { RadioGroup } from "@/components/ui/radio-group"
 import { Spinner } from "@/components/ui/spinner"
@@ -14,6 +15,62 @@ import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
 export type WizardStep = { key: string; label: string }
+
+export function StepBar({
+  steps,
+  current,
+  stepHref,
+  label,
+  className,
+}: {
+  steps: WizardStep[]
+  current: string
+  stepHref?: (key: string) => string | undefined
+  label: string
+  className?: string
+}) {
+  const index = Math.max(
+    0,
+    steps.findIndex((s) => s.key === current)
+  )
+  return (
+    <ol
+      aria-label={label}
+      className={cn("m-0 flex list-none flex-wrap gap-x-5 gap-y-1 border-b border-line p-0", className)}
+    >
+      {steps.map((s, i) => {
+        const link = i < index ? stepHref?.(s.key) : undefined
+        const cls = cn(
+          "-mb-px inline-flex h-10 items-center gap-2 border-b-2 border-transparent text-body text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          i === index && "border-brand font-medium text-foreground",
+          i < index && "text-fg2",
+          link && "hover:text-foreground"
+        )
+        const body = (
+          <>
+            <span
+              className={cn("font-mono text-[11px] text-muted2", i === index && "text-brand", i < index && "text-ok")}
+            >
+              {i < index ? <CheckIcon aria-hidden className="size-3" /> : i + 1}
+            </span>
+            <span className={cn(i !== index && "max-sm:sr-only")}>{s.label}</span>
+          </>
+        )
+        return (
+          <li key={s.key} aria-current={i === index ? "step" : undefined}>
+            {link ? (
+              <Link to={link} className={cls}>
+                {body}
+              </Link>
+            ) : (
+              <span className={cls}>{body}</span>
+            )}
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
 
 export function Stepper({
   steps,
@@ -31,43 +88,19 @@ export function Stepper({
   className?: string
 }) {
   const count = steps.length
-  const index = Math.max(
-    0,
-    steps.findIndex((s) => s.key === current)
-  )
-  const step = index + 1
+  const step =
+    Math.max(
+      0,
+      steps.findIndex((s) => s.key === current)
+    ) + 1
   return (
     <div className={className}>
-      <p className="mb-2.5 text-small text-faint" data-testid={testId}>
+      <StepBar steps={steps} current={current} stepHref={stepHref} label={label} className="mb-6" />
+      <p className="eyebrow font-mono text-muted2" data-testid={testId}>
         <Trans>
           Step {step} of {count}
         </Trans>
-        <span aria-hidden="true"> · </span>
-        <span className="text-muted-foreground">{steps[index]?.label}</span>
       </p>
-      <ol className="flex gap-1" aria-label={label}>
-        {steps.map((s, i) => {
-          const href = i < index ? stepHref?.(s.key) : undefined
-          return (
-            <li
-              key={s.key}
-              className={cn("relative h-1 flex-1 rounded-full bg-border transition-colors", i < step && "bg-brand")}
-              aria-current={i === index ? "step" : undefined}
-            >
-              {href ? (
-                <Link
-                  to={href}
-                  className="absolute -inset-y-2 inset-x-0 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-                >
-                  <span className="sr-only">{s.label}</span>
-                </Link>
-              ) : (
-                <span className="sr-only">{s.label}</span>
-              )}
-            </li>
-          )
-        })}
-      </ol>
     </div>
   )
 }
@@ -145,13 +178,14 @@ export function WizardFrame({
 
   return (
     <div className="flex min-h-svh flex-col bg-background" data-testid="setup">
-      <header className="sticky top-0 z-10 flex h-13 shrink-0 items-center justify-between gap-3 border-b bg-background px-4 sm:px-6">
-        <span className="flex min-w-0 items-center gap-2.5">
+      <header className="sticky top-0 z-10 flex h-13 shrink-0 items-center justify-between gap-3 border-t-2 border-b border-t-brand border-b-line-soft bg-background px-4 sm:px-6">
+        <span className="flex min-w-0 items-center gap-2.5 px-1 sm:px-2.5">
           <YuvaMark className="size-6 shrink-0" />
-          <span className="truncate text-body font-semibold">{membership.workspace.name}</span>
+          <span className="truncate text-[16px] font-semibold tracking-[-0.01em]">{membership.workspace.name}</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <LanguageMenu />
+          <ThemeToggle />
           {leave !== undefined
             ? leave
             : steps &&
@@ -165,12 +199,12 @@ export function WizardFrame({
       </header>
       <div className="grid flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <main ref={main} className="flex min-w-0 justify-center px-4 pt-8 pb-12 sm:px-8 lg:pt-[9vh] lg:pb-16">
-          <div className="w-full max-w-[30rem]">
+          <div className="w-full max-w-[720px] lg:max-w-[36rem]">
             {back && (
               <Link
                 to={back}
                 state={state}
-                className="mb-5 inline-flex w-fit items-center gap-1.5 text-small text-faint transition-colors hover:text-foreground"
+                className="mb-5 inline-flex w-fit items-center gap-1.5 text-small text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 data-testid="setup-back"
               >
                 <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
@@ -184,7 +218,7 @@ export function WizardFrame({
                 stepHref={stepHref}
                 label={stepsLabel}
                 testId="setup-step"
-                className="mb-7"
+                className="mb-2"
               />
             )}
             {children}

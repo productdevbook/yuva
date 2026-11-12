@@ -47,6 +47,7 @@ export {
   ChoiceCards,
   StepActions,
   StepHeader,
+  StepBar,
   Stepper,
   SummaryList,
   WizardFrame,

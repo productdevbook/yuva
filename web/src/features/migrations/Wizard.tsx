@@ -1,9 +1,19 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowDownIcon, CheckIcon, LifeBuoyIcon, MailIcon, ShieldCheckIcon } from "lucide-react"
+import { ArrowDownIcon, LifeBuoyIcon, MailIcon, ShieldCheckIcon } from "lucide-react"
 import { useEffect, useRef } from "react"
 import { Link, Navigate, useParams, useSearchParams } from "react-router"
 
-import { BackArrow, ErrorLine, InfoSection, KV, PageTop, SummaryList, WizardFrame, YuvaMark } from "@/components/common"
+import {
+  BackArrow,
+  ErrorLine,
+  InfoSection,
+  KV,
+  PageTop,
+  StepBar,
+  SummaryList,
+  WizardFrame,
+  YuvaMark,
+} from "@/components/common"
 import { formatDate } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { useNumber } from "@/features/broadcasts/BroadcastParts"
@@ -25,7 +35,6 @@ import { PreviewCaption } from "@/features/setup/previews"
 import { useIsPhone } from "@/hooks/use-media-query"
 import type { Migration, MigrationPreset } from "@/lib/api"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
 export const STEPS = ["source", "connect", "choose", "map", "review", "copy", "switch", "done"] as const
@@ -184,45 +193,13 @@ function FlatWizard({
           {" · "}
           {names[step]}
         </p>
-        <ol
-          aria-label={t`Migration steps`}
-          className="m-0 mb-8 flex list-none flex-wrap gap-x-5 gap-y-1 border-b border-line p-0"
-        >
-          {steps.map((s, i) => {
-            const link = i < index ? href(s) : undefined
-            const cls = cn(
-              "-mb-px inline-flex h-10 items-center gap-2 border-b-2 border-transparent text-body text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              i === index && "border-brand font-medium text-foreground",
-              i < index && "text-fg2",
-              link && "hover:text-foreground"
-            )
-            const body = (
-              <>
-                <span
-                  className={cn(
-                    "font-mono text-[11px] text-muted2",
-                    i === index && "text-brand",
-                    i < index && "text-ok"
-                  )}
-                >
-                  {i < index ? <CheckIcon aria-hidden className="size-3" /> : i + 1}
-                </span>
-                {names[s]}
-              </>
-            )
-            return (
-              <li key={s} aria-current={i === index ? "step" : undefined}>
-                {link ? (
-                  <Link to={link} className={cls}>
-                    {body}
-                  </Link>
-                ) : (
-                  <span className={cls}>{body}</span>
-                )}
-              </li>
-            )
-          })}
-        </ol>
+        <StepBar
+          steps={steps.map((s) => ({ key: s, label: names[s] }))}
+          current={step}
+          stepHref={(key) => href(key as StepKey)}
+          label={t`Migration steps`}
+          className="mb-8"
+        />
         {back && (
           <Link
             to={back}

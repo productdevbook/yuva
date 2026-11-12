@@ -148,11 +148,11 @@ function Consent({ account, channel, origin, host }: { account: ReaderAccount } 
           address when you write; other readers see only your name.
         </Trans>
       </AuthHeading>
-      <div className="flex items-center gap-3 rounded-xl border bg-surface px-4 py-3">
+      <div className="flex items-center gap-3 border-y border-line-soft px-1 py-3">
         <InitialsAvatar initials={account.initials} />
         <span className="flex min-w-0 flex-col">
           <span className="truncate text-body font-medium">{shown}</span>
-          <span className="truncate text-caption text-faint">{account.email}</span>
+          <span className="truncate font-mono text-caption text-muted-foreground">{account.email}</span>
         </span>
       </div>
       {!account.name && (
@@ -192,7 +192,7 @@ function Consent({ account, channel, origin, host }: { account: ReaderAccount } 
           <Trans>Cancel</Trans>
         </Button>
       </div>
-      <p className="mt-6 border-t pt-4 text-center text-small break-words text-faint">
+      <p className="mt-6 border-t border-line-soft pt-4 text-center text-small break-words text-muted-foreground">
         <Trans>Not {email}?</Trans>{" "}
         <button
           type="button"

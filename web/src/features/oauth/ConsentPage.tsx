@@ -25,7 +25,7 @@ function Ended({ title, children }: { title: React.ReactNode; children: React.Re
   return (
     <AuthLayout>
       <AuthHeading icon={<ClockIcon />} tone="muted" title={title} className="mb-0">
-        <div className="flex flex-col items-center gap-3" data-testid="consent-ended">
+        <div className="flex flex-col items-start gap-3" data-testid="consent-ended">
           {children}
         </div>
       </AuthHeading>
@@ -43,8 +43,8 @@ function Expired() {
 
 function Fact({ label, children, testId }: { label: React.ReactNode; children: React.ReactNode; testId?: string }) {
   return (
-    <div className="flex flex-col gap-0.5 px-4 py-3" data-testid={testId}>
-      <dt className="text-caption text-faint">{label}</dt>
+    <div className="flex flex-col gap-0.5 px-1 py-3" data-testid={testId}>
+      <dt className="text-caption text-muted2">{label}</dt>
       <dd className="text-body break-words">{children}</dd>
     </div>
   )
@@ -112,7 +112,7 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
         </Trans>
       </AuthHeading>
 
-      <dl className="divide-y rounded-xl border bg-surface">
+      <dl className="divide-y divide-line-soft border-y border-line-soft">
         <Fact label={<Trans>App</Trans>} testId="consent-client">
           <span className="font-medium">{clientName}</span>
           <span className="block text-caption text-muted-foreground">
@@ -251,7 +251,7 @@ function Consent({ req, email }: { req: OAuthRequest; email: string }) {
         </Button>
       </div>
       {leaving && (
-        <p role="status" className="mt-4 text-center text-body text-muted-foreground">
+        <p role="status" className="mt-4 text-body text-muted-foreground">
           <Trans>Returning you to {host}…</Trans>
         </p>
       )}

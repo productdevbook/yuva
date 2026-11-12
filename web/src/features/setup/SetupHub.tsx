@@ -144,22 +144,22 @@ export function SetupHub() {
       <ErrorLine error={home.error} />
       {!items ? (
         !home.error && (
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-2">
             {Array.from({ length: 6 }, (_, i) => (
-              <Skeleton key={i} className="h-[68px] rounded-2xl" />
+              <Skeleton key={i} className="h-[60px] rounded-md" />
             ))}
           </div>
         )
       ) : (
-        <ul className="flex flex-col gap-2.5" data-testid="setup-hub">
+        <ul className="border-b border-line-soft" data-testid="setup-hub">
           {items.map((item) => (
             <li key={item.id}>
               <Link
                 to={hubTarget(item, places)}
                 state={item.done ? undefined : ({ back: "/setup" } satisfies SetupState)}
                 className={cn(
-                  "group flex w-full items-center gap-3.5 rounded-2xl border bg-card px-4 py-3.5 text-start transition-colors outline-none hover:border-faint focus-visible:ring-3 focus-visible:ring-ring/30",
-                  focus === item.id && "border-faint"
+                  "group flex w-full items-center gap-3.5 border-t border-line-soft px-1 py-3.5 text-start transition-colors outline-none hover:bg-subtle focus-visible:bg-subtle focus-visible:ring-2 focus-visible:ring-ring",
+                  focus === item.id && "bg-subtle"
                 )}
                 onMouseEnter={() => setFocus(item.id)}
                 onFocus={() => setFocus(item.id)}
@@ -168,24 +168,24 @@ export function SetupHub() {
               >
                 <span
                   className={cn(
-                    "grid size-9 shrink-0 place-items-center rounded-[10px] border bg-surface text-muted-foreground [&_svg]:size-4",
-                    item.done && "border-success/20 bg-success/10 text-success"
+                    "grid size-5 shrink-0 place-items-center text-muted-foreground [&_svg]:size-4",
+                    item.done && "text-ok"
                   )}
                 >
                   {item.done ? <CheckIcon /> : <HubIcon id={item.id} />}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-medium">{text.title[item.id]}</span>
-                  <span className="mt-0.5 block text-small text-faint">
+                  <span className="mt-0.5 block text-small text-muted-foreground">
                     {item.done ? text.count(item.id, item.count) : text.hint[item.id]}
                   </span>
                 </span>
                 {item.done && (
-                  <span className="shrink-0 text-small font-medium text-success">
+                  <span className="shrink-0 text-small font-medium text-ok">
                     <Trans>Done</Trans>
                   </span>
                 )}
-                <ChevronRightIcon className="size-4 shrink-0 text-faint transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />
+                <ChevronRightIcon className="size-4 shrink-0 text-muted2 transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />
               </Link>
             </li>
           ))}
