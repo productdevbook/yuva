@@ -17,7 +17,6 @@ import {
   NavGroup,
   PageHeading,
   PageTop as PageTopLine,
-  ProductsGroup,
   SectionPage,
   topButton,
   topInk,
@@ -1284,17 +1283,7 @@ function FlatTeam({ tab }: { tab: "members" | "invites" }) {
     </>
   )
   return (
-    <SectionPage
-      title={t`Team`}
-      nav={
-        <>
-          <NavGroup items={nav} />
-          {canManage && <ProductsGroup />}
-        </>
-      }
-      aside={aside}
-      testId="team-home"
-    >
+    <SectionPage title={t`Team`} nav={<NavGroup items={nav} />} aside={aside} testId="team-home">
       <PageTopLine
         back={detail ? { label: names.members, to: "/team" } : undefined}
         actions={

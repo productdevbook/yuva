@@ -1,7 +1,7 @@
 import { useLingui } from "@lingui/react/macro"
 import { useSearchParams } from "react-router"
 
-import { NavGroup, ProductsGroup, SectionPage, TopSep, type NavItem } from "@/components/common"
+import { NavGroup, SectionPage, TopSep, type NavItem } from "@/components/common"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { usePagesMonitors, statusLink } from "@/features/status/queries"
 import { useScopeIncidents, useStatusScope } from "@/features/status/scope"
@@ -114,7 +114,6 @@ function StatusNav({ place, view }: { place: StatusPlace; view?: IncidentView })
     <>
       <NavGroup items={main} />
       {page && <NavGroup title={page.name} items={pageViews} />}
-      <ProductsGroup />
     </>
   )
 }

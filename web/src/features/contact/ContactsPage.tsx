@@ -18,7 +18,6 @@ import {
   PageLayout,
   PageSidebar,
   PageTop,
-  ProductsGroup,
   SectionNav,
   toast,
   TopSep,
@@ -588,7 +587,6 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
             },
           ]}
         />
-        {canManage && <ProductsGroup />}
       </NavList>
       {!canManage && <SectionNav />}
     </PageSidebar>

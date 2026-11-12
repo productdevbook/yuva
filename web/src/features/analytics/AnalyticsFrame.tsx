@@ -1,7 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useParams, useSearchParams } from "react-router"
 
-import { InfoSection, KV, NavGroup, ProductsGroup, SectionPage, TopSep, type NavItem } from "@/components/common"
+import { InfoSection, KV, NavGroup, SectionPage, TopSep, type NavItem } from "@/components/common"
 import { formatDate } from "@/components/common/text"
 import { filterLabel } from "@/features/analytics/Controls"
 import { useAnalyticsProperties } from "@/features/analytics/properties"
@@ -141,7 +141,6 @@ function AnalyticsNav({ property, current }: { property?: AnalyticsProperty; cur
     <>
       {target && GROUPS.map((g) => <NavGroup key={g.key} title={titles[g.key]} items={views(g.views)} />)}
       <NavGroup title={t`Sites and apps`} items={sites} />
-      <ProductsGroup />
     </>
   )
 }

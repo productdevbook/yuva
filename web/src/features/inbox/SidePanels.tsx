@@ -24,7 +24,6 @@ import {
   PageSidebar,
   PageTop,
   PersonAvatar,
-  ProductsGroup,
   SectionNav,
   TopSep,
   UnreadBadge,
@@ -389,7 +388,6 @@ export function MentionsPage() {
                 },
               ]}
             />
-            {canManage && <ProductsGroup />}
           </NavList>
           {!canManage && <SectionNav />}
         </PageSidebar>

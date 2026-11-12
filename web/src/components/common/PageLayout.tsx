@@ -114,11 +114,12 @@ export function PageSearch({ label }: { label?: string }) {
       type="button"
       onClick={openPalette}
       aria-label={`${text} ${mod} K`}
+      title={text}
       className="flex h-9 w-full items-center gap-2 rounded-md border bg-subtle px-3.5 text-body text-muted-foreground outline-none transition-colors hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring"
       data-testid="page-search"
     >
       <SearchIcon aria-hidden className="size-[15px] shrink-0" />
-      <span className="min-w-0 flex-1 truncate text-start">{text}</span>
+      <span className="min-w-0 flex-1 truncate text-start">{t`Search`}</span>
       <KeyHint keys={[mod, "K"]} className="rounded border border-input bg-background px-1.5 text-muted-foreground" />
     </button>
   )

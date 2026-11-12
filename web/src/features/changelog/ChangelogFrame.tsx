@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react/macro"
 
-import { NavGroup, ProductsGroup, SectionPage, TopSep, type NavItem } from "@/components/common"
+import { NavGroup, SectionPage, TopSep, type NavItem } from "@/components/common"
 import { changelogLink, useChangelogs } from "@/features/changelog/queries"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import type { Changelog } from "@/lib/api"
@@ -104,7 +104,6 @@ function ChangelogNav({ place, changelog }: { place: ChangelogPlace; changelog?:
           },
         ]}
       />
-      <ProductsGroup />
     </>
   )
 }

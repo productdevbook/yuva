@@ -11,7 +11,6 @@ import {
   NavGroup,
   PageHeading,
   PageTop as PageTopLine,
-  ProductsGroup,
   SectionPage,
   topInk,
   TopSep,
@@ -668,7 +667,6 @@ export function AssistantsPage() {
 
 function FlatAssistants() {
   const { t, i18n } = useLingui()
-  const { canManage } = useSession()
   const [tab, setTab] = useState<AssistantTab>("drafts")
   const [connect, setConnect] = useState(false)
   const view = useDraftsView()
@@ -701,12 +699,7 @@ function FlatAssistants() {
   return (
     <SectionPage
       title={t`Assistants`}
-      nav={
-        <>
-          <NavGroup items={nav} />
-          {canManage && <ProductsGroup />}
-        </>
-      }
+      nav={<NavGroup items={nav} />}
       aside={
         <>
           {tab === "drafts" && (

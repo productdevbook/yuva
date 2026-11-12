@@ -125,7 +125,7 @@ export function WorkspaceMark({ name, className }: { name: string; className?: s
   )
 }
 
-export function WorkspaceMenu() {
+export function WorkspaceMenu({ children }: { children?: React.ReactNode }) {
   const navigate = useNavigate()
   const { me, membership, switchWorkspace } = useSession()
   const signup = useVersion().data?.signup
@@ -162,6 +162,8 @@ export function WorkspaceMenu() {
         <SettingsIcon />
         <Trans>Workspace settings</Trans>
       </DropdownMenuItem>
+      {children && <DropdownMenuSeparator />}
+      {children}
     </DropdownMenuContent>
   )
 }

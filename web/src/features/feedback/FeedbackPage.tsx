@@ -17,7 +17,6 @@ import {
   PageLayout,
   PageSidebar,
   PageTop,
-  ProductsGroup,
   SectionHeading,
   SectionNav,
   toast,
@@ -522,7 +521,6 @@ function FeedbackSidebar({
             }))}
           />
         </div>
-        {canManage && <ProductsGroup />}
       </NavList>
       {!canManage && <SectionNav />}
     </PageSidebar>

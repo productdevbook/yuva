@@ -1,5 +1,4 @@
-import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { EllipsisIcon, SearchIcon } from "lucide-react"
+import { Trans, useLingui } from "@lingui/react/macro"
 import { useState } from "react"
 
 import { useGo, useSection } from "@/app/Rail"
@@ -9,27 +8,97 @@ import {
   InfoColumn,
   NavGroup,
   NavList,
-  NavRow,
   PageLayout,
   PageSearch,
   SideColumn,
   SideTitle,
   type NavItem,
 } from "@/components/common/PageLayout"
-import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { useCounts } from "@/features/inbox/queries"
 import { useVersion } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { isSupport, useInboxes } from "@/lib/workspace"
 
+function ProductsMenuGroup() {
+  const { t } = useLingui()
+  const inboxes = (useInboxes().data ?? []).filter(isSupport)
+  const [value, set] = useInboxFilter()
+  const counts = useCounts().data
+  const [query, setQuery] = useState("")
+  if (inboxes.length < 2) return null
+  const openOf = new Map((counts?.inboxes ?? []).map((c) => [c.id, c.count]))
+  const sorted = [...inboxes].sort(
+    (a, b) => (openOf.get(b.id) ?? 0) - (openOf.get(a.id) ?? 0) || a.name.localeCompare(b.name)
+  )
+  const total = inboxes.reduce((n, i) => n + (openOf.get(i.id) ?? 0), 0)
+  const q = query.trim().toLocaleLowerCase()
+  const found = q ? sorted.filter((i) => i.name.toLocaleLowerCase().includes(q)) : sorted
+  const count = (n: number | undefined) => <span className="font-mono text-[11px] text-muted-foreground">{n ?? 0}</span>
+  return (
+    <DropdownMenuGroup>
+      <DropdownMenuLabel>
+        <Trans>Products</Trans>
+      </DropdownMenuLabel>
+      {sorted.length > 8 && (
+        <Input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.stopPropagation()}
+          placeholder={t`Find a product`}
+          aria-label={t`Find a product`}
+          className="mb-1 rounded-lg bg-subtle"
+          data-testid="page-products-find"
+        />
+      )}
+      <DropdownMenuRadioGroup value={value || "all"} onValueChange={(v) => set(v === "all" ? "" : v)}>
+        {!q && (
+          <DropdownMenuRadioItem value="all" data-testid="page-product-all">
+            <span className="min-w-0 flex-1 truncate">
+              <Trans>All products</Trans>
+            </span>
+            {count(total)}
+          </DropdownMenuRadioItem>
+        )}
+        {found.map((i) => (
+          <DropdownMenuRadioItem key={i.id} value={i.id} data-testid={`page-product-${i.id}`}>
+            <span
+              aria-hidden
+              className="size-2 shrink-0 rounded-full bg-muted-foreground"
+              style={i.branding.color ? { backgroundColor: i.branding.color } : undefined}
+            />
+            <span className="min-w-0 flex-1 truncate">{i.name}</span>
+            {count(openOf.get(i.id))}
+          </DropdownMenuRadioItem>
+        ))}
+        {found.length === 0 && (
+          <p className="m-0 px-2.5 py-1.5 text-small text-muted-foreground">
+            <Trans>No product by that name.</Trans>
+          </p>
+        )}
+      </DropdownMenuRadioGroup>
+    </DropdownMenuGroup>
+  )
+}
+
 function WorkspaceHeader() {
   const { t } = useLingui()
   const { membership } = useSession()
   const version = useVersion().data?.version
+  const inboxes = (useInboxes().data ?? []).filter(isSupport)
+  const [value] = useInboxFilter()
   const name = membership.workspace.name
+  const picked = inboxes.length > 1 ? inboxes.find((i) => i.id === value) : undefined
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -38,123 +107,38 @@ function WorkspaceHeader() {
         data-testid="page-workspace"
       >
         <WorkspaceMark name={name} className="size-[22px] rounded-md text-[11px]" />
-        <span className="min-w-0 flex-1 truncate">{name}</span>
+        <span className="flex min-w-0 flex-1 flex-col leading-tight">
+          <span className="truncate">{name}</span>
+          {inboxes.length > 1 && (
+            <span
+              className="flex items-center gap-1.5 truncate text-small font-normal tracking-normal text-muted-foreground"
+              data-testid="page-product-current"
+            >
+              {picked && (
+                <span
+                  aria-hidden
+                  className="size-2 shrink-0 rounded-full bg-muted-foreground"
+                  style={picked.branding.color ? { backgroundColor: picked.branding.color } : undefined}
+                />
+              )}
+              <span className="truncate">{picked ? picked.name : <Trans>All products</Trans>}</span>
+            </span>
+          )}
+        </span>
         {version && (
           <span className="shrink-0 rounded border border-input px-1.5 font-mono text-[11px] font-normal text-muted-foreground">
             {version}
           </span>
         )}
       </DropdownMenuTrigger>
-      <WorkspaceMenu />
+      <WorkspaceMenu>
+        <ProductsMenuGroup />
+      </WorkspaceMenu>
     </DropdownMenu>
   )
 }
 
-export function ProductsGroup({ limit = 4 }: { limit?: number }) {
-  const { t } = useLingui()
-  const inboxes = (useInboxes().data ?? []).filter(isSupport)
-  const [value, set] = useInboxFilter()
-  const counts = useCounts().data
-  const [open, setOpen] = useState(false)
-  const [query, setQuery] = useState("")
-  if (inboxes.length < 2) return null
-  const openOf = new Map((counts?.inboxes ?? []).map((c) => [c.id, c.count]))
-  const sorted = [...inboxes].sort(
-    (a, b) => (openOf.get(b.id) ?? 0) - (openOf.get(a.id) ?? 0) || a.name.localeCompare(b.name)
-  )
-  const shown = sorted.slice(0, limit)
-  const picked = sorted.find((i) => i.id === value)
-  if (picked && !shown.includes(picked)) shown.splice(limit - 1, 1, picked)
-  const total = inboxes.reduce((n, i) => n + (openOf.get(i.id) ?? 0), 0)
-  const row = (i: (typeof inboxes)[number], close?: boolean): NavItem => ({
-    key: i.id,
-    label: i.name,
-    color: i.branding.color ?? "",
-    count: openOf.get(i.id),
-    current: value === i.id,
-    onSelect: () => {
-      set(i.id)
-      if (close) setOpen(false)
-    },
-    testId: `page-product-${i.id}`,
-  })
-  const rest = sorted.length - shown.length
-  const q = query.trim().toLocaleLowerCase()
-  const found = q ? sorted.filter((i) => i.name.toLocaleLowerCase().includes(q)) : sorted
-  return (
-    <NavGroup
-      title={t`Products`}
-      items={[
-        {
-          key: "all",
-          label: t`All products`,
-          color: "",
-          count: total,
-          current: !value,
-          onSelect: () => set(""),
-          testId: "page-product-all",
-        },
-        ...shown.map((i) => row(i)),
-      ]}
-    >
-      {rest > 0 && (
-        <Popover
-          open={open}
-          onOpenChange={(next) => {
-            setOpen(next)
-            if (!next) setQuery("")
-          }}
-        >
-          <PopoverTrigger
-            className="flex w-full items-center gap-2 rounded-sm px-2.5 py-1 text-start text-body leading-5 text-muted-foreground outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-            data-rail-item
-            data-testid="page-products-more"
-          >
-            <EllipsisIcon aria-hidden className="size-3.5 shrink-0" />
-            <Plural value={rest} one="# more" other="# more" />
-          </PopoverTrigger>
-          <PopoverContent side="right" align="start" className="w-[300px] gap-2 rounded-xl p-2.5">
-            <div className="flex items-center gap-2 px-0.5">
-              <span className="flex-1 text-small font-semibold">
-                <Trans>Products</Trans>
-              </span>
-              <span className="font-mono text-[11px] text-muted2">{sorted.length}</span>
-            </div>
-            <label className="relative block">
-              <span className="sr-only">
-                <Trans>Find a product</Trans>
-              </span>
-              <SearchIcon
-                aria-hidden
-                className="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
-              />
-              <Input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={t`Find a product`}
-                className="rounded-lg bg-subtle ps-8"
-                data-testid="page-products-find"
-              />
-            </label>
-            <div className="-mx-1 flex max-h-[300px] flex-col overflow-y-auto px-1">
-              {found.map((i) => (
-                <NavRow key={i.id} item={row(i, true)} />
-              ))}
-              {found.length === 0 && (
-                <p className="m-0 px-2.5 py-1.5 text-small text-muted-foreground">
-                  <Trans>No product by that name.</Trans>
-                </p>
-              )}
-            </div>
-          </PopoverContent>
-        </Popover>
-      )}
-    </NavGroup>
-  )
-}
-
-export function SectionNav({ products = true }: { products?: boolean }) {
+export function SectionNav() {
   const { t } = useLingui()
   const section = useSection()
   const go = useGo()
@@ -175,7 +159,6 @@ export function SectionNav({ products = true }: { products?: boolean }) {
   return (
     <NavList label={t`Sections`}>
       {first && <NavGroup title={first.title} items={items(first)} />}
-      {products && <ProductsGroup />}
       {rest.map((g) => (
         <NavGroup key={g.title ?? "main"} title={g.title} items={items(g)} />
       ))}
@@ -199,8 +182,8 @@ export function PageSidebar({
   return (
     <SideColumn label={t`Navigation`}>
       <WorkspaceHeader />
-      <SideTitle title={title} back={back} />
       <PageSearch label={searchLabel} />
+      <SideTitle title={title} back={back} />
       {children ?? <SectionNav />}
       <div className="border-t border-line-soft pt-3">
         <UserMenu row align="start" side="top" />
@@ -233,7 +216,7 @@ export function SectionPage({
       sidebar={
         <PageSidebar title={title} searchLabel={searchLabel}>
           <NavList label={title}>{nav}</NavList>
-          {!canManage && <SectionNav products={false} />}
+          {!canManage && <SectionNav />}
         </PageSidebar>
       }
       aside={<InfoColumn label={t`Details`}>{aside}</InfoColumn>}

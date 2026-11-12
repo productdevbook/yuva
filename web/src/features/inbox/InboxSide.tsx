@@ -9,7 +9,6 @@ import {
   NavGroup,
   NavList,
   PageSidebar,
-  ProductsGroup,
   SectionNav,
   sourceOf,
   TopSep,
@@ -105,7 +104,6 @@ export function ConversationsSidebar({
       <NavList label={t`Conversations`}>
         <NavGroup items={items} />
         {saved.length > 0 && <NavGroup title={t`Saved views`} items={saved} />}
-        {canManage && <ProductsGroup />}
       </NavList>
       {!canManage && <SectionNav />}
     </PageSidebar>

@@ -8,7 +8,6 @@ import {
   PageLayout,
   PageSidebar,
   PageTop,
-  ProductsGroup,
   SectionNav,
   Dot,
   TopSep,
@@ -167,7 +166,6 @@ function BroadcastsSidebar({ current, sub }: { current: BroadcastsPlace; sub?: N
       <NavList label={t`Broadcasts`}>
         <NavGroup items={withSub(views)} />
         <NavGroup title={t`Audience`} items={withSub(audience)} />
-        {canManage && <ProductsGroup />}
       </NavList>
       {!canManage && <SectionNav />}
     </PageSidebar>

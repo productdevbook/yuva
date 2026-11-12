@@ -93,4 +93,4 @@ export {
   UnreadBadge,
   useDayLabel,
 } from "@/components/common/FlatList"
-export { PageSidebar, ProductsGroup, SectionNav, SectionPage } from "@/components/common/PageSidebar"
+export { PageSidebar, SectionNav, SectionPage } from "@/components/common/PageSidebar"

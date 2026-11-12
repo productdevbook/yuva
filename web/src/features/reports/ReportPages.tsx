@@ -12,7 +12,6 @@ import {
   NavGroup,
   PageHeading,
   PageTop as FlatTop,
-  ProductsGroup,
   SectionPage,
   Stat,
   StatCard,
@@ -356,18 +355,15 @@ export function ReportsPane() {
           title={t`Reports`}
           testId="reports"
           nav={
-            <>
-              <NavGroup
-                items={tabs.map((x) => ({
-                  key: x.key,
-                  label: x.label,
-                  to: x.to,
-                  current: x.key === tab,
-                  testId: x.testId,
-                }))}
-              />
-              <ProductsGroup />
-            </>
+            <NavGroup
+              items={tabs.map((x) => ({
+                key: x.key,
+                label: x.label,
+                to: x.to,
+                current: x.key === tab,
+                testId: x.testId,
+              }))}
+            />
           }
           aside={<ReportsAside trends={trends} csvReady={csv.ready} onCsv={() => setCsvOpen(true)} />}
         >
