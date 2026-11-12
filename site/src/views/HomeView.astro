@@ -1,12 +1,11 @@
 ---
-import { docsCopy } from "@/copy/docs"
 import { headerCopy } from "@/copy/header"
 import { homeCopy } from "@/copy/home"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
 import Footer from "@/layouts/Footer.astro"
 import PageShell from "@/layouts/PageShell.astro"
-import { href, nav, quickStart } from "@/lib/docs"
+import { quickStart } from "@/lib/docs"
 import { absolute, home, links, VERSION, type Locale } from "@/lib/routes"
 import { shots } from "@/lib/shots"
 import Features from "@/sections/Features.astro"
@@ -14,7 +13,6 @@ import Hero from "@/sections/Hero.astro"
 import Tour from "@/sections/Tour.astro"
 import TopLinks from "@/ui/TopLinks.astro"
 import type { NavRowGroup } from "@/ui/NavRows.astro"
-import { msg } from "@lingui/core/macro"
 
 interface Props {
   locale: Locale
@@ -24,25 +22,14 @@ const { locale } = Astro.props
 const i18n = i18nFor(locale)
 const c = homeCopy(i18n, await quickStart(locale))
 const h = headerCopy(i18n, locale)
-const d = docsCopy(i18n)
-const start = (await nav(locale)).find((g) => g.key === "start")
-const groups: NavRowGroup[] = [
-  {
-    key: "start",
-    title: d.groups.start,
-    items: [
-      { label: i18n._(msg`Home`), href: home[locale], current: true },
-      { label: c.hero.signUp, href: c.hero.signUpHref },
-      { label: c.hero.logIn, href: c.hero.logInHref },
-      ...(start?.items ?? []).map((i) => ({ label: i.title, href: href(locale, i.rel) })),
-    ],
-  },
-  ...h.groups.map((g) => ({
+const inPage = (url: string) => url.startsWith(`${home[locale]}#`)
+const groups: NavRowGroup[] = h.groups
+  .map((g) => ({
     key: g.id,
     title: g.label,
-    items: g.items.map((i) => ({ label: i.title, href: i.href })),
-  })),
-]
+    items: g.items.filter((i) => !inPage(i.href)).map((i) => ({ label: i.title, href: i.href })),
+  }))
+  .filter((g) => g.items.length > 0)
 const developers = c.features.items.find((f) => f.id === "developers")!
 const selfHosting = c.features.items.find((f) => f.id === "self-hosting")!
 const toc = [
