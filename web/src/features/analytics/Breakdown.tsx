@@ -151,10 +151,10 @@ export function BreakdownView({ group }: { group: Group }) {
         <CsvButton testId="analytics-csv" run={() => downloadCsv(property.id, body, `${property.name}-${dim}`)} />
       </div>
       <QueryProblem error={table.error} />
-      <div className="overflow-hidden rounded-[14px] border bg-card">
+      <div className="overflow-hidden rounded-[10px] border bg-background">
         <table className="w-full table-fixed text-body" data-testid="analytics-table">
           <thead>
-            <tr className="border-b text-caption text-faint">
+            <tr className="border-b text-caption text-muted2">
               <th className="px-4 py-2.5 text-start font-medium">{text.dimension[dim]}</th>
               {metrics.map((m, i) => (
                 <th key={m} className={cn("w-28 px-2 py-2.5 text-end font-medium", i > 0 && "@max-2xl:hidden")}>
@@ -178,7 +178,7 @@ export function BreakdownView({ group }: { group: Group }) {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-line-soft">
             {table.isPending ? (
               <tr>
                 <td colSpan={metrics.length + 1} className="p-4">
@@ -196,8 +196,8 @@ export function BreakdownView({ group }: { group: Group }) {
                 const value = r.dimensions[0] ?? ""
                 const filterable = value !== OTHER && !share
                 return (
-                  <tr key={`${value}${i}`} className="hover:bg-muted/50">
-                    <td className="truncate px-4 py-2">
+                  <tr key={`${value}${i}`} className="hover:bg-subtle">
+                    <td className="truncate px-4 py-2.5">
                       {filterable ? (
                         <button
                           type="button"
@@ -213,7 +213,13 @@ export function BreakdownView({ group }: { group: Group }) {
                       )}
                     </td>
                     {metrics.map((m, j) => (
-                      <td key={m} className={cn("px-2 py-2 text-end tabular-nums", j > 0 && "@max-2xl:hidden")}>
+                      <td
+                        key={m}
+                        className={cn(
+                          "px-2 py-2.5 text-end font-mono text-xs tabular-nums",
+                          j > 0 && "@max-2xl:hidden"
+                        )}
+                      >
                         {formatMetric(m, num(r.metrics, m), i18n.locale)}
                       </td>
                     ))}

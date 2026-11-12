@@ -18,6 +18,7 @@ msgstr "{0, plural, other {# 行}}"
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, other {本日の訪問者}}"
 
@@ -254,6 +255,7 @@ msgstr "ルールを追加"
 msgid "Add a step"
 msgstr "ステップを追加"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "すべてのイベント"
 msgid "All goals"
 msgstr "すべてのゴール"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "すべてのサイト"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "オーナーまたは管理者が、プロパティの設定でリンクできます。"
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "オーナーまたは管理者が、同意機能で永続 ID をオンにできます。"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "アナリティクス"
@@ -376,6 +383,10 @@ msgstr "オーディエンス"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "{expires} まで利用可能"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "行動"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "コレクション"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "{0} – {1} と比較"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "1 年前と比較"
@@ -506,6 +519,7 @@ msgstr "他の日と比較…"
 msgid "Compare with the days"
 msgstr "比較する日"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "前の期間と比較"
@@ -514,6 +528,7 @@ msgstr "前の期間と比較"
 msgid "Compared days"
 msgstr "比較した日"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "比較"
@@ -586,6 +601,7 @@ msgstr "コンバージョンの推移"
 msgid "Conversions per 100 visitors."
 msgstr "訪問者 100 人あたりのコンバージョン。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "サイトとアプリのCookieなしの訪問者"
@@ -617,6 +633,10 @@ msgstr "集計の扱い"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "国"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "国と都市。住所は一切保存しません。"
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "詳細"
 msgid "Device"
 msgstr "デバイス"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "自分の訪問を集計しない"
 msgid "does not contain"
 msgstr "を含まない"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "イベント {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "イベント {event}({key} = {value})"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "ファイルはバックグラウンドで作成され、7 日後に削�
 msgid "Filter by this"
 msgstr "これで絞り込む"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "受信トレイ {inboxName} から。1,000 表示あたりの会話数�
 msgid "Funnel"
 msgstr "ファネル"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "ファネル"
 
@@ -1132,7 +1154,7 @@ msgstr "ゴール「{0}」を作成しました"
 msgid "Goal drop"
 msgstr "ゴールの減少"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "ゴール"
@@ -1173,6 +1195,10 @@ msgstr "ホスト"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "ホストまたはアプリ"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "初回訪問後の数週間で何人が戻ってくるか。"
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "サインイン済みユーザーを連絡先にリンク"
 msgid "live"
 msgstr "ライブ"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "ライブ"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "さらに読み込む"
 msgid "Location database"
 msgstr "位置情報データベース"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "新しい共有リンク"
 msgid "No alerts yet."
 msgstr "アラートはまだありません。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "比較なし"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "イベントはまだありません。"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "過去 24 時間にイベントはありません"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "イベントはまだありません"
 
@@ -1758,7 +1791,7 @@ msgstr "その他のサイト"
 msgid "Outbound link"
 msgstr "外部リンク"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "概要"
@@ -1828,6 +1861,7 @@ msgstr "パターンに一致するページは 1 つのパスにまとめて集
 msgid "Pages viewed."
 msgstr "表示されたページ。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Cookie なし、IP アドレスの保存なし、法令で許される場合は同意バナーなしで、ページ、流入元、場所、デバイスを集計します。"
@@ -1897,6 +1931,10 @@ msgstr "時間別"
 msgid "per week"
 msgstr "週別"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "期間"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "永続 ID"
@@ -1904,6 +1942,10 @@ msgstr "永続 ID"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "スマートフォン"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "スマートフォン、パソコン、OS、ブラウザ。"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "プラットフォーム"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "プラットフォーム"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "プライバシー"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "製品"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "すべてのページの head にスクリプトを設置します。シ
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "これらのリンクをプライバシーのページに掲載してください。オプトアウトは、スクリプトが訪問者のデバイスに保存する唯一のもので、本人が求めた場合のみです。Do Not Track や Global Privacy Control のある訪問者は一切集計されません。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "訪問者が次を行った時点で到達"
 msgid "Ready"
 msgstr "準備完了"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "リアルタイム"
@@ -2085,7 +2136,7 @@ msgstr "レポート"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "Do Not Track や Global Privacy Control のあるリクエスト、および同意が必要なプロパティで同意のないイベントは、受け取りますが、保存も集計もされません。"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "リテンション"
@@ -2114,6 +2165,10 @@ msgstr "{name} を取り消しますか?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "取り消し済み"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "現在"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "{path} で {pct} までスクロール"
 msgid "Scrolls"
 msgstr "スクロール"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "検索、リンク、キャンペーン、アプリストア。"
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "セグメント"
@@ -2220,7 +2279,7 @@ msgstr "サーバー"
 msgid "Server busy"
 msgstr "サーバー混雑"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "設定"
@@ -2267,6 +2326,10 @@ msgstr "過去 30 日間を表示"
 msgid "Signed up"
 msgstr "サインアップ済み"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "サイトとアプリ"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "埋め込みを許可するサイト"
@@ -2283,7 +2346,7 @@ msgstr "一部のイベントが破棄されました。理由は下に表示さ
 msgid "Source"
 msgstr "ソース"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "ステップ {0}"
 msgid "Steps"
 msgstr "手順"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "サポート"
@@ -2421,6 +2484,10 @@ msgstr "この期間は詳細レコードの範囲外です。"
 msgid "The report could not be loaded"
 msgstr "レポートを読み込めませんでした"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "スクリプト、アラート、共有、保存される内容。"
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "サーバー自身のデータベース"
@@ -2501,6 +2568,7 @@ msgstr "ページ滞在時間"
 msgid "Time the page was visible and in focus, per view."
 msgstr "ページが表示され、フォーカスされていた時間(表示ごと)。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "追跡中のプロパティ"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "トラッキング"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "トラフィック"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "訪問者"
 msgid "Visitors in the last 30 minutes"
 msgstr "過去 30 分の訪問者"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "現在の訪問者"
@@ -2702,6 +2775,7 @@ msgstr "Do Not Track や Global Privacy Control のある訪問者は何も送�
 msgid "Visits"
 msgstr "訪問"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "成功として数える訪問とイベント"
@@ -2762,6 +2836,10 @@ msgstr "週"
 msgid "What changed"
 msgstr "変更点"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "サイトやアプリで人々が何をしたか。"
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "目立つ点"
@@ -2778,13 +2856,26 @@ msgstr "エクスポートする内容"
 msgid "Where conversions come from"
 msgstr "コンバージョンの流入元"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "目標までの途中で人々がどこで離脱するか。"
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "プロパティの 1 日が始まり、終わる時刻。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "どのページが訪問され、どのページが質問につながっているか"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "どの訪問がチームへの質問で終わるか。"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "直近30分間にここにいる人。"
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

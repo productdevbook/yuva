@@ -18,6 +18,7 @@ msgstr "{0, plural, one {# redak} few {# retka} other {# redaka}}"
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {posjetitelj danas} few {posjetitelja danas} other {posjetitelja danas}}"
 
@@ -254,6 +255,7 @@ msgstr "Dodaj pravilo"
 msgid "Add a step"
 msgstr "Dodaj korak"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "Svi događaji"
 msgid "All goals"
 msgstr "Svi ciljevi"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "Sva web-mjesta"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "Vlasnik ili administrator može jedan povezati u postavkama svojstva."
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Vlasnik ili administrator može uključiti trajni ID u funkcijama privole."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Analitika"
@@ -376,6 +383,10 @@ msgstr "Publika"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "Dostupno do {expires}"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "Ponašanje"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "Zbirka"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Usporedi s {0} – {1}"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Usporedi s godinu dana ranije"
@@ -506,6 +519,7 @@ msgstr "Usporedi s drugim danima…"
 msgid "Compare with the days"
 msgstr "Usporedi s danima"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Usporedi s prethodnim razdobljem"
@@ -514,6 +528,7 @@ msgstr "Usporedi s prethodnim razdobljem"
 msgid "Compared days"
 msgstr "Uspoređeni dani"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Usporedba"
@@ -586,6 +601,7 @@ msgstr "Konverzije kroz vrijeme"
 msgid "Conversions per 100 visitors."
 msgstr "Konverzije na 100 posjetitelja."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "Posjetitelji bez kolačića na tvojim web-stranicama i u aplikacijama"
@@ -617,6 +633,10 @@ msgstr "Prebrojano kao"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "Države"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "Države i gradovi, bez spremanja ijedne adrese."
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "Pojedinosti"
 msgid "Device"
 msgstr "Uređaj"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "Ne broji moje posjete"
 msgid "does not contain"
 msgstr "ne sadrži"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "Događaj {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "Događaj {event} s {key} = {value}"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "Datoteke se izrađuju u pozadini i brišu sedam dana poslije."
 msgid "Filter by this"
 msgstr "Filtriraj po ovome"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "Iz pretinca {inboxName}. Poredano po razgovorima na 1000 prikaza; strani
 msgid "Funnel"
 msgstr "Lijevak"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "Lijevci"
 
@@ -1132,7 +1154,7 @@ msgstr "Cilj „{0}” je izrađen"
 msgid "Goal drop"
 msgstr "Pad cilja"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "Ciljevi"
@@ -1173,6 +1195,10 @@ msgstr "Host"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "Host ili aplikacija"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "Koliko ih se vrati u tjednima nakon prvog posjeta."
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "Poveži prijavljene korisnike s njihovim kontaktom"
 msgid "live"
 msgstr "uživo"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "Uživo"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "Učitaj više"
 msgid "Location database"
 msgstr "Baza lokacija"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "Nova poveznica za dijeljenje"
 msgid "No alerts yet."
 msgstr "Još nema upozorenja."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Bez usporedbe"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "Još nema događaja."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "U zadnja 24 sata nema događaja"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Još nema događaja"
 
@@ -1758,7 +1791,7 @@ msgstr "Druga web-mjesta"
 msgid "Outbound link"
 msgstr "Odlazna poveznica"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "Pregled"
@@ -1828,6 +1861,7 @@ msgstr "Stranice koje odgovaraju uzorku broje se pod jednom putanjom pa se svaka
 msgid "Pages viewed."
 msgstr "Pregledane stranice."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Stranice, izvori, mjesta i uređaji, bez kolačića, bez pohrane IP adresa i bez bannera privole gdje zakon to dopušta."
@@ -1897,6 +1931,10 @@ msgstr "po satu"
 msgid "per week"
 msgstr "tjedno"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "Razdoblje"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Trajni ID"
@@ -1904,6 +1942,10 @@ msgstr "Trajni ID"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "Telefon"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "Mobiteli, računala, sustavi i preglednici."
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "Platforma"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "Platforme"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "Privatnost"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "Proizvod"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "Stavite skriptu u head svake stranice. Broji prikaze stranica, i kad jed
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Stavite ove poveznice na svoju stranicu o privatnosti. Odbijanje je jedino što skripta pohranjuje na uređaj posjetitelja, i to samo kad to zatraži. Posjetitelji s Do Not Track ili Global Privacy Control nikad se ne broje."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "Dostiže se kad posjetitelj"
 msgid "Ready"
 msgstr "Spremno"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "Stvarno vrijeme"
@@ -2085,7 +2136,7 @@ msgstr "Izvješće"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "Zahtjevi s Do Not Track ili Global Privacy Control i događaji bez privole na svojstvu koje je zahtijeva primaju se, ali se ovdje ne pohranjuju niti broje."
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "Zadržavanje"
@@ -2114,6 +2165,10 @@ msgstr "Opozvati {name}?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "Opozvano"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "Trenutno"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "Prelistano do {pct} na {path}"
 msgid "Scrolls"
 msgstr "Listanja"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "Pretraživanje, poveznice, kampanje i trgovine aplikacija."
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "Segment"
@@ -2220,7 +2279,7 @@ msgstr "Poslužitelj"
 msgid "Server busy"
 msgstr "Poslužitelj zauzet"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "Postavke"
@@ -2267,6 +2326,10 @@ msgstr "Prikaži zadnjih 30 dana"
 msgid "Signed up"
 msgstr "Registrirao/la se"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "Web-mjesta i aplikacije"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "Web-mjesta koja ga mogu ugraditi"
@@ -2283,7 +2346,7 @@ msgstr "Neki događaji su odbačeni. Razlozi su ispod."
 msgid "Source"
 msgstr "Izvor"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "Korak {0}"
 msgid "Steps"
 msgstr "Koraci"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "Podrška"
@@ -2421,6 +2484,10 @@ msgstr "Raspon je izvan detaljnih zapisa."
 msgid "The report could not be loaded"
 msgstr "Izvješće se nije moglo učitati"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "Skripta, upozorenja, dijeljenje i što se čuva."
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "Vlastita baza podataka poslužitelja"
@@ -2501,6 +2568,7 @@ msgstr "Vrijeme na stranici"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Vrijeme dok je stranica bila vidljiva i u fokusu, po prikazu."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "Praćeni propovi"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "Praćenje"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "Promet"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "Posjetitelji"
 msgid "Visitors in the last 30 minutes"
 msgstr "Posjetitelji u zadnjih 30 minuta"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Posjetitelji sada"
@@ -2702,6 +2775,7 @@ msgstr "Posjetitelji s Do Not Track ili Global Privacy Control ne šalju ništa 
 msgid "Visits"
 msgstr "Posjeti"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Posjeti i događaji koji se broje kao uspjeh"
@@ -2762,6 +2836,10 @@ msgstr "Tjedni"
 msgid "What changed"
 msgstr "Što se promijenilo"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "Što su ljudi radili na vašem web-mjestu i u aplikacijama."
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "Što se ističe"
@@ -2778,13 +2856,26 @@ msgstr "Što izvesti"
 msgid "Where conversions come from"
 msgstr "Odakle dolaze konverzije"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "Gdje ljudi odustaju na putu do cilja."
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "Gdje dan svojstva počinje i završava."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Koje stranice ljudi posjećuju i koje vode do pitanja"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "Koji posjeti završe pitanjem vašem timu."
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "Tko je ovdje u zadnjih 30 minuta."
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

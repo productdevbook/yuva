@@ -21,6 +21,7 @@ import {
   VisitorAvatar,
 } from "@/components/common"
 import { HOME_KEYS } from "@/components/common/ShortcutSheet"
+import { Stat, Stats } from "@/components/common/Stats"
 import { formatDuration, useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -460,69 +461,6 @@ function HomeSkeleton() {
       <Skeleton className="h-[52px] rounded-lg" />
       <Skeleton className="h-[52px] rounded-lg" />
       <Skeleton className="h-[260px] rounded-[10px]" />
-    </div>
-  )
-}
-
-function Stat({
-  value,
-  label,
-  hint,
-  to,
-  quiet,
-  tone,
-  testId,
-}: {
-  value: React.ReactNode
-  label: string
-  hint?: string
-  to?: string
-  quiet?: boolean
-  tone?: "brand"
-  testId?: string
-}) {
-  const body = (
-    <>
-      <b
-        className={cn(
-          "text-[26px] leading-8 font-semibold tracking-[-0.02em] tabular-nums",
-          quiet && "text-muted2",
-          tone === "brand" && "text-brand"
-        )}
-      >
-        {value}
-      </b>
-      <span className="truncate text-caption text-muted-foreground">{label}</span>
-      {hint && <span className="truncate font-mono text-[11px] text-muted2">{hint}</span>}
-    </>
-  )
-  const className = "flex min-w-0 flex-col gap-1 border-e border-b border-line-soft px-[18px] py-4"
-  if (to)
-    return (
-      <Link
-        to={to}
-        className={cn(className, "outline-none transition-colors hover:bg-subtle focus-visible:bg-subtle")}
-        data-testid={testId}
-      >
-        {body}
-      </Link>
-    )
-  return (
-    <div className={className} data-testid={testId}>
-      {body}
-    </div>
-  )
-}
-
-function Stats({ children, label, testId }: { children: React.ReactNode; label?: string; testId?: string }) {
-  return (
-    <div
-      role={label ? "group" : undefined}
-      aria-label={label}
-      className="-me-px -mb-px grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] phone:grid-cols-2"
-      data-testid={testId}
-    >
-      {children}
     </div>
   )
 }

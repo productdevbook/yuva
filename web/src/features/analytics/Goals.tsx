@@ -1,9 +1,9 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { ArrowLeftIcon, CalendarClockIcon, PencilIcon, PlusIcon, TargetIcon, Trash2Icon } from "lucide-react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useSearchParams } from "react-router"
 
-import { ErrorLine, Notice, Segmented, useConfirm } from "@/components/common"
+import { ErrorLine, listRowClass, Notice, Segmented, useConfirm } from "@/components/common"
 import { formatDate } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -38,6 +38,8 @@ import {
   type AnalyticsGoalKind,
   type AnalyticsShareView,
 } from "@/lib/api"
+import { useListCursor } from "@/features/inbox/listCursor"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { useOptionalSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
@@ -337,7 +339,7 @@ function GoalBreakdown({ goal }: { goal: AnalyticsGoal }) {
 
 const GOAL_KPIS: NumMetric[] = ["conversions", "conversion_rate", "completions"]
 
-function GoalDetail({ goal, onBack }: { goal: AnalyticsGoal; onBack: () => void }) {
+function GoalDetail({ goal, onBack, flat }: { goal: AnalyticsGoal; onBack: () => void; flat: boolean }) {
   const { t, i18n } = useLingui()
   const text = useAnalyticsText()
   const describe = useGoalText()
@@ -362,15 +364,23 @@ function GoalDetail({ goal, onBack }: { goal: AnalyticsGoal; onBack: () => void 
   return (
     <section className="flex flex-col gap-4" data-testid="analytics-goal">
       <div className="flex flex-col items-start gap-1">
-        <Button variant="ghost" size="sm" className="-ms-2" onClick={onBack}>
-          <ArrowLeftIcon className="rtl:rotate-180" />
-          <Trans>All goals</Trans>
-        </Button>
+        {!flat && (
+          <Button variant="ghost" size="sm" className="-ms-2" onClick={onBack}>
+            <ArrowLeftIcon className="rtl:rotate-180" />
+            <Trans>All goals</Trans>
+          </Button>
+        )}
         <div className="flex w-full flex-wrap items-start gap-2">
           <div className="min-w-0 flex-1">
-            <h2 className="text-title break-words" data-testid="goal-name-title">
-              {goal.name}
-            </h2>
+            {flat ? (
+              <h1 className="m-0 text-page leading-[34px] break-words" data-testid="goal-name-title">
+                {goal.name}
+              </h1>
+            ) : (
+              <h2 className="text-title break-words" data-testid="goal-name-title">
+                {goal.name}
+              </h2>
+            )}
             <p className="text-body break-words text-muted-foreground" dir="auto">
               {describe(goal)}
             </p>
@@ -419,7 +429,7 @@ function GoalDetail({ goal, onBack }: { goal: AnalyticsGoal; onBack: () => void 
         {GOAL_KPIS.map((m) => (
           <div
             key={m}
-            className="flex min-w-0 flex-col rounded-[14px] border bg-card px-4 py-3 @max-2xl:px-3"
+            className="flex min-w-0 flex-col rounded-[10px] border bg-background px-4 py-3 @max-2xl:px-3"
             title={text.metricHelp[m]}
             data-testid={`kpi-${m}`}
           >
@@ -476,10 +486,14 @@ function GoalList({
   goals,
   onPick,
   onNew,
+  flat,
+  active,
 }: {
   goals: AnalyticsGoal[]
   onPick: (id: string) => void
   onNew?: () => void
+  flat: boolean
+  active: boolean
 }) {
   const { i18n } = useLingui()
   const text = useAnalyticsText()
@@ -489,6 +503,76 @@ function GoalList({
   const color = inbox?.branding.color || "var(--brand)"
   const { view } = useView()
   const totals = useGoalTotals(property.id, goals, { range: view.range, ...scopeOf(view) })
+  const listRef = useRef<HTMLDivElement>(null)
+  const { cursorId } = useListCursor(goals, null, onPick, flat && active, listRef, true, true)
+  if (flat)
+    return (
+      <div ref={listRef} className="flex flex-col">
+        <QueryProblem error={totals.error} />
+        <div className="flex flex-col border-b border-line-soft" data-testid="goals-table">
+          {goals.map((g) => {
+            const m = totals.data?.get(g.id)
+            return (
+              <button
+                key={g.id}
+                type="button"
+                className={cn(
+                  listRowClass,
+                  "scroll-mt-[calc(var(--page-top-h,56px)+8px)]",
+                  cursorId === g.id && "bg-subtle shadow-[inset_2px_0_0_var(--brand)]"
+                )}
+                onClick={() => onPick(g.id)}
+                data-row-id={g.id}
+                data-testid="goal-row"
+              >
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="truncate font-medium text-foreground">{g.name}</span>
+                  <span className="truncate font-mono text-caption text-muted2" dir="auto">
+                    {describe(g)}
+                  </span>
+                </span>
+                <span className="flex shrink-0 flex-col items-end gap-0.5">
+                  <b className="font-mono text-body font-medium tabular-nums" title={text.metricHelp.conversions}>
+                    {m ? (
+                      formatMetric("conversions", num(m, "conversions"), i18n.locale)
+                    ) : (
+                      <Dash pending={totals.isPending} />
+                    )}
+                  </b>
+                  <span className="text-caption text-muted-foreground" title={text.metricHelp.conversion_rate}>
+                    {m && <GoalRate value={formatMetric("conversion_rate", num(m, "conversion_rate"), i18n.locale)} />}
+                    {m?.revenue?.length ? (
+                      <span className="ms-2 tabular-nums">
+                        <RevenueAmounts revenue={m.revenue} />
+                      </span>
+                    ) : null}
+                  </span>
+                </span>
+                <span className="phone:hidden">
+                  <GoalSpark goal={g} color={color} />
+                </span>
+              </button>
+            )
+          })}
+          {onNew && (
+            <button
+              type="button"
+              onClick={onNew}
+              className={cn(listRowClass, "text-muted-foreground hover:text-foreground")}
+              data-testid="goal-new"
+            >
+              <PlusIcon aria-hidden className="size-4 shrink-0" />
+              <span className="min-w-0 truncate">
+                <Trans>New goal</Trans>
+                <span className="ms-2 text-caption text-muted2">
+                  <Trans>a page visit or an event from your site or app</Trans>
+                </span>
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
+    )
   return (
     <>
       <QueryProblem error={totals.error} />
@@ -499,7 +583,7 @@ function GoalList({
             <li key={g.id}>
               <button
                 type="button"
-                className="flex h-full w-full min-w-0 flex-col gap-3 rounded-[14px] border bg-card p-[18px] text-start outline-none transition-colors hover:border-faint focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-full w-full min-w-0 flex-col gap-3 rounded-[10px] border bg-background p-[18px] text-start outline-none transition-colors hover:border-faint focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => onPick(g.id)}
                 data-testid="goal-row"
               >
@@ -544,7 +628,7 @@ function GoalList({
             <button
               type="button"
               onClick={onNew}
-              className="flex h-full min-h-36 w-full flex-col items-center justify-center gap-1.5 rounded-[14px] border border-dashed border-input p-[18px] text-center text-muted-foreground outline-none transition-colors hover:border-faint hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex h-full min-h-36 w-full flex-col items-center justify-center gap-1.5 rounded-[10px] border border-dashed border-input p-[18px] text-center text-muted-foreground outline-none transition-colors hover:border-faint hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
               data-testid="goal-new"
             >
               <PlusIcon className="size-5" />
@@ -573,6 +657,7 @@ export function GoalsView() {
   const goals = useGoals(property.id)
   const [params, setParams] = useSearchParams()
   const creating = params.get("goal") === "new"
+  const flat = !useIsPhone() && !share
   const list = goals.data ?? []
   const picked = list.find((g) => g.id === params.get("goal"))
   const setCreating = (on: boolean) => pick(on ? "new" : null)
@@ -583,14 +668,14 @@ export function GoalsView() {
       else next.delete("goal")
       return next
     })
-  if (goals.isPending) return <Skeleton className="h-64 rounded-[14px]" />
+  if (goals.isPending) return <Skeleton className="h-64 rounded-[10px]" />
   if (goals.error) return <ErrorLine error={goals.error} />
-  if (picked) return <GoalDetail key={picked.id} goal={picked} onBack={() => pick(null)} />
+  if (picked) return <GoalDetail key={picked.id} goal={picked} onBack={() => pick(null)} flat={flat} />
   return (
     <section className="@container flex flex-col gap-3" data-testid="analytics-goals">
       {list.length === 0 ? (
         <div
-          className="flex flex-col items-center gap-2 rounded-[14px] border border-dashed px-4 py-10 text-center"
+          className="flex flex-col items-center gap-2 rounded-[10px] border border-dashed px-4 py-10 text-center"
           data-testid="goals-empty"
         >
           <TargetIcon className="size-6 text-faint" />
@@ -615,7 +700,13 @@ export function GoalsView() {
           )}
         </div>
       ) : (
-        <GoalList goals={list} onPick={pick} onNew={canManage ? () => setCreating(true) : undefined} />
+        <GoalList
+          goals={list}
+          onPick={pick}
+          onNew={canManage ? () => setCreating(true) : undefined}
+          flat={flat}
+          active={!creating}
+        />
       )}
       {creating && <GoalDialog onClose={() => setCreating(false)} />}
     </section>

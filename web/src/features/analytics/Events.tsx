@@ -58,10 +58,10 @@ function EventTable({
         <CsvButton testId="analytics-csv" run={() => downloadCsv(property.id, body, csvName)} />
       </div>
       <QueryProblem error={table.error} />
-      <div className="overflow-hidden rounded-[14px] border bg-card">
+      <div className="overflow-hidden rounded-[10px] border bg-background">
         <table className="w-full table-fixed text-body" data-testid={testId}>
           <thead>
-            <tr className="border-b text-caption text-faint">
+            <tr className="border-b text-caption text-muted2">
               <th className="px-4 py-2.5 text-start font-medium">{head}</th>
               <th className="w-28 px-2 py-2.5 text-end font-medium @max-2xl:hidden" title={text.metricHelp.visitors}>
                 {text.metric.visitors}
@@ -74,7 +74,7 @@ function EventTable({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-line-soft">
             {table.isPending ? (
               <tr>
                 <td colSpan={4} className="p-4">
@@ -91,8 +91,8 @@ function EventTable({
               rows.map((r, i) => {
                 const v = r.dimensions[0] ?? ""
                 return (
-                  <tr key={`${v}${i}`} className="hover:bg-muted/50">
-                    <td className="truncate px-4 py-2">
+                  <tr key={`${v}${i}`} className="hover:bg-subtle">
+                    <td className="truncate px-4 py-2.5">
                       {onPick && v !== OTHER ? (
                         <button
                           type="button"
@@ -110,7 +110,7 @@ function EventTable({
                     <td className="px-2 py-2 text-end tabular-nums @max-2xl:hidden">
                       {formatMetric("visitors", num(r.metrics, "visitors"), i18n.locale)}
                     </td>
-                    <td className="px-2 py-2 text-end tabular-nums">
+                    <td className="px-2 py-2.5 text-end font-mono text-xs tabular-nums">
                       {formatMetric("events", num(r.metrics, "events"), i18n.locale)}
                     </td>
                     <td
@@ -165,7 +165,7 @@ export function RevenueTiles({ revenue }: { revenue?: AnalyticsRevenue[] }) {
         return (
           <div
             key={r.currency}
-            className="flex min-w-0 flex-col rounded-[14px] border bg-card px-4 py-3 @max-2xl:px-3"
+            className="flex min-w-0 flex-col rounded-[10px] border bg-background px-4 py-3 @max-2xl:px-3"
             data-testid="revenue-tile"
           >
             <span className="max-w-full truncate text-small text-faint">
@@ -186,7 +186,7 @@ export function RevenueTiles({ revenue }: { revenue?: AnalyticsRevenue[] }) {
 
 export function Tile({ label, value, help }: { label: string; value: React.ReactNode; help?: string }) {
   return (
-    <div className="flex min-w-0 flex-col rounded-[14px] border bg-card px-4 py-3 @max-2xl:px-3" title={help}>
+    <div className="flex min-w-0 flex-col rounded-[10px] border bg-background px-4 py-3 @max-2xl:px-3" title={help}>
       <span className="max-w-full truncate text-small text-faint">{label}</span>
       <b className="text-page tabular-nums">{value}</b>
     </div>
@@ -249,8 +249,8 @@ function EventDetail({ name }: { name: string }) {
       <div className="grid grid-cols-3 gap-2 @max-2xl:grid-cols-2" data-testid="event-totals">
         {totals.isPending ? (
           <>
-            <Skeleton className="h-[74px] rounded-[14px]" />
-            <Skeleton className="h-[74px] rounded-[14px]" />
+            <Skeleton className="h-[74px] rounded-[10px]" />
+            <Skeleton className="h-[74px] rounded-[10px]" />
           </>
         ) : (
           <>
@@ -330,7 +330,7 @@ function EventDetail({ name }: { name: string }) {
           testId="analytics-props"
         />
       ) : (
-        <p className="rounded-[14px] border border-dashed px-4 py-6 text-center text-body text-faint">
+        <p className="rounded-[10px] border border-dashed px-4 py-6 text-center text-body text-faint">
           <Trans>Pick a prop to see the values this event carried.</Trans>
         </p>
       )}

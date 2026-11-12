@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { DownloadIcon, HistoryIcon, UserCheckIcon } from "lucide-react"
 import { useOutletContext } from "react-router"
 
-import { ErrorLine, Notice } from "@/components/common"
+import { chartDots, ErrorLine, Notice } from "@/components/common"
 import { formatDate } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { useGeoAttribution, useShare } from "@/features/analytics/queries"
@@ -11,7 +11,6 @@ import { todayIso, useView } from "@/features/analytics/state"
 import { api, ApiError, unwrap, type AnalyticsProperty } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useOptionalSession } from "@/lib/session"
-import { look } from "@/features/inbox/PageFrame"
 import { cn } from "@/lib/utils"
 
 export function useCurrentProperty() {
@@ -27,6 +26,65 @@ export type BarItem = {
   ltr?: boolean
 }
 
+export function Meter({ value, max }: { value: number; max: number }) {
+  return (
+    <span aria-hidden className="h-2 min-w-10 flex-1 overflow-hidden rounded-full bg-seg">
+      <span
+        className="block h-full rounded-full bg-brand"
+        style={{ width: `${Math.max(1.5, (value / Math.max(1, max)) * 100)}%` }}
+      />
+    </span>
+  )
+}
+
+export const meterRowClass =
+  "flex h-10 w-full min-w-0 items-center gap-3 border-t border-line-soft px-4 text-body text-foreground outline-none first:border-t-0"
+
+export function MeterRow({
+  label,
+  value,
+  max,
+  display,
+  onClick,
+  ltr,
+  mono,
+}: {
+  label: React.ReactNode
+  value: number
+  max: number
+  display: React.ReactNode
+  onClick?: () => void
+  ltr?: boolean
+  mono?: boolean
+}) {
+  const inner = (
+    <>
+      <span
+        className={cn("min-w-0 flex-[0_1_45%] truncate text-start", mono && "font-mono text-[13px]")}
+        dir={ltr ? "ltr" : undefined}
+      >
+        {label}
+      </span>
+      <Meter value={value} max={max} />
+      <span className="shrink-0 text-end font-mono text-xs tabular-nums">{display}</span>
+    </>
+  )
+  return onClick ? (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(meterRowClass, "transition-colors hover:bg-subtle focus-visible:bg-subtle")}
+      data-testid="analytics-bar"
+    >
+      {inner}
+    </button>
+  ) : (
+    <div className={meterRowClass} data-testid="analytics-bar">
+      {inner}
+    </div>
+  )
+}
+
 export function BarList({
   items,
   head,
@@ -38,49 +96,26 @@ export function BarList({
 }) {
   const max = Math.max(1, ...items.map((i) => i.value))
   return (
-    <div className="flex flex-col" data-testid={testId}>
+    <div className="-mx-3 -my-3 flex flex-col" data-testid={testId}>
       {head && (
-        <div className={cn(look.over, "flex justify-between px-2 pb-1.5")}>
+        <div className="flex justify-between border-b px-4 py-2 text-caption font-medium text-muted2">
           <span>{head[0]}</span>
           <span>{head[1]}</span>
         </div>
       )}
-      <ul className="flex flex-col gap-0.5">
-        {items.map((it) => {
-          const inner = (
-            <>
-              <span
-                aria-hidden
-                className="absolute inset-y-[3px] start-0 rounded-md bg-brand/10"
-                style={{ width: `${Math.max(1.5, (it.value / max) * 100)}%` }}
-              />
-              <span className="relative min-w-0 flex-1 truncate text-start" dir={it.ltr ? "ltr" : undefined}>
-                {it.label}
-              </span>
-              <span className="relative shrink-0 text-body font-semibold tabular-nums">{it.display}</span>
-            </>
-          )
-          const cls =
-            "relative flex h-[34px] w-full items-center gap-3 rounded-md px-2 text-body outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          return (
-            <li key={it.key}>
-              {it.onClick ? (
-                <button
-                  type="button"
-                  onClick={it.onClick}
-                  className={cn(cls, "transition-colors hover:bg-muted")}
-                  data-testid="analytics-bar"
-                >
-                  {inner}
-                </button>
-              ) : (
-                <div className={cls} data-testid="analytics-bar">
-                  {inner}
-                </div>
-              )}
-            </li>
-          )
-        })}
+      <ul className="flex flex-col">
+        {items.map((it) => (
+          <li key={it.key} className="border-t border-line-soft first:border-t-0 [&>*]:border-t-0">
+            <MeterRow
+              label={it.label}
+              value={it.value}
+              max={max}
+              display={it.display}
+              onClick={it.onClick}
+              ltr={it.ltr}
+            />
+          </li>
+        ))}
       </ul>
     </div>
   )
@@ -186,6 +221,7 @@ export function Panel({
   children,
   footer,
   className,
+  dotted,
   testId,
 }: {
   title?: React.ReactNode
@@ -193,18 +229,23 @@ export function Panel({
   children: React.ReactNode
   footer?: React.ReactNode
   className?: string
+  dotted?: boolean
   testId?: string
 }) {
   return (
-    <section className={cn("flex min-w-0 flex-col rounded-[14px] border bg-card", className)} data-testid={testId}>
+    <section className={cn("flex min-w-0 flex-col", className)} data-testid={testId}>
       {(title || action) && (
-        <header className="flex min-h-12 flex-wrap items-center gap-2 px-4 pt-2.5 pb-1">
-          {title && <h2 className="min-w-0 flex-1 text-[14px] leading-5 font-semibold">{title}</h2>}
+        <header className="flex min-h-8 flex-wrap items-center gap-x-3 gap-y-1 pb-2.5">
+          {title && <h2 className="m-0 min-w-0 flex-1 text-base font-semibold tracking-[-0.01em]">{title}</h2>}
           {action}
         </header>
       )}
-      <div className="flex min-w-0 flex-1 flex-col px-3 pb-3">{children}</div>
-      {footer && <div className="flex flex-wrap items-center gap-2 border-t px-4 py-2">{footer}</div>}
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[10px] border bg-background">
+        <div className={cn("flex min-w-0 flex-1 flex-col px-3 py-3", dotted && cn(chartDots, "px-4 pt-5"))}>
+          {children}
+        </div>
+        {footer && <div className="flex flex-wrap items-center gap-2 border-t px-4 py-2">{footer}</div>}
+      </div>
     </section>
   )
 }

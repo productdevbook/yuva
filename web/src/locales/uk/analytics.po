@@ -18,6 +18,7 @@ msgstr "{0, plural, one {# рядок} few {# рядки} many {# рядків} 
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {відвідувач сьогодні} few {відвідувачі сьогодні} many {відвідувачів сьогодні} other {відвідувача сьогодні}}"
 
@@ -254,6 +255,7 @@ msgstr "Додати правило"
 msgid "Add a step"
 msgstr "Додати крок"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "Усі події"
 msgid "All goals"
 msgstr "Усі цілі"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "Усі сайти"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "Власник або адміністратор може прив'язати її в налаштуваннях ресурсу."
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Власник або адміністратор може ввімкнути постійний ID у функціях згоди."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Аналітика"
@@ -376,6 +383,10 @@ msgstr "Аудиторія"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "Доступно до {expires}"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "Поведінка"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "Колекція"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Порівняти з {0} – {1}"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Порівняти з минулим роком"
@@ -506,6 +519,7 @@ msgstr "Порівняти з іншими днями…"
 msgid "Compare with the days"
 msgstr "Порівняти з днями"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Порівняти з попереднім періодом"
@@ -514,6 +528,7 @@ msgstr "Порівняти з попереднім періодом"
 msgid "Compared days"
 msgstr "Порівнювані дні"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Порівняння"
@@ -586,6 +601,7 @@ msgstr "Конверсії в часі"
 msgid "Conversions per 100 visitors."
 msgstr "Конверсій на 100 відвідувачів."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "Відвідувачі без cookie на ваших сайтах і в застосунках"
@@ -617,6 +633,10 @@ msgstr "Враховується як"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "Країни"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "Країни та міста, без зберігання жодної адреси."
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "Подробиці"
 msgid "Device"
 msgstr "Пристрій"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "Не рахувати мої візити"
 msgid "does not contain"
 msgstr "не містить"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "Подія {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "Подія {event} з {key} = {value}"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "Файли створюються у фоні й видаляються 
 msgid "Filter by this"
 msgstr "Фільтрувати за цим"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "Зі скриньки {inboxName}. Сортування за розмо�
 msgid "Funnel"
 msgstr "Воронка"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "Воронки"
 
@@ -1132,7 +1154,7 @@ msgstr "Ціль «{0}» створено"
 msgid "Goal drop"
 msgstr "Падіння цілі"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "Цілі"
@@ -1173,6 +1195,10 @@ msgstr "Хост"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "Хост або застосунок"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "Скільки повертаються в тижні після першого візиту."
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "Зв'язувати користувачів, що ввійшли, з ї
 msgid "live"
 msgstr "наживо"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "У мережі"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "Завантажити ще"
 msgid "Location database"
 msgstr "База місцезнаходжень"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "Нове посилання для спільного доступу"
 msgid "No alerts yet."
 msgstr "Сповіщень поки немає."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Без порівняння"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "Подій поки немає."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "Немає подій за останні 24 години"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Подій поки немає"
 
@@ -1758,7 +1791,7 @@ msgstr "Інші сайти"
 msgid "Outbound link"
 msgstr "Зовнішнє посилання"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "Огляд"
@@ -1828,6 +1861,7 @@ msgstr "Сторінки, що відповідають шаблону, раху
 msgid "Pages viewed."
 msgstr "Переглянуті сторінки."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Сторінки, джерела, місця й пристрої — без cookie, без зберігання IP-адрес і без банера згоди там, де це допускає закон."
@@ -1897,6 +1931,10 @@ msgstr "на годину"
 msgid "per week"
 msgstr "на тиждень"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "Період"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Постійний ID"
@@ -1904,6 +1942,10 @@ msgstr "Постійний ID"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "Телефон"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "Телефони, комп’ютери, системи та браузери."
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "Платформа"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "Платформи"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "Конфіденційність"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "Продукт"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "Помістіть скрипт у head кожної сторінки. �
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Помістіть ці посилання на сторінку про конфіденційність. Відмова — єдине, що скрипт зберігає на пристрої відвідувача, і лише коли той попросить. Відвідувачі з Do Not Track чи Global Privacy Control ніколи не рахуються."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "Досягається, коли відвідувач"
 msgid "Ready"
 msgstr "Готово"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "У реальному часі"
@@ -2085,7 +2136,7 @@ msgstr "Звіт"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "Запити з Do Not Track чи Global Privacy Control і події без згоди для ресурсу, якому вона потрібна, приймаються, але тут не зберігаються й не рахуються."
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "Утримання"
@@ -2114,6 +2165,10 @@ msgstr "Відкликати {name}?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "Відкликано"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "Просто зараз"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "Прокручування до {pct} на {path}"
 msgid "Scrolls"
 msgstr "Прокручування"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "Пошук, посилання, кампанії та магазини застосунків."
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "Сегмент"
@@ -2220,7 +2279,7 @@ msgstr "Сервер"
 msgid "Server busy"
 msgstr "Сервер зайнятий"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "Налаштування"
@@ -2267,6 +2326,10 @@ msgstr "Показати останні 30 днів"
 msgid "Signed up"
 msgstr "Зареєструвався"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "Сайти й застосунки"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "Сайти, які можуть його вбудовувати"
@@ -2283,7 +2346,7 @@ msgstr "Деякі події відкинуто. Причини нижче."
 msgid "Source"
 msgstr "Джерело"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "Крок {0}"
 msgid "Steps"
 msgstr "Кроки"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "Підтримка"
@@ -2421,6 +2484,10 @@ msgstr "Період поза докладними записами."
 msgid "The report could not be loaded"
 msgstr "Не вдалося завантажити звіт"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "Скрипт, сповіщення, доступ і що зберігається."
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "Власна база сервера"
@@ -2501,6 +2568,7 @@ msgstr "Час на сторінці"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Час, коли сторінка була видима й у фокусі, на перегляд."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "Відстежувані параметри"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "Відстеження"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "Трафік"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "Відвідувачі"
 msgid "Visitors in the last 30 minutes"
 msgstr "Відвідувачі за останні 30 хвилин"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Відвідувачі зараз"
@@ -2702,6 +2775,7 @@ msgstr "Відвідувачі з Do Not Track чи Global Privacy Control ні�
 msgid "Visits"
 msgstr "Візити"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Візити й події, що вважаються успіхом"
@@ -2762,6 +2836,10 @@ msgstr "Тижні"
 msgid "What changed"
 msgstr "Що змінилося"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "Що люди робили на вашому сайті та в застосунках."
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "Що впадає в око"
@@ -2778,13 +2856,26 @@ msgstr "Що експортувати"
 msgid "Where conversions come from"
 msgstr "Звідки приходять конверсії"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "Де люди відпадають на шляху до мети."
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "Де починається й закінчується день ресурсу."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Які сторінки відвідують люди і які призводять до запитань"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "Які візити закінчуються запитанням до вашої команди."
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "Хто тут за останні 30 хвилин."
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

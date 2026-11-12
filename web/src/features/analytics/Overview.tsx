@@ -2,12 +2,11 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { ArrowDownRightIcon, ArrowUpRightIcon } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, XAxis, YAxis } from "recharts"
 
-import { Segmented } from "@/components/common"
+import { Segmented, Stat, StatCard } from "@/components/common"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
-import { look } from "@/features/inbox/PageFrame"
 import { AddNoteButton, annotationMarks, AnnotationList } from "@/features/analytics/Annotations"
 import { deviceCard, groupDimensions, RowLabel, type Group } from "@/features/analytics/Breakdown"
 import { OverviewInsights } from "@/features/analytics/Insights"
@@ -15,6 +14,7 @@ import {
   Attribution,
   BarList,
   ConsentedOnly,
+  MeterRow,
   offersPersistent,
   Panel,
   PanelProblem,
@@ -79,7 +79,7 @@ export function KpiTile({
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-1 basis-0 flex-col gap-0.5 rounded-[14px] border bg-card px-4 py-3.5 @max-[900px]:basis-[calc(50%-5px)]",
+        "flex min-w-0 flex-1 basis-0 flex-col gap-0.5 rounded-[10px] border bg-background px-4 py-3.5 @max-[900px]:basis-[calc(50%-5px)]",
         className
       )}
       data-testid={testId}
@@ -116,49 +116,49 @@ function Kpis() {
   const fmt = new Intl.NumberFormat(i18n.locale)
   const pending = traffic.isPending
   const value = (m: NumMetric) =>
-    pending ? <Skeleton className="mt-1 h-7 w-16" /> : formatMetric(m, num(totals, m), i18n.locale)
+    pending ? <Skeleton className="my-1 h-6 w-16" /> : formatMetric(m, num(totals, m), i18n.locale)
   const visitors = num(totals, "visitors") ?? 0
   const conversations = num(support.data?.totals, "conversations")
   const share1 = new Intl.NumberFormat(i18n.locale, { style: "percent", maximumFractionDigits: 1 })
   return (
     <>
       <QueryProblem error={traffic.error} />
-      <div className="flex flex-wrap gap-2.5" data-testid="analytics-kpis">
+      <StatCard testId="analytics-kpis">
         {(!share || share.views.includes("realtime")) && (
-          <KpiTile
+          <Stat
             live
             label={<Trans>Visitors now</Trans>}
-            value={live.data ? fmt.format(live.data.visitors) : <Skeleton className="mt-1 h-7 w-10" />}
+            value={live.data ? fmt.format(live.data.visitors) : <Skeleton className="my-1 h-6 w-10" />}
             hint={<Trans>live</Trans>}
             testId="kpi-realtime"
           />
         )}
-        <KpiTile
+        <Stat
           label={<Trans>Visitors</Trans>}
           value={value("visitors")}
           hint={<Delta now={num(totals, "visitors")} before={num(before, "visitors")} metric="visitors" />}
           testId="kpi-visitors"
         />
-        <KpiTile
+        <Stat
           label={<Trans>Page views</Trans>}
           value={value("pageviews")}
           hint={<Delta now={num(totals, "pageviews")} before={num(before, "pageviews")} metric="pageviews" />}
           testId="kpi-pageviews"
         />
-        <KpiTile
+        <Stat
           label={<Trans>Bounce</Trans>}
           value={value("bounce_rate")}
           hint={<Delta now={num(totals, "bounce_rate")} before={num(before, "bounce_rate")} metric="bounce_rate" />}
           testId="kpi-bounce_rate"
         />
         {!share && (
-          <KpiTile
+          <Stat
             label={<Trans>Started a conversation</Trans>}
             value={
               !property.inbox_id ? (
                 "–"
               ) : conversations === undefined ? (
-                <Skeleton className="mt-1 h-7 w-12" />
+                <Skeleton className="my-1 h-6 w-12" />
               ) : (
                 fmt.format(conversations)
               )
@@ -175,7 +175,7 @@ function Kpis() {
             testId="kpi-conversations"
           />
         )}
-      </div>
+      </StatCard>
     </>
   )
 }
@@ -276,6 +276,7 @@ export function TimeChart({ metric: fixed, goalId }: { metric?: NumMetric; goalI
           {!share && <AddNoteButton propertyId={property.id} />}
         </>
       }
+      dotted
       testId="analytics-chart"
     >
       {q.isPending ? (
@@ -285,11 +286,10 @@ export function TimeChart({ metric: fixed, goalId }: { metric?: NumMetric; goalI
       ) : (
         <ChartContainer config={config} className="aspect-auto h-56 w-full">
           <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -12 }}>
-            <CartesianGrid vertical={false} />
             <XAxis
               dataKey="at"
               tickLine={false}
-              axisLine={false}
+              axisLine={{ stroke: "var(--input)" }}
               tickMargin={8}
               minTickGap={28}
               interval="preserveStartEnd"
@@ -426,20 +426,23 @@ function VisitorsChart() {
     conversations: { label: t`Started a conversation`, color: "var(--foreground)" },
   }
   return (
-    <section className="flex flex-col gap-2 rounded-[14px] border bg-card pb-3" data-testid="analytics-chart">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 pt-3.5">
-        <h2 className="min-w-0 flex-1 text-[14px] leading-5 font-semibold">{text.metric.visitors}</h2>
-        {showConversations && (
+    <Panel
+      title={text.metric.visitors}
+      action={
+        showConversations && (
           <Legend
             items={[
               { color: "var(--brand)", label: text.metric.visitors },
               { color: "var(--foreground)", label: t`Started a conversation` },
             ]}
           />
-        )}
-      </div>
+        )
+      }
+      dotted
+      testId="analytics-chart"
+    >
       {q.isPending ? (
-        <Skeleton className="mx-4 h-[200px]" />
+        <Skeleton className="h-[200px]" />
       ) : q.error ? (
         <PanelProblem error={q.error} />
       ) : rows.length === 0 ? (
@@ -449,16 +452,15 @@ function VisitorsChart() {
       ) : (
         <ChartContainer
           config={config}
-          className="aspect-auto h-[200px] w-full px-2"
+          className="aspect-auto h-[200px] w-full"
           role="img"
           aria-label={text.metric.visitors}
         >
           <AreaChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -4 }}>
-            <CartesianGrid vertical={false} />
             <XAxis
               dataKey="at"
               tickLine={false}
-              axisLine={false}
+              axisLine={{ stroke: "var(--input)" }}
               tickMargin={8}
               minTickGap={32}
               interval="preserveStartEnd"
@@ -518,7 +520,7 @@ function VisitorsChart() {
           </AreaChart>
         </ChartContainer>
       )}
-    </section>
+    </Panel>
   )
 }
 
@@ -555,14 +557,18 @@ function Box({
   const join = search ? `${search}&by=${dim}` : `?by=${dim}`
   const details = share ? `/share/${share.token}/${group}${join}` : `/analytics/${property.id}/${group}${join}`
   return (
-    <section className="flex min-w-0 flex-col overflow-hidden rounded-[14px] border bg-card" data-testid={testId}>
-      <div className="flex min-h-11 items-center gap-2 px-4 pt-3 pb-2">
-        <h2 className="min-w-0 flex-1 truncate text-[14px] leading-5 font-semibold">
-          <Link to={details} className="hover:underline">
-            {title}
-          </Link>
-        </h2>
-        {dims.length > 1 && (
+    <Panel
+      testId={testId}
+      title={
+        <Link
+          to={details}
+          className="rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {title}
+        </Link>
+      }
+      action={
+        dims.length > 1 && (
           <Segmented
             value={dim}
             onChange={setPicked}
@@ -570,75 +576,59 @@ function Box({
             itemClassName="h-6 px-2 text-small"
             items={dims.map((d) => ({ value: d, label: text.dimension[d] }))}
           />
+        )
+      }
+      footer={
+        <>
+          <Link
+            to={details}
+            className="w-fit text-small text-fg2 underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Trans>Details</Trans>
+            <span aria-hidden className="ms-1 inline-block rtl:-scale-x-100">
+              →
+            </span>
+          </Link>
+          {group === "locations" && <Attribution propertyId={property.id} className="ms-auto" />}
+        </>
+      }
+    >
+      <div className="-mx-3 -my-3 flex flex-col">
+        <div className="flex justify-between border-b px-4 py-2 text-caption font-medium text-muted2">
+          <span className="truncate">{text.dimension[dim]}</span>
+          <span>{text.metric.visitors}</span>
+        </div>
+        {q.isPending ? (
+          <Skeleton className="m-4 h-36" />
+        ) : q.error ? (
+          <PanelProblem error={q.error} />
+        ) : rows.length === 0 ? (
+          <p className="px-4 py-8 text-center text-body text-faint">
+            <Trans>Nothing counted in this range.</Trans>
+          </p>
+        ) : (
+          <ul className="flex flex-col">
+            {rows.map((r, i) => {
+              const value = r.dimensions[0] ?? ""
+              const v = num(r.metrics, "visitors") ?? 0
+              const click = value === OTHER || share ? undefined : () => addFilter(dim, value)
+              return (
+                <li key={`${value}${i}`} className="border-t border-line-soft first:border-t-0 [&>*]:border-t-0">
+                  <MeterRow
+                    label={<RowLabel dim={dim} row={r} value={value} text={text} />}
+                    value={v}
+                    max={max}
+                    display={formatCompact(v, i18n.locale)}
+                    onClick={click}
+                    mono={mono}
+                  />
+                </li>
+              )
+            })}
+          </ul>
         )}
       </div>
-      <div className={cn(look.over, "flex justify-between px-4 pb-1.5")}>
-        <span className="truncate">{text.dimension[dim]}</span>
-        <span>{text.metric.visitors}</span>
-      </div>
-      {q.isPending ? (
-        <Skeleton className="m-4 mt-1 h-36" />
-      ) : q.error ? (
-        <PanelProblem error={q.error} />
-      ) : rows.length === 0 ? (
-        <p className="px-4 py-8 text-center text-body text-faint">
-          <Trans>Nothing counted in this range.</Trans>
-        </p>
-      ) : (
-        <ul className="pb-1">
-          {rows.map((r, i) => {
-            const value = r.dimensions[0] ?? ""
-            const v = num(r.metrics, "visitors") ?? 0
-            const click = value === OTHER || share ? undefined : () => addFilter(dim, value)
-            const inner = (
-              <>
-                <span
-                  aria-hidden
-                  className="absolute inset-y-[3px] start-0 rounded-md bg-brand/10"
-                  style={{ width: `${Math.max(1.5, (v / max) * 100)}%` }}
-                />
-                <span className={cn("relative min-w-0 flex-1 truncate text-start", mono && "font-mono text-[13px]")}>
-                  <RowLabel dim={dim} row={r} value={value} text={text} />
-                </span>
-                <span className="relative shrink-0 font-semibold tabular-nums">{formatCompact(v, i18n.locale)}</span>
-              </>
-            )
-            const cls = "relative mx-2 flex h-[34px] items-center gap-3 rounded-md px-2 outline-none"
-            return (
-              <li key={`${value}${i}`}>
-                {click ? (
-                  <button
-                    type="button"
-                    onClick={click}
-                    className={cn(
-                      cls,
-                      "w-[calc(100%-1rem)] transition-colors hover:bg-surface focus-visible:bg-surface"
-                    )}
-                    data-testid="analytics-bar"
-                  >
-                    {inner}
-                  </button>
-                ) : (
-                  <div className={cls} data-testid="analytics-bar">
-                    {inner}
-                  </div>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      )}
-      <Link
-        to={details}
-        className="mx-4 mt-auto mb-3 w-fit pt-1 text-small text-muted-foreground outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <Trans>Details</Trans>
-        <span aria-hidden className="ms-1 inline-block rtl:-scale-x-100">
-          →
-        </span>
-      </Link>
-      {group === "locations" && <Attribution propertyId={property.id} className="border-t px-4 py-2" />}
-    </section>
+    </Panel>
   )
 }
 
@@ -703,11 +693,11 @@ export function Overview() {
   const { view } = useView()
   const shown = (g: Group) => !share || share.views.includes(g)
   return (
-    <div className="flex flex-col gap-4" data-testid="analytics-overview">
+    <div className="flex flex-col gap-7" data-testid="analytics-overview">
       <Kpis />
       {!share && <OverviewInsights property={property} view={view} />}
       <VisitorsChart />
-      <div className="grid gap-4 @3xl:grid-cols-2">
+      <div className="grid gap-x-5 gap-y-7 @3xl:grid-cols-2">
         {shown("pages") && (
           <Box
             group="pages"

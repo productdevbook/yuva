@@ -80,7 +80,7 @@ export function PagesView() {
         </Trans>
       </p>
       <QueryProblem error={traffic.error} />
-      <section className="overflow-x-auto rounded-[14px] border bg-card">
+      <section className="overflow-x-auto rounded-[10px] border bg-background">
         <div className="min-w-[760px]">
           <div className={cn(GRID, tableHeadClass, "py-2.5")}>
             <span>{text.dimension.page}</span>

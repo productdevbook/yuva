@@ -158,6 +158,8 @@ export function Layout() {
     section === "knowledge" ||
     section === "board" ||
     section === "updates" ||
+    section === "analytics" ||
+    section === "reports" ||
     (section === "mail" && !/^\/mail\/[^/]+\/filters$/.test(pathname))
   if (!phone && flatPage) {
     return (

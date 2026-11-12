@@ -1,10 +1,25 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react"
 import { useMemo, useState } from "react"
-import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
 import { Outlet, useLocation, useSearchParams } from "react-router"
 
-import { ErrorLine, InboxMark } from "@/components/common"
+import {
+  ErrorLine,
+  InboxMark,
+  InfoSection,
+  KV,
+  NavGroup,
+  PageHeading,
+  PageTop as FlatTop,
+  ProductsGroup,
+  SectionPage,
+  Stat,
+  StatCard,
+  topButton,
+  topInk,
+  TopSep,
+} from "@/components/common"
 import { ChipGroup } from "@/components/common/ChipGroup"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Segmented } from "@/components/common/Segmented"
@@ -20,7 +35,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
-import { KpiTile } from "@/features/analytics/Overview"
 import { Panel } from "@/features/analytics/parts"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
@@ -34,17 +48,11 @@ import {
   useRecentConversations,
   useWindowStats,
 } from "@/features/reports/data"
-import {
-  headClass,
-  LoadProblem,
-  ReportSkeleton,
-  SlaBar,
-  SlotsContext,
-  Tiles,
-  ToolbarPortal,
-} from "@/features/reports/parts"
+import { headClass, LoadProblem, ReportSkeleton, SlaBar, SlotsContext, ToolbarPortal } from "@/features/reports/parts"
 import { Face, headButton, ProductTag } from "@/features/settings/ui"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { useNow } from "@/hooks/use-now"
+import { useTodayStats } from "@/features/reports/ReportsColumn"
 import type { ConversationListItem, Stats } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useInboxes, useMembers } from "@/lib/workspace"
@@ -251,6 +259,71 @@ function PeriodBar() {
   )
 }
 
+function ReportsTrail({ name }: { name: string }) {
+  const { t } = useLingui()
+  const scope = useScopeName()
+  return (
+    <>
+      <span className="font-medium text-foreground">{t`Reports`}</span>
+      <TopSep />
+      <span className="truncate">{name}</span>
+      <TopSep />
+      <span className="truncate normal-case">{scope}</span>
+    </>
+  )
+}
+
+function ReportsAside({ trends, csvReady, onCsv }: { trends: boolean; csvReady: boolean; onCsv: () => void }) {
+  const { t, i18n } = useLingui()
+  const names = useRangeText()
+  const range = useRange()
+  const today = useTodayStats()
+  const s = today.data
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const rated = s ? s.ratings.good + s.ratings.bad : 0
+  const pct = s && rated ? new Intl.NumberFormat(i18n.locale, { style: "percent" }).format(s.ratings.good / rated) : ""
+  return (
+    <>
+      {!trends && (
+        <InfoSection title={<Trans>Period</Trans>} testId="reports-aside-period">
+          <p className="m-0 text-small text-fg2">{names[range]}</p>
+        </InfoSection>
+      )}
+      <InfoSection title={<Trans>Today</Trans>} testId="reports-aside-today">
+        <ErrorLine error={today.error} />
+        <KV
+          label={<Trans>Replies and closes</Trans>}
+          value={s ? t`${fmt.format(s.replies)} replies · ${fmt.format(s.closed)} closed` : "–"}
+          to="/reports/today"
+        />
+        <KV
+          label={<Trans>Ratings</Trans>}
+          value={s ? (rated ? t`${pct} satisfied` : t`No ratings today`) : "–"}
+          to="/reports/ratings"
+        />
+        <KV
+          label={<Trans>By member</Trans>}
+          value={s ? t`${fmt.format(s.members.length)} active today` : "–"}
+          to="/reports/members"
+        />
+      </InfoSection>
+      {!trends && (
+        <InfoSection title={<Trans>Download CSV</Trans>}>
+          <Button
+            variant="outline"
+            className={topButton}
+            disabled={!csvReady}
+            onClick={onCsv}
+            data-testid="reports-aside-csv"
+          >
+            <Trans>Download CSV</Trans>
+          </Button>
+        </InfoSection>
+      )}
+    </>
+  )
+}
+
 export function ReportsPane() {
   const { t } = useLingui()
   const { pathname, search } = useLocation()
@@ -261,12 +334,85 @@ export function ReportsPane() {
   const [toolbar, setToolbar] = useState<HTMLElement | null>(null)
   const [actions, setActions] = useState<HTMLElement | null>(null)
   const slots = useMemo(() => ({ toolbar, actions }), [toolbar, actions])
+  const phone = useIsPhone()
   const tabs = [
     { key: "today", to: { pathname: "/reports/today", search }, label: t`Overview`, testId: "report-tab-today" },
     { key: "trends", to: { pathname: "/reports/trends", search: "" }, label: t`Trends`, testId: "report-tab-trends" },
     { key: "ratings", to: { pathname: "/reports/ratings", search }, label: t`Ratings`, testId: "report-tab-ratings" },
     { key: "members", to: { pathname: "/reports/members", search }, label: t`Team`, testId: "report-tab-members" },
   ]
+  if (!phone) {
+    const tab = (["today", "trends", "ratings", "members"] as const).find((k) => k === current) ?? "today"
+    const names = { today: t`Overview`, trends: t`Trends`, ratings: t`Ratings`, members: t`Team` }
+    const ledes = {
+      today: t`How fast and how well your team answers`,
+      trends: t`Up to 13 months, by group`,
+      ratings: t`Scores and comments after a conversation closed.`,
+      members: t`Each person’s replies, closes and ratings.`,
+    }
+    return (
+      <SlotsContext.Provider value={slots}>
+        <SectionPage
+          title={t`Reports`}
+          testId="reports"
+          nav={
+            <>
+              <NavGroup
+                items={tabs.map((x) => ({
+                  key: x.key,
+                  label: x.label,
+                  to: x.to,
+                  current: x.key === tab,
+                  testId: x.testId,
+                }))}
+              />
+              <ProductsGroup />
+            </>
+          }
+          aside={<ReportsAside trends={trends} csvReady={csv.ready} onCsv={() => setCsvOpen(true)} />}
+        >
+          <div className="@container flex min-w-0 flex-col">
+            <FlatTop
+              actions={
+                <>
+                  {!trends && (
+                    <Button
+                      className={topInk}
+                      disabled={!csv.ready}
+                      onClick={() => setCsvOpen(true)}
+                      data-testid="report-export"
+                    >
+                      <Trans>Download CSV</Trans>
+                    </Button>
+                  )}
+                  <span ref={setActions} className="contents" />
+                </>
+              }
+            >
+              <ReportsTrail name={names[tab]} />
+            </FlatTop>
+            <div className="mt-3">
+              <PageHeading title={names[tab]} lede={ledes[tab]} />
+            </div>
+            <div
+              ref={setToolbar}
+              className="mt-5 flex flex-wrap items-center gap-2 empty:hidden"
+              data-testid="reports-toolbar"
+            />
+            {!trends && (
+              <ToolbarPortal>
+                <PeriodBar />
+              </ToolbarPortal>
+            )}
+            <div className="mt-6 flex flex-col gap-5">
+              <Outlet />
+            </div>
+          </div>
+          {csvOpen && <CsvDialog csv={csv} onClose={() => setCsvOpen(false)} />}
+        </SectionPage>
+      </SlotsContext.Provider>
+    )
+  }
   return (
     <SlotsContext.Provider value={slots}>
       <main className="@container flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="reports">
@@ -364,6 +510,7 @@ function NewChart({ items, more }: { items: ConversationListItem[]; more: boolea
         </span>
       }
       testId="report-chart"
+      dotted
     >
       <ChartContainer
         config={config}
@@ -372,11 +519,10 @@ function NewChart({ items, more }: { items: ConversationListItem[]; more: boolea
         aria-label={t`New conversations`}
       >
         <BarChart data={slots} margin={{ top: 8, right: 8, bottom: 0, left: -4 }} barCategoryGap="22%">
-          <CartesianGrid vertical={false} />
           <XAxis
             dataKey="label"
             tickLine={false}
-            axisLine={false}
+            axisLine={{ stroke: "var(--input)" }}
             tickMargin={8}
             minTickGap={28}
             interval="preserveStartEnd"
@@ -392,9 +538,9 @@ function NewChart({ items, more }: { items: ConversationListItem[]; more: boolea
               />
             }
           />
-          <Bar dataKey="n" fill="var(--color-n)" radius={[3, 3, 0, 0]} maxBarSize={22} isAnimationActive={false}>
+          <Bar dataKey="n" radius={[2, 2, 0, 0]} maxBarSize={22} isAnimationActive={false}>
             {slots.map((s, i) => (
-              <Cell key={s.key} fillOpacity={i === last ? 1 : 0.5} />
+              <Cell key={s.key} fill={i === last ? "var(--color-n)" : "var(--bar2)"} />
             ))}
           </Bar>
         </BarChart>
@@ -444,7 +590,7 @@ function ByProduct({ items }: { items: ConversationListItem[] }) {
     .map((inbox, i) => ({ inbox, s: stats[i]?.data, n: items.filter((c) => c.inbox_id === inbox.id).length }))
     .sort((a, b) => b.n - a.n)
   return (
-    <section className="overflow-x-auto rounded-[14px] border bg-card" data-testid="report-inboxes">
+    <section className="overflow-x-auto rounded-[10px] border bg-background" data-testid="report-inboxes">
       <div className="min-w-[560px]">
         <div className={cn(PRODUCT_GRID, headClass, "h-9 border-b")}>
           <span>
@@ -505,15 +651,15 @@ export function TodayReport() {
         const breached = fmt.format(s.sla.breached)
         return (
           <>
-            <Tiles testId="report-tiles">
-              <KpiTile
+            <StatCard testId="report-tiles">
+              <Stat
                 label={t`New`}
                 value={recent.data ? `${fmt.format(fresh.length)}${recent.data.complete ? "" : "+"}` : "–"}
                 hint={t`conversations started`}
                 testId="report-new"
               />
               {s.sla.met + s.sla.breached > 0 && (
-                <KpiTile
+                <Stat
                   label={t`SLA met`}
                   value={new Intl.NumberFormat(i18n.locale, { style: "percent" }).format(
                     s.sla.met / (s.sla.met + s.sla.breached)
@@ -522,9 +668,9 @@ export function TodayReport() {
                   testId="report-sla"
                 />
               )}
-              <KpiTile label={t`Replied`} value={fmt.format(s.replies)} hint={t`messages sent`} />
-              <KpiTile label={t`Closed`} value={fmt.format(s.closed)} hint={t`conversations`} />
-              <KpiTile
+              <Stat label={t`Replied`} value={fmt.format(s.replies)} hint={t`messages sent`} />
+              <Stat label={t`Closed`} value={fmt.format(s.closed)} hint={t`conversations`} />
+              <Stat
                 label={t`First reply`}
                 value={
                   s.median_first_reply_seconds !== undefined
@@ -533,7 +679,7 @@ export function TodayReport() {
                 }
                 hint={range === "today" ? t`median today` : t`median`}
               />
-              <KpiTile
+              <Stat
                 label={t`Resolved in`}
                 value={
                   s.median_resolution_seconds !== undefined
@@ -543,9 +689,9 @@ export function TodayReport() {
                 hint={t`median, first message to closed`}
                 testId="report-resolved"
               />
-            </Tiles>
+            </StatCard>
             {recent.isPending ? (
-              <Skeleton className="h-60 rounded-[14px]" />
+              <Skeleton className="h-60 rounded-[10px]" />
             ) : (
               <NewChart items={fresh} more={!recent.data?.complete} />
             )}
@@ -594,7 +740,7 @@ export function RatingsReport() {
             <EmptyBox
               icon={ThumbsUpIcon}
               title={<Trans>No ratings in this period</Trans>}
-              className="rounded-[14px] border-solid bg-card"
+              className="rounded-[10px] border-solid bg-background"
               testId="report-no-ratings"
               actions={
                 range !== "30d" && (
@@ -622,7 +768,7 @@ export function RatingsReport() {
             className="grid items-start gap-4 grid-cols-[340px_minmax(0,1fr)] @max-[1000px]:grid-cols-1"
             data-testid="report-ratings"
           >
-            <section className="flex flex-col gap-3.5 rounded-[14px] border bg-card p-5">
+            <section className="flex flex-col gap-3.5 rounded-[10px] border bg-background p-5">
               <span className="text-small text-faint">
                 <Trans>Satisfied</Trans>
               </span>
@@ -760,7 +906,7 @@ export function MembersReport() {
         )
         if (people.length === 0) {
           return (
-            <div className="rounded-[14px] border bg-card">
+            <div className="rounded-[10px] border bg-background">
               <p className="px-4 py-12 text-center text-body text-faint">
                 <Trans>Nobody has replied or closed anything in this period.</Trans>
               </p>
@@ -785,7 +931,7 @@ export function MembersReport() {
         )
         return (
           <>
-            <section className="overflow-x-auto rounded-[14px] border bg-card" data-testid="report-members">
+            <section className="overflow-x-auto rounded-[10px] border bg-background" data-testid="report-members">
               <div className="min-w-[680px]">
                 <div className={cn(MEMBER_GRID, headClass, "h-9 border-b")}>
                   <span>

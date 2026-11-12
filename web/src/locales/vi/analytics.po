@@ -18,6 +18,7 @@ msgstr "{0, plural, other {# dòng}}"
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, other {khách truy cập hôm nay}}"
 
@@ -254,6 +255,7 @@ msgstr "Thêm quy tắc"
 msgid "Add a step"
 msgstr "Thêm một bước"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "Tất cả sự kiện"
 msgid "All goals"
 msgstr "Tất cả mục tiêu"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "Tất cả trang web"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "Chủ sở hữu hoặc quản trị viên có thể liên kết một hộp thư trong cài đặt của thuộc tính."
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Chủ sở hữu hoặc quản trị viên có thể bật ID liên tục trong các tính năng đồng ý."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Phân tích"
@@ -376,6 +383,10 @@ msgstr "Đối tượng"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "Có sẵn đến {expires}"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "Hành vi"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "Bộ sưu tập"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "So sánh với {0} – {1}"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "So sánh với một năm trước"
@@ -506,6 +519,7 @@ msgstr "So sánh với những ngày khác…"
 msgid "Compare with the days"
 msgstr "So sánh với các ngày"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "So sánh với giai đoạn trước"
@@ -514,6 +528,7 @@ msgstr "So sánh với giai đoạn trước"
 msgid "Compared days"
 msgstr "Những ngày so sánh"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "So sánh"
@@ -586,6 +601,7 @@ msgstr "Chuyển đổi theo thời gian"
 msgid "Conversions per 100 visitors."
 msgstr "Lượt chuyển đổi trên 100 khách truy cập."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "Khách truy cập không dùng cookie trên các trang web và ứng dụng của bạn"
@@ -617,6 +633,10 @@ msgstr "Được đếm là"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "Quốc gia"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "Quốc gia và thành phố, không lưu bất kỳ địa chỉ nào."
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "Chi tiết"
 msgid "Device"
 msgstr "Thiết bị"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "Không đếm lượt truy cập của tôi"
 msgid "does not contain"
 msgstr "không chứa"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "Sự kiện {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "Sự kiện {event} với {key} = {value}"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "Tệp được tạo ở chế độ nền và bị xóa sau bảy ngày
 msgid "Filter by this"
 msgstr "Lọc theo mục này"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "Từ hộp thư {inboxName}. Xếp theo số cuộc trò chuyện trên 
 msgid "Funnel"
 msgstr "Phễu"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "Phễu"
 
@@ -1132,7 +1154,7 @@ msgstr "Mục tiêu “{0}” đã được tạo"
 msgid "Goal drop"
 msgstr "Mục tiêu giảm"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "Mục tiêu"
@@ -1173,6 +1195,10 @@ msgstr "Host"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "Host hoặc ứng dụng"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "Bao nhiêu người quay lại trong những tuần sau lần ghé đầu tiên."
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "Liên kết người dùng đã đăng nhập với liên hệ của h�
 msgid "live"
 msgstr "trực tiếp"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "Trực tiếp"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "Tải thêm"
 msgid "Location database"
 msgstr "Cơ sở dữ liệu vị trí"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "Liên kết chia sẻ mới"
 msgid "No alerts yet."
 msgstr "Chưa có cảnh báo."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Không so sánh"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "Chưa có sự kiện."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "Không có sự kiện trong 24 giờ qua"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Chưa có sự kiện"
 
@@ -1758,7 +1791,7 @@ msgstr "Trang web khác"
 msgid "Outbound link"
 msgstr "Liên kết ra ngoài"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "Tổng quan"
@@ -1828,6 +1861,7 @@ msgstr "Các trang khớp một mẫu được đếm dưới một đường d�
 msgid "Pages viewed."
 msgstr "Trang đã xem."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Trang, nguồn, địa điểm và thiết bị, không dùng cookie, không lưu địa chỉ IP và không có biểu ngữ đồng ý ở nơi luật cho phép."
@@ -1897,6 +1931,10 @@ msgstr "mỗi giờ"
 msgid "per week"
 msgstr "mỗi tuần"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "Khoảng thời gian"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "ID liên tục"
@@ -1904,6 +1942,10 @@ msgstr "ID liên tục"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "Điện thoại"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "Điện thoại, máy tính, hệ điều hành và trình duyệt."
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "Nền tảng"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "Nền tảng"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "Quyền riêng tư"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "Sản phẩm"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "Đặt script trong head của mọi trang. Nó đếm lượt xem trang
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Đặt các liên kết này trên trang quyền riêng tư của bạn. Từ chối là thứ duy nhất script lưu trên thiết bị của khách, và chỉ khi họ yêu cầu. Khách có Do Not Track hoặc Global Privacy Control không bao giờ được đếm."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "Đạt được khi một khách"
 msgid "Ready"
 msgstr "Sẵn sàng"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "Thời gian thực"
@@ -2085,7 +2136,7 @@ msgstr "Báo cáo"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "Yêu cầu có Do Not Track hoặc Global Privacy Control, và sự kiện không có đồng ý trên thuộc tính cần nó, được nhận nhưng không lưu cũng không đếm ở đây."
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "Lưu giữ khách"
@@ -2114,6 +2165,10 @@ msgstr "Thu hồi {name}?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "Đã thu hồi"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "Ngay lúc này"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "Đã cuộn đến {pct} trên {path}"
 msgid "Scrolls"
 msgstr "Lượt cuộn"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "Tìm kiếm, liên kết, chiến dịch và các cửa hàng ứng dụng."
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "Phân khúc"
@@ -2220,7 +2279,7 @@ msgstr "Máy chủ"
 msgid "Server busy"
 msgstr "Máy chủ bận"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "Cài đặt"
@@ -2267,6 +2326,10 @@ msgstr "Hiện 30 ngày qua"
 msgid "Signed up"
 msgstr "Đã đăng ký"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "Trang web và ứng dụng"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "Trang web có thể nhúng nó"
@@ -2283,7 +2346,7 @@ msgstr "Một số sự kiện đã bị bỏ. Lý do ở bên dưới."
 msgid "Source"
 msgstr "Nguồn"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "Bước {0}"
 msgid "Steps"
 msgstr "Các bước"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "Hỗ trợ"
@@ -2421,6 +2484,10 @@ msgstr "Khoảng nằm ngoài các bản ghi chi tiết."
 msgid "The report could not be loaded"
 msgstr "Không tải được báo cáo"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "Mã script, cảnh báo, chia sẻ và những gì được lưu."
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "Cơ sở dữ liệu riêng của máy chủ"
@@ -2501,6 +2568,7 @@ msgstr "Thời gian trên trang"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Thời gian trang hiển thị và được tập trung, mỗi lượt xem."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "Prop được theo dõi"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "Theo dõi"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "Lưu lượng"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "Khách truy cập"
 msgid "Visitors in the last 30 minutes"
 msgstr "Khách truy cập trong 30 phút qua"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Khách truy cập hiện tại"
@@ -2702,6 +2775,7 @@ msgstr "Khách truy cập có Do Not Track hoặc Global Privacy Control không 
 msgid "Visits"
 msgstr "Lượt truy cập"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Lượt truy cập và sự kiện được tính là thành công"
@@ -2762,6 +2836,10 @@ msgstr "Tuần"
 msgid "What changed"
 msgstr "Điều gì đã thay đổi"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "Mọi người đã làm gì trên trang web và ứng dụng của bạn."
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "Điều nổi bật"
@@ -2778,13 +2856,26 @@ msgstr "Xuất gì"
 msgid "Where conversions come from"
 msgstr "Lượt chuyển đổi đến từ đâu"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "Nơi mọi người bỏ cuộc trên đường đến một mục tiêu."
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "Nơi ngày của thuộc tính bắt đầu và kết thúc."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Mọi người truy cập những trang nào và trang nào dẫn đến câu hỏi"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "Lượt truy cập nào kết thúc bằng một câu hỏi cho nhóm của bạn."
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "Ai đang ở đây trong 30 phút qua."
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

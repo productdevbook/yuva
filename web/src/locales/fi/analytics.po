@@ -18,6 +18,7 @@ msgstr "{0, plural, one {# rivi} other {# riviä}}"
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {kävijä tänään} other {kävijää tänään}}"
 
@@ -254,6 +255,7 @@ msgstr "Lisää sääntö"
 msgid "Add a step"
 msgstr "Lisää vaihe"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "Kaikki tapahtumat"
 msgid "All goals"
 msgstr "Kaikki tavoitteet"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "Kaikki sivustot"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "Omistaja tai ylläpitäjä voi liittää sellaisen ominaisuuden asetuksissa."
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Omistaja tai ylläpitäjä voi ottaa pysyvän tunnuksen käyttöön suostumusominaisuuksissa."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Analytiikka"
@@ -376,6 +383,10 @@ msgstr "Yleisö"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "Saatavilla {expires} asti"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "Käyttäytyminen"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "Kokoelma"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Vertaa aikaan {0} – {1}"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Vertaa vuotta aiempaan"
@@ -506,6 +519,7 @@ msgstr "Vertaa muihin päiviin …"
 msgid "Compare with the days"
 msgstr "Vertaa päiviin"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Vertaa edelliseen jaksoon"
@@ -514,6 +528,7 @@ msgstr "Vertaa edelliseen jaksoon"
 msgid "Compared days"
 msgstr "Vertailupäivät"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Vertailu"
@@ -586,6 +601,7 @@ msgstr "Konversiot ajan mittaan"
 msgid "Conversions per 100 visitors."
 msgstr "Konversiot 100 kävijää kohden."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "Evästeettömät kävijät sivustoillasi ja sovelluksissasi"
@@ -617,6 +633,10 @@ msgstr "Laskettu nimellä"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "Maat"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "Maat ja kaupungit, tallentamatta mitään osoitetta."
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "Tiedot"
 msgid "Device"
 msgstr "Laite"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "Älä laske käyntejäni"
 msgid "does not contain"
 msgstr "ei sisällä"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "Tapahtuma {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "Tapahtuma {event}, jossa {key} = {value}"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "Tiedostot tehdään taustalla ja poistetaan seitsemän päivää myöhem
 msgid "Filter by this"
 msgstr "Suodata tällä"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "Postilaatikosta {inboxName}. Järjestetty keskustelujen mukaan 1 000 nä
 msgid "Funnel"
 msgstr "Suppilo"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "Suppilot"
 
@@ -1132,7 +1154,7 @@ msgstr "Tavoite ”{0}” luotiin"
 msgid "Goal drop"
 msgstr "Tavoitteen lasku"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "Tavoitteet"
@@ -1173,6 +1195,10 @@ msgstr "Isäntä"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "Isäntä tai sovellus"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "Kuinka moni palaa ensimmäistä käyntiä seuraavina viikkoina."
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "Yhdistä kirjautuneet käyttäjät kontaktiinsa"
 msgid "live"
 msgstr "live"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "Live"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "Lataa lisää"
 msgid "Location database"
 msgstr "Sijaintitietokanta"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "Uusi jakolinkki"
 msgid "No alerts yet."
 msgstr "Ei vielä hälytyksiä."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Ei vertailua"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "Ei vielä tapahtumaa."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "Ei tapahtumia viimeisen 24 tunnin aikana"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Ei vielä tapahtumia"
 
@@ -1758,7 +1791,7 @@ msgstr "Muut sivustot"
 msgid "Outbound link"
 msgstr "Ulkoinen linkki"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "Yleiskatsaus"
@@ -1828,6 +1861,7 @@ msgstr "Mallia vastaavat sivut lasketaan yhden polun alle, joten jokainen tilaus
 msgid "Pages viewed."
 msgstr "Katsotut sivut."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Sivut, lähteet, paikat ja laitteet ilman evästeitä, tallentamatta IP-osoitteita ja ilman suostumusbanneria, missä laki sen sallii."
@@ -1897,6 +1931,10 @@ msgstr "tunnissa"
 msgid "per week"
 msgstr "viikossa"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "Jakso"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Pysyvä tunnus"
@@ -1904,6 +1942,10 @@ msgstr "Pysyvä tunnus"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "Puhelin"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "Puhelimet, tietokoneet, järjestelmät ja selaimet."
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "Alusta"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "Alustat"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "Yksityisyys"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "Tuote"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "Laita skripti jokaisen sivun headiin. Se laskee sivunäytöt, myös kun 
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Laita nämä linkit tietosuojasivullesi. Kieltäytyminen on ainoa asia, jonka skripti tallentaa kävijän laitteelle, ja vain kun he sitä pyytävät. Kävijöitä, joilla on Do Not Track tai Global Privacy Control, ei koskaan lasketa."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "Saavutetaan, kun kävijä"
 msgid "Ready"
 msgstr "Valmis"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "Reaaliaika"
@@ -2085,7 +2136,7 @@ msgstr "Raportti"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "Pyynnöt, joissa on Do Not Track tai Global Privacy Control, sekä tapahtumat ilman suostumusta ominaisuudella, joka sitä tarvitsee, otetaan vastaan mutta niitä ei tallenneta eikä lasketa täällä."
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "Säilyvyys"
@@ -2114,6 +2165,10 @@ msgstr "Perutaanko {name}?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "Peruttu"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "Juuri nyt"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "Vieritetty kohtaan {pct} sivulla {path}"
 msgid "Scrolls"
 msgstr "Vierittämiset"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "Haku, linkit, kampanjat ja sovelluskaupat."
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "Segmentti"
@@ -2220,7 +2279,7 @@ msgstr "Palvelin"
 msgid "Server busy"
 msgstr "Palvelin kiireinen"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "Asetukset"
@@ -2267,6 +2326,10 @@ msgstr "Näytä viimeiset 30 päivää"
 msgid "Signed up"
 msgstr "Rekisteröityi"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "Sivustot ja sovellukset"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "Sivustot, jotka voivat upottaa sen"
@@ -2283,7 +2346,7 @@ msgstr "Joitakin tapahtumia hylättiin. Syyt ovat alla."
 msgid "Source"
 msgstr "Lähde"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "Vaihe {0}"
 msgid "Steps"
 msgstr "Vaiheet"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "Tuki"
@@ -2421,6 +2484,10 @@ msgstr "Aikaväli on yksityiskohtaisten tietojen ulkopuolella."
 msgid "The report could not be loaded"
 msgstr "Raporttia ei voitu ladata"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "Skripti, hälytykset, jakaminen ja mitä säilytetään."
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "Palvelimen oma tietokanta"
@@ -2501,6 +2568,7 @@ msgstr "Aika sivulla"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Aika, jonka sivu oli näkyvissä ja kohdistettuna, näyttöä kohden."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "Seuratut propit"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "Seuranta"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "Liikenne"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "Kävijät"
 msgid "Visitors in the last 30 minutes"
 msgstr "Kävijät viimeisen 30 minuutin aikana"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Kävijät nyt"
@@ -2702,6 +2775,7 @@ msgstr "Kävijät, joilla on Do Not Track tai Global Privacy Control, eivät lä
 msgid "Visits"
 msgstr "Käynnit"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Käynnit ja tapahtumat, jotka lasketaan onnistumiseksi"
@@ -2762,6 +2836,10 @@ msgstr "Viikot"
 msgid "What changed"
 msgstr "Mikä muuttui"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "Mitä ihmiset tekivät sivustollasi ja sovelluksissasi."
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "Mikä erottuu"
@@ -2778,13 +2856,26 @@ msgstr "Mitä viedään"
 msgid "Where conversions come from"
 msgstr "Mistä konversiot tulevat"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "Missä ihmiset putoavat pois matkalla tavoitteeseen."
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "Missä ominaisuuden päivä alkaa ja päättyy."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Mitä sivuja ihmiset käyvät katsomassa ja mitkä johtavat kysymyksiin"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "Mitkä käynnit päättyvät kysymykseen tiimillesi."
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "Kuka on täällä viimeisten 30 minuutin aikana."
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

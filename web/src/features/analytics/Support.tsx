@@ -46,7 +46,7 @@ function NoInbox({ p }: { p: AnalyticsProperty }) {
   const search = useViewSearch()
   return (
     <section
-      className="flex flex-col items-center gap-2 rounded-[14px] border border-dashed px-4 py-10 text-center"
+      className="flex flex-col items-center gap-2 rounded-[10px] border border-dashed px-4 py-10 text-center"
       data-testid="support-no-inbox"
     >
       <LifeBuoyIcon className="size-6 text-faint" />
@@ -126,7 +126,7 @@ function Tiles({
       {TILES.map((m) => (
         <div
           key={m}
-          className="flex min-w-0 flex-col items-start rounded-[14px] border bg-card px-4 py-3 @max-2xl:px-3"
+          className="flex min-w-0 flex-col items-start rounded-[10px] border bg-background px-4 py-3 @max-2xl:px-3"
           title={text.metricHelp[m]}
           data-testid={`support-${m}`}
         >
@@ -218,10 +218,10 @@ function SupportReport({ p }: { p: AnalyticsProperty }) {
         />
         <CsvButton testId="support-csv" run={() => downloadCsv(p.id, body, `${p.name}-support-${dim}`)} />
       </div>
-      <div className="overflow-hidden rounded-[14px] border bg-card">
+      <div className="overflow-hidden rounded-[10px] border bg-background">
         <table className="w-full table-fixed text-body" data-testid="support-table">
           <thead>
-            <tr className="border-b text-caption text-faint">
+            <tr className="border-b text-caption text-muted2">
               <th className="px-4 py-2.5 text-start font-medium">{text.dimension[dim]}</th>
               {COLUMNS.map((m, i) => {
                 const label = m === "ratings_up" ? t`Ratings` : text.metric[m]
@@ -261,7 +261,7 @@ function SupportReport({ p }: { p: AnalyticsProperty }) {
               })}
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-line-soft">
             {table.isPending ? (
               <tr>
                 <td colSpan={COLUMNS.length + 1} className="p-4">
@@ -279,8 +279,8 @@ function SupportReport({ p }: { p: AnalyticsProperty }) {
                 const value = r.dimensions[0] ?? ""
                 const low = dim === "page" && (num(r.metrics, "pageviews") ?? 0) < LOW_VIEWS
                 return (
-                  <tr key={`${value}${i}`} className="hover:bg-muted/50" data-testid="support-row">
-                    <td className="truncate px-4 py-2">
+                  <tr key={`${value}${i}`} className="hover:bg-subtle" data-testid="support-row">
+                    <td className="truncate px-4 py-2.5">
                       {value === OTHER ? (
                         <RowLabel dim={dim} row={r} value={value} text={text} />
                       ) : (
@@ -298,7 +298,7 @@ function SupportReport({ p }: { p: AnalyticsProperty }) {
                       <td
                         key={m}
                         className={cn(
-                          "px-2 py-2 text-end tabular-nums",
+                          "px-2 py-2.5 text-end font-mono text-xs tabular-nums",
                           j > 1 && "@max-2xl:hidden",
                           low && m === "support_rate" && "text-faint"
                         )}

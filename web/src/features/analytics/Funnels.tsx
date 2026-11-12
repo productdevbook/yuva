@@ -9,10 +9,10 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Link, useSearchParams } from "react-router"
 
-import { ErrorLine, Notice, useConfirm } from "@/components/common"
+import { ErrorLine, listRowClass, Notice, useConfirm } from "@/components/common"
 import { formatDate } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -37,7 +37,10 @@ import {
   type AnalyticsGoal,
   type AnalyticsRange,
 } from "@/lib/api"
+import { useListCursor } from "@/features/inbox/listCursor"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { useSession } from "@/lib/session"
+import { cn } from "@/lib/utils"
 
 const FUNNEL_PERIODS = ["today", "yesterday", "7d", "28d", "30d", "90d", "month", "last_month"] as const
 
@@ -411,9 +414,22 @@ export function FunnelsView() {
   const goals = useGoals(property.id)
   const [params, setParams] = useSearchParams()
   const [creating, setCreating] = useState(false)
+  const phone = useIsPhone()
   const list = funnels.data ?? []
   const goalList = goals.data ?? []
-  const current = list.find((f) => f.id === params.get("funnel")) ?? list[0]
+  const flat = !phone
+  const asked = list.find((f) => f.id === params.get("funnel"))
+  const current = asked ?? list[0]
+  const listing = flat && !asked && list.length > 1
+  const listRef = useRef<HTMLDivElement>(null)
+  const goalName = new Map(goalList.map((g) => [g.id, g.name]))
+  const open = (id: string) =>
+    setParams((prev) => {
+      const next = new URLSearchParams(prev)
+      next.set("funnel", id)
+      return next
+    })
+  const { cursorId } = useListCursor(list, null, open, listing && !creating, listRef, true, true)
   const pick = (id: string) =>
     setParams(
       (prev) => {
@@ -423,7 +439,7 @@ export function FunnelsView() {
       },
       { replace: true }
     )
-  if (funnels.isPending || goals.isPending) return <Skeleton className="h-64 rounded-[14px]" />
+  if (funnels.isPending || goals.isPending) return <Skeleton className="h-64 rounded-[10px]" />
   if (funnels.error || goals.error) return <ErrorLine error={funnels.error ?? goals.error} />
   const canCreate = canManage && goalList.length >= 2
   const newButton = canManage && (
@@ -442,7 +458,7 @@ export function FunnelsView() {
     <section className="flex flex-col gap-3" data-testid="analytics-funnels">
       {list.length === 0 ? (
         <div
-          className="flex flex-col items-center gap-2 rounded-[14px] border border-dashed px-4 py-10 text-center"
+          className="flex flex-col items-center gap-2 rounded-[10px] border border-dashed px-4 py-10 text-center"
           data-testid="funnels-empty"
         >
           <FilterIcon className="size-6 text-faint" />
@@ -480,7 +496,7 @@ export function FunnelsView() {
       ) : (
         <>
           <div className="flex flex-wrap items-center gap-2">
-            {list.length > 1 && current && (
+            {!flat && list.length > 1 && current && (
               <ChoiceSelect
                 value={current.id}
                 onChange={pick}
@@ -492,7 +508,34 @@ export function FunnelsView() {
             <span className="flex-1" />
             {newButton}
           </div>
-          {current && <FunnelPanel key={current.id} funnel={current} goals={goalList} />}
+          {listing ? (
+            <div ref={listRef} className="flex flex-col border-b border-line-soft" data-testid="funnels-list">
+              {list.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => open(f.id)}
+                  className={cn(
+                    listRowClass,
+                    "scroll-mt-[calc(var(--page-top-h,56px)+8px)]",
+                    cursorId === f.id && "bg-subtle shadow-[inset_2px_0_0_var(--brand)]"
+                  )}
+                  data-row-id={f.id}
+                  data-testid="funnel-row"
+                >
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate font-medium text-foreground">{f.name}</span>
+                    <span className="truncate text-caption text-muted-foreground" dir="auto">
+                      {f.steps.map((id) => goalName.get(id) ?? "–").join(" → ")}
+                    </span>
+                  </span>
+                  <span className="shrink-0 font-mono text-xs text-muted2 tabular-nums">{f.steps.length}</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            current && <FunnelPanel key={current.id} funnel={current} goals={goalList} />
+          )}
         </>
       )}
       {creating && (

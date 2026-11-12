@@ -18,6 +18,7 @@ msgstr "{0, plural, other {# 行}}"
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, other {今日访客}}"
 
@@ -254,6 +255,7 @@ msgstr "添加规则"
 msgid "Add a step"
 msgstr "添加步骤"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "所有事件"
 msgid "All goals"
 msgstr "所有目标"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "所有站点"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "所有者或管理员可以在属性设置中关联一个。"
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "所有者或管理员可以在同意功能中开启持久 ID。"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "分析"
@@ -376,6 +383,10 @@ msgstr "受众"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "可用至 {expires}"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "行为"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "集合"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "与 {0} – {1} 对比"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "与一年前对比"
@@ -506,6 +519,7 @@ msgstr "与其他日子对比…"
 msgid "Compare with the days"
 msgstr "与这些日子对比"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "与上一时段对比"
@@ -514,6 +528,7 @@ msgstr "与上一时段对比"
 msgid "Compared days"
 msgstr "对比的日子"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "对比"
@@ -586,6 +601,7 @@ msgstr "转化趋势"
 msgid "Conversions per 100 visitors."
 msgstr "每 100 位访客的转化数。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "你的网站和应用中不使用 Cookie 的访客"
@@ -617,6 +633,10 @@ msgstr "统计为"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "国家和地区"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "国家和城市，不保存任何地址。"
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "详情"
 msgid "Device"
 msgstr "设备"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "不统计我的访问"
 msgid "does not contain"
 msgstr "不包含"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "事件 {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "事件 {event},{key} = {value}"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "文件在后台生成,并在七天后删除。"
 msgid "Filter by this"
 msgstr "按此筛选"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "来自收件箱 {inboxName}。按每 1,000 次浏览的对话数排序;�
 msgid "Funnel"
 msgstr "漏斗"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "漏斗"
 
@@ -1132,7 +1154,7 @@ msgstr "已创建目标“{0}”"
 msgid "Goal drop"
 msgstr "目标下滑"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "目标"
@@ -1173,6 +1195,10 @@ msgstr "主机"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "主机或应用"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "首次访问后的几周内有多少人回来。"
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "将已登录用户关联到其联系人"
 msgid "live"
 msgstr "实时"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "在线"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "加载更多"
 msgid "Location database"
 msgstr "位置数据库"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "新建共享链接"
 msgid "No alerts yet."
 msgstr "还没有警报。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "不对比"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "还没有事件。"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "最近 24 小时没有事件"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "还没有事件"
 
@@ -1758,7 +1791,7 @@ msgstr "其他站点"
 msgid "Outbound link"
 msgstr "出站链接"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "概览"
@@ -1828,6 +1861,7 @@ msgstr "匹配某个模式的页面会计在同一路径下,因此所有订单�
 msgid "Pages viewed."
 msgstr "浏览的页面。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "统计页面、来源、地点和设备,无 Cookie、不存储 IP 地址,并且在法律允许的地方无需同意横幅。"
@@ -1897,6 +1931,10 @@ msgstr "每小时"
 msgid "per week"
 msgstr "每周"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "时间段"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "持久 ID"
@@ -1904,6 +1942,10 @@ msgstr "持久 ID"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "手机"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "手机、电脑、系统和浏览器。"
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "平台"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "平台"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "隐私"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "产品"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "把脚本放在每个页面的 head 中。它会统计页面浏览,包�
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "把这些链接放在你的隐私页面上。退出统计是脚本在访客设备上存储的唯一内容,而且仅在对方要求时才会存储。带有 Do Not Track 或 Global Privacy Control 的访客绝不会被统计。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "当访客满足以下条件时到达"
 msgid "Ready"
 msgstr "就绪"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "实时"
@@ -2085,7 +2136,7 @@ msgstr "报告"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "带有 Do Not Track 或 Global Privacy Control 的请求,以及在需要同意的属性上没有同意的事件,会被接收,但不会在此存储或统计。"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "留存"
@@ -2114,6 +2165,10 @@ msgstr "撤销 {name}?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "已撤销"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "当前"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "在 {path} 滚动到 {pct}"
 msgid "Scrolls"
 msgstr "滚动"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "搜索、链接、推广活动和应用商店。"
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "细分"
@@ -2220,7 +2279,7 @@ msgstr "服务器"
 msgid "Server busy"
 msgstr "服务器繁忙"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "设置"
@@ -2267,6 +2326,10 @@ msgstr "显示最近 30 天"
 msgid "Signed up"
 msgstr "已注册"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "网站和应用"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "可以嵌入它的站点"
@@ -2283,7 +2346,7 @@ msgstr "有些事件被丢弃了。原因见下方。"
 msgid "Source"
 msgstr "来源"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "第 {0} 步"
 msgid "Steps"
 msgstr "步骤"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "支持"
@@ -2421,6 +2484,10 @@ msgstr "该范围超出了详细记录。"
 msgid "The report could not be loaded"
 msgstr "无法加载报告"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "脚本、提醒、分享以及保留的内容。"
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "服务器自己的数据库"
@@ -2501,6 +2568,7 @@ msgstr "页面停留时间"
 msgid "Time the page was visible and in focus, per view."
 msgstr "页面可见且处于焦点的时间,按每次浏览计。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "被跟踪的属性"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "跟踪"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "流量"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "访客"
 msgid "Visitors in the last 30 minutes"
 msgstr "最近 30 分钟的访客"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "当前访客"
@@ -2702,6 +2775,7 @@ msgstr "带有 Do Not Track 或 Global Privacy Control 的访客不会发送任�
 msgid "Visits"
 msgstr "访问"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "算作成功的访问和事件"
@@ -2762,6 +2836,10 @@ msgstr "周"
 msgid "What changed"
 msgstr "变化了什么"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "人们在你的网站和应用中做了什么。"
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "值得注意的地方"
@@ -2778,13 +2856,26 @@ msgstr "要导出什么"
 msgid "Where conversions come from"
 msgstr "转化来自哪里"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "人们在通往目标的路上在哪里离开。"
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "属性的一天从何时开始和结束。"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "人们访问了哪些页面，哪些页面会引发问题"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "哪些访问以向你的团队提问结束。"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "最近 30 分钟内谁在这里。"
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

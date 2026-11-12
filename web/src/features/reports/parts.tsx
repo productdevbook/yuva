@@ -3,7 +3,7 @@ import { TriangleAlertIcon } from "lucide-react"
 import { createContext, useContext } from "react"
 import { createPortal } from "react-dom"
 
-import { ErrorLine } from "@/components/common"
+import { ErrorLine, Stat, StatCard } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { look } from "@/features/inbox/PageFrame"
@@ -69,20 +69,13 @@ export function LoadProblem({ error, onRetry, testId }: { error: unknown; onRetr
 
 export function ReportSkeleton({ tiles = 5, testId }: { tiles?: number; testId?: string }) {
   return (
-    <div className="flex flex-col gap-4" aria-busy="true" data-testid={testId}>
-      <Tiles>
+    <div className="flex flex-col gap-5" aria-busy="true" data-testid={testId}>
+      <StatCard>
         {Array.from({ length: tiles }, (_, i) => (
-          <div
-            key={i}
-            className="flex min-w-0 flex-1 basis-0 flex-col gap-1.5 rounded-[14px] border bg-card px-4 py-3.5 @max-[900px]:basis-[calc(50%-5px)]"
-          >
-            <Skeleton className="h-3.5 w-20" />
-            <Skeleton className="h-7 w-16" />
-            <Skeleton className="h-3 w-24" />
-          </div>
+          <Stat key={i} value={<Skeleton className="my-1 h-6 w-16" />} label={<Skeleton className="h-3 w-20" />} />
         ))}
-      </Tiles>
-      <Skeleton className="h-72 rounded-[14px]" />
+      </StatCard>
+      <Skeleton className="h-72 rounded-[10px]" />
     </div>
   )
 }

@@ -18,6 +18,7 @@ msgstr "{0, plural, one {# Zeile} other {# Zeilen}}"
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {Besucher heute} other {Besucher heute}}"
 
@@ -254,6 +255,7 @@ msgstr "Regel hinzufügen"
 msgid "Add a step"
 msgstr "Schritt hinzufügen"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "Alle Ereignisse"
 msgid "All goals"
 msgstr "Alle Ziele"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "Alle Websites"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "Ein Eigentümer oder Admin kann in den Einstellungen der Property eines verknüpfen."
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Ein Eigentümer oder Admin kann die dauerhafte ID in den Einwilligungsfunktionen einschalten."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Analytics"
@@ -376,6 +383,10 @@ msgstr "Zielgruppe"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "Verfügbar bis {expires}"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "Verhalten"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "Sammlung"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Mit {0} – {1} vergleichen"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Mit dem Vorjahr vergleichen"
@@ -506,6 +519,7 @@ msgstr "Mit anderen Tagen vergleichen …"
 msgid "Compare with the days"
 msgstr "Mit den Tagen vergleichen"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Mit dem Zeitraum davor vergleichen"
@@ -514,6 +528,7 @@ msgstr "Mit dem Zeitraum davor vergleichen"
 msgid "Compared days"
 msgstr "Verglichene Tage"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Vergleich"
@@ -586,6 +601,7 @@ msgstr "Conversions im Zeitverlauf"
 msgid "Conversions per 100 visitors."
 msgstr "Conversions pro 100 Besucher."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "Cookielose Besucher auf deinen Websites und in deinen Apps"
@@ -617,6 +633,10 @@ msgstr "Gezählt als"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "Länder"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "Länder und Städte, ohne eine Adresse zu speichern."
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "Details"
 msgid "Device"
 msgstr "Gerät"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "Meine Besuche nicht zählen"
 msgid "does not contain"
 msgstr "enthält nicht"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "Ereignis {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "Ereignis {event} mit {key} = {value}"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "Dateien werden im Hintergrund erstellt und sieben Tage später gelöscht
 msgid "Filter by this"
 msgstr "Danach filtern"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "Aus dem Postfach {inboxName}. Nach Unterhaltungen pro 1.000 Aufrufe sort
 msgid "Funnel"
 msgstr "Trichter"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "Trichter"
 
@@ -1132,7 +1154,7 @@ msgstr "Das Ziel „{0}“ wurde erstellt"
 msgid "Goal drop"
 msgstr "Ziel-Einbruch"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "Ziele"
@@ -1173,6 +1195,10 @@ msgstr "Host"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "Host oder App"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "Wie viele in den Wochen nach ihrem ersten Besuch wiederkommen."
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "Angemeldete Nutzer mit ihrem Kontakt verknüpfen"
 msgid "live"
 msgstr "live"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "Live"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "Mehr laden"
 msgid "Location database"
 msgstr "Standortdatenbank"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "Neuer Freigabelink"
 msgid "No alerts yet."
 msgstr "Noch keine Alarme."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Kein Vergleich"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "Noch kein Ereignis."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "Keine Ereignisse in den letzten 24 Stunden"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Noch keine Ereignisse"
 
@@ -1758,7 +1791,7 @@ msgstr "Andere Websites"
 msgid "Outbound link"
 msgstr "Ausgehender Link"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "Übersicht"
@@ -1828,6 +1861,7 @@ msgstr "Seiten, die zu einem Muster passen, werden unter einem Pfad gezählt, so
 msgid "Pages viewed."
 msgstr "Aufgerufene Seiten."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Seiten, Quellen, Orte und Geräte, ohne Cookies, ohne Speicherung von IP-Adressen und, wo das Gesetz es erlaubt, ohne Einwilligungsbanner."
@@ -1897,6 +1931,10 @@ msgstr "pro Stunde"
 msgid "per week"
 msgstr "pro Woche"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "Zeitraum"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Dauerhafte ID"
@@ -1904,6 +1942,10 @@ msgstr "Dauerhafte ID"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "Smartphone"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "Handys, Computer, Systeme und Browser."
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "Plattform"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "Plattformen"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "Datenschutz"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "Produkt"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "Setzen Sie das Skript in den Head jeder Seite. Es zählt Seitenaufrufe, 
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Setzen Sie diese Links auf Ihre Datenschutzseite. Der Opt-out ist das Einzige, was das Skript auf dem Gerät des Besuchers speichert, und nur wenn er es verlangt. Besucher mit Do Not Track oder Global Privacy Control werden nie gezählt."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "Erreicht, wenn ein Besucher"
 msgid "Ready"
 msgstr "Bereit"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "Echtzeit"
@@ -2085,7 +2136,7 @@ msgstr "Melden"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "Anfragen mit Do Not Track oder Global Privacy Control und Ereignisse ohne Einwilligung bei einer Property, die sie braucht, werden angenommen, hier aber weder gespeichert noch gezählt."
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "Retention"
@@ -2114,6 +2165,10 @@ msgstr "{name} widerrufen?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "Widerrufen"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "Gerade jetzt"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "Auf {path} bis {pct} gescrollt"
 msgid "Scrolls"
 msgstr "Scrolls"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "Suche, Links, Kampagnen und die App-Stores."
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "Segment"
@@ -2220,7 +2279,7 @@ msgstr "Server"
 msgid "Server busy"
 msgstr "Server ausgelastet"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "Einstellungen"
@@ -2267,6 +2326,10 @@ msgstr "Die letzten 30 Tage anzeigen"
 msgid "Signed up"
 msgstr "Registriert"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "Websites und Apps"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "Websites, die es einbetten dürfen"
@@ -2283,7 +2346,7 @@ msgstr "Einige Ereignisse wurden verworfen. Die Gründe stehen unten."
 msgid "Source"
 msgstr "Quelle"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "Schritt {0}"
 msgid "Steps"
 msgstr "Schritte"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "Support"
@@ -2421,6 +2484,10 @@ msgstr "Der Zeitraum liegt außerhalb der detaillierten Datensätze."
 msgid "The report could not be loaded"
 msgstr "Der Bericht konnte nicht geladen werden"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "Das Skript, Warnungen, Freigaben und was aufbewahrt wird."
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "Die eigene Datenbank des Servers"
@@ -2501,6 +2568,7 @@ msgstr "Verweildauer auf der Seite"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Zeit, in der die Seite sichtbar und im Fokus war, pro Aufruf."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "Erfasste Props"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "Tracking"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "Traffic"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "Besucher"
 msgid "Visitors in the last 30 minutes"
 msgstr "Besucher in den letzten 30 Minuten"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Besucher jetzt"
@@ -2702,6 +2775,7 @@ msgstr "Besucher mit Do Not Track oder Global Privacy Control senden nichts, dah
 msgid "Visits"
 msgstr "Besuche"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Besuche und Ereignisse, die als Erfolg zählen"
@@ -2762,6 +2836,10 @@ msgstr "Wochen"
 msgid "What changed"
 msgstr "Was sich geändert hat"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "Was Menschen auf Ihrer Website und in Ihren Apps getan haben."
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "Was auffällt"
@@ -2778,13 +2856,26 @@ msgstr "Was exportiert werden soll"
 msgid "Where conversions come from"
 msgstr "Woher Conversions kommen"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "Wo Menschen auf dem Weg zu einem Ziel abspringen."
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "Wo der Tag der Property beginnt und endet."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Welche Seiten Leute besuchen und welche zu Fragen führen"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "Welche Besuche mit einer Frage an Ihr Team enden."
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "Wer in den letzten 30 Minuten hier ist."
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

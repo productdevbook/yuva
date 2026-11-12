@@ -18,6 +18,7 @@ msgstr "{0, plural, one {# řádek} few {# řádky} many {# řádku} other {# ř
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, one {návštěvník dnes} few {návštěvníci dnes} many {návštěvníka dnes} other {návštěvníků dnes}}"
 
@@ -254,6 +255,7 @@ msgstr "Přidat pravidlo"
 msgid "Add a step"
 msgstr "Přidat krok"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "Všechny události"
 msgid "All goals"
 msgstr "Všechny cíle"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "Všechny weby"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "Vlastník nebo správce může jednu propojit v nastavení vlastnosti."
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "Vlastník nebo správce může zapnout trvalé ID ve funkcích souhlasu."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "Analytika"
@@ -376,6 +383,10 @@ msgstr "Publikum"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "K dispozici do {expires}"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "Chování"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "Kolekce"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "Porovnat s {0} – {1}"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "Porovnat s rokem dříve"
@@ -506,6 +519,7 @@ msgstr "Porovnat s jinými dny…"
 msgid "Compare with the days"
 msgstr "Porovnat s dny"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "Porovnat s předchozím obdobím"
@@ -514,6 +528,7 @@ msgstr "Porovnat s předchozím obdobím"
 msgid "Compared days"
 msgstr "Porovnávané dny"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "Porovnání"
@@ -586,6 +601,7 @@ msgstr "Konverze v čase"
 msgid "Conversions per 100 visitors."
 msgstr "Konverze na 100 návštěvníků."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "Návštěvníci bez cookies na vašich webech a v aplikacích"
@@ -617,6 +633,10 @@ msgstr "Započítáno jako"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "Země"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "Země a města, bez ukládání jakékoli adresy."
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "Podrobnosti"
 msgid "Device"
 msgstr "Zařízení"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "Nepočítat mé návštěvy"
 msgid "does not contain"
 msgstr "neobsahuje"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "Událost {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "Událost {event} s {key} = {value}"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "Soubory se vytvářejí na pozadí a o sedm dní později se smažou."
 msgid "Filter by this"
 msgstr "Filtrovat podle tohoto"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "Ze schránky {inboxName}. Seřazeno podle konverzací na 1 000 zobrazen�
 msgid "Funnel"
 msgstr "Trychtýř"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "Trychtýře"
 
@@ -1132,7 +1154,7 @@ msgstr "Cíl „{0}“ byl vytvořen"
 msgid "Goal drop"
 msgstr "Pokles cíle"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "Cíle"
@@ -1173,6 +1195,10 @@ msgstr "Hostitel"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "Hostitel nebo aplikace"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "Kolik lidí se vrátí v týdnech po první návštěvě."
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "Propojit přihlášené uživatele s jejich kontaktem"
 msgid "live"
 msgstr "živě"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "Živě"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "Načíst další"
 msgid "Location database"
 msgstr "Databáze poloh"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "Nový sdílený odkaz"
 msgid "No alerts yet."
 msgstr "Zatím žádná upozornění."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "Bez porovnání"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "Zatím žádná událost."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "Za posledních 24 hodin žádné události"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "Zatím žádné události"
 
@@ -1758,7 +1791,7 @@ msgstr "Jiné weby"
 msgid "Outbound link"
 msgstr "Odchozí odkaz"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "Přehled"
@@ -1828,6 +1861,7 @@ msgstr "Stránky odpovídající vzoru se počítají pod jednou cestou, takže 
 msgid "Pages viewed."
 msgstr "Zobrazené stránky."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "Stránky, zdroje, místa a zařízení, bez cookies, bez ukládání adres IP a bez banneru souhlasu tam, kde to zákon dovoluje."
@@ -1897,6 +1931,10 @@ msgstr "za hodinu"
 msgid "per week"
 msgstr "za týden"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "Období"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "Trvalé ID"
@@ -1904,6 +1942,10 @@ msgstr "Trvalé ID"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "Telefon"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "Telefony, počítače, systémy a prohlížeče."
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "Platforma"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "Platformy"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "Soukromí"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "Produkt"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "Vložte skript do head každé stránky. Počítá zobrazení stránek, 
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "Vložte tyto odkazy na stránku o ochraně soukromí. Odmítnutí je jediné, co skript ukládá do zařízení návštěvníka, a jen když o to požádá. Návštěvníci s Do Not Track nebo Global Privacy Control se nikdy nepočítají."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "Dosaženo, když návštěvník"
 msgid "Ready"
 msgstr "Připraveno"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "Reálný čas"
@@ -2085,7 +2136,7 @@ msgstr "Zpráva"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "Požadavky s Do Not Track nebo Global Privacy Control a události bez souhlasu u vlastnosti, která ho vyžaduje, se přijímají, ale zde se neukládají ani nepočítají."
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "Retence"
@@ -2114,6 +2165,10 @@ msgstr "Odvolat {name}?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "Odvoláno"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "Právě teď"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "Doscrollováno na {pct} na {path}"
 msgid "Scrolls"
 msgstr "Scrollování"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "Vyhledávání, odkazy, kampaně a obchody s aplikacemi."
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "Segment"
@@ -2220,7 +2279,7 @@ msgstr "Server"
 msgid "Server busy"
 msgstr "Server je vytížený"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "Nastavení"
@@ -2267,6 +2326,10 @@ msgstr "Zobrazit posledních 30 dní"
 msgid "Signed up"
 msgstr "Zaregistroval(a) se"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "Weby a aplikace"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "Weby, které ho mohou vkládat"
@@ -2283,7 +2346,7 @@ msgstr "Některé události byly zahozeny. Důvody jsou níže."
 msgid "Source"
 msgstr "Zdroj"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "Krok {0}"
 msgid "Steps"
 msgstr "Kroky"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "Podpora"
@@ -2421,6 +2484,10 @@ msgstr "Rozsah je mimo podrobné záznamy."
 msgid "The report could not be loaded"
 msgstr "Zprávu se nepodařilo načíst"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "Skript, upozornění, sdílení a co se uchovává."
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "Vlastní databáze serveru"
@@ -2501,6 +2568,7 @@ msgstr "Čas na stránce"
 msgid "Time the page was visible and in focus, per view."
 msgstr "Doba, po kterou byla stránka viditelná a aktivní, na zobrazení."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "Sledované propy"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "Sledování"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "Návštěvnost"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "Návštěvníci"
 msgid "Visitors in the last 30 minutes"
 msgstr "Návštěvníci za posledních 30 minut"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "Návštěvníci právě teď"
@@ -2702,6 +2775,7 @@ msgstr "Návštěvníci s Do Not Track nebo Global Privacy Control nic neposíla
 msgid "Visits"
 msgstr "Návštěvy"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "Návštěvy a události, které se počítají jako úspěch"
@@ -2762,6 +2836,10 @@ msgstr "Týdny"
 msgid "What changed"
 msgstr "Co se změnilo"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "Co lidé dělali na vašem webu a ve vašich aplikacích."
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "Co vyčnívá"
@@ -2778,13 +2856,26 @@ msgstr "Co exportovat"
 msgid "Where conversions come from"
 msgstr "Odkud konverze pocházejí"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "Kde lidé cestou k cíli odpadají."
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "Kde začíná a končí den vlastnosti."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "Které stránky lidé navštěvují a které vedou k otázkám"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "Které návštěvy skončí dotazem na váš tým."
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "Kdo je tu za posledních 30 minut."
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

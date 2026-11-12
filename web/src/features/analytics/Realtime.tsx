@@ -1,7 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
 
-import { ErrorLine } from "@/components/common"
+import { ErrorLine, Stat, StatCard } from "@/components/common"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Attribution, BarList, Panel, useCurrentProperty } from "@/features/analytics/parts"
@@ -66,30 +66,20 @@ export function Realtime() {
   const time = new Intl.DateTimeFormat(i18n.locale, { timeStyle: "short" })
   const config: ChartConfig = { pageviews: { label: text.metric.pageviews, color: "var(--brand)" } }
   return (
-    <div className="flex flex-col gap-4" data-testid="analytics-realtime">
+    <div className="flex flex-col gap-7" data-testid="analytics-realtime">
       <ErrorLine error={live.error} />
       {!r ? (
-        <Skeleton className="h-64 rounded-[14px]" />
+        <Skeleton className="h-64 rounded-[10px]" />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-[14px] border bg-card px-4 py-3.5">
-              <span className="flex items-center gap-2 text-small text-faint">
-                <span className="relative flex size-2">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden" />
-                  <span className="relative inline-flex size-2 rounded-full bg-success" />
-                </span>
-                <Trans>Visitors in the last 30 minutes</Trans>
-              </span>
-              <b className="block text-[2.5rem] leading-tight tabular-nums" data-testid="realtime-visitors">
-                {fmt.format(r.visitors)}
-              </b>
-            </div>
-            <div className="rounded-[14px] border bg-card px-4 py-3.5">
-              <span className="text-small text-faint">{text.title.lastHalfHour}</span>
-              <b className="block text-[2.5rem] leading-tight tabular-nums">{fmt.format(r.pageviews)}</b>
-            </div>
-          </div>
+          <StatCard>
+            <Stat
+              live
+              label={<Trans>Visitors in the last 30 minutes</Trans>}
+              value={<span data-testid="realtime-visitors">{fmt.format(r.visitors)}</span>}
+            />
+            <Stat label={text.title.lastHalfHour} value={fmt.format(r.pageviews)} />
+          </StatCard>
           <Panel
             title={text.title.perMinute}
             action={
@@ -97,14 +87,14 @@ export function Realtime() {
                 <Trans>Refreshes every 15 seconds</Trans>
               </span>
             }
+            dotted
           >
             <ChartContainer config={config} className="aspect-auto h-44 w-full">
               <BarChart data={r.minutes} margin={{ top: 4, right: 4, bottom: 0, left: -20 }} barCategoryGap={2}>
-                <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="at"
                   tickLine={false}
-                  axisLine={false}
+                  axisLine={{ stroke: "var(--input)" }}
                   tickMargin={8}
                   minTickGap={32}
                   tickFormatter={(v) => time.format(new Date(String(v)))}
@@ -118,16 +108,15 @@ export function Realtime() {
                     />
                   }
                 />
-                <Bar
-                  dataKey="pageviews"
-                  fill="var(--color-pageviews)"
-                  radius={[3, 3, 0, 0]}
-                  isAnimationActive={false}
-                />
+                <Bar dataKey="pageviews" radius={[2, 2, 0, 0]} isAnimationActive={false}>
+                  {r.minutes.map((m, i) => (
+                    <Cell key={m.at} fill={i === r.minutes.length - 1 ? "var(--color-pageviews)" : "var(--bar2)"} />
+                  ))}
+                </Bar>
               </BarChart>
             </ChartContainer>
           </Panel>
-          <div className="grid gap-4 @2xl:grid-cols-2">
+          <div className="grid gap-x-5 gap-y-7 @2xl:grid-cols-2">
             <Top title={text.title.pages} dim="page" items={r.pages} testId="realtime-pages" />
             <Top title={<Trans>Sources</Trans>} dim="source" items={r.sources} testId="realtime-sources" />
             <Top

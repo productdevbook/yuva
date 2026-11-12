@@ -18,6 +18,7 @@ msgstr "{0, plural, other {#행}}"
 
 #. placeholder {0}: p.visitors_today
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "{0, plural, one {visitor today} other {visitors today}}"
 msgstr "{0, plural, other {오늘 방문자}}"
 
@@ -254,6 +255,7 @@ msgstr "규칙 추가"
 msgid "Add a step"
 msgstr "단계 추가"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 #: src/features/analytics/NewProperty.tsx
 msgid "Add a website"
@@ -320,6 +322,10 @@ msgstr "모든 이벤트"
 msgid "All goals"
 msgstr "모든 목표"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "All sites"
+msgstr "모든 사이트"
+
 #: src/features/analytics/Support.tsx
 msgid "An owner or admin can link one in the property’s settings."
 msgstr "소유자 또는 관리자가 속성 설정에서 연결할 수 있습니다."
@@ -329,6 +335,7 @@ msgid "An owner or admin can turn on the persistent id in the consent features."
 msgstr "소유자 또는 관리자가 동의 기능에서 영구 ID를 켤 수 있습니다."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Analytics"
 msgstr "분석"
@@ -376,6 +383,10 @@ msgstr "대상"
 #: src/features/analytics/SharePage.tsx
 msgid "Available until {expires}"
 msgstr "{expires}까지 사용 가능"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Behaviour"
+msgstr "행동"
 
 #: src/features/analytics/Settings.tsx
 msgid "Bots"
@@ -486,10 +497,12 @@ msgstr "컬렉션"
 
 #. placeholder {0}: formatDate(`${c.from}T12:00:00Z`, i18n.locale)
 #. placeholder {1}: formatDate(`${c.to}T12:00:00Z`, i18n.locale)
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with {0} – {1}"
 msgstr "{0} – {1}와(과) 비교"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with a year earlier"
 msgstr "1년 전과 비교"
@@ -506,6 +519,7 @@ msgstr "다른 날과 비교…"
 msgid "Compare with the days"
 msgstr "비교할 날"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Compare with the period before"
 msgstr "이전 기간과 비교"
@@ -514,6 +528,7 @@ msgstr "이전 기간과 비교"
 msgid "Compared days"
 msgstr "비교한 날"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "Comparison"
 msgstr "비교"
@@ -586,6 +601,7 @@ msgstr "시간별 전환"
 msgid "Conversions per 100 visitors."
 msgstr "방문자 100명당 전환."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Cookieless visitors across your sites and apps"
 msgstr "사이트와 앱의 쿠키 없는 방문자"
@@ -617,6 +633,10 @@ msgstr "집계 방식"
 #: src/features/analytics/Realtime.tsx
 msgid "Countries"
 msgstr "국가"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Countries and cities, without storing any address."
+msgstr "국가와 도시. 주소는 저장하지 않습니다."
 
 #: src/features/analytics/text.ts
 msgid "Country"
@@ -796,7 +816,7 @@ msgstr "상세"
 msgid "Device"
 msgstr "기기"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -831,6 +851,7 @@ msgstr "내 방문을 집계하지 않기"
 msgid "does not contain"
 msgstr "포함하지 않음"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Domains"
@@ -919,7 +940,7 @@ msgstr "이벤트 {event}"
 msgid "Event {event} with {key} = {value}"
 msgstr "이벤트 {event}({key} = {value})"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Install.tsx
 #: src/features/analytics/Sharing.tsx
 #: src/features/analytics/text.ts
@@ -1031,6 +1052,7 @@ msgstr "파일은 백그라운드에서 만들어지며 7일 후에 삭제됩니
 msgid "Filter by this"
 msgstr "이것으로 필터"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Filters"
@@ -1111,7 +1133,7 @@ msgstr "받은 편지함 {inboxName}에서. 1,000회 조회당 대화 수 순입
 msgid "Funnel"
 msgstr "퍼널"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 msgid "Funnels"
 msgstr "퍼널"
 
@@ -1132,7 +1154,7 @@ msgstr "목표 \"{0}\"을(를) 만들었습니다"
 msgid "Goal drop"
 msgstr "목표 감소"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Goals"
 msgstr "목표"
@@ -1173,6 +1195,10 @@ msgstr "호스트"
 #: src/features/analytics/text.ts
 msgid "Host or app"
 msgstr "호스트 또는 앱"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "How many come back in the weeks after their first visit."
+msgstr "첫 방문 이후 몇 주 동안 얼마나 다시 오는지."
 
 #: src/features/analytics/Install.tsx
 msgid "How to install"
@@ -1342,6 +1368,10 @@ msgstr "로그인한 사용자를 연락처와 연결"
 msgid "live"
 msgstr "실시간"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Live"
+msgstr "실시간"
+
 #: src/features/analytics/Alerts.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Events.tsx
@@ -1353,7 +1383,7 @@ msgstr "더 보기"
 msgid "Location database"
 msgstr "위치 데이터베이스"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Sharing.tsx
@@ -1498,6 +1528,7 @@ msgstr "새 공유 링크"
 msgid "No alerts yet."
 msgstr "아직 경고가 없습니다."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 msgid "No comparison"
 msgstr "비교 안 함"
@@ -1527,10 +1558,12 @@ msgid "No event yet."
 msgstr "아직 이벤트가 없습니다."
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events in the last 24 hours"
 msgstr "최근 24시간 동안 이벤트가 없습니다"
 
 #: src/features/analytics/AnalyticsColumn.tsx
+#: src/features/analytics/AnalyticsRoutes.tsx
 msgid "No events yet"
 msgstr "아직 이벤트가 없습니다"
 
@@ -1758,7 +1791,7 @@ msgstr "다른 사이트"
 msgid "Outbound link"
 msgstr "외부 링크"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Overview"
 msgstr "개요"
@@ -1828,6 +1861,7 @@ msgstr "패턴에 맞는 페이지는 하나의 경로로 집계되므로 모든
 msgid "Pages viewed."
 msgstr "조회한 페이지."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent banner where the law allows it."
 msgstr "쿠키 없이, IP 주소를 저장하지 않고, 법이 허용하는 경우 동의 배너 없이 페이지, 유입 경로, 위치, 기기를 집계합니다."
@@ -1897,6 +1931,10 @@ msgstr "시간별"
 msgid "per week"
 msgstr "주별"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Period"
+msgstr "기간"
+
 #: src/features/analytics/Settings.tsx
 msgid "Persistent id"
 msgstr "영구 ID"
@@ -1904,6 +1942,10 @@ msgstr "영구 ID"
 #: src/features/analytics/text.ts
 msgid "Phone"
 msgstr "휴대폰"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Phones, computers, systems and browsers."
+msgstr "휴대폰, 컴퓨터, 시스템, 브라우저."
 
 #: src/features/analytics/Funnels.tsx
 msgid "Pick a goal"
@@ -1932,6 +1974,14 @@ msgstr "플랫폼"
 #: src/features/analytics/Settings.tsx
 msgid "Platforms"
 msgstr "플랫폼"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Privacy"
+msgstr "개인정보"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Product"
+msgstr "제품"
 
 #: src/features/analytics/text.ts
 msgid "Prop"
@@ -1982,6 +2032,7 @@ msgstr "모든 페이지의 head에 스크립트를 넣으세요. 싱글 페이�
 msgid "Put these links on your privacy page. Opting out is the only thing the script stores on the visitor’s device, and only when they ask for it. Visitors with Do Not Track or Global Privacy Control are never counted."
 msgstr "이 링크를 개인정보 처리 페이지에 넣으세요. 수신 거부는 스크립트가 방문자의 기기에 저장하는 유일한 것이며, 방문자가 요청할 때만 저장됩니다. Do Not Track 또는 Global Privacy Control이 있는 방문자는 절대 집계되지 않습니다."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Controls.tsx
 #: src/features/analytics/Exports.tsx
 msgid "Range"
@@ -2015,7 +2066,7 @@ msgstr "방문자가 다음을 하면 도달"
 msgid "Ready"
 msgstr "준비됨"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Sharing.tsx
 msgid "Realtime"
 msgstr "실시간"
@@ -2085,7 +2136,7 @@ msgstr "보고서"
 msgid "Requests with Do Not Track or Global Privacy Control, and events without consent on a property that needs it, are taken but neither stored nor counted here."
 msgstr "Do Not Track 또는 Global Privacy Control이 있는 요청과, 동의가 필요한 속성에서 동의 없이 온 이벤트는 받아들이지만 저장하거나 집계하지 않습니다."
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Retention"
 msgstr "리텐션"
@@ -2114,6 +2165,10 @@ msgstr "{name}을(를) 폐기할까요?"
 #: src/features/analytics/Sharing.tsx
 msgid "Revoked"
 msgstr "폐기됨"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Right now"
+msgstr "지금"
 
 #: src/features/analytics/Exports.tsx
 msgid "Rows"
@@ -2192,6 +2247,10 @@ msgstr "{path}에서 {pct}까지 스크롤"
 msgid "Scrolls"
 msgstr "스크롤"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Search, links, campaigns and the app stores."
+msgstr "검색, 링크, 캠페인, 앱 스토어."
+
 #: src/features/analytics/Controls.tsx
 msgid "Segment"
 msgstr "세그먼트"
@@ -2220,7 +2279,7 @@ msgstr "서버"
 msgid "Server busy"
 msgstr "서버 혼잡"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Settings"
 msgstr "설정"
@@ -2267,6 +2326,10 @@ msgstr "최근 30일 표시"
 msgid "Signed up"
 msgstr "가입함"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Sites and apps"
+msgstr "사이트와 앱"
+
 #: src/features/analytics/Sharing.tsx
 msgid "Sites that may embed it"
 msgstr "임베드를 허용할 사이트"
@@ -2283,7 +2346,7 @@ msgstr "일부 이벤트가 버려졌습니다. 이유는 아래에 있습니다
 msgid "Source"
 msgstr "출처"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Breakdown.tsx
 #: src/features/analytics/Overview.tsx
 #: src/features/analytics/Realtime.tsx
@@ -2308,7 +2371,7 @@ msgstr "{0}단계"
 msgid "Steps"
 msgstr "단계"
 
-#: src/features/analytics/AnalyticsRoutes.tsx
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Support.tsx
 msgid "Support"
 msgstr "지원"
@@ -2421,6 +2484,10 @@ msgstr "이 범위는 상세 기록 밖입니다."
 msgid "The report could not be loaded"
 msgstr "보고서를 불러올 수 없습니다"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "The script, alerts, sharing and what is kept."
+msgstr "스크립트, 알림, 공유, 보관되는 항목."
+
 #: src/features/analytics/Settings.tsx
 msgid "The server’s own database"
 msgstr "서버 자체의 데이터베이스"
@@ -2501,6 +2568,7 @@ msgstr "페이지 체류 시간"
 msgid "Time the page was visible and in focus, per view."
 msgstr "페이지가 보이고 포커스가 있던 시간(조회당)."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/NewProperty.tsx
 #: src/features/analytics/Settings.tsx
 msgid "Time zone"
@@ -2569,6 +2637,10 @@ msgstr "추적 중인 속성"
 #: src/features/analytics/Settings.tsx
 msgid "Tracking"
 msgstr "추적"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Traffic"
+msgstr "트래픽"
 
 #: src/features/analytics/Alerts.tsx
 msgid "Traffic drop"
@@ -2682,6 +2754,7 @@ msgstr "방문자"
 msgid "Visitors in the last 30 minutes"
 msgstr "최근 30분의 방문자"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/Overview.tsx
 msgid "Visitors now"
 msgstr "현재 방문자"
@@ -2702,6 +2775,7 @@ msgstr "Do Not Track 또는 Global Privacy Control이 있는 방문자는 아무
 msgid "Visits"
 msgstr "방문"
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Visits and events that count as success"
 msgstr "성공으로 집계되는 방문과 이벤트"
@@ -2762,6 +2836,10 @@ msgstr "주"
 msgid "What changed"
 msgstr "변경된 점"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "What people did on your site and in your apps."
+msgstr "사람들이 사이트와 앱에서 한 일."
+
 #: src/features/analytics/Support.tsx
 msgid "What stands out"
 msgstr "눈에 띄는 점"
@@ -2778,13 +2856,26 @@ msgstr "내보낼 항목"
 msgid "Where conversions come from"
 msgstr "전환이 오는 곳"
 
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Where people drop off on the way to a goal."
+msgstr "목표로 가는 길에 사람들이 이탈하는 곳."
+
 #: src/features/analytics/NewProperty.tsx
 msgid "Where the property’s day starts and ends."
 msgstr "속성의 하루가 시작하고 끝나는 시각."
 
+#: src/features/analytics/AnalyticsFrame.tsx
 #: src/features/analytics/AnalyticsRoutes.tsx
 msgid "Which pages people visit, and which lead to questions"
 msgstr "사람들이 어떤 페이지를 방문하고 어떤 페이지가 질문으로 이어지는지"
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Which visits end in a question to your team."
+msgstr "어떤 방문이 팀에 대한 질문으로 끝나는지."
+
+#: src/features/analytics/AnalyticsFrame.tsx
+msgid "Who is here in the last 30 minutes."
+msgstr "최근 30분 동안 여기 있는 사람."
 
 #: src/features/analytics/Install.tsx
 msgid "With data-consent=\"required\" the script sends nothing until your consent tool says the visitor agreed. Set Collection to “Only with consent” in the general settings too, so the server refuses events without it."

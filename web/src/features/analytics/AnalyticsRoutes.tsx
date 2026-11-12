@@ -1,6 +1,6 @@
 import "@/features/analytics/i18n"
 
-import { Trans, useLingui } from "@lingui/react/macro"
+import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { useEffect, useRef } from "react"
 import { ChartLineIcon, ChevronsUpDownIcon, PlusIcon } from "lucide-react"
 import {
@@ -15,7 +15,7 @@ import {
   useSearchParams,
 } from "react-router"
 
-import { Dot, ErrorLine } from "@/components/common"
+import { Dot, ErrorLine, FlatEmpty, ListRow, PageHeading, PageTop as FlatTop, topInk } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -34,7 +34,20 @@ import { RetentionView } from "@/features/analytics/Retention"
 import { SettingsView } from "@/features/analytics/Settings"
 import { SupportView } from "@/features/analytics/Support"
 import { useViewSearch } from "@/features/analytics/state"
-import { useAnalyticsText } from "@/features/analytics/text"
+import {
+  AnalyticsLayout,
+  AnalyticsTrail,
+  useDetailBack,
+  useScopedProperties,
+  useViewLedes,
+  useViewNames,
+  VIEWS,
+  type ViewKey,
+} from "@/features/analytics/AnalyticsFrame"
+import { formatCompact } from "@/features/analytics/text"
+import { useListCursor } from "@/features/inbox/listCursor"
+import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useNow } from "@/hooks/use-now"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { PagesView } from "@/features/analytics/Pages"
@@ -44,29 +57,17 @@ import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
-const VIEWS = [
-  "overview",
-  "realtime",
-  "pages",
-  "sources",
-  "locations",
-  "devices",
-  "events",
-  "goals",
-  "funnels",
-  "retention",
-  "support",
-  "settings",
-] as const
-type ViewKey = (typeof VIEWS)[number]
-
 function AnalyticsHome() {
   const { canManage } = useSession()
   const phone = useIsPhone()
   const [inboxId] = useInboxFilter()
   const list = useAnalyticsProperties()
-  const first = list.data?.items.find((p) => !inboxId || p.inbox_id === inboxId)
-  if (first && !phone) return <Navigate to={`/analytics/${first.id}`} replace />
+  const scoped = (list.data?.items ?? []).filter((p) => !inboxId || p.inbox_id === inboxId)
+  const first = scoped[0]
+  if (!phone) {
+    if (first && scoped.length === 1) return <Navigate to={`/analytics/${first.id}`} replace />
+    return <PropertyList />
+  }
   return (
     <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="analytics-home">
       <PageTop title={<Trans>Analytics</Trans>} sub={<Trans>Cookieless visitors across your sites and apps</Trans>} />
@@ -102,13 +103,110 @@ function AnalyticsHome() {
   )
 }
 
+function PropertyList() {
+  const { t, i18n } = useLingui()
+  const { canManage } = useSession()
+  const navigate = useNavigate()
+  const { list, items } = useScopedProperties()
+  const inboxes = useInboxes().data ?? []
+  const colors = new Map(inboxes.map((i) => [i.id, i.branding.color]))
+  const now = useNow(60_000)
+  const listRef = useRef<HTMLDivElement>(null)
+  const open = (id: string) => navigate(`/analytics/${id}`)
+  const { cursorId } = useListCursor(items, null, open, true, listRef, true, true)
+  return (
+    <AnalyticsLayout testId="analytics-home">
+      <FlatTop
+        actions={
+          canManage && (
+            <Button className={topInk} render={<Link to="/analytics/new" />} data-testid="analytics-home-add">
+              <PlusIcon className="size-3.5" aria-hidden />
+              <Trans>Add a website</Trans>
+            </Button>
+          )
+        }
+      >
+        <AnalyticsTrail />
+      </FlatTop>
+      <div className="mt-3 flex max-w-[980px] flex-col">
+        <PageHeading title={t`Analytics`} lede={<Trans>Cookieless visitors across your sites and apps</Trans>} />
+        {list.data && <UsageBanner usage={list.data.usage} className="mt-5" />}
+        <ErrorLine error={list.error} className="mt-3" />
+        {list.isPending ? (
+          <div className="mt-7 flex flex-col gap-3">
+            {[0, 1, 2].map((n) => (
+              <Skeleton key={n} className="h-5 w-full" />
+            ))}
+          </div>
+        ) : items.length === 0 ? (
+          <FlatEmpty testId="analytics-empty">
+            <p className="m-0 font-medium text-foreground">
+              <Trans>Count your website’s visitors</Trans>
+            </p>
+            <p className="m-0 max-w-[560px]">
+              <Trans>
+                Pages, sources, places and devices, without cookies, without storing IP addresses and without a consent
+                banner where the law allows it.
+              </Trans>
+            </p>
+          </FlatEmpty>
+        ) : (
+          <div ref={listRef} className="mt-6 flex flex-col border-b border-line-soft">
+            {items.map((p) => {
+              const quiet = !p.last_event_at || now - Date.parse(p.last_event_at) > 86_400_000
+              const color = inboxes.length > 1 && p.inbox_id ? colors.get(p.inbox_id) : undefined
+              return (
+                <ListRow
+                  key={p.id}
+                  to={`/analytics/${p.id}`}
+                  className={cn(cursorId === p.id && "bg-subtle shadow-[inset_2px_0_0_var(--brand)]")}
+                  data-row-id={p.id}
+                  data-testid="analytics-property"
+                >
+                  <span
+                    aria-hidden
+                    className="size-[7px] shrink-0 rounded-full bg-muted2"
+                    style={color ? { backgroundColor: color } : undefined}
+                  />
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className="truncate font-medium text-foreground">{p.name}</span>
+                      {quiet && (
+                        <span
+                          className="size-1.5 shrink-0 rounded-full bg-warn"
+                          title={p.first_event_at ? t`No events in the last 24 hours` : t`No events yet`}
+                          data-testid="analytics-quiet"
+                        />
+                      )}
+                    </span>
+                    <span className="truncate font-mono text-caption text-muted2" dir="ltr">
+                      {p.domains.join(", ")}
+                    </span>
+                  </span>
+                  <span className="flex shrink-0 flex-col items-end">
+                    <span className="font-mono text-body font-medium tabular-nums">
+                      {formatCompact(p.visitors_today, i18n.locale)}
+                    </span>
+                    <span className="text-caption text-muted-foreground">
+                      <Plural value={p.visitors_today} one="visitor today" other="visitors today" />
+                    </span>
+                  </span>
+                </ListRow>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </AnalyticsLayout>
+  )
+}
+
 const HEADED: ViewKey[] = ["overview", "pages", "goals"]
 
 const pickerClass = "h-[30px] rounded-lg"
 
 function PropertyLayout() {
   const { t } = useLingui()
-  const text = useAnalyticsText()
   const { propertyId = "" } = useParams()
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -123,20 +221,7 @@ function PropertyLayout() {
   const inbox = (useInboxes().data ?? []).find((i) => i.id === property.data?.inbox_id)
   const last = pathname.split("/")[3] as ViewKey | undefined
   const current: ViewKey = last && VIEWS.includes(last) ? last : "overview"
-  const names: Record<ViewKey, string> = {
-    overview: t`Overview`,
-    realtime: t`Realtime`,
-    pages: text.title.pages,
-    sources: t`Sources`,
-    locations: t`Locations`,
-    devices: t`Devices`,
-    events: t`Events`,
-    goals: t`Goals`,
-    funnels: t`Funnels`,
-    retention: t`Retention`,
-    support: t`Support`,
-    settings: t`Settings`,
-  }
+  const names = useViewNames()
   const p = property.data
   const seenInbox = useRef(inboxId)
   useEffect(() => {
@@ -147,6 +232,22 @@ function PropertyLayout() {
     const view = current === "settings" ? "" : current === "overview" ? "" : `/${current}`
     navigate(next ? `/analytics/${next.id}${view}${search}` : "/analytics")
   }, [inboxId, p, list, current, search, navigate])
+  const phone = useIsPhone()
+  const ledes = useViewLedes()
+  const back = useDetailBack(current)
+  useHotkeys({ Escape: () => back && navigate(back.to) }, !phone && !!back)
+  if (!p && !phone) {
+    return (
+      <AnalyticsLayout current={current} testId="analytics-property">
+        <FlatTop>
+          <AnalyticsTrail current={current} />
+        </FlatTop>
+        <div className="mt-3">
+          {property.error ? <ErrorLine error={property.error} /> : <Skeleton className="h-64 rounded-[10px]" />}
+        </div>
+      </AnalyticsLayout>
+    )
+  }
   if (!p) {
     return (
       <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface">
@@ -203,6 +304,57 @@ function PropertyLayout() {
       {headed ? current !== "pages" && <FilterBar /> : current !== "funnels" && <FilterBar />}
     </div>
   ) : null
+  if (!phone) {
+    const action =
+      current === "goals"
+        ? canManage &&
+          picked !== "new" &&
+          !back && (
+            <Button className={topInk} render={<Link to={`?${newGoal.toString()}`} />} data-testid="analytics-goal-new">
+              <PlusIcon className="size-3.5" aria-hidden />
+              <Trans>New goal</Trans>
+            </Button>
+          )
+        : canManage &&
+          current !== "pages" &&
+          current !== "settings" && (
+            <Button
+              className={topInk}
+              render={<Link to={`/analytics/${p.id}/settings?tab=sharing`} />}
+              data-testid="analytics-share"
+            >
+              <Trans>Share</Trans>
+            </Button>
+          )
+    const goalOpen = current === "goals" && !!back
+    return (
+      <AnalyticsLayout property={p} current={current} testId="analytics-property">
+        <div key={p.id} className="@container flex min-w-0 flex-col">
+          <FlatTop back={back} actions={action || undefined}>
+            <AnalyticsTrail property={p} current={current} />
+          </FlatTop>
+          {!goalOpen && (
+            <div className="mt-3">
+              <PageHeading title={names[current]} lede={ledes[current]} />
+            </div>
+          )}
+          {toolbar && (
+            <div className="mt-5 flex flex-wrap items-center gap-2 empty:hidden" data-testid="analytics-toolbar">
+              {current !== "goals" && <RangePicker plain className={pickerClass} />}
+              {!headed && current !== "events" && current !== "funnels" && <ComparePicker className={pickerClass} />}
+              {!headed && current !== "funnels" && <SegmentPicker propertyId={p.id} className={pickerClass} />}
+              {headed ? current !== "pages" && <FilterBar /> : current !== "funnels" && <FilterBar />}
+            </div>
+          )}
+          <div className="mt-6 flex flex-col gap-4">
+            {usage && <UsageBanner usage={usage} />}
+            {!p.first_event_at && current !== "settings" && <WaitForFirstEvent propertyId={p.id} />}
+            <Outlet context={{ property: p }} />
+          </div>
+        </div>
+      </AnalyticsLayout>
+    )
+  }
   return (
     <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="analytics-property" key={p.id}>
       <PageTop

@@ -1,17 +1,17 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { ChartLineIcon, DownloadIcon } from "lucide-react"
 import { useMemo, useState } from "react"
-import { Area, AreaChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, Line, LineChart, XAxis, YAxis } from "recharts"
 import { useSearchParams } from "react-router"
 
-import { ErrorLine } from "@/components/common"
+import { ErrorLine, Stat, StatCard } from "@/components/common"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Segmented } from "@/components/common/Segmented"
 import { formatDuration, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
-import { KpiTile, Legend } from "@/features/analytics/Overview"
+import { Legend } from "@/features/analytics/Overview"
 import { Panel } from "@/features/analytics/parts"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { look } from "@/features/inbox/PageFrame"
@@ -466,6 +466,7 @@ function VolumeChart({
   const compact = new Intl.NumberFormat(i18n.locale, { notation: "compact" })
   return (
     <Panel
+      dotted
       title={<Trans>Conversations and replies</Trans>}
       action={
         <Legend
@@ -479,11 +480,10 @@ function VolumeChart({
     >
       <ChartContainer config={config} className="aspect-auto h-56 w-full px-1" data-testid="trends-volume">
         <AreaChart data={rows} margin={chartMargin}>
-          <CartesianGrid vertical={false} />
           <XAxis
             dataKey="day"
             tickLine={false}
-            axisLine={false}
+            axisLine={{ stroke: "var(--input)" }}
             tickMargin={8}
             minTickGap={28}
             interval="preserveStartEnd"
@@ -564,6 +564,7 @@ function TimesChart({
   const label = periodLabel(granularity, i18n.locale)
   return (
     <Panel
+      dotted
       title={<Trans>Response times</Trans>}
       action={
         <>
@@ -589,11 +590,10 @@ function TimesChart({
       {any ? (
         <ChartContainer config={config} className="aspect-auto h-56 w-full px-1" data-testid="trends-times">
           <LineChart data={rows} margin={chartMargin}>
-            <CartesianGrid vertical={false} />
             <XAxis
               dataKey="day"
               tickLine={false}
-              axisLine={false}
+              axisLine={{ stroke: "var(--input)" }}
               tickMargin={8}
               minTickGap={28}
               interval="preserveStartEnd"
@@ -744,7 +744,7 @@ function GroupTable({
     )
   }
   return (
-    <section className="overflow-x-auto rounded-[14px] border bg-card" data-testid="trends-groups">
+    <section className="overflow-x-auto rounded-[10px] border bg-background" data-testid="trends-groups">
       <table className="w-full min-w-[860px] text-body">
         <caption className="sr-only">{t`Figures by group`}</caption>
         <thead className={headClass}>
@@ -976,7 +976,7 @@ export function TrendsReport() {
       ) : (
         report.data && (
           <div
-            className={cn("flex flex-col gap-4 transition-opacity", report.isPlaceholderData && "opacity-60")}
+            className={cn("flex flex-col gap-5 transition-opacity", report.isPlaceholderData && "opacity-60")}
             data-testid="trends"
           >
             <p className="text-small text-faint" data-testid="trends-built-until">
@@ -986,37 +986,31 @@ export function TrendsReport() {
               <EmptyBox
                 icon={ChartLineIcon}
                 title={<Trans>No activity in this period</Trans>}
-                className="rounded-[14px] border-solid bg-card"
+                className="rounded-[10px] border-solid bg-background"
                 testId="trends-empty"
               >
                 <Trans>Nothing was opened, replied to or closed here. Try a longer period or other filters.</Trans>
               </EmptyBox>
             ) : (
               <>
-                <div className="grid grid-cols-12 gap-2.5 @max-[760px]:grid-cols-2" data-testid="trends-tiles">
-                  {tiles.map((x, i) => (
-                    <KpiTile
+                <StatCard testId="trends-tiles">
+                  {tiles.map((x) => (
+                    <Stat
                       key={x.key}
                       label={x.label}
-                      wrapLabel
                       value={x.value}
                       hint={<Delta cur={x.cur} prev={x.prev} kind={x.kind} better={x.better} />}
                       testId={`trends-tile-${x.key}`}
-                      className={cn(
-                        i < 4 ? "col-span-3" : "col-span-4",
-                        "@max-[760px]:col-span-1",
-                        i === tiles.length - 1 && "@max-[760px]:col-span-2"
-                      )}
                     />
                   ))}
-                </div>
-                <div className="grid grid-cols-2 gap-4 @max-[1000px]:grid-cols-1">
+                </StatCard>
+                <div className="grid grid-cols-2 gap-x-5 gap-y-7 @max-[1000px]:grid-cols-1">
                   <VolumeChart series={report.data.series} granularity={granularity} />
                   <TimesChart series={report.data.series} granularity={granularity} />
                 </div>
                 {group && report.data.groups && (
                   <>
-                    <h2 className="text-[14px] leading-5 font-semibold">
+                    <h2 className="m-0 mt-3 text-base font-semibold tracking-[-0.01em]">
                       <Trans>By group</Trans>
                     </h2>
                     <GroupTable by={group} groups={report.data.groups} totals={report.data.totals} />

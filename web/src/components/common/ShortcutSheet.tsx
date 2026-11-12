@@ -640,6 +640,14 @@ export function ShortcutSheet({
       ],
     },
     {
+      title: t`Analytics`,
+      items: [
+        [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the sites, goals or funnels`],
+        [["↵"], t`Open the site, goal or funnel`],
+        [["Esc"], t`Back to the goals or funnels`],
+      ],
+    },
+    {
       title: t`What’s new entry`,
       items: [
         [[mod, "S"], t`Save the draft now`],
