@@ -21,6 +21,7 @@ msgstr "“क्या यह पेज उपयोगी था?”, आप�
 
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
@@ -69,6 +70,11 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 #: src/features/broadcasts/Trigger.tsx
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
+
+#. placeholder {0}: items.length
+#: src/features/inbox/SidePanels.tsx
+msgid "{0, plural, one {# mention} other {# mentions}}"
+msgstr "{0, plural, one {# उल्लेख} other {# उल्लेख}}"
 
 #. placeholder {0}: l.fallback
 #: src/features/broadcasts/AudienceBuilder.tsx
@@ -587,6 +593,10 @@ msgstr "{listName} तैयार है"
 msgid "{liveText} in the last 30 minutes"
 msgstr "पिछले 30 मिनट में {liveText}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{mailCount, plural, one {# message} other {# messages}}"
+msgstr "{mailCount, plural, one {# संदेश} other {# संदेश}}"
+
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
 msgstr "{met} पूरे हुए, {breached} का उल्लंघन हुआ"
@@ -688,6 +698,7 @@ msgid "{n} attempts"
 msgstr "{n} प्रयास"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "{n} conversations"
 msgstr "{n} बातचीत"
 
@@ -890,10 +901,6 @@ msgstr "{person} ने खाता हटाकर वर्कस्पेस
 msgid "{picked} selected"
 msgstr "{picked} चयनित"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "{product}’s conversations"
-msgstr "{product} की बातचीत"
-
 #: src/features/migrations/text.ts
 msgid "{provider} accepts no passwords over IMAP. This mailbox connects only with “Sign in with Microsoft”: go back and pick Outlook.com and Microsoft 365."
 msgstr "{provider} IMAP पर पासवर्ड स्वीकार नहीं करता। यह मेलबॉक्स केवल “Microsoft से साइन इन करें” से कनेक्ट होता है: वापस जाएँ और Outlook.com और Microsoft 365 चुनें।"
@@ -1045,6 +1052,10 @@ msgstr "{share} उपयोगी"
 msgid "{share} uptime"
 msgstr "{share} अपटाइम"
 
+#: src/features/inbox/ChatsPage.tsx
+msgid "{shown, plural, one {# conversation} other {# conversations}}"
+msgstr "{shown, plural, one {# बातचीत} other {# बातचीत}}"
+
 #: src/features/broadcasts/Import.tsx
 msgid "{size} · pick another file"
 msgstr "{size} · दूसरी फ़ाइल चुनें"
@@ -1052,6 +1063,10 @@ msgstr "{size} · दूसरी फ़ाइल चुनें"
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} स्पैम के रूप में चिह्नित"
+
+#: src/features/mail/MailThread.tsx
+msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
+msgstr "{stackCount, plural, one {पिछला # संदेश दिखाएँ} other {पिछले # संदेश दिखाएँ}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -1076,6 +1091,11 @@ msgstr "{total, plural, one {पिछले 30 दिन · # ब्रॉड�
 #: src/features/reports/ReportPages.tsx
 msgid "{total} in total"
 msgstr "कुल {total}"
+
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "{unreadText} unread"
+msgstr "{unreadText} अपठित"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "{unseenText} unread of {totalText}"
@@ -2285,6 +2305,7 @@ msgid "Added the domain {domain} for single sign-on"
 msgstr "सिंगल साइन-ऑन के लिए डोमेन {domain} जोड़ा"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -2444,6 +2465,7 @@ msgid "All languages"
 msgstr "सभी भाषाएँ"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "सभी मेल"
@@ -2451,6 +2473,10 @@ msgstr "सभी मेल"
 #: src/features/account/AccountPage.tsx
 msgid "All marked as read"
 msgstr "सभी को पढ़ा हुआ चिह्नित किया गया"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "All mentions"
+msgstr "सभी उल्लेख"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/StatusPages.tsx
@@ -2474,8 +2500,10 @@ msgid "all products"
 msgstr "सभी उत्पाद"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -3334,9 +3362,12 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee} को असाइन किया गया, नाम से रखा गया"
 
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "आपको असाइन किया गया"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
@@ -3349,6 +3380,7 @@ msgstr "असिस्टेंट"
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "Assistants"
 msgstr "असिस्टेंट"
 
@@ -3555,6 +3587,7 @@ msgstr "ड्राफ़्ट पर वापस"
 msgid "Back to setup"
 msgstr "सेटअप पर वापस"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
@@ -3617,6 +3650,7 @@ msgid "Beats only when the job succeeded."
 msgstr "केवल तभी संकेत भेजता है जब काम सफल हो।"
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "पहले"
 
@@ -4212,6 +4246,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "भेजने का डोमेन बदलने से DKIM साइनिंग तब तक बंद हो जाती है जब तक आप नए डोमेन के लिए उसे फिर चालू नहीं करते।"
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4427,7 +4462,6 @@ msgstr "वर्कस्पेस चुनें"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "लिस्ट से एक चुनें, या ↑ ↓ से चलें और Enter से खोलें।"
 
@@ -4619,6 +4653,7 @@ msgstr "खोज बंद करें (Esc)"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Closed"
@@ -5033,6 +5068,7 @@ msgstr "सहमति रिकॉर्ड"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5143,6 +5179,7 @@ msgstr "Continue with your organisation's sign-in"
 msgid "Convers."
 msgstr "बातचीत"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "बातचीत"
@@ -5185,6 +5222,8 @@ msgstr "बातचीत"
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -5199,10 +5238,6 @@ msgstr "बातचीत और जवाब"
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "बातचीत कॉपी हुईं"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Conversations from every product"
-msgstr "सभी प्रोडक्ट की बातचीत"
 
 #: src/features/contact/DeleteContactDialog.tsx
 msgid "Conversations in mailboxes you cannot read are deleted with it"
@@ -6221,6 +6256,10 @@ msgstr "ब्राउज़र की सेटिंग में इस स�
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -7175,6 +7214,11 @@ msgstr "हर खुली चर्चा का उत्तर है।"
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "बाकी सभी ब्राउज़र और डिवाइस से साइन आउट हो जाएगा। यह डिवाइस साइन इन रहेगा।"
 
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "every product"
+msgstr "सभी प्रोडक्ट"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "हर उत्पाद"
@@ -7514,7 +7558,6 @@ msgid "Filled with the values of {who}"
 msgstr "{who} की वैल्यू से भरा गया"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "फ़िल्टर"
@@ -7549,6 +7592,7 @@ msgstr "इस जैसे संदेश फ़िल्टर करें"
 
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Filters"
 msgstr "फ़िल्टर"
 
@@ -7660,6 +7704,10 @@ msgstr "{first} में पहला जवाब"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "पहला जवाब, 90वाँ पर्सेंटाइल"
+
+#: src/features/inbox/InboxSide.tsx
+msgid "First reply, median"
+msgstr "पहला जवाब, माध्यिका"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -7910,6 +7958,7 @@ msgstr "शुक्रवार"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8850,12 +8899,17 @@ msgid "In the Google Admin console, open Apps › Google Workspace › Gmail ›
 msgstr "Google Admin console में Apps › Google Workspace › Gmail › Routing खोलें।"
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/MailSide.tsx
 msgid "In the inbox"
 msgstr "इनबॉक्स में"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "In this browser tab"
 msgstr "इस ब्राउज़र टैब में"
+
+#: src/features/mail/MailSide.tsx
+msgid "In this thread"
+msgstr "इस थ्रेड में"
 
 #: src/components/common/BulkReport.tsx
 msgid "In use by {names}"
@@ -8881,7 +8935,6 @@ msgstr "Zoho Mail में Settings › Mail accounts › IMAP access खोल
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/InstallDialog.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10117,6 +10170,7 @@ msgstr "सिंगल साइन-ऑन को अनिवार्य क�
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Mail"
 msgstr "मेल"
 
@@ -10224,6 +10278,10 @@ msgstr "आपके सपोर्ट पते पर मेल, उसी �
 msgid "Mail, {mailUnread} unread"
 msgstr "मेल, {mailUnread} अपठित"
 
+#: src/features/mail/MailSide.tsx
+msgid "Mailbox"
+msgstr "मेलबॉक्स"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "मेलबॉक्स का पता"
@@ -10232,6 +10290,7 @@ msgstr "मेलबॉक्स का पता"
 msgid "Mailbox: {name}"
 msgstr "मेलबॉक्स: {name}"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -10554,6 +10613,7 @@ msgstr "ने आपका उल्लेख किया"
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -10627,6 +10687,7 @@ msgid "Message type"
 msgstr "संदेश का प्रकार"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -11420,6 +11481,7 @@ msgid "New mail"
 msgstr "नया मेल"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "New mailbox"
 msgstr "नया मेलबॉक्स"
 
@@ -13204,6 +13266,7 @@ msgstr "केवल आपकी टीम को दिखता है।"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/status/StatusPages.tsx
@@ -14167,10 +14230,6 @@ msgstr "Pick a list to save the trigger"
 msgid "Pick a list under Who gets it to save"
 msgstr "Pick a list under Who gets it to save"
 
-#: src/features/mail/MailPage.tsx
-msgid "Pick a mail"
-msgstr "एक मेल चुनें"
-
 #: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -14591,6 +14650,8 @@ msgstr "pro, team"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -15583,6 +15644,7 @@ msgstr "दूसरी बातचीत के थ्रेड में ज�
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
@@ -15635,6 +15697,8 @@ msgid "Replies to a broadcast"
 msgstr "ब्रॉडकास्ट के जवाब"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Replies to mail we sent"
@@ -15923,6 +15987,10 @@ msgstr "जवाब का समय, पिछले 24 घंटे"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "जवाब का समय"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Rest of the team"
+msgstr "टीम के बाकी लोग"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16222,6 +16290,7 @@ msgstr "सैंडबॉक्स (डेवलपमेंट बिल्ड
 msgid "Satisfaction"
 msgstr "संतुष्टि"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Satisfied"
@@ -16340,6 +16409,7 @@ msgid "Saved"
 msgstr "सहेजा गया"
 
 #: src/app/ViewsGroup.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 msgid "Saved views"
 msgstr "सहेजे गए व्यू"
@@ -16580,6 +16650,8 @@ msgid "Search operators"
 msgstr "खोज ऑपरेटर"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Search or jump to…"
 msgstr "खोजें या जाएँ…"
 
@@ -18260,6 +18332,7 @@ msgstr "तारा लगाएँ या हटाएँ (S)"
 msgid "Star removed"
 msgstr "तारा हटाया गया"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/queries.ts
 msgid "Starred"
 msgstr "तारा लगाया गया"
@@ -18327,6 +18400,8 @@ msgid "Start your mailing list"
 msgstr "अपनी मेलिंग लिस्ट शुरू करें"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Started"
 msgstr "शुरू हुआ"
 
@@ -18408,6 +18483,8 @@ msgstr "बंद होने पर स्थिति"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -20796,8 +20873,10 @@ msgid "To: {who}"
 msgstr "प्रति: {who}"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21065,6 +21144,7 @@ msgstr "सौंपना हटाएँ"
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "बिना असाइन"
@@ -21261,6 +21341,10 @@ msgstr "अनपढ़ा"
 #: src/features/inbox/ChatList.tsx
 msgid "Unread · {0}"
 msgstr "अपठित · {0}"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "Unread mentions"
+msgstr "अपठित उल्लेख"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/inbox/ChatList.tsx
@@ -22655,6 +22739,7 @@ msgstr "अपना मेल लिखें…"
 msgid "Yes"
 msgstr "हाँ"
 
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
 msgid "Yesterday"

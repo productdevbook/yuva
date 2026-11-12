@@ -152,7 +152,7 @@ export function ProductsGroup({ limit = 4 }: { limit?: number }) {
   )
 }
 
-function AppNav() {
+export function SectionNav({ products = true }: { products?: boolean }) {
   const { t } = useLingui()
   const section = useSection()
   const go = useGo()
@@ -173,7 +173,7 @@ function AppNav() {
   return (
     <NavList label={t`Sections`}>
       {first && <NavGroup title={first.title} items={items(first)} />}
-      <ProductsGroup />
+      {products && <ProductsGroup />}
       {rest.map((g) => (
         <NavGroup key={g.title ?? "main"} title={g.title} items={items(g)} />
       ))}
@@ -199,7 +199,7 @@ export function PageSidebar({
       <WorkspaceHeader />
       <SideTitle title={title} back={back} />
       <PageSearch label={searchLabel} />
-      {children ?? <AppNav />}
+      {children ?? <SectionNav />}
       <div className="border-t border-line-soft pt-3">
         <UserMenu row align="start" side="top" />
       </div>

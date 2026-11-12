@@ -21,6 +21,7 @@ msgstr "„האם הדף הזה עזר?”, משוב ודיונים בתיעוד
 
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
@@ -69,6 +70,11 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 #: src/features/broadcasts/Trigger.tsx
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
+
+#. placeholder {0}: items.length
+#: src/features/inbox/SidePanels.tsx
+msgid "{0, plural, one {# mention} other {# mentions}}"
+msgstr "{0, plural, one {אזכור אחד} two {# אזכורים} other {# אזכורים}}"
 
 #. placeholder {0}: l.fallback
 #: src/features/broadcasts/AudienceBuilder.tsx
@@ -587,6 +593,10 @@ msgstr "{listName} מוכנה"
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} ב-30 הדקות האחרונות"
 
+#: src/features/mail/MailThread.tsx
+msgid "{mailCount, plural, one {# message} other {# messages}}"
+msgstr "{mailCount, plural, one {הודעה אחת} two {# הודעות} other {# הודעות}}"
+
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
 msgstr "{met} קוימו, {breached} הופרו"
@@ -688,6 +698,7 @@ msgid "{n} attempts"
 msgstr "{n} ניסיונות"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "{n} conversations"
 msgstr "{n} שיחות"
 
@@ -890,10 +901,6 @@ msgstr "{person} עזב/ה את סביבת העבודה במחיקת החשבו�
 msgid "{picked} selected"
 msgstr "{picked} נבחרו"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "{product}’s conversations"
-msgstr "שיחות של {product}"
-
 #: src/features/migrations/text.ts
 msgid "{provider} accepts no passwords over IMAP. This mailbox connects only with “Sign in with Microsoft”: go back and pick Outlook.com and Microsoft 365."
 msgstr "{provider} אינו מקבל סיסמאות דרך IMAP. תיבת הדואר הזאת מתחברת רק באמצעות „כניסה עם Microsoft”: חזור ובחר Outlook.com ו-Microsoft 365."
@@ -1045,6 +1052,10 @@ msgstr "{share} מצאו מועיל"
 msgid "{share} uptime"
 msgstr "זמינות {share}"
 
+#: src/features/inbox/ChatsPage.tsx
+msgid "{shown, plural, one {# conversation} other {# conversations}}"
+msgstr "{shown, plural, one {שיחה אחת} two {# שיחות} other {# שיחות}}"
+
 #: src/features/broadcasts/Import.tsx
 msgid "{size} · pick another file"
 msgstr "{size} · בחר קובץ אחר"
@@ -1052,6 +1063,10 @@ msgstr "{size} · בחר קובץ אחר"
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} סומנו כספאם"
+
+#: src/features/mail/MailThread.tsx
+msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
+msgstr "{stackCount, plural, one {הצגת הודעה קודמת אחת} two {הצגת # הודעות קודמות} other {הצגת # הודעות קודמות}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -1076,6 +1091,11 @@ msgstr "{total, plural, one {30 הימים האחרונים · שליחה המו
 #: src/features/reports/ReportPages.tsx
 msgid "{total} in total"
 msgstr "{total} בסך הכול"
+
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "{unreadText} unread"
+msgstr "{unreadText} שלא נקראו"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "{unseenText} unread of {totalText}"
@@ -2285,6 +2305,7 @@ msgid "Added the domain {domain} for single sign-on"
 msgstr "הוסיף/ה את הדומיין {domain} להתחברות יחידה"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -2444,6 +2465,7 @@ msgid "All languages"
 msgstr "כל השפות"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "כל הדואר"
@@ -2451,6 +2473,10 @@ msgstr "כל הדואר"
 #: src/features/account/AccountPage.tsx
 msgid "All marked as read"
 msgstr "הכול סומן כנקרא"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "All mentions"
+msgstr "כל האזכורים"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/StatusPages.tsx
@@ -2474,8 +2500,10 @@ msgid "all products"
 msgstr "כל המוצרים"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -3334,9 +3362,12 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "משויכת ל-{assignee}, נשמר לפי שם"
 
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "שויך אליך"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
@@ -3349,6 +3380,7 @@ msgstr "עוזר"
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "Assistants"
 msgstr "עוזרים"
 
@@ -3555,6 +3587,7 @@ msgstr "חזרה לטיוטה"
 msgid "Back to setup"
 msgstr "חזרה להגדרה"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
@@ -3617,6 +3650,7 @@ msgid "Beats only when the job succeeded."
 msgstr "שולח אות רק כשהמשימה הצליחה."
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "קודם"
 
@@ -4212,6 +4246,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "שינוי דומיין השליחה מכבה את החתימה ב-DKIM עד שתפעיל אותה שוב עבור הדומיין החדש."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4427,7 +4462,6 @@ msgstr "בחר סביבת עבודה"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "בחר אחד מהרשימה, או נווט עם ↑ ↓ ופתח אותו עם Enter."
 
@@ -4619,6 +4653,7 @@ msgstr "סגירת החיפוש (Esc)"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Closed"
@@ -5033,6 +5068,7 @@ msgstr "רשומת הסכמה"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5143,6 +5179,7 @@ msgstr "Continue with your organisation's sign-in"
 msgid "Convers."
 msgstr "שיחות"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "שיחה"
@@ -5185,6 +5222,8 @@ msgstr "שיחות"
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -5199,10 +5238,6 @@ msgstr "שיחות ותשובות"
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "שיחות הועתקו"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Conversations from every product"
-msgstr "שיחות מכל המוצרים"
 
 #: src/features/contact/DeleteContactDialog.tsx
 msgid "Conversations in mailboxes you cannot read are deleted with it"
@@ -6221,6 +6256,10 @@ msgstr "התראות שולחן עבודה חסומות לאתר הזה בהגד
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -7175,6 +7214,11 @@ msgstr "לכל דיון פתוח יש תשובה."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "כל שאר הדפדפנים והמכשירים ינותקו. המכשיר הזה יישאר מחובר."
 
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "every product"
+msgstr "כל המוצרים"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "כל מוצר"
@@ -7514,7 +7558,6 @@ msgid "Filled with the values of {who}"
 msgstr "מולא בערכים של {who}"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "סינון"
@@ -7549,6 +7592,7 @@ msgstr "סינון הודעות כמו זו"
 
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Filters"
 msgstr "מסננים"
 
@@ -7660,6 +7704,10 @@ msgstr "תשובה ראשונה תוך {first}"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "תשובה ראשונה, האחוזון ה-90"
+
+#: src/features/inbox/InboxSide.tsx
+msgid "First reply, median"
+msgstr "תגובה ראשונה, חציון"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -7910,6 +7958,7 @@ msgstr "יום שישי"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8850,12 +8899,17 @@ msgid "In the Google Admin console, open Apps › Google Workspace › Gmail ›
 msgstr "במסוף Google Admin, פתח Apps › Google Workspace › Gmail › Routing."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/MailSide.tsx
 msgid "In the inbox"
 msgstr "בתיבת הדואר"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "In this browser tab"
 msgstr "בלשונית הדפדפן הזאת"
+
+#: src/features/mail/MailSide.tsx
+msgid "In this thread"
+msgstr "בשרשור הזה"
 
 #: src/components/common/BulkReport.tsx
 msgid "In use by {names}"
@@ -8881,7 +8935,6 @@ msgstr "ב-Zoho Mail, פתח Settings › Mail accounts › IMAP access והפע
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/InstallDialog.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10117,6 +10170,7 @@ msgstr "הפך/ה את ההתחברות היחידה לחובה"
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Mail"
 msgstr "דואר"
 
@@ -10224,6 +10278,10 @@ msgstr "דואר לכתובת התמיכה שלך, נענה ממנה"
 msgid "Mail, {mailUnread} unread"
 msgstr "דואר, {mailUnread} שלא נקראו"
 
+#: src/features/mail/MailSide.tsx
+msgid "Mailbox"
+msgstr "תיבת דואר"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "כתובת תיבת הדואר"
@@ -10232,6 +10290,7 @@ msgstr "כתובת תיבת הדואר"
 msgid "Mailbox: {name}"
 msgstr "תיבת דואר: {name}"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -10554,6 +10613,7 @@ msgstr "הזכיר אותך"
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -10627,6 +10687,7 @@ msgid "Message type"
 msgstr "סוג הודעה"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -11420,6 +11481,7 @@ msgid "New mail"
 msgstr "מכתב חדש"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "New mailbox"
 msgstr "תיבה חדשה"
 
@@ -13204,6 +13266,7 @@ msgstr "רק הצוות שלך רואה את זה."
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/status/StatusPages.tsx
@@ -14167,10 +14230,6 @@ msgstr "Pick a list to save the trigger"
 msgid "Pick a list under Who gets it to save"
 msgstr "Pick a list under Who gets it to save"
 
-#: src/features/mail/MailPage.tsx
-msgid "Pick a mail"
-msgstr "בחרו מייל"
-
 #: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -14591,6 +14650,8 @@ msgstr "pro, team"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -15583,6 +15644,7 @@ msgstr "השיב בשרשור של שיחה אחרת"
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
@@ -15635,6 +15697,8 @@ msgid "Replies to a broadcast"
 msgstr "תשובות לשליחה המונית"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Replies to mail we sent"
@@ -15923,6 +15987,10 @@ msgstr "זמן תגובה, 24 השעות האחרונות"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "זמני תגובה"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Rest of the team"
+msgstr "שאר הצוות"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16222,6 +16290,7 @@ msgstr "Sandbox (גרסאות פיתוח)"
 msgid "Satisfaction"
 msgstr "שביעות רצון"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Satisfied"
@@ -16340,6 +16409,7 @@ msgid "Saved"
 msgstr "נשמר"
 
 #: src/app/ViewsGroup.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 msgid "Saved views"
 msgstr "תצוגות שמורות"
@@ -16580,6 +16650,8 @@ msgid "Search operators"
 msgstr "אופרטורי חיפוש"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Search or jump to…"
 msgstr "חיפוש או מעבר אל…"
 
@@ -18260,6 +18332,7 @@ msgstr "הוספה או הסרה של כוכב (S)"
 msgid "Star removed"
 msgstr "הכוכב הוסר"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/queries.ts
 msgid "Starred"
 msgstr "סומן בכוכב"
@@ -18327,6 +18400,8 @@ msgid "Start your mailing list"
 msgstr "התחל את רשימת התפוצה שלך"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Started"
 msgstr "התחיל"
 
@@ -18408,6 +18483,8 @@ msgstr "מצב בנפילה"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -20796,8 +20873,10 @@ msgid "To: {who}"
 msgstr "אל: {who}"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21065,6 +21144,7 @@ msgstr "ביטול ההקצאה"
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "לא משויכות"
@@ -21261,6 +21341,10 @@ msgstr "לא נקראו"
 #: src/features/inbox/ChatList.tsx
 msgid "Unread · {0}"
 msgstr "שלא נקראו · {0}"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "Unread mentions"
+msgstr "אזכורים שלא נקראו"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/inbox/ChatList.tsx
@@ -22655,6 +22739,7 @@ msgstr "כתבו את המכתב…"
 msgid "Yes"
 msgstr "כן"
 
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
 msgid "Yesterday"

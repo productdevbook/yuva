@@ -1,41 +1,38 @@
-import { Trans, useLingui } from "@lingui/react/macro"
+import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { CheckIcon, MessagesSquareIcon, PlusIcon } from "lucide-react"
-import { useCallback, useState } from "react"
-import { useDefaultLayout } from "react-resizable-panels"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router"
 
 import { inboxRoot } from "@/app/shell"
+import { InfoColumn, PageHeading, PageLayout, PageTop, TopSep, TopSlotProvider } from "@/components/common"
 import { formatDuration } from "@/components/common/text"
-import { ContactPanel } from "@/features/contact/ContactSheet"
 import { ChatView } from "@/features/conversation/ChatView"
-import { useConversation } from "@/features/conversation/queries"
 import { EmptyFeedback } from "@/features/feedback/FeedbackList"
 import { FeedbackPage } from "@/features/feedback/FeedbackPage"
 import {
   ChatList,
-  isWaiting,
   rememberChip,
   useRememberedChip,
   StartConversation,
   useChipLabels,
-  useChips,
   type Chip,
+  type ListShown,
 } from "@/features/inbox/ChatList"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { ViewChips } from "@/features/inbox/ListHead"
 import { AssistantsPage } from "@/features/inbox/AssistantsPage"
-import { useOpenOnly } from "@/features/inbox/SourceFilter"
+import { ConversationEyebrow, ConversationInfo, ConversationsSidebar, ListInfo } from "@/features/inbox/InboxSide"
+import { useOpenOnly, useOrigin } from "@/features/inbox/SourceFilter"
 import { MentionsPage } from "@/features/inbox/SidePanels"
-import { useCounts, useLoadedCount, useStats } from "@/features/inbox/queries"
+import { useCounts, useStats } from "@/features/inbox/queries"
 import { useActiveView } from "@/features/inbox/views/useActiveView"
+import { useViews } from "@/features/inbox/views/queries"
 import { useRailView } from "@/features/inbox/railView"
+import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useIsPhone, useMediaQuery } from "@/hooks/use-media-query"
 import { useViewing } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 import { Button } from "@/components/ui/button"
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 
 const PANEL_KEY = "contact-panel"
 
@@ -124,150 +121,167 @@ function EmptyChat() {
   )
 }
 
-const handle = cn(
-  "split-handle cursor-split bg-border bg-clip-content transition-colors duration-150 after:w-4 data-[separator=hover]:bg-brand/60 data-[separator=active]:bg-brand",
-  "data-[separator=active]:z-10 data-[separator=active]:-mx-6 data-[separator=active]:px-6 data-[separator=active]:after:w-full",
-  "data-[separator=hover]:z-10 data-[separator=hover]:-mx-6 data-[separator=hover]:px-6 data-[separator=hover]:after:w-full"
-)
-
-function followGrip(e: React.PointerEvent<HTMLDivElement>) {
-  const el = e.currentTarget
-  el.style.setProperty("--grip-y", `${e.clientY - el.getBoundingClientRect().top}px`)
-  for (const sep of el.querySelectorAll<HTMLElement>("[data-slot=resizable-handle]")) {
-    const r = sep.getBoundingClientRect()
-    const dx = Math.max(-24, Math.min(24, e.clientX - (r.left + r.width / 2)))
-    sep.style.setProperty("--grip-dx", `${dx}px`)
-  }
+function backSearch(search: string) {
+  const params = new URLSearchParams(search)
+  params.delete("m")
+  params.delete("compose")
+  const out = params.toString()
+  return out ? `?${out}` : ""
 }
 
 function InboxPage({ id }: { id: string | null }) {
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const navigate = useNavigate()
-  const roomy = useMediaQuery("(min-width: 1200px)")
+  const { search } = useLocation()
+  const { apart } = useSession()
+  const wide = useMediaQuery("(min-width: 1180px)")
   const [panel, setPanel] = usePanel()
   const view = useActiveView()
   const openOnly = useOpenOnly()
+  const [origin] = useOrigin()
+  const rail = useRailView()
   const initialChip = useRememberedChip()
   const [chip, setChip] = useState<Chip>(initialChip)
   const [starting, setStarting] = useState(false)
   const [sidebarInbox] = useInboxFilter()
   const [chipInbox, setChipInbox] = useState("")
+  const [slot, setSlot] = useState<HTMLElement | null>(null)
   const inboxId = sidebarInbox || chipInbox
-  const product = useInboxes().data?.find((i) => i.id === sidebarInbox)?.name
-  const counts = useCounts(["conversation"]).data
-  const scope = { kind: ["conversation" as const], purpose: "support" as const, inbox_id: inboxId || undefined }
-  const waiting = useLoadedCount({ ...scope, status: ["open"] }, isWaiting)
-  const unassigned = useLoadedCount({ ...scope, status: ["open"], assignee: "unassigned" })
+  const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
   const labels = useChipLabels()
-  const tabs = useChips()
-  const contactId = useConversation(id ?? undefined).data?.contact_id
-  const { search } = useLocation()
-  const open = useCallback((next: string) => navigate(`/conversations/${next}${search}`), [navigate, search])
-  const count = (k: Chip) =>
-    k === "waiting"
-      ? waiting
-      : k === "unassigned"
-        ? inboxId
-          ? unassigned
-          : counts?.unassigned
-        : k === "teams"
-          ? counts?.mine_teams
-          : undefined
-  const inline = roomy && panel && !!contactId && !!id
-  const layout = useDefaultLayout({
-    id: "inbox-panes",
-    panelIds: inline ? ["list", "chat", "contact"] : ["list", "chat"],
-  })
-  return (
-    <main className="flex min-h-0 flex-1 flex-col" data-testid={id ? "chats" : "inbox-page"}>
-      <ResizablePanelGroup
-        className="min-h-0 flex-1"
-        disableCursor
-        onPointerMoveCapture={followGrip}
-        resizeTargetMinimumSize={{ fine: 16, coarse: 32 }}
-        defaultLayout={layout.defaultLayout}
-        onLayoutChanged={layout.onLayoutChanged}
-      >
-        <ResizablePanel
-          id="list"
-          className="flex flex-col"
-          defaultSize={340}
-          minSize={260}
-          maxSize={560}
-          groupResizeBehavior="preserve-pixel-size"
-        >
-          <ChatList
-            currentId={id}
-            onOpen={open}
-            chip={chip}
-            onChip={setChip}
-            inbox={chipInbox}
-            onInbox={setChipInbox}
-            embedded
-            head={
+  const saved = useViews().data?.find((v) => v.id === view.id)
+  const viewName = view.id
+    ? (saved?.name ?? t`Conversations`)
+    : origin === "outbound"
+      ? t`Replies to mail we sent`
+      : openOnly
+        ? t`Open`
+        : labels[chip]
+  const listY = useRef(0)
+  const open = useCallback(
+    (next: string) => {
+      if (!id) listY.current = window.scrollY
+      navigate(`/conversations/${next}${search}`)
+    },
+    [navigate, search, id]
+  )
+  useLayoutEffect(() => {
+    window.scrollTo({ top: id ? 0 : listY.current })
+  }, [id])
+  const listPath = `${inboxRoot(apart)}${backSearch(search)}`
+  const back =
+    rail === "mentions"
+      ? { label: t`Mentions`, to: "/mentions" }
+      : rail === "assistants"
+        ? { label: t`Assistants`, to: "/assistants" }
+        : { label: viewName, to: listPath }
+  useHotkeys({ Escape: () => navigate(back.to) }, !!id)
+  const pickChip = (k: Chip) => {
+    rememberChip(k)
+    setChip(k)
+    if (id) navigate(inboxRoot(apart))
+    else view.clear(!view.id)
+  }
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const where = product ?? t`every product`
+  const heading = ({ shown, unread, more }: ListShown) => {
+    const n = `${fmt.format(shown)}${more ? "+" : ""}`
+    const unreadText = fmt.format(unread)
+    return (
+      <PageHeading
+        title={viewName}
+        lede={
+          <span data-testid="list-lede">
+            {more ? (
+              <Trans>{n} conversations</Trans>
+            ) : (
+              <Plural value={shown} one="# conversation" other="# conversations" />
+            )}
+            {unread > 0 && (
               <>
-                <header className="flex h-15 shrink-0 items-center gap-2 ps-4 pe-3" data-testid="list-head">
-                  <div className="flex min-w-0 flex-1 flex-col leading-tight">
-                    <h1 className="truncate text-[16px] font-semibold">
-                      <Trans>Inbox</Trans>
-                    </h1>
-                    <p className="truncate text-caption text-faint">
-                      {product ? (
-                        <Trans>{product}’s conversations</Trans>
-                      ) : (
-                        <Trans>Conversations from every product</Trans>
-                      )}
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-lg text-muted-foreground"
-                    onClick={() => setStarting(true)}
-                    aria-label={t`New conversation`}
-                    title={t`New conversation`}
-                    data-testid="new-conversation"
-                  >
-                    <PlusIcon />
-                  </Button>
-                </header>
-                <ViewChips
-                  label={t`Filter`}
-                  value={view.id || openOnly ? null : chip}
-                  onChange={(k) => {
-                    view.clear(!view.id)
-                    rememberChip(k)
-                    setChip(k)
-                  }}
-                  items={tabs.map((k) => ({ value: k, label: labels[k], count: count(k), testId: `chip-${k}` }))}
-                />
+                {" · "}
+                <Trans>{unreadText} unread</Trans>
               </>
-            }
-          />
-        </ResizablePanel>
-        <ResizableHandle withHandle className={handle} />
-        <ResizablePanel id="chat" className="flex flex-col" minSize={440}>
-          {id ? <ChatView key={id} id={id} panel={panel} inlinePanel={roomy} onPanel={setPanel} /> : <EmptyChat />}
-        </ResizablePanel>
-        {inline && (
+            )}
+            {" · "}
+            {where}
+          </span>
+        }
+      />
+    )
+  }
+  return (
+    <PageLayout
+      testId={id ? "chats" : "inbox-page"}
+      label={t`Conversations`}
+      sidebar={
+        <ConversationsSidebar
+          current={view.id || openOnly || origin === "outbound" ? null : chip}
+          onChip={pickChip}
+          inboxId={inboxId}
+        />
+      }
+      aside={
+        <InfoColumn label={t`Details`}>
+          {id ? (
+            <ConversationInfo id={id} panel={panel} onPanel={setPanel} />
+          ) : (
+            <ListInfo title={viewName} inboxId={inboxId} />
+          )}
+        </InfoColumn>
+      }
+    >
+      <PageTop
+        back={id ? back : undefined}
+        slot={id ? setSlot : undefined}
+        actions={
+          <Button
+            className="h-8 gap-1.5 rounded-[9px] bg-foreground px-3 text-background hover:bg-foreground/90"
+            onClick={() => setStarting(true)}
+            title={t`New conversation`}
+            data-testid="new-conversation"
+          >
+            <PlusIcon />
+            <span className={id ? "sr-only" : "max-lg:sr-only"}>
+              <Trans>New conversation</Trans>
+            </span>
+          </Button>
+        }
+      >
+        {id ? (
+          <ConversationEyebrow id={id} />
+        ) : (
           <>
-            <ResizableHandle withHandle className={handle} />
-            <ResizablePanel
-              id="contact"
-              className="flex flex-col"
-              defaultSize={280}
-              minSize={240}
-              maxSize={480}
-              groupResizeBehavior="preserve-pixel-size"
-              data-contact-panel
-            >
-              <ContactPanel key={contactId} contactId={contactId} conversationId={id} onClose={() => setPanel(false)} />
-            </ResizablePanel>
+            <span className="font-medium text-foreground">
+              <Trans>Conversations</Trans>
+            </span>
+            <TopSep />
+            <span className="truncate">{viewName}</span>
+            <TopSep />
+            <span className="truncate">{product ?? t`All products`}</span>
           </>
         )}
-      </ResizablePanelGroup>
+      </PageTop>
+      <div className="max-w-[860px]">
+        <ChatList
+          currentId={id}
+          onOpen={open}
+          chip={chip}
+          onChip={setChip}
+          inbox={chipInbox}
+          onInbox={setChipInbox}
+          flat
+          hidden={!!id}
+          head={heading}
+        />
+        {id && (
+          <TopSlotProvider value={slot}>
+            <ChatView key={id} id={id} flat panel={panel} inlinePanel={wide} onPanel={setPanel} />
+          </TopSlotProvider>
+        )}
+      </div>
       <StartConversation open={starting} onOpenChange={setStarting} />
-    </main>
+    </PageLayout>
   )
 }
 

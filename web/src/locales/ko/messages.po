@@ -21,6 +21,7 @@ msgstr "\"이 페이지가 도움이 되었나요?\", 문서에 대한 의견과
 
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
@@ -69,6 +70,11 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 #: src/features/broadcasts/Trigger.tsx
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
+
+#. placeholder {0}: items.length
+#: src/features/inbox/SidePanels.tsx
+msgid "{0, plural, one {# mention} other {# mentions}}"
+msgstr "{0, plural, other {멘션 #개}}"
 
 #. placeholder {0}: l.fallback
 #: src/features/broadcasts/AudienceBuilder.tsx
@@ -587,6 +593,10 @@ msgstr "{listName}이(가) 준비되었습니다"
 msgid "{liveText} in the last 30 minutes"
 msgstr "최근 30분간 {liveText}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{mailCount, plural, one {# message} other {# messages}}"
+msgstr "{mailCount, plural, other {메시지 #개}}"
+
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
 msgstr "충족 {met}건, 위반 {breached}건"
@@ -688,6 +698,7 @@ msgid "{n} attempts"
 msgstr "{n}회 시도"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "{n} conversations"
 msgstr "대화 {n}개"
 
@@ -890,10 +901,6 @@ msgstr "{person} 님이 계정을 삭제하여 워크스페이스를 떠났습�
 msgid "{picked} selected"
 msgstr "{picked}개 선택됨"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "{product}’s conversations"
-msgstr "{product}의 대화"
-
 #: src/features/migrations/text.ts
 msgid "{provider} accepts no passwords over IMAP. This mailbox connects only with “Sign in with Microsoft”: go back and pick Outlook.com and Microsoft 365."
 msgstr "{provider}은(는) IMAP으로 비밀번호를 받지 않습니다. 이 메일함은 \"Microsoft로 로그인\"으로만 연결됩니다. 뒤로 가서 Outlook.com 및 Microsoft 365를 선택하세요."
@@ -1045,6 +1052,10 @@ msgstr "도움이 됨 {share}"
 msgid "{share} uptime"
 msgstr "가동률 {share}"
 
+#: src/features/inbox/ChatsPage.tsx
+msgid "{shown, plural, one {# conversation} other {# conversations}}"
+msgstr "{shown, plural, other {대화 #개}}"
+
 #: src/features/broadcasts/Import.tsx
 msgid "{size} · pick another file"
 msgstr "{size} · 다른 파일 선택"
@@ -1052,6 +1063,10 @@ msgstr "{size} · 다른 파일 선택"
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "스팸 신고 {spam}건"
+
+#: src/features/mail/MailThread.tsx
+msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
+msgstr "{stackCount, plural, other {이전 메시지 #개 보기}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -1076,6 +1091,11 @@ msgstr "{total, plural, other {최근 30일 · 일괄 발송 #건}}"
 #: src/features/reports/ReportPages.tsx
 msgid "{total} in total"
 msgstr "총 {total}"
+
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "{unreadText} unread"
+msgstr "읽지 않음 {unreadText}개"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "{unseenText} unread of {totalText}"
@@ -2285,6 +2305,7 @@ msgid "Added the domain {domain} for single sign-on"
 msgstr "싱글 사인온용 도메인 {domain}을(를) 추가했습니다"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -2444,6 +2465,7 @@ msgid "All languages"
 msgstr "모든 언어"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "모든 메일"
@@ -2451,6 +2473,10 @@ msgstr "모든 메일"
 #: src/features/account/AccountPage.tsx
 msgid "All marked as read"
 msgstr "모두 읽음으로 표시했습니다"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "All mentions"
+msgstr "모든 멘션"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/StatusPages.tsx
@@ -2474,8 +2500,10 @@ msgid "all products"
 msgstr "모든 제품"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -3334,9 +3362,12 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee}님에게 배정됨, 이름으로 유지"
 
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "나에게 배정됨"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
@@ -3349,6 +3380,7 @@ msgstr "어시스턴트"
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "Assistants"
 msgstr "어시스턴트"
 
@@ -3555,6 +3587,7 @@ msgstr "초안으로 돌아가기"
 msgid "Back to setup"
 msgstr "설정으로 돌아가기"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
@@ -3617,6 +3650,7 @@ msgid "Beats only when the job succeeded."
 msgstr "작업이 성공했을 때만 비트를 보냅니다."
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "이전"
 
@@ -4212,6 +4246,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "발송 도메인을 바꾸면 새 도메인에서 다시 켤 때까지 DKIM 서명이 꺼집니다."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4427,7 +4462,6 @@ msgstr "워크스페이스 선택"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "목록에서 고르거나 ↑ ↓로 이동해 Enter로 여세요."
 
@@ -4619,6 +4653,7 @@ msgstr "검색 닫기(Esc)"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Closed"
@@ -5033,6 +5068,7 @@ msgstr "동의 기록"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5143,6 +5179,7 @@ msgstr "Continue with your organisation's sign-in"
 msgid "Convers."
 msgstr "대화"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "대화"
@@ -5185,6 +5222,8 @@ msgstr "대화"
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -5199,10 +5238,6 @@ msgstr "대화 및 답변"
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "대화를 복사했습니다"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Conversations from every product"
-msgstr "모든 제품의 대화"
 
 #: src/features/contact/DeleteContactDialog.tsx
 msgid "Conversations in mailboxes you cannot read are deleted with it"
@@ -6221,6 +6256,10 @@ msgstr "브라우저 설정에서 이 사이트의 데스크톱 알림이 차단
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -7175,6 +7214,11 @@ msgstr "열린 토론마다 답변이 있습니다."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "다른 모든 브라우저와 기기에서 로그아웃됩니다. 이 기기는 로그인 상태를 유지합니다."
 
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "every product"
+msgstr "모든 제품"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "모든 제품"
@@ -7514,7 +7558,6 @@ msgid "Filled with the values of {who}"
 msgstr "{who}님의 값으로 채웠습니다"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "필터"
@@ -7549,6 +7592,7 @@ msgstr "이와 비슷한 메시지 필터링"
 
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Filters"
 msgstr "필터"
 
@@ -7660,6 +7704,10 @@ msgstr "{first}의 첫 답장"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "첫 답변, 90번째 백분위수"
+
+#: src/features/inbox/InboxSide.tsx
+msgid "First reply, median"
+msgstr "첫 답장, 중앙값"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -7910,6 +7958,7 @@ msgstr "금요일"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8850,12 +8899,17 @@ msgid "In the Google Admin console, open Apps › Google Workspace › Gmail ›
 msgstr "Google 관리 콘솔에서 앱 › Google Workspace › Gmail › 라우팅을 여세요."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/MailSide.tsx
 msgid "In the inbox"
 msgstr "받은 편지함에서"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "In this browser tab"
 msgstr "이 브라우저 탭에서"
+
+#: src/features/mail/MailSide.tsx
+msgid "In this thread"
+msgstr "이 스레드"
 
 #: src/components/common/BulkReport.tsx
 msgid "In use by {names}"
@@ -8881,7 +8935,6 @@ msgstr "Zoho Mail에서 설정 › 메일 계정 › IMAP 접근을 열고 IMAP�
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/InstallDialog.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10117,6 +10170,7 @@ msgstr "싱글 사인온을 필수로 바꿨습니다"
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Mail"
 msgstr "메일"
 
@@ -10224,6 +10278,10 @@ msgstr "지원 주소로 온 메일을 그 주소로 답장"
 msgid "Mail, {mailUnread} unread"
 msgstr "메일, 읽지 않음 {mailUnread}개"
 
+#: src/features/mail/MailSide.tsx
+msgid "Mailbox"
+msgstr "메일함"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "메일함 주소"
@@ -10232,6 +10290,7 @@ msgstr "메일함 주소"
 msgid "Mailbox: {name}"
 msgstr "메일함: {name}"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -10554,6 +10613,7 @@ msgstr "회원님을 언급했습니다"
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -10627,6 +10687,7 @@ msgid "Message type"
 msgstr "메시지 유형"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -11420,6 +11481,7 @@ msgid "New mail"
 msgstr "새 메일"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "New mailbox"
 msgstr "새 메일함"
 
@@ -13204,6 +13266,7 @@ msgstr "팀만 볼 수 있습니다."
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/status/StatusPages.tsx
@@ -14167,10 +14230,6 @@ msgstr "Pick a list to save the trigger"
 msgid "Pick a list under Who gets it to save"
 msgstr "Pick a list under Who gets it to save"
 
-#: src/features/mail/MailPage.tsx
-msgid "Pick a mail"
-msgstr "메일을 선택하세요"
-
 #: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -14591,6 +14650,8 @@ msgstr "pro, team"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -15583,6 +15644,7 @@ msgstr "다른 대화의 스레드에서 답장했습니다"
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
@@ -15635,6 +15697,8 @@ msgid "Replies to a broadcast"
 msgstr "일괄 발송에 대한 답장"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Replies to mail we sent"
@@ -15923,6 +15987,10 @@ msgstr "응답 시간, 최근 24시간"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "응답 시간"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Rest of the team"
+msgstr "나머지 팀원"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16222,6 +16290,7 @@ msgstr "샌드박스(개발 빌드)"
 msgid "Satisfaction"
 msgstr "만족도"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Satisfied"
@@ -16340,6 +16409,7 @@ msgid "Saved"
 msgstr "저장됨"
 
 #: src/app/ViewsGroup.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 msgid "Saved views"
 msgstr "저장된 보기"
@@ -16580,6 +16650,8 @@ msgid "Search operators"
 msgstr "검색 연산자"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Search or jump to…"
 msgstr "검색 또는 이동…"
 
@@ -18260,6 +18332,7 @@ msgstr "별표 또는 별표 해제 (S)"
 msgid "Star removed"
 msgstr "별표를 해제했습니다"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/queries.ts
 msgid "Starred"
 msgstr "별표를 했습니다"
@@ -18327,6 +18400,8 @@ msgid "Start your mailing list"
 msgstr "메일링 리스트를 시작하세요"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Started"
 msgstr "시작됨"
 
@@ -18408,6 +18483,8 @@ msgstr "다운 시 상태"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -20796,8 +20873,10 @@ msgid "To: {who}"
 msgstr "받는 사람: {who}"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21065,6 +21144,7 @@ msgstr "배정 해제"
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "배정 안 됨"
@@ -21261,6 +21341,10 @@ msgstr "읽지 않음"
 #: src/features/inbox/ChatList.tsx
 msgid "Unread · {0}"
 msgstr "읽지 않음 · {0}"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "Unread mentions"
+msgstr "읽지 않은 멘션"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/inbox/ChatList.tsx
@@ -22655,6 +22739,7 @@ msgstr "메일을 작성하세요…"
 msgid "Yes"
 msgstr "예"
 
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
 msgid "Yesterday"

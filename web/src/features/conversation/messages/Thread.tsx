@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ChevronDownIcon, FileDownIcon, HistoryIcon, LockIcon, SendIcon } from "lucide-react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { ArrowDownIcon, ChevronDownIcon, FileDownIcon, HistoryIcon, LockIcon, SendIcon } from "lucide-react"
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 
 import { BotAvatar, ContactAvatar, ErrorLine, Kbd, PersonAvatar, TypingDots } from "@/components/common"
 import { categoryTone, useFeedbackCategories } from "@/components/common/feedbackCategories"
@@ -905,9 +905,23 @@ function Typing({ name }: { name: string }) {
   )
 }
 
-function Row({ className, ...props }: React.ComponentProps<typeof MessageScrollerItem>) {
+const PageMode = createContext(false)
+const NEAR_END = 96
+const noRoot = { current: null }
+
+function Row({ className, messageId, scrollAnchor: _, ...props }: React.ComponentProps<typeof MessageScrollerItem>) {
+  const page = useContext(PageMode)
+  if (page)
+    return (
+      <div
+        data-message-id={messageId}
+        className={cn("min-w-0 shrink-0 scroll-mt-24 scroll-mb-[calc(var(--composer-h,0px)+1rem)]", className)}
+        {...props}
+      />
+    )
   return (
     <MessageScrollerItem
+      messageId={messageId}
       className={cn("[contain-intrinsic-size:none] [content-visibility:visible]", className)}
       {...props}
     />
@@ -1019,11 +1033,113 @@ export type ThreadProps = {
   focusId?: string
 }
 
-export function Thread(props: ThreadProps) {
+type Scroller = Pick<ReturnType<typeof useMessageScroller>, "scrollToEnd" | "scrollToMessage">
+
+export function Thread({ page, ...props }: ThreadProps & { page?: boolean }) {
+  if (page)
+    return (
+      <PageMode.Provider value>
+        <PageThread {...props} />
+      </PageMode.Provider>
+    )
   return (
     <MessageScrollerProvider autoScroll defaultScrollPosition="end" scrollPreviousItemPeek={0}>
-      <ThreadView {...props} />
+      <BoxThread {...props} />
     </MessageScrollerProvider>
+  )
+}
+
+function BoxThread(props: ThreadProps) {
+  const scroller = useMessageScroller()
+  return <ThreadView {...props} scroller={scroller} />
+}
+
+function scrolling() {
+  return document.scrollingElement ?? document.documentElement
+}
+
+function PageThread(props: ThreadProps) {
+  const content = useRef<HTMLDivElement>(null)
+  const stick = useRef(true)
+  const [away, setAway] = useState(false)
+  const firstId = props.items[0]?.id
+  const first = useRef<{ id: string; top: number } | null>(null)
+  const firstIdRef = useLatest(firstId)
+  const rowOf = useCallback(
+    (id: string) => content.current?.querySelector<HTMLElement>(`[data-message-id="${CSS.escape(id)}"]`) ?? null,
+    []
+  )
+  const measure = useCallback(() => {
+    const id = firstIdRef.current
+    const row = id ? rowOf(id) : null
+    first.current = id && row ? { id, top: row.getBoundingClientRect().top } : null
+  }, [firstIdRef, rowOf])
+
+  const scrollToEnd = useCallback<Scroller["scrollToEnd"]>(({ behavior = "auto" } = {}) => {
+    const el = scrolling()
+    stick.current = true
+    el.scrollTo({ top: el.scrollHeight, behavior })
+    return true
+  }, [])
+  const scrollToMessage = useCallback<Scroller["scrollToMessage"]>(
+    (id, { align = "start", behavior = "auto" } = {}) => {
+      const row = rowOf(id)
+      if (!row) return false
+      stick.current = false
+      row.scrollIntoView({ block: align, behavior })
+      return true
+    },
+    [rowOf]
+  )
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = scrolling()
+      const near = el.scrollHeight - el.scrollTop - el.clientHeight <= NEAR_END
+      stick.current = near
+      setAway(!near)
+      measure()
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    scrollToEnd()
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [measure, scrollToEnd])
+
+  useEffect(() => {
+    const el = content.current
+    if (!el || typeof ResizeObserver === "undefined") return
+    let frame = 0
+    const ro = new ResizeObserver(() => {
+      window.cancelAnimationFrame(frame)
+      frame = window.requestAnimationFrame(() => {
+        if (!stick.current) return
+        const s = scrolling()
+        s.scrollTop = s.scrollHeight
+      })
+    })
+    ro.observe(el)
+    return () => {
+      window.cancelAnimationFrame(frame)
+      ro.disconnect()
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    const prev = first.current
+    if (prev && prev.id !== firstId && !stick.current) {
+      const row = rowOf(prev.id)
+      if (row) window.scrollBy(0, row.getBoundingClientRect().top - prev.top)
+    }
+    measure()
+  }, [firstId, measure, rowOf])
+
+  return (
+    <ThreadView
+      {...props}
+      scroller={useMemo(() => ({ scrollToEnd, scrollToMessage }), [scrollToEnd, scrollToMessage])}
+      content={content}
+      away={away}
+    />
   )
 }
 
@@ -1042,11 +1158,18 @@ function ThreadView({
   lastId,
   lastMine,
   focusId,
-}: ThreadProps) {
+  scroller,
+  content,
+  away = false,
+}: ThreadProps & {
+  scroller: Scroller
+  content?: React.RefObject<HTMLDivElement | null>
+  away?: boolean
+}) {
   const { t } = useLingui()
   const { membership } = useSession()
   const dayLabel = useDayLabel()
-  const { scrollToEnd, scrollToMessage } = useMessageScroller()
+  const { scrollToEnd, scrollToMessage } = scroller
   const viewport = useRef<HTMLDivElement>(null)
   const me = membership.member_id
   const current = base.find?.current
@@ -1136,52 +1259,86 @@ function ThreadView({
     )
   }
 
+  const body = (
+    <>
+      {top && <Row>{top}</Row>}
+      {older.has && (
+        <Row>
+          <Older root={content ? noRoot : viewport} loading={older.loading} onLoad={older.load} />
+        </Row>
+      )}
+      {pending ? (
+        <Row className="grid gap-2">
+          <Skeleton className="h-12 w-2/3 rounded-2xl" />
+          <Skeleton className="h-12 w-1/2 justify-self-end rounded-2xl" />
+        </Row>
+      ) : error ? (
+        <Row>
+          <ErrorLine error={error} />
+        </Row>
+      ) : (
+        rows.map((r) =>
+          r.m ? (
+            <Row key={r.key} messageId={r.m.id} onKeyDown={removeKey(r.m)}>
+              {render(r.m, r.i)}
+            </Row>
+          ) : r.key === IMPORTED_END ? (
+            <Row key={r.key} messageId={r.key}>
+              <ImportedMarker />
+            </Row>
+          ) : (
+            <Row key={r.key} messageId={r.key}>
+              <DayMarker label={dayLabel(r.day!)} />
+            </Row>
+          )
+        )
+      )}
+      {sending.map((p) => (
+        <Row key={p.key}>
+          <Pending p={p} />
+        </Row>
+      ))}
+      {typing && (
+        <Row>
+          <Typing name={name.split(" ")[0]} />
+        </Row>
+      )}
+    </>
+  )
+
+  if (content)
+    return (
+      <div role="log" aria-label={t`Messages`} className="relative flex-1 [overflow-anchor:none]" data-testid="thread">
+        <div ref={content} className="mx-auto flex w-full max-w-[776px] flex-col px-7 pt-6 pb-8">
+          {body}
+        </div>
+        <div className="pointer-events-none sticky bottom-[calc(var(--composer-h,0px)+1rem)] z-10 flex h-0 justify-center">
+          <Button
+            variant="secondary"
+            size="icon-sm"
+            aria-label={t`Go to the latest message`}
+            title={t`Go to the latest message`}
+            inert={!away}
+            tabIndex={away ? 0 : -1}
+            onClick={() => scrollToEnd({ behavior: "smooth" })}
+            className={cn(
+              "-translate-y-full border-border bg-background text-foreground shadow-md transition-opacity duration-200 hover:bg-muted",
+              away ? "pointer-events-auto opacity-100" : "opacity-0"
+            )}
+            data-active={away ? "true" : "false"}
+            data-testid="to-latest"
+          >
+            <ArrowDownIcon />
+          </Button>
+        </div>
+      </div>
+    )
+
   return (
     <MessageScroller className="bg-background">
       <MessageScrollerViewport ref={viewport} aria-label={t`Messages`} data-testid="thread">
         <MessageScrollerContent className="mx-auto w-full max-w-[776px] gap-0 px-7 pt-6 pb-8 phone:px-3">
-          {top && <Row>{top}</Row>}
-          {older.has && (
-            <Row>
-              <Older root={viewport} loading={older.loading} onLoad={older.load} />
-            </Row>
-          )}
-          {pending ? (
-            <Row className="grid gap-2">
-              <Skeleton className="h-12 w-2/3 rounded-2xl" />
-              <Skeleton className="h-12 w-1/2 justify-self-end rounded-2xl" />
-            </Row>
-          ) : error ? (
-            <Row>
-              <ErrorLine error={error} />
-            </Row>
-          ) : (
-            rows.map((r) =>
-              r.m ? (
-                <Row key={r.key} messageId={r.m.id} onKeyDown={removeKey(r.m)}>
-                  {render(r.m, r.i)}
-                </Row>
-              ) : r.key === IMPORTED_END ? (
-                <Row key={r.key} messageId={r.key}>
-                  <ImportedMarker />
-                </Row>
-              ) : (
-                <Row key={r.key} messageId={r.key}>
-                  <DayMarker label={dayLabel(r.day!)} />
-                </Row>
-              )
-            )
-          )}
-          {sending.map((p) => (
-            <Row key={p.key}>
-              <Pending p={p} />
-            </Row>
-          ))}
-          {typing && (
-            <Row>
-              <Typing name={name.split(" ")[0]} />
-            </Row>
-          )}
+          {body}
         </MessageScrollerContent>
       </MessageScrollerViewport>
       <DayChip items={items} root={viewport} />

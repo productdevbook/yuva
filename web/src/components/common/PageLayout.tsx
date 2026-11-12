@@ -1,5 +1,7 @@
 import { useLingui } from "@lingui/react/macro"
 import { ArrowLeftIcon, MoonIcon, SearchIcon, SunIcon } from "lucide-react"
+import { createContext, useContext } from "react"
+import { createPortal } from "react-dom"
 import { Link, type To } from "react-router"
 
 import { moveFocus } from "@/app/Rail"
@@ -131,6 +133,7 @@ export type NavItem = {
   sub?: boolean
   color?: string
   to?: To
+  state?: unknown
   onSelect?: () => void
   ariaLabel?: string
   title?: string
@@ -170,6 +173,7 @@ export function NavRow({ item }: { item: NavItem }) {
     return (
       <Link
         to={item.to}
+        state={item.state}
         onClick={item.onSelect}
         aria-current={current}
         aria-label={item.ariaLabel}
@@ -221,38 +225,54 @@ export function NavList({ label, children }: { label: string; children: React.Re
   )
 }
 
+const TopSlotContext = createContext<HTMLElement | null>(null)
+
+export const TopSlotProvider = TopSlotContext.Provider
+
+export function TopPortal({ children }: { children: React.ReactNode }) {
+  const slot = useContext(TopSlotContext)
+  return slot ? createPortal(children, slot) : children
+}
+
 export function PageTop({
   back,
   actions,
+  slot,
   children,
 }: {
-  back?: { label: string; to?: To; onClick?: () => void }
+  back?: { label: string; to?: To; onClick?: () => void; testId?: string }
   actions?: React.ReactNode
+  slot?: (el: HTMLElement | null) => void
   children?: React.ReactNode
 }) {
   const backClass =
     "-ms-2 inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2 text-small text-fg2 outline-none hover:bg-line-soft hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
   return (
     <div
-      className="sticky top-0 z-10 flex min-h-8 items-center gap-x-3 gap-y-2 bg-background pt-3.5 pb-2.5"
+      className="sticky top-0 z-20 flex min-h-8 flex-wrap items-center gap-x-3 gap-y-2 bg-background pt-3.5 pb-2.5"
       data-testid="page-top"
     >
       {back &&
         (back.to !== undefined ? (
-          <Link to={back.to} onClick={back.onClick} className={backClass} data-testid="page-back">
+          <Link to={back.to} onClick={back.onClick} className={backClass} data-testid={back.testId ?? "page-back"}>
             <BackArrow className="size-3.5" />
             {back.label}
           </Link>
         ) : (
-          <button type="button" onClick={back.onClick} className={backClass} data-testid="page-back">
+          <button type="button" onClick={back.onClick} className={backClass} data-testid={back.testId ?? "page-back"}>
             <BackArrow className="size-3.5" />
             {back.label}
           </button>
         ))}
-      <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden font-mono text-caption tracking-[0.04em] whitespace-nowrap text-muted2 uppercase">
+      <div className="flex min-w-0 flex-1 basis-40 items-center gap-2 overflow-hidden font-mono text-caption tracking-[0.04em] whitespace-nowrap text-muted2 uppercase">
         {children}
       </div>
-      {actions && <div className="flex shrink-0 items-center gap-0.5">{actions}</div>}
+      {(slot || actions) && (
+        <div className="ms-auto flex min-w-0 flex-wrap items-center justify-end gap-1.5">
+          {slot && <div ref={slot} className="flex min-w-0 flex-wrap items-center gap-1.5 empty:hidden" />}
+          {actions && <div className="flex shrink-0 items-center gap-1.5">{actions}</div>}
+        </div>
+      )}
     </div>
   )
 }

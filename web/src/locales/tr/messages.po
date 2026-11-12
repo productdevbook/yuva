@@ -21,6 +21,7 @@ msgstr "Dokümanlarınızda “Bu sayfa yararlı oldu mu?”, geri bildirim ve t
 
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
@@ -69,6 +70,11 @@ msgstr "{0, plural, one {biri {list} aboneliğini onayladıktan # saat sonra} ot
 #: src/features/broadcasts/Trigger.tsx
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {biri {match} koşuluna uymaya başladıktan # saat sonra} other {biri {match} koşuluna uymaya başladıktan # saat sonra}}"
+
+#. placeholder {0}: items.length
+#: src/features/inbox/SidePanels.tsx
+msgid "{0, plural, one {# mention} other {# mentions}}"
+msgstr "{0, plural, one {# bahsetme} other {# bahsetme}}"
 
 #. placeholder {0}: l.fallback
 #: src/features/broadcasts/AudienceBuilder.tsx
@@ -587,6 +593,10 @@ msgstr "{listName} hazır"
 msgid "{liveText} in the last 30 minutes"
 msgstr "son 30 dakikada {liveText}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{mailCount, plural, one {# message} other {# messages}}"
+msgstr "{mailCount, plural, one {# ileti} other {# ileti}}"
+
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
 msgstr "{met} karşılandı, {breached} aşıldı"
@@ -688,6 +698,7 @@ msgid "{n} attempts"
 msgstr "{n} deneme"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "{n} conversations"
 msgstr "{n} konuşma"
 
@@ -890,10 +901,6 @@ msgstr "{person} hesabını silerek çalışma alanından ayrıldı"
 msgid "{picked} selected"
 msgstr "{picked} seçildi"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "{product}’s conversations"
-msgstr "{product} konuşmaları"
-
 #: src/features/migrations/text.ts
 msgid "{provider} accepts no passwords over IMAP. This mailbox connects only with “Sign in with Microsoft”: go back and pick Outlook.com and Microsoft 365."
 msgstr "{provider}, IMAP üzerinden şifre kabul etmiyor. Bu posta kutusu yalnızca “Microsoft ile oturum aç” ile bağlanır: geri dönüp Outlook.com ve Microsoft 365'i seçin."
@@ -1045,6 +1052,10 @@ msgstr "{share} yararlı"
 msgid "{share} uptime"
 msgstr "{share} çalışma süresi"
 
+#: src/features/inbox/ChatsPage.tsx
+msgid "{shown, plural, one {# conversation} other {# conversations}}"
+msgstr "{shown, plural, one {# konuşma} other {# konuşma}}"
+
 #: src/features/broadcasts/Import.tsx
 msgid "{size} · pick another file"
 msgstr "{size} · başka bir dosya seçin"
@@ -1052,6 +1063,10 @@ msgstr "{size} · başka bir dosya seçin"
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} spam olarak işaretlendi"
+
+#: src/features/mail/MailThread.tsx
+msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
+msgstr "{stackCount, plural, one {Önceki # iletiyi göster} other {Önceki # iletiyi göster}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -1076,6 +1091,11 @@ msgstr "{total, plural, one {Son 30 gün · # bülten} other {Son 30 gün · # b
 #: src/features/reports/ReportPages.tsx
 msgid "{total} in total"
 msgstr "Toplam {total}"
+
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "{unreadText} unread"
+msgstr "{unreadText} okunmamış"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "{unseenText} unread of {totalText}"
@@ -2285,6 +2305,7 @@ msgid "Added the domain {domain} for single sign-on"
 msgstr "{domain} alan adı tek oturum açma için eklendi"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -2444,6 +2465,7 @@ msgid "All languages"
 msgstr "Tüm diller"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "Tüm postalar"
@@ -2451,6 +2473,10 @@ msgstr "Tüm postalar"
 #: src/features/account/AccountPage.tsx
 msgid "All marked as read"
 msgstr "Hepsi okundu olarak işaretlendi"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "All mentions"
+msgstr "Tüm bahsetmeler"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/StatusPages.tsx
@@ -2474,8 +2500,10 @@ msgid "all products"
 msgstr "tüm ürünler"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -3334,9 +3362,12 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "Atanan: {assignee} (yalnızca adıyla)"
 
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "Size atandı"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
@@ -3349,6 +3380,7 @@ msgstr "Asistan"
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "Assistants"
 msgstr "Asistanlar"
 
@@ -3555,6 +3587,7 @@ msgstr "Taslağa dön"
 msgid "Back to setup"
 msgstr "Kuruluma dön"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
@@ -3617,6 +3650,7 @@ msgid "Beats only when the job succeeded."
 msgstr "Yalnızca iş başarılı olduğunda sinyal gönderir."
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "Öncesi"
 
@@ -4212,6 +4246,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "Gönderim alan adını değiştirmek, yeni alan adı için yeniden açana kadar DKIM imzalamayı kapatır."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4427,7 +4462,6 @@ msgstr "Bir çalışma alanı seçin"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "Listeden birini seçin ya da ↑ ↓ ile gezinip Enter ile açın."
 
@@ -4619,6 +4653,7 @@ msgstr "Aramayı kapat (Esc)"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Closed"
@@ -5033,6 +5068,7 @@ msgstr "İzin kaydı"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5143,6 +5179,7 @@ msgstr "Kuruluşunuzun girişiyle devam edin"
 msgid "Convers."
 msgstr "Konuş."
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "Konuşma"
@@ -5185,6 +5222,8 @@ msgstr "konuşma"
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -5199,10 +5238,6 @@ msgstr "Konuşmalar ve yanıtlar"
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "Kopyalanan konuşmalar"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Conversations from every product"
-msgstr "Tüm ürünlerden konuşmalar"
 
 #: src/features/contact/DeleteContactDialog.tsx
 msgid "Conversations in mailboxes you cannot read are deleted with it"
@@ -6221,6 +6256,10 @@ msgstr "Masaüstü bildirimleri bu site için tarayıcı ayarlarında engelli, b
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -7175,6 +7214,11 @@ msgstr "Açık tartışmaların hepsinin bir yanıtı var."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Diğer tüm tarayıcılarda ve cihazlarda oturum kapatılır. Bu cihazdaki oturum açık kalır."
 
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "every product"
+msgstr "tüm ürünler"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "Tüm ürünler"
@@ -7514,7 +7558,6 @@ msgid "Filled with the values of {who}"
 msgstr "{who} kişisinin bilgileriyle doldurulur"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "Filtre"
@@ -7549,6 +7592,7 @@ msgstr "Buna benzeyen iletileri filtrele"
 
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Filters"
 msgstr "Filtreler"
 
@@ -7660,6 +7704,10 @@ msgstr "ilk yanıt {first}"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "İlk yanıt, 90. yüzdelik"
+
+#: src/features/inbox/InboxSide.tsx
+msgid "First reply, median"
+msgstr "İlk yanıt, ortanca"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -7910,6 +7958,7 @@ msgstr "Cuma"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8850,12 +8899,17 @@ msgid "In the Google Admin console, open Apps › Google Workspace › Gmail ›
 msgstr "Google Yönetici Konsolu'nda Uygulamalar › Google Workspace › Gmail › Yönlendirme'yi açın."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/MailSide.tsx
 msgid "In the inbox"
 msgstr "Gelen kutusunda"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "In this browser tab"
 msgstr "Bu tarayıcı sekmesinde"
+
+#: src/features/mail/MailSide.tsx
+msgid "In this thread"
+msgstr "Bu yazışmada"
 
 #: src/components/common/BulkReport.tsx
 msgid "In use by {names}"
@@ -8881,7 +8935,6 @@ msgstr "Zoho Mail'de Ayarlar › Posta hesapları › IMAP erişimi'ni açın ve
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/InstallDialog.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10117,6 +10170,7 @@ msgstr "Tek oturum açmayı zorunlu yaptı"
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Mail"
 msgstr "Posta"
 
@@ -10224,6 +10278,10 @@ msgstr "Destek adresinize gelen postalar, aynı adresten yanıtlanır"
 msgid "Mail, {mailUnread} unread"
 msgstr "Posta, {mailUnread} okunmamış"
 
+#: src/features/mail/MailSide.tsx
+msgid "Mailbox"
+msgstr "Posta kutusu"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "Posta kutusu adresi"
@@ -10232,6 +10290,7 @@ msgstr "Posta kutusu adresi"
 msgid "Mailbox: {name}"
 msgstr "Posta kutusu: {name}"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -10554,6 +10613,7 @@ msgstr "sizden bahsetti"
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -10627,6 +10687,7 @@ msgid "Message type"
 msgstr "Mesaj türü"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -11420,6 +11481,7 @@ msgid "New mail"
 msgstr "Yeni posta"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "New mailbox"
 msgstr "Yeni posta kutusu"
 
@@ -13204,6 +13266,7 @@ msgstr "Yalnızca ekibiniz görür."
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/status/StatusPages.tsx
@@ -14167,10 +14230,6 @@ msgstr "Tetikleyiciyi kaydetmek için bir liste seçin"
 msgid "Pick a list under Who gets it to save"
 msgstr "Kaydetmek için “Kim alır” altında bir liste seçin"
 
-#: src/features/mail/MailPage.tsx
-msgid "Pick a mail"
-msgstr "Bir e-posta seçin"
-
 #: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -14591,6 +14650,8 @@ msgstr "pro, ekip"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -15583,6 +15644,7 @@ msgstr "Başka bir konuşmanın dizisinde yanıtlandı"
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
@@ -15635,6 +15697,8 @@ msgid "Replies to a broadcast"
 msgstr "Bülten yanıtları"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Replies to mail we sent"
@@ -15923,6 +15987,10 @@ msgstr "Yanıt süresi, son 24 saat"
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "Yanıt süreleri"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Rest of the team"
+msgstr "Ekibin geri kalanı"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16222,6 +16290,7 @@ msgstr "Sandbox (geliştirme sürümleri)"
 msgid "Satisfaction"
 msgstr "Memnuniyet"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Satisfied"
@@ -16340,6 +16409,7 @@ msgid "Saved"
 msgstr "Kaydedildi"
 
 #: src/app/ViewsGroup.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 msgid "Saved views"
 msgstr "Kayıtlı görünümler"
@@ -16580,6 +16650,8 @@ msgid "Search operators"
 msgstr "Arama işleçleri"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Search or jump to…"
 msgstr "Ara veya şuraya git…"
 
@@ -18260,6 +18332,7 @@ msgstr "Yıldız ekle ya da kaldır (S)"
 msgid "Star removed"
 msgstr "Yıldız kaldırıldı"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/queries.ts
 msgid "Starred"
 msgstr "Yıldız eklendi"
@@ -18327,6 +18400,8 @@ msgid "Start your mailing list"
 msgstr "E-posta listenizi başlatın"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Started"
 msgstr "Başladı"
 
@@ -18408,6 +18483,8 @@ msgstr "Düştüğündeki durum"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -20796,8 +20873,10 @@ msgid "To: {who}"
 msgstr "Alıcı: {who}"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21065,6 +21144,7 @@ msgstr "Atamayı kaldır"
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "Atanmamış"
@@ -21261,6 +21341,10 @@ msgstr "Okunmamış"
 #: src/features/inbox/ChatList.tsx
 msgid "Unread · {0}"
 msgstr "Okunmamış · {0}"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "Unread mentions"
+msgstr "Okunmamış bahsetmeler"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/inbox/ChatList.tsx
@@ -22655,6 +22739,7 @@ msgstr "Postanızı yazın…"
 msgid "Yes"
 msgstr "Evet"
 
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
 msgid "Yesterday"

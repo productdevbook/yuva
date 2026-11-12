@@ -2,7 +2,18 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { PaperclipIcon, TriangleAlertIcon } from "lucide-react"
 import { useMemo, useRef } from "react"
 
-import { ContactAvatar, ErrorLine } from "@/components/common"
+import {
+  ContactAvatar,
+  dayOf,
+  ErrorLine,
+  FlatEmpty,
+  FlatRow,
+  FlatTag,
+  FlatTime,
+  groupRuns,
+  ListGroup,
+  useDayLabel,
+} from "@/components/common"
 import { formatShort } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -95,12 +106,77 @@ function Row({
   )
 }
 
+function FlatDraftRow({
+  item,
+  current,
+  cursor,
+  showInbox,
+  onOpen,
+}: {
+  item: DraftItem
+  current: boolean
+  cursor: boolean
+  showInbox: boolean
+  onOpen: () => void
+}) {
+  const { t, i18n } = useLingui()
+  const inbox = useInboxes().data?.find((i) => i.id === item.conversation.inbox_id)
+  const d = item.draft
+  const who = item.conversation.contact.name || item.conversation.contact.email || t`Unknown sender`
+  const subject = item.conversation.subject.trim() || t`(no subject)`
+  const line = d.body.replace(/\s+/g, " ").trim()
+  return (
+    <FlatRow
+      color={inbox?.branding.color}
+      current={current}
+      cursor={cursor}
+      data-testid="mail-row"
+      data-conversation-id={item.conversation.id}
+      button={{ onClick: onOpen, "aria-current": current || undefined, "data-testid": "mail-open" }}
+      who={
+        <span className="min-w-0 truncate" data-testid="mail-sender">
+          {t`To: ${who}`}
+        </span>
+      }
+      end={
+        <>
+          {showInbox && inbox && <FlatTag className="@max-2xl/list:hidden">{inbox.name}</FlatTag>}
+          {d.attachments.length > 0 && (
+            <PaperclipIcon className="size-3.5 shrink-0 text-muted2" aria-label={t`Has attachments`} />
+          )}
+          <FlatTime iso={d.created_at}>{formatShort(d.created_at, i18n.locale)}</FlatTime>
+        </>
+      }
+    >
+      <span className="text-foreground" data-testid="mail-subject">
+        {subject}
+      </span>
+      {"  "}
+      {d.send_error ? (
+        <span className="text-destructive" data-testid="mail-draft-failed">
+          <TriangleAlertIcon className="me-1 inline size-3.5 align-[-2px]" />
+          {d.send_error.detail}
+        </span>
+      ) : (
+        <span className="text-muted-foreground" data-testid="mail-line">
+          <span className="font-semibold text-destructive">
+            <Trans>Draft:</Trans>
+          </span>{" "}
+          {line}
+        </span>
+      )}
+    </FlatRow>
+  )
+}
+
 export function MailDrafts({
   box,
   currentId,
   onOpen,
   onCompose,
   active,
+  flat = false,
+  hidden = false,
   head,
 }: {
   box: string
@@ -108,9 +184,12 @@ export function MailDrafts({
   onOpen: (id: string, editDraft?: string) => void
   onCompose: (item: DraftItem) => void
   active: boolean
+  flat?: boolean
+  hidden?: boolean
   head?: React.ReactNode
 }) {
   const { t } = useLingui()
+  const dayLabel = useDayLabel()
   const mailBoxes = useMailInboxes()
   const scroller = useRef<HTMLDivElement>(null)
   const list = useDrafts({ inbox_id: box === "all" ? undefined : box, mine: true, scheduled: false })
@@ -132,8 +211,67 @@ export function MailDrafts({
       if (item) open(item)
     },
     active,
-    scroller
+    scroller,
+    !hidden,
+    !!flat && !hidden
   )
+
+  if (flat) {
+    return (
+      <nav
+        aria-label={t`Drafts`}
+        className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
+        data-testid="mail-list"
+      >
+        {head}
+        <div ref={scroller} data-testid="list">
+          {list.isPending ? (
+            <div className="mt-7 flex flex-col gap-3">
+              {[0, 1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-5 w-full" />
+              ))}
+            </div>
+          ) : items.length === 0 && !list.hasNextPage ? (
+            <FlatEmpty testId="list-empty">
+              <p className="m-0">
+                <Trans>You have no drafts. Mail you start writing is kept here.</Trans>
+              </p>
+            </FlatEmpty>
+          ) : (
+            <div className="mt-7">
+              {groupRuns(items, (i) => dayOf(i.draft.created_at)).map((g) => (
+                <ListGroup key={g.key} label={dayLabel(g.items[0].draft.created_at)}>
+                  {g.items.map((item) => (
+                    <FlatDraftRow
+                      key={item.draft.id}
+                      item={item}
+                      current={item.conversation.id === currentId}
+                      cursor={item.conversation.id === cursorId}
+                      showInbox={box === "all"}
+                      onOpen={() => open(item)}
+                    />
+                  ))}
+                </ListGroup>
+              ))}
+            </div>
+          )}
+          {list.hasNextPage && (
+            <div className="flex justify-center p-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => void list.fetchNextPage()}
+                disabled={list.isFetchingNextPage}
+              >
+                <Trans>Load more</Trans>
+              </Button>
+            </div>
+          )}
+          <ErrorLine error={list.error} className="py-2" />
+        </div>
+      </nav>
+    )
+  }
 
   return (
     <nav aria-label={t`Drafts`} className="flex h-full min-h-0 flex-col bg-surface" data-testid="mail-list">

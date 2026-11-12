@@ -21,6 +21,7 @@ msgstr "“ಈ ಪುಟ ಸಹಾಯಕವಾಗಿತ್ತೇ?”, ನಿಮ�
 
 #: src/features/mail/MailDrafts.tsx
 #: src/features/mail/MailList.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/MailThread.tsx
 #: src/features/migrations/CopyStep.tsx
 msgid "(no subject)"
@@ -69,6 +70,11 @@ msgstr "{0, plural, one {# hour after someone confirms {list}} other {# hours af
 #: src/features/broadcasts/Trigger.tsx
 msgid "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
 msgstr "{0, plural, one {# hour after someone starts to match {match}} other {# hours after someone starts to match {match}}}"
+
+#. placeholder {0}: items.length
+#: src/features/inbox/SidePanels.tsx
+msgid "{0, plural, one {# mention} other {# mentions}}"
+msgstr "{0, plural, one {# ಉಲ್ಲೇಖ} other {# ಉಲ್ಲೇಖಗಳು}}"
 
 #. placeholder {0}: l.fallback
 #: src/features/broadcasts/AudienceBuilder.tsx
@@ -587,6 +593,10 @@ msgstr "{listName} ಸಿದ್ಧವಾಗಿದೆ"
 msgid "{liveText} in the last 30 minutes"
 msgstr "ಕಳೆದ 30 ನಿಮಿಷಗಳಲ್ಲಿ {liveText}"
 
+#: src/features/mail/MailThread.tsx
+msgid "{mailCount, plural, one {# message} other {# messages}}"
+msgstr "{mailCount, plural, one {# ಸಂದೇಶ} other {# ಸಂದೇಶಗಳು}}"
+
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
 msgstr "{met} ಪೂರೈಸಲಾಗಿದೆ, {breached} ಉಲ್ಲಂಘಿಸಲಾಗಿದೆ"
@@ -688,6 +698,7 @@ msgid "{n} attempts"
 msgstr "{n} ಪ್ರಯತ್ನಗಳು"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "{n} conversations"
 msgstr "{n} ಸಂಭಾಷಣೆಗಳು"
 
@@ -890,10 +901,6 @@ msgstr "{person} ಖಾತೆಯನ್ನು ಅಳಿಸಿ ವರ್ಕ್‌�
 msgid "{picked} selected"
 msgstr "{picked} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ"
 
-#: src/features/inbox/ChatsPage.tsx
-msgid "{product}’s conversations"
-msgstr "{product} ಸಂಭಾಷಣೆಗಳು"
-
 #: src/features/migrations/text.ts
 msgid "{provider} accepts no passwords over IMAP. This mailbox connects only with “Sign in with Microsoft”: go back and pick Outlook.com and Microsoft 365."
 msgstr "{provider} IMAP ಮೂಲಕ ಪಾಸ್‌ವರ್ಡ್‌ಗಳನ್ನು ಸ್ವೀಕರಿಸುವುದಿಲ್ಲ. ಈ ಮೇಲ್‌ಬಾಕ್ಸ್ “Microsoft ನೊಂದಿಗೆ ಸೈನ್ ಇನ್” ಮೂಲಕ ಮಾತ್ರ ಸಂಪರ್ಕಿಸುತ್ತದೆ: ಹಿಂದೆ ಹೋಗಿ Outlook.com ಮತ್ತು Microsoft 365 ಆಯ್ಕೆಮಾಡಿ."
@@ -1045,6 +1052,10 @@ msgstr "{share} ಸಹಾಯಕ"
 msgid "{share} uptime"
 msgstr "{share} ಅಪ್‌ಟೈಮ್"
 
+#: src/features/inbox/ChatsPage.tsx
+msgid "{shown, plural, one {# conversation} other {# conversations}}"
+msgstr "{shown, plural, one {# ಸಂಭಾಷಣೆ} other {# ಸಂಭಾಷಣೆಗಳು}}"
+
 #: src/features/broadcasts/Import.tsx
 msgid "{size} · pick another file"
 msgstr "{size} · ಬೇರೆ ಫೈಲ್ ಆರಿಸಿ"
@@ -1052,6 +1063,10 @@ msgstr "{size} · ಬೇರೆ ಫೈಲ್ ಆರಿಸಿ"
 #: src/features/broadcasts/Overview.tsx
 msgid "{spam} marked as spam"
 msgstr "{spam} ಸ್ಪ್ಯಾಮ್ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ"
+
+#: src/features/mail/MailThread.tsx
+msgid "{stackCount, plural, one {Show # earlier message} other {Show # earlier messages}}"
+msgstr "{stackCount, plural, one {ಹಿಂದಿನ # ಸಂದೇಶ ತೋರಿಸಿ} other {ಹಿಂದಿನ # ಸಂದೇಶಗಳನ್ನು ತೋರಿಸಿ}}"
 
 #: src/features/status/StatusPages.tsx
 msgid "{state} since {since}"
@@ -1076,6 +1091,11 @@ msgstr "{total, plural, one {ಕಳೆದ 30 ದಿನಗಳು · # ಬ್ರ�
 #: src/features/reports/ReportPages.tsx
 msgid "{total} in total"
 msgstr "ಒಟ್ಟು {total}"
+
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "{unreadText} unread"
+msgstr "{unreadText} ಓದದವು"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "{unseenText} unread of {totalText}"
@@ -2285,6 +2305,7 @@ msgid "Added the domain {domain} for single sign-on"
 msgstr "ಸಿಂಗಲ್ ಸೈನ್-ಆನ್‌ಗಾಗಿ ಡೊಮೇನ್ {domain} ಸೇರಿಸಿದರು"
 
 #: src/features/conversation/Feedback.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
 #: src/features/setup/email/EmailLayout.tsx
 #: src/features/status/CreatePageDialog.tsx
@@ -2444,6 +2465,7 @@ msgid "All languages"
 msgstr "ಎಲ್ಲಾ ಭಾಷೆಗಳು"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/text.ts
 msgid "All mail"
 msgstr "ಎಲ್ಲಾ ಮೇಲ್"
@@ -2451,6 +2473,10 @@ msgstr "ಎಲ್ಲಾ ಮೇಲ್"
 #: src/features/account/AccountPage.tsx
 msgid "All marked as read"
 msgstr "ಎಲ್ಲವನ್ನೂ ಓದಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "All mentions"
+msgstr "ಎಲ್ಲ ಉಲ್ಲೇಖಗಳು"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/StatusPages.tsx
@@ -2474,8 +2500,10 @@ msgid "all products"
 msgstr "ಎಲ್ಲಾ ಉತ್ಪನ್ನಗಳು"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
@@ -3334,9 +3362,12 @@ msgid "Assigned to {assignee}, kept by name"
 msgstr "{assignee} ಅವರಿಗೆ ನಿಯೋಜಿಸಲಾಗಿದೆ, ಹೆಸರಿನಿಂದ ಉಳಿಸಲಾಗಿದೆ"
 
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 msgid "Assigned to you"
 msgstr "ನಿಮಗೆ ನಿಯೋಜಿಸಲಾಗಿದೆ"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Assignee"
@@ -3349,6 +3380,7 @@ msgstr "ಸಹಾಯಕ"
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AssistantsPage.tsx
+#: src/features/inbox/ChatsPage.tsx
 msgid "Assistants"
 msgstr "ಸಹಾಯಕರು"
 
@@ -3555,6 +3587,7 @@ msgstr "ಡ್ರಾಫ್ಟ್‌ಗೆ ಹಿಂತಿರುಗಿ"
 msgid "Back to setup"
 msgstr "ಸೆಟಪ್‌ಗೆ ಹಿಂತಿರುಗಿ"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/conversation/ChatView.tsx
 #: src/features/mail/MailThread.tsx
 msgid "Back to the list"
@@ -3617,6 +3650,7 @@ msgid "Beats only when the job succeeded."
 msgstr "ಕೆಲಸ ಯಶಸ್ವಿಯಾದಾಗ ಮಾತ್ರ ಸಂಕೇತ ಕಳುಹಿಸುತ್ತದೆ."
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Before"
 msgstr "ಮೊದಲು"
 
@@ -4212,6 +4246,7 @@ msgid "Changing the sending domain turns DKIM signing off until you enable it ag
 msgstr "ಕಳುಹಿಸುವ ಡೊಮೇನ್ ಬದಲಾಯಿಸಿದರೆ ಹೊಸ ಡೊಮೇನ್‌ಗಾಗಿ ಮತ್ತೆ ಸಕ್ರಿಯಗೊಳಿಸುವವರೆಗೆ DKIM ಸೈನಿಂಗ್ ಆಫ್ ಆಗುತ್ತದೆ."
 
 #: src/features/contact/ContactDetails.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -4427,7 +4462,6 @@ msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್ ಆರಿಸಿ"
 
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatsPage.tsx
-#: src/features/mail/MailPage.tsx
 msgid "Choose one from the list, or move with ↑ ↓ and open it with Enter."
 msgstr "ಪಟ್ಟಿಯಿಂದ ಒಂದನ್ನು ಆರಿಸಿ, ಅಥವಾ ↑ ↓ ನಿಂದ ಚಲಿಸಿ ಮತ್ತು Enter ನಿಂದ ತೆರೆಯಿರಿ."
 
@@ -4619,6 +4653,7 @@ msgstr "ಹುಡುಕಾಟ ಮುಚ್ಚಿ (Esc)"
 
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Closed"
@@ -5033,6 +5068,7 @@ msgstr "ಒಪ್ಪಿಗೆ ದಾಖಲೆ"
 
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Contact"
@@ -5143,6 +5179,7 @@ msgstr "Continue with your organisation's sign-in"
 msgid "Convers."
 msgstr "ಸಂಭಾ."
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
 msgstr "ಸಂಭಾಷಣೆ"
@@ -5185,6 +5222,8 @@ msgstr "ಸಂಭಾಷಣೆಗಳು"
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -5199,10 +5238,6 @@ msgstr "ಸಂಭಾಷಣೆಗಳು ಮತ್ತು ಉತ್ತರಗಳು"
 #: src/features/migrations/parts.tsx
 msgid "Conversations copied"
 msgstr "ಸಂಭಾಷಣೆಗಳನ್ನು ನಕಲಿಸಲಾಗಿದೆ"
-
-#: src/features/inbox/ChatsPage.tsx
-msgid "Conversations from every product"
-msgstr "ಎಲ್ಲ ಉತ್ಪನ್ನಗಳ ಸಂಭಾಷಣೆಗಳು"
 
 #: src/features/contact/DeleteContactDialog.tsx
 msgid "Conversations in mailboxes you cannot read are deleted with it"
@@ -6221,6 +6256,10 @@ msgstr "ಬ್ರೌಸರ್‌ನ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್�
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+#: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -7175,6 +7214,11 @@ msgstr "ಪ್ರತಿ ತೆರೆದ ಚರ್ಚೆಗೂ ಉತ್ತರವ
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "ಉಳಿದ ಎಲ್ಲ ಬ್ರೌಸರ್‌ಗಳು ಮತ್ತು ಸಾಧನಗಳಿಂದ ಸೈನ್ ಔಟ್ ಆಗುತ್ತದೆ. ಈ ಸಾಧನ ಸೈನ್ ಇನ್ ಆಗಿಯೇ ಇರುತ್ತದೆ."
 
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/SidePanels.tsx
+msgid "every product"
+msgstr "ಎಲ್ಲ ಉತ್ಪನ್ನಗಳು"
+
 #: src/features/contact/ContactsPage.tsx
 msgid "Every product"
 msgstr "ಪ್ರತಿ ಉತ್ಪನ್ನ"
@@ -7514,7 +7558,6 @@ msgid "Filled with the values of {who}"
 msgstr "{who} ಅವರ ಮೌಲ್ಯಗಳಿಂದ ತುಂಬಲಾಗಿದೆ"
 
 #: src/features/inbox/ChatList.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Filter"
 msgstr "ಫಿಲ್ಟರ್"
@@ -7549,6 +7592,7 @@ msgstr "ಇದರಂತಹ ಸಂದೇಶಗಳನ್ನು ಫಿಲ್ಟರ�
 
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Filters"
 msgstr "ಫಿಲ್ಟರ್‌ಗಳು"
 
@@ -7660,6 +7704,10 @@ msgstr "{first} ನಲ್ಲಿ ಮೊದಲ ಉತ್ತರ"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "ಮೊದಲ ಉತ್ತರ, ೯೦ನೇ ಪರ್ಸೆಂಟೈಲ್"
+
+#: src/features/inbox/InboxSide.tsx
+msgid "First reply, median"
+msgstr "ಮೊದಲ ಉತ್ತರ, ಮಧ್ಯಮ"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -7910,6 +7958,7 @@ msgstr "ಶುಕ್ರವಾರ"
 #: src/features/broadcasts/SendTime.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/mail/Compose.tsx
+#: src/features/mail/MailThread.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/setup/previews.tsx
@@ -8850,12 +8899,17 @@ msgid "In the Google Admin console, open Apps › Google Workspace › Gmail ›
 msgstr "Google Admin console ನಲ್ಲಿ, Apps › Google Workspace › Gmail › Routing ತೆರೆಯಿರಿ."
 
 #: src/features/broadcasts/Composer.tsx
+#: src/features/mail/MailSide.tsx
 msgid "In the inbox"
 msgstr "ಇನ್‌ಬಾಕ್ಸ್‌ನಲ್ಲಿ"
 
 #: src/features/settings/notifications/TabAlertsSection.tsx
 msgid "In this browser tab"
 msgstr "ಈ ಬ್ರೌಸರ್ ಟ್ಯಾಬ್‌ನಲ್ಲಿ"
+
+#: src/features/mail/MailSide.tsx
+msgid "In this thread"
+msgstr "ಈ ಥ್ರೆಡ್‌ನಲ್ಲಿ"
 
 #: src/components/common/BulkReport.tsx
 msgid "In use by {names}"
@@ -8881,7 +8935,6 @@ msgstr "Zoho Mail ನಲ್ಲಿ, Settings › Mail accounts › IMAP access �
 #: src/features/broadcasts/NewBroadcastDialog.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/docs/InstallDialog.tsx
-#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/migrations/text.ts
 #: src/features/settings/automation/RuleDialog.tsx
@@ -10117,6 +10170,7 @@ msgstr "ಸಿಂಗಲ್ ಸೈನ್-ಆನ್ ಅನ್ನು ಕಡ್ಡ�
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Mail"
 msgstr "ಮೇಲ್"
 
@@ -10224,6 +10278,10 @@ msgstr "ನಿಮ್ಮ ಬೆಂಬಲ ವಿಳಾಸಕ್ಕೆ ಮೇಲ್
 msgid "Mail, {mailUnread} unread"
 msgstr "ಮೇಲ್, {mailUnread} ಓದದವು"
 
+#: src/features/mail/MailSide.tsx
+msgid "Mailbox"
+msgstr "ಮೇಲ್‌ಬಾಕ್ಸ್"
+
 #: src/features/migrations/SourceStep.tsx
 msgid "Mailbox address"
 msgstr "ಮೇಲ್‌ಬಾಕ್ಸ್ ವಿಳಾಸ"
@@ -10232,6 +10290,7 @@ msgstr "ಮೇಲ್‌ಬಾಕ್ಸ್ ವಿಳಾಸ"
 msgid "Mailbox: {name}"
 msgstr "ಮೇಲ್‌ಬಾಕ್ಸ್: {name}"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -10554,6 +10613,7 @@ msgstr "ನಿಮ್ಮನ್ನು ಉಲ್ಲೇಖಿಸಿದ್ದಾರ�
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -10627,6 +10687,7 @@ msgid "Message type"
 msgstr "ಸಂದೇಶದ ಪ್ರಕಾರ"
 
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/webhooks/events.tsx
 msgid "Messages"
@@ -11420,6 +11481,7 @@ msgid "New mail"
 msgstr "ಹೊಸ ಮೇಲ್"
 
 #: src/features/mail/MailPage.tsx
+#: src/features/mail/MailSide.tsx
 msgid "New mailbox"
 msgstr "ಹೊಸ ಮೇಲ್‌ಬಾಕ್ಸ್"
 
@@ -13204,6 +13266,7 @@ msgstr "ನಿಮ್ಮ ತಂಡಕ್ಕೆ ಮಾತ್ರ ಕಾಣುತ್
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/ChatsPage.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
 #: src/features/status/StatusPages.tsx
@@ -14167,10 +14230,6 @@ msgstr "Pick a list to save the trigger"
 msgid "Pick a list under Who gets it to save"
 msgstr "Pick a list under Who gets it to save"
 
-#: src/features/mail/MailPage.tsx
-msgid "Pick a mail"
-msgstr "ಒಂದು ಮೇಲ್ ಆಯ್ಕೆಮಾಡಿ"
-
 #: src/components/common/MailboxOwnerChoice.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -14591,6 +14650,8 @@ msgstr "pro, team"
 #: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/inbox/SidePanels.tsx
 #: src/features/migrations/MigrationsPage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -15583,6 +15644,7 @@ msgstr "ಇನ್ನೊಂದು ಸಂಭಾಷಣೆಯ ಥ್ರೆಡ್‌�
 #: src/app/Palette.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/conversation/Feedback.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/channels/email/EmailSections.tsx
@@ -15635,6 +15697,8 @@ msgid "Replies to a broadcast"
 msgstr "ಬ್ರಾಡ್‌ಕಾಸ್ಟ್‌ಗೆ ಉತ್ತರಗಳು"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/ChatsPage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Replies to mail we sent"
@@ -15923,6 +15987,10 @@ msgstr "ಪ್ರತಿಕ್ರಿಯೆ ಸಮಯ, ಕಳೆದ 24 ಗಂಟ�
 #: src/features/reports/TrendsReport.tsx
 msgid "Response times"
 msgstr "ಪ್ರತಿಕ್ರಿಯೆ ಸಮಯ"
+
+#: src/features/inbox/ChatList.tsx
+msgid "Rest of the team"
+msgstr "ತಂಡದ ಉಳಿದವರು"
 
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
@@ -16222,6 +16290,7 @@ msgstr "ಸ್ಯಾಂಡ್‌ಬಾಕ್ಸ್ (ಅಭಿವೃದ್ಧಿ 
 msgid "Satisfaction"
 msgstr "ತೃಪ್ತಿ"
 
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Satisfied"
@@ -16340,6 +16409,7 @@ msgid "Saved"
 msgstr "ಉಳಿಸಲಾಗಿದೆ"
 
 #: src/app/ViewsGroup.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 msgid "Saved views"
 msgstr "ಉಳಿಸಿದ ವೀಕ್ಷಣೆಗಳು"
@@ -16580,6 +16650,8 @@ msgid "Search operators"
 msgstr "ಹುಡುಕಾಟ ಆಪರೇಟರ್‌ಗಳು"
 
 #: src/app/Sidebar.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Search or jump to…"
 msgstr "ಹುಡುಕಿ ಅಥವಾ ಹೋಗಿ…"
 
@@ -18260,6 +18332,7 @@ msgstr "ನಕ್ಷತ್ರ ಹಾಕಿ ಅಥವಾ ತೆಗೆಯಿರಿ
 msgid "Star removed"
 msgstr "ನಕ್ಷತ್ರ ತೆಗೆಯಲಾಗಿದೆ"
 
+#: src/features/mail/MailSide.tsx
 #: src/features/mail/queries.ts
 msgid "Starred"
 msgstr "ನಕ್ಷತ್ರ ಹಾಕಲಾಗಿದೆ"
@@ -18327,6 +18400,8 @@ msgid "Start your mailing list"
 msgstr "ನಿಮ್ಮ ಮೇಲಿಂಗ್ ಪಟ್ಟಿ ಆರಂಭಿಸಿ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 msgid "Started"
 msgstr "ಆರಂಭವಾಗಿದೆ"
 
@@ -18408,6 +18483,8 @@ msgstr "ಸ್ಥಗಿತಗೊಂಡಾಗ ಸ್ಥಿತಿ"
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
+#: src/features/inbox/InboxSide.tsx
+#: src/features/mail/MailSide.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
@@ -20796,8 +20873,10 @@ msgid "To: {who}"
 msgstr "ಇವರಿಗೆ: {who}"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21065,6 +21144,7 @@ msgstr "ನಿಯೋಜನೆ ತೆಗೆದುಹಾಕಿ"
 #: src/features/conversation/ChatView.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/inbox/InboxSide.tsx
 #: src/features/settings/macros/MacroDialog.tsx
 msgid "Unassigned"
 msgstr "ನಿಯೋಜಿಸಿಲ್ಲ"
@@ -21261,6 +21341,10 @@ msgstr "ಓದಿಲ್ಲ"
 #: src/features/inbox/ChatList.tsx
 msgid "Unread · {0}"
 msgstr "ಓದದವು · {0}"
+
+#: src/features/inbox/SidePanels.tsx
+msgid "Unread mentions"
+msgstr "ಓದದ ಉಲ್ಲೇಖಗಳು"
 
 #: src/features/account/AccountPage.tsx
 #: src/features/inbox/ChatList.tsx
@@ -22655,6 +22739,7 @@ msgstr "ನಿಮ್ಮ ಮೇಲ್ ಬರೆಯಿರಿ…"
 msgid "Yes"
 msgstr "ಹೌದು"
 
+#: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
 msgid "Yesterday"

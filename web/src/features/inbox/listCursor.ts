@@ -8,7 +8,9 @@ export function useListCursor(
   currentId: string | null,
   onOpen: (id: string) => void,
   active: boolean,
-  scroller: React.RefObject<HTMLElement | null>
+  scroller: React.RefObject<HTMLElement | null>,
+  arrows = true,
+  browse = false
 ) {
   const [cursorId, setCursorId] = useState<string | null>(null)
   const reveal = (id: string) =>
@@ -39,11 +41,24 @@ export function useListCursor(
   }
   useHotkeys(
     {
-      ArrowDown: () => moveCursor(1),
-      ArrowUp: () => moveCursor(-1),
-      Enter: () => cursorId && openCursor(),
-      [SHORTCUTS.next]: () => step(1),
-      [SHORTCUTS.previous]: () => step(-1),
+      ...(arrows
+        ? {
+            ArrowDown: () => moveCursor(1),
+            ArrowUp: () => moveCursor(-1),
+            Enter: () => cursorId && openCursor(),
+          }
+        : {}),
+      ...(browse
+        ? {
+            [SHORTCUTS.next]: () => moveCursor(1),
+            [SHORTCUTS.previous]: () => moveCursor(-1),
+            Enter: () => openCursor(),
+            o: () => openCursor(),
+          }
+        : {
+            [SHORTCUTS.next]: () => step(1),
+            [SHORTCUTS.previous]: () => step(-1),
+          }),
     },
     active
   )

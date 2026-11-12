@@ -147,7 +147,12 @@ export function Layout() {
   const { apart } = useSession()
   const section = useSection()
   useMentionsView(pathname, apart)
-  if (!phone && section === "home") {
+  const flatPage =
+    section === "home" ||
+    isChats(pathname, apart) ||
+    section === "mentions" ||
+    (section === "mail" && !/^\/mail\/[^/]+\/filters$/.test(pathname))
+  if (!phone && flatPage) {
     return (
       <Flat>
         <Outlet />

@@ -31,6 +31,11 @@ import {
   ContactAvatar,
   Dot,
   ErrorLine,
+  FlatEmpty,
+  FlatRow,
+  FlatTag,
+  FlatTime,
+  ListGroup,
   ImportedChip,
   isVisitor,
   Kbd,
@@ -103,7 +108,7 @@ import { useSetAvailability } from "@/lib/availability"
 import { useSession } from "@/lib/session"
 import { useTyping } from "@/lib/typing"
 import { cn } from "@/lib/utils"
-import { useChannelMap, useLabels, useMemberMap, useMyTeams, useTeams } from "@/lib/workspace"
+import { useChannelMap, useInboxes, useLabels, useMemberMap, useMyTeams, useTeams } from "@/lib/workspace"
 
 export type Chip = "waiting" | "all" | "mine" | "teams" | "unassigned" | "snoozed" | "done" | "spam" | "trash"
 export const PAGE_CHIPS: Chip[] = ["waiting", "all", "mine", "teams", "unassigned", "snoozed", "done"]
@@ -381,6 +386,147 @@ function Row({
         )}
       </span>
     </button>
+  )
+}
+
+function FlatChatRow({
+  c,
+  current,
+  cursor,
+  live,
+  selecting,
+  checked,
+  onOpen,
+}: {
+  c: ConversationListItem
+  current: boolean
+  cursor: boolean
+  live: boolean
+  selecting: boolean
+  checked: boolean
+  onOpen: (range: boolean) => void
+}) {
+  const { t, i18n } = useLingui()
+  const channel = useChannelMap().get(c.channel_id ?? "")
+  const members = useMemberMap()
+  const inbox = useInboxes().data?.find((i) => i.id === c.inbox_id)
+  const assignee = c.assignee_id ? members.get(c.assignee_id) : undefined
+  const contactName = useContactName()
+  const name = contactName(c, channel, c.contact.name, c.contact.email)
+  const source = sourceOf(c, channel)
+  const sourceText = useSourceText()
+  const rating = currentRating(c)
+  const labels = useLabels().data ?? []
+  const chips = labels.filter((l) => c.labels.includes(l.id))
+  const waiting = isWaiting(c)
+  const now = useNow(60_000)
+  const subject = c.subject.trim()
+  const since = c.assign_waiting_since ? formatDateTime(c.assign_waiting_since, i18n.locale) : ""
+  return (
+    <FlatRow
+      color={inbox?.branding.color}
+      current={current}
+      cursor={cursor}
+      checked={checked}
+      button={{
+        onClick: (e) => onOpen(e.shiftKey),
+        "aria-current": current || undefined,
+        "aria-pressed": selecting ? checked : undefined,
+        "data-checked": checked || undefined,
+        "data-testid": "list-row",
+        "data-conversation-id": c.id,
+        "data-unread": c.unread || undefined,
+        "data-pinned": c.pinned_at ? true : undefined,
+        title: inbox?.name,
+      }}
+      lead={
+        selecting ? (
+          <span
+            aria-hidden
+            className={cn(
+              "grid size-[18px] place-items-center rounded-[5px] border-[1.5px]",
+              checked ? "border-foreground bg-foreground text-background" : "border-input bg-card"
+            )}
+            data-testid="row-check"
+          >
+            {checked && <CheckIcon className="size-3.5" strokeWidth={3} />}
+          </span>
+        ) : undefined
+      }
+      who={
+        <>
+          {c.pinned_at && (
+            <PinIcon className="size-3 shrink-0 rotate-45 text-faint" aria-label={t`Pinned`} data-testid="row-pinned" />
+          )}
+          <span className={cn("min-w-0 truncate", c.unread && "font-semibold text-foreground")}>{name}</span>
+          {live && (
+            <span className="size-2 shrink-0 rounded-full bg-success" title={t`Online now`} data-testid="row-live" />
+          )}
+        </>
+      }
+      end={
+        <>
+          {c.priority === "urgent" && (
+            <span className="shrink-0 rounded-full bg-destructive/10 px-1.5 text-[11px] leading-[18px] font-semibold text-destructive">
+              <Trans>Urgent</Trans>
+            </span>
+          )}
+          <span className="flex min-w-0 items-center gap-1.5 @max-3xl/list:hidden" data-testid="row-source">
+            {c.imported && <ImportedChip at={c.imported.at} />}
+            {c.broadcast_id && (
+              <MegaphoneIcon
+                className="size-3.5 shrink-0 text-brand"
+                aria-label={t`Reply to a broadcast`}
+                data-testid="row-broadcast"
+              />
+            )}
+            {chips.slice(0, 2).map((l) => (
+              <LabelTag key={l.id} name={l.name} />
+            ))}
+            {source && <FlatTag>{sourceText[source]}</FlatTag>}
+          </span>
+          {c.sla && <SlaBadge sla={c.sla} />}
+          {rating && <RatingMark rating={rating.rating} comment={rating.comment} />}
+          {!assignee && c.assign_waiting_since && (
+            <ClockIcon
+              className="size-3.5 shrink-0 text-warning"
+              aria-label={t`Waiting for an available teammate since ${since}`}
+              data-testid="row-assign-waiting"
+            />
+          )}
+          {assignee && (
+            <span
+              className="shrink-0 @max-2xl/list:hidden"
+              title={t`Assigned to ${assignee.name || assignee.email}`}
+              data-testid="row-assignee"
+            >
+              <MemberAvatar name={assignee.name || assignee.email} className="size-5 text-[9px]" />
+            </span>
+          )}
+          {c.unread && (
+            <span className="size-2 shrink-0 rounded-full bg-brand" aria-label={t`Unread`} data-testid="row-unread" />
+          )}
+          <FlatTime iso={c.last_activity_at} className={cn(waiting && "font-medium text-brand")}>
+            {waiting
+              ? formatDuration(Math.max(60, (now - Date.parse(c.last_activity_at)) / 1000), i18n.locale)
+              : formatShort(c.last_activity_at, i18n.locale)}
+          </FlatTime>
+        </>
+      }
+    >
+      <span className="flex min-w-0 items-center gap-1.5">
+        {c.trashed_at && <Trash2Icon className="size-3.5 shrink-0 text-faint" aria-label={t`Trash`} />}
+        {c.status === "snoozed" && <ClockIcon className="size-3.5 shrink-0 text-faint" aria-label={t`Snoozed`} />}
+        {subject && (
+          <span className={cn("shrink-0 truncate text-foreground", c.unread && "font-semibold", "max-w-[60%]")}>
+            {subject}
+          </span>
+        )}
+        <span className="flex min-w-0 flex-1 text-muted-foreground">
+          <Preview c={c} current={current} receipts={channel?.kind === "chat" || channel?.kind === "app"} />
+        </span>
+      </span>
+    </FlatRow>
   )
 }
 
@@ -719,6 +865,10 @@ function statusGroups(prev: ConversationListItem[]) {
   return groups.values()
 }
 
+export type ListShown = { shown: number; unread: number; more: boolean }
+
+type FlatGroup = "mine" | "unassigned" | "team"
+
 export function ChatList({
   currentId,
   onOpen,
@@ -728,6 +878,8 @@ export function ChatList({
   inbox: controlledInbox,
   onInbox,
   embedded = false,
+  flat = false,
+  hidden = false,
   head,
 }: {
   currentId: string | null
@@ -738,11 +890,13 @@ export function ChatList({
   inbox?: string
   onInbox?: (id: string) => void
   embedded?: boolean
-  head?: React.ReactNode
+  flat?: boolean
+  hidden?: boolean
+  head?: React.ReactNode | ((shown: ListShown) => React.ReactNode)
 }) {
   const { t } = useLingui()
   const errorText = useErrorText()
-  const { canManage } = useSession()
+  const { canManage, membership } = useSession()
   const [confirm, confirmDialog] = useConfirm()
   const tabs = useChips()
   const initialChip = useRememberedChip()
@@ -824,11 +978,32 @@ export function ChatList({
   const pinnedRows = [...pinnedLoaded, ...loaded.filter((c) => c.pinned_at && !pinnedLoaded.some((x) => x.id === c.id))]
     .filter((c) => c.pinned_at && keep(c))
     .sort(sort === "sla_due" ? () => 0 : byTime)
-  const mainRows = loaded.filter((c) => !c.pinned_at && keep(c))
-  if (sort === "oldest") mainRows.sort(byTime)
+  const sortedRows = loaded.filter((c) => !c.pinned_at && keep(c))
+  if (sort === "oldest") sortedRows.sort(byTime)
+  const me = membership.member_id
+  const groupOf = (c: ConversationListItem): FlatGroup =>
+    c.assignee_id === me ? "mine" : c.assignee_id ? "team" : "unassigned"
+  const flatGroups = flat
+    ? (["mine", "unassigned", "team"] as const)
+        .map((g) => ({ key: g, items: sortedRows.filter((c) => groupOf(c) === g) }))
+        .filter((g) => g.items.length > 0)
+    : []
+  const mainRows = flat ? flatGroups.flatMap((g) => g.items) : sortedRows
   const rows = [...pinnedRows, ...mainRows]
   const live = useLiveIds(rows.filter((c) => c.status !== "closed"))
-  const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, active, scroller)
+  const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(
+    rows,
+    currentId,
+    onOpen,
+    active,
+    scroller,
+    !hidden,
+    !!flat && !hidden
+  )
+  const toTop = () => {
+    if (flat) window.scrollTo({ top: 0 })
+    else scroller.current?.scrollTo({ top: 0 })
+  }
 
   const scope = [
     origin,
@@ -897,7 +1072,7 @@ export function ChatList({
           }
         : {}),
     },
-    active
+    active && !hidden
   )
 
   const [selectSeen, setSelectSeen] = useState(select)
@@ -917,12 +1092,12 @@ export function ChatList({
     const root = scroller.current
     if (!el || !root || typeof IntersectionObserver === "undefined") return
     const io = new IntersectionObserver((entries) => setNearEnd(entries.some((e) => e.isIntersecting)), {
-      root,
+      root: flat ? null : root,
       rootMargin: "400px",
     })
     io.observe(el)
     return () => io.disconnect()
-  }, [])
+  }, [flat])
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = list
   useEffect(() => {
     if (nearEnd && hasNextPage && !isFetchingNextPage) void fetchNextPage()
@@ -930,7 +1105,7 @@ export function ChatList({
 
   const reset = () => {
     setCursorId(null)
-    scroller.current?.scrollTo({ top: 0 })
+    toTop()
   }
   const seenView = useRef(view.id)
   const changeView = useLatest(() => {
@@ -947,8 +1122,9 @@ export function ChatList({
     setTeamId("")
     setUnreadOnly(false)
     changeView.current()
-    scroller.current?.scrollTo({ top: 0 })
-  }, [view.id, changeView])
+    if (flat) window.scrollTo({ top: 0 })
+    else scroller.current?.scrollTo({ top: 0 })
+  }, [view.id, changeView, flat])
   const setChip = (c: Chip) => {
     view.clear(!view.id)
     rememberChip(c)
@@ -967,8 +1143,9 @@ export function ChatList({
     setCursorId(null)
   }
   useEffect(() => {
-    scroller.current?.scrollTo({ top: 0 })
-  }, [chip])
+    if (flat) window.scrollTo({ top: 0 })
+    else scroller.current?.scrollTo({ top: 0 })
+  }, [chip, flat])
 
   const labels = useChipLabels()
   const empty: Record<Chip, React.ReactNode> = {
@@ -1139,7 +1316,7 @@ export function ChatList({
           ...(canManage && inTrash ? { [SHORTCUTS.deleteForever]: deleteChosen } : {}),
         }
       : {},
-    active
+    active && !hidden
   )
 
   const searchBox = (
@@ -1408,8 +1585,8 @@ export function ChatList({
     </div>
   )
 
-  const chips = (
-    <div className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pb-2.5" data-testid="chips">
+  const chipItems = (
+    <>
       <InboxChip value={sidebarInbox || chipInbox} locked={locked} onChange={setInbox} />
       <SourceFilter inboxId={inboxId} onChange={reset} placeholder={<Trans>Filter</Trans>} />
       <LabelChip
@@ -1439,6 +1616,11 @@ export function ChatList({
         }}
       />
       <ViewsMenu filters={filters} active={active} />
+    </>
+  )
+  const chips = (
+    <div className="flex shrink-0 flex-wrap items-center gap-1.5 px-3 pb-2.5" data-testid="chips">
+      {chipItems}
     </div>
   )
 
@@ -1455,13 +1637,130 @@ export function ChatList({
     isWaiting
   )
 
+  const groupLabels: Record<FlatGroup, string> = {
+    mine: t`Assigned to you`,
+    unassigned: t`Unassigned`,
+    team: t`Rest of the team`,
+  }
+  const flatRow = (c: ConversationListItem) => (
+    <FlatChatRow
+      key={c.id}
+      c={c}
+      current={c.id === currentId}
+      cursor={c.id === cursorId}
+      live={live.has(c.id)}
+      selecting={selecting}
+      checked={selected.has(c.id)}
+      onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
+    />
+  )
+
+  if (flat) {
+    return (
+      <nav
+        aria-label={t`Conversations`}
+        className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
+        data-testid="chat-list"
+      >
+        {typeof head === "function"
+          ? head({ shown: rows.length, unread: rows.filter((c) => c.unread).length, more: !!hasNextPage })
+          : head}
+        <div className="mt-5 flex flex-wrap items-center gap-1.5" data-testid="chips">
+          <div className="flex min-w-48 flex-[1_1_240px] items-center gap-1.5">
+            {searchBox}
+            <Button
+              variant="outline"
+              className={cn("h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal", selecting && "bg-muted")}
+              onClick={() => (selecting ? stopSelecting() : setSelecting(true))}
+              aria-pressed={selecting}
+              aria-label={t`Select conversations`}
+              title={t`Select conversations`}
+              data-testid="select-conversations"
+            >
+              <SquareCheckBigIcon />
+            </Button>
+          </div>
+          {chipItems}
+          <SearchError error={list.error} className="w-full" />
+        </div>
+        <div className="mt-3 flex flex-col gap-2 empty:hidden">
+          <AwayBanner />
+          {!view.id && !openOnly && chip === "waiting" && <CleanupBanner inboxId={inboxId} />}
+          {inTrash && canManage && <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />}
+          <ImportBanner />
+        </div>
+        {trashTools.dialogs}
+        <div ref={scroller} data-testid="list">
+          {list.isPending ? (
+            <div className="mt-7 flex flex-col gap-3">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className="h-5 w-full" />
+              ))}
+            </div>
+          ) : rows.length === 0 && !hasNextPage ? (
+            <FlatEmpty testId="list-empty">
+              <p className="m-0">
+                {q ? (
+                  <Trans>Nothing matches your search here.</Trans>
+                ) : narrowed || unreadOnly ? (
+                  <Trans>Nothing matches these filters.</Trans>
+                ) : (
+                  empty[view.id ? "all" : chip]
+                )}
+              </p>
+              {filtered && (
+                <Button
+                  variant="outline"
+                  className="h-8 rounded-[9px] border-input bg-card px-3 font-normal"
+                  onClick={clearFilters}
+                  data-testid="clear-filters"
+                >
+                  <Trans>Clear search and filters</Trans>
+                </Button>
+              )}
+            </FlatEmpty>
+          ) : (
+            <div className="mt-7">
+              {pinnedRows.length > 0 && (
+                <ListGroup
+                  label={
+                    <span className="flex items-center gap-1.5" data-testid="pinned-heading">
+                      <PinIcon className="size-3 rotate-45" />
+                      <Trans>Pinned</Trans>
+                    </span>
+                  }
+                >
+                  {pinnedRows.map(flatRow)}
+                </ListGroup>
+              )}
+              {flatGroups.map((g) => (
+                <ListGroup key={g.key} label={groupLabels[g.key]}>
+                  {g.items.map(flatRow)}
+                </ListGroup>
+              ))}
+            </div>
+          )}
+          <div ref={sentinel} className="h-px" />
+          {isFetchingNextPage && <Skeleton className="mt-2 h-5 w-1/2" />}
+          <ErrorLine error={isSearchError(list.error) ? null : list.error} className="py-2" />
+        </div>
+        {selecting && <div className="sticky bottom-4 z-20 mt-4 [&>div]:mx-0 [&>div]:mb-0">{selection}</div>}
+        {confirmDialog}
+        <BulkFailuresDialog failures={failures} rows={rows} onClose={() => setFailures([])} />
+        {linking && (
+          <LinkIncidentDialog conversationIds={chosen} onClose={() => setLinking(false)} onDone={stopSelecting} />
+        )}
+      </nav>
+    )
+  }
+
   return (
     <nav
       aria-label={t`Conversations`}
       className="@container/list flex h-full min-h-0 flex-col bg-surface"
       data-testid="chat-list"
     >
-      {embedded && head}
+      {embedded && (typeof head === "function" ? null : head)}
       {!embedded && (
         <PhoneHeader>
           <ViewChips

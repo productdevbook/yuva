@@ -26,6 +26,7 @@ import {
   VisitorAvatar,
 } from "@/components/common"
 import { inboxRoot } from "@/app/shell"
+import { TopPortal } from "@/components/common/PageLayout"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText, useErrorText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
@@ -104,6 +105,7 @@ import { useChannel, useChannelMap, useInboxes, useLabels, useMemberMap } from "
 
 type Props = {
   id: string
+  flat?: boolean
   onBack?: () => void
   panel: boolean
   inlinePanel: boolean
@@ -175,7 +177,14 @@ export function ChatView(props: Props) {
     )
   }
   if (c.inbox_purpose === "mail")
-    return <MailThread id={c.id} onBack={props.onBack} onLeave={props.onBack ?? (() => navigate(inboxRoot(apart)))} />
+    return (
+      <MailThread
+        id={c.id}
+        flat={props.flat}
+        onBack={props.onBack}
+        onLeave={props.onBack ?? (() => navigate(inboxRoot(apart)))}
+      />
+    )
   return <Loaded {...props} c={c} contact={contact.data} channel={known ?? fetched} />
 }
 
@@ -183,6 +192,7 @@ function Loaded({
   c,
   contact,
   channel,
+  flat,
   onBack,
   panel,
   inlinePanel,
@@ -559,31 +569,28 @@ function Loaded({
 
   const sep = <span aria-hidden>·</span>
   const subject = c.kind === "feedback" ? "" : c.subject.trim()
-  return (
-    <section
-      aria-label={name}
-      className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-background"
-      data-testid="conversation"
-      data-conversation-id={c.id}
-      onDragEnter={(e) => {
-        if (e.dataTransfer.types.includes("Files")) setDragging(true)
-      }}
-      onDragOver={(e) => {
-        if (!e.dataTransfer.types.includes("Files")) return
-        e.preventDefault()
-        e.dataTransfer.dropEffect = "copy"
-      }}
-      onDragLeave={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDragging(false)
-      }}
-      onDrop={(e) => {
-        if (!e.dataTransfer.files.length) return
-        e.preventDefault()
-        setDragging(false)
-        reply.current?.addFiles(Array.from(e.dataTransfer.files))
-        reply.current?.focus()
-      }}
-    >
+  const dropProps = {
+    onDragEnter: (e: React.DragEvent) => {
+      if (e.dataTransfer.types.includes("Files")) setDragging(true)
+    },
+    onDragOver: (e: React.DragEvent) => {
+      if (!e.dataTransfer.types.includes("Files")) return
+      e.preventDefault()
+      e.dataTransfer.dropEffect = "copy"
+    },
+    onDragLeave: (e: React.DragEvent) => {
+      if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDragging(false)
+    },
+    onDrop: (e: React.DragEvent) => {
+      if (!e.dataTransfer.files.length) return
+      e.preventDefault()
+      setDragging(false)
+      reply.current?.addFiles(Array.from(e.dataTransfer.files))
+      reply.current?.focus()
+    },
+  }
+  const dropOverlay = (
+    <>
       {dragging && (
         <div
           className="pointer-events-none absolute inset-2 z-30 grid place-items-center rounded-2xl border-2 border-dashed border-brand/60 bg-background/85 text-center"
@@ -595,156 +602,163 @@ function Loaded({
           </span>
         </div>
       )}
-      <header
-        className="@container/person flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border/60 bg-background px-6 py-2.5 phone:px-3 phone:py-2"
-        data-testid="person"
+    </>
+  )
+  const personButton = (
+    <>
+      <button
+        type="button"
+        onClick={togglePanel}
+        className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg text-start leading-[1.3] outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        title={t`Contact details (C)`}
       >
-        <div className="flex min-w-0 flex-1 basis-64 items-center gap-2">
-          <BackButton onBack={onBack} />
-          <button
-            type="button"
-            onClick={togglePanel}
-            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg text-start leading-[1.3] outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            title={t`Contact details (C)`}
-          >
-            {phone && (
-              <span className="relative shrink-0">
-                {visitor ? (
-                  <VisitorAvatar className="size-9" />
-                ) : (
-                  <ContactAvatar id={c.contact_id} name={name} className="size-9" />
-                )}
-                {actions.live && (
-                  <span
-                    className="absolute -end-px -bottom-px size-3 rounded-full border-2 border-background bg-success"
-                    data-testid="contact-live"
-                  />
-                )}
-              </span>
+        {phone && (
+          <span className="relative shrink-0">
+            {visitor ? (
+              <VisitorAvatar className="size-9" />
+            ) : (
+              <ContactAvatar id={c.contact_id} name={name} className="size-9" />
             )}
-            <span className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate text-[16px] font-semibold" data-testid={subject ? "header-subject" : undefined}>
-                {subject || name}
-              </span>
+            {actions.live && (
               <span
-                className={cn(
-                  "flex min-w-0 items-center gap-x-1.5 truncate text-caption text-faint",
-                  phone && "flex-wrap gap-y-0.5 whitespace-normal"
-                )}
-              >
-                {!phone && actions.live && (
-                  <span className="size-2 shrink-0 rounded-full bg-success" data-testid="contact-live" aria-hidden />
-                )}
-                <span className="max-w-[60%] shrink-0 truncate" data-testid="person-name">
-                  {name}
-                </span>
-                {inbox && (
-                  <>
-                    {sep}
-                    <span className="inline-flex min-w-0 items-center gap-1 truncate">
-                      <Dot color={inbox.branding.color} className="size-[7px] rounded-[2px]" />
-                      <span className="truncate">{inbox.name}</span>
-                    </span>
-                  </>
-                )}
-                {source && (
-                  <>
-                    {sep}
-                    <span className="shrink-0">{sourceText[source]}</span>
-                  </>
-                )}
-                {place && (
-                  <>
-                    {sep}
-                    <span className="min-w-0 truncate" data-testid="header-place">
-                      {place}
-                    </span>
-                  </>
-                )}
-                {sep}
-                <span className="truncate" data-testid="header-status">
-                  <Status c={c} lastInbound={lastInbound} />
-                </span>
-              </span>
-            </span>
-          </button>
-        </div>
-        <div
-          ref={actionsRef}
-          role="toolbar"
-          aria-label={t`Conversation actions`}
-          className="flex flex-wrap items-center gap-1.5 phone:w-full"
-          data-testid="conversation-actions"
-        >
-          {!trashed && (
-            <>
-              <HandMenu
-                c={c}
-                actions={actions}
-                open={menu === "hand"}
-                onOpenChange={openMenu("hand")}
-                label={
-                  <span data-testid={assignee ? "header-assignee" : undefined}>
-                    {assignee ? assignee.name || assignee.email : <Trans>Unassigned</Trans>}
-                  </span>
-                }
-              />
-              <TeamMenu c={c} open={menu === "team"} onOpenChange={openMenu("team")} />
-              {!c.assignee_id && (
-                <Button
-                  variant="outline"
-                  className={look.btnSm}
-                  onClick={actions.claim}
-                  title={t`Assign to me`}
-                  data-testid="assign-me-button"
-                >
-                  <Trans>Assign to me</Trans>
-                </Button>
-              )}
-              <SnoozeMenu name={name} actions={actions} open={menu === "snooze"} onOpenChange={openMenu("snooze")} />
-              <SlaPopover c={c} open={menu === "sla"} onOpenChange={openMenu("sla")} />
-              {c.kind === "feedback" && (
-                <ProgressMenu c={c} update={update} open={menu === "progress"} onOpenChange={openMenu("progress")} />
-              )}
-              {c.kind === "feedback" && <IssueMenu onPick={setIssueMode} count={issues.length} />}
-            </>
-          )}
-          <div className="ms-auto flex items-center gap-1.5">
-            {!trashed && (
-              <ConversationMenu
-                c={c}
-                open={moreOpen}
-                onOpenChange={setMoreOpen}
-                view={moreView}
-                onView={setMoreView}
-                update={update}
-                move={move}
-                pinned={pinned}
-                onPin={togglePin}
-                onUnread={markUnread}
-                onDiscussion={handlers.discussion}
-                onIncident={handlers.incident}
-                onForward={() => setForwarding({})}
-                onIdea={handlers.idea}
-                onFind={() => (finding ? closeFind() : openFind())}
-                onTrash={canManage ? trash : undefined}
+                className="absolute -end-px -bottom-px size-3 rounded-full border-2 border-background bg-success"
+                data-testid="contact-live"
               />
             )}
-            <Button
-              variant="outline"
-              className={cn(look.btnSm, "w-[30px] px-0", shownPanel && "bg-muted")}
-              onClick={togglePanel}
-              aria-pressed={shownPanel}
-              aria-label={t`Contact details (C)`}
-              title={t`Contact details (C)`}
-              data-testid="toggle-contact-panel"
-            >
-              <PanelRightIcon className="rtl:-scale-x-100" />
-            </Button>
-            {!trashed && <CloseButton c={c} actions={actions} />}
-          </div>
+          </span>
+        )}
+        <span className="flex min-w-0 flex-1 flex-col">
+          {!flat && (
+            <span className="truncate text-[16px] font-semibold" data-testid={subject ? "header-subject" : undefined}>
+              {subject || name}
+            </span>
+          )}
+          <span
+            className={cn(
+              "flex min-w-0 items-center gap-x-1.5 truncate",
+              flat ? "text-reading text-muted-foreground" : "text-caption text-faint",
+              phone && "flex-wrap gap-y-0.5 whitespace-normal"
+            )}
+          >
+            {!phone && actions.live && (
+              <span className="size-2 shrink-0 rounded-full bg-success" data-testid="contact-live" aria-hidden />
+            )}
+            <span className="max-w-[60%] shrink-0 truncate" data-testid="person-name">
+              {name}
+            </span>
+            {inbox && (
+              <>
+                {sep}
+                <span className="inline-flex min-w-0 items-center gap-1 truncate">
+                  <Dot color={inbox.branding.color} className="size-[7px] rounded-[2px]" />
+                  <span className="truncate">{inbox.name}</span>
+                </span>
+              </>
+            )}
+            {source && (
+              <>
+                {sep}
+                <span className="shrink-0">{sourceText[source]}</span>
+              </>
+            )}
+            {place && (
+              <>
+                {sep}
+                <span className="min-w-0 truncate" data-testid="header-place">
+                  {place}
+                </span>
+              </>
+            )}
+            {sep}
+            <span className="truncate" data-testid="header-status">
+              <Status c={c} lastInbound={lastInbound} />
+            </span>
+          </span>
+        </span>
+      </button>
+    </>
+  )
+  const toolbar = (
+    <>
+      <div
+        ref={actionsRef}
+        role="toolbar"
+        aria-label={t`Conversation actions`}
+        className="flex flex-wrap items-center gap-1.5 phone:w-full"
+        data-testid="conversation-actions"
+      >
+        {!trashed && (
+          <>
+            <HandMenu
+              c={c}
+              actions={actions}
+              open={menu === "hand"}
+              onOpenChange={openMenu("hand")}
+              label={
+                <span data-testid={assignee ? "header-assignee" : undefined}>
+                  {assignee ? assignee.name || assignee.email : <Trans>Unassigned</Trans>}
+                </span>
+              }
+            />
+            <TeamMenu c={c} open={menu === "team"} onOpenChange={openMenu("team")} />
+            {!c.assignee_id && (
+              <Button
+                variant="outline"
+                className={look.btnSm}
+                onClick={actions.claim}
+                title={t`Assign to me`}
+                data-testid="assign-me-button"
+              >
+                <Trans>Assign to me</Trans>
+              </Button>
+            )}
+            <SnoozeMenu name={name} actions={actions} open={menu === "snooze"} onOpenChange={openMenu("snooze")} />
+            <SlaPopover c={c} open={menu === "sla"} onOpenChange={openMenu("sla")} />
+            {c.kind === "feedback" && (
+              <ProgressMenu c={c} update={update} open={menu === "progress"} onOpenChange={openMenu("progress")} />
+            )}
+            {c.kind === "feedback" && <IssueMenu onPick={setIssueMode} count={issues.length} />}
+          </>
+        )}
+        <div className="ms-auto flex items-center gap-1.5">
+          {!trashed && (
+            <ConversationMenu
+              c={c}
+              open={moreOpen}
+              onOpenChange={setMoreOpen}
+              view={moreView}
+              onView={setMoreView}
+              update={update}
+              move={move}
+              pinned={pinned}
+              onPin={togglePin}
+              onUnread={markUnread}
+              onDiscussion={handlers.discussion}
+              onIncident={handlers.incident}
+              onForward={() => setForwarding({})}
+              onIdea={handlers.idea}
+              onFind={() => (finding ? closeFind() : openFind())}
+              onTrash={canManage ? trash : undefined}
+            />
+          )}
+          <Button
+            variant="outline"
+            className={cn(look.btnSm, "w-[30px] px-0", shownPanel && "bg-muted")}
+            onClick={togglePanel}
+            aria-pressed={shownPanel}
+            aria-label={t`Contact details (C)`}
+            title={t`Contact details (C)`}
+            data-testid="toggle-contact-panel"
+          >
+            <PanelRightIcon className="rtl:-scale-x-100" />
+          </Button>
+          {!trashed && <CloseButton c={c} actions={actions} />}
         </div>
-      </header>
+      </div>
+    </>
+  )
+  const detailsLine = (
+    <>
       {(chipLabels.length > 0 ||
         (c.kind === "feedback" && c.feedback) ||
         pageLine ||
@@ -788,6 +802,10 @@ function Loaded({
           <Watchers conversationId={c.id} />
         </div>
       )}
+    </>
+  )
+  const middle = (
+    <>
       {c.kind === "feedback" && !phone && <ProgressStrip progress={c.feedback?.progress} update={update} />}
       {finding && (
         <div
@@ -857,6 +875,10 @@ function Loaded({
         </div>
       )}
       {trashed && <TrashBanner c={c} onRestore={restore} busy={trasher.isPending} />}
+    </>
+  )
+  const spamBanner = (
+    <>
       {c.spam && !trashed && (
         <Alert
           role="status"
@@ -872,8 +894,13 @@ function Loaded({
           </Button>
         </Alert>
       )}
+    </>
+  )
+  const thread = (
+    <>
       <Thread
         key={c.id}
+        page={flat}
         items={items}
         ctx={ctx}
         conversation={c}
@@ -893,6 +920,10 @@ function Loaded({
         lastMine={lastMine}
         focusId={focusId}
       />
+    </>
+  )
+  const composer = (
+    <>
       {!trashed && (
         <Composer>
           {beatenBy ? (
@@ -915,6 +946,10 @@ function Loaded({
           />
         </Composer>
       )}
+    </>
+  )
+  const dialogs = (
+    <>
       {confirmDialog}
       {linking && (
         <LinkIncidentDialog
@@ -941,7 +976,85 @@ function Loaded({
       {!inlinePanel && (
         <ContactSheet contactId={c.contact_id} conversationId={c.id} open={sheet} onOpenChange={setSheet} />
       )}
+    </>
+  )
+  if (flat) {
+    return (
+      <section
+        aria-label={name}
+        className="relative -mb-16 flex min-h-[calc(100svh-3.625rem)] min-w-0 flex-col"
+        data-testid="conversation"
+        data-conversation-id={c.id}
+        {...dropProps}
+      >
+        {dropOverlay}
+        <h1
+          className="m-0 mt-3 text-page leading-[34px] text-balance break-words"
+          data-testid={subject ? "header-subject" : undefined}
+        >
+          {subject || name}
+        </h1>
+        <div className="mt-1.5 flex min-w-0 text-reading text-muted-foreground" data-testid="person">
+          {personButton}
+        </div>
+        <TopPortal>{toolbar}</TopPortal>
+        <div className="mt-2 empty:hidden [&>div]:border-0 [&>div]:bg-transparent [&>div]:px-0">{detailsLine}</div>
+        <div className="mt-4 flex flex-1 flex-col rounded-xl border bg-background">
+          {middle}
+          {spamBanner}
+          {thread}
+          <StickyComposer>{composer}</StickyComposer>
+        </div>
+        {dialogs}
+      </section>
+    )
+  }
+  return (
+    <section
+      aria-label={name}
+      className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-background"
+      data-testid="conversation"
+      data-conversation-id={c.id}
+      {...dropProps}
+    >
+      {dropOverlay}
+      <header
+        className="@container/person flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border/60 bg-background px-6 py-2.5 phone:px-3 phone:py-2"
+        data-testid="person"
+      >
+        <div className="flex min-w-0 flex-1 basis-64 items-center gap-2">
+          <BackButton onBack={onBack} />
+          {personButton}
+        </div>
+        {toolbar}
+      </header>
+      {detailsLine}
+      {middle}
+      {spamBanner}
+      {thread}
+      {composer}
+      {dialogs}
     </section>
+  )
+}
+
+function StickyComposer({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    const parent = el?.parentElement
+    if (!el || !parent || typeof ResizeObserver === "undefined") return
+    const ro = new ResizeObserver(() => parent.style.setProperty("--composer-h", `${el.offsetHeight}px`))
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      parent.style.removeProperty("--composer-h")
+    }
+  }, [])
+  return (
+    <div ref={ref} className="sticky bottom-0 z-10 rounded-b-xl bg-background empty:hidden">
+      {children}
+    </div>
   )
 }
 

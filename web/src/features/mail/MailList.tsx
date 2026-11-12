@@ -12,7 +12,20 @@ import {
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
-import { ContactAvatar, ErrorLine, Kbd, toast } from "@/components/common"
+import {
+  ContactAvatar,
+  dayOf,
+  ErrorLine,
+  FlatEmpty,
+  FlatRow,
+  FlatTag,
+  FlatTime,
+  groupRuns,
+  Kbd,
+  ListGroup,
+  toast,
+  useDayLabel,
+} from "@/components/common"
 import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { MAIL_KEYS, SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { formatWhen } from "@/components/common/SendLater"
@@ -219,6 +232,140 @@ function Row({
   )
 }
 
+function FlatMailRow({
+  c,
+  folder,
+  current,
+  cursor,
+  selecting,
+  checked,
+  showInbox,
+  scheduledAt,
+  onOpen,
+  onStar,
+}: {
+  c: ConversationListItem
+  folder: Folder
+  current: boolean
+  cursor: boolean
+  selecting: boolean
+  checked: boolean
+  showInbox: boolean
+  scheduledAt?: string
+  onOpen: (range: boolean) => void
+  onStar: () => void
+}) {
+  const { t, i18n } = useLingui()
+  const previewText = usePreviewText()
+  const draft = useDraftText(c.id)
+  const inbox = useInboxes().data?.find((i) => i.id === c.inbox_id)
+  const who = sender(c) || t`Unknown sender`
+  const subject = c.subject.trim() || t`(no subject)`
+  const line = c.last_message ? previewText(c.last_message) : ""
+  const starred = !!c.starred
+  return (
+    <FlatRow
+      color={inbox?.branding.color}
+      current={current}
+      cursor={cursor}
+      checked={checked}
+      data-testid="mail-row"
+      data-conversation-id={c.id}
+      data-unread={c.unread || undefined}
+      data-checked={checked || undefined}
+      button={{
+        onClick: (e) => onOpen(e.shiftKey),
+        "aria-current": current || undefined,
+        "aria-pressed": selecting ? checked : undefined,
+        "data-testid": "mail-open",
+        title: inbox?.name,
+      }}
+      lead={
+        selecting ? (
+          <span
+            aria-hidden
+            className={cn(
+              "grid size-[18px] place-items-center rounded-[5px] border-[1.5px]",
+              checked ? "border-foreground bg-foreground text-background" : "border-input bg-card"
+            )}
+            data-testid="row-check"
+          >
+            {checked && <CheckIcon className="size-3" strokeWidth={3} />}
+          </span>
+        ) : undefined
+      }
+      who={
+        <span className={cn("min-w-0 truncate", c.unread && "font-semibold text-foreground")} data-testid="mail-sender">
+          {folder === "sent" || folder === "scheduled" ? t`To: ${who}` : who}
+        </span>
+      }
+      end={
+        <>
+          {showInbox && inbox && <FlatTag className="@max-2xl/list:hidden">{inbox.name}</FlatTag>}
+          {c.status === "snoozed" && folder !== "snoozed" && (
+            <ClockIcon className="size-3.5 shrink-0 text-muted2" aria-label={t`Snoozed`} />
+          )}
+          {c.has_attachments && (
+            <PaperclipIcon
+              className="size-3.5 shrink-0 text-muted2"
+              aria-label={t`Has attachments`}
+              data-testid="mail-attachment"
+            />
+          )}
+          {c.unread && (
+            <span className="size-2 shrink-0 rounded-full bg-brand" aria-label={t`Unread`} data-testid="row-unread" />
+          )}
+          {scheduledAt ? (
+            <FlatTime iso={scheduledAt} className="flex items-center gap-1 text-warning">
+              <ClockIcon className="size-3" />
+              <span data-testid="mail-scheduled-at">{formatWhen(scheduledAt, i18n.locale)}</span>
+            </FlatTime>
+          ) : (
+            <FlatTime iso={c.last_activity_at} className={cn(c.unread && "font-medium text-foreground")}>
+              {formatShort(c.last_activity_at, i18n.locale)}
+            </FlatTime>
+          )}
+        </>
+      }
+      after={
+        <button
+          type="button"
+          onClick={onStar}
+          className={cn(
+            "me-0.5 grid size-7 shrink-0 place-items-center rounded-md outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
+            starred ? "text-warning" : "text-muted2"
+          )}
+          aria-pressed={starred}
+          aria-label={starred ? t`Remove the star` : t`Star`}
+          title={starred ? t`Remove the star (S)` : t`Star (S)`}
+          data-testid="mail-star"
+        >
+          <StarIcon className={cn("size-4", starred && "fill-current")} />
+        </button>
+      }
+    >
+      <span className={cn("text-foreground", c.unread && "font-semibold")} data-testid="mail-subject">
+        {subject}
+      </span>
+      <span className="text-muted-foreground">
+        {"  "}
+        {draft && !current ? (
+          <>
+            <span className="font-semibold text-destructive">
+              <Trans>Draft:</Trans>
+            </span>{" "}
+            {draft}
+          </>
+        ) : (
+          <span className={cn(c.last_message?.redacted && "italic")} data-testid="mail-line">
+            {line}
+          </span>
+        )}
+      </span>
+    </FlatRow>
+  )
+}
+
 function statusGroups(prev: ConversationListItem[]) {
   const groups = new Map<string, { status: ConversationStatus; until?: string; ids: string[] }>()
   for (const c of prev) {
@@ -239,6 +386,8 @@ export function MailList({
   currentId,
   onOpen,
   active,
+  flat = false,
+  hidden = false,
   head,
 }: {
   box: string
@@ -246,6 +395,8 @@ export function MailList({
   currentId: string | null
   onOpen: (id: string) => void
   active: boolean
+  flat?: boolean
+  hidden?: boolean
   head?: React.ReactNode
 }) {
   const { t } = useLingui()
@@ -262,7 +413,16 @@ export function MailList({
   const anchor = useRef<string | null>(null)
   const list = useConversations(mailFilters(box, folder, q))
   const rows = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
-  const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, active, scroller)
+  const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(
+    rows,
+    currentId,
+    onOpen,
+    active,
+    scroller,
+    !hidden,
+    !!flat && !hidden
+  )
+  const dayLabel = useDayLabel()
   const star = useStar()
   const bulk = useBulkUpdateConversations()
   const memberActions = useListActions()
@@ -278,20 +438,21 @@ export function MailList({
     setQuery("")
   }
   useEffect(() => {
-    scroller.current?.scrollTo({ top: 0 })
-  }, [box, folder])
+    if (flat) window.scrollTo({ top: 0 })
+    else scroller.current?.scrollTo({ top: 0 })
+  }, [box, folder, flat])
 
   useEffect(() => {
     const el = sentinel.current
     const root = scroller.current
     if (!el || !root || typeof IntersectionObserver === "undefined") return
     const io = new IntersectionObserver((entries) => setNearEnd(entries.some((e) => e.isIntersecting)), {
-      root,
+      root: flat ? null : root,
       rootMargin: "400px",
     })
     io.observe(el)
     return () => io.disconnect()
-  }, [])
+  }, [flat])
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = list
   useEffect(() => {
     if (nearEnd && hasNextPage && !isFetchingNextPage) void fetchNextPage()
@@ -446,7 +607,7 @@ export function MailList({
             ...(canManage ? { [MAIL_KEYS.trash]: trashChosen } : {}),
           }
       : {}
-  useHotkeys({ ...listKeys, ...selectionKeys, ...(selecting ? { Escape: stopSelecting } : {}) }, active)
+  useHotkeys({ ...listKeys, ...selectionKeys, ...(selecting ? { Escape: stopSelecting } : {}) }, active && !hidden)
 
   const searchInput = useRef<HTMLInputElement>(null)
   const suggest = useOperatorSuggest(query, setQuery, searchInput)
@@ -644,6 +805,82 @@ export function MailList({
     scheduled: <Trans>No mail is scheduled. Pick Send later to send mail at a time you choose.</Trans>,
     archive: <Trans>Nothing is archived yet.</Trans>,
     trash: <Trans>The Trash is empty.</Trans>,
+  }
+
+  const mailRow = (c: ConversationListItem) => (
+    <FlatMailRow
+      key={c.id}
+      c={c}
+      folder={folder}
+      current={c.id === currentId}
+      cursor={c.id === cursorId}
+      selecting={selecting}
+      checked={selected.has(c.id)}
+      showInbox={box === "all"}
+      scheduledAt={folder === "scheduled" ? c.scheduled_at : undefined}
+      onOpen={(range) => (selecting ? toggle(c.id, range) : onOpen(c.id))}
+      onStar={() => star([c.id], !c.starred)}
+    />
+  )
+
+  if (flat) {
+    return (
+      <nav
+        aria-label={t`Mail`}
+        className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
+        data-testid="mail-list"
+      >
+        {head}
+        <div className="relative mt-5 flex flex-wrap items-center gap-1.5">
+          {searchBox}
+          <Button
+            variant="outline"
+            className={cn("h-8 w-8 rounded-[9px] border-input bg-card px-0 font-normal", selecting && "bg-muted")}
+            onClick={() => (selecting ? stopSelecting() : setSelecting(true))}
+            aria-pressed={selecting}
+            aria-label={t`Select mails`}
+            title={t`Select mails (X)`}
+            data-testid="select-mails"
+          >
+            <SquareCheckBigIcon />
+          </Button>
+          <OperatorList s={suggest} />
+          <SearchError error={list.error} className="w-full" />
+        </div>
+        {inTrash && (
+          <div className="mt-3">
+            <TrashStrip onEmpty={(n) => trashTools.emptyTrash(n)} busy={trashTools.pending} />
+          </div>
+        )}
+        <div ref={scroller} data-testid="list">
+          {list.isPending ? (
+            <div className="mt-7 flex flex-col gap-3">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className="h-5 w-full" />
+              ))}
+            </div>
+          ) : rows.length === 0 && !hasNextPage ? (
+            <FlatEmpty testId="list-empty">
+              <p className="m-0">{q ? <Trans>No mail matches your search.</Trans> : empty[folder]}</p>
+            </FlatEmpty>
+          ) : (
+            <div className="mt-7">
+              {groupRuns(rows, (c) => dayOf(c.last_activity_at)).map((g) => (
+                <ListGroup key={g.key} label={dayLabel(g.items[0].last_activity_at)}>
+                  {g.items.map(mailRow)}
+                </ListGroup>
+              ))}
+            </div>
+          )}
+          <div ref={sentinel} className="h-px" />
+          {isFetchingNextPage && <Skeleton className="mt-2 h-5 w-1/2" />}
+          <ErrorLine error={isSearchError(list.error) ? null : list.error} className="py-2" />
+        </div>
+        {selecting && <div className="sticky bottom-4 z-20 mt-4 [&>div]:mx-0 [&>div]:mb-0">{selection}</div>}
+        {confirmDialog}
+        {trashTools.dialogs}
+      </nav>
+    )
   }
 
   return (

@@ -327,6 +327,7 @@ export function ShortcutSheet({
         [k(SHORTCUTS.sla), t`Show the SLA targets`],
         [k(SHORTCUTS.close), t`Close or reopen`],
         [k(SHORTCUTS.contact), t`Contact details`],
+        [[k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Open the next or previous conversation`],
         [k(SHORTCUTS.history), t`Other conversations`],
         [k(SHORTCUTS.more), t`Priority, inbox, spam and more`],
         [k(SHORTCUTS.spam), t`Mark or unmark as spam`],
@@ -348,14 +349,14 @@ export function ShortcutSheet({
         [k(SHORTCUTS.idea), t`Link to a roadmap idea`],
         [k(SHORTCUTS.createIssue), t`Create a GitHub or Linear issue`],
         [k(SHORTCUTS.linkIssue), t`Link a GitHub or Linear issue`],
+        [["Esc"], t`Back to the list`],
       ],
     },
     {
       title: t`Conversation list`,
       items: [
-        [["↑", "↓"], t`Move through the list`],
-        [["↵"], t`Open the conversation`],
-        [[k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Open the next or previous conversation`],
+        [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the list`],
+        [["↵", "o"], t`Open the conversation`],
         [[SHORTCUTS.search], t`Search conversations`],
         [k(SHORTCUTS.select), t`Select the conversation under the cursor`],
         [k(SHORTCUTS.linkSelected), t`Link the selected conversations to an incident`],
@@ -371,6 +372,8 @@ export function ShortcutSheet({
     {
       title: t`Mail`,
       items: [
+        [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the list`],
+        [["↵", "o"], t`Open the conversation`],
         [k(MAIL_KEYS.compose), t`Write a new mail`],
         [k(MAIL_KEYS.reply), t`Reply to the sender`],
         [k(MAIL_KEYS.replyAll), t`Reply to everyone`],
@@ -386,6 +389,7 @@ export function ShortcutSheet({
         [k(MAIL_KEYS.unread), t`Mark as unread and go back to the list`],
         [k(MAIL_KEYS.quoted), t`Show or hide quoted text`],
         [k(MAIL_KEYS.expand), t`Expand or collapse every message`],
+        [["Esc"], t`Back to the list`],
         [[k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Open the next or previous mail`],
         [k(MAIL_KEYS.select), t`Select the mail under the cursor`],
         [k(MAIL_KEYS.editScheduled), t`Edit the scheduled or unsent draft`],

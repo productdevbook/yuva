@@ -1,10 +1,23 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, ChevronDownIcon, FilterIcon, MailIcon, MailOpenIcon, PenSquareIcon, PlusIcon } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
-import { useDefaultLayout } from "react-resizable-panels"
+import { CheckIcon, ChevronDownIcon, FilterIcon, MailIcon, PenSquareIcon, PlusIcon } from "lucide-react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Link, Navigate, useLocation, useNavigate } from "react-router"
 
-import { EmptyState, Kbd } from "@/components/common"
+import {
+  Dot,
+  EmptyState,
+  InfoColumn,
+  Kbd,
+  FlatEmpty,
+  PageHeading,
+  PageLayout,
+  PageTop,
+  TopSep,
+  TopSlotProvider,
+} from "@/components/common"
+import { useEnumText } from "@/components/common/text"
+import { useConversation } from "@/features/conversation/queries"
+import { MailListInfo, MailSidebar, MailThreadInfo, useFolderCounts } from "@/features/mail/MailSide"
 import { MAIL_KEYS } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,7 +29,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ListHead, ViewChips } from "@/features/inbox/ListHead"
 import {
   mailPath,
@@ -32,7 +44,6 @@ import { COMPOSE_EVENT } from "@/features/mail/compose"
 import { MailDrafts } from "@/features/mail/MailDrafts"
 import { MailList } from "@/features/mail/MailList"
 import { MailThread } from "@/features/mail/MailThread"
-import { useMailCounts } from "@/features/mail/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { DraftItem, Inbox } from "@/lib/api"
 import { useIsPhone } from "@/hooks/use-media-query"
@@ -40,20 +51,7 @@ import { useViewing } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
-const handle = cn(
-  "split-handle cursor-split bg-border bg-clip-content transition-colors duration-150 after:w-4 data-[separator=hover]:bg-brand/60 data-[separator=active]:bg-brand",
-  "data-[separator=active]:z-10 data-[separator=active]:-mx-6 data-[separator=active]:px-6 data-[separator=active]:after:w-full",
-  "data-[separator=hover]:z-10 data-[separator=hover]:-mx-6 data-[separator=hover]:px-6 data-[separator=hover]:after:w-full"
-)
-
 const chrome = "h-8 rounded-[9px] border-input bg-card font-normal"
-
-function useFolderCounts(box: string): Partial<Record<Folder, number>> {
-  const counts = useMailCounts()
-  if (!counts) return {}
-  if (box === "all") return { inbox: counts.all, starred: counts.starred }
-  return { inbox: counts.inboxes.find((c) => c.id === box)?.count ?? 0 }
-}
 
 function BoxPicker({ box, folder, compact }: { box: string; folder: Folder; compact?: boolean }) {
   const { t } = useLingui()
@@ -169,52 +167,111 @@ function ComposeButton({ onClick }: { onClick: () => void }) {
   )
 }
 
-function EmptyThread() {
+function NoMailText() {
   return (
-    <div
-      className="flex min-h-0 flex-1 flex-col items-center justify-center bg-background px-8 text-center"
-      data-testid="mail-empty"
+    <Trans>
+      A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support.
+    </Trans>
+  )
+}
+
+function NoMailAdd({ className }: { className?: string }) {
+  const { canManage } = useSession()
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className={className}
+      render={<Link to={canManage ? "/setup/new" : "/setup/mail"} state={{ back: "/mail" }} />}
+      data-testid="mail-none-add"
     >
-      <div className="mb-3 grid size-14 place-items-center rounded-[18px] bg-muted text-faint">
-        <MailOpenIcon className="size-6" />
-      </div>
-      <h1 className="text-[18px] leading-6 font-semibold">
-        <Trans>Pick a mail</Trans>
-      </h1>
-      <p className="mt-1 max-w-sm text-small text-faint">
-        <Trans>Choose one from the list, or move with ↑ ↓ and open it with Enter.</Trans>
-      </p>
-    </div>
+      {canManage ? <Trans>Add an inbox</Trans> : <Trans>Create your own mailbox</Trans>}
+    </Button>
   )
 }
 
 function NoMailInboxes() {
-  const { canManage } = useSession()
   return (
     <main className="flex min-h-0 flex-1 flex-col" data-testid="mail-none">
       <EmptyState icon={MailIcon} title={<Trans>No team mail yet</Trans>}>
         <p>
-          <Trans>
-            A team mail inbox keeps the mail of a shared address, like hello@ or billing@, away from customer support.
-          </Trans>
+          <NoMailText />
         </p>
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-4"
-          render={<Link to={canManage ? "/setup/new" : "/setup/mail"} state={{ back: "/mail" }} />}
-          data-testid="mail-none-add"
-        >
-          {canManage ? <Trans>Add an inbox</Trans> : <Trans>Create your own mailbox</Trans>}
-        </Button>
+        <NoMailAdd className="mt-4" />
       </EmptyState>
     </main>
   )
 }
 
-function Thread({ id, onBack, onLeave }: { id: string; onBack?: () => void; onLeave: () => void }) {
+function NoMailInboxesPage() {
+  const { t } = useLingui()
+  const labels = useFolderLabels()
+  return (
+    <PageLayout
+      testId="mail"
+      label={t`Mail`}
+      sidebar={<MailSidebar box="all" folder="inbox" />}
+      aside={
+        <InfoColumn label={t`Details`}>
+          <MailListInfo box="all" folder="inbox" />
+        </InfoColumn>
+      }
+    >
+      <PageTop>
+        <span className="font-medium text-foreground">
+          <Trans>Mail</Trans>
+        </span>
+        <TopSep />
+        <span className="truncate">{labels.inbox}</span>
+      </PageTop>
+      <div className="max-w-[860px]">
+        <PageHeading title={labels.inbox} lede={t`All mail`} />
+        <FlatEmpty testId="mail-none">
+          <p className="m-0 font-medium text-foreground">
+            <Trans>No team mail yet</Trans>
+          </p>
+          <p className="m-0 max-w-[560px]">
+            <NoMailText />
+          </p>
+          <NoMailAdd />
+        </FlatEmpty>
+      </div>
+    </PageLayout>
+  )
+}
+
+function Thread({
+  id,
+  flat,
+  onBack,
+  onLeave,
+}: {
+  id: string
+  flat?: boolean
+  onBack?: () => void
+  onLeave: () => void
+}) {
   const state = useLocation().state as { editDraft?: string } | null
-  return <MailThread key={id} id={id} onBack={onBack} onLeave={onLeave} openDraft={state?.editDraft} />
+  return <MailThread key={id} id={id} flat={flat} onBack={onBack} onLeave={onLeave} openDraft={state?.editDraft} />
+}
+
+function MailEyebrow({ id }: { id: string }) {
+  const text = useEnumText()
+  const c = useConversation(id).data
+  const inbox = useMailInboxes().find((i) => i.id === c?.inbox_id)
+  if (!c) return null
+  return (
+    <>
+      {inbox && (
+        <>
+          <Dot color={inbox.branding.color} className="size-2 rounded-[2px]" />
+          <span className="truncate font-medium text-foreground">{inbox.name}</span>
+          <TopSep />
+        </>
+      )}
+      <span className="truncate">{text.statusOf(c.status, c.kind)}</span>
+    </>
+  )
 }
 
 export function MailPage() {
@@ -227,12 +284,18 @@ export function MailPage() {
   const folders = useFolders()
   const labels = useFolderLabels()
   const counts = useFolderCounts(box)
-  const layout = useDefaultLayout({ id: "mail-panes", panelIds: ["list", "thread"] })
+  const [slot, setSlot] = useState<HTMLElement | null>(null)
+  const listY = useRef(0)
   const open = useCallback(
-    (next: string, editDraft?: string) =>
-      navigate(mailPath(box, folder, next), editDraft ? { state: { editDraft } } : undefined),
-    [navigate, box, folder]
+    (next: string, editDraft?: string) => {
+      if (!id) listY.current = window.scrollY
+      navigate(mailPath(box, folder, next), editDraft ? { state: { editDraft } } : undefined)
+    },
+    [navigate, box, folder, id]
   )
+  useLayoutEffect(() => {
+    if (!phone) window.scrollTo({ top: id ? 0 : listY.current })
+  }, [id, phone])
   const leave = useCallback(() => navigate(mailPath(box, folder)), [navigate, box, folder])
   useViewing(id ?? undefined)
   const [composing, setComposing] = useState<{ draft?: DraftItem } | null>(null)
@@ -242,9 +305,10 @@ export function MailPage() {
     return () => window.removeEventListener(COMPOSE_EVENT, on)
   }, [])
   useHotkeys({ [MAIL_KEYS.compose]: () => setComposing({}) }, inboxes.length > 0 && !composing)
+  useHotkeys({ Escape: leave }, !phone && !!id && !composing)
 
   const canonical = mailPath(box, folders.includes(folder) ? folder : "inbox", id ?? undefined)
-  if (inboxes.length === 0) return <NoMailInboxes />
+  if (inboxes.length === 0) return phone ? <NoMailInboxes /> : <NoMailInboxesPage />
   if (pathname !== canonical) return <Navigate to={canonical} replace />
 
   const list = (currentId: string | null, head?: React.ReactNode) =>
@@ -268,23 +332,6 @@ export function MailPage() {
     count: counts[f],
     testId: `mail-folder-${f}`,
   }))
-
-  const head = (
-    <>
-      <header className="flex h-15 shrink-0 items-center gap-1.5 ps-4 pe-3" data-testid="list-head">
-        <div className="flex min-w-0 flex-1 flex-col leading-tight">
-          <h1 className="truncate text-[16px] font-semibold">
-            <Trans>Mail</Trans>
-          </h1>
-          <p className="truncate text-caption text-faint">{boxName}</p>
-        </div>
-        <BoxPicker box={box} folder={folder} compact />
-        <FiltersLink box={box} compact />
-        <ComposeButton onClick={() => setComposing({})} />
-      </header>
-      <ViewChips value={folder} onChange={(f) => navigate(mailPath(box, f))} label={t`Folders`} items={chips} />
-    </>
-  )
 
   if (phone) {
     if (id) {
@@ -328,33 +375,61 @@ export function MailPage() {
     )
   }
 
+  const heading = <PageHeading title={labels[folder]} lede={<span data-testid="list-lede">{boxName}</span>} />
   return (
-    <main className="flex min-h-0 flex-1 flex-col" data-testid="mail">
-      <ResizablePanelGroup
-        className="min-h-0 flex-1"
-        disableCursor
-        resizeTargetMinimumSize={{ fine: 16, coarse: 32 }}
-        defaultLayout={layout.defaultLayout}
-        onLayoutChanged={layout.onLayoutChanged}
+    <PageLayout
+      testId="mail"
+      label={t`Mail`}
+      sidebar={<MailSidebar box={box} folder={folder} />}
+      aside={
+        <InfoColumn label={t`Details`}>
+          {id ? <MailThreadInfo id={id} box={box} folder={folder} /> : <MailListInfo box={box} folder={folder} />}
+        </InfoColumn>
+      }
+    >
+      <PageTop
+        back={id ? { label: labels[folder], onClick: leave } : undefined}
+        slot={id ? setSlot : undefined}
+        actions={<ComposeButton onClick={() => setComposing({})} />}
       >
-        <ResizablePanel
-          id="list"
-          className="flex flex-col"
-          defaultSize={380}
-          minSize={280}
-          maxSize={600}
-          groupResizeBehavior="preserve-pixel-size"
-        >
-          {list(id, head)}
-        </ResizablePanel>
-        <ResizableHandle withHandle className={handle} />
-        <ResizablePanel id="thread" className="flex flex-col" minSize={440}>
-          {id ? <Thread id={id} onLeave={leave} /> : <EmptyThread />}
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        {id ? (
+          <MailEyebrow id={id} />
+        ) : (
+          <>
+            <span className="font-medium text-foreground">
+              <Trans>Mail</Trans>
+            </span>
+            <TopSep />
+            <span className="truncate">{labels[folder]}</span>
+            <TopSep />
+            <span className="truncate">{boxName}</span>
+          </>
+        )}
+      </PageTop>
+      <div className="max-w-[860px]">
+        {folder === "drafts" ? (
+          <MailDrafts
+            box={box}
+            currentId={id}
+            onOpen={open}
+            onCompose={(draft) => setComposing({ draft })}
+            active={!composing}
+            flat
+            hidden={!!id}
+            head={heading}
+          />
+        ) : (
+          <MailList box={box} folder={folder} currentId={id} onOpen={open} active flat hidden={!!id} head={heading} />
+        )}
+        {id && (
+          <TopSlotProvider value={slot}>
+            <Thread id={id} flat onLeave={leave} />
+          </TopSlotProvider>
+        )}
+      </div>
       {composing && (
         <Compose key={composing.draft?.draft.id} box={box} draft={composing.draft} onClose={() => setComposing(null)} />
       )}
-    </main>
+    </PageLayout>
   )
 }
