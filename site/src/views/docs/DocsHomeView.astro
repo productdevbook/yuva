@@ -4,8 +4,6 @@ import { i18nFor } from "@/i18n"
 import DocsLayout from "@/layouts/DocsLayout.astro"
 import { description, docs, href, nav, translatedCount } from "@/lib/docs"
 import { docsPath, type Locale } from "@/lib/routes"
-import Cross from "@/ui/Cross.astro"
-import Icon from "@/ui/Icon.astro"
 
 interface Props {
   locale: Locale
@@ -21,6 +19,7 @@ const regions = (await nav(locale)).map((g) => ({
     .filter((i) => i.slug !== "index")
     .map((i) => ({ ...i, text: i.slug === "api" ? t.api.description : description(all.get(i.slug)!) })),
 }))
+const headings = regions.map((g) => ({ depth: 2, slug: `docs-${g.key}`, text: g.title }))
 ---
 
 <DocsLayout
@@ -29,36 +28,34 @@ const regions = (await nav(locale)).map((g) => ({
   description={t.home.description}
   slug="index"
   rel=""
+  headings={headings}
   english={false}
-  wideContent
   home
 >
-  <section class="px-5 py-12 sm:px-8 lg:px-12 lg:py-16" aria-labelledby="docs-title">
-    <h1 id="docs-title" class="text-[clamp(2.25rem,1.6rem+2vw,3rem)] leading-[1.06] font-semibold tracking-[-0.035em]">
+  <section aria-labelledby="docs-title">
+    <h1
+      id="docs-title"
+      class="text-[30px] leading-[38px] font-semibold tracking-[-0.02em] sm:text-4xl sm:leading-[44px]"
+    >
       {t.home.heading}
     </h1>
-    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft">{t.home.lead}</p>
-    {englishOnly && <p class="mt-4 text-sm text-ink-faint">{t.english}</p>}
+    <p class="mt-2.5 text-lg leading-7 text-ink-soft">{t.home.lead}</p>
+    {englishOnly && <p class="mt-3 text-sm text-ink-faint">{t.english}</p>}
   </section>
 
   {regions.map((g) => (
-    <section class="relative border-t border-rule" aria-labelledby={`docs-${g.key}`}>
-      <Cross class="-start-[6px] -top-[6px] hidden lg:block" />
-      <h2 id={`docs-${g.key}`} class="flex items-center gap-2.5 px-5 py-3 text-sm font-medium sm:px-8 lg:px-12">
-        <span class="grid size-6 place-items-center rounded-md border border-rule text-ink-soft">
-          <Icon name={g.icon} class="size-3.5" />
-        </span>
+    <section class="mt-14" aria-labelledby={`docs-${g.key}`}>
+      <h2 id={`docs-${g.key}`} class="mb-2 text-[22px] leading-7 font-semibold tracking-[-0.01em]">
         {g.title}
       </h2>
-      <ul class="border-t border-rule">
+      <ul class="border-t border-rule-soft">
         {g.items.map((i) => (
-          <li class="border-b border-rule last:border-b-0">
-            <a
-              class="group grid gap-1 px-5 py-4 transition-colors hover:bg-paper-deep sm:px-8 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] md:gap-8 lg:px-12"
-              href={href(locale, i.rel)}
-            >
-              <span class="font-medium group-hover:text-brand">{i.title}</span>
-              <span class="line-clamp-2 text-sm leading-relaxed text-ink-soft">{i.text}</span>
+          <li class="border-b border-rule-soft">
+            <a class="group flex flex-wrap gap-x-6 gap-y-1 py-3.5" href={href(locale, i.rel)}>
+              <span class="flex-[0_0_200px] text-[15px] font-semibold underline-offset-4 group-hover:underline">
+                {i.title}
+              </span>
+              <span class="line-clamp-2 flex-[1_1_320px] text-[15px] leading-6 text-ink-soft">{i.text}</span>
             </a>
           </li>
         ))}

@@ -52,10 +52,6 @@ msgstr "ಯಾರೂ ಕೈಹಾಕದೆ ಒಂದು ಪರಿಶೀಲನೆ
 msgid "a contact and their data"
 msgstr "ಒಂದು ಸಂಪರ್ಕ ಮತ್ತು ಅದರ ಡೇಟಾ"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "{platform} SDK ನಲ್ಲಿ ಒಂದು ಸಂಭಾಷಣೆ: ಆರ್ಡರ್ ಕುರಿತು ಪ್ರಶ್ನೆ, ಟ್ರ್ಯಾಕಿಂಗ್ ಲಿಂಕ್ ಸಹಿತ ತಂಡದ ಉತ್ತರಗಳು ಮತ್ತು ಉತ್ತರಿಸಲು ಒಂದು ಬಾಕ್ಸ್."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "ಗ್ರಾಹಕರು ಇದನ್ನು ಮುಚ್ಚಬಹುದು. ಘಟನೆಗೆ ಹೊಸ ನವೀಕರಣ ಬಂದಾಗ ಇದು ಮತ್ತೆ ಕಾಣಿಸುತ್ತದೆ."
@@ -185,6 +181,10 @@ msgstr "GitHub ನಲ್ಲಿ ಎಲ್ಲಾ ಬಿಡುಗಡೆಗಳು"
 msgid "All templates"
 msgstr "ಎಲ್ಲಾ ಟೆಂಪ್ಲೇಟ್‌ಗಳು"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "ಚಂದಾದಾರಿಕೆ ಬೇಡದ Atom ಫೀಡ್, ನಿಮ್ಮ README ಗಾಗಿ ಬ್ಯಾಡ್ಜ್, ಮತ್ತು ನಿಮ್ಮ ಸ್ವಂತ ಸೈಟ್ ಅಥವಾ ಆ್ಯಪ್‌ಗಾಗಿ ಅದೇ ಪುಟ JSON ಆಗಿ."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "ಏನನ್ನಾದರೂ ಕಳುಹಿಸುವ ಮೊದಲು"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "ಬೀಟಾ"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "ಬ್ಲಾಕ್‌ಗಳು"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Yuva ಅನ್ನು Claude, ChatGPT, Cursor, VS Code ಅಥವಾ Gemin
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "ಸಂಪರ್ಕ"
@@ -503,12 +502,14 @@ msgstr "ಕೊಡುಗೆ ನೀಡುವುದು"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "ನಕಲಿಸಲಾಗಿದೆ"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "ನಕಲಿಸಿ"
 
@@ -644,7 +645,6 @@ msgstr "ಡಾಕ್ಸ್"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "ಡಾಕ್ಯುಮೆಂಟೇಶನ್"
@@ -797,6 +797,10 @@ msgstr "Yuva ದ ಎಲ್ಲಾ ಮಾರ್ಗದರ್ಶಿಗಳು ಒಂ�
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Yuva ದ ಪ್ರತಿ ಬಿಡುಗಡೆ ಮತ್ತು ಅದರಲ್ಲಿ ಏನು ಬದಲಾಯಿತು, ಬದಲಾವಣೆ ಲಾಗ್‌ನಿಂದ."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "ಇನ್‌ಬಾಕ್ಸ್ ಸುತ್ತಲಿನ ಎಲ್ಲವೂ"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "ಎಲ್ಲವೂ API ನಲ್ಲಿದೆ, status:read ಮತ್ತು status:manage ವ್ಯಾಪ್ತಿಗಳೊಂದಿಗೆ. ವೆಬ್‌ಹುಕ್‌ಗಳು ಘಟಕ, ಘಟನೆ ಮತ್ತು ಮಾನಿಟರ್ ಬದಲಾವಣೆಗಳನ್ನು ಘೋಷಿಸುತ್ತವೆ, ಮತ್ತು MCP ಮೂಲಕ ಜೋಡಿಸಿದ ಸಹಾಯಕರು ಕರಡುಗಳನ್ನು ತೆರೆಯಬಹುದು ಮತ್ತು ಘಟನೆಗಳನ್ನು ಪರಿಹರಿಸಬಹುದು."
@@ -902,10 +906,6 @@ msgstr "ಗ್ಯಾಲರಿ"
 msgid "Get started"
 msgstr "ಪ್ರಾರಂಭಿಸಿ"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "ಪ್ರತಿ ಉತ್ಪನ್ನದ ಬಳಕೆದಾರರಿಗೆ ನಿಮ್ಮನ್ನು ತಲುಪಲು ಒಂದು ದಾರಿ ನೀಡಿ."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "ಕೀ ಮತ್ತು ನಿಮ್ಮ Yuva ಸರ್ವರ್‌ನ ವಿಳಾಸವನ್ನು ಘಟಕಗಳಿಗೆ ಕೊಡಿ, ಉದಾಹರಣೆಗೆ ಪರಿಸರದಲ್ಲಿ:"
@@ -955,6 +955,11 @@ msgstr "ನಮಸ್ಕಾರ! ನಿಮ್ಮ ಬಗ್ಗೆ ಮತ್ತು �
 msgid "History"
 msgstr "ಇತಿಹಾಸ"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "ಮುಖಪುಟ"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hooks"
@@ -962,6 +967,10 @@ msgstr "Hooks"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "ಹೋಸ್ಟ್ ಮಾಡಿದ"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "ಹೋಸ್ಟ್ ಮಾಡಿದ್ದು ಅಥವಾ ನಿಮ್ಮ ಸ್ವಂತ ಸರ್ವರ್‌ನಲ್ಲಿ"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "ಶಾಯಿ"
 msgid "Install the chat block, then render it:"
 msgstr "ಚಾಟ್ ಬ್ಲಾಕ್ ಸ್ಥಾಪಿಸಿ, ನಂತರ ಅದನ್ನು ರೆಂಡರ್ ಮಾಡಿ:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Yuva ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "ಸ್ಥಾಪನೆ"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "ಲೈವ್ ಮುನ್ನೋಟ"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "ಲಾಗ್ ಇನ್"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "ಪ್ರತಿ ಘಟಕಕ್ಕೆ ಒಂದು ಚೆಕ್‌ಬಾಕ್ಸ್, ಮತ್ತು ಪ್ರತಿ ಇ-ಮೇಲ್‌ನಲ್ಲಿ ಆಯ್ಕೆ ಬದಲಿಸಲು ಅಥವಾ ಬಿಡಲು ಲಿಂಕ್."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "ಒಂದು Docker ಇಮೇಜ್ ಮತ್ತು Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "ನಿಮ್ಮ ಸ್ವಂತ ಸರ್ವರ್‌ನಲ್ಲಿ ಒಂದು Docker ಇಮೇಜ್ ಮತ್ತು Postgres."
 
@@ -1517,6 +1535,10 @@ msgstr "ನನ್ನ ಸರ್ವರ್‌ನಲ್ಲಿ ತೆರೆಯಿರ�
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Plugins ತೆರೆಯಿರಿ, ಪ್ಲಸ್ ಬಟನ್ ಆರಿಸಿ, ನಂತರ Add custom MCP server."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "ಓಪನ್ ಸೋರ್ಸ್"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "ಐಚ್ಛಿಕ: ನಿಯೋಜನೆ ಆದೇಶಕ್ಕೆ ಪ�
 msgid "Or ask for one thing"
 msgstr "ಅಥವಾ ಒಂದು ವಿಷಯ ಕೇಳಿ"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "ಅಥವಾ ನೀವೇ ಹೋಸ್ಟ್ ಮಾಡಿ"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "ಅಥವಾ ವಾಕ್ಯವನ್ನು ಟೈಪ್ ಮಾಡಿ:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "ಒಟ್ಟಾರೆ ಸ್ಥಿತಿ"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "ಅವಲೋಕನ"
 
@@ -1668,7 +1687,6 @@ msgstr "ಮುನ್ನೋಟ ಮತ್ತು ಬಳಕೆ"
 msgid "Preview colours"
 msgstr "ಬಣ್ಣಗಳ ಮುನ್ನೋಟ"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "{name} ಟೆಂಪ್ಲೇಟ್‌ನ ಮುನ್ನೋಟ"
@@ -1744,10 +1762,6 @@ msgstr "ಲೈವ್ ಚಾಟ್, ದಸ್ತಾವೇಜು ಪುಟಗಳ �
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "LICENSING.md ಓದಿ"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "ಕೋಡ್ ಓದಿ, ನಿಮ್ಮ ಯಂತ್ರದಲ್ಲಿ {version} ಚಲಾಯಿಸಿ, ಮತ್ತು ಅದು ಬೆಳೆಯುತ್ತಿರುವಂತೆ ಜೊತೆಗಿರಿ."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "ಜೋಡಿಸಿದವುಗಳಿಗೆ ಉತ್ತರ"
 msgid "Report a vulnerability"
 msgstr "ದುರ್ಬಲತೆಯನ್ನು ವರದಿ ಮಾಡಿ"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "ಸಮಸ್ಯೆಯನ್ನು ವರದಿ ಮಾಡಿ"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "ದುರ್ಬಲತೆಗಳನ್ನು GitHub ಮೂಲಕ ಖಾಸಗಿಯಾಗಿ ವರದಿ ಮಾಡಿ, ಎಂದಿಗೂ ಸಾರ್ವಜನಿಕ ಇಶ್ಯೂನಲ್ಲಿ ಅಲ್ಲ."
@@ -1869,7 +1887,6 @@ msgstr "ಅವಶ್ಯಕತೆಗಳು"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "ಸಂಪನ್ಮೂಲಗಳು"
 
@@ -1885,8 +1902,11 @@ msgstr "ಪ್ರತಿಕ್ರಿಯೆ ಸಮಯಗಳು"
 msgid "Responses"
 msgstr "ಪ್ರತಿಕ್ರಿಯೆಗಳು"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST ಮತ್ತು MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "ಮಾರ್ಗಸೂಚಿ"
@@ -2009,6 +2029,10 @@ msgstr "ಕೆಲವು ಹಂತಗಳಲ್ಲಿ ಹೊಂದಿಸಿ"
 msgid "Set up a channel"
 msgstr "ಚಾನಲ್ ಹೊಂದಿಸಿ"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "ಸೆಟ್ ಅಪ್ ಮಾಡಿ ಮತ್ತು ಚಲಾಯಿಸಿ"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "ಈ ಸೈಟ್‌ಗಾಗಿ Yuva ವಿಶ್ಲೇಷಣೆಯನ್ನು ಹೊಂದಿಸಿ, ಸೈನ್-ಅಪ್‌ಗಳಿಗೆ ಒಂದು ಗುರಿಯೊಂದಿಗೆ."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "ಹಂತ"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "ಉಚಿತವಾಗಿ ಪ್ರಾರಂಭಿಸಿ"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "AI ಯೊಂದಿಗೆ ಪ್ರಾರಂಭಿಸಿ"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ವಿಶ್ಲೇಷಣೆ�
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "ಉತ್ತರ ಪ್ರತಿ ವಿಳಾಸಕ್ಕೂ ಒಂದೇ, ಮತ್ತು ದೃಢೀಕರಿಸದೆ ಯಾರೂ ಚಂದಾದಾರರಾಗುವುದಿಲ್ಲ."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "1.0 ಕ್ಕಿಂತ ಮೊದಲು API ಇನ್ನೂ ಬದಲಾಗಬಹುದು, ಆದ್ದರಿಂದ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡುವ ಮೊದಲು ಬಿಡುಗಡೆ ಟಿಪ್ಪಣಿಗಳನ್ನು ಓದಿ. ಸರ್ವರ್ ಪ್ರಾರಂಭವಾದಾಗ ಡೇಟಾಬೇಸ್ ಮೈಗ್ರೇಶನ್‌ಗಳು ಚಲಿಸುತ್ತವೆ: ಮೊದಲು ಬ್ಯಾಕಪ್ ತೆಗೆದುಕೊಳ್ಳಿ."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API ನಿಧಾನವಾಗಿ ಓಡುತ್ತಿದೆ"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "ಹೆಸರು ಮತ್ತು ಈ ಸೈಟ್ ಅನ್ನು Geist ನಲ್ಲಿ ಹೊಂದಿಸಲಾಗಿದೆ, ಇದು SIL Open Font License ಅಡಿಯಲ್ಲಿನ ಓಪನ್-ಸೋರ್ಸ್ ಟೈಪ್‌ಫೇಸ್."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "ಫೋನ್‌ನಲ್ಲಿ ಪ್ಯಾನೆಲ್: ಪ್ರತಿ ವ್ಯಕ್ತಿಯ ಚಾನಲ್ ಮತ್ತು ಇತ್ತೀಚಿನ ಸಂದೇಶದೊಂದಿಗೆ ಸಂಭಾಷಣೆ ಪಟ್ಟಿ, ಮತ್ತು ಕೆಳಗೆ ಟ್ಯಾಬ್‌ಗಳು."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "ಮೊಬೈಲ್ ಆ್ಯಪ್‌ನಿಂದ ಕಳುಹಿಸಿದ ಪ್ರತಿಕ್ರಿಯೆಯೊಂದಿಗೆ ಪ್ಯಾನೆಲ್: ಸಂಭಾಷಣೆ ಪಟ್ಟಿಯ ಪಕ್ಕದಲ್ಲಿ ಆ್ಯಪ್ ಆವೃತ್ತಿ, ಸಾಧನ ಮತ್ತು ಪರದೆಯೊಂದಿಗೆ ಬಗ್ ವರದಿ."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "ಪದಗಳಲ್ಲಿ ಸ್ಥಿತಿ, ಪ್ರಭಾವಿತ ಘಟಕಗಳು ಮತ್ತು ನವೀಕರಣಗಳು, ಚಿತ್ರಗಳು, ಟ್ರ್ಯಾಕಿಂಗ್ ಅಥವಾ ಪ್ರಚಾರವಿಲ್ಲದೆ. ಇಂಗ್ಲಿಷ್, ಟರ್ಕಿಶ್ ಅಥವಾ ಜರ್ಮನ್‌ನಲ್ಲಿ."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "ಆ್ಯಪ್‌ನೊಳಗೆ {platform} SDK ಯ ಬೆಂಬಲ ಪರದೆ: ವ್ಯಕ್ತಿಯ ಸಂಭಾಷಣೆಗಳು ಕೊನೆಯ ಉತ್ತರದೊಂದಿಗೆ ಮತ್ತು ಹೊಸ ಸಂದೇಶ ಬರೆಯಲು ಒಂದು ಬಟನ್."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "ಬೆಂಬಲ ತಂಡವು ಸಾಮಾನ್ಯವಾಗಿ ಬೇರೆ ಬೇರೆಯಾಗಿ ಬಾಡಿಗೆಗೆ ಪಡೆಯುವ ಸಾಧನಗಳು, ಅದೇ ಸರ್ವರ್ ಮತ್ತು ಅದೇ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "ಹೆಸರು ಮತ್ತು ಲೋಗೋ ಬಳಕೆ"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "API ಯ ಆವೃತ್ತಿ {version}, OpenAPI ಒಪ್ಪಂದದಿಂದ ರಚಿತ. ಯಾವುದೇ ಭಾಷೆಯಲ್ಲಿ ಕ್ಲೈಂಟ್ ರಚಿಸಲು ಒಪ್ಪಂದವನ್ನು ಬಳಸಿ."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "GitHub ನಲ್ಲಿ ನೋಡಿ"
 
 #: src/copy/home.ts
 msgid "visitors"

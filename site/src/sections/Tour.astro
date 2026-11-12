@@ -1,0 +1,125 @@
+---
+import type { HomeCopy } from "@/copy/home"
+import type { Locale } from "@/lib/routes"
+import type { Shots } from "@/lib/shots"
+import { stack } from "@/lib/stack"
+import Shot from "@/ui/Shot.astro"
+
+interface Props {
+  t: HomeCopy["tour"]
+  shots: Shots
+  locale: Locale
+}
+
+const { t, shots: s, locale } = Astro.props
+const panels = [
+  { id: "widget", shot: s.widget },
+  { id: "feedback", shot: s.feedback },
+  { id: "broadcast", shot: s.broadcast },
+  { id: "analytics", shot: s.analytics },
+  { id: "migration", shot: s.migration },
+] as const
+const sizes = "(min-width: 1440px) 860px, (min-width: 768px) calc(100vw - 380px), calc(100vw - 32px)"
+---
+
+<section id="inbox" class="mt-12 overflow-hidden rounded-[10px] border border-rule" aria-label={t.title} data-tabs>
+  <div class="flex flex-wrap items-stretch gap-x-[22px] border-b border-rule px-4" role="tablist" aria-label={t.label}>
+    {t.tabs.map((tab, i) => (
+      <button
+        type="button"
+        role="tab"
+        id={`tab-${tab.id}`}
+        aria-controls={`panel-${tab.id}`}
+        aria-selected={i === 0 ? "true" : "false"}
+        tabindex={i === 0 ? 0 : -1}
+        class="-mb-px flex h-12 shrink-0 cursor-pointer items-center border-b-2 border-transparent px-0.5 text-sm font-medium whitespace-nowrap text-ink-soft hover:text-ink aria-selected:border-brand aria-selected:font-semibold aria-selected:text-ink"
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+  <div class="bg-paper-deep bg-[radial-gradient(var(--rule-strong)_1px,transparent_1px)] [background-size:18px_18px] px-3 pt-6 pb-5 sm:px-6 sm:pt-8">
+    <div class="overflow-hidden rounded-[10px] border border-rule bg-paper shadow-[0_1px_2px_rgb(0_0_0/4%)]">
+      <div role="tabpanel" id="panel-inbox" aria-labelledby="tab-inbox" tabindex="0">
+        <Shot
+          light={s.thread.light}
+          dark={s.thread.dark}
+          alt={t.alts.inbox}
+          widths={[720, 1080, 1440, 2160]}
+          sizes={sizes}
+          small={{ light: s.phoneThread.light, dark: s.phoneThread.dark, widths: [390, 585, 780], sizes: "300px" }}
+          eager
+        />
+      </div>
+      {panels.map((p) => (
+        <div role="tabpanel" id={`panel-${p.id}`} aria-labelledby={`tab-${p.id}`} tabindex="0" hidden>
+          <Shot
+            light={p.shot.light}
+            dark={p.shot.dark}
+            alt={t.alts[p.id]}
+            widths={[720, 1080, 1440, 2160]}
+            sizes={sizes}
+          />
+        </div>
+      ))}
+    </div>
+    <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-ink-soft">
+      <span class="inline-flex items-center gap-[7px]">
+        <span class="size-[7px] rounded-full bg-moss" aria-hidden="true"></span>
+        {t.worksWith}
+      </span>
+      <ul class="flex flex-wrap items-center gap-1.5">
+        {stack.map((item) => (
+          <li>
+            <a
+              href={item.href[locale]}
+              class="inline-flex h-7 items-center gap-1.5 rounded-md border border-rule bg-paper px-2 text-xs text-ink-2 hover:border-rule-strong hover:text-ink"
+            >
+              {item.path && (
+                <svg viewBox={item.viewBox ?? "0 0 24 24"} class="size-3.5 shrink-0 fill-current" aria-hidden="true">
+                  <path d={item.path} fill-rule={item.viewBox ? "evenodd" : undefined} />
+                </svg>
+              )}
+              {item.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-tabs]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')]
+    const select = (tab: HTMLButtonElement) => {
+      for (const t of tabs) {
+        const on = t === tab
+        t.setAttribute("aria-selected", String(on))
+        t.tabIndex = on ? 0 : -1
+        root.querySelector<HTMLElement>(`#${t.getAttribute("aria-controls")}`)!.hidden = !on
+      }
+    }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(tab))
+      tab.addEventListener("keydown", (e) => {
+        const key = e.key
+        const next =
+          key === "ArrowRight"
+            ? i + 1
+            : key === "ArrowLeft"
+              ? i - 1
+              : key === "Home"
+                ? 0
+                : key === "End"
+                  ? tabs.length - 1
+                  : -1
+        if (next < 0) return
+        e.preventDefault()
+        const target = tabs[(next + tabs.length) % tabs.length]!
+        select(target)
+        target.focus()
+      })
+    })
+  })
+</script>

@@ -52,10 +52,6 @@ msgstr "การตรวจสอบกำหนดสถานะของค
 msgid "a contact and their data"
 msgstr "รายชื่อติดต่อและข้อมูลของรายชื่อนั้น"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "บทสนทนาใน SDK สำหรับ {platform}: คำถามเกี่ยวกับคำสั่งซื้อ และคำตอบของทีมพร้อมลิงก์ติดตามพัสดุ และช่องสำหรับตอบกลับ"
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "ลูกค้าปิดได้ และจะกลับมาแสดงอีกเมื่อเหตุการณ์มีการอัปเดตใหม่"
@@ -185,6 +181,10 @@ msgstr "รุ่นทั้งหมดบน GitHub"
 msgid "All templates"
 msgstr "เทมเพลตทั้งหมด"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "มีบัญชีอยู่แล้วใช่ไหม"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "ฟีด Atom ที่ไม่ต้องสมัครสมาชิก ป้ายสำหรับ README ของคุณ และหน้าเดียวกันในรูปแบบ JSON สำหรับเว็บไซต์หรือแอปของคุณเอง"
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "ก่อนที่จะส่งอะไรออกไป"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "เบตา"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "บล็อก"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "เชื่อมต่อ Yuva กับ Claude, ChatGPT, Cursor, VS C
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "ติดต่อ"
@@ -503,12 +502,14 @@ msgstr "การมีส่วนร่วม"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "คัดลอกแล้ว"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "คัดลอก"
 
@@ -644,7 +645,6 @@ msgstr "เอกสาร"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "เอกสารประกอบ"
@@ -797,6 +797,10 @@ msgstr "คู่มือ Yuva ทั้งหมดในที่เดีย
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "ทุกรุ่นของ Yuva และสิ่งที่เปลี่ยนไป จากบันทึกการเปลี่ยนแปลง"
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "ทุกอย่างรอบกล่องข้อความ"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "ทุกอย่างอยู่ใน API ด้วยสิทธิ์ status:read และ status:manage เว็บฮุคแจ้งการเปลี่ยนแปลงของคอมโพเนนต์ เหตุการณ์ และมอนิเตอร์ และผู้ช่วยที่เชื่อมต่อผ่าน MCP สามารถเปิดฉบับร่างและแก้ไขเหตุการณ์ได้"
@@ -902,10 +906,6 @@ msgstr "แกลเลอรี"
 msgid "Get started"
 msgstr "เริ่มต้นใช้งาน"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "ให้ผู้ใช้ของทุกผลิตภัณฑ์มีช่องทางติดต่อคุณ"
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "ส่งคีย์และที่อยู่เซิร์ฟเวอร์ Yuva ของคุณให้คอมโพเนนต์ เช่นผ่านตัวแปรสภาพแวดล้อม:"
@@ -955,6 +955,11 @@ msgstr "สวัสดี! เล่าให้เราฟังสักน�
 msgid "History"
 msgstr "ประวัติ"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "หน้าแรก"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hooks"
@@ -962,6 +967,10 @@ msgstr "Hooks"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "โฮสต์ให้"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "แบบโฮสต์ให้หรือโฮสต์เอง"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "หมึก"
 msgid "Install the chat block, then render it:"
 msgstr "ติดตั้งบล็อกแชต แล้วเรนเดอร์:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "ติดตั้ง Yuva"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "การติดตั้ง"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "ตัวอย่างสด"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "เข้าสู่ระบบ"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "ช่องทำเครื่องหมายหนึ่งช่องต่อคอมโพเนนต์ และทุกอีเมลมีลิงก์สำหรับเปลี่ยนตัวเลือกหรือยกเลิกการรับ"
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Docker image เดียวกับ Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "อิมเมจ Docker เดียวกับ Postgres บนเซิร์ฟเวอร์ของคุณเอง"
 
@@ -1517,6 +1535,10 @@ msgstr "เปิดบนเซิร์ฟเวอร์ของฉัน"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "เปิด Plugins เลือกปุ่มเครื่องหมายบวก แล้วเลือก Add custom MCP server"
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "โอเพนซอร์ส"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "ไม่บังคับ: เก็บอีเมลไว้ระ�
 msgid "Or ask for one thing"
 msgstr "หรือขอแค่อย่างเดียว"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "หรือโฮสต์เอง"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "หรือพิมพ์ประโยคนี้:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "สถานะโดยรวม"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "ภาพรวม"
 
@@ -1668,7 +1687,6 @@ msgstr "ตัวอย่างและการใช้งาน"
 msgid "Preview colours"
 msgstr "ดูตัวอย่างสี"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "ตัวอย่างเทมเพลต {name}"
@@ -1744,10 +1762,6 @@ msgstr "คอมโพเนนต์ React สำหรับแชตสด �
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "อ่าน LICENSING.md"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "อ่านโค้ด รัน {version} บนเครื่องของคุณ และติดตามขณะที่มันเติบโต"
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "ตอบกลับบทสนทนาที่เชื่อมโ
 msgid "Report a vulnerability"
 msgstr "รายงานช่องโหว่"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "รายงานปัญหา"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "รายงานช่องโหว่แบบส่วนตัวผ่าน GitHub ไม่ใช่ใน issue สาธารณะ"
@@ -1869,7 +1887,6 @@ msgstr "สิ่งที่ต้องมี"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "ทรัพยากร"
 
@@ -1885,8 +1902,11 @@ msgstr "เวลาตอบสนอง"
 msgid "Responses"
 msgstr "การตอบกลับ"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST และ MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "โรดแมป"
@@ -2009,6 +2029,10 @@ msgstr "ตั้งค่าได้ในไม่กี่ขั้นตอ
 msgid "Set up a channel"
 msgstr "ตั้งค่าช่องทาง"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "ตั้งค่าและใช้งาน"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "ตั้งค่าการวิเคราะห์ของ Yuva สำหรับเว็บไซต์นี้ พร้อมเป้าหมายสำหรับการสมัคร"
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "ระยะ"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "เริ่มใช้ฟรี"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "เริ่มต้นด้วย AI"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "ภาพรวมการวิเคราะห์ในแผงค
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "คำตอบเหมือนกันทุกที่อยู่ และไม่มีใครถูกสมัครโดยไม่ยืนยัน"
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "API ยังอาจเปลี่ยนได้ก่อนเวอร์ชัน 1.0 จึงควรอ่านบันทึกประจำรุ่นก่อนอัปเกรด การย้ายข้อมูลฐานข้อมูลจะทำงานเมื่อเซิร์ฟเวอร์เริ่มทำงาน: สำรองข้อมูลก่อน"
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API ทำงานช้า"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "ชื่อและเว็บไซต์นี้จัดพิมพ์ด้วย Geist ฟอนต์โอเพนซอร์สภายใต้ SIL Open Font License"
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "แผงควบคุมบนโทรศัพท์: รายการสนทนาพร้อมช่องทางและข้อความล่าสุดของแต่ละคน และแท็บด้านล่าง"
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "แผงควบคุมที่มีความคิดเห็นที่ส่งจากแอปมือถือ: รายงานบั๊กพร้อมเวอร์ชันแอป อุปกรณ์ และหน้าจอ ถัดจากรายการสนทนา"
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "สถานะเป็นข้อความ คอมโพเนนต์ที่ได้รับผลกระทบ และการอัปเดต โดยไม่มีรูปภาพ การติดตาม หรือโฆษณา ในภาษาอังกฤษ ตุรกี หรือเยอรมัน"
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "หน้าจอซัพพอร์ตของ SDK สำหรับ {platform} ภายในแอป: บทสนทนาของผู้ใช้พร้อมคำตอบล่าสุด และปุ่มสำหรับเขียนข้อความใหม่"
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "เครื่องมือที่ทีมซัพพอร์ตมักเช่าแยกกัน อยู่ในเซิร์ฟเวอร์เดียวกันและแผงควบคุมเดียวกัน"
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "การใช้ชื่อและโลโก้"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "API เวอร์ชัน {version} สร้างจากสัญญา OpenAPI ใช้สัญญานี้สร้างไคลเอนต์ในภาษาใดก็ได้"
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "ดูบน GitHub"
 
 #: src/copy/home.ts
 msgid "visitors"

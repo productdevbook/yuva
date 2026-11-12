@@ -1,0 +1,165 @@
+---
+import { docsCopy } from "@/copy/docs"
+import { headerCopy } from "@/copy/header"
+import { i18nFor } from "@/i18n"
+import { appUrl, bcp47, home, languageName, locales, VERSION, type Locale } from "@/lib/routes"
+import DocsSearch from "@/ui/DocsSearch.astro"
+import Logo from "@/ui/Logo.astro"
+import NavRows, { type NavRowGroup } from "@/ui/NavRows.astro"
+import ThemeToggle from "@/ui/ThemeToggle.astro"
+
+type TocItem = { href: string; label: string; depth?: number }
+
+interface Props {
+  locale: Locale
+  paths: Record<Locale, string>
+  label: string
+  groups: NavRowGroup[]
+  toc?: TocItem[]
+  current?: boolean
+}
+
+const { locale, paths, label, groups, toc = [], current = false } = Astro.props
+const t = docsCopy(i18nFor(locale))
+const h = headerCopy(i18nFor(locale), locale)
+---
+
+<div class="h-0.5 bg-brand"></div>
+
+<div class="sticky top-0 z-50 border-b border-rule-soft bg-paper md:hidden">
+  <div class="flex h-14 items-center gap-3 px-4">
+    <a class="flex items-center gap-2.5 font-semibold tracking-[-0.01em]" href={home[locale]} aria-label={h.home}>
+      <Logo size={22} />
+      Yuva
+    </a>
+    <span class="ms-auto">
+      <DocsSearch locale={locale} compact />
+    </span>
+    <details class="group" data-shell-menu>
+      <summary
+        class="grid size-9 cursor-pointer list-none place-content-center gap-[5px] rounded-md [&::-webkit-details-marker]:hidden"
+        aria-label={h.menu}
+      >
+        <span class="h-[1.5px] w-4 rounded-full bg-ink transition duration-200 group-open:translate-y-[3.25px] group-open:rotate-45"></span>
+        <span class="h-[1.5px] w-4 rounded-full bg-ink transition duration-200 group-open:-translate-y-[3.25px] group-open:-rotate-45"></span>
+      </summary>
+      <div class="fixed inset-x-0 top-[3.625rem] bottom-0 flex flex-col gap-6 overflow-y-auto bg-paper px-4 pt-4 pb-8">
+        <div class="grid grid-cols-2 gap-3">
+          <a
+            class="inline-flex h-10 items-center justify-center rounded-md border border-rule-strong text-sm font-medium"
+            href={appUrl(locale)}
+          >
+            {h.logIn}
+          </a>
+          <a
+            class="inline-flex h-10 items-center justify-center rounded-md bg-brand text-sm font-medium text-white"
+            href={appUrl(locale, { signup: "1" })}
+          >
+            {h.startFree}
+          </a>
+        </div>
+        <slot name="mobile" />
+        <NavRows groups={groups} label={label} />
+        <ThemeToggle locale={locale} class="self-start" />
+        <ul class="flex flex-wrap gap-x-4 gap-y-2 px-2.5 text-sm">
+          {locales
+            .filter((l) => l !== locale)
+            .map((l) => (
+              <li>
+                <a class="text-ink-2 hover:underline" href={paths[l]} hreflang={l} lang={bcp47[l]}>
+                  {languageName(l)}
+                </a>
+              </li>
+            ))}
+        </ul>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="mx-auto flex w-full max-w-[1440px] items-stretch">
+  <aside class="hidden w-60 flex-none flex-col gap-5 border-e border-rule-soft pt-6 pe-4 pb-12 ps-6 md:flex">
+    <a
+      class="flex items-center gap-2.5 px-2.5 py-1 text-base font-semibold tracking-[-0.01em]"
+      href={home[locale]}
+      aria-label={h.home}
+      aria-current={current ? "page" : undefined}
+    >
+      <Logo size={22} />
+      Yuva
+      <span class="ms-auto rounded border border-rule-strong px-[5px] font-mono text-[11px] font-normal text-ink-soft">
+        {VERSION}
+      </span>
+    </a>
+    <slot name="head" />
+    <DocsSearch locale={locale} />
+    <NavRows groups={groups} label={label} />
+  </aside>
+
+  <main id="main" class="min-w-0 flex-[999_1_560px] px-4 pt-8 pb-24 md:ps-12 md:pe-8 md:pt-12">
+    <slot />
+  </main>
+
+  <aside class="hidden w-60 flex-none pt-12 pe-6 pb-12 ps-2 min-[1180px]:block">
+    <div class="mb-3 flex justify-end">
+      <ThemeToggle locale={locale} />
+    </div>
+    {toc.length > 0 && (
+      <nav aria-label={t.onThisPage} data-toc>
+        <p class="pb-1.5 text-xs font-medium text-ink-faint">{t.onThisPage}</p>
+        <ol>
+          {toc.map((i) => (
+            <li>
+              <a
+                class:list={[
+                  "block py-[3px] text-[13px] leading-5 text-ink-2 no-underline underline-offset-4 hover:underline aria-[current=location]:font-medium aria-[current=location]:text-ink",
+                  i.depth === 3 && "ps-3",
+                ]}
+                href={i.href}
+              >
+                {i.label}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    <slot name="aside" />
+  </aside>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>("[data-shell-menu]").forEach((d) => {
+    d.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("a")) d.open = false
+    })
+  })
+
+  const toc = document.querySelector<HTMLElement>("[data-toc]")
+  const entries = [...(toc?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]') ?? [])]
+    .map((link) => ({ link, heading: document.getElementById(decodeURIComponent(link.hash.slice(1))) }))
+    .filter((e): e is { link: HTMLAnchorElement; heading: HTMLElement } => e.heading !== null)
+  if (entries.length) {
+    let active: HTMLAnchorElement | undefined
+    let queued = false
+    const update = () => {
+      queued = false
+      const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
+      let pick = entries[0]!
+      for (const e of entries) if (e.heading.getBoundingClientRect().top <= 120) pick = e
+      if (bottom) pick = entries[entries.length - 1]!
+      if (pick.link === active) return
+      active?.removeAttribute("aria-current")
+      active = pick.link
+      active.setAttribute("aria-current", "location")
+    }
+    const schedule = () => {
+      if (queued) return
+      queued = true
+      requestAnimationFrame(update)
+    }
+    addEventListener("scroll", schedule, { passive: true })
+    addEventListener("resize", schedule, { passive: true })
+    update()
+  }
+</script>

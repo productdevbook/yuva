@@ -52,10 +52,6 @@ msgstr "Một lần kiểm tra đặt trạng thái của thành phần mà khô
 msgid "a contact and their data"
 msgstr "một liên hệ và dữ liệu của họ"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "Một cuộc trò chuyện trong SDK {platform}: câu hỏi về một đơn hàng và các trả lời của nhóm kèm liên kết theo dõi, cùng ô để trả lời."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "Khách hàng có thể đóng nó. Nó hiện lại khi sự cố có cập nhật mới."
@@ -185,6 +181,10 @@ msgstr "Tất cả bản phát hành trên GitHub"
 msgid "All templates"
 msgstr "Tất cả mẫu"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "Đã có tài khoản?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "Một nguồn cấp Atom không cần đăng ký, một huy hiệu cho README của bạn và chính trang này dưới dạng JSON cho trang web hoặc ứng dụng của bạn."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "trước khi bất cứ thứ gì được gửi đi"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "Beta"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "Khối"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Kết nối Yuva với Claude, ChatGPT, Cursor, VS Code hoặc Gemini CL
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "Liên hệ"
@@ -503,12 +502,14 @@ msgstr "Đóng góp"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "Đã sao chép"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "Sao chép"
 
@@ -644,7 +645,6 @@ msgstr "Tài liệu"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "Tài liệu hướng dẫn"
@@ -797,6 +797,10 @@ msgstr "Tất cả hướng dẫn của Yuva ở một nơi: cài đặt, kênh,
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Mỗi bản phát hành của Yuva và những gì đã thay đổi, từ nhật ký thay đổi."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "Mọi thứ xoay quanh hộp thư đến"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "Mọi thứ đều có trong API, với các phạm vi status:read và status:manage. Webhook thông báo thay đổi của thành phần, sự cố và trình giám sát, còn các trợ lý kết nối qua MCP có thể mở bản nháp và giải quyết sự cố."
@@ -902,10 +906,6 @@ msgstr "Thư viện"
 msgid "Get started"
 msgstr "Bắt đầu"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "Cho người dùng của mọi sản phẩm một cách để liên hệ với bạn."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "Đưa khóa và địa chỉ máy chủ Yuva của bạn cho các thành phần, ví dụ trong biến môi trường:"
@@ -955,6 +955,11 @@ msgstr "Xin chào! Hãy kể đôi chút về bạn và điều bạn đang ngh�
 msgid "History"
 msgstr "Lịch sử"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "Trang chủ"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hook"
@@ -962,6 +967,10 @@ msgstr "Hook"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "Được lưu trữ"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "Được lưu trữ sẵn hoặc tự lưu trữ"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "Mực"
 msgid "Install the chat block, then render it:"
 msgstr "Cài khối chat, rồi hiển thị nó:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Cài đặt Yuva"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "Cài đặt"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "Xem trước trực tiếp"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "Đăng nhập"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "Một ô chọn cho mỗi thành phần và trong mỗi e-mail có liên kết để đổi lựa chọn hoặc hủy đăng ký."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Một Docker image và Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "Một image Docker và Postgres trên máy chủ của riêng bạn."
 
@@ -1517,6 +1535,10 @@ msgstr "Mở trên máy chủ của tôi"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Mở Plugins, chọn nút dấu cộng, rồi Add custom MCP server."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "Mã nguồn mở"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "Tùy chọn: giữ thư trong lúc gián đoạn bằng cách thêm mộ
 msgid "Or ask for one thing"
 msgstr "Hoặc chỉ yêu cầu một việc"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "Hoặc tự lưu trữ"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "Hoặc gõ câu sau:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "Trạng thái chung"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "Tổng quan"
 
@@ -1668,7 +1687,6 @@ msgstr "Xem trước và sử dụng"
 msgid "Preview colours"
 msgstr "Xem trước màu"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "Xem trước mẫu {name}"
@@ -1744,10 +1762,6 @@ msgstr "Các thành phần React cho chat trực tiếp, thảo luận trên tra
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "Đọc LICENSING.md"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "Đọc mã, chạy {version} trên máy của bạn và theo dõi khi nó lớn lên."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "Trả lời những cuộc trò chuyện đã liên kết"
 msgid "Report a vulnerability"
 msgstr "Báo cáo lỗ hổng bảo mật"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "Báo cáo sự cố"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "Hãy báo cáo lỗ hổng riêng tư qua GitHub, đừng bao giờ trong một issue công khai."
@@ -1869,7 +1887,6 @@ msgstr "Yêu cầu"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "Tài nguyên"
 
@@ -1885,8 +1902,11 @@ msgstr "Thời gian phản hồi"
 msgid "Responses"
 msgstr "Các phản hồi"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST và MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "Lộ trình"
@@ -2009,6 +2029,10 @@ msgstr "Thiết lập chỉ trong vài bước"
 msgid "Set up a channel"
 msgstr "Thiết lập kênh"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "Thiết lập và vận hành"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "Thiết lập phân tích Yuva cho trang web này, với một mục tiêu cho lượt đăng ký."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "Giai đoạn"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "Bắt đầu miễn phí"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "Bắt đầu với AI"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "Tổng quan phân tích trong bảng điều khiển: 30 ngày lượt k
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "Câu trả lời giống nhau cho mọi địa chỉ, và không ai được đăng ký nếu chưa xác nhận."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "API vẫn có thể thay đổi trước bản 1.0, vì vậy hãy đọc ghi chú phát hành trước khi nâng cấp. Các bước chuyển đổi cơ sở dữ liệu chạy khi máy chủ khởi động: hãy sao lưu trước."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API đang chạy chậm"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "Tên và trang web này được dàn trang bằng Geist, một phông chữ mã nguồn mở theo giấy phép SIL Open Font License."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "Bảng điều khiển trên điện thoại: danh sách cuộc trò chuyện với kênh và tin nhắn mới nhất của mỗi người, và các tab ở dưới."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "Bảng điều khiển với phản hồi gửi từ ứng dụng di động: một báo cáo lỗi kèm phiên bản ứng dụng, thiết bị và màn hình, bên cạnh danh sách cuộc trò chuyện."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "Trạng thái bằng lời, các thành phần bị ảnh hưởng và các cập nhật, không có hình ảnh, theo dõi hay quảng cáo. Bằng tiếng Anh, tiếng Thổ Nhĩ Kỳ hoặc tiếng Đức."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "Màn hình hỗ trợ của SDK {platform} trong một ứng dụng: các cuộc trò chuyện của người dùng với trả lời mới nhất, và nút để viết tin nhắn mới."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "Những công cụ mà một đội hỗ trợ thường thuê riêng lẻ, trên cùng một máy chủ và cùng một bảng điều khiển."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "Cách dùng tên và logo"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "Phiên bản {version} của API, được tạo từ hợp đồng OpenAPI. Dùng hợp đồng để tạo client bằng bất kỳ ngôn ngữ nào."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "Xem trên GitHub"
 
 #: src/copy/home.ts
 msgid "visitors"

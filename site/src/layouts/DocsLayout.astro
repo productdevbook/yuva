@@ -1,15 +1,12 @@
 ---
+import { msg } from "@lingui/core/macro"
 import { docsCopy } from "@/copy/docs"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
+import PageShell from "@/layouts/PageShell.astro"
 import { href, neighbours, nav } from "@/lib/docs"
-import { headerCopy } from "@/copy/header"
-import { appUrl, bcp47, docsPath, languageName, links, locales, type Locale } from "@/lib/routes"
-import ThemeToggle from "@/ui/ThemeToggle.astro"
-import DocsHeader from "@/layouts/DocsHeader.astro"
-import Cross from "@/ui/Cross.astro"
-import DocsNav from "@/ui/DocsNav.astro"
-import Icon from "@/ui/Icon.astro"
+import { docsPath, home as homePage, links, type Locale } from "@/lib/routes"
+import TopLinks from "@/ui/TopLinks.astro"
 
 type Heading = { depth: number; slug: string; text: string }
 
@@ -42,168 +39,138 @@ const {
   english = locale !== "en",
   home = false,
 } = Astro.props
-const t = docsCopy(i18nFor(locale))
-const h = headerCopy(i18nFor(locale), locale)
+const i18n = i18nFor(locale)
+const t = docsCopy(i18n)
 const groups = await nav(locale)
 const { prev, next } = await neighbours(slug, locale)
-const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
+const toc = headings
+  .filter((h) => h.depth === 2 || h.depth === 3)
+  .map((h) => ({ href: `#${h.slug}`, label: h.text, depth: h.depth }))
 const group = groups.find((g) => g.items.some((i) => i.slug === slug))
-const strip = "relative flex h-11 items-center gap-2 border-b border-rule px-5 text-[13px] text-ink-faint"
+const rows = groups.map((g) => ({
+  key: g.key,
+  title: g.title,
+  items: g.items.map((i) => ({ label: i.title, href: href(locale, i.rel), current: i.slug === slug })),
+}))
+const sections = [
+  { label: t.guides, sub: i18n._(msg`Set up and run`), href: href(locale), current: true },
+  { label: t.apiReference, sub: i18n._(msg`REST and MCP`), href: href(locale, "api/"), current: false },
+]
+const aside = "text-ink-2 underline-offset-4 hover:underline"
 ---
 
-<Base locale={locale} title={`${title} · Yuva docs`} description={description} paths={docsPath(rel)} image={image} bare>
-  <DocsHeader locale={locale} paths={docsPath(rel)} section="guides" />
-  <div class="grid grid-cols-1 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)_15rem]">
-    <aside class="hidden border-e border-rule lg:block">
-      <div class="sticky top-14 flex h-[calc(100svh-3.5rem)] flex-col">
-        <div class:list={[strip, "pe-3"]}>
-          <span class="font-medium text-ink-soft">{t.documentation}</span>
-          <Cross class="-end-[6px] -bottom-[6px]" />
-        </div>
-        <div class="flex-1 overflow-y-auto overscroll-contain" data-sidebar>
-          <DocsNav locale={locale} groups={groups} slug={slug} label={t.documentation} />
-        </div>
+<Base
+  locale={locale}
+  title={`${title} · Yuva docs`}
+  description={description}
+  paths={docsPath(rel)}
+  image={image}
+  shell
+>
+  <PageShell locale={locale} paths={docsPath(rel)} label={t.documentation} groups={rows} toc={toc}>
+    <Fragment slot="head">
+      <div class="flex flex-col gap-0.5 px-2.5">
+        <a
+          class="inline-flex items-center gap-1.5 self-start text-xs leading-[18px] text-ink-soft hover:text-ink"
+          href={homePage[locale]}
+        >
+          <span aria-hidden="true" class="rtl:-scale-x-100">
+            ←
+          </span>
+          {i18n._(msg`Home`)}
+        </a>
+        <p class="text-xl leading-7 font-semibold tracking-[-0.01em]">{t.docs}</p>
       </div>
-    </aside>
-
-    <div class:list={["min-w-0", wideContent && "xl:col-span-2"]}>
-      <details class="group relative border-b border-rule lg:hidden">
-        <summary class="flex h-11 cursor-pointer list-none items-center gap-2.5 px-5 text-sm font-medium [&::-webkit-details-marker]:hidden">
-          {group && <Icon name={group.icon} class="size-4 text-brand" />}
-          <span class="flex-1 truncate">{title}</span>
-          <span class="text-xs text-ink-faint">{t.menu}</span>
-          <svg
-            class="size-4 text-ink-faint group-open:rotate-180"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            aria-hidden="true"
+      <nav class="grid grid-cols-2 gap-0.5 rounded-lg border border-rule bg-seg p-[3px]" aria-label={t.documentation}>
+        {sections.map((s) => (
+          <a
+            class="flex flex-col gap-px rounded-md border border-transparent px-2.5 py-1.5 aria-[current=page]:border-rule aria-[current=page]:bg-paper aria-[current=page]:shadow-[0_1px_2px_rgb(0_0_0/6%)]"
+            href={s.href}
+            aria-current={s.current ? "page" : undefined}
           >
-            <path d="m4 6 4 4 4-4" />
-          </svg>
-        </summary>
-        <div class="absolute inset-x-0 top-full z-40 max-h-[70svh] overflow-y-auto border-b border-rule bg-paper shadow-paper">
-          <div class="grid gap-3 border-b border-rule px-5 py-3 md:hidden">
-            <ThemeToggle locale={locale} class="justify-self-start" />
-            <p class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-              {locales
-                .filter((l) => l !== locale)
-                .map((l) => (
-                  <a class="text-ink-soft hover:text-ink" href={docsPath(rel)[l]} hreflang={l} lang={bcp47[l]}>
-                    {languageName(l)}
-                  </a>
-                ))}
-              <a class="text-ink-soft hover:text-ink" href={links.repo}>
-                GitHub
-              </a>
-            </p>
-            <div class="grid grid-cols-2 gap-3">
-              <a
-                class="inline-flex h-10 items-center justify-center rounded-full border border-rule-strong text-sm font-medium"
-                href={appUrl(locale)}
-              >
-                {h.logIn}
-              </a>
-              <a
-                class="inline-flex h-10 items-center justify-center rounded-full bg-signal text-sm font-medium text-white"
-                href={appUrl(locale, { signup: "1" })}
-              >
-                {h.startFree}
-              </a>
-            </div>
-          </div>
-          <DocsNav locale={locale} groups={groups} slug={slug} label={t.documentation} />
-        </div>
-      </details>
+            <span class="text-sm leading-[18px] font-medium">{s.label}</span>
+            <span class="text-[11px] leading-[14px] text-ink-soft">{s.sub}</span>
+          </a>
+        ))}
+      </nav>
+    </Fragment>
 
-      <div class:list={[strip, "hidden lg:flex"]}>
-        {group && <Icon name={group.icon} class="size-3.5" />}
-        {group && <span>{group.title}</span>}
-        {group && !home && <span aria-hidden="true">/</span>}
-        {!home && <span class="truncate font-medium text-ink-soft">{title}</span>}
-        {!wideContent && <Cross class="-end-[6px] -bottom-[6px] hidden xl:block" />}
-      </div>
-
-      <main class:list={["min-w-0", !home && "mx-auto max-w-3xl px-5 py-10 sm:px-8 lg:px-12 lg:py-14"]}>
-        {!home && (
+    <div class="mb-3 flex items-center gap-2">
+      <p class="flex min-w-0 flex-1 items-center gap-2 font-mono text-xs tracking-[0.04em] text-ink-faint uppercase">
+        <span>{t.docs}</span>
+        {group && !home && (
           <>
-            <h1 class="text-[clamp(2.25rem,1.6rem+2vw,3rem)] leading-[1.06] font-semibold tracking-[-0.035em]">
-              {title}
-            </h1>
-            <p class="mt-3 text-sm text-ink-faint">
-              {[...meta.slice(0, 1), ...(english ? [t.english] : [])].join(" · ")}
-            </p>
+            <span class="text-rule-strong" aria-hidden="true">
+              ·
+            </span>
+            <span class="size-[7px] shrink-0 rounded-full bg-brand" aria-hidden="true"></span>
+            <span class="truncate text-ink">{group.title}</span>
           </>
         )}
-        <article class:list={["docs-content", !home && "mt-10"]} data-copy={t.copy} data-copied={t.copied}>
-          <slot />
-        </article>
-        {edit && (
-          <p class="mt-10 text-sm">
-            <a class="text-ink-faint hover:text-ink" href={edit}>
-              {t.edit} →
-            </a>
-          </p>
-        )}
-      </main>
+      </p>
+      <TopLinks locale={locale} paths={docsPath(rel)} />
+    </div>
 
+    <div class:list={[!wideContent && "max-w-[720px]"]}>
       {!home && (
-        <div class="relative grid grid-cols-2 border-y border-rule text-sm">
-          <Cross class="-start-[6px] -top-[6px] hidden lg:block" />
-          {!wideContent && <Cross class="-end-[6px] -top-[6px] hidden xl:block" />}
-          {prev ? (
-            <a class="block border-e border-rule p-5 hover:bg-paper-deep sm:px-8" href={href(locale, prev.rel)}>
-              <span class="block text-xs text-ink-faint">← {t.previous}</span>
-              <span class="mt-1 block font-medium text-ink-soft">{prev.title}</span>
+        <h1 class="text-[30px] leading-[38px] font-semibold tracking-[-0.02em] sm:text-4xl sm:leading-[44px]">
+          {title}
+        </h1>
+      )}
+      {english && <p class="mt-3 text-sm text-ink-faint">{t.english}</p>}
+      <article class:list={["docs-content", !home && "mt-4"]} data-copy={t.copy} data-copied={t.copied}>
+        <slot />
+      </article>
+
+      {!home && (prev || next) && (
+        <div class="mt-16 flex flex-wrap gap-3">
+          {prev && (
+            <a
+              class="flex flex-[1_1_240px] flex-col gap-1 rounded-[10px] border border-rule px-4 py-3.5 hover:bg-paper-deep"
+              href={href(locale, prev.rel)}
+            >
+              <span class="text-xs text-ink-soft">{t.previous}</span>
+              <span class="text-[15px] font-medium">{prev.title}</span>
             </a>
-          ) : (
-            <span class="border-e border-rule"></span>
           )}
           {next && (
-            <a class="block p-5 text-end hover:bg-paper-deep sm:px-8" href={href(locale, next.rel)}>
-              <span class="block text-xs text-ink-faint">{t.next} →</span>
-              <span class="mt-1 block font-medium text-brand">{next.title}</span>
+            <a
+              class="flex flex-[1_1_240px] flex-col items-end gap-1 rounded-[10px] border border-rule px-4 py-3.5 text-end hover:bg-paper-deep"
+              href={href(locale, next.rel)}
+            >
+              <span class="text-xs text-ink-soft">{t.next}</span>
+              <span class="text-[15px] font-medium">{next.title}</span>
             </a>
           )}
         </div>
       )}
+      {edit && (
+        <p class="mt-10 text-sm min-[1180px]:hidden">
+          <a class={aside} href={edit}>
+            {t.edit}
+          </a>
+        </p>
+      )}
     </div>
 
-    {!wideContent && (
-      <aside class="hidden border-s border-rule xl:block">
-        <div class="sticky top-14">
-          <div class:list={[strip, "ps-5"]}>
-            <span class="font-medium text-ink-soft">{t.onThisPage}</span>
-          </div>
-          {toc.length > 1 && (
-            <nav
-              class="max-h-[calc(100svh-6.25rem)] overflow-y-auto overscroll-contain py-2"
-              aria-label={t.onThisPage}
-              data-toc
-            >
-              <ol>
-                {toc.map((h) => (
-                  <li>
-                    <a
-                      class:list={[
-                        "relative block py-1.5 pe-5 text-[13px] leading-5 transition-colors hover:bg-paper-deep hover:text-ink focus-visible:rounded-none focus-visible:-outline-offset-2 aria-[current=location]:bg-brand-wash aria-[current=location]:font-medium aria-[current=location]:text-brand aria-[current=location]:before:absolute aria-[current=location]:before:inset-y-0 aria-[current=location]:before:start-0 aria-[current=location]:before:w-0.5 aria-[current=location]:before:bg-signal",
-                        h.depth === 3 ? "ps-9 text-ink-faint" : "ps-5 text-ink-soft",
-                      ]}
-                      href={`#${h.slug}`}
-                    >
-                      {h.text}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
+    <Fragment slot="aside">
+      {(meta.length > 0 || edit) && (
+        <div class="mt-6 flex flex-col gap-1.5 border-t border-rule-soft pt-3.5 text-[13px]">
+          {meta.slice(0, 1).map((m) => (
+            <p class="text-ink-faint">{m}</p>
+          ))}
+          {edit && (
+            <a class={aside} href={edit}>
+              {t.edit}
+            </a>
           )}
+          <a class={aside} href={links.issues}>
+            {i18n._(msg`Report an issue`)}
+          </a>
         </div>
-      </aside>
-    )}
-  </div>
+      )}
+    </Fragment>
+  </PageShell>
 </Base>
 
 <script>
@@ -252,42 +219,4 @@ const strip = "relative flex h-11 items-center gap-2 border-b border-rule px-5 t
     pre.replaceWith(frame)
     frame.append(bar, pre)
   })
-
-  const sidebar = document.querySelector<HTMLElement>("[data-sidebar]")
-  const current = sidebar?.querySelector<HTMLElement>('[aria-current="page"]')
-  if (sidebar && current)
-    sidebar.scrollTop +=
-      current.getBoundingClientRect().top - sidebar.getBoundingClientRect().top - sidebar.clientHeight / 3
-
-  const toc = document.querySelector<HTMLElement>("[data-toc]")
-  const entries = [...(toc?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]') ?? [])]
-    .map((link) => ({ link, heading: document.getElementById(decodeURIComponent(link.hash.slice(1))) }))
-    .filter((e): e is { link: HTMLAnchorElement; heading: HTMLElement } => e.heading !== null)
-  if (toc && entries.length) {
-    let active: HTMLAnchorElement | undefined
-    let queued = false
-    const update = () => {
-      queued = false
-      const line = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 96
-      const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
-      let pick = entries[0]!
-      for (const e of entries) if (e.heading.getBoundingClientRect().top <= line + 16) pick = e
-      if (bottom) pick = entries[entries.length - 1]!
-      if (pick.link === active) return
-      active?.removeAttribute("aria-current")
-      active = pick.link
-      active.setAttribute("aria-current", "location")
-      const top = active.offsetTop - toc.offsetTop
-      if (top < toc.scrollTop || top + active.offsetHeight > toc.scrollTop + toc.clientHeight)
-        toc.scrollTop = top - toc.clientHeight / 3
-    }
-    const schedule = () => {
-      if (queued) return
-      queued = true
-      requestAnimationFrame(update)
-    }
-    addEventListener("scroll", schedule, { passive: true })
-    addEventListener("resize", schedule, { passive: true })
-    update()
-  }
 </script>

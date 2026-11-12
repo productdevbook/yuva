@@ -52,10 +52,6 @@ msgstr "점검이 아무 손길 없이 구성 요소의 상태를 설정하고, 
 msgid "a contact and their data"
 msgstr "연락처와 그 데이터"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "{platform} SDK의 대화: 주문에 관한 질문과 배송 추적 링크가 담긴 팀의 답장, 답장을 쓰는 입력란."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "고객이 닫을 수 있습니다. 인시던트에 새 업데이트가 올라오면 다시 나타납니다."
@@ -185,6 +181,10 @@ msgstr "GitHub의 모든 릴리스"
 msgid "All templates"
 msgstr "모든 템플릿"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "이미 계정이 있으신가요?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "구독이 필요 없는 Atom 피드, README용 배지, 그리고 자체 사이트나 앱을 위한 같은 페이지의 JSON."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "무언가 발송되기 전에"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "베타"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "블록"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Yuva를 Claude, ChatGPT, Cursor, VS Code, Gemini CLI와 연결하면 어
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "문의"
@@ -503,12 +502,14 @@ msgstr "기여하기"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "복사됨"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "복사"
 
@@ -644,7 +645,6 @@ msgstr "문서"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "문서"
@@ -797,6 +797,10 @@ msgstr "Yuva의 모든 가이드를 한곳에: 설치, 채널, 일괄 발송, �
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "변경 내역에서 가져온 Yuva의 모든 릴리스와 변경 내용."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "받은편지함을 둘러싼 모든 것"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "모든 것이 API에 있으며 스코프는 status:read와 status:manage입니다. 웹훅이 구성 요소, 인시던트, 모니터의 변경을 알리고, MCP로 연결된 어시스턴트는 초안을 열고 인시던트를 해결할 수 있습니다."
@@ -902,10 +906,6 @@ msgstr "갤러리"
 msgid "Get started"
 msgstr "시작하기"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "모든 제품의 사용자가 당신에게 연락할 수 있게 하세요."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "키와 Yuva 서버 주소를 컴포넌트에 전달하세요. 예를 들어 환경 변수로 전달할 수 있습니다."
@@ -955,6 +955,11 @@ msgstr "안녕하세요! 본인과 생각하고 계신 내용을 조금 알려 �
 msgid "History"
 msgstr "기록"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "홈"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "훅"
@@ -962,6 +967,10 @@ msgstr "훅"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "호스팅"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "호스팅 또는 직접 호스팅"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "잉크"
 msgid "Install the chat block, then render it:"
 msgstr "채팅 블록을 설치한 다음 렌더링하세요."
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Yuva 설치"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "설치"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "실시간 미리보기"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "로그인"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "구성 요소마다 체크박스 하나가 있고, 모든 메일에 선택을 바꾸거나 수신을 거부하는 링크가 있습니다."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Docker 이미지 하나와 Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "직접 운영하는 서버에 Docker 이미지 하나와 Postgres."
 
@@ -1517,6 +1535,10 @@ msgstr "내 서버에서 열기"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Plugins를 열고 더하기 버튼을 선택한 다음 Add custom MCP server를 선택하세요."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "오픈 소스"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "선택 사항: 배포 명령에 대체 주소를 추가하면 장애 중
 msgid "Or ask for one thing"
 msgstr "또는 한 가지만 요청하기"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "또는 직접 호스팅"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "또는 다음 문장을 입력하세요."
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "전체 상태"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "개요"
 
@@ -1668,7 +1687,6 @@ msgstr "미리보기와 사용"
 msgid "Preview colours"
 msgstr "색상 미리보기"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "{name} 템플릿 미리보기"
@@ -1744,10 +1762,6 @@ msgstr "실시간 채팅, 문서 페이지 토론, 메일링 리스트 가입을
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "LICENSING.md 읽기"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "코드를 읽고, 컴퓨터에서 {version}을(를) 실행하며, 성장하는 모습을 함께 지켜보세요."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "연결된 대화에 답장"
 msgid "Report a vulnerability"
 msgstr "취약점 신고"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "문제 신고"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "취약점은 공개 이슈가 아니라 GitHub를 통해 비공개로 신고해 주세요."
@@ -1869,7 +1887,6 @@ msgstr "요구 사항"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "리소스"
 
@@ -1885,8 +1902,11 @@ msgstr "응답 시간"
 msgid "Responses"
 msgstr "응답"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST와 MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "로드맵"
@@ -2009,6 +2029,10 @@ msgstr "몇 단계로 설정하기"
 msgid "Set up a channel"
 msgstr "채널 설정"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "설정과 운영"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "이 사이트에 Yuva 분석을 설정하고, 가입 목표도 추가해 주세요."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "단계"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "무료로 시작"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "AI로 시작하기"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "패널의 분석 개요: 30일간의 방문자, 페이지뷰, 이탈률,
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "어떤 주소에도 같은 응답을 주며, 확인 없이는 아무도 구독되지 않습니다."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "API는 1.0 전까지 바뀔 수 있으니 업그레이드하기 전에 릴리스 노트를 읽으세요. 데이터베이스 마이그레이션은 서버가 시작될 때 실행됩니다. 먼저 백업하세요."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API가 느리게 동작합니다"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "이름과 이 사이트는 SIL Open Font License의 오픈 소스 서체 Geist로 조판되었습니다."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "휴대폰의 패널: 사람별 채널과 최근 메시지가 표시된 대화 목록과 하단 탭."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "모바일 앱에서 보낸 피드백이 표시된 패널: 앱 버전, 기기, 화면이 담긴 버그 리포트가 대화 목록 옆에 나타납니다."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "말로 쓴 상태, 영향받는 구성 요소와 업데이트. 이미지, 추적, 홍보가 없습니다. 영어, 튀르키예어 또는 독일어로 제공됩니다."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "앱 안의 {platform} SDK 지원 화면: 사용자의 대화와 최근 답장, 새 메시지를 쓰는 버튼."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "지원팀이 보통 따로따로 빌려 쓰는 도구를 같은 서버, 같은 패널에서."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "이름과 로고 사용"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "API 버전 {version}, OpenAPI 계약에서 생성되었습니다. 계약을 사용해 어떤 언어로든 클라이언트를 생성하세요."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "GitHub에서 보기"
 
 #: src/copy/home.ts
 msgid "visitors"

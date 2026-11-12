@@ -52,10 +52,6 @@ msgstr "チェックが誰の手も借りずにコンポーネントの状態を
 msgid "a contact and their data"
 msgstr "連絡先とそのデータ"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "{platform} SDK の会話：注文についての質問と、追跡リンク付きのチームの返信、返信を書く入力欄。"
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "お客様は閉じることができます。インシデントに新しい更新があると再び表示されます。"
@@ -185,6 +181,10 @@ msgstr "GitHub のすべてのリリース"
 msgid "All templates"
 msgstr "すべてのテンプレート"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "アカウントをお持ちですか？"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "購読が不要な Atom フィード、README 用のバッジ、そして自分のサイトやアプリ向けに同じページを JSON で。"
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "送信される前に"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "ベータ"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "ブロック"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Yuva を Claude、ChatGPT、Cursor、VS Code、Gemini CLI に接続す�
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "お問い合わせ"
@@ -503,12 +502,14 @@ msgstr "コントリビューション"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "コピーしました"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "コピー"
 
@@ -644,7 +645,6 @@ msgstr "ドキュメント"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "ドキュメント"
@@ -797,6 +797,10 @@ msgstr "Yuva のすべてのガイドをひとつに: インストール、チ�
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Yuva のすべてのリリースと、その変更内容(変更履歴より)。"
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "受信トレイを取り巻くすべて"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "すべて API にあります。スコープは status:read と status:manage です。Webhook がコンポーネント、インシデント、モニターの変更を通知し、MCP で接続したアシスタントは下書きを作成してインシデントを解決できます。"
@@ -902,10 +906,6 @@ msgstr "ギャラリー"
 msgid "Get started"
 msgstr "はじめる"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "すべてのプロダクトのユーザーが、あなたに連絡できるようにしましょう。"
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "キーと Yuva サーバーのアドレスをコンポーネントに渡します。たとえば環境変数で次のようにします。"
@@ -955,6 +955,11 @@ msgstr "こんにちは。あなたのことと、ご相談内容を少しお聞
 msgid "History"
 msgstr "履歴"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "ホーム"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "フック"
@@ -962,6 +967,10 @@ msgstr "フック"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "ホスト型"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "ホスト型またはセルフホスト"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "インク"
 msgid "Install the chat block, then render it:"
 msgstr "チャットブロックをインストールして、表示します。"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Yuva をインストール"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "インストール"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "ライブプレビュー"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "ログイン"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "コンポーネントごとに1つのチェックボックスがあり、各メールには選択の変更や配信停止のリンクがあります。"
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Docker イメージひとつと Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "自分のサーバーに Docker イメージ 1 つと Postgres。"
 
@@ -1517,6 +1535,10 @@ msgstr "自分のサーバーで開く"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Plugins を開き、プラスボタンを選んで、Add custom MCP server を選びます。"
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "オープンソース"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "任意: デプロイコマンドにフォールバック用アドレス�
 msgid "Or ask for one thing"
 msgstr "または、ひとつだけお願いする"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "またはセルフホスト"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "または、次の文を入力します。"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "全体の状態"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "概要"
 
@@ -1668,7 +1687,6 @@ msgstr "プレビューと利用"
 msgid "Preview colours"
 msgstr "色のプレビュー"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "テンプレート「{name}」のプレビュー"
@@ -1744,10 +1762,6 @@ msgstr "ライブチャット、ドキュメントページのディスカッシ
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "LICENSING.md を読む"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "コードを読み、お使いのマシンで {version} を動かし、成長を見守ってください。"
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "リンクされた会話へ返信"
 msgid "Report a vulnerability"
 msgstr "脆弱性を報告"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "問題を報告"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "脆弱性は、公開の issue ではなく、GitHub 経由で非公開で報告してください。"
@@ -1869,7 +1887,6 @@ msgstr "必要なもの"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "リソース"
 
@@ -1885,8 +1902,11 @@ msgstr "応答時間"
 msgid "Responses"
 msgstr "レスポンス"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST と MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "ロードマップ"
@@ -2009,6 +2029,10 @@ msgstr "数ステップでセットアップ"
 msgid "Set up a channel"
 msgstr "チャネルを設定する"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "セットアップと運用"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "このサイトに Yuva アナリティクスをセットアップして、サインアップのゴールを設定してください。"
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "ステージ"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "無料ではじめる"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "AI ではじめる"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "パネルのアナリティクス概要: 30 日分の訪問者、ペー�
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "どのアドレスにも同じ応答を返し、確認なしに購読されることはありません。"
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "API は 1.0 までにまだ変わる可能性があるため、アップグレードの前にリリースノートを読んでください。データベースのマイグレーションはサーバーの起動時に実行されます。先にバックアップを取ってください。"
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API の動作が遅くなっています"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "名称とこのサイトは、SIL Open Font License のオープンソース書体 Geist で組まれています。"
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "スマートフォンのパネル: 各ユーザーのチャネルと最新メッセージが並ぶ会話一覧と、下部のタブ。"
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "モバイルアプリから送られたフィードバックが表示されたパネル: アプリのバージョン、デバイス、画面が記録された不具合レポートが、会話一覧の隣に表示されています。"
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "言葉による状態、影響を受けるコンポーネントと更新。画像、トラッキング、宣伝はありません。英語、トルコ語、ドイツ語で提供します。"
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "アプリ内の {platform} SDK のサポート画面：その人の会話と最新の返信、新しいメッセージを書くボタン。"
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "サポートチームがふだん個別に契約しているツールを、同じサーバーと同じパネルで。"
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "名称とロゴの使い方"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "API のバージョン {version}。OpenAPI 契約から生成されています。契約を使えば、任意の言語でクライアントを生成できます。"
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "GitHub で見る"
 
 #: src/copy/home.ts
 msgid "visitors"

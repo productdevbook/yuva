@@ -1,160 +1,103 @@
 ---
 import type { HomeCopy } from "@/copy/home"
-import type { StatusSampleCopy } from "@/copy/status"
-import type { Shots } from "@/lib/shots"
-import SectionHead from "@/ui/SectionHead.astro"
-import Shot from "@/ui/Shot.astro"
-import StatusSample from "@/ui/StatusSample.astro"
-import Stop from "@/ui/Stop.astro"
 
 interface Props {
-  t: HomeCopy["features"]
-  shots: Shots
-  previews: { name: string; src: string; href: string }[]
-  status: StatusSampleCopy
+  t: HomeCopy
 }
 
-const { t, shots: s, previews, status } = Astro.props
-const row = "grid items-center gap-10 lg:gap-16"
-const link = "mt-6 inline-flex text-sm font-medium text-brand hover:underline"
-const apps = [
-  { name: "iOS", shots: s.ios },
-  { name: "Android", shots: s.android },
-]
+const { t } = Astro.props
+const byId = Object.fromEntries(t.features.items.map((f) => [f.id, f]))
+const rows = t.features.items.filter((f) => !["inbox", "channels", "developers", "self-hosting"].includes(f.id))
+const developers = byId["developers"]!
+const selfHosting = byId["self-hosting"]!
+const h2 = "mt-[72px] mb-2 scroll-mt-6 text-[22px] leading-7 font-semibold tracking-[-0.01em]"
+const lead = "mb-5 max-w-[680px] text-[15px] leading-6 text-ink-soft"
+const more = "text-sm font-medium text-ink underline-offset-4 hover:underline"
 ---
 
-{t.items.map((f, i) => {
-  const flip = i % 2 === 1
-  const alt = f.shot ? t.alts[f.shot] : ""
-  return (
-    <Stop
-      id={f.id}
-      labelledby={`${f.id}-title`}
-      tone={flip ? "deep" : "paper"}
-      index={String(i + 1).padStart(2, "0")}
-      label={f.title}
-    >
-      <div class:list={[row, (f.shot || f.visual) && "lg:grid-cols-2"]}>
-        <div class:list={["min-w-0", (f.shot || f.visual) && flip && "lg:order-2"]}>
-          <SectionHead title={f.title} lead={f.body} id={`${f.id}-title`} />
-          {f.shot || f.visual ? (
-            <ul class="mt-8 grid max-w-xl gap-3 text-sm">
-              {f.points.map((p) => (
-                <li class="flex gap-3 border-t border-rule pt-3">
-                  <span class="w-2/5 shrink-0 font-semibold tracking-tight">{p.term}</span>
-                  <span class="text-ink-soft">{p.text}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <ul class="mt-10 grid border-t border-rule sm:grid-cols-3">
-              {f.points.map((p) => (
-                <li class="border-b border-rule py-4 text-sm sm:border-b-0 sm:border-s sm:px-6 sm:first:border-s-0 sm:first:ps-0 sm:last:pe-0">
-                  <span class="block font-semibold tracking-tight">{p.term}</span>
-                  <span class="mt-1 block text-ink-soft">{p.text}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <a class={link} href={f.href}>
-            {f.link ?? t.guide} →
-          </a>
-        </div>
-        {f.visual === "status" && (
-          <div class="min-w-0">
-            <StatusSample t={status} compact />
-          </div>
-        )}
-        {f.shot === "phone" && (
-          <div class="mx-auto w-[min(17rem,72vw)] overflow-hidden rounded-[2.4rem] border-[7px] border-zinc-900 dark:border-zinc-700 [&_img]:aspect-[390/760] [&_img]:object-cover [&_img]:object-top">
-            <Shot light={s.phone.light} dark={s.phone.dark} alt={alt} widths={[320, 480, 720]} sizes="272px" />
-          </div>
-        )}
-        {f.shot === "widget" && (
-          <div class="overflow-hidden rounded-lg border border-rule">
-            <Shot
-              light={s.widget.light}
-              dark={s.widget.dark}
-              alt={alt}
-              widths={[640, 960, 1280]}
-              sizes="(min-width: 1024px) 520px, calc(100vw - 40px)"
-            />
-          </div>
-        )}
-        {f.shot && f.shot !== "phone" && f.shot !== "widget" && (
-          <div class="overflow-hidden rounded-lg border border-rule">
-            <Shot
-              light={s[f.shot].light}
-              dark={s[f.shot].dark}
-              alt={alt}
-              widths={[480, 720, 960, 1440]}
-              sizes="(min-width: 1024px) 520px, calc(100vw - 40px)"
-            />
-          </div>
-        )}
-      </div>
-      {f.id === "channels" && (
-        <div class="mt-12 grid gap-10 sm:grid-cols-2 sm:gap-6 lg:gap-12">
-          {apps.map((app) => (
-            <figure class="min-w-0">
-              <figcaption class="mb-4 flex items-center gap-3 text-sm font-medium tracking-tight text-ink-soft after:h-px after:flex-1 after:bg-rule">
-                {app.name}
-              </figcaption>
-              <div class="grid grid-cols-2 items-start gap-3 sm:gap-4">
-                {(["list", "thread"] as const).map((view) => (
-                  <div class="overflow-hidden rounded-[1.25rem] border border-rule bg-paper lg:rounded-[1.75rem]">
-                    <Shot
-                      light={app.shots[view].light}
-                      dark={app.shots[view].dark}
-                      alt={t.appAlts[view](app.name)}
-                      widths={[240, 360, 480, 720]}
-                      sizes="(min-width: 1024px) 240px, (min-width: 640px) 22vw, calc(50vw - 22px)"
-                    />
-                  </div>
-                ))}
-              </div>
-            </figure>
-          ))}
-        </div>
-      )}
-      {f.id === "designs" && (
-        <ul class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
-          {previews.map((p, n) => (
-            <li class:list={["min-w-0", n === 2 && "max-sm:hidden"]}>
-              <a class="group block" href={p.href}>
-                <span class="block aspect-[4/5] overflow-hidden border border-rule bg-paper-deep transition-colors group-hover:border-rule-strong">
-                  <img
-                    class="size-full object-cover object-top"
-                    src={p.src}
-                    alt={t.templateAlt(p.name)}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </span>
-                <span class="mt-2 block text-sm font-medium group-hover:text-brand">{p.name}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-    </Stop>
-  )
-})}
-
-<Stop
-  labelledby="resources-title"
-  tone={t.items.length % 2 ? "deep" : "paper"}
-  index={String(t.items.length + 1).padStart(2, "0")}
-  label={t.resources.title}
-  headed
->
-  <ul class="flex flex-wrap gap-x-8 gap-y-3 font-medium">
-    {t.resources.links.map((l) => (
-      <li>
-        <a class="text-brand hover:underline" href={l.href}>
-          {l.label} →
+<section aria-labelledby="channels">
+  <h2 id="channels" class={h2}>
+    {t.channels.title}
+  </h2>
+  <p class={lead}>{t.channels.lead}</p>
+  <ul class="grid [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))] overflow-hidden rounded-[10px] border border-rule">
+    {t.channels.cells.map((c) => (
+      <li class="-me-px -mb-px border-e border-b border-rule-soft">
+        <a class="flex h-full flex-col gap-2 p-[18px] hover:bg-paper-deep" href={c.href}>
+          <span class="text-[15px] font-semibold">{c.name}</span>
+          <code class="font-mono text-xs text-brand" dir="ltr">
+            {c.code}
+          </code>
+          <span class="text-[13px] leading-[19px] text-ink-soft">{c.text}</span>
         </a>
       </li>
     ))}
   </ul>
-</Stop>
+</section>
+
+<section aria-labelledby="parts">
+  <h2 id="parts" class={h2}>
+    {t.parts.title}
+  </h2>
+  <p class={lead}>{t.parts.lead}</p>
+  <div class="border-t border-rule-soft">
+    {rows.map((f) => (
+      <div id={f.id} class="flex scroll-mt-6 flex-wrap gap-x-6 gap-y-1.5 border-b border-rule-soft py-[18px]">
+        <h3 class="flex-[0_0_200px] text-[15px] font-semibold">{f.title}</h3>
+        <p class="flex-[1_1_320px] text-[15px] leading-6 text-ink-soft">
+          {f.body}{" "}
+          <a class={more} href={f.href}>
+            {f.link ?? t.features.guide} →
+          </a>
+        </p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<section aria-labelledby="developers">
+  <h2 id="developers" class={h2}>
+    {developers.title}
+  </h2>
+  <p class={lead}>{developers.body}</p>
+  <div class="overflow-hidden rounded-[10px] border border-rule">
+    <div class="flex h-10 items-center gap-4 border-b border-rule px-4 font-mono text-[13px] text-ink">curl</div>
+    <pre
+      class="m-0 overflow-x-auto bg-paper-deep px-[18px] py-4 font-mono text-[13px] leading-[21px]"
+      dir="ltr"
+    >{t.build.curl}</pre>
+  </div>
+  <dl class="mt-4 grid [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))] gap-x-6 gap-y-2 text-sm">
+    {developers.points.map((p) => (
+      <div>
+        <dt class="font-semibold">{p.term}</dt>
+        <dd class="text-ink-soft">{p.text}</dd>
+      </div>
+    ))}
+  </dl>
+  <p class="mt-4">
+    <a class={more} href={developers.href}>
+      {developers.link} →
+    </a>
+  </p>
+</section>
+
+<section aria-labelledby="self-hosting">
+  <h2 id="self-hosting" class={h2}>
+    {selfHosting.title}
+  </h2>
+  <p class={lead}>{selfHosting.body}</p>
+  <ul class="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-4">
+    {selfHosting.points.map((p) => (
+      <li class="rounded-[10px] border border-rule p-[18px]">
+        <p class="text-[15px] font-semibold">{p.term}</p>
+        <p class="mt-1.5 text-sm leading-[21px] text-ink-soft">{p.text}</p>
+      </li>
+    ))}
+  </ul>
+  <p class="mt-4">
+    <a class={more} href={selfHosting.href}>
+      {t.hero.quickStart} →
+    </a>
+  </p>
+</section>

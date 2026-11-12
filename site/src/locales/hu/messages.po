@@ -52,10 +52,6 @@ msgstr "Egy ellenőrzés emberi beavatkozás nélkül állítja be egy összetev
 msgid "a contact and their data"
 msgstr "egy kapcsolat és az adatai"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "Egy beszélgetés a(z) {platform} SDK-ban: kérdés egy rendelésről és a csapat válaszai nyomkövetési linkkel, valamint egy mező a válaszhoz."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "Az ügyfél elvetheti. Visszatér, amikor az incidens új frissítést kap."
@@ -185,6 +181,10 @@ msgstr "Minden kiadás a GitHubon"
 msgid "All templates"
 msgstr "Minden sablon"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "Már van fiókod?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "Előfizetést nem igénylő Atom-hírcsatorna, jelvény a README-hez, és ugyanez az oldal JSON-ként a saját webhelyéhez vagy alkalmazásához."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "mielőtt bármi elmenne"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "Béta"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "Blokkok"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Csatlakoztasd a Yuvát a Claude-hoz, ChatGPT-hez, Cursorhoz, VS Code-hoz
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "Kapcsolat"
@@ -503,12 +502,14 @@ msgstr "Közreműködés"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "Másolva"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "Másolás"
 
@@ -644,7 +645,6 @@ msgstr "Dokumentáció"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "Dokumentáció"
@@ -797,6 +797,10 @@ msgstr "Minden Yuva-útmutató egy helyen: telepítés, csatornák, tömeges kü
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "A Yuva minden kiadása és hogy mi változott benne, a változásnaplóból."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "Minden, ami a beérkezett üzenetek körül van"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "Minden az API-ban van, a status:read és status:manage jogosultságokkal. A webhookok jelzik az összetevők, incidensek és monitorok változásait, az MCP-n át csatlakoztatott asszisztensek pedig piszkozatokat nyithatnak és incidenseket oldhatnak meg."
@@ -902,10 +906,6 @@ msgstr "Galéria"
 msgid "Get started"
 msgstr "Kezdés"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "Adj minden termék felhasználójának módot arra, hogy elérjen téged."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "Add át a kulcsot és a Yuva-szervered címét a komponenseknek, például a környezetben:"
@@ -955,6 +955,11 @@ msgstr "Szia! Mesélj egy kicsit magadról és arról, mi jár a fejedben."
 msgid "History"
 msgstr "Előzmények"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "Kezdőlap"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hooks"
@@ -962,6 +967,10 @@ msgstr "Hooks"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "Tárolt"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "Szolgáltatásként vagy saját szerveren"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "Tinta"
 msgid "Install the chat block, then render it:"
 msgstr "Telepítsd a csevegőblokkot, majd rendereld:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "A Yuva telepítése"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "Telepítés"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "Élő előnézet"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "Bejelentkezés"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "Összetevőnként egy jelölőnégyzet, és minden levélben egy hivatkozás a választás módosításához vagy a leiratkozáshoz."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Egy Docker-image és Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "Egyetlen Docker-image és Postgres a saját szerveredön."
 
@@ -1517,6 +1535,10 @@ msgstr "Megnyitás a szerveremen"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Nyisd meg a Plugins menüt, válaszd a plusz gombot, majd az Add custom MCP server lehetőséget."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "Nyílt forráskód"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "Opcionális: őrizd meg a leveleket kiesés idején, ha tartalékcímet 
 msgid "Or ask for one thing"
 msgstr "Vagy kérj egyetlen dolgot"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "Vagy üzemeltesd magad"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "Vagy írd be a mondatot:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "Általános állapot"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "Áttekintés"
 
@@ -1668,7 +1687,6 @@ msgstr "Előnézet és használat"
 msgid "Preview colours"
 msgstr "Színek előnézete"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "A(z) {name} sablon előnézete"
@@ -1744,10 +1762,6 @@ msgstr "React-komponensek élő csevegéshez, dokumentációs oldalak beszélget
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "A LICENSING.md elolvasása"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "Olvasd el a kódot, futtasd a {version} verziót a gépeden, és kövesd, ahogy növekszik."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "Válasz a kapcsoltaknak"
 msgid "Report a vulnerability"
 msgstr "Sebezhetőség bejelentése"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "Hiba bejelentése"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "A sebezhetőségeket privátban jelentsd a GitHubon keresztül, soha ne nyilvános hibajegyben."
@@ -1869,7 +1887,6 @@ msgstr "Követelmények"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "Erőforrások"
 
@@ -1885,8 +1902,11 @@ msgstr "Válaszidők"
 msgid "Responses"
 msgstr "Válaszok"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST és MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "Ütemterv"
@@ -2009,6 +2029,10 @@ msgstr "Állítsd be néhány lépésben"
 msgid "Set up a channel"
 msgstr "Csatorna beállítása"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "Beállítás és üzemeltetés"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "Állítsd be a Yuva analitikát ehhez az oldalhoz, a regisztrációkra vonatkozó céllal."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "Szakasz"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "Kezdd ingyen"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "Kezdd MI-vel"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "Az analitika áttekintése a panelen: 30 nap látogatói, oldalmegtekint
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "A válasz minden címnél ugyanaz, és megerősítés nélkül senkit sem iratkoztatnak fel."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "Az API az 1.0 előtt még változhat, ezért frissítés előtt olvasd el a kiadási megjegyzéseket. Az adatbázis-migrációk a szerver indulásakor futnak le: előbb készíts biztonsági mentést."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "Az API lassan fut"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "A név és ez az oldal Geist betűtípussal szedett, amely a SIL Open Font License alá tartozó, nyílt forráskódú betűtípus."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "A panel telefonon: a beszélgetéslista az egyes személyek csatornájával és legutóbbi üzenetével, alul a fülekkel."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "A panel mobilalkalmazásból küldött visszajelzésekkel: hibajelentés az alkalmazás verziójával, eszközével és képernyőjével a beszélgetéslista mellett."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "Az állapot szavakkal, az érintett összetevők és a frissítések, képek, követés és reklám nélkül. Angolul, törökül vagy németül."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "A(z) {platform} SDK ügyfélszolgálati képernyője egy alkalmazásban: a személy beszélgetései a legutóbbi válasszal, és egy gomb új üzenet írásához."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "Az eszközök, amelyeket egy ügyfélszolgálati csapat általában külön bérel, ugyanazon a szerveren és ugyanabban a panelben."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "A név és a logó használata"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "Az API {version} verziója, az OpenAPI-szerződésből generálva. A szerződéssel bármilyen nyelven generálhatsz klienst."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "Megtekintés a GitHubon"
 
 #: src/copy/home.ts
 msgid "visitors"

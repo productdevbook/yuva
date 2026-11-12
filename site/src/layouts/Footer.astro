@@ -13,6 +13,7 @@ import {
   links,
   releases,
   templates,
+  VERSION,
   type Locale,
 } from "@/lib/routes"
 import Cross from "@/ui/Cross.astro"
@@ -24,9 +25,10 @@ interface Props {
   locale: Locale
   paths: Record<Locale, string>
   wide?: boolean
+  inline?: boolean
 }
 
-const { locale, paths, wide = false } = Astro.props
+const { locale, paths, wide = false, inline = false } = Astro.props
 const i18n = i18nFor(locale)
 const year = new Date().getFullYear()
 const columns = [
@@ -62,30 +64,36 @@ const columns = [
     ],
   },
 ]
-const link = "text-ink-soft transition-colors hover:text-ink"
+const link = "text-ink-2 underline-offset-4 hover:text-ink hover:underline"
 ---
 
-<footer class="border-t border-rule text-sm">
-  <div class:list={["relative mx-auto", wide ? "max-w-none" : "max-w-6xl border-x border-rule"]}>
-    {!wide && <Cross class="-start-[6px] -top-[6px]" />}
-    {!wide && <Cross class="-end-[6px] -top-[6px]" />}
+<footer
+  class:list={["text-[13px] text-ink-soft", inline ? "mt-24 border-t border-rule-soft pt-6" : "border-t border-rule"]}
+>
+  <div
+    class:list={[!inline && "relative mx-auto", !inline && (wide ? "max-w-none" : "max-w-6xl border-x border-rule")]}
+  >
+    {!inline && !wide && <Cross class="-start-[6px] -top-[6px]" />}
+    {!inline && !wide && <Cross class="-end-[6px] -top-[6px]" />}
     <div
-      class:list={["grid gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.4fr_1fr_1fr_1fr]", wide && "lg:px-6"]}
+      class:list={[
+        "grid [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] gap-6",
+        !inline && "px-5 py-12 sm:px-8",
+        !inline && wide && "lg:px-6",
+      ]}
     >
-      <div>
-        <a class="inline-flex items-center gap-2.5" href={home[locale]}>
-          <Logo size={24} />
-          <span class="text-base font-semibold tracking-tight">Yuva</span>
+      <div class="flex flex-col gap-1.5">
+        <a class="inline-flex items-center gap-2 font-semibold text-ink" href={home[locale]}>
+          <Logo size={18} />
+          Yuva {VERSION}
         </a>
-        <p class="mt-4 max-w-xs leading-relaxed text-ink-soft">
-          {i18n._(msg`Open-source customer messaging for teams that run many products.`)}
-        </p>
-        <p class="mt-2 max-w-xs text-ink-faint">{i18n._(msg`“Yuva” is Turkish for nest, or home.`)}</p>
+        <p>{i18n._(msg`Open-source customer messaging for teams that run many products.`)}</p>
+        <p class="text-ink-faint">{i18n._(msg`“Yuva” is Turkish for nest, or home.`)}</p>
       </div>
       {columns.map((c) => (
-        <nav aria-label={c.title}>
-          <h2 class="font-semibold">{c.title}</h2>
-          <ul class="mt-4 grid gap-2.5">
+        <nav class="flex flex-col gap-1.5" aria-label={c.title}>
+          <h2 class="font-medium text-ink-faint">{c.title}</h2>
+          <ul class="flex flex-col gap-1.5">
             {c.items.map((i) => (
               <li>
                 <a class={link} href={i.href}>
@@ -99,19 +107,22 @@ const link = "text-ink-soft transition-colors hover:text-ink"
     </div>
     <div
       class:list={[
-        "flex flex-col gap-3 border-t border-rule px-5 py-6 text-ink-faint sm:flex-row sm:items-center sm:justify-between sm:px-8",
-        wide && "lg:px-6",
+        "flex flex-col gap-3 border-t border-rule-soft text-ink-faint sm:flex-row sm:items-center sm:justify-between",
+        inline ? "mt-8 pt-5" : "px-5 py-5 sm:px-8",
+        !inline && wide && "lg:px-6",
       ]}
     >
       <p>
         {i18n._(msg`Server and panel under AGPL-3.0, SDKs and API contract under MIT.`)} © {year} productdevbook
       </p>
-      <div class="flex items-center gap-3">
-        <ThemeToggle locale={locale} />
-        <LangMenu locale={locale} paths={paths} up />
-      </div>
+      {!inline && (
+        <div class="flex items-center gap-3">
+          <ThemeToggle locale={locale} />
+          <LangMenu locale={locale} paths={paths} up />
+        </div>
+      )}
     </div>
-    <div class="min-h-[192px] border-t border-rule [--yuva-status-gutter:0px]">
+    <div class:list={["min-h-[192px] border-t border-rule-soft [--yuva-status-gutter:0px]", inline && "mt-5"]}>
       <yuva-status page="useyuva" server="https://app.useyuva.com" components lang={locale} theme="auto"></yuva-status>
     </div>
   </div>

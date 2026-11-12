@@ -1,10 +1,11 @@
 ---
+import "@fontsource-variable/inter"
 import "@fontsource-variable/geist"
 import "@fontsource-variable/geist-mono"
 import "@/styles/global.css"
-import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url"
-import geistLatinExt from "@fontsource-variable/geist/files/geist-latin-ext-wght-normal.woff2?url"
-import geistCyrillic from "@fontsource-variable/geist/files/geist-cyrillic-wght-normal.woff2?url"
+import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url"
+import interLatinExt from "@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2?url"
+import interCyrillic from "@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2?url"
 import { msg } from "@lingui/core/macro"
 import Footer from "@/layouts/Footer.astro"
 import Header from "@/layouts/Header.astro"
@@ -23,6 +24,7 @@ interface Props {
   image?: string
   wide?: boolean
   bare?: boolean
+  shell?: boolean
 }
 
 const {
@@ -37,6 +39,7 @@ const {
   image,
   wide = false,
   bare = false,
+  shell = false,
 } = Astro.props
 const i18n = i18nFor(locale)
 const canonical = absolute(paths[locale])
@@ -55,9 +58,9 @@ const serialize = (o: object) => JSON.stringify(o).replace(/</g, "\\u003c")
 const latinExt: Locale[] = ["tr", "pl", "cs", "sk", "hr", "sl", "ro", "hu"]
 const cyrillic: Locale[] = ["ru", "uk"]
 const preload = [
-  geistLatin,
-  ...(latinExt.includes(locale) ? [geistLatinExt] : []),
-  ...(cyrillic.includes(locale) ? [geistCyrillic] : []),
+  interLatin,
+  ...(latinExt.includes(locale) ? [interLatinExt] : []),
+  ...(cyrillic.includes(locale) ? [interCyrillic] : []),
 ]
 ---
 
@@ -78,8 +81,8 @@ const preload = [
       </>
     )}
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f8f8f6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#161616" media="(prefers-color-scheme: dark)" />
     <script is:inline set:html={localeScript}></script>
     <script is:inline>
       ;(function () {
@@ -97,8 +100,8 @@ const preload = [
           else root.setAttribute("data-theme", choice)
           var dark = choice === "dark" || (choice === "system" && matchMedia("(prefers-color-scheme: dark)").matches)
           document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
-            var own = (m.getAttribute("media") || "").indexOf("dark") > -1 ? "#09090b" : "#ffffff"
-            m.setAttribute("content", choice === "system" ? own : dark ? "#09090b" : "#ffffff")
+            var own = (m.getAttribute("media") || "").indexOf("dark") > -1 ? "#161616" : "#f8f8f6"
+            m.setAttribute("content", choice === "system" ? own : dark ? "#161616" : "#f8f8f6")
           })
           document.querySelectorAll("yuva-status").forEach(function (s) {
             s.setAttribute("theme", choice === "system" ? "auto" : choice)
@@ -164,7 +167,9 @@ const preload = [
     >
       {i18n._(msg`Skip to content`)}
     </a>
-    {bare ? (
+    {shell ? (
+      <slot />
+    ) : bare ? (
       <main id="main">
         <slot />
       </main>

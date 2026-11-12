@@ -52,10 +52,6 @@ msgstr "ఎవరూ చేయి వేయకుండానే ఒక తన�
 msgid "a contact and their data"
 msgstr "ఒక కాంటాక్ట్ మరియు దాని డేటా"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "{platform} SDK లో ఒక సంభాషణ: ఒక ఆర్డర్ గురించి ప్రశ్న, ట్రాకింగ్ లింక్‌తో టీమ్ సమాధానాలు, సమాధానం రాయడానికి ఒక బాక్స్."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "కస్టమర్ దీన్ని మూసివేయవచ్చు. సంఘటనకు కొత్త అప్‌డేట్ వచ్చినప్పుడు ఇది మళ్లీ కనిపిస్తుంది."
@@ -185,6 +181,10 @@ msgstr "GitHub లో అన్ని రిలీజ్‌లు"
 msgid "All templates"
 msgstr "అన్ని టెంప్లేట్‌లు"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "ఇప్పటికే ఖాతా ఉందా?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "సబ్‌స్క్రిప్షన్ అవసరం లేని Atom ఫీడ్, మీ README కోసం బ్యాడ్జ్, మరియు మీ సొంత సైట్ లేదా యాప్ కోసం అదే పేజీ JSON రూపంలో."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "ఏదైనా పంపబడకముందే"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "బీటా"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "బ్లాక్‌లు"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Yuva ను Claude, ChatGPT, Cursor, VS Code లేదా Gemini CLI క
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "సంప్రదింపు"
@@ -503,12 +502,14 @@ msgstr "సహకారం"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "కాపీ అయింది"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "కాపీ చేయి"
 
@@ -644,7 +645,6 @@ msgstr "డాక్స్"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "డాక్యుమెంటేషన్"
@@ -797,6 +797,10 @@ msgstr "Yuva గైడ్‌లన్నీ ఒకే చోట: ఇన్‌స
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Yuva యొక్క ప్రతి రిలీజ్, అందులో ఏం మారిందో, చేంజ్‌లాగ్ నుంచి."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "ఇన్‌బాక్స్ చుట్టూ ఉన్నవన్నీ"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "ప్రతిదీ API లో ఉంది, status:read మరియు status:manage స్కోప్‌లతో. వెబ్‌హుక్‌లు భాగాలు, సంఘటనలు, మానిటర్‌ల మార్పులను ప్రకటిస్తాయి, MCP ద్వారా కనెక్ట్ అయిన అసిస్టెంట్‌లు డ్రాఫ్ట్‌లు తెరిచి సంఘటనలను పరిష్కరించగలరు."
@@ -902,10 +906,6 @@ msgstr "గ్యాలరీ"
 msgid "Get started"
 msgstr "ప్రారంభించండి"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "ప్రతి ఉత్పత్తి వినియోగదారులకు మిమ్మల్ని చేరుకునే మార్గం ఇవ్వండి."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "కీని మరియు మీ Yuva సర్వర్ చిరునామాను కాంపోనెంట్‌లకు ఇవ్వండి, ఉదాహరణకు ఎన్విరాన్‌మెంట్‌లో:"
@@ -955,6 +955,11 @@ msgstr "నమస్కారం! మీ గురించి, మీ మనస
 msgid "History"
 msgstr "చరిత్ర"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "హోమ్"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hooks"
@@ -962,6 +967,10 @@ msgstr "Hooks"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "హోస్ట్ చేసింది"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "హోస్ట్ చేసినది లేదా మీ సొంత సర్వర్‌లో"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "సిరా"
 msgid "Install the chat block, then render it:"
 msgstr "చాట్ బ్లాక్‌ను ఇన్‌స్టాల్ చేసి, ఆపై రెండర్ చేయండి:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Yuva ఇన్‌స్టాల్ చేయండి"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "ఇన్‌స్టాలేషన్"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "లైవ్ ప్రివ్యూ"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "లాగ్ ఇన్"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "ప్రతి భాగానికి ఒక చెక్‌బాక్స్, ప్రతి ఇ-మెయిల్‌లో ఎంపికను మార్చడానికి లేదా వైదొలగడానికి లింక్."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "ఒక Docker ఇమేజ్ మరియు Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "మీ స్వంత సర్వర్‌లో ఒక Docker ఇమేజ్, Postgres."
 
@@ -1517,6 +1535,10 @@ msgstr "నా సర్వర్‌లో తెరవండి"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Plugins తెరిచి, ప్లస్ బటన్ ఎంచుకుని, తర్వాత Add custom MCP server."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "ఓపెన్ సోర్స్"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "ఐచ్ఛికం: డిప్లాయ్ కమాండ్‌క
 msgid "Or ask for one thing"
 msgstr "లేదా ఒక్క విషయం అడగండి"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "లేదా మీరే హోస్ట్ చేయండి"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "లేదా వాక్యాన్ని టైప్ చేయండి:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "మొత్తం స్థితి"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "అవలోకనం"
 
@@ -1668,7 +1687,6 @@ msgstr "ప్రివ్యూ, వినియోగం"
 msgid "Preview colours"
 msgstr "రంగుల ప్రివ్యూ"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "{name} టెంప్లేట్ ప్రివ్యూ"
@@ -1744,10 +1762,6 @@ msgstr "లైవ్ చాట్, డాక్యుమెంటేషన్ �
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "LICENSING.md చదవండి"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "కోడ్ చదవండి, మీ కంప్యూటర్‌లో {version} నడపండి, అది ఎదుగుతుండగా కలిసి ఉండండి."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "లింక్ చేసిన వాటికి సమాధానం
 msgid "Report a vulnerability"
 msgstr "ఒక దుర్బలత్వాన్ని నివేదించండి"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "సమస్యను నివేదించండి"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "దుర్బలత్వాలను GitHub ద్వారా ప్రైవేట్‌గా నివేదించండి, ఎప్పుడూ పబ్లిక్ ఇష్యూలో కాదు."
@@ -1869,7 +1887,6 @@ msgstr "అవసరాలు"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "వనరులు"
 
@@ -1885,8 +1902,11 @@ msgstr "ప్రతిస్పందన సమయాలు"
 msgid "Responses"
 msgstr "స్పందనలు"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST మరియు MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "రోడ్‌మ్యాప్"
@@ -2009,6 +2029,10 @@ msgstr "కొన్ని దశల్లో సెటప్ చేయండి
 msgid "Set up a channel"
 msgstr "ఛానెల్‌ను సెటప్ చేయండి"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "సెటప్ చేసి నడపండి"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "ఈ సైట్ కోసం Yuva విశ్లేషణను సెటప్ చేయి, సైన్-అప్‌ల కోసం ఒక లక్ష్యంతో."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "దశ"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "ఉచితంగా ప్రారంభించండి"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "AI తో ప్రారంభించండి"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "ప్యానెల్‌లో విశ్లేషణ అవలో�
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "సమాధానం ప్రతి చిరునామాకూ ఒకటే, ధృవీకరించకుండా ఎవరూ సబ్‌స్క్రైబ్ కారు."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "1.0 కంటే ముందు API ఇంకా మారవచ్చు, కాబట్టి అప్‌గ్రేడ్ చేసే ముందు విడుదల గమనికలు చదవండి. సర్వర్ ప్రారంభమైనప్పుడు డేటాబేస్ మైగ్రేషన్‌లు నడుస్తాయి: ముందుగా బ్యాకప్ తీసుకోండి."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API నెమ్మదిగా నడుస్తోంది"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "పేరు, ఈ సైట్ SIL Open Font License కింద ఉన్న ఓపెన్-సోర్స్ టైప్‌ఫేస్ Geist లో కూర్చబడ్డాయి."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "ఫోన్‌లో ప్యానెల్: ప్రతి వ్యక్తి ఛానెల్, తాజా సందేశంతో సంభాషణ జాబితా, కింద ట్యాబ్‌లు."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "మొబైల్ యాప్ నుంచి పంపిన అభిప్రాయంతో ప్యానెల్: సంభాషణ జాబితా పక్కన యాప్ వెర్షన్, పరికరం, స్క్రీన్‌తో బగ్ నివేదిక."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "మాటల్లో స్థితి, ప్రభావితమైన భాగాలు మరియు అప్‌డేట్‌లు, చిత్రాలు, ట్రాకింగ్ లేదా ప్రచారం లేకుండా. ఇంగ్లీష్, టర్కిష్ లేదా జర్మన్‌లో."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "యాప్‌లోని {platform} SDK సపోర్ట్ స్క్రీన్: వ్యక్తి సంభాషణలు చివరి సమాధానంతో, కొత్త సందేశం రాయడానికి ఒక బటన్."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "సపోర్ట్ టీమ్ సాధారణంగా వేర్వేరుగా అద్దెకు తీసుకునే టూల్స్, అదే సర్వర్‌లో అదే ప్యానెల్‌లో."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "పేరు, లోగో వినియోగం"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "API వెర్షన్ {version}, OpenAPI ఒప్పందం నుంచి రూపొందించబడింది. ఏ భాషలోనైనా క్లయింట్ రూపొందించడానికి ఒప్పందాన్ని వాడండి."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "GitHub లో చూడండి"
 
 #: src/copy/home.ts
 msgid "visitors"

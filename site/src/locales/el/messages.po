@@ -52,10 +52,6 @@ msgstr "Ένας έλεγχος ορίζει την κατάσταση ενός 
 msgid "a contact and their data"
 msgstr "μια επαφή και τα δεδομένα της"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "Μια συνομιλία στο SDK για {platform}: μια ερώτηση για μια παραγγελία και οι απαντήσεις της ομάδας με σύνδεσμο παρακολούθησης, και ένα πλαίσιο για απάντηση."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "Ο πελάτης μπορεί να το κλείσει. Επανεμφανίζεται όταν το περιστατικό λάβει νέα ενημέρωση."
@@ -185,6 +181,10 @@ msgstr "Όλες οι εκδόσεις στο GitHub"
 msgid "All templates"
 msgstr "Όλα τα πρότυπα"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "Έχετε ήδη λογαριασμό;"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "Μια τροφοδοσία Atom που δεν απαιτεί συνδρομή, ένα σήμα για το README σας και η ίδια σελίδα ως JSON για τον δικό σας ιστότοπο ή εφαρμογή."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "πριν σταλεί οτιδήποτε"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "Beta"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "Μπλοκ"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Συνδέστε το Yuva με Claude, ChatGPT, Cursor, VS Code ή Gemi
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "Επικοινωνία"
@@ -503,12 +502,14 @@ msgstr "Συνεισφορά"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "Αντιγράφηκε"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "Αντιγραφή"
 
@@ -644,7 +645,6 @@ msgstr "Έγγραφα"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "Τεκμηρίωση"
@@ -797,6 +797,10 @@ msgstr "Όλοι οι οδηγοί του Yuva σε ένα μέρος: εγκα�
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Κάθε έκδοση του Yuva και τι άλλαξε σε αυτήν, από το αρχείο αλλαγών."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "Όλα γύρω από τα εισερχόμενα"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "Όλα βρίσκονται στο API, με τα δικαιώματα status:read και status:manage. Τα webhooks ανακοινώνουν αλλαγές σε στοιχεία, περιστατικά και παρακολουθήσεις, και βοηθοί συνδεδεμένοι μέσω MCP μπορούν να ανοίγουν πρόχειρα και να επιλύουν περιστατικά."
@@ -902,10 +906,6 @@ msgstr "Συλλογή"
 msgid "Get started"
 msgstr "Ξεκινήστε"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "Δώστε στους χρήστες κάθε προϊόντος έναν τρόπο να σας βρουν."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "Δώστε στα στοιχεία το κλειδί και τη διεύθυνση του διακομιστή Yuva, για παράδειγμα στο περιβάλλον:"
@@ -955,6 +955,11 @@ msgstr "Γεια σας! Πείτε μας λίγα λόγια για εσάς �
 msgid "History"
 msgstr "Ιστορικό"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "Αρχική"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hooks"
@@ -962,6 +967,10 @@ msgstr "Hooks"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "Φιλοξενούμενο"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "Φιλοξενούμενο ή στον δικό σας διακομιστή"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "Μελάνι"
 msgid "Install the chat block, then render it:"
 msgstr "Εγκαταστήστε το μπλοκ συνομιλίας και μετά αποδώστε το:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Εγκατάσταση του Yuva"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "Εγκατάσταση"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "Ζωντανή προεπισκόπηση"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "Σύνδεση"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "Ένα πλαίσιο επιλογής για κάθε στοιχείο και σε κάθε e-mail ένας σύνδεσμος για αλλαγή της επιλογής ή διαγραφή."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Ένα image Docker και Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "Ένα image Docker και Postgres στον δικό σας διακομιστή."
 
@@ -1517,6 +1535,10 @@ msgstr "Άνοιγμα στον διακομιστή μου"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Ανοίξτε το Plugins, πατήστε το κουμπί συν και μετά Add custom MCP server."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "Ανοιχτός κώδικας"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "Προαιρετικά: κρατήστε την αλληλογραφία
 msgid "Or ask for one thing"
 msgstr "Ή ζητήστε ένα πράγμα"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "Ή φιλοξενήστε το μόνοι σας"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "Ή πληκτρολογήστε τη φράση:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "Συνολική κατάσταση"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "Επισκόπηση"
 
@@ -1668,7 +1687,6 @@ msgstr "Προεπισκόπηση και χρήση"
 msgid "Preview colours"
 msgstr "Προεπισκόπηση χρωμάτων"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "Προεπισκόπηση του προτύπου {name}"
@@ -1744,10 +1762,6 @@ msgstr "Στοιχεία React για ζωντανή συνομιλία, συζ�
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "Διαβάστε το LICENSING.md"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "Διαβάστε τον κώδικα, τρέξτε την {version} στον υπολογιστή σας και ακολουθήστε την εξέλιξή της."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "Απάντηση στις συνδεδεμένες"
 msgid "Report a vulnerability"
 msgstr "Αναφέρετε μια ευπάθεια"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "Αναφορά προβλήματος"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "Αναφέρετε τις ευπάθειες ιδιωτικά μέσω GitHub, ποτέ σε δημόσιο issue."
@@ -1869,7 +1887,6 @@ msgstr "Απαιτήσεις"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "Πόροι"
 
@@ -1885,8 +1902,11 @@ msgstr "Χρόνοι απόκρισης"
 msgid "Responses"
 msgstr "Αποκρίσεις"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST και MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "Χάρτης πορείας"
@@ -2009,6 +2029,10 @@ msgstr "Ρυθμίστε το σε λίγα βήματα"
 msgid "Set up a channel"
 msgstr "Ρύθμιση καναλιού"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "Ρύθμιση και λειτουργία"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "Ρύθμισε τα αναλυτικά στοιχεία του Yuva για αυτόν τον ιστότοπο, με στόχο για τις εγγραφές."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "Στάδιο"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "Ξεκινήστε δωρεάν"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "Ξεκινήστε με AI"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "Η επισκόπηση αναλυτικών στοιχείων στον
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "Η απάντηση είναι ίδια για κάθε διεύθυνση, και κανείς δεν γίνεται συνδρομητής χωρίς επιβεβαίωση."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "Το API μπορεί ακόμη να αλλάξει πριν από την 1.0, γι' αυτό διαβάστε τις σημειώσεις έκδοσης πριν αναβαθμίσετε. Οι μεταφορές της βάσης δεδομένων εκτελούνται όταν ξεκινά ο διακομιστής: κρατήστε πρώτα αντίγραφο ασφαλείας."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "Το API τρέχει αργά"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "Το όνομα και αυτός ο ιστότοπος είναι στοιχειοθετημένα σε Geist, μια γραμματοσειρά ανοιχτού κώδικα με άδεια SIL Open Font License."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "Ο πίνακας στο τηλέφωνο: η λίστα συνομιλιών με το κανάλι και το τελευταίο μήνυμα κάθε ατόμου και οι καρτέλες στο κάτω μέρος."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "Ο πίνακας με σχόλια χρηστών από εφαρμογή κινητού: μια αναφορά σφάλματος με την έκδοση της εφαρμογής, τη συσκευή και την οθόνη, δίπλα στη λίστα συνομιλιών."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "Η κατάσταση με λέξεις, τα επηρεαζόμενα στοιχεία και οι ενημερώσεις, χωρίς εικόνες, παρακολούθηση ή προώθηση. Στα αγγλικά, τουρκικά ή γερμανικά."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "Η οθόνη υποστήριξης του SDK για {platform} μέσα σε μια εφαρμογή: οι συνομιλίες του ατόμου με την τελευταία απάντηση και ένα κουμπί για νέο μήνυμα."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "Τα εργαλεία που μια ομάδα υποστήριξης συνήθως νοικιάζει χωριστά, στον ίδιο διακομιστή και στον ίδιο πίνακα."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "Χρήση του ονόματος και του λογοτύπου"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "Έκδοση {version} του API, παραγμένη από το συμβόλαιο OpenAPI. Χρησιμοποιήστε το συμβόλαιο για να δημιουργήσετε client σε οποιαδήποτε γλώσσα."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "Προβολή στο GitHub"
 
 #: src/copy/home.ts
 msgid "visitors"

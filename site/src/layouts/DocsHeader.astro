@@ -25,6 +25,8 @@ const tab =
   "relative flex h-14 items-center text-sm text-ink-soft transition-colors hover:text-ink aria-[current=page]:font-medium aria-[current=page]:text-ink aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-0 aria-[current=page]:after:-bottom-px aria-[current=page]:after:h-0.5 aria-[current=page]:after:bg-signal"
 ---
 
+<div class="h-0.5 bg-brand"></div>
+
 <header class="sticky top-0 z-50 border-b border-rule before:absolute before:inset-0 before:-z-10 before:bg-paper/90 before:backdrop-blur-lg">
   <div class="flex h-14 items-stretch">
     <div
@@ -76,13 +78,13 @@ const tab =
           <XIcon size={16} />
         </a>
         <a
-          class="hidden h-9 items-center rounded-full px-3 text-sm font-medium text-ink-soft hover:bg-paper-deep hover:text-ink md:inline-flex"
+          class="hidden h-9 items-center rounded-md px-3 text-sm font-medium text-ink-soft hover:bg-paper-deep hover:text-ink md:inline-flex"
           href={appUrl(locale)}
         >
           {h.logIn}
         </a>
         <a
-          class="hidden h-9 items-center rounded-full bg-signal px-4 text-sm font-medium text-white hover:bg-signal/90 md:inline-flex"
+          class="hidden h-9 items-center rounded-md bg-signal px-4 text-sm font-medium text-white hover:bg-signal/90 md:inline-flex"
           href={appUrl(locale, { signup: "1" })}
         >
           {h.startFree}

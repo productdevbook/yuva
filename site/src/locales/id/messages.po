@@ -52,10 +52,6 @@ msgstr "Pemeriksaan menetapkan status komponen tanpa campur tangan siapa pun, da
 msgid "a contact and their data"
 msgstr "kontak dan datanya"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "Percakapan di SDK {platform}: pertanyaan tentang pesanan dan balasan tim dengan tautan pelacakan, serta kotak untuk membalas."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "Pelanggan dapat menutupnya. Muncul lagi saat insiden mendapat pembaruan baru."
@@ -185,6 +181,10 @@ msgstr "Semua rilis di GitHub"
 msgid "All templates"
 msgstr "Semua templat"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "Sudah punya akun?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "Feed Atom yang tidak perlu berlangganan, lencana untuk README Anda, dan halaman yang sama sebagai JSON untuk situs atau aplikasi Anda."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "sebelum apa pun dikirim"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "Beta"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "Blok"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Hubungkan Yuva ke Claude, ChatGPT, Cursor, VS Code, atau Gemini CLI, lal
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "Kontak"
@@ -503,12 +502,14 @@ msgstr "Berkontribusi"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "Tersalin"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "Salin"
 
@@ -644,7 +645,6 @@ msgstr "Dokumen"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "Dokumentasi"
@@ -797,6 +797,10 @@ msgstr "Semua panduan Yuva di satu tempat: instalasi, saluran, siaran massal, an
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Setiap rilis Yuva dan apa yang berubah di dalamnya, dari catatan perubahan."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "Semua hal di sekitar kotak masuk"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "Semuanya ada di API, dengan cakupan status:read dan status:manage. Webhook mengumumkan perubahan komponen, insiden, dan monitor, dan asisten yang terhubung lewat MCP dapat membuka draf dan menyelesaikan insiden."
@@ -902,10 +906,6 @@ msgstr "Galeri"
 msgid "Get started"
 msgstr "Mulai"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "Beri pengguna setiap produk cara untuk menghubungi Anda."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "Berikan kunci dan alamat server Yuva Anda ke komponen, misalnya lewat environment:"
@@ -955,6 +955,11 @@ msgstr "Halo! Ceritakan sedikit tentang diri Anda dan apa yang Anda pikirkan."
 msgid "History"
 msgstr "Riwayat"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "Beranda"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hook"
@@ -962,6 +967,10 @@ msgstr "Hook"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "Dihosting"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "Dihosting atau di server sendiri"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "Tinta"
 msgid "Install the chat block, then render it:"
 msgstr "Instal blok obrolan, lalu render:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Instal Yuva"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "Instalasi"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "Pratinjau langsung"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "Masuk"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "Satu kotak centang per komponen, dan di setiap e-mail ada tautan untuk mengubah pilihan atau berhenti."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Satu image Docker dan Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "Satu image Docker dan Postgres di server Anda sendiri."
 
@@ -1517,6 +1535,10 @@ msgstr "Buka di server saya"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Buka Plugins, pilih tombol plus, lalu Add custom MCP server."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "Sumber terbuka"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "Opsional: simpan surat saat gangguan dengan menambahkan alamat cadangan 
 msgid "Or ask for one thing"
 msgstr "Atau minta satu hal"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "Atau hosting sendiri"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "Atau ketik kalimatnya:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "Status keseluruhan"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "Ikhtisar"
 
@@ -1668,7 +1687,6 @@ msgstr "Pratinjau dan penggunaan"
 msgid "Preview colours"
 msgstr "Pratinjau warna"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "Pratinjau templat {name}"
@@ -1744,10 +1762,6 @@ msgstr "Komponen React untuk obrolan langsung, diskusi halaman dokumentasi, dan 
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "Baca LICENSING.md"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "Baca kodenya, jalankan {version} di mesin Anda, dan ikuti perkembangannya."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "Balas ke yang tertaut"
 msgid "Report a vulnerability"
 msgstr "Laporkan kerentanan"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "Laporkan masalah"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "Laporkan kerentanan secara privat lewat GitHub, jangan pernah di issue publik."
@@ -1869,7 +1887,6 @@ msgstr "Persyaratan"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "Sumber daya"
 
@@ -1885,8 +1902,11 @@ msgstr "Waktu respons"
 msgid "Responses"
 msgstr "Respons"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST dan MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "Peta jalan"
@@ -2009,6 +2029,10 @@ msgstr "Siapkan dalam beberapa langkah"
 msgid "Set up a channel"
 msgstr "Siapkan kanal"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "Siapkan dan jalankan"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "Siapkan analitik Yuva untuk situs ini, dengan sasaran untuk pendaftaran."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "Tahap"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "Mulai gratis"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "Mulai dengan AI"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "Ikhtisar analitik di panel: 30 hari pengunjung, tampilan halaman, dan ra
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "Jawabannya sama untuk setiap alamat, dan tidak ada yang berlangganan tanpa konfirmasi."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "API masih bisa berubah sebelum 1.0, jadi baca catatan rilis sebelum memperbarui. Migrasi database berjalan saat server dimulai: buat cadangan terlebih dahulu."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API berjalan lambat"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "Nama dan situs ini disusun dengan Geist, huruf open source di bawah SIL Open Font License."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "Panel di ponsel: daftar percakapan dengan saluran dan pesan terbaru tiap orang, dan tab di bagian bawah."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "Panel dengan masukan yang dikirim dari aplikasi seluler: laporan bug dengan versi aplikasi, perangkat, dan layar, di samping daftar percakapan."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "Status dalam kata-kata, komponen yang terdampak, dan pembaruan, tanpa gambar, pelacakan, atau promosi. Dalam bahasa Inggris, Turki, atau Jerman."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "Layar dukungan SDK {platform} di dalam aplikasi: percakapan orang tersebut dengan balasan terakhir, dan tombol untuk menulis pesan baru."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "Alat yang biasanya disewa terpisah oleh tim dukungan, di server yang sama dan panel yang sama."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "Penggunaan nama dan logo"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "Versi {version} dari API, dihasilkan dari kontrak OpenAPI. Gunakan kontrak untuk menghasilkan klien dalam bahasa apa pun."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "Lihat di GitHub"
 
 #: src/copy/home.ts
 msgid "visitors"

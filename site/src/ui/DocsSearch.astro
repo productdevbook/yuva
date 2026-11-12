@@ -15,8 +15,8 @@ const t = docsCopy(i18nFor(locale))
 <button
   type="button"
   class:list={[
-    "flex items-center gap-2 rounded-xl border border-rule text-sm text-ink-faint transition-colors hover:border-rule-strong hover:text-ink-soft",
-    compact ? "size-11 justify-center" : "w-full px-3 py-2",
+    "flex cursor-pointer items-center gap-2 rounded-md text-sm text-ink-soft transition-colors hover:text-ink",
+    compact ? "size-9 justify-center" : "h-9 w-full border border-rule bg-paper-deep px-3.5 hover:bg-raise",
   ]}
   data-search-open
   data-base={docsRoot(locale)}
@@ -40,7 +40,7 @@ const t = docsCopy(i18nFor(locale))
   {!compact && (
     <>
       <span class="flex-1 text-start">{t.searchDocs}</span>
-      <kbd class="rounded-md border border-rule px-1.5 font-sans text-xs">⌘K</kbd>
+      <kbd class="rounded border border-rule-strong bg-paper px-[5px] font-mono text-[11px]">⌘K</kbd>
     </>
   )}
 </button>

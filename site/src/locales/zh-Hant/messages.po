@@ -52,10 +52,6 @@ msgstr "檢查無需任何人動手即可設定元件狀態，元件當機或恢
 msgid "a contact and their data"
 msgstr "一位聯絡人及其資料"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "{platform} SDK 中的一段對話：關於訂單的提問、團隊附上物流追蹤連結的回覆，以及回覆輸入框。"
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "客戶可以關閉它。事件有新更新時它會再次出現。"
@@ -185,6 +181,10 @@ msgstr "GitHub 上的所有版本"
 msgid "All templates"
 msgstr "所有範本"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "已有帳號？"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "無需訂閱的 Atom 摘要、用於 README 的徽章，以及供你自己的網站或應用程式使用的同一頁面 JSON。"
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "在任何內容寄出之前"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "公開測試"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "區塊"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "將 Yuva 連接到 Claude、ChatGPT、Cursor、VS Code 或 Gemini CLI，
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "聯絡我們"
@@ -503,12 +502,14 @@ msgstr "參與貢獻"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "已複製"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "複製"
 
@@ -644,7 +645,6 @@ msgstr "文件"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "文件"
@@ -797,6 +797,10 @@ msgstr "Yuva 的全部指南集中在一處：安裝、頻道、群發、分析�
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Yuva 的每個版本及其變更，來自更新日誌。"
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "收件匣周邊的一切"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "一切都在 API 中，權限為 status:read 與 status:manage。Webhook 會通知元件、事件與監控的變更，透過 MCP 連接的助理可以建立草稿並解決事件。"
@@ -902,10 +906,6 @@ msgstr "圖庫"
 msgid "Get started"
 msgstr "開始使用"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "讓每個產品的使用者都有聯絡你的方式。"
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "把金鑰和你的 Yuva 伺服器位址交給元件，例如透過環境變數："
@@ -955,6 +955,11 @@ msgstr "你好！請簡單介紹一下你自己，以及你的想法。"
 msgid "History"
 msgstr "歷史"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "首頁"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hooks"
@@ -962,6 +967,10 @@ msgstr "Hooks"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "託管"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "託管或自行架設"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "墨色"
 msgid "Install the chat block, then render it:"
 msgstr "安裝聊天區塊，然後渲染它："
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "安裝 Yuva"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "安裝"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "即時預覽"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "登入"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "每個元件一個核取方塊，每封郵件中都有用於變更選擇或取消訂閱的連結。"
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "一個 Docker 映像檔加 Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "在你自己的伺服器上執行一個 Docker 映像與 Postgres。"
 
@@ -1517,6 +1535,10 @@ msgstr "在我的伺服器上開啟"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "開啟 Plugins，選擇加號按鈕，然後選擇 Add custom MCP server。"
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "開放原始碼"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "選用：在部署指令中加入備用位址，以便在故障期間保
 msgid "Or ask for one thing"
 msgstr "或者只提一個需求"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "或者自行託管"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "或者輸入這句話："
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "整體狀態"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "總覽"
 
@@ -1668,7 +1687,6 @@ msgstr "預覽與使用"
 msgid "Preview colours"
 msgstr "預覽顏色"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "範本「{name}」預覽"
@@ -1744,10 +1762,6 @@ msgstr "用於即時聊天、文件頁面討論與郵寄清單訂閱的 React �
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "閱讀 LICENSING.md"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "閱讀程式碼，在你的機器上執行 {version}，見證它的成長。"
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "回覆已連結的對話"
 msgid "Report a vulnerability"
 msgstr "回報安全漏洞"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "回報問題"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "請透過 GitHub 私下回報漏洞，切勿在公開 issue 中回報。"
@@ -1869,7 +1887,6 @@ msgstr "需求"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "資源"
 
@@ -1885,8 +1902,11 @@ msgstr "回應時間"
 msgid "Responses"
 msgstr "回應"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST 與 MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "路線圖"
@@ -2009,6 +2029,10 @@ msgstr "幾步即可完成設定"
 msgid "Set up a channel"
 msgstr "設定頻道"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "設定與執行"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "為這個網站設定 Yuva 分析，並為註冊設一個目標。"
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "階段"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "免費開始"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "用 AI 開始"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "面板中的分析總覽：30 天的訪客、頁面瀏覽量與跳出率
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "對任何位址的回應都相同，未經確認不會有人被訂閱。"
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "在 1.0 之前 API 仍可能變動，升級前請先閱讀版本說明。資料庫遷移會在伺服器啟動時執行：請先備份。"
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API 運作緩慢"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "名稱與本網站使用 Geist 排版，這是一款採用 SIL Open Font License 的開源字型。"
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "手機上的面板：對話清單顯示每個人的頻道與最新訊息，底部是分頁列。"
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "顯示從行動應用程式傳來的意見回饋的面板：對話清單旁是一份附有應用程式版本、裝置與畫面的錯誤報告。"
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "文字狀態、受影響的元件與更新，沒有圖片、追蹤或推銷。提供英文、土耳其文或德文。"
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "應用程式內 {platform} SDK 的支援畫面：此人的對話與最新回覆，以及撰寫新訊息的按鈕。"
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "支援團隊通常分別租用的工具，都在同一台伺服器、同一個面板裡。"
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "名稱與標誌的使用"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "API 的 {version} 版本，由 OpenAPI 契約產生。可用該契約產生任何語言的用戶端。"
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "在 GitHub 上檢視"
 
 #: src/copy/home.ts
 msgid "visitors"

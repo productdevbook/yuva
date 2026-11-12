@@ -52,10 +52,6 @@ msgstr "Bir kontrol, kimsenin eli değmeden bir bileşenin durumunu ayarlar; bil
 msgid "a contact and their data"
 msgstr "bir kişiyi ve verilerini"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "{platform} SDK'sında bir konuşma: bir siparişle ilgili soru, takip bağlantısıyla ekibin yanıtları ve yanıt yazma kutusu."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "Müşteri kapatabilir. Olay yeni bir güncelleme aldığında yeniden görünür."
@@ -185,6 +181,10 @@ msgstr "GitHub'daki bütün sürümler"
 msgid "All templates"
 msgstr "Tüm şablonlar"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "Hesabınız var mı?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "Abonelik gerektirmeyen bir Atom beslemesi, README'niz için bir rozet ve kendi siteniz ya da uygulamanız için aynı sayfa JSON olarak."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "hiçbir şey gönderilmeden önce"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "Beta"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "Bloklar"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Yuva'yı Claude, ChatGPT, Cursor, VS Code ya da Gemini CLI'a bağlayın;
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "İletişim"
@@ -503,12 +502,14 @@ msgstr "Katkıda bulunma"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "Kopyalandı"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "Kopyala"
 
@@ -644,7 +645,6 @@ msgstr "Belgeler"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "Belgeler"
@@ -797,6 +797,10 @@ msgstr "Tüm Yuva rehberleri tek yerde: kurulum, kanallar, toplu gönderimler, a
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Değişiklik günlüğünden, Yuva'nın her sürümü ve o sürümde değişenler."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "Gelen kutusunun etrafındaki her şey"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "Her şey API'de. status:read ve status:manage kapsamları var. Webhook'lar bileşen, olay ve izleyici değişikliklerini duyurur; MCP ile bağlı asistanlar taslak açabilir ve olayları çözebilir."
@@ -902,10 +906,6 @@ msgstr "Galeri"
 msgid "Get started"
 msgstr "Başlarken"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "Her ürününüzün kullanıcısına size ulaşmanın bir yolunu verin."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "Anahtarı ve Yuva sunucunuzun adresini bileşenlere verin, örneğin ortam değişkenlerinde:"
@@ -955,6 +955,11 @@ msgstr "Merhaba! Bize biraz kendinizden ve aklınızdakinden söz edin."
 msgid "History"
 msgstr "Geçmiş"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "Ana sayfa"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hook'lar"
@@ -962,6 +967,10 @@ msgstr "Hook'lar"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "Barındırılan"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "Barındırılan ya da kendi sunucunuzda"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "Mürekkep"
 msgid "Install the chat block, then render it:"
 msgstr "Sohbet bloğunu kurun, sonra çizdirin:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Yuva'yı kurun"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "Kurulum"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "Canlı önizleme"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "Giriş yap"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "Her bileşen için bir onay kutusu ve her e-postada seçimi değiştirmek ya da ayrılmak için bir bağlantı."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Tek Docker imajı ve Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "Kendi sunucunuzda tek bir Docker imajı ve Postgres."
 
@@ -1517,6 +1535,10 @@ msgstr "Sunucumda aç"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Plugins'i açın, artı düğmesini seçin, ardından Add custom MCP server'ı seçin."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "Açık kaynak"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "İsteğe bağlı: dağıtım komutuna bir yedek adres ekleyerek kesinti 
 msgid "Or ask for one thing"
 msgstr "Ya da tek bir şey isteyin"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "Ya da kendiniz barındırın"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "Ya da şu cümleyi yazın:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "Genel durum"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "Genel bakış"
 
@@ -1668,7 +1687,6 @@ msgstr "Önizle ve kullan"
 msgid "Preview colours"
 msgstr "Önizleme renkleri"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "{name} şablonunun önizlemesi"
@@ -1744,10 +1762,6 @@ msgstr "Canlı sohbet, dokümantasyon sayfası tartışmaları ve e-posta listes
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "LICENSING.md'yi okuyun"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "Kodu okuyun, {version} sürümünü kendi makinenizde çalıştırın ve Yuva büyürken birlikte izleyin."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "Bağlı olanlara yanıt"
 msgid "Report a vulnerability"
 msgstr "Güvenlik açığı bildirin"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "Sorun bildirin"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "Güvenlik açıklarını herkese açık bir konuda değil, GitHub üzerinden gizlice bildirin."
@@ -1869,7 +1887,6 @@ msgstr "Gereksinimler"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "Kaynaklar"
 
@@ -1885,8 +1902,11 @@ msgstr "Yanıt süreleri"
 msgid "Responses"
 msgstr "Yanıtlar"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST ve MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "Yol haritası"
@@ -2009,6 +2029,10 @@ msgstr "Birkaç adımda kurun"
 msgid "Set up a channel"
 msgstr "Kanal kurulumu"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "Kurun ve çalıştırın"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "Bu site için Yuva analitiğini kur, kayıtlar için bir hedef ekle."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "Aşama"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "Ücretsiz başla"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "Yapay zekâyla başla"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "Panelde analitik özeti: 30 günlük ziyaretçi, sayfa görüntüleme ve
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "Yanıt her adres için aynıdır ve onaylamadan kimse abone olmaz."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "API 1.0'dan önce hâlâ değişebilir; güncellemeden önce sürüm notlarını okuyun. Veritabanı geçişleri sunucu başlarken çalışır: önce yedek alın."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API yavaş çalışıyor"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "İsim ve bu site, SIL Open Font License ile yayımlanan açık kaynak yazı tipi Geist ile dizilmiştir."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "Telefonda panel: her kişinin kanalı ve son mesajıyla konuşma listesi ve altta sekmeler."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "Bir mobil uygulamadan gönderilen geri bildirimle panel: konuşma listesinin yanında uygulama sürümü, cihaz ve ekran bilgisiyle bir hata bildirimi."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "Yazıyla durum, etkilenen bileşenler ve güncellemeler; görsel, izleme ya da tanıtım yok. İngilizce, Türkçe veya Almanca."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "Bir uygulamanın içinde {platform} SDK'sının destek ekranı: kişinin konuşmaları son yanıtla birlikte ve yeni mesaj yazma düğmesi."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "Bir destek ekibinin genelde ayrı ayrı kiraladığı araçlar, aynı sunucuda ve aynı panelde."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "İsmi ve logoyu kullanmak"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "API'nin {version} sürümü, OpenAPI sözleşmesinden üretildi. Sözleşmeyle istediğiniz dilde bir istemci üretebilirsiniz."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "GitHub'da inceleyin"
 
 #: src/copy/home.ts
 msgid "visitors"

@@ -1,0 +1,32 @@
+---
+export type NavRow = { label: string; href: string; current?: boolean }
+export type NavRowGroup = { key: string; title: string; items: NavRow[] }
+
+interface Props {
+  groups: NavRowGroup[]
+  label: string
+}
+
+const { groups, label } = Astro.props
+---
+
+<nav class="flex flex-col gap-[22px]" aria-label={label}>
+  {groups.map((g) => (
+    <div>
+      <p class="px-2.5 pb-1.5 text-xs font-medium text-ink-faint">{g.title}</p>
+      <ul>
+        {g.items.map((i) => (
+          <li>
+            <a
+              class="block w-fit px-2.5 py-1 text-sm leading-5 text-ink-2 no-underline underline-offset-4 hover:underline aria-[current=page]:font-medium aria-[current=page]:text-ink aria-[current=page]:underline aria-[current=page]:decoration-brand aria-[current=page]:decoration-2"
+              href={i.href}
+              aria-current={i.current ? "page" : undefined}
+            >
+              {i.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</nav>

@@ -22,6 +22,8 @@ const item =
   "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-start text-sm outline-none hover:bg-paper-deep focus-visible:bg-paper-deep"
 ---
 
+<div class="h-0.5 bg-brand"></div>
+
 <header class="sticky top-0 z-50 border-b border-rule before:absolute before:inset-0 before:-z-10 before:bg-paper/80 before:backdrop-blur-lg">
   <div
     class:list={[
@@ -152,13 +154,13 @@ const item =
         <XIcon size={14} />
       </a>
       <a
-        class="hidden h-9 items-center rounded-full px-3 text-sm font-medium text-ink-soft transition-colors hover:bg-paper-deep hover:text-ink lg:inline-flex"
+        class="hidden h-9 items-center rounded-md px-3 text-sm font-medium text-ink-soft transition-colors hover:bg-paper-deep hover:text-ink lg:inline-flex"
         href={appUrl(locale)}
       >
         {t.logIn}
       </a>
       <a
-        class="hidden h-9 items-center rounded-full bg-signal px-4 text-sm font-medium text-white transition-colors hover:bg-signal/90 lg:inline-flex"
+        class="hidden h-9 items-center rounded-md bg-signal px-4 text-sm font-medium text-white transition-colors hover:bg-signal/90 lg:inline-flex"
         href={appUrl(locale, { signup: "1" })}
       >
         {t.startFree}
@@ -218,13 +220,13 @@ const item =
           </nav>
           <div class="mt-auto grid grid-cols-2 gap-3 pt-6">
             <a
-              class="inline-flex h-11 items-center justify-center rounded-full border border-rule-strong text-sm font-medium"
+              class="inline-flex h-11 items-center justify-center rounded-md border border-rule-strong text-sm font-medium"
               href={appUrl(locale)}
             >
               {t.logIn}
             </a>
             <a
-              class="inline-flex h-11 items-center justify-center rounded-full bg-signal text-sm font-medium text-white"
+              class="inline-flex h-11 items-center justify-center rounded-md bg-signal text-sm font-medium text-white"
               href={appUrl(locale, { signup: "1" })}
             >
               {t.startFree}

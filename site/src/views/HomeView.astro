@@ -1,34 +1,57 @@
 ---
+import { docsCopy } from "@/copy/docs"
+import { headerCopy } from "@/copy/header"
 import { homeCopy } from "@/copy/home"
-import { statusSampleCopy } from "@/copy/status"
 import { i18nFor } from "@/i18n"
 import Base from "@/layouts/Base.astro"
-import { quickStart } from "@/lib/docs"
-import { absolute, home, links, template, VERSION, type Locale } from "@/lib/routes"
-import Close from "@/sections/Close.astro"
+import Footer from "@/layouts/Footer.astro"
+import PageShell from "@/layouts/PageShell.astro"
+import { href, nav, quickStart } from "@/lib/docs"
+import { absolute, home, links, VERSION, type Locale } from "@/lib/routes"
+import { shots } from "@/lib/shots"
 import Features from "@/sections/Features.astro"
 import Hero from "@/sections/Hero.astro"
-import { previewImage, previewLocale, templates, text } from "@/lib/templates"
-import { shots } from "@/lib/shots"
+import Tour from "@/sections/Tour.astro"
+import TopLinks from "@/ui/TopLinks.astro"
+import type { NavRowGroup } from "@/ui/NavRows.astro"
+import { msg } from "@lingui/core/macro"
 
 interface Props {
   locale: Locale
 }
 
 const { locale } = Astro.props
-const c = homeCopy(i18nFor(locale), await quickStart(locale))
-
-const picks = ["welcome", "newsletter", "product-update"]
-const previews = templates()
-  .filter((x) => picks.includes(x.slug))
-  .sort((a, b) => picks.indexOf(a.slug) - picks.indexOf(b.slug))
-  .map((x) => {
-    return {
-      name: text(x.name, locale),
-      src: previewImage(x.slug, previewLocale(x, locale)),
-      href: template(x.slug)[locale],
-    }
-  })
+const i18n = i18nFor(locale)
+const c = homeCopy(i18n, await quickStart(locale))
+const h = headerCopy(i18n, locale)
+const d = docsCopy(i18n)
+const start = (await nav(locale)).find((g) => g.key === "start")
+const groups: NavRowGroup[] = [
+  {
+    key: "start",
+    title: d.groups.start,
+    items: [
+      { label: i18n._(msg`Home`), href: home[locale], current: true },
+      { label: c.hero.signUp, href: c.hero.signUpHref },
+      { label: c.hero.logIn, href: c.hero.logInHref },
+      ...(start?.items ?? []).map((i) => ({ label: i.title, href: href(locale, i.rel) })),
+    ],
+  },
+  ...h.groups.map((g) => ({
+    key: g.id,
+    title: g.label,
+    items: g.items.map((i) => ({ label: i.title, href: i.href })),
+  })),
+]
+const developers = c.features.items.find((f) => f.id === "developers")!
+const selfHosting = c.features.items.find((f) => f.id === "self-hosting")!
+const toc = [
+  { href: "#overview", label: c.toc.overview },
+  { href: "#channels", label: c.channels.title },
+  { href: "#parts", label: c.parts.title },
+  { href: "#developers", label: developers.title },
+  { href: "#self-hosting", label: selfHosting.title },
+]
 
 const jsonLd = [
   {
@@ -48,8 +71,28 @@ const jsonLd = [
 ]
 ---
 
-<Base locale={locale} title={c.meta.title} description={c.meta.description} jsonLd={jsonLd}>
-  <Hero t={c.hero} shots={shots(locale)} locale={locale} alts={c.features.alts} />
-  <Features t={c.features} shots={shots(locale)} previews={previews} status={statusSampleCopy(i18nFor(locale))} />
-  <Close t={c.close} hero={c.hero} locale={locale} />
+<Base locale={locale} title={c.meta.title} description={c.meta.description} jsonLd={jsonLd} shell>
+  <PageShell locale={locale} paths={home} label={h.sections} groups={groups} toc={toc} current>
+    <div class="mb-6 hidden md:-mt-6 md:block">
+      <TopLinks locale={locale} paths={home}>
+        <span class="mx-1.5 h-[18px] w-px bg-rule" aria-hidden="true"></span>
+        <a
+          class="inline-flex h-8 items-center rounded-md px-3 text-sm font-medium text-ink-2 hover:bg-rule-soft hover:text-ink"
+          href={c.hero.logInHref}
+        >
+          {c.hero.logIn}
+        </a>
+        <a
+          class="inline-flex h-8 items-center rounded-md bg-brand px-3.5 text-sm font-medium text-white"
+          href={c.hero.signUpHref}
+        >
+          {c.hero.startFree}
+        </a>
+      </TopLinks>
+    </div>
+    <Hero t={c.hero} locale={locale} />
+    <Tour t={c.tour} shots={shots(locale)} locale={locale} />
+    <Features t={c} />
+    <Footer locale={locale} paths={home} inline />
+  </PageShell>
 </Base>

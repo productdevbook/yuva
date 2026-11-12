@@ -19,10 +19,16 @@
   --color-paper-deep: var(--paper-deep);
   --color-sheet: var(--sheet);
   --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
   --color-ink-soft: var(--ink-soft);
   --color-ink-faint: var(--ink-faint);
   --color-rule: var(--rule);
   --color-rule-strong: var(--rule-strong);
+  --color-rule-soft: var(--rule-soft);
+  --color-raise: var(--raise);
+  --color-seg: var(--seg);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
   --color-brand: var(--brand);
   --color-brand-bright: var(--brand-bright);
   --color-brand-wash: var(--brand-wash);
@@ -33,10 +39,10 @@
   --color-night-rule: #27272a;
   --color-night-sheet: #131316;
   --color-glow: #ffb08f;
-  --color-signal: #d4431c;
+  --color-signal: var(--brand);
 
-  --font-display: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
 
   --color-background: var(--background);
@@ -64,18 +70,24 @@
 
 :root {
   color-scheme: light dark;
-  --paper: #ffffff;
-  --paper-deep: #f7f7f8;
-  --sheet: #ffffff;
-  --ink: #0b0b0f;
-  --ink-soft: #52525b;
-  --ink-faint: #71717a;
-  --rule: #ececef;
-  --rule-strong: #d4d4d8;
+  --paper: #f8f8f6;
+  --paper-deep: #f1f1ee;
+  --sheet: #f8f8f6;
+  --ink: #1c1c1a;
+  --ink-2: #30302d;
+  --ink-soft: #4c4c48;
+  --ink-faint: #62625e;
+  --rule: #e2e2dd;
+  --rule-strong: #d3d3ce;
+  --rule-soft: #eaeae5;
+  --raise: #eaeae6;
+  --seg: #e9e9e5;
   --brand: #c2410c;
   --brand-bright: #e4572e;
-  --brand-wash: #fff1eb;
-  --moss: #15803d;
+  --brand-wash: #fbede6;
+  --moss: #1a7f4b;
+  --warn: #9a5a00;
+  --bad: #b42318;
   --night: #09090b;
 }
 
@@ -85,35 +97,48 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper: #09090b;
-  --paper-deep: #0f0f12;
-  --sheet: #121216;
-  --ink: #fafafa;
-  --ink-soft: #a1a1aa;
-  --ink-faint: #8a8a93;
-  --rule: #1f1f23;
-  --rule-strong: #2e2e34;
+  -webkit-font-smoothing: antialiased;
+  --paper: #161616;
+  --paper-deep: #1c1c1c;
+  --sheet: #1c1c1c;
+  --ink: #dcdcd8;
+  --ink-2: #c9c9c5;
+  --ink-soft: #a3a3a0;
+  --ink-faint: #8f8f8c;
+  --rule: #2c2c2c;
+  --rule-strong: #3a3a3a;
+  --rule-soft: #242424;
+  --raise: #242424;
+  --seg: #202020;
   --brand: #ff8a5c;
   --brand-bright: #f26b3a;
   --brand-wash: #2a140c;
-  --moss: #4ade80;
+  --moss: #4cc38a;
+  --warn: #e0a040;
+  --bad: #f97066;
   --night: #050506;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --paper: #09090b;
-    --paper-deep: #0f0f12;
-    --sheet: #121216;
-    --ink: #fafafa;
-    --ink-soft: #a1a1aa;
-    --ink-faint: #8a8a93;
-    --rule: #1f1f23;
-    --rule-strong: #2e2e34;
+    --paper: #161616;
+    --paper-deep: #1c1c1c;
+    --sheet: #1c1c1c;
+    --ink: #dcdcd8;
+    --ink-2: #c9c9c5;
+    --ink-soft: #a3a3a0;
+    --ink-faint: #8f8f8c;
+    --rule: #2c2c2c;
+    --rule-strong: #3a3a3a;
+    --rule-soft: #242424;
+    --raise: #242424;
+    --seg: #202020;
     --brand: #ff8a5c;
     --brand-bright: #f26b3a;
     --brand-wash: #2a140c;
-    --moss: #4ade80;
+    --moss: #4cc38a;
+    --warn: #e0a040;
+    --bad: #f97066;
     --night: #050506;
   }
 }
@@ -240,10 +265,10 @@
 }
 
 @utility prose-yuva {
-  --tw-prose-body: var(--ink-soft);
+  --tw-prose-body: var(--ink-2);
   --tw-prose-headings: var(--ink);
   --tw-prose-lead: var(--ink-soft);
-  --tw-prose-links: var(--brand);
+  --tw-prose-links: var(--ink);
   --tw-prose-bold: var(--ink);
   --tw-prose-counters: var(--ink-faint);
   --tw-prose-bullets: var(--rule-strong);
@@ -255,16 +280,16 @@
   --tw-prose-pre-code: var(--ink);
   --tw-prose-pre-bg: var(--paper-deep);
   --tw-prose-th-borders: var(--rule-strong);
-  --tw-prose-td-borders: var(--rule);
+  --tw-prose-td-borders: var(--rule-soft);
 }
 
 .prose .astro-code {
-  @apply rounded-xl border border-rule;
+  @apply rounded-[10px] border border-rule;
   background-color: var(--paper-deep) !important;
 }
 
 .docs-content .code-frame {
-  @apply my-6 overflow-hidden rounded-xl border border-rule bg-paper-deep;
+  @apply my-6 overflow-hidden rounded-[10px] border border-rule bg-paper-deep;
 }
 
 .docs-content .code-frame .astro-code {
@@ -272,50 +297,50 @@
 }
 
 .docs-content .code-bar {
-  @apply flex items-center justify-between border-b border-rule px-4 py-2 font-sans text-xs text-ink-faint;
+  @apply flex items-center justify-between border-b border-rule bg-paper px-4 py-1.5 font-mono text-xs text-ink-faint;
 }
 
 .docs-content .code-bar button {
-  @apply rounded-md px-2 py-1 font-medium text-ink-soft hover:bg-rule hover:text-ink;
+  @apply h-7 rounded-md px-2.5 font-sans text-[13px] text-ink-2 hover:bg-rule-soft hover:text-ink;
 }
 
 .docs-body h2 {
-  @apply mt-16 mb-4 border-t border-rule pt-10 text-[1.6rem] font-semibold tracking-[-0.02em];
+  @apply mt-14 mb-2.5 text-[22px] leading-7 font-semibold tracking-[-0.01em];
 }
 
 .docs-body > h2:first-of-type {
-  @apply mt-10;
+  @apply mt-12;
 }
 
 .docs-body h3 {
-  @apply mt-10 mb-3 text-[1.15rem] font-semibold;
+  @apply mt-10 mb-2.5 text-[17px] font-semibold;
 }
 
 .docs-body h3.step {
-  @apply flex items-center gap-3;
+  @apply flex items-baseline gap-2.5;
 }
 
 .docs-body h3.step::before {
   content: attr(data-step);
-  @apply grid size-7 shrink-0 place-items-center rounded-full bg-signal font-sans text-sm font-semibold text-white;
+  @apply shrink-0 font-mono text-[13px] font-medium text-brand;
 }
 
 .docs-body table {
-  @apply w-full overflow-hidden rounded-xl border border-rule text-sm;
+  @apply w-full overflow-hidden rounded-[10px] border border-rule text-sm;
   border-collapse: separate;
   border-spacing: 0;
 }
 
-.docs-body thead {
-  @apply bg-paper-deep;
-}
-
 .docs-body th {
-  @apply px-4 py-2.5 text-start text-xs font-semibold text-ink-soft;
+  @apply border-b border-rule px-3 py-2 text-start text-xs font-medium text-ink-faint;
 }
 
 .docs-body td {
-  @apply border-t border-rule px-4 py-3 align-top;
+  @apply border-b border-rule-soft px-3 py-2.5 align-top leading-[21px] text-ink-2;
+}
+
+.docs-body tr:last-child td {
+  @apply border-b-0;
 }
 
 .docs-body td:first-child code {
@@ -336,11 +361,11 @@
 }
 
 .prose .callout {
-  @apply relative rounded-xl border border-rule border-s-4 border-s-sky-500 bg-paper-deep px-5 py-4 font-normal not-italic text-ink;
+  @apply relative rounded-[10px] border border-rule bg-paper-deep px-4 py-3 text-[14px] leading-[21px] font-normal not-italic text-ink-2;
 }
 
 .prose .callout::before {
-  @apply mb-1 flex items-center gap-2 text-sm font-semibold text-sky-600 dark:text-sky-400;
+  @apply mb-1 flex items-center gap-2 text-sm font-semibold text-ink;
   content: attr(data-label);
 }
 
@@ -353,29 +378,19 @@
   @apply my-0;
 }
 
-.prose .callout-tip {
-  @apply border-s-emerald-500;
-}
 .prose .callout-tip::before {
-  @apply text-emerald-600 dark:text-emerald-400;
-}
-.prose .callout-important {
-  @apply border-s-violet-500;
-}
-.prose .callout-important::before {
-  @apply text-violet-600 dark:text-violet-400;
+  @apply text-moss;
 }
 .prose :is(.callout-warning, .callout-caution) {
-  @apply border-s-brand-bright bg-brand-wash;
+  @apply border-brand/40 bg-brand-wash;
 }
 .prose :is(.callout-warning, .callout-caution)::before {
   @apply text-brand;
 }
 
 .docs-body > p:first-child {
-  @apply text-lg leading-relaxed text-ink;
+  @apply text-lg leading-7 text-ink-soft;
 }
-
 
 pre,
 code,

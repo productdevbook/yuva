@@ -52,10 +52,6 @@ msgstr "Preverjanje nastavi stanje komponente brez človeškega posega, Yuva pa 
 msgid "a contact and their data"
 msgstr "stik in njegovi podatki"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "Pogovor v SDK-ju za {platform}: vprašanje o naročilu in odgovori ekipe s povezavo za sledenje ter polje za odgovor."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "Stranka jo lahko opusti. Vrne se, ko incident prejme novo posodobitev."
@@ -185,6 +181,10 @@ msgstr "Vse izdaje na GitHubu"
 msgid "All templates"
 msgstr "Vse predloge"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "Že imate račun?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "Vir Atom, ki ne zahteva naročnine, značka za vaš README in ista stran kot JSON za vaše spletno mesto ali aplikacijo."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "preden se karkoli pošlje"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "Beta"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "Bloki"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Povežite Yuvo s Claudom, ChatGPT-jem, Cursorjem, VS Code ali Gemini CLI
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "Stik"
@@ -503,12 +502,14 @@ msgstr "Prispevanje"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "Kopirano"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "Kopiraj"
 
@@ -644,7 +645,6 @@ msgstr "Dokumenti"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "Dokumentacija"
@@ -797,6 +797,10 @@ msgstr "Vsi vodniki za Yuvo na enem mestu: namestitev, kanali, množična pošil
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Vsaka izdaja Yuve in kaj se je v njej spremenilo, iz dnevnika sprememb."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "Vse okoli nabiralnika"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "Vse je v API-ju, z dovoljenji status:read in status:manage. Webhooki sporočajo spremembe komponent, incidentov in nadzornikov, pomočniki, povezani prek MCP, pa lahko odprejo osnutke in rešujejo incidente."
@@ -902,10 +906,6 @@ msgstr "Galerija"
 msgid "Get started"
 msgstr "Začnite"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "Uporabnikom vsakega izdelka dajte način, da vas dosežejo."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "Komponentam podajte ključ in naslov svojega strežnika Yuva, na primer v okolju:"
@@ -955,6 +955,11 @@ msgstr "Pozdravljeni! Povejte nam nekaj o sebi in o tem, kaj imate v mislih."
 msgid "History"
 msgstr "Zgodovina"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "Domov"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hooks"
@@ -962,6 +967,10 @@ msgstr "Hooks"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "Gostovano"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "Gostovano ali na lastnem strežniku"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "Črnilo"
 msgid "Install the chat block, then render it:"
 msgstr "Namestite klepetalni blok in ga nato izrišite:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Namestite Yuvo"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "Namestitev"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "Predogled v živo"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "Prijava"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "Eno potrditveno polje na komponento in v vsakem sporočilu povezava za spremembo izbire ali odjavo."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Ena Docker slika in Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "Ena slika Docker in Postgres na lastnem strežniku."
 
@@ -1517,6 +1535,10 @@ msgstr "Odpri na mojem strežniku"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Odprite Plugins, izberite gumb plus, nato Add custom MCP server."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "Odprta koda"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "Neobvezno: med izpadom obdržite pošto, tako da ukazu za namestitev dod
 msgid "Or ask for one thing"
 msgstr "Ali prosite za eno stvar"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "Ali gostujte sami"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "Ali vtipkajte stavek:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "Splošno stanje"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "Pregled"
 
@@ -1668,7 +1687,6 @@ msgstr "Predogled in uporaba"
 msgid "Preview colours"
 msgstr "Predogled barv"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "Predogled predloge {name}"
@@ -1744,10 +1762,6 @@ msgstr "Komponente React za klepet v živo, razprave na straneh dokumentacije in
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "Preberi LICENSING.md"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "Preberite kodo, zaženite {version} na svojem računalniku in spremljajte, kako raste."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "Odgovor povezanim"
 msgid "Report a vulnerability"
 msgstr "Prijavi ranljivost"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "Prijavite težavo"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "Ranljivosti prijavljajte zasebno prek GitHuba, nikoli v javnem issueju."
@@ -1869,7 +1887,6 @@ msgstr "Zahteve"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "Viri"
 
@@ -1885,8 +1902,11 @@ msgstr "Odzivni časi"
 msgid "Responses"
 msgstr "Odgovori"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST in MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "Načrt razvoja"
@@ -2009,6 +2029,10 @@ msgstr "Nastavite v nekaj korakih"
 msgid "Set up a channel"
 msgstr "Nastavitev kanala"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "Namestitev in delovanje"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "Nastavi analitiko Yuve za to spletno mesto s ciljem za registracije."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "Faza"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "Začnite brezplačno"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "Začnite z umetno inteligenco"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "Pregled analitike v nadzorni plošči: 30 dni obiskovalcev, ogledov stra
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "Odgovor je enak za vsak naslov in nihče ni naročen brez potrditve."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "API se lahko pred različico 1.0 še spremeni, zato pred nadgradnjo preberite opombe ob izdaji. Migracije baze podatkov se zaženejo ob zagonu strežnika: najprej naredite varnostno kopijo."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "API deluje počasi"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "Ime in to spletno mesto sta stavljena v pisavi Geist, odprtokodni pisavi z licenco SIL Open Font License."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "Nadzorna plošča na telefonu: seznam pogovorov s kanalom in zadnjim sporočilom vsake osebe ter zavihki spodaj."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "Nadzorna plošča s povratnimi informacijami, poslanimi iz mobilne aplikacije: prijava hrošča z različico aplikacije, napravo in zaslonom ob seznamu pogovorov."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "Stanje z besedami, prizadete komponente in posodobitve, brez slik, sledenja ali oglaševanja. V angleščini, turščini ali nemščini."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "Zaslon podpore SDK-ja za {platform} v aplikaciji: pogovori osebe z zadnjim odgovorom in gumb za novo sporočilo."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "Orodja, ki jih ekipa za podporo običajno najema ločeno, na istem strežniku in v isti plošči."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "Uporaba imena in logotipa"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "Različica {version} vmesnika API, ustvarjena iz pogodbe OpenAPI. S pogodbo ustvarite odjemalca v katerem koli jeziku."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "Poglej na GitHubu"
 
 #: src/copy/home.ts
 msgid "visitors"

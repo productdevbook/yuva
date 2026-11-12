@@ -1,0 +1,28 @@
+---
+import { links, type Locale } from "@/lib/routes"
+import GitHubIcon from "@/ui/GitHubIcon.astro"
+import LangMenu from "@/ui/LangMenu.astro"
+import ThemeToggle from "@/ui/ThemeToggle.astro"
+
+interface Props {
+  locale: Locale
+  paths: Record<Locale, string>
+}
+
+const { locale, paths } = Astro.props
+const link =
+  "hidden h-7 items-center gap-1.5 rounded-md px-2.5 text-[13px] text-ink-2 hover:bg-rule-soft hover:text-ink md:inline-flex"
+---
+
+<div class="flex flex-wrap items-center justify-end gap-1">
+  <a class:list={[link, "border border-rule"]} href={links.repo}>
+    <GitHubIcon size={14} />
+    GitHub
+  </a>
+  <a class={link} href={links.x}>
+    X
+  </a>
+  <LangMenu locale={locale} paths={paths} class="hidden px-2.5 md:block" />
+  <ThemeToggle locale={locale} class="ms-1 hidden md:inline-flex min-[1180px]:hidden" />
+  <slot />
+</div>

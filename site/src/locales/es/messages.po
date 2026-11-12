@@ -52,10 +52,6 @@ msgstr "Una comprobación cambia el estado de un componente sin que nadie interv
 msgid "a contact and their data"
 msgstr "un contacto y sus datos"
 
-#: src/copy/home.ts
-msgid "A conversation in the {platform} SDK: a question about an order and the team's replies with a tracking link, and a box to write back."
-msgstr "Una conversación en el SDK de {platform}: una pregunta sobre un pedido y las respuestas del equipo con un enlace de seguimiento, y un cuadro para responder."
-
 #: src/copy/status.ts
 msgid "A customer can dismiss it. It returns when the incident gets a new update."
 msgstr "El cliente puede descartarla. Vuelve a aparecer cuando el incidente recibe una nueva actualización."
@@ -185,6 +181,10 @@ msgstr "Todas las versiones en GitHub"
 msgid "All templates"
 msgstr "Todas las plantillas"
 
+#: src/copy/home.ts
+msgid "Already have an account?"
+msgstr "¿Ya tienes una cuenta?"
+
 #: src/copy/status.ts
 msgid "An Atom feed that needs no subscription, a badge for your README, and the same page as JSON for your own site or app."
 msgstr "Un feed Atom que no requiere suscripción, una insignia para su README y la misma página en JSON para su propio sitio o app."
@@ -289,6 +289,7 @@ msgid "before anything is sent"
 msgstr "antes de que se envíe nada"
 
 #: src/copy/contact.ts
+#: src/copy/home.ts
 msgid "Beta"
 msgstr "Beta"
 
@@ -297,7 +298,6 @@ msgid "Blocks"
 msgstr "Bloques"
 
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/copy/pages.ts
 #: src/layouts/Footer.astro
 msgid "Blog"
@@ -477,7 +477,6 @@ msgstr "Conecta Yuva a Claude, ChatGPT, Cursor, VS Code o Gemini CLI, y deja que
 
 #: src/copy/contact.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Contact"
 msgstr "Contacto"
@@ -503,12 +502,14 @@ msgstr "Contribuir"
 #: src/copy/contact.ts
 #: src/copy/docs.ts
 #: src/copy/header.ts
+#: src/copy/home.ts
 #: src/copy/pages.ts
 msgid "Copied"
 msgstr "Copiado"
 
 #: src/copy/ai.ts
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Copy"
 msgstr "Copiar"
 
@@ -644,7 +645,6 @@ msgstr "Documentos"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Documentation"
 msgstr "Documentación"
@@ -797,6 +797,10 @@ msgstr "Todas las guías de Yuva en un solo lugar: instalación, canales, envío
 msgid "Every Yuva release and what changed in it, from the changelog."
 msgstr "Cada versión de Yuva y lo que cambió en ella, desde el registro de cambios."
 
+#: src/copy/home.ts
+msgid "Everything around the inbox"
+msgstr "Todo lo que rodea a la bandeja de entrada"
+
 #: src/copy/status.ts
 msgid "Everything is in the API, with the scopes status:read and status:manage. Webhooks announce component, incident and monitor changes, and assistants connected over MCP can open drafts and resolve incidents."
 msgstr "Todo está en la API, con los ámbitos status:read y status:manage. Los webhooks anuncian cambios de componentes, incidentes y monitores, y los asistentes conectados por MCP pueden abrir borradores y resolver incidentes."
@@ -902,10 +906,6 @@ msgstr "Galería"
 msgid "Get started"
 msgstr "Empezar"
 
-#: src/copy/home.ts
-msgid "Give every product's users a way to reach you."
-msgstr "Da a los usuarios de cada producto una forma de contactarte."
-
 #: src/copy/shadcn.ts
 msgid "Give the key and the address of your Yuva server to the components, for example in the environment:"
 msgstr "Pasa la clave y la dirección de tu servidor de Yuva a los componentes, por ejemplo en el entorno:"
@@ -955,6 +955,11 @@ msgstr "¡Hola! Cuéntanos un poco sobre ti y qué tienes en mente."
 msgid "History"
 msgstr "Historial"
 
+#: src/layouts/DocsLayout.astro
+#: src/views/HomeView.astro
+msgid "Home"
+msgstr "Inicio"
+
 #: src/copy/shadcn.ts
 msgid "Hooks"
 msgstr "Hooks"
@@ -962,6 +967,10 @@ msgstr "Hooks"
 #: src/copy/home.ts
 msgid "Hosted"
 msgstr "Alojado"
+
+#: src/copy/home.ts
+msgid "Hosted or self-hosted"
+msgstr "Alojado o en tu propio servidor"
 
 #: src/copy/contact.ts
 msgid "Hosted service and commercial licenses"
@@ -1090,6 +1099,10 @@ msgstr "Tinta"
 msgid "Install the chat block, then render it:"
 msgstr "Instala el bloque de chat y luego renderízalo:"
 
+#: src/copy/home.ts
+msgid "Install Yuva"
+msgstr "Instala Yuva"
+
 #: src/copy/shadcn.ts
 msgid "Installation"
 msgstr "Instalación"
@@ -1210,6 +1223,7 @@ msgid "Live preview"
 msgstr "Vista previa en vivo"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Log in"
 msgstr "Iniciar sesión"
 
@@ -1470,6 +1484,10 @@ msgid "One checkbox per component, and a link in every mail to change it or leav
 msgstr "Una casilla por componente y, en cada correo, un enlace para cambiarla o darse de baja."
 
 #: src/copy/home.ts
+msgid "One Docker image and Postgres"
+msgstr "Una imagen de Docker y Postgres"
+
+#: src/copy/home.ts
 msgid "One Docker image and Postgres on your own server."
 msgstr "Una imagen de Docker y Postgres en tu propio servidor."
 
@@ -1517,6 +1535,10 @@ msgstr "Abrir en mi servidor"
 #: src/copy/ai.ts
 msgid "Open Plugins, select the plus button, then Add custom MCP server."
 msgstr "Abre Plugins, pulsa el botón más y luego Add custom MCP server."
+
+#: src/copy/home.ts
+msgid "Open source"
+msgstr "Código abierto"
 
 #: src/copy/contact.ts
 msgid "Open source that stays open"
@@ -1567,10 +1589,6 @@ msgstr "Opcional: conserva el correo durante una caída añadiendo una direcció
 msgid "Or ask for one thing"
 msgstr "O pide una sola cosa"
 
-#: src/copy/home.ts
-msgid "Or host it yourself"
-msgstr "O alójalo tú mismo"
-
 #: src/copy/ai.ts
 msgid "Or type the sentence:"
 msgstr "O escribe la frase:"
@@ -1592,6 +1610,7 @@ msgid "Overall state"
 msgstr "Estado general"
 
 #: src/copy/docs.ts
+#: src/copy/home.ts
 msgid "Overview"
 msgstr "Resumen"
 
@@ -1668,7 +1687,6 @@ msgstr "Vista previa y uso"
 msgid "Preview colours"
 msgstr "Previsualizar colores"
 
-#: src/copy/home.ts
 #: src/copy/templates.ts
 msgid "Preview of the {name} template"
 msgstr "Vista previa de la plantilla {name}"
@@ -1744,10 +1762,6 @@ msgstr "Componentes de React para chat en vivo, debates en páginas de documenta
 #: src/copy/contact.ts
 msgid "Read LICENSING.md"
 msgstr "Leer LICENSING.md"
-
-#: src/copy/home.ts
-msgid "Read the code, run {version} on your machine, and follow along as it grows."
-msgstr "Lee el código, ejecuta {version} en tu máquina y sigue su evolución."
 
 #: src/copy/docs.ts
 msgid "Read the English page"
@@ -1843,6 +1857,10 @@ msgstr "Responder a los vinculados"
 msgid "Report a vulnerability"
 msgstr "Informar de una vulnerabilidad"
 
+#: src/layouts/DocsLayout.astro
+msgid "Report an issue"
+msgstr "Informar de un problema"
+
 #: src/copy/contact.ts
 msgid "Report vulnerabilities privately through GitHub, never in a public issue."
 msgstr "Informa de las vulnerabilidades en privado a través de GitHub, nunca en una incidencia pública."
@@ -1869,7 +1887,6 @@ msgstr "Requisitos"
 
 #: src/copy/docs.ts
 #: src/copy/header.ts
-#: src/copy/home.ts
 msgid "Resources"
 msgstr "Recursos"
 
@@ -1885,8 +1902,11 @@ msgstr "Tiempos de respuesta"
 msgid "Responses"
 msgstr "Respuestas"
 
+#: src/layouts/DocsLayout.astro
+msgid "REST and MCP"
+msgstr "REST y MCP"
+
 #: src/copy/header.ts
-#: src/copy/home.ts
 #: src/layouts/Footer.astro
 msgid "Roadmap"
 msgstr "Hoja de ruta"
@@ -2009,6 +2029,10 @@ msgstr "Configúralo en unos pocos pasos"
 msgid "Set up a channel"
 msgstr "Configura un canal"
 
+#: src/layouts/DocsLayout.astro
+msgid "Set up and run"
+msgstr "Configurar y ejecutar"
+
 #: src/copy/ai.ts
 msgid "Set up Yuva analytics for this site, with a goal for sign-ups."
 msgstr "Configura la analítica de Yuva para este sitio, con un objetivo para los registros."
@@ -2074,12 +2098,9 @@ msgid "Stage"
 msgstr "Etapa"
 
 #: src/copy/header.ts
+#: src/copy/home.ts
 msgid "Start free"
 msgstr "Empezar gratis"
-
-#: src/copy/home.ts
-msgid "Start with AI"
-msgstr "Empezar con IA"
 
 #: src/copy/status.ts
 msgid "Start with the guide."
@@ -2176,6 +2197,10 @@ msgstr "La vista general de analítica en el panel: 30 días de visitantes, pág
 msgid "The answer is the same for every address, and nobody is subscribed without confirming."
 msgstr "La respuesta es la misma para cada dirección, y nadie se suscribe sin confirmar."
 
+#: src/copy/home.ts
+msgid "The API can still change before 1.0, so read the release notes before you upgrade. Database migrations run when the server starts: back up first."
+msgstr "La API todavía puede cambiar antes de la 1.0, así que lee las notas de la versión antes de actualizar. Las migraciones de la base de datos se ejecutan al arrancar el servidor: haz antes una copia de seguridad."
+
 #: src/copy/status.ts
 msgid "The API is running slow"
 msgstr "La API va lenta"
@@ -2237,10 +2262,6 @@ msgid "The name and this site are set in Geist, an open-source typeface under th
 msgstr "El nombre y este sitio están compuestos en Geist, una tipografía de código abierto bajo la SIL Open Font License."
 
 #: src/copy/home.ts
-msgid "The panel on a phone: the conversation list with each person's channel and latest message, and the tabs at the bottom."
-msgstr "El panel en un teléfono: la lista de conversaciones con el canal y el último mensaje de cada persona, y las pestañas abajo."
-
-#: src/copy/home.ts
 msgid "The panel with feedback sent from a mobile app: a bug report with the app version, device and screen, next to the conversation list."
 msgstr "El panel con comentarios enviados desde una app móvil: un informe de error con la versión de la app, el dispositivo y la pantalla, junto a la lista de conversaciones."
 
@@ -2269,8 +2290,8 @@ msgid "The state in words, the affected components and the updates, with no imag
 msgstr "El estado con palabras, los componentes afectados y las actualizaciones, sin imágenes, seguimiento ni promoción. En inglés, turco o alemán."
 
 #: src/copy/home.ts
-msgid "The support screen of the {platform} SDK inside an app: the person's conversations with the latest reply, and a button to write a new message."
-msgstr "La pantalla de soporte del SDK de {platform} dentro de una app: las conversaciones de la persona con la última respuesta y un botón para escribir un mensaje nuevo."
+msgid "The tools a support team usually rents separately, in the same server and the same panel."
+msgstr "Las herramientas que un equipo de soporte suele alquilar por separado, en el mismo servidor y el mismo panel."
 
 #: src/copy/status.ts
 msgid "The widget and the apps show it in each language they speak."
@@ -2404,10 +2425,6 @@ msgstr "Uso del nombre y el logotipo"
 #: src/copy/docs.ts
 msgid "Version {version} of the API, generated from the OpenAPI contract. Use the contract to generate a client in any language."
 msgstr "Versión {version} de la API, generada a partir del contrato OpenAPI. Usa el contrato para generar un cliente en cualquier lenguaje."
-
-#: src/copy/home.ts
-msgid "View on GitHub"
-msgstr "Ver en GitHub"
 
 #: src/copy/home.ts
 msgid "visitors"

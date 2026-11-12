@@ -10,27 +10,19 @@ interface Props {
 }
 
 const { t, locale } = Astro.props
+const card = "flex flex-col gap-1.5 rounded-[10px] border p-5 text-ink"
+const button = "mt-2.5 inline-flex h-9 items-center self-start rounded-md px-3.5 text-sm font-medium"
 ---
 
-<div class:list={["grid gap-3 sm:grid-cols-2", Astro.props.class]}>
-  <a
-    class="group rounded-2xl border border-signal/30 bg-brand-wash p-5 transition-colors hover:border-signal/60"
-    href={appUrl(locale, { signup: "1" })}
-  >
-    <p class="font-semibold tracking-tight">{t.hosted}</p>
-    <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">{t.hostedBody}</p>
-    <span class="mt-4 inline-flex h-9 items-center rounded-full bg-signal px-4 text-sm font-medium text-white transition-colors group-hover:bg-signal/90">
-      {t.signUp}
-    </span>
+<div class:list={["grid [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))] gap-3", Astro.props.class]}>
+  <a class:list={[card, "border-brand bg-brand-wash"]} href={appUrl(locale, { signup: "1" })}>
+    <span class="text-[15px] font-semibold">{t.hosted}</span>
+    <span class="text-sm leading-[21px] text-ink-2">{t.hostedBody}</span>
+    <span class:list={[button, "bg-brand text-white"]}>{t.signUp}</span>
   </a>
-  <a
-    class="group rounded-2xl border border-rule p-5 transition-colors hover:border-rule-strong hover:bg-paper-deep"
-    href={t.quickStartHref}
-  >
-    <p class="font-semibold tracking-tight">{t.selfHosted}</p>
-    <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">{t.selfHostedBody}</p>
-    <span class="mt-4 inline-flex h-9 items-center rounded-full border border-rule-strong px-4 text-sm font-medium">
-      {t.quickStart}
-    </span>
+  <a class:list={[card, "border-rule hover:bg-paper-deep"]} href={t.quickStartHref}>
+    <span class="text-[15px] font-semibold">{t.selfHosted}</span>
+    <span class="text-sm leading-[21px] text-ink-2">{t.selfHostedBody}</span>
+    <span class:list={[button, "border border-rule-strong"]}>{t.quickStart}</span>
   </a>
 </div>
