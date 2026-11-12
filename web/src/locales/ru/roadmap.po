@@ -12,6 +12,7 @@ msgid "{inboxName} has no web chat channel. Add one first, because the public bo
 msgstr "У {inboxName} нет канала веб-чата. Сначала добавьте его, потому что публичная доска встраивает чат."
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, one {# отзыв} few {# отзыва} many {# отзывов} other {# отзыва}}"
 
@@ -21,6 +22,7 @@ msgstr "Ждут одобрения: {pending}"
 
 #: src/features/roadmap/Board.tsx
 #: src/features/roadmap/LinkIdeaDialog.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{votes} votes"
 msgstr "Голосов: {votes}"
 
@@ -37,11 +39,13 @@ msgid "Add a web chat channel"
 msgstr "Добавить канал веб-чата"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "Адрес"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "All boards"
 msgstr "Все доски"
 
@@ -52,6 +56,11 @@ msgstr "Все изменения сохранены."
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "Все подходящие отзывы из {inboxName} уже привязаны."
+
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "All stages"
+msgstr "Все этапы"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -88,6 +97,11 @@ msgstr "Доска"
 msgid "Board deleted"
 msgstr "Доска удалена"
 
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "Boards"
+msgstr "Доски"
+
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
 #: src/features/roadmap/NewIdeaDialog.tsx
@@ -117,12 +131,17 @@ msgid "Create board ({newKey})"
 msgstr "Создать доску ({newKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Create board for {name}"
 msgstr "Создать доску для {name}"
 
 #: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Create idea"
 msgstr "Создать идею"
+
+#: src/features/roadmap/pages.tsx
+msgid "Created"
+msgstr "Создано"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Delete"
@@ -158,6 +177,10 @@ msgstr "Готово"
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Сообщения всех публикуются сразу, кроме сообщений авторов, которых вы пометили как спам."
 
+#: src/features/roadmap/pages.tsx
+msgid "Feedback"
+msgstr "Отзывы"
+
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Good news: “{title}” has shipped. Thank you for asking for it."
 msgstr "Хорошие новости: «{title}» выпущено. Спасибо, что попросили."
@@ -169,6 +192,10 @@ msgstr "Скрыто"
 #: src/features/roadmap/Board.tsx
 msgid "Hide"
 msgstr "Скрыть"
+
+#: src/features/roadmap/pages.tsx
+msgid "Idea"
+msgstr "Идея"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Idea started"
@@ -236,22 +263,27 @@ msgid "Linked to {title}"
 msgstr "Привязан к инциденту {title}"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Load more"
 msgstr "Загрузить ещё"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "Сделать закрытой"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "Сделать закрытой ({publicKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "Сделать публичной"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "Сделать публичной ({publicKey})"
 
@@ -319,6 +351,7 @@ msgid "No idea matches."
 msgstr "Нет подходящих идей."
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "No ideas yet. New ones land here."
 msgstr "Идей пока нет. Новые появятся здесь."
 
@@ -327,6 +360,7 @@ msgid "None"
 msgstr "Нет"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Nothing here yet."
 msgstr "Здесь пока ничего нет."
 
@@ -372,10 +406,12 @@ msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "Публикуется как ваш публичный ответ под идеей. Markdown поддерживается."
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "Закрытый"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
 msgstr "Публичный"
@@ -413,6 +449,7 @@ msgid "Review the reply"
 msgstr "Проверить ответ"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "Дорожная карта"
 
@@ -433,6 +470,7 @@ msgid "Search ideas"
 msgstr "Искать идеи"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "Настройки"
 
@@ -449,6 +487,7 @@ msgid "Shown under the name on the public board."
 msgstr "Показывается под названием на публичной доске."
 
 #: src/features/roadmap/MoveDialog.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Stage"
 msgstr "Этап"
 
@@ -526,11 +565,18 @@ msgstr "Используйте от 3 до 48 букв, цифр и внутре
 msgid "View board"
 msgstr "Открыть доску"
 
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "Видимость"
 
+#: src/features/roadmap/pages.tsx
+msgid "Votes"
+msgstr "Голоса"
+
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "Ждут одобрения"
 

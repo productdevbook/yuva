@@ -110,6 +110,7 @@ msgstr "Afegeix una subcol·lecció"
 msgid "Add locale"
 msgstr "Add locale"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -178,6 +179,7 @@ msgstr "Visualitzacions d’articles"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Articles"
@@ -294,6 +296,7 @@ msgid "Collection"
 msgstr "Col·lecció"
 
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Col·leccions"
@@ -404,6 +407,8 @@ msgstr "Esborrany"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Esborrany enviat. Un propietari o administrador el pot publicar."
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Esborranys"
@@ -467,11 +472,13 @@ msgstr "Encapçalament"
 
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Centre d’ajuda"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Centre d’ajuda creat. Escriu el primer article i després publica’l."
@@ -481,6 +488,7 @@ msgid "Help center deleted"
 msgstr "Centre d’ajuda eliminat"
 
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help centers"
 msgstr "Centres d’ajuda"
@@ -570,6 +578,10 @@ msgstr "Darrers {d} dies"
 msgid "last 7 days"
 msgstr "últims 7 dies"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Last 7 days"
+msgstr "Últims 7 dies"
+
 #: src/features/help/ImportCard.tsx
 msgid "Leave empty to read every site."
 msgstr "Leave empty to read every site."
@@ -657,6 +669,10 @@ msgstr "Col·lecció nova"
 #: src/features/help/CollectionsTab.tsx
 msgid "New collection ({newKey})"
 msgstr "Col·lecció nova ({newKey})"
+
+#: src/features/help/HelpFrame.tsx
+msgid "New help center for {product}"
+msgstr "Nou centre d’ajuda per a {product}"
 
 #: src/features/help/ReportTab.tsx
 msgid "No article got a “no” in this period."
@@ -842,18 +858,22 @@ msgstr "Adreça pública"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Publica"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Publica ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
+#: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -881,6 +901,7 @@ msgstr "Redirects"
 msgid "Remove {0}"
 msgstr "Treu {0}"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Report"
 msgstr "Informe"
@@ -956,6 +977,7 @@ msgstr "Paraules de cerca"
 msgid "Searched for, found nothing"
 msgstr "Cercat, sense resultats"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Searches"
 msgstr "Cerques"
@@ -976,6 +998,7 @@ msgstr "Enviat"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1008,6 +1031,10 @@ msgstr "Es mostra sota el nom a la pàgina d’inici."
 #: src/features/help/SettingsTab.tsx
 msgid "Shown when an article has no translation in the visitor’s language."
 msgstr "Es mostra quan un article no té traducció a l’idioma del visitant."
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Site"
+msgstr "Lloc"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Site link"
@@ -1157,10 +1184,12 @@ msgstr "Escriu una paraula per cercar."
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish"
 msgstr "Despublica"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Despublica ({publishKey})"
 
@@ -1177,8 +1206,10 @@ msgid "Unpublish this translation?"
 msgstr "Vols despublicar aquesta traducció?"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Sense publicar"
 
@@ -1215,10 +1246,12 @@ msgid "View"
 msgstr "Mostra"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Mostra el lloc"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Mostra el lloc ({openKey})"
 
@@ -1230,6 +1263,10 @@ msgstr "Visualitzacions"
 #: src/features/help/ArticlesTab.tsx
 msgid "Views · 7 days"
 msgstr "Visualitzacions · 7 dies"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Visibility"
+msgstr "Visibilitat"
 
 #: src/features/help/CenterBar.tsx
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."

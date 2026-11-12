@@ -2003,6 +2003,7 @@ msgstr "শুধু কাজ"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "সক্রিয়"
 
@@ -2345,6 +2346,7 @@ msgstr "সিঙ্গল সাইন-অনের জন্য ডোমে�
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "ঠিকানা"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "সব"
 
@@ -2491,6 +2494,10 @@ msgstr "সব ইমপোর্ট"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "সব ইনবক্স"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "সব ঘটনা"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "সব পণ্য"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "সব পণ্য"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "{endedAt}-এ সম্পন্ন হয়েছে"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "উপাদান"
 
@@ -4834,6 +4843,7 @@ msgstr "উপাদান মুছে ফেলা হয়েছে"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "উপাদান"
@@ -6293,6 +6303,7 @@ msgstr "ডেস্কটপ নোটিফিকেশনের অনুম�
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "ব্রাউজারের সেটিংসে এই সাইটের জন্য ডেস্কটপ নোটিফিকেশন ব্লক করা, তাই শুধু শব্দ বাজে।"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "এনক্রিপশন"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "দিনের শেষ (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "শেষ"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "এই মেলবক্সের জন্য IMAP বন্ধ। {pr
 msgid "IMAP server"
 msgstr "IMAP সার্ভার"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "প্রভাব"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "ইনবক্স 80 অক্ষরের চেয়ে লম্বা বিষয় কেটে দেয়।"
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "ঘটনা"
@@ -9059,6 +9076,7 @@ msgstr "ঘটনা: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "ঘটনা"
 
@@ -9526,6 +9544,7 @@ msgstr "কীওয়ার্ড"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "ধরন"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "শেষবার পড়া {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "শেষ ফলাফল"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "সোমবার সকালে"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "মনিটর"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "মনিটর মুছে ফেলা হয়েছে"
 
@@ -10905,6 +10932,7 @@ msgstr "নজরদারিতে"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "মনিটর"
@@ -10912,6 +10940,10 @@ msgstr "মনিটর"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "মনিটর স্ট্যাটাস পেজের একটি উপাদানের অবস্থা নির্ধারণ করে। আগে একটি স্ট্যাটাস পেজ তৈরি করুন।"
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "মনিটর, {down}টি বন্ধ"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "বন্ধ"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "বন্ধ"
 
@@ -13499,6 +13532,10 @@ msgstr "ইনবক্স খুলুন"
 msgid "Open incident"
 msgstr "ঘটনা খুলুন"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "খোলা ঘটনা"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "খোলা কথোপকথনে গ্রাহকের উত্তরের অপেক্ষায় থাকা কথোপকথনও আছে। কোনো প্রোডাক্টের ৫টি রেটিং হলে, ভালো ৮৫%-এর নিচে নামলে রেটিং কমলা হয়।"
@@ -13840,6 +13877,7 @@ msgstr "সময়ের সঙ্গে"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "ওভারভিউ"
@@ -13881,7 +13919,10 @@ msgstr "গতি (সেকেন্ডে মেইল)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "পেজ"
 
@@ -13897,6 +13938,7 @@ msgstr "যে পেজে তারা রাজি হয়েছে (ঐচ
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "পেজ"
 
@@ -13967,6 +14009,7 @@ msgstr "পাসওয়ার্ড সেট হয়েছে"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "অতীত"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "পাবলিক"
 
@@ -16576,6 +16620,7 @@ msgstr "এন্ট্রি শিডিউল করুন"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "শিডিউল করা হয়েছে"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "অনুসন্ধান"
 
@@ -17518,6 +17564,7 @@ msgstr "সেট আপ হচ্ছে…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "সেটিংস"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "সাইনিং সিক্রেট"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "থেকে"
 
@@ -18497,6 +18545,7 @@ msgstr "আপনার মেইলিং লিস্ট শুরু কর�
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "শুরু হয়েছে"
 
@@ -18520,6 +18569,7 @@ msgstr "{starter} শুরু করেছেন · {started}"
 msgid "Starting"
 msgstr "শুরু হচ্ছে"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "শুরু"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (পোর্ট 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "অবস্থা"
 
@@ -18586,6 +18638,7 @@ msgstr "বন্ধ হলে অবস্থা"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "স্ট্যাটাস"
 
@@ -18593,6 +18646,7 @@ msgstr "স্ট্যাটাস"
 msgid "Status and coming up"
 msgstr "স্ট্যাটাস ও আসন্ন"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "স্ট্যাটাস পেজ"
@@ -18605,6 +18659,7 @@ msgstr "স্ট্যাটাস পেজ মুছে ফেলা হয�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "স্ট্যাটাস পেজ"
@@ -18744,6 +18799,7 @@ msgstr "এইমাত্র তালিকায় সাবস্ক্র�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "সাবস্ক্রাইবার"
@@ -20574,6 +20630,10 @@ msgstr "এই ইনবক্সে এখনও কোনো মেইলি�
 msgid "This inbox is for"
 msgstr "এই ইনবক্সটি এর জন্য"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "এই ঘটনাটি আর নেই অথবা আপনি এটি দেখতে পারবেন না।"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "এটি একটি সংকুচিত আর্কাইভ। Takeout আর্কাইভ আনজিপ করুন এবং .mbox ফাইল আপলোড করুন।"
@@ -20689,6 +20749,10 @@ msgstr "এই বার্তা"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "এই মাইগ্রেশন শেষ হয়েছে, তাই আর কিছু আপলোড করা যায় না। অন্য ফাইলের জন্য নতুন একটি শুরু করুন।"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "এই মনিটরটি আর নেই অথবা আপনি এটি দেখতে পারবেন না।"
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "{shown} দিনে আপটাইম {uptime}"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "এই পেজে আপটাইম লুকানো আছে। এখানে প্রতিদিন দেখতে সেটিংসে এটি চালু করুন।"
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "আপটাইম, ২৪ ঘণ্টা"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "ভিউ"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "ভিউ"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "দৃশ্যমানতা"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

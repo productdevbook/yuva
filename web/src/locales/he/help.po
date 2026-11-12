@@ -110,6 +110,7 @@ msgstr "הוספת אוסף משנה"
 msgid "Add locale"
 msgstr "Add locale"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -178,6 +179,7 @@ msgstr "צפיות במאמרים"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "מאמרים"
@@ -294,6 +296,7 @@ msgid "Collection"
 msgstr "אוסף"
 
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "אוספים"
@@ -404,6 +407,8 @@ msgstr "טיוטה"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "הטיוטה נשלחה. בעלים או מנהל יכולים לפרסם אותה."
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "טיוטות"
@@ -467,11 +472,13 @@ msgstr "כותרת"
 
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "מרכז עזרה"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "מרכז העזרה נוצר. כתבו את המאמר הראשון ואז פרסמו אותו."
@@ -481,6 +488,7 @@ msgid "Help center deleted"
 msgstr "מרכז העזרה נמחק"
 
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help centers"
 msgstr "מרכזי עזרה"
@@ -570,6 +578,10 @@ msgstr "{d} הימים האחרונים"
 msgid "last 7 days"
 msgstr "7 הימים האחרונים"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Last 7 days"
+msgstr "7 הימים האחרונים"
+
 #: src/features/help/ImportCard.tsx
 msgid "Leave empty to read every site."
 msgstr "Leave empty to read every site."
@@ -657,6 +669,10 @@ msgstr "אוסף חדש"
 #: src/features/help/CollectionsTab.tsx
 msgid "New collection ({newKey})"
 msgstr "אוסף חדש ({newKey})"
+
+#: src/features/help/HelpFrame.tsx
+msgid "New help center for {product}"
+msgstr "מרכז עזרה חדש עבור {product}"
 
 #: src/features/help/ReportTab.tsx
 msgid "No article got a “no” in this period."
@@ -842,18 +858,22 @@ msgstr "כתובת ציבורית"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "פרסום"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "פרסום ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
+#: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -881,6 +901,7 @@ msgstr "Redirects"
 msgid "Remove {0}"
 msgstr "הסרת {0}"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Report"
 msgstr "דוח"
@@ -956,6 +977,7 @@ msgstr "מילות חיפוש"
 msgid "Searched for, found nothing"
 msgstr "חיפשו ולא נמצא כלום"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Searches"
 msgstr "חיפושים"
@@ -976,6 +998,7 @@ msgstr "נשלחו"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1008,6 +1031,10 @@ msgstr "מוצג מתחת לשם בדף הבית."
 #: src/features/help/SettingsTab.tsx
 msgid "Shown when an article has no translation in the visitor’s language."
 msgstr "מוצג כשלמאמר אין תרגום בשפת המבקר."
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Site"
+msgstr "אתר"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Site link"
@@ -1157,10 +1184,12 @@ msgstr "הקלידו מילה לחיפוש."
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish"
 msgstr "ביטול פרסום"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "ביטול פרסום ({publishKey})"
 
@@ -1177,8 +1206,10 @@ msgid "Unpublish this translation?"
 msgstr "לבטל את הפרסום של התרגום הזה?"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "לא פורסם"
 
@@ -1215,10 +1246,12 @@ msgid "View"
 msgstr "צפייה"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site"
 msgstr "הצגת האתר"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "הצגת האתר ({openKey})"
 
@@ -1230,6 +1263,10 @@ msgstr "צפיות"
 #: src/features/help/ArticlesTab.tsx
 msgid "Views · 7 days"
 msgstr "צפיות · 7 ימים"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Visibility"
+msgstr "חשיפה"
 
 #: src/features/help/CenterBar.tsx
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."

@@ -74,6 +74,8 @@ export {
   SideTitle,
   ThemeToggle,
   TopPortal,
+  topButton,
+  topInk,
   TopSep,
   TopSlotProvider,
   type NavItem,
@@ -89,4 +91,4 @@ export {
   UnreadBadge,
   useDayLabel,
 } from "@/components/common/FlatList"
-export { PageSidebar, ProductsGroup, SectionNav } from "@/components/common/PageSidebar"
+export { PageSidebar, ProductsGroup, SectionNav, SectionPage } from "@/components/common/PageSidebar"

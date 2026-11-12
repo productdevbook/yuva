@@ -12,6 +12,7 @@ msgid "{inboxName} has no web chat channel. Add one first, because the public bo
 msgstr "Tuotteella {inboxName} ei ole verkkochat-kanavaa. Lisää ensin yksi, koska julkinen taulu upottaa sen."
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, one {# palaute} other {# palautetta}}"
 
@@ -21,6 +22,7 @@ msgstr "{pending} odottaa hyväksyntää"
 
 #: src/features/roadmap/Board.tsx
 #: src/features/roadmap/LinkIdeaDialog.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{votes} votes"
 msgstr "{votes} ääntä"
 
@@ -37,11 +39,13 @@ msgid "Add a web chat channel"
 msgstr "Lisää verkkochat-kanava"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "Osoite"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "All boards"
 msgstr "Kaikki taulut"
 
@@ -52,6 +56,11 @@ msgstr "Kaikki muutokset tallennettu."
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "Kaikki sopiva palaute tuotteelta {inboxName} on jo liitetty."
+
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "All stages"
+msgstr "Kaikki vaiheet"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -88,6 +97,11 @@ msgstr "Taulu"
 msgid "Board deleted"
 msgstr "Taulu poistettu"
 
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "Boards"
+msgstr "Taulut"
+
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
 #: src/features/roadmap/NewIdeaDialog.tsx
@@ -117,12 +131,17 @@ msgid "Create board ({newKey})"
 msgstr "Luo taulu ({newKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Create board for {name}"
 msgstr "Luo taulu tuotteelle {name}"
 
 #: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Create idea"
 msgstr "Luo idea"
+
+#: src/features/roadmap/pages.tsx
+msgid "Created"
+msgstr "Luotu"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Delete"
@@ -158,6 +177,10 @@ msgstr "Valmis"
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Kaikkien viestit julkaistaan heti, paitsi niiden tekijöiden, jotka merkitsit roskapostiksi."
 
+#: src/features/roadmap/pages.tsx
+msgid "Feedback"
+msgstr "Palaute"
+
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Good news: “{title}” has shipped. Thank you for asking for it."
 msgstr "Hyviä uutisia: ”{title}” on julkaistu. Kiitos, että pyysit sitä."
@@ -169,6 +192,10 @@ msgstr "Piilotettu"
 #: src/features/roadmap/Board.tsx
 msgid "Hide"
 msgstr "Piilota"
+
+#: src/features/roadmap/pages.tsx
+msgid "Idea"
+msgstr "Idea"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Idea started"
@@ -236,22 +263,27 @@ msgid "Linked to {title}"
 msgstr "Liitetty kohteeseen {title}"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Load more"
 msgstr "Lataa lisää"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "Tee yksityiseksi"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "Tee yksityiseksi ({publicKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "Tee julkiseksi"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "Tee julkiseksi ({publicKey})"
 
@@ -319,6 +351,7 @@ msgid "No idea matches."
 msgstr "Mikään idea ei täsmää."
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "No ideas yet. New ones land here."
 msgstr "Ideoita ei ole vielä. Uudet ilmestyvät tänne."
 
@@ -327,6 +360,7 @@ msgid "None"
 msgstr "Ei mitään"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Nothing here yet."
 msgstr "Täällä ei ole vielä mitään."
 
@@ -372,10 +406,12 @@ msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "Julkaistaan julkisena vastauksenasi ideaan. Markdown toimii."
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "Yksityinen"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
 msgstr "Julkinen"
@@ -413,6 +449,7 @@ msgid "Review the reply"
 msgstr "Tarkista vastaus"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "Tiekartta"
 
@@ -433,6 +470,7 @@ msgid "Search ideas"
 msgstr "Hae ideoita"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "Asetukset"
 
@@ -449,6 +487,7 @@ msgid "Shown under the name on the public board."
 msgstr "Näytetään nimen alla julkisella taululla."
 
 #: src/features/roadmap/MoveDialog.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Stage"
 msgstr "Vaihe"
 
@@ -526,11 +565,18 @@ msgstr "Käytä 3–48 kirjainta, numeroa ja sisäisiä yhdysmerkkejä."
 msgid "View board"
 msgstr "Näytä taulu"
 
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "Näkyvyys"
 
+#: src/features/roadmap/pages.tsx
+msgid "Votes"
+msgstr "Äänet"
+
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "Odottaa hyväksyntää"
 

@@ -2003,6 +2003,7 @@ msgstr "କେବଳ କାର୍ଯ୍ୟ"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "ସକ୍ରିୟ"
 
@@ -2345,6 +2346,7 @@ msgstr "ସିଙ୍ଗଲ୍ ସାଇନ୍-ଅନ୍ ପାଇଁ ଡୋମ�
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "ଠିକଣା"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "ସବୁ"
 
@@ -2491,6 +2494,10 @@ msgstr "ସମସ୍ତ ଆମଦାନି"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "ସମସ୍ତ ଇନବକ୍ସ"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "ସମସ୍ତ ଘଟଣା"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "ସମସ୍ତ ଉତ୍ପାଦ"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "ସମସ୍ତ ଉତ୍ପାଦ"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "{endedAt} ରେ ସମାପ୍ତ ହେଲା"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "ଘଟକ"
 
@@ -4834,6 +4843,7 @@ msgstr "ଉପାଦାନ ବିଲୋପ ହେଲା"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "ଉପାଦାନ"
@@ -6293,6 +6303,7 @@ msgstr "ଡେସ୍କଟପ୍ ବିଜ୍ଞପ୍ତି ଅନୁମତି�
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "ବ୍ରାଉଜର ସେଟିଂସରେ ଏହି ସାଇଟ୍ ପାଇଁ ଡେସ୍କଟପ୍ ବିଜ୍ଞପ୍ତି ଅବରୋଧିତ, ତେଣୁ କେବଳ ଶବ୍ଦ ବାଜେ।"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "ଏନକ୍ରିପସନ୍"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "ଦିନର ଶେଷ (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "ଶେଷ"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "ଏହି ମେଲବକ୍ସ ପାଇଁ IMAP ବନ୍ଦ ଅଛି
 msgid "IMAP server"
 msgstr "IMAP ସର୍ଭର"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "ପ୍ରଭାବ"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "ଇନବକ୍ସ 80 ଅକ୍ଷରରୁ ଲମ୍ବା ବିଷୟ କାଟିଦିଏ।"
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "ଘଟଣା"
@@ -9059,6 +9076,7 @@ msgstr "ଘଟଣା: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "ଘଟଣା"
 
@@ -9526,6 +9544,7 @@ msgstr "କୀୱାର୍ଡ"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "ପ୍ରକାର"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "{when} ଶେଷ ଥର ପଢ଼ାଗଲା"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "ଶେଷ ଫଳାଫଳ"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "ସୋମବାର ସକାଳେ"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "ମନିଟର"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "ମନିଟର ଡିଲିଟ୍ ହେଲା"
 
@@ -10905,6 +10932,7 @@ msgstr "ନଜରରେ"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "ମନିଟରଗୁଡ଼ିକ"
@@ -10912,6 +10940,10 @@ msgstr "ମନିଟରଗୁଡ଼ିକ"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "ମନିଟରଗୁଡ଼ିକ ସ୍ଥିତି ପୃଷ୍ଠାର ଏକ ଉପାଦାନର ସ୍ଥିତି ସ୍ଥିର କରେ। ପ୍ରଥମେ ଏକ ସ୍ଥିତି ପୃଷ୍ଠା ତିଆରି କରନ୍ତୁ।"
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "ମନିଟର, {down} ବନ୍ଦ"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "ବନ୍ଦ"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "ବନ୍ଦ"
 
@@ -13499,6 +13532,10 @@ msgstr "ଇନବକ୍ସ ଖୋଲନ୍ତୁ"
 msgid "Open incident"
 msgstr "ଘଟଣା ଖୋଲନ୍ତୁ"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "ଖୋଲା ଘଟଣା"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "ଖୋଲା କଥୋପକଥନରେ ଗ୍ରାହକଙ୍କ ଉତ୍ତରକୁ ଅପେକ୍ଷା କରୁଥିବା କଥୋପକଥନ ମଧ୍ୟ ଅଛି। କୌଣସି ପ୍ରଡକ୍ଟର 5ଟି ରେଟିଂ ହେବା ପରେ, ଭଲ 85%ରୁ କମ ହେଲେ ରେଟିଂ କମଳା ହୁଏ।"
@@ -13840,6 +13877,7 @@ msgstr "ସମୟ ସହ"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "ସମୀକ୍ଷା"
@@ -13881,7 +13919,10 @@ msgstr "ଗତି (ସେକେଣ୍ଡକୁ ମେଲ୍)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "ପୃଷ୍ଠା"
 
@@ -13897,6 +13938,7 @@ msgstr "ସେମାନେ ରାଜି ହୋଇଥିବା ପୃଷ୍ଠା
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "ପୃଷ୍ଠା"
 
@@ -13967,6 +14009,7 @@ msgstr "ପାସୱାର୍ଡ ସେଟ୍ ହେଲା"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "ଅତୀତ"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "ସାର୍ବଜନୀନ"
 
@@ -16576,6 +16620,7 @@ msgstr "ଏଣ୍ଟ୍ରି ସିଡ୍ୟୁଲ୍ କରନ୍ତୁ"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "ସିଡ୍ୟୁଲ୍ ହୋଇଛି"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "ସନ୍ଧାନ କରନ୍ତୁ"
 
@@ -17518,6 +17564,7 @@ msgstr "ସେଟ୍ ହେଉଛି…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "ସେଟିଂସ୍"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "ସାଇନିଂ ସିକ୍ରେଟ୍"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "ଠାରୁ"
 
@@ -18497,6 +18545,7 @@ msgstr "ଆପଣଙ୍କ ମେଲିଂ ତାଲିକା ଆରମ୍ଭ �
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "ଆରମ୍ଭ ହେଲା"
 
@@ -18520,6 +18569,7 @@ msgstr "{starter} ଆରମ୍ଭ କଲେ · {started}"
 msgid "Starting"
 msgstr "ଆରମ୍ଭ ହେଉଛି"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "ଆରମ୍ଭ"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (ପୋର୍ଟ 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "ସ୍ଥିତି"
 
@@ -18586,6 +18638,7 @@ msgstr "ବନ୍ଦ ହେଲେ ସ୍ଥିତି"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "ସ୍ଥିତି"
 
@@ -18593,6 +18646,7 @@ msgstr "ସ୍ଥିତି"
 msgid "Status and coming up"
 msgstr "ସ୍ଥିତି ଓ ଆଗାମୀ"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "ସ୍ଥିତି ପୃଷ୍ଠା"
@@ -18605,6 +18659,7 @@ msgstr "ସ୍ଥିତି ପୃଷ୍ଠା ବିଲୋପ ହେଲା"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "ସ୍ଥିତି ପୃଷ୍ଠା"
@@ -18744,6 +18799,7 @@ msgstr "ବର୍ତ୍ତମାନ ତାଲିକାରେ ସବସ୍କ୍�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "ସବ୍ସ୍କ୍ରାଇବର୍"
@@ -20574,6 +20630,10 @@ msgstr "ଏହି ଇନବକ୍ସର ଏପର୍ଯ୍ୟନ୍ତ ମେଲ
 msgid "This inbox is for"
 msgstr "ଏହି ଇନବକ୍ସ ଏଥିପାଇଁ"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "ଏହି ଘଟଣା ଆଉ ନାହିଁ କିମ୍ବା ଆପଣ ଏହାକୁ ଦେଖିପାରିବେ ନାହିଁ।"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "ଏହା ଏକ ସଙ୍କୁଚିତ ଆର୍କାଇଭ୍। Takeout ଆର୍କାଇଭ୍ ଅନଜିପ୍ କରି .mbox ଫାଇଲ୍ ଅପଲୋଡ୍ କରନ୍ତୁ।"
@@ -20689,6 +20749,10 @@ msgstr "ଏହି ବାର୍ତ୍ତା"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "ଏହି ମାଇଗ୍ରେସନ୍ ଶେଷ ହୋଇଛି, ତେଣୁ ଆଉ କିଛି ଅପଲୋଡ୍ ହୋଇପାରିବ ନାହିଁ। ଅନ୍ୟ ଫାଇଲ୍ ପାଇଁ ନୂଆ ଆରମ୍ଭ କରନ୍ତୁ।"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "ଏହି ମନିଟର ଆଉ ନାହିଁ କିମ୍ବା ଆପଣ ଏହାକୁ ଦେଖିପାରିବେ ନାହିଁ।"
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "{shown} ଦିନରେ ଅପଟାଇମ {uptime}"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "ଏହି ପୃଷ୍ଠାରେ ଅପଟାଇମ ଲୁଚିଛି। ଏଠାରେ ପ୍ରତିଦିନ ଦେଖିବାକୁ ସେଟିଂସରେ ଏହାକୁ ଚାଲୁ କରନ୍ତୁ।"
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "ଅପଟାଇମ, 24 ଘଣ୍ଟା"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "ଦେଖା"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "ଦେଖା"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "ଦୃଶ୍ୟମାନତା"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

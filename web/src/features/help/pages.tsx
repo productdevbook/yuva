@@ -1,23 +1,25 @@
 import "@/features/help/i18n"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { LifeBuoyIcon, LoaderIcon } from "lucide-react"
+import { ArrowUpRightIcon, LifeBuoyIcon, LoaderIcon, PlusIcon } from "lucide-react"
 import { useRef, useState } from "react"
 import { Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 
+import { FlatEmpty, PageHeading, PageTop as FlatTop, topButton, topInk } from "@/components/common"
 import { PaneEmpty } from "@/components/common/Column"
 import { toast } from "@/components/common/Toast"
 import { HELP_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ArticlesTab, NewArticleDialog } from "@/features/help/ArticlesTab"
+import { ArticlesTab, HelpAside, NewArticleDialog } from "@/features/help/ArticlesTab"
 import { CenterBar, DocsNote, ProductChips, usePublishToggle } from "@/features/help/CenterBar"
 import { CollectionsTab } from "@/features/help/CollectionsTab"
 import { CreateCenterDialog } from "@/features/help/CreateCenterDialog"
+import { HelpLayout, HelpTrail, useHelpNames } from "@/features/help/HelpFrame"
 import { centerLink, useHelpCenter, useHelpCenters, useHelpCollections, useHelpPreview } from "@/features/help/queries"
 import { ReportTab } from "@/features/help/ReportTab"
 import { SettingsTab } from "@/features/help/SettingsTab"
-import { ErrorLine } from "@/features/help/text"
+import { collectionName, ErrorLine } from "@/features/help/text"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
@@ -63,6 +65,7 @@ function useCreateCenter() {
 }
 
 export function HelpHome() {
+  const { t } = useLingui()
   const phone = useIsPhone()
   const { canManage } = useSession()
   const { all, groups, pending, error } = useCenterChoice()
@@ -82,6 +85,52 @@ export function HelpHome() {
   if (first) return <Navigate to={centerLink(first.id)} replace />
   const target =
     all.find((g) => g.inbox.id === picked && !g.center) ?? groups.find((g) => !g.center) ?? all.find((g) => !g.center)
+  if (!phone)
+    return (
+      <HelpLayout testId="help-home">
+        <FlatTop>
+          <span className="font-medium text-foreground">{t`Help center`}</span>
+        </FlatTop>
+        <section className="flex max-w-[760px] flex-col" data-testid="help-panel">
+          <PageHeading
+            title={target ? <Trans>No help center for {target.inbox.name} yet</Trans> : <Trans>Help center</Trans>}
+            lede={<Trans>Articles people read before they write to you</Trans>}
+          />
+          {pending ? (
+            <Skeleton className="mt-7 h-5 w-full" />
+          ) : error ? (
+            <ErrorLine error={error} className="mt-4" />
+          ) : target ? (
+            <FlatEmpty>
+              <p className="m-0">
+                <Trans>
+                  Answer common questions once, in writing. Each product gets its own help center with articles,
+                  collections and a report of what people search for. Pages are hosted by Yuva, so there is nothing to
+                  install on your site.
+                </Trans>
+              </p>
+              {canManage ? (
+                <Button className={topInk} onClick={() => create(target.inbox)} data-testid="create-help-center-open">
+                  <Trans>Create help center</Trans>
+                </Button>
+              ) : (
+                <span className="text-caption" data-testid="help-none">
+                  <Trans>No help center yet. Owners and admins create it.</Trans>
+                </span>
+              )}
+            </FlatEmpty>
+          ) : (
+            <FlatEmpty testId="help-empty">
+              <Trans>No inbox to show a help center for.</Trans>
+            </FlatEmpty>
+          )}
+          <div className="mt-8">
+            <DocsNote />
+          </div>
+        </section>
+        {dialog}
+      </HelpLayout>
+    )
   return (
     <main className="flex min-h-0 flex-1 flex-col bg-surface" data-testid="help-home">
       <PageTop
@@ -193,7 +242,9 @@ function PreviewDialog({ center, onClose }: { center: HelpCenter; onClose: () =>
 }
 
 export function CenterPane() {
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
+  const phone = useIsPhone()
+  const helpNames = useHelpNames()
   const { centerId = "" } = useParams()
   const [params] = useSearchParams()
   const navigate = useNavigate()
@@ -235,8 +286,144 @@ export function CenterPane() {
     !!c
   )
 
+  const previewKey = keyLabel(HELP_KEYS.preview).join("")
+  const newKey = keyLabel(HELP_KEYS.newArticle).join("")
+  const openKey = keyLabel(HELP_KEYS.openPage).join("")
+  const publishKey = keyLabel(HELP_KEYS.publishCenter).join("")
   const switched = inboxFilter && c && c.inbox_id !== inboxFilter && centers?.find((x) => x.inbox_id === inboxFilter)
   if (switched) return <Navigate to={centerLink(switched.id)} replace />
+
+  if (!phone) {
+    const picked = listing ? (params.get("collection") ?? "") : ""
+    const col = collections.find((x) => x.id === picked)
+    const heading = col
+      ? collectionName(col, i18n.locale, c?.default_locale ?? "en")
+      : tab === "articles"
+        ? (c?.name ?? helpNames.articles)
+        : helpNames[tab]
+    if (!c)
+      return (
+        <HelpLayout place={tab} testId={center.isPending ? undefined : "help-center-error"}>
+          <FlatTop />
+          {center.isPending ? (
+            <div className="mt-3 flex max-w-[760px] flex-col gap-4" aria-busy="true">
+              <Skeleton className="h-8 w-60" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+          ) : (
+            <FlatEmpty>
+              <ErrorLine error={center.error} />
+            </FlatEmpty>
+          )}
+        </HelpLayout>
+      )
+    return (
+      <HelpLayout
+        place={tab}
+        center={c}
+        testId="help-center"
+        aside={<HelpAside center={c} onWrite={(title) => setCreating({ title, collectionId: picked })} />}
+      >
+        <FlatTop
+          actions={
+            <>
+              <Button
+                variant="outline"
+                className={topButton}
+                onClick={() => setPreview(true)}
+                title={t`Preview (${previewKey})`}
+                data-testid="help-preview"
+              >
+                <Trans>Preview</Trans>
+              </Button>
+              {c.published && (
+                <Button
+                  variant="outline"
+                  className={topButton}
+                  render={<a href={c.url} target="_blank" rel="noreferrer noopener" />}
+                  title={t`View site (${openKey})`}
+                  data-testid="help-open-public"
+                >
+                  <Trans>View site</Trans>
+                  <ArrowUpRightIcon className="text-faint rtl:-scale-x-100" />
+                </Button>
+              )}
+              {canManage && (
+                <Button
+                  variant="outline"
+                  className={topButton}
+                  disabled={pub.pending}
+                  onClick={togglePublish}
+                  title={c.published ? t`Unpublish (${publishKey})` : t`Publish (${publishKey})`}
+                  data-testid="help-publish"
+                >
+                  {c.published ? <Trans>Unpublish</Trans> : <Trans>Publish</Trans>}
+                </Button>
+              )}
+              <Button
+                className={topInk}
+                onClick={() => setCreating({ title: "", collectionId: picked })}
+                title={t`New article (${newKey})`}
+                data-testid="new-article"
+              >
+                <PlusIcon className="size-3.5" aria-hidden />
+                <Trans>New article</Trans>
+              </Button>
+            </>
+          }
+        >
+          <HelpTrail place={col ? helpNames.collections : helpNames[tab]} center={c} />
+        </FlatTop>
+        <section key={c.id} className="@container flex max-w-[1040px] flex-col">
+          <PageHeading
+            title={<span data-testid="help-center-name">{heading}</span>}
+            lede={
+              <span data-testid="help-published">
+                <span dir="ltr">{c.url.replace(/^https?:\/\//, "")}</span>
+                {" · "}
+                {c.published ? <Trans>Published</Trans> : <Trans>Unpublished</Trans>}
+                {". "}
+                <Trans>Articles people read before they write to you</Trans>
+              </span>
+            }
+          />
+          <ErrorLine error={pub.error} className="mt-3" />
+          <div className={listing ? undefined : "mt-6"}>
+            {listing && (
+              <ArticlesTab
+                key={`${tab}:${picked}`}
+                center={c}
+                drafts={tab === "drafts"}
+                q={q}
+                onQ={setQ}
+                search={search}
+                onWrite={(title, collectionId) => setCreating({ title, collectionId })}
+                flat
+                collection={picked}
+              />
+            )}
+            {tab === "collections" && <CollectionsTab center={c} />}
+            {tab === "report" && <ReportTab center={c} />}
+            {tab === "settings" && canManage && <SettingsTab center={c} />}
+          </div>
+          <div className="mt-8">
+            <DocsNote />
+          </div>
+        </section>
+        {pub.dialog}
+        {preview && <PreviewDialog center={c} onClose={() => setPreview(false)} />}
+        {creating && (
+          <NewArticleDialog
+            center={c}
+            collections={collections}
+            collectionId={creating.collectionId}
+            initialTitle={creating.title}
+            onClose={() => setCreating(null)}
+          />
+        )}
+      </HelpLayout>
+    )
+  }
 
   if (center.isPending) {
     return (
@@ -279,8 +466,6 @@ export function CenterPane() {
     report: HELP_KEYS.report,
     settings: HELP_KEYS.settings,
   }
-  const previewKey = keyLabel(HELP_KEYS.preview).join("")
-  const newKey = keyLabel(HELP_KEYS.newArticle).join("")
   return (
     <main className="flex min-h-0 flex-1 flex-col bg-surface" data-testid="help-center" key={c.id}>
       <PageTop

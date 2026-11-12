@@ -12,6 +12,7 @@ msgid "{inboxName} has no web chat channel. Add one first, because the public bo
 msgstr "{inboxName} में कोई वेब चैट चैनल नहीं है। पहले एक जोड़ें, क्योंकि पब्लिक बोर्ड उसे एम्बेड करता है।"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, one {# फ़ीडबैक} other {# फ़ीडबैक}}"
 
@@ -21,6 +22,7 @@ msgstr "{pending} अनुमोदन की प्रतीक्षा म�
 
 #: src/features/roadmap/Board.tsx
 #: src/features/roadmap/LinkIdeaDialog.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{votes} votes"
 msgstr "{votes} वोट"
 
@@ -37,11 +39,13 @@ msgid "Add a web chat channel"
 msgstr "वेब चैट चैनल जोड़ें"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "पता"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "All boards"
 msgstr "सभी बोर्ड"
 
@@ -52,6 +56,11 @@ msgstr "सभी बदलाव सहेजे गए।"
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "{inboxName} के जो फ़ीडबैक फिट बैठते हैं, वे पहले से जुड़े हैं।"
+
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "All stages"
+msgstr "सभी चरण"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -88,6 +97,11 @@ msgstr "बोर्ड"
 msgid "Board deleted"
 msgstr "बोर्ड हटा दिया गया"
 
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "Boards"
+msgstr "बोर्ड"
+
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
 #: src/features/roadmap/NewIdeaDialog.tsx
@@ -117,12 +131,17 @@ msgid "Create board ({newKey})"
 msgstr "बोर्ड बनाएँ ({newKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Create board for {name}"
 msgstr "{name} के लिए बोर्ड बनाएँ"
 
 #: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Create idea"
 msgstr "आइडिया बनाएँ"
+
+#: src/features/roadmap/pages.tsx
+msgid "Created"
+msgstr "बनाया गया"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Delete"
@@ -158,6 +177,10 @@ msgstr "हो गया"
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "सबकी पोस्ट तुरंत प्रकाशित होती हैं, सिवाय उन लेखकों की जिन्हें आपने स्पैम चिह्नित किया है।"
 
+#: src/features/roadmap/pages.tsx
+msgid "Feedback"
+msgstr "फ़ीडबैक"
+
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Good news: “{title}” has shipped. Thank you for asking for it."
 msgstr "अच्छी खबर: “{title}” रिलीज़ हो गया है। इसे माँगने के लिए धन्यवाद।"
@@ -169,6 +192,10 @@ msgstr "छिपा"
 #: src/features/roadmap/Board.tsx
 msgid "Hide"
 msgstr "छिपाएँ"
+
+#: src/features/roadmap/pages.tsx
+msgid "Idea"
+msgstr "आइडिया"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Idea started"
@@ -236,22 +263,27 @@ msgid "Linked to {title}"
 msgstr "{title} से जोड़ी गई"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Load more"
 msgstr "और लोड करें"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "निजी बनाएँ"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "निजी बनाएँ ({publicKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "सार्वजनिक बनाएँ"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "सार्वजनिक बनाएँ ({publicKey})"
 
@@ -319,6 +351,7 @@ msgid "No idea matches."
 msgstr "कोई आइडिया मेल नहीं खाता।"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "No ideas yet. New ones land here."
 msgstr "अभी कोई आइडिया नहीं है। नए यहीं आएँगे।"
 
@@ -327,6 +360,7 @@ msgid "None"
 msgstr "कोई नहीं"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Nothing here yet."
 msgstr "यहाँ अभी कुछ नहीं है।"
 
@@ -372,10 +406,12 @@ msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "आइडिया पर आपके सार्वजनिक जवाब के रूप में पोस्ट होता है। Markdown काम करता है।"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "निजी"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
 msgstr "सार्वजनिक"
@@ -413,6 +449,7 @@ msgid "Review the reply"
 msgstr "जवाब जाँचें"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "रोडमैप"
 
@@ -433,6 +470,7 @@ msgid "Search ideas"
 msgstr "आइडिया खोजें"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "सेटिंग"
 
@@ -449,6 +487,7 @@ msgid "Shown under the name on the public board."
 msgstr "सार्वजनिक बोर्ड पर नाम के नीचे दिखता है।"
 
 #: src/features/roadmap/MoveDialog.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Stage"
 msgstr "चरण"
 
@@ -526,11 +565,18 @@ msgstr "3 से 48 अक्षर, अंक और बीच के हाइ
 msgid "View board"
 msgstr "बोर्ड देखें"
 
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "दृश्यता"
 
+#: src/features/roadmap/pages.tsx
+msgid "Votes"
+msgstr "वोट"
+
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "अनुमोदन की प्रतीक्षा में"
 

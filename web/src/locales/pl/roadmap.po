@@ -12,6 +12,7 @@ msgid "{inboxName} has no web chat channel. Add one first, because the public bo
 msgstr "{inboxName} nie ma kanału czatu internetowego. Najpierw dodaj jeden, bo publiczna tablica go osadza."
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, one {# opinia} few {# opinie} many {# opinii} other {# opinii}}"
 
@@ -21,6 +22,7 @@ msgstr "Czeka na zatwierdzenie: {pending}"
 
 #: src/features/roadmap/Board.tsx
 #: src/features/roadmap/LinkIdeaDialog.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{votes} votes"
 msgstr "Głosy: {votes}"
 
@@ -37,11 +39,13 @@ msgid "Add a web chat channel"
 msgstr "Dodaj kanał czatu internetowego"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "Adres"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "All boards"
 msgstr "Wszystkie tablice"
 
@@ -52,6 +56,11 @@ msgstr "Wszystkie zmiany zapisane."
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "Wszystkie pasujące opinie z {inboxName} są już powiązane."
+
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "All stages"
+msgstr "Wszystkie etapy"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -88,6 +97,11 @@ msgstr "Tablica"
 msgid "Board deleted"
 msgstr "Tablica usunięta"
 
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "Boards"
+msgstr "Tablice"
+
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
 #: src/features/roadmap/NewIdeaDialog.tsx
@@ -117,12 +131,17 @@ msgid "Create board ({newKey})"
 msgstr "Utwórz tablicę ({newKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Create board for {name}"
 msgstr "Utwórz tablicę dla {name}"
 
 #: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Create idea"
 msgstr "Utwórz pomysł"
+
+#: src/features/roadmap/pages.tsx
+msgid "Created"
+msgstr "Utworzono"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Delete"
@@ -158,6 +177,10 @@ msgstr "Gotowe"
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Wpisy wszystkich są publikowane od razu, z wyjątkiem wpisów autorów oznaczonych jako spam."
 
+#: src/features/roadmap/pages.tsx
+msgid "Feedback"
+msgstr "Opinie"
+
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Good news: “{title}” has shipped. Thank you for asking for it."
 msgstr "Dobre wieści: „{title}” zostało wdrożone. Dziękujemy za zgłoszenie."
@@ -169,6 +192,10 @@ msgstr "Ukryte"
 #: src/features/roadmap/Board.tsx
 msgid "Hide"
 msgstr "Ukryj"
+
+#: src/features/roadmap/pages.tsx
+msgid "Idea"
+msgstr "Pomysł"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Idea started"
@@ -236,22 +263,27 @@ msgid "Linked to {title}"
 msgstr "Powiązano z incydentem {title}"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Load more"
 msgstr "Wczytaj więcej"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "Ustaw jako prywatną"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "Ustaw jako prywatną ({publicKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "Ustaw jako publiczną"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "Ustaw jako publiczną ({publicKey})"
 
@@ -319,6 +351,7 @@ msgid "No idea matches."
 msgstr "Żaden pomysł nie pasuje."
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "No ideas yet. New ones land here."
 msgstr "Nie ma jeszcze pomysłów. Nowe trafią tutaj."
 
@@ -327,6 +360,7 @@ msgid "None"
 msgstr "Brak"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Nothing here yet."
 msgstr "Nic tu jeszcze nie ma."
 
@@ -372,10 +406,12 @@ msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "Opublikowana jako Twoja publiczna odpowiedź pod pomysłem. Markdown działa."
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "Prywatna"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
 msgstr "Publiczna"
@@ -413,6 +449,7 @@ msgid "Review the reply"
 msgstr "Sprawdź odpowiedź"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "Mapa drogowa"
 
@@ -433,6 +470,7 @@ msgid "Search ideas"
 msgstr "Szukaj pomysłów"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "Ustawienia"
 
@@ -449,6 +487,7 @@ msgid "Shown under the name on the public board."
 msgstr "Pokazywany pod nazwą na tablicy publicznej."
 
 #: src/features/roadmap/MoveDialog.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Stage"
 msgstr "Etap"
 
@@ -526,11 +565,18 @@ msgstr "Użyj od 3 do 48 liter, cyfr i myślników wewnątrz."
 msgid "View board"
 msgstr "Zobacz tablicę"
 
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "Widoczność"
 
+#: src/features/roadmap/pages.tsx
+msgid "Votes"
+msgstr "Głosy"
+
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "Czeka na zatwierdzenie"
 

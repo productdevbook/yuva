@@ -12,6 +12,7 @@ msgid "{inboxName} has no web chat channel. Add one first, because the public bo
 msgstr "{inboxName} 沒有網頁聊天管道。請先新增一個，因為公開看板會嵌入它。"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, other {# 則反饋}}"
 
@@ -21,6 +22,7 @@ msgstr "{pending} 個等待稽覈"
 
 #: src/features/roadmap/Board.tsx
 #: src/features/roadmap/LinkIdeaDialog.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{votes} votes"
 msgstr "{votes} 票"
 
@@ -37,11 +39,13 @@ msgid "Add a web chat channel"
 msgstr "新增網頁聊天管道"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "地址"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "All boards"
 msgstr "所有看板"
 
@@ -52,6 +56,11 @@ msgstr "所有變更已儲存。"
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "{inboxName} 中所有合適的反饋都已連結。"
+
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "All stages"
+msgstr "所有階段"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -88,6 +97,11 @@ msgstr "看板"
 msgid "Board deleted"
 msgstr "看板已刪除"
 
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "Boards"
+msgstr "看板"
+
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
 #: src/features/roadmap/NewIdeaDialog.tsx
@@ -117,12 +131,17 @@ msgid "Create board ({newKey})"
 msgstr "建立看板（{newKey}）"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Create board for {name}"
 msgstr "為 {name} 建立看板"
 
 #: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Create idea"
 msgstr "建立想法"
+
+#: src/features/roadmap/pages.tsx
+msgid "Created"
+msgstr "已建立"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Delete"
@@ -158,6 +177,10 @@ msgstr "完成"
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "所有人的帖子都會立即釋出,但你標記為垃圾的作者除外。"
 
+#: src/features/roadmap/pages.tsx
+msgid "Feedback"
+msgstr "反饋"
+
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Good news: “{title}” has shipped. Thank you for asking for it."
 msgstr "好消息：「{title}」已發布。感謝你的提議。"
@@ -169,6 +192,10 @@ msgstr "已隱藏"
 #: src/features/roadmap/Board.tsx
 msgid "Hide"
 msgstr "隱藏"
+
+#: src/features/roadmap/pages.tsx
+msgid "Idea"
+msgstr "想法"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Idea started"
@@ -236,22 +263,27 @@ msgid "Linked to {title}"
 msgstr "已連結到 {title}"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Load more"
 msgstr "載入更多"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "設為私有"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "設為私有（{publicKey}）"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "設為公開"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "設為公開（{publicKey}）"
 
@@ -319,6 +351,7 @@ msgid "No idea matches."
 msgstr "沒有符合的想法。"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "No ideas yet. New ones land here."
 msgstr "還沒有想法。新的想法會出現在這裡。"
 
@@ -327,6 +360,7 @@ msgid "None"
 msgstr "無"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Nothing here yet."
 msgstr "這裡還沒有內容。"
 
@@ -372,10 +406,12 @@ msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "將作為你對該想法的公開回覆發布。支援 Markdown。"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "私有"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
 msgstr "公開"
@@ -413,6 +449,7 @@ msgid "Review the reply"
 msgstr "檢查回覆"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "路線圖"
 
@@ -433,6 +470,7 @@ msgid "Search ideas"
 msgstr "搜尋想法"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "設定"
 
@@ -449,6 +487,7 @@ msgid "Shown under the name on the public board."
 msgstr "顯示在公開看板的名稱下方。"
 
 #: src/features/roadmap/MoveDialog.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Stage"
 msgstr "階段"
 
@@ -526,11 +565,18 @@ msgstr "使用 3 到 48 個字母、數字和中間的連字號。"
 msgid "View board"
 msgstr "檢視看板"
 
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "可見度"
 
+#: src/features/roadmap/pages.tsx
+msgid "Votes"
+msgstr "票數"
+
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "等待稽覈"
 

@@ -4,11 +4,12 @@ import { ArrowUpRightIcon, PlusIcon } from "lucide-react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
-import { InboxMark } from "@/components/common"
+import { InboxMark, PageHeading, PageTop as FlatTop } from "@/components/common"
 import { PaneBack } from "@/components/common/Column"
 import { CHANGELOG_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ChangelogLayout, ChangelogTrail } from "@/features/changelog/ChangelogFrame"
 import { CreateChangelogDialog } from "@/features/changelog/CreateChangelogDialog"
 import { PreviewDialog } from "@/features/changelog/PreviewDialog"
 import { changelogLink, changelogOfInbox, useChangelogs, useUpdateChangelog } from "@/features/changelog/queries"
@@ -18,11 +19,13 @@ import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { look, PageTop } from "@/features/inbox/PageFrame"
 import { Pill } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useIsPhone } from "@/hooks/use-media-query"
 import type { Changelog, Inbox } from "@/lib/api"
 import { useSession } from "@/lib/session"
+import { cn } from "@/lib/utils"
 import { isSupport, useInboxes } from "@/lib/workspace"
 
-function ChangelogCard({ changelog, inbox }: { changelog: Changelog; inbox: Inbox }) {
+function ChangelogCard({ changelog, inbox, flat }: { changelog: Changelog; inbox: Inbox; flat?: boolean }) {
   const navigate = useNavigate()
   const { canManage } = useSession()
   const localeName = useLocaleName()
@@ -30,8 +33,8 @@ function ChangelogCard({ changelog, inbox }: { changelog: Changelog; inbox: Inbo
   const [preview, setPreview] = useState(false)
   const { entries: total, published, scheduled } = changelog.counts
   return (
-    <section className={look.card} data-testid="changelog-card">
-      <div className="flex flex-wrap items-center gap-3 px-4 py-4">
+    <section className={flat ? "border-t border-line-soft" : look.card} data-testid="changelog-card">
+      <div className={cn("flex flex-wrap items-center gap-3 py-4", flat ? "px-1" : "px-4")}>
         <InboxMark name={inbox.name} color={inbox.branding.color} className="size-8 text-body" />
         <div className="flex min-w-48 flex-1 flex-col leading-[1.35]">
           <span className="flex items-center gap-2">
@@ -93,7 +96,7 @@ function ChangelogCard({ changelog, inbox }: { changelog: Changelog; inbox: Inbo
           )}
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-1.5 px-4 pb-3.5">
+      <div className={cn("flex flex-wrap items-center gap-1.5 pb-3.5", flat ? "ps-[52px] pe-1" : "px-4")}>
         <span className={look.faint}>
           <Trans>Languages</Trans>
         </span>
@@ -125,6 +128,74 @@ export function ChangelogsPage() {
   const createKey = keyLabel(CHANGELOG_KEYS.create).join("")
   useHotkeys(missing ? { [CHANGELOG_KEYS.create]: () => setCreating(missing) } : {}, !creating)
   const { t } = useLingui()
+  const phone = useIsPhone()
+  const dialog = creating && (
+    <CreateChangelogDialog
+      inboxId={creating.id}
+      inboxName={creating.name}
+      onClose={() => setCreating(null)}
+      onCreated={(c) => {
+        setCreating(null)
+        navigate(changelogLink(c.id, "settings"))
+      }}
+    />
+  )
+  if (!phone)
+    return (
+      <ChangelogLayout place="changelogs" testId="changelogs-page">
+        <FlatTop back={{ label: t`What’s new`, to: "/updates" }}>
+          <ChangelogTrail place={t`Changelogs`} />
+        </FlatTop>
+        <section className="flex max-w-[980px] flex-col">
+          <PageHeading
+            title={t`Changelogs`}
+            lede={<Trans>Each product has one changelog. Owners and admins create and publish them.</Trans>}
+          />
+          <ErrorLine error={changelogs.error} className="mt-3" />
+          <div className="mt-7">
+            {changelogs.isPending || inboxQuery.isPending ? (
+              <Skeleton className="h-5 w-full" />
+            ) : (
+              inboxes.map((inbox) => {
+                const changelog = changelogOfInbox(changelogs.data, inbox.id)
+                return changelog ? (
+                  <ChangelogCard key={inbox.id} changelog={changelog} inbox={inbox} flat />
+                ) : (
+                  <section
+                    key={inbox.id}
+                    className="flex flex-wrap items-center gap-3 border-t border-line-soft px-1 py-4"
+                    data-testid="changelog-card-missing"
+                  >
+                    <InboxMark name={inbox.name} color={inbox.branding.color} className="size-8 text-body" />
+                    <div className="flex min-w-48 flex-1 flex-col leading-[1.35]">
+                      <span className="truncate text-[15px] font-semibold">{inbox.name}</span>
+                      {!canManage && (
+                        <span className="text-small text-faint">
+                          <Trans>No changelog yet. Owners and admins create it.</Trans>
+                        </span>
+                      )}
+                    </div>
+                    {canManage && (
+                      <Button
+                        variant="outline"
+                        className={look.btnSm}
+                        onClick={() => setCreating(inbox)}
+                        title={t`Create changelog (${createKey})`}
+                        data-testid="create-changelog-open"
+                      >
+                        <PlusIcon />
+                        <Trans>Create changelog</Trans>
+                      </Button>
+                    )}
+                  </section>
+                )
+              })
+            )}
+          </div>
+        </section>
+        {dialog}
+      </ChangelogLayout>
+    )
   return (
     <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="changelogs-page">
       <PageTop
@@ -178,17 +249,7 @@ export function ChangelogsPage() {
           )}
         </div>
       </div>
-      {creating && (
-        <CreateChangelogDialog
-          inboxId={creating.id}
-          inboxName={creating.name}
-          onClose={() => setCreating(null)}
-          onCreated={(c) => {
-            setCreating(null)
-            navigate(changelogLink(c.id, "settings"))
-          }}
-        />
-      )}
+      {dialog}
     </main>
   )
 }

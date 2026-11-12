@@ -2003,6 +2003,7 @@ msgstr "Bare handlinger"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "Aktiv"
 
@@ -2345,6 +2346,7 @@ msgstr "La til domenet {domain} for enkel pålogging"
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "Adresse"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "Alle"
 
@@ -2491,6 +2494,10 @@ msgstr "Alle importer"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Alle postbokser"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "Alle hendelser"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "alle produkter"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "Alle produkter"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "Fullført kl. {endedAt}"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "Komponent"
 
@@ -4834,6 +4843,7 @@ msgstr "Komponent slettet"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "Komponenter"
@@ -6293,6 +6303,7 @@ msgstr "Skrivebordsvarsler er tillatt."
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "Skrivebordsvarsler er blokkert for dette nettstedet i nettleserens innstillinger, så bare lyden spilles."
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "Kryptering"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "Slutten av dagen (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "Avsluttet"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "IMAP er av for denne postboksen. Slå det på i innstillingene til {prov
 msgid "IMAP server"
 msgstr "IMAP-server"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "Påvirkning"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "Innbokser kutter emnefelt som er lengre enn 80 tegn."
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "Hendelse"
@@ -9059,6 +9076,7 @@ msgstr "Hendelse: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "Hendelser"
 
@@ -9526,6 +9544,7 @@ msgstr "Nøkkelord"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Type"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "Sist lest {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "Siste resultat"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "Mandag morgen"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "Monitor"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "Monitor slettet"
 
@@ -10905,6 +10932,7 @@ msgstr "Overvåkes"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "Monitorer"
@@ -10912,6 +10940,10 @@ msgstr "Monitorer"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Monitorer setter statusen til en komponent på en statusside. Opprett først en statusside."
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "Monitorer, {down} nede"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "av"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "Av"
 
@@ -13499,6 +13532,10 @@ msgstr "Åpne innboksen"
 msgid "Open incident"
 msgstr "Åpne hendelse"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "Åpne hendelser"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "Åpne omfatter samtaler som venter på kunden. Vurderingen blir oransje under 85 % gode når et produkt har 5 vurderinger."
@@ -13840,6 +13877,7 @@ msgstr "Over tid"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "Oversikt"
@@ -13881,7 +13919,10 @@ msgstr "Tempo (e-poster i sekundet)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "Side"
 
@@ -13897,6 +13938,7 @@ msgstr "Side der de sa ja (valgfritt)"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "Sider"
 
@@ -13967,6 +14009,7 @@ msgstr "Passord satt"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "Tidligere"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "Offentlig"
 
@@ -16576,6 +16620,7 @@ msgstr "Planlegg innlegget"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Planlagt"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "Søk"
 
@@ -17518,6 +17564,7 @@ msgstr "Setter opp …"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Innstillinger"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "Signeringshemmelighet"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "Siden"
 
@@ -18497,6 +18545,7 @@ msgstr "Start e-postlisten din"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "Startet"
 
@@ -18520,6 +18569,7 @@ msgstr "Startet av {starter} · {started}"
 msgid "Starting"
 msgstr "Starter"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "Start"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (port 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "Tilstand"
 
@@ -18586,6 +18638,7 @@ msgstr "Tilstand når den er nede"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "Status"
 
@@ -18593,6 +18646,7 @@ msgstr "Status"
 msgid "Status and coming up"
 msgstr "Status og kommende"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "Statusside"
@@ -18605,6 +18659,7 @@ msgstr "Statusside slettet"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Statussider"
@@ -18744,6 +18799,7 @@ msgstr "Meldt på listen nå"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "Abonnenter"
@@ -20574,6 +20630,10 @@ msgstr "Denne postboksen har ingen e-postliste ennå. En utsendelse går bare ti
 msgid "This inbox is for"
 msgstr "Denne innboksen er for"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "Hendelsen finnes ikke lenger, eller du kan ikke se den."
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "Dette er et komprimert arkiv. Pakk ut Takeout-arkivet og last opp .mbox-filen."
@@ -20689,6 +20749,10 @@ msgstr "Denne meldingen"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Denne migreringen er avsluttet, så ingenting mer kan lastes opp. Start en ny for en annen fil."
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "Monitoren finnes ikke lenger, eller du kan ikke se den."
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "oppetid {uptime} over {shown} dager"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "Oppetid er skjult på denne siden. Slå den på i innstillingene for å se hver dag her."
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "Oppetid, 24 timer"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "visninger"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Visninger"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "Synlighet"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

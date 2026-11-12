@@ -2003,6 +2003,7 @@ msgstr "Só ações"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "Ativo"
 
@@ -2345,6 +2346,7 @@ msgstr "Adicionou o domínio {domain} para o início de sessão único"
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "Endereço"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "Todos"
 
@@ -2491,6 +2494,10 @@ msgstr "Todas as importações"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Todas as caixas"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "Todos os incidentes"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "todos os produtos"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "Todos os produtos"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "Concluído às {endedAt}"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "Componente"
 
@@ -4834,6 +4843,7 @@ msgstr "Componente eliminado"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "Componentes"
@@ -6293,6 +6303,7 @@ msgstr "As notificações na área de trabalho estão permitidas."
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "As notificações na área de trabalho estão bloqueadas para este site nas configurações do navegador, então só o som toca."
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "Criptografia"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "Fim do dia (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "Terminou"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "O IMAP está desativado para esta caixa. Ative nas configurações do {p
 msgid "IMAP server"
 msgstr "Servidor IMAP"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "Impacto"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "As caixas de entrada cortam assuntos com mais de 80 caracteres."
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "Incidente"
@@ -9059,6 +9076,7 @@ msgstr "Incidente: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "Incidentes"
 
@@ -9526,6 +9544,7 @@ msgstr "Palavra-chave"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Tipo"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "Última leitura {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "Último resultado"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "Segunda-feira de manhã"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "Monitor"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "Monitor eliminado"
 
@@ -10905,6 +10932,7 @@ msgstr "Monitorando"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "Monitores"
@@ -10912,6 +10940,10 @@ msgstr "Monitores"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Os monitores definem o estado de um componente da página de status. Crie primeiro uma página de status."
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "Monitores, {down} em baixo"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "desativado"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "Desativado"
 
@@ -13499,6 +13532,10 @@ msgstr "Abrir caixa de entrada"
 msgid "Open incident"
 msgstr "Abrir incidente"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "Incidentes abertos"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "Abertas inclui conversas à espera do cliente. A avaliação fica âmbar abaixo de 85 % boas quando um produto tem 5 avaliações."
@@ -13840,6 +13877,7 @@ msgstr "Ao longo do tempo"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "Visão geral"
@@ -13881,7 +13919,10 @@ msgstr "Ritmo (e-mails por segundo)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "Página"
 
@@ -13897,6 +13938,7 @@ msgstr "Página em que aceitaram (opcional)"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "Páginas"
 
@@ -13967,6 +14009,7 @@ msgstr "Palavra-passe definida"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "Passados"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "Pública"
 
@@ -16576,6 +16620,7 @@ msgstr "Agendar a entrada"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Agendado"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "Buscar"
 
@@ -17518,6 +17564,7 @@ msgstr "A configurar…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Configurações"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "Segredo de assinatura"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "Desde"
 
@@ -18497,6 +18545,7 @@ msgstr "Crie sua lista de e-mails"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "Iniciado"
 
@@ -18520,6 +18569,7 @@ msgstr "Iniciado por {starter} · {started}"
 msgid "Starting"
 msgstr "A iniciar"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "Início"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (porta 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "Estado"
 
@@ -18586,6 +18638,7 @@ msgstr "Estado ao cair"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "Status"
 
@@ -18593,6 +18646,7 @@ msgstr "Status"
 msgid "Status and coming up"
 msgstr "Estado e próximos"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "Página de status"
@@ -18605,6 +18659,7 @@ msgstr "Página de status eliminada"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Páginas de status"
@@ -18744,6 +18799,7 @@ msgstr "Iubscrito na lista agora"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "Subscritores"
@@ -20574,6 +20630,10 @@ msgstr "Esta caixa ainda não tem lista de e-mails. Um envio vai só para quem s
 msgid "This inbox is for"
 msgstr "Esta caixa é para"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "Este incidente já não existe ou não o pode ver."
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "Este é um ficheiro comprimido. Descomprima o ficheiro do Takeout e envie o ficheiro .mbox."
@@ -20689,6 +20749,10 @@ msgstr "Esta mensagem"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Esta migração terminou, então nada mais pode ser enviado. Inicie uma nova para outro ficheiro."
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "Este monitor já não existe ou não o pode ver."
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "disponibilidade {uptime} em {shown} dias"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "A disponibilidade está oculta nesta página. Ative-a nas definições para ver cada dia aqui."
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "Disponibilidade, 24 horas"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "visualizações"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Visualizações"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "Visibilidade"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

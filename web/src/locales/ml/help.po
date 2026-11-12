@@ -110,6 +110,7 @@ msgstr "ഉപ-ശേഖരം ചേർക്കുക"
 msgid "Add locale"
 msgstr "Add locale"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -178,6 +179,7 @@ msgstr "ലേഖന കാഴ്ചകൾ"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "ലേഖനങ്ങൾ"
@@ -294,6 +296,7 @@ msgid "Collection"
 msgstr "ശേഖരം"
 
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "ശേഖരങ്ങൾ"
@@ -404,6 +407,8 @@ msgstr "കരട്"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "കരട് സമർപ്പിച്ചു. ഉടമയ്ക്കോ അഡ്മിനോ ഇത് പ്രസിദ്ധീകരിക്കാം."
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "ഡ്രാഫ്റ്റുകൾ"
@@ -467,11 +472,13 @@ msgstr "തലക്കെട്ട്"
 
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "സഹായ കേന്ദ്രം"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "സഹായ കേന്ദ്രം സൃഷ്ടിച്ചു. ആദ്യ ലേഖനം എഴുതി പ്രസിദ്ധീകരിക്കുക."
@@ -481,6 +488,7 @@ msgid "Help center deleted"
 msgstr "സഹായ കേന്ദ്രം ഇല്ലാതാക്കി"
 
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help centers"
 msgstr "സഹായ കേന്ദ്രങ്ങൾ"
@@ -570,6 +578,10 @@ msgstr "കഴിഞ്ഞ {d} ദിവസം"
 msgid "last 7 days"
 msgstr "കഴിഞ്ഞ 7 ദിവസം"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Last 7 days"
+msgstr "കഴിഞ്ഞ 7 ദിവസം"
+
 #: src/features/help/ImportCard.tsx
 msgid "Leave empty to read every site."
 msgstr "Leave empty to read every site."
@@ -657,6 +669,10 @@ msgstr "പുതിയ ശേഖരം"
 #: src/features/help/CollectionsTab.tsx
 msgid "New collection ({newKey})"
 msgstr "പുതിയ ശേഖരം ({newKey})"
+
+#: src/features/help/HelpFrame.tsx
+msgid "New help center for {product}"
+msgstr "{product}-നായി പുതിയ സഹായ കേന്ദ്രം"
 
 #: src/features/help/ReportTab.tsx
 msgid "No article got a “no” in this period."
@@ -842,18 +858,22 @@ msgstr "പൊതു വിലാസം"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "പ്രസിദ്ധീകരിക്കുക"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "പ്രസിദ്ധീകരിക്കുക ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
+#: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -881,6 +901,7 @@ msgstr "Redirects"
 msgid "Remove {0}"
 msgstr "{0} നീക്കം ചെയ്യുക"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Report"
 msgstr "റിപ്പോർട്ട്"
@@ -956,6 +977,7 @@ msgstr "തിരയൽ വാക്കുകൾ"
 msgid "Searched for, found nothing"
 msgstr "തിരഞ്ഞു, ഒന്നും കണ്ടെത്തിയില്ല"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Searches"
 msgstr "തിരയലുകൾ"
@@ -976,6 +998,7 @@ msgstr "അയച്ചത്"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1008,6 +1031,10 @@ msgstr "ഹോം പേജിൽ പേരിന് താഴെ കാണി�
 #: src/features/help/SettingsTab.tsx
 msgid "Shown when an article has no translation in the visitor’s language."
 msgstr "ലേഖനത്തിന് സന്ദർശകന്റെ ഭാഷയിൽ വിവർത്തനം ഇല്ലാത്തപ്പോൾ കാണിക്കും."
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Site"
+msgstr "സൈറ്റ്"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Site link"
@@ -1157,10 +1184,12 @@ msgstr "തിരയാൻ ഒരു വാക്ക് ടൈപ്പ് ച�
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish"
 msgstr "പ്രസിദ്ധീകരണം റദ്ദാക്കുക"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "പ്രസിദ്ധീകരണം റദ്ദാക്കുക ({publishKey})"
 
@@ -1177,8 +1206,10 @@ msgid "Unpublish this translation?"
 msgstr "ഈ വിവർത്തനത്തിന്റെ പ്രസിദ്ധീകരണം റദ്ദാക്കണോ?"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "പ്രസിദ്ധീകരിച്ചിട്ടില്ല"
 
@@ -1215,10 +1246,12 @@ msgid "View"
 msgstr "കാണുക"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site"
 msgstr "സൈറ്റ് കാണുക"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "സൈറ്റ് കാണുക ({openKey})"
 
@@ -1230,6 +1263,10 @@ msgstr "കാഴ്ചകൾ"
 #: src/features/help/ArticlesTab.tsx
 msgid "Views · 7 days"
 msgstr "കാഴ്ചകൾ · 7 ദിവസം"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Visibility"
+msgstr "ദൃശ്യത"
 
 #: src/features/help/CenterBar.tsx
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."

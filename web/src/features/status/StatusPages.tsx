@@ -8,10 +8,26 @@ import {
   PlusIcon,
   TriangleAlertIcon,
 } from "lucide-react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
-import { ErrorLine, InboxMark, useConfirm } from "@/components/common"
+import {
+  ErrorLine,
+  FlatEmpty,
+  FlatRow,
+  FlatWho,
+  InboxMark,
+  InfoSection,
+  KV,
+  ListRow,
+  MoreLink,
+  PageHeading,
+  PageTop,
+  SectionHeading,
+  topButton,
+  topInk,
+  useConfirm,
+} from "@/components/common"
 import { keyLabel, STATUS_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDuration, formatShort } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -26,7 +42,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
-import { FrameTabs, look, Overline, PageTop } from "@/features/inbox/PageFrame"
+import { useListCursor } from "@/features/inbox/listCursor"
+import { FrameTabs, look, Overline, PageTop as StackTop } from "@/features/inbox/PageFrame"
 import { ComponentsTab } from "@/features/status/ComponentsTab"
 import { CreatePageDialog } from "@/features/status/CreatePageDialog"
 import { Pill } from "@/features/status/PageFrame"
@@ -44,6 +61,7 @@ import {
 } from "@/features/status/queries"
 import { useStatusScope } from "@/features/status/scope"
 import { SettingsTab } from "@/features/status/SettingsTab"
+import { StatusLayout, StatusTrail, useStatusNames, type StatusPlace } from "@/features/status/StatusFrame"
 import { SubscribersTab } from "@/features/status/SubscribersTab"
 import { INCIDENT_STATES, isClosed, MAINTENANCE_STATES, StateDot, useStatusText } from "@/features/status/text"
 import { UptimeBars, usePercent } from "@/features/status/UptimeBars"
@@ -304,15 +322,22 @@ function ComponentRow({
   name,
   state,
   uptime,
+  flat,
 }: {
   p: StatusPage
   name: string
   state: StatusComponentStateValue
   uptime?: { uptime?: number; days?: Parameters<typeof UptimeBars>[0]["days"] }
+  flat?: boolean
 }) {
   const percent = usePercent()
   return (
-    <li className="grid grid-cols-[minmax(150px,1fr)_minmax(0,2.2fr)_64px_132px] items-center gap-x-3.5 gap-y-1.5 border-t px-4 py-2.5 text-small first:border-t-0 @max-3xl:grid-cols-[minmax(0,1fr)_auto]">
+    <li
+      className={cn(
+        "grid grid-cols-[minmax(150px,1fr)_minmax(0,2.2fr)_64px_132px] items-center gap-x-3.5 gap-y-1.5 border-t py-2.5 text-small @max-3xl:grid-cols-[minmax(0,1fr)_auto]",
+        flat ? "border-line-soft px-1" : "px-4 first:border-t-0"
+      )}
+    >
       <span className="truncate font-semibold" title={name}>
         {name}
       </span>
@@ -339,7 +364,7 @@ function ComponentRow({
   )
 }
 
-function ComponentsCard({ p }: { p: StatusPage }) {
+function ComponentsCard({ p, flat }: { p: StatusPage; flat?: boolean }) {
   const text = useStatusText()
   const components = useStatusComponents(p.id)
   const pub = usePublicStatus(p)
@@ -359,9 +384,10 @@ function ComponentsCard({ p }: { p: StatusPage }) {
     else sections.push({ key, name: groups.find((g) => g.id === key)?.name, rows: [c] })
   }
   const legend: StatusComponentStateValue[] = ["operational", "degraded", "major_outage", "maintenance"]
+  const pad = flat ? "px-1" : "px-4"
   return (
-    <section className={card} data-testid="status-components-card">
-      <div className="flex flex-wrap items-start gap-x-3 gap-y-1 px-4 pt-3.5 pb-2">
+    <section className={flat ? "flex flex-col" : card} data-testid="status-components-card">
+      <div className={cn("flex flex-wrap items-start gap-x-3 gap-y-1 pt-3.5 pb-2", pad)}>
         <div className="flex min-w-0 flex-1 flex-col leading-[1.35]">
           <Link
             to={statusLink(p.id, "components")}
@@ -381,14 +407,14 @@ function ComponentsCard({ p }: { p: StatusPage }) {
           <Skeleton className="h-12 w-full rounded-[10px]" />
         </div>
       ) : items.length === 0 ? (
-        <p className="px-4 py-6 text-center text-faint">
+        <p className={cn("py-6 text-faint", flat ? "border-t border-line-soft px-1" : "px-4 text-center")}>
           <Trans>
             No components yet. Add the parts of your product that customers depend on, in the Components tab.
           </Trans>
         </p>
       ) : (
         <>
-          <div className="flex flex-wrap gap-x-3 gap-y-1 px-4 pb-3 text-caption text-faint" aria-hidden>
+          <div className={cn("flex flex-wrap gap-x-3 gap-y-1 pb-3 text-caption text-faint", pad)} aria-hidden>
             {legend.map((s) => (
               <span key={s} className="inline-flex items-center gap-1.5">
                 <StateDot state={s} className="size-2.5 rounded-[2px]" />
@@ -397,11 +423,11 @@ function ComponentsCard({ p }: { p: StatusPage }) {
             ))}
           </div>
           {sections.map((s) => (
-            <div key={s.key || "none"} className="border-t">
-              {s.name && <Overline className="px-4 pt-2.5 pb-1">{s.name}</Overline>}
+            <div key={s.key || "none"} className={flat ? undefined : "border-t"}>
+              {s.name && <Overline className={cn("pt-2.5 pb-1", pad)}>{s.name}</Overline>}
               <ul>
                 {s.rows.map((c) => (
-                  <ComponentRow key={c.id} p={p} name={c.name} state={c.state} uptime={uptime.get(c.id)} />
+                  <ComponentRow key={c.id} p={p} name={c.name} state={c.state} uptime={uptime.get(c.id)} flat={flat} />
                 ))}
               </ul>
             </div>
@@ -713,6 +739,274 @@ function OverviewSkeleton() {
   )
 }
 
+function OpenIncidentRow({ p, i }: { p: StatusPage; i: StatusIncident }) {
+  const { i18n } = useLingui()
+  const text = useStatusText()
+  const draft = !i.published_at
+  const maintenance = i.kind === "maintenance"
+  const since = formatShort(i.started_at ?? i.published_at ?? i.created_at, i18n.locale)
+  const state = text.incident[i.state]
+  const latest = i.updates[0]
+  return (
+    <ListRow to={incidentLink(p.id, i.id)} className="items-start" data-testid="status-incident-row">
+      <span
+        aria-hidden
+        className={cn(
+          "mt-1.5 size-[7px] shrink-0 rounded-full",
+          maintenance ? "bg-blue-600 dark:bg-blue-400" : i.impact === "minor" ? "bg-warn" : "bg-bad"
+        )}
+      />
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="font-medium break-words text-foreground">{i.title}</span>
+        <span className="text-small text-muted-foreground">
+          {maintenance ? text.kind.maintenance : text.impact[i.impact]}
+          {" · "}
+          <Trans>
+            {state} since {since}
+          </Trans>
+          {draft && (
+            <>
+              {" · "}
+              <Trans>not posted yet</Trans>
+            </>
+          )}
+        </span>
+        {latest?.body && <span className="line-clamp-2 text-small text-muted-foreground">{latest.body}</span>}
+      </span>
+      <span className="inline-flex shrink-0 items-center gap-1 text-small font-medium text-brand">
+        {draft ? <Trans>Review and post</Trans> : maintenance ? <Trans>Open</Trans> : <Trans>Post update</Trans>}
+        <ArrowRightIcon className="size-3.5 rtl:rotate-180" />
+      </span>
+    </ListRow>
+  )
+}
+
+function PageInfo({ p, incidents }: { p: StatusPage; incidents: StatusIncident[] }) {
+  const { t, i18n } = useLingui()
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const subs = p.email_subscribers
+  const past = incidents
+    .filter((i) => i.kind === "incident" && !!i.published_at)
+    .sort((a, b) => (b.started_at ?? b.created_at).localeCompare(a.started_at ?? a.created_at))
+  const last = past[0]
+  return (
+    <InfoSection title={<Trans>Page</Trans>} testId="status-facts">
+      <KV label={<Trans>Address</Trans>} value={<span dir="ltr">{hostOf(p.url)}</span>} />
+      <KV
+        label={<Trans>Visibility</Trans>}
+        value={p.published ? t`Published` : t`Unpublished`}
+        tone={p.published ? "ok" : undefined}
+      />
+      <KV
+        label={<Trans>Subscribers</Trans>}
+        value={subs.enabled ? fmt.format(subs.counts.subscribed) : t`Off`}
+        to={statusLink(p.id, "subscribers")}
+      />
+      <KV
+        label={<Trans>Last incident</Trans>}
+        value={
+          !last
+            ? t`None yet`
+            : !last.resolved_at
+              ? t`Now`
+              : formatShort(last.started_at ?? last.created_at, i18n.locale)
+        }
+        tone={last && !last.resolved_at ? "warn" : undefined}
+        to="/incidents"
+      />
+    </InfoSection>
+  )
+}
+
+function MonitorsInfo({ p }: { p: StatusPage }) {
+  const text = useStatusText()
+  const monitors = useStatusMonitors(p.id).data ?? []
+  const shown = [...monitors]
+    .sort((a, b) => Number(b.state === "down" && !b.paused) - Number(a.state === "down" && !a.paused))
+    .slice(0, MONITOR_ROWS)
+  return (
+    <InfoSection
+      title={<Trans>Monitors</Trans>}
+      action={
+        <MoreLink to="/monitors">
+          <Trans>All</Trans>
+        </MoreLink>
+      }
+      testId="status-monitors-card"
+    >
+      {shown.length === 0 ? (
+        <p className="m-0 text-small text-muted-foreground">
+          <Trans>No monitor watches this page yet</Trans>
+        </p>
+      ) : (
+        shown.map((m) => (
+          <KV
+            key={m.id}
+            label={m.name}
+            value={text.monitorState[m.paused ? "paused" : m.state]}
+            tone={m.paused ? undefined : m.state === "down" ? "bad" : m.state === "up" ? "ok" : undefined}
+            to={monitorLink(m.id)}
+          />
+        ))
+      )}
+    </InfoSection>
+  )
+}
+
+function ComingUpInfo({ p, planned }: { p: StatusPage; planned: StatusIncident[] }) {
+  const { i18n } = useLingui()
+  return (
+    <InfoSection title={<Trans>Coming up</Trans>} testId="status-coming-up">
+      {planned.length === 0 ? (
+        <p className="m-0 text-small text-muted-foreground">
+          <Trans>No maintenance is planned.</Trans>
+        </p>
+      ) : (
+        planned.map((i) => (
+          <KV
+            key={i.id}
+            label={i.title}
+            value={formatShort(i.scheduled_start ?? i.created_at, i18n.locale)}
+            to={incidentLink(p.id, i.id)}
+          />
+        ))
+      )}
+    </InfoSection>
+  )
+}
+
+function FlatOverview({ p }: { p: StatusPage }) {
+  const { t } = useLingui()
+  const text = useStatusText()
+  const incidents = usePagesIncidents([p.id], false)
+  const monitors = useStatusMonitors(p.id).data
+  const open = incidents.data.filter((i) => !isClosed(i) && i.state !== "scheduled")
+  const headline =
+    p.state === "operational"
+      ? t`All systems operational`
+      : p.state === "degraded" || p.state === "partial_outage"
+        ? t`Partly degraded`
+        : text.component[p.state]
+  const watching = monitors?.length ?? 0
+  return (
+    <div className="flex flex-col" data-testid="status-overview">
+      <div className="mt-6 flex items-center gap-3 border-y border-line-soft px-1 py-3.5" role="status">
+        <StateDot state={p.state} className="size-2.5" />
+        <span className="min-w-0 flex-1 text-body">
+          <b className="font-semibold text-foreground" data-testid="status-overall">
+            {headline}
+          </b>
+          <span className="text-muted-foreground">
+            {" · "}
+            {watching > 0 ? (
+              <Plural value={watching} one="Watched by # monitor" other="Watched by # monitors" />
+            ) : (
+              <Trans>No monitor watches this page yet</Trans>
+            )}
+          </span>
+        </span>
+      </div>
+      {open.length > 0 && (
+        <>
+          <SectionHeading
+            title={<Trans>Open incidents</Trans>}
+            more={
+              <MoreLink to="/incidents">
+                <Trans>All incidents</Trans>
+              </MoreLink>
+            }
+          />
+          <div>
+            {open.map((i) => (
+              <OpenIncidentRow key={i.id} p={p} i={i} />
+            ))}
+          </div>
+        </>
+      )}
+      <div className="mt-6">
+        <ComponentsCard p={p} flat />
+      </div>
+    </div>
+  )
+}
+
+function OverviewAside({ p }: { p: StatusPage }) {
+  const incidents = usePagesIncidents([p.id], false)
+  const planned = incidents.data.filter((i) => !isClosed(i) && i.state === "scheduled")
+  return (
+    <>
+      <PageInfo p={p} incidents={incidents.data} />
+      <MonitorsInfo p={p} />
+      <ComingUpInfo p={p} planned={planned} />
+    </>
+  )
+}
+
+function PagesList({
+  items,
+  inboxOf,
+  missing,
+  onCreate,
+}: {
+  items: StatusPage[]
+  inboxOf: (p?: StatusPage) => Inbox | undefined
+  missing: Inbox[]
+  onCreate: (inboxId: string) => void
+}) {
+  const { t } = useLingui()
+  const navigate = useNavigate()
+  const text = useStatusText()
+  const listRef = useRef<HTMLDivElement>(null)
+  const { cursorId } = useListCursor(items, null, (id) => navigate(statusLink(id)), true, listRef, true, true)
+  return (
+    <div ref={listRef} className="mt-7" role="list" aria-label={t`Status pages`}>
+      {items.map((p) => {
+        const inbox = inboxOf(p)
+        return (
+          <div role="listitem" key={p.id}>
+            <FlatRow
+              color={inbox?.branding.color}
+              cursor={p.id === cursorId}
+              data-row-id={p.id}
+              cols="grid-cols-[7px_minmax(0,1fr)_minmax(0,160px)_auto]"
+              button={{ onClick: () => navigate(statusLink(p.id)), "data-testid": "status-home-page" }}
+              who={
+                <span className="flex min-w-0 flex-col gap-0.5">
+                  <FlatWho strong>{p.name}</FlatWho>
+                  <span className="truncate text-small text-muted-foreground" dir="ltr">
+                    {hostOf(p.url)}
+                  </span>
+                </span>
+              }
+              end={
+                <span className={cn("text-small", p.published ? "text-ok" : "text-muted-foreground")}>
+                  {p.published ? <Trans>Published</Trans> : <Trans>Unpublished</Trans>}
+                </span>
+              }
+            >
+              <span className="inline-flex items-center gap-2 text-small">
+                <StateDot state={p.state} />
+                {text.component[p.state]}
+              </span>
+            </FlatRow>
+          </div>
+        )
+      })}
+      {missing.map((i) => {
+        const product = i.name
+        return (
+          <ListRow key={i.id} onClick={() => onCreate(i.id)} data-testid="create-status-page-open">
+            <PlusIcon aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
+            <span className="min-w-0 truncate text-muted-foreground">
+              <Trans>Create status page for {product}</Trans>
+            </span>
+          </ListRow>
+        )
+      })}
+    </div>
+  )
+}
+
 export function StatusHome() {
   const { t } = useLingui()
   const navigate = useNavigate()
@@ -748,13 +1042,19 @@ export function StatusHome() {
     })
   }
   const busy = !!creating || preview
+  const statusNames = useStatusNames()
+  const listing = !phone && params.get("tab") === "pages"
 
   useHotkeys(
     {
-      j: () => pick(at + 1),
-      k: () => pick(at - 1),
-      ArrowDown: () => pick(at + 1),
-      ArrowUp: () => pick(at - 1),
+      ...(listing
+        ? {}
+        : {
+            j: () => pick(at + 1),
+            k: () => pick(at - 1),
+            ArrowDown: () => pick(at + 1),
+            ArrowUp: () => pick(at - 1),
+          }),
       ...(missing.length > 0 ? { [STATUS_KEYS.newPage]: () => setCreating("") } : {}),
       ...(current
         ? {
@@ -762,6 +1062,10 @@ export function StatusHome() {
             [STATUS_KEYS.components]: () => go(current.id, "components"),
             [STATUS_KEYS.subscribers]: () => go(current.id, "subscribers"),
             ...(canManage ? { [STATUS_KEYS.settings]: () => go(current.id, "settings") } : {}),
+          }
+        : {}),
+      ...(current && !listing
+        ? {
             [STATUS_KEYS.preview]: () => setPreview(true),
             ...(current.published
               ? { [STATUS_KEYS.openPage]: () => window.open(current.url, "_blank", "noopener,noreferrer") }
@@ -786,9 +1090,201 @@ export function StatusHome() {
     testId: `status-tab-${v}`,
   }))
 
+  const dialogs = (
+    <>
+      {creating !== null && (
+        <CreatePageDialog
+          inboxes={missing}
+          inboxId={creating || undefined}
+          onClose={() => setCreating(null)}
+          onCreated={(p) => {
+            setCreating(null)
+            navigate(statusLink(p.id, "settings"))
+          }}
+        />
+      )}
+      {preview && current && <PreviewDialog page={current} onClose={() => setPreview(false)} />}
+      {confirmDialog}
+    </>
+  )
+
+  if (!phone) {
+    const place: StatusPlace = listing ? "pages" : tab
+    const published = items.filter((p) => p.published).length
+    return (
+      <StatusLayout
+        place={place}
+        testId="status-home"
+        aside={
+          listing
+            ? items.length > 0 && (
+                <InfoSection title={<Trans>Status pages</Trans>}>
+                  <KV label={<Trans>Pages</Trans>} value={items.length} />
+                  <KV label={<Trans>Published</Trans>} value={published} tone={published ? "ok" : undefined} />
+                </InfoSection>
+              )
+            : current && <OverviewAside p={current} />
+        }
+      >
+        <PageTop
+          actions={
+            <>
+              {current && !listing && (
+                <PagePicker
+                  items={items}
+                  current={current}
+                  inboxOf={inboxOf}
+                  missing={missing}
+                  onPick={(id) => go(id, tab)}
+                  onCreate={setCreating}
+                />
+              )}
+              {current && !listing && (
+                <Button
+                  variant="outline"
+                  className={topButton}
+                  onClick={() => setPreview(true)}
+                  title={t`Preview (${previewKey})`}
+                  data-testid="status-preview"
+                >
+                  <Trans>Preview</Trans>
+                </Button>
+              )}
+              {current?.published && !listing && (
+                <Button
+                  variant="outline"
+                  className={topButton}
+                  render={<a href={current.url} target="_blank" rel="noreferrer noopener" />}
+                  title={t`View page (${openKey})`}
+                  data-testid="status-open-public"
+                >
+                  <Trans>View page</Trans>
+                  <ArrowUpRightIcon className="text-faint rtl:-scale-x-100" />
+                </Button>
+              )}
+              {current &&
+                !listing &&
+                canManage &&
+                (current.published ? (
+                  <Button
+                    variant="outline"
+                    className={topButton}
+                    disabled={patch.isPending}
+                    onClick={togglePublish}
+                    title={t`Unpublish (${publishKey})`}
+                    data-testid="status-publish"
+                  >
+                    <Trans>Unpublish</Trans>
+                  </Button>
+                ) : (
+                  <Button
+                    className={topInk}
+                    disabled={patch.isPending}
+                    onClick={togglePublish}
+                    title={t`Publish (${publishKey})`}
+                    data-testid="status-publish"
+                  >
+                    <Trans>Publish</Trans>
+                  </Button>
+                ))}
+              {missing.length > 0 && (listing || !current) && (
+                <Button
+                  className={topInk}
+                  onClick={() => setCreating("")}
+                  title={t`Create status page (${newKey})`}
+                  data-testid="status-home-create"
+                >
+                  <PlusIcon className="size-3.5" aria-hidden />
+                  <Trans>New page</Trans>
+                </Button>
+              )}
+            </>
+          }
+        >
+          <StatusTrail place={place} name={!listing ? current?.name : undefined} />
+        </PageTop>
+        <section
+          className="@container flex max-w-[1040px] flex-col"
+          data-testid={current && !listing ? "status-page" : undefined}
+        >
+          <PageHeading
+            title={listing || !current ? statusNames.pages : tab === "overview" ? current.name : statusNames[tab]}
+            lede={
+              listing || !current ? (
+                <Trans>Public pages that say whether your products work</Trans>
+              ) : (
+                <span data-testid="status-published">
+                  <span dir="ltr">{hostOf(current.url)}</span>
+                  {" · "}
+                  {current.published ? (
+                    <Trans>Published</Trans>
+                  ) : (
+                    <>
+                      <Trans>Unpublished</Trans>
+                      {" · "}
+                      <Trans>only your team can preview it</Trans>
+                    </>
+                  )}
+                </span>
+              )
+            }
+          />
+          <ErrorLine error={patch.error} className="mt-3" />
+          {pages.isPending ? (
+            <div className="mt-7 flex flex-col gap-3" aria-busy="true" data-testid="status-loading">
+              {[0, 1, 2].map((n) => (
+                <Skeleton key={n} className="h-5 w-full" />
+              ))}
+            </div>
+          ) : pages.error ? (
+            <FlatEmpty testId="status-error">
+              <ErrorLine error={pages.error} />
+              <Button variant="outline" className={topButton} onClick={() => void pages.refetch()}>
+                <Trans>Try again</Trans>
+              </Button>
+            </FlatEmpty>
+          ) : items.length === 0 ? (
+            <FlatEmpty testId="status-home-empty">
+              <p className="m-0 max-w-xl">
+                <Trans>
+                  Tell your customers whether your product works. Each product gets one page, where you open incidents,
+                  plan maintenance and set the state of each component.
+                </Trans>
+              </p>
+              {missing.length > 0 ? (
+                <Button variant="outline" className={topButton} onClick={() => setCreating("")}>
+                  <PlusIcon />
+                  <Trans>New page</Trans>
+                </Button>
+              ) : (
+                !canManage && (
+                  <p className="m-0 text-small" data-testid="status-none">
+                    <Trans>No status page yet. Owners and admins create it.</Trans>
+                  </p>
+                )
+              )}
+            </FlatEmpty>
+          ) : listing ? (
+            <PagesList items={items} inboxOf={inboxOf} missing={missing} onCreate={setCreating} />
+          ) : (
+            current && (
+              <div key={current.id} className={tab === "overview" ? undefined : "mt-6 flex flex-col gap-4"}>
+                {tab === "overview" && <FlatOverview p={current} />}
+                {tab === "components" && <ComponentsTab page={current} />}
+                {tab === "subscribers" && <SubscribersTab page={current} />}
+                {tab === "settings" && canManage && <SettingsTab page={current} />}
+              </div>
+            )
+          )}
+        </section>
+        {dialogs}
+      </StatusLayout>
+    )
+  }
+
   return (
     <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="status-home">
-      <PageTop
+      <StackTop
         className="bg-surface"
         title={<Trans>Status pages</Trans>}
         sub={<Trans>Public pages that say whether your products work</Trans>}
@@ -944,19 +1440,7 @@ export function StatusHome() {
           </section>
         )
       )}
-      {creating !== null && (
-        <CreatePageDialog
-          inboxes={missing}
-          inboxId={creating || undefined}
-          onClose={() => setCreating(null)}
-          onCreated={(p) => {
-            setCreating(null)
-            navigate(statusLink(p.id, "settings"))
-          }}
-        />
-      )}
-      {preview && current && <PreviewDialog page={current} onClose={() => setPreview(false)} />}
-      {confirmDialog}
+      {dialogs}
     </main>
   )
 }

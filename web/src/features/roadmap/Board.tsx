@@ -9,7 +9,7 @@ import {
 } from "@dnd-kit/core"
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { ArrowRightLeftIcon, CheckIcon, HourglassIcon, MessageSquareIcon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
 import { ErrorLine, toast } from "@/components/common"
@@ -67,6 +67,7 @@ function Card({
   const linked = idea.linked_count ?? 0
   const pending = idea.pending_posts ?? 0
   const title = idea.title
+  const picked = useRef<IdeaStage | null>(null)
   return (
     <li
       ref={setNodeRef}
@@ -119,8 +120,15 @@ function Card({
         )}
         {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
       </span>
-      <DropdownMenu>
+      <DropdownMenu
+        onOpenChangeComplete={(open) => {
+          const to = picked.current
+          picked.current = null
+          if (!open && to) onMove(to)
+        }}
+      >
         <DropdownMenuTrigger
+          onPointerDown={(e) => e.stopPropagation()}
           render={
             <Button
               variant="ghost"
@@ -134,9 +142,15 @@ function Card({
         >
           <ArrowRightLeftIcon />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-44">
+        <DropdownMenuContent align="end" className="min-w-44" onPointerDown={(e) => e.stopPropagation()}>
           {IDEA_STAGES.map((s) => (
-            <DropdownMenuItem key={s} disabled={s === idea.stage} onClick={() => onMove(s)}>
+            <DropdownMenuItem
+              key={s}
+              disabled={s === idea.stage}
+              onClick={() => {
+                picked.current = s
+              }}
+            >
               {text.stage[s]}
               {s === idea.stage && <CheckIcon className="ms-auto" />}
             </DropdownMenuItem>
@@ -158,8 +172,10 @@ function StageColumn({
   ideaId,
   cursorId,
   all,
+  flat,
   onMove,
 }: {
+  flat?: boolean
   stage: IdeaStage
   count: number
   list: Ideas
@@ -176,7 +192,8 @@ function StageColumn({
     <section
       ref={setNodeRef}
       className={cn(
-        "flex min-w-64 flex-1 basis-0 snap-start flex-col gap-2 rounded-[14px] border bg-surface p-2.5 transition-colors max-md:min-w-[82%] max-md:flex-none",
+        "flex min-w-64 flex-1 basis-0 snap-start flex-col gap-2 border p-2.5 transition-colors max-md:min-w-[82%] max-md:flex-none",
+        flat ? "min-w-0 rounded-[10px] border-line-soft bg-subtle max-md:min-w-0" : "rounded-[14px] bg-surface",
         stage === "closed" && "opacity-80",
         isOver && "bg-brand-wash"
       )}
@@ -343,7 +360,9 @@ export function Board({
   moving,
   onMoving,
   onMoved,
+  flat,
 }: {
+  flat?: boolean
   boards: RoadmapBoard[]
   ideaId?: string
   all: boolean
@@ -422,11 +441,17 @@ export function Board({
 
   return (
     <>
-      <div className="@container min-h-0 min-w-0 flex-1 overflow-y-auto">
-        <div className="flex min-h-full flex-col gap-4 p-6 @max-3xl:px-4 @max-3xl:pt-4">
+      <div className={flat ? "@container mt-6 min-w-0" : "@container min-h-0 min-w-0 flex-1 overflow-y-auto"}>
+        <div className={cn("flex flex-col gap-4", !flat && "min-h-full p-6 @max-3xl:px-4 @max-3xl:pt-4")}>
           <Pending scope={scope} inScope={inScope} inboxOf={inboxOf} all={all} />
           <DndContext sensors={sensors} onDragEnd={onDragEnd}>
-            <div className="flex min-h-0 flex-1 snap-x items-stretch gap-3 overflow-x-auto" data-testid="board-columns">
+            <div
+              className={cn(
+                "min-h-0 flex-1 items-stretch gap-3 overflow-x-auto",
+                flat ? "grid auto-cols-[minmax(10rem,1fr)] grid-flow-col pb-2" : "flex snap-x"
+              )}
+              data-testid="board-columns"
+            >
               {stages.map((stage, i) => (
                 <StageColumn
                   key={stage}
@@ -438,6 +463,7 @@ export function Board({
                   ideaId={ideaId}
                   cursorId={cursorId}
                   all={all}
+                  flat={flat}
                   onMove={onMoving}
                 />
               ))}

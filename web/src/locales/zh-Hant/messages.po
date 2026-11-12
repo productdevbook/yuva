@@ -2003,6 +2003,7 @@ msgstr "僅動作"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "已啟用"
 
@@ -2345,6 +2346,7 @@ msgstr "已為單一登入新增網域 {domain}"
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "地址"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "全部"
 
@@ -2491,6 +2494,10 @@ msgstr "所有匯入"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "所有收件匣"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "所有事件"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "所有產品"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "所有產品"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "已於 {endedAt} 完成"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "元件"
 
@@ -4834,6 +4843,7 @@ msgstr "元件已刪除"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "元件"
@@ -6293,6 +6303,7 @@ msgstr "已允許桌面通知。"
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "瀏覽器設定中已遮蔽此站點的桌面通知,因此只會播放提示音。"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "加密"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "一天結束（24:00）"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "結束"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "此信箱已關閉 IMAP。請在 {provider} 的設定中開啟,然後再
 msgid "IMAP server"
 msgstr "IMAP 伺服器"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "影響"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "收件匣會截斷超過 80 個字元的主題。"
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "事件"
@@ -9059,6 +9076,7 @@ msgstr "事件：{title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "事件"
 
@@ -9526,6 +9544,7 @@ msgstr "關鍵字"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "類型"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "最近讀取 {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "最近結果"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "週一早上"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "監控"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "監控已刪除"
 
@@ -10905,6 +10932,7 @@ msgstr "觀察中"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "監控"
@@ -10912,6 +10940,10 @@ msgstr "監控"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "監控會設定狀態頁元件的狀態。請先建立狀態頁。"
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "監控，{down} 個中斷"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "關閉"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "關"
 
@@ -13499,6 +13532,10 @@ msgstr "開啟收件匣"
 msgid "Open incident"
 msgstr "開啟事件"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "進行中的事件"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "未結對話包含等待客戶回覆的對話。產品有 5 個評價後，好評率低於 85% 時評分會顯示為橘色。"
@@ -13840,6 +13877,7 @@ msgstr "隨時間變化"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "概覽"
@@ -13881,7 +13919,10 @@ msgstr "速度(每秒郵件數)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "頁面"
 
@@ -13897,6 +13938,7 @@ msgstr "他們同意時所在的頁面(可選)"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "頁面"
 
@@ -13967,6 +14009,7 @@ msgstr "已設定密碼"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "過往"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "公開"
 
@@ -16576,6 +16620,7 @@ msgstr "安排項目"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "已安排"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "搜尋"
 
@@ -17518,6 +17564,7 @@ msgstr "正在設定…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "設定"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "簽名金鑰"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "自"
 
@@ -18497,6 +18545,7 @@ msgstr "建立你的郵件列表"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "已開始"
 
@@ -18520,6 +18569,7 @@ msgstr "由 {starter} 發起 · {started}"
 msgid "Starting"
 msgstr "正在開始"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "開始"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS(埠 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "狀態"
 
@@ -18586,6 +18638,7 @@ msgstr "故障時的狀態"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "狀態"
 
@@ -18593,6 +18646,7 @@ msgstr "狀態"
 msgid "Status and coming up"
 msgstr "狀態與即將發生"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "狀態頁"
@@ -18605,6 +18659,7 @@ msgstr "狀態頁已刪除"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "狀態頁"
@@ -18744,6 +18799,7 @@ msgstr "剛剛訂閱了清單"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "訂閱者"
@@ -20574,6 +20630,10 @@ msgstr "此收件匣還沒有郵件列表。群發只會發給訂閱了某個列
 msgid "This inbox is for"
 msgstr "此收件匣用於"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "此事件已不存在，或你無權檢視。"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "這是壓縮歸檔。請解壓 Takeout 壓縮包並上傳 .mbox 檔案。"
@@ -20689,6 +20749,10 @@ msgstr "此訊息"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "此遷移已結束,無法再上傳任何內容。要處理另一個檔案,請開始新的遷移。"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "此監控已不存在，或你無權檢視。"
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "{shown} 天內可用率 {uptime}"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "此頁面隱藏了可用率。在設定中開啟後，即可在這裡查看每天的情況。"
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "可用率，24 小時"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "瀏覽量"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "瀏覽"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "可見度"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

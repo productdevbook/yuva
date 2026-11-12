@@ -2003,6 +2003,7 @@ msgstr "सिर्फ़ कार्रवाइयाँ"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "सक्रिय"
 
@@ -2345,6 +2346,7 @@ msgstr "सिंगल साइन-ऑन के लिए डोमेन {do
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "पता"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "सभी"
 
@@ -2491,6 +2494,10 @@ msgstr "सभी इम्पोर्ट"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "सभी इनबॉक्स"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "सभी घटनाएँ"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "सभी उत्पाद"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "सभी उत्पाद"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "{endedAt} बजे पूरा हुआ"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "घटक"
 
@@ -4834,6 +4843,7 @@ msgstr "घटक हटाया गया"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "घटक"
@@ -6293,6 +6303,7 @@ msgstr "डेस्कटॉप नोटिफ़िकेशन की अन
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "ब्राउज़र की सेटिंग में इस साइट के लिए डेस्कटॉप नोटिफ़िकेशन ब्लॉक हैं, इसलिए केवल आवाज़ बजती है।"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "एन्क्रिप्शन"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "दिन का अंत (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "समाप्त"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "इस मेलबॉक्स के लिए IMAP बंद है�
 msgid "IMAP server"
 msgstr "IMAP सर्वर"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "प्रभाव"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "इनबॉक्स 80 अक्षरों से लंबे विषय काट देते हैं।"
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "घटना"
@@ -9059,6 +9076,7 @@ msgstr "घटना: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "घटनाएँ"
 
@@ -9526,6 +9544,7 @@ msgstr "कीवर्ड"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "प्रकार"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "{when} आख़िरी बार पढ़ा"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "आखिरी नतीजा"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "सोमवार सुबह"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "मॉनिटर"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "मॉनिटर हटा दिया गया"
 
@@ -10905,6 +10932,7 @@ msgstr "निगरानी में"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "मॉनिटर"
@@ -10912,6 +10940,10 @@ msgstr "मॉनिटर"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "मॉनिटर स्टेटस पेज के एक घटक की स्थिति तय करते हैं। पहले एक स्टेटस पेज बनाएँ।"
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "मॉनिटर, {down} बंद"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "बंद"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "बंद"
 
@@ -13499,6 +13532,10 @@ msgstr "इनबॉक्स खोलें"
 msgid "Open incident"
 msgstr "घटना खोलें"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "खुली घटनाएँ"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "खुली बातचीत में ग्राहक के जवाब का इंतज़ार करने वाली बातचीत भी शामिल हैं। किसी प्रोडक्ट की 5 रेटिंग होने पर, अच्छी रेटिंग 85% से कम हो तो रेटिंग नारंगी हो जाती है।"
@@ -13840,6 +13877,7 @@ msgstr "समय के साथ"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "ओवरव्यू"
@@ -13881,7 +13919,10 @@ msgstr "गति (मेल प्रति सेकंड)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "पेज"
 
@@ -13897,6 +13938,7 @@ msgstr "जिस पेज पर वे सहमत हुए (वैकल�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "पेज"
 
@@ -13967,6 +14009,7 @@ msgstr "पासवर्ड सेट किया गया"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "पिछली"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "सार्वजनिक"
 
@@ -16576,6 +16620,7 @@ msgstr "प्रविष्टि शेड्यूल करें"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "शेड्यूल किया गया"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "खोजें"
 
@@ -17518,6 +17564,7 @@ msgstr "सेट अप हो रहा है…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "सेटिंग"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "साइनिंग सीक्रेट"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "से"
 
@@ -18497,6 +18545,7 @@ msgstr "अपनी मेलिंग लिस्ट शुरू करे�
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "शुरू हुआ"
 
@@ -18520,6 +18569,7 @@ msgstr "{starter} ने शुरू किया · {started}"
 msgid "Starting"
 msgstr "शुरू हो रहा है"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "शुरुआत"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (पोर्ट 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "अवस्था"
 
@@ -18586,6 +18638,7 @@ msgstr "बंद होने पर स्थिति"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "स्टेटस"
 
@@ -18593,6 +18646,7 @@ msgstr "स्टेटस"
 msgid "Status and coming up"
 msgstr "स्टेटस और आगे क्या है"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "स्टेटस पेज"
@@ -18605,6 +18659,7 @@ msgstr "स्टेटस पेज हटाया गया"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "स्टेटस पेज"
@@ -18744,6 +18799,7 @@ msgstr "अभी सूची में सब्सक्राइब कि�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "सब्सक्राइबर"
@@ -20574,6 +20630,10 @@ msgstr "इस इनबॉक्स में अभी कोई मेलि�
 msgid "This inbox is for"
 msgstr "यह इनबॉक्स इसके लिए है"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "यह घटना अब मौजूद नहीं है या आप इसे नहीं देख सकते।"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "यह एक कंप्रेस्ड आर्काइव है। Takeout आर्काइव को अनज़िप करें और .mbox फ़ाइल अपलोड करें।"
@@ -20689,6 +20749,10 @@ msgstr "यह संदेश"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "यह माइग्रेशन खत्म हो चुका है, इसलिए और कुछ अपलोड नहीं हो सकता। दूसरी फ़ाइल के लिए नया शुरू करें।"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "यह मॉनिटर अब मौजूद नहीं है या आप इसे नहीं देख सकते।"
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "{shown} दिनों में अपटाइम {uptime}"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "इस पेज पर अपटाइम छिपा है। यहाँ हर दिन देखने के लिए इसे सेटिंग में चालू करें।"
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "अपटाइम, 24 घंटे"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "व्यू"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "व्यू"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "दृश्यता"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

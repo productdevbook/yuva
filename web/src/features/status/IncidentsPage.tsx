@@ -1,20 +1,39 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { CalendarClockIcon, CheckCircle2Icon, FlameIcon } from "lucide-react"
-import { useState } from "react"
+import { CalendarClockIcon, CheckCircle2Icon, FlameIcon, PlusIcon } from "lucide-react"
+import { useRef, useState } from "react"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router"
 
-import { ErrorLine } from "@/components/common"
+import {
+  dayOf,
+  Dot,
+  ErrorLine,
+  FlatEmpty,
+  FlatRow,
+  FlatTag,
+  FlatWho,
+  groupRuns,
+  InfoSection,
+  KV,
+  ListGroup,
+  PageHeading,
+  PageTop,
+  topButton,
+  topInk,
+  useDayLabel,
+} from "@/components/common"
 import { PaneBack } from "@/components/common/Column"
 import { INCIDENT_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
 import { formatDuration, formatShort } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
+import { useListCursor } from "@/features/inbox/listCursor"
+import { FrameTabs, look, PageTop as StackTop } from "@/features/inbox/PageFrame"
 import { IncidentDetail, incidentTone } from "@/features/status/IncidentDetail"
 import { IncidentDialog } from "@/features/status/IncidentDialog"
 import { Pill, ProductTag } from "@/features/status/PageFrame"
 import { incidentLink } from "@/features/status/queries"
 import { useScopeIncidents, useStatusScope } from "@/features/status/scope"
+import { StatusLayout, StatusTrail, useStatusNames } from "@/features/status/StatusFrame"
 import { isClosed, useStatusText } from "@/features/status/text"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useIsPhone } from "@/hooks/use-media-query"
@@ -28,6 +47,12 @@ export type View = (typeof VIEWS)[number]
 export function viewOf(i: StatusIncident): View {
   if (isClosed(i)) return "past"
   return i.state === "scheduled" ? "scheduled" : "active"
+}
+
+const flatTone = { success: "var(--ok)", info: "#2563eb", warning: "var(--warn)" }
+
+function started(i: StatusIncident) {
+  return i.started_at ?? i.published_at ?? i.created_at
 }
 
 const dotTone = { success: "bg-success", info: "bg-blue-600 dark:bg-blue-400", warning: "bg-warning" }
@@ -140,6 +165,10 @@ export function IncidentsPage() {
         : (b.started_at ?? b.published_at ?? b.created_at).localeCompare(a.started_at ?? a.published_at ?? a.created_at)
     )
   const shown = selected ?? (phone ? undefined : rows[0])
+  const listRef = useRef<HTMLDivElement>(null)
+  const dayLabel = useDayLabel()
+  const text = useStatusText()
+  const names = useStatusNames()
   const shownPage = shown && byPage.get(shown.page_id)
   const loading = pagesQuery.isPending || (pages.length > 0 && incidents.isPending)
   const incidentKey = keyLabel(INCIDENT_KEYS.incident).join("")
@@ -152,12 +181,23 @@ export function IncidentsPage() {
     const next = rows[Math.min(rows.length - 1, Math.max(0, at + by))]
     if (next) navigate(incidentLink(next.page_id, next.id, view), { replace: true })
   }
+  const flatList = !phone && !incidentId
+  const openRow = (id: string) => {
+    const i = rows.find((x) => x.id === id)
+    if (i) navigate(incidentLink(i.page_id, i.id, view))
+  }
+  const { cursorId } = useListCursor(rows, null, openRow, flatList && !creating, listRef, true, true)
   useHotkeys(
     {
-      j: () => step(1),
-      k: () => step(-1),
-      ArrowDown: () => step(1),
-      ArrowUp: () => step(-1),
+      ...(flatList
+        ? {}
+        : {
+            j: () => step(1),
+            k: () => step(-1),
+            ArrowDown: () => step(1),
+            ArrowUp: () => step(-1),
+          }),
+      ...(!phone && incidentId ? { Escape: () => navigate(to(view)) } : {}),
       [INCIDENT_KEYS.active]: () => navigate(to("active")),
       [INCIDENT_KEYS.scheduled]: () => navigate(to("scheduled")),
       [INCIDENT_KEYS.past]: () => navigate(to("past")),
@@ -203,6 +243,209 @@ export function IncidentsPage() {
     </p>
   ) : null
 
+  const dialog = creating && (
+    <IncidentDialog
+      pages={pages}
+      pageId={shown?.page_id}
+      kind={creating.kind}
+      onClose={() => setCreating(null)}
+      onDone={(i) => {
+        setCreating(null)
+        navigate(incidentLink(i.page_id, i.id, viewOf(i)))
+      }}
+    />
+  )
+
+  if (!phone) {
+    const viewName = names[view]
+    const newButtons = canCreate && (
+      <>
+        <Button
+          variant="outline"
+          className={topButton}
+          onClick={() => setCreating({ kind: "maintenance" })}
+          title={t`Plan maintenance (${maintenanceKey})`}
+          data-testid="status-new-maintenance"
+        >
+          <Trans>Plan maintenance</Trans>
+        </Button>
+        <Button
+          className={topInk}
+          onClick={() => setCreating({ kind: "incident" })}
+          title={t`New incident (${incidentKey})`}
+          data-testid="status-new-incident"
+        >
+          <PlusIcon className="size-3.5" aria-hidden />
+          <Trans>New incident</Trans>
+        </Button>
+      </>
+    )
+    if (incidentId)
+      return (
+        <>
+          {loading ? (
+            <StatusLayout place="incidents" view={view} testId="status-incidents">
+              <PageTop back={{ label: viewName, to: to(view) }} />
+              <div className="mt-3 flex max-w-[760px] flex-col gap-4">
+                <Skeleton className="h-8 w-60" />
+                <Skeleton className="h-24 w-full" />
+              </div>
+            </StatusLayout>
+          ) : selected && byPage.get(selected.page_id) ? (
+            <IncidentDetail
+              key={selected.id}
+              page={byPage.get(selected.page_id)!}
+              i={selected}
+              justResolved={kept?.id === selected.id}
+              onClosed={(id) => setKept({ id, view })}
+              onDeleted={() => navigate(to(view), { replace: true })}
+              layout={({ actions, body, aside }) => (
+                <StatusLayout place="incidents" view={view} testId="status-incidents" aside={aside}>
+                  <PageTop
+                    back={{ label: viewName, to: to(view) }}
+                    actions={<div className="flex flex-wrap items-center gap-1.5">{actions}</div>}
+                  >
+                    <StatusTrail place="incidents" view={view} name={byPage.get(selected.page_id)?.name} />
+                  </PageTop>
+                  <div className="@container max-w-[760px]">{body}</div>
+                </StatusLayout>
+              )}
+            />
+          ) : (
+            <StatusLayout place="incidents" view={view} testId="status-incidents">
+              <PageTop back={{ label: viewName, to: to(view) }} />
+              <FlatEmpty>
+                <ErrorLine error={pagesQuery.error ?? incidents.error} />
+                <Trans>This incident no longer exists or you cannot see it.</Trans>
+              </FlatEmpty>
+            </StatusLayout>
+          )}
+          {dialog}
+        </>
+      )
+    const groups = groupRuns(rows, (i) =>
+      dayOf(view === "scheduled" ? (i.scheduled_start ?? i.created_at) : started(i))
+    )
+    return (
+      <StatusLayout
+        place="incidents"
+        view={view}
+        testId="status-incidents"
+        aside={
+          pages.length > 0 && (
+            <InfoSection title={<Trans>Incidents</Trans>}>
+              <KV
+                label={names.active}
+                value={counts.active}
+                tone={counts.active ? "warn" : undefined}
+                to={to("active")}
+              />
+              <KV label={names.scheduled} value={counts.scheduled} to={to("scheduled")} />
+              <KV label={<Trans>Status pages</Trans>} value={pages.length} to="/status?tab=pages" />
+            </InfoSection>
+          )
+        }
+      >
+        <PageTop actions={newButtons}>
+          <StatusTrail place="incidents" view={view} />
+        </PageTop>
+        <section className="flex max-w-[980px] flex-col">
+          <PageHeading
+            title={view === "active" ? t`Incidents` : `${t`Incidents`} · ${viewName}`}
+            lede={<Trans>What went wrong and what you told people</Trans>}
+          />
+          <ErrorLine error={pagesQuery.error ?? incidents.error} className="mt-3" />
+          {loading ? (
+            <div className="mt-7 flex flex-col gap-3">
+              {[0, 1, 2].map((n) => (
+                <Skeleton key={n} className="h-5 w-full" />
+              ))}
+            </div>
+          ) : pages.length === 0 ? (
+            <FlatEmpty>
+              <p className="m-0">
+                <Trans>Incidents live on a status page. Create one first.</Trans>
+              </p>
+              {canManage && (
+                <Button variant="outline" className={topButton} render={<Link to="/status" />}>
+                  <Trans>Status pages</Trans>
+                </Button>
+              )}
+            </FlatEmpty>
+          ) : rows.length === 0 ? (
+            <FlatEmpty testId="status-incidents-empty">
+              <p className="m-0">{emptyText}</p>
+              {view !== "past" && (
+                <Button
+                  variant="outline"
+                  className={topButton}
+                  onClick={() => setCreating({ kind: view === "scheduled" ? "maintenance" : "incident" })}
+                >
+                  {view === "scheduled" ? <Trans>Plan maintenance</Trans> : <Trans>New incident</Trans>}
+                </Button>
+              )}
+            </FlatEmpty>
+          ) : (
+            <div ref={listRef} className="mt-7" aria-label={t`Incidents`} data-testid="status-incident-list">
+              {groups.map((g) => (
+                <ListGroup
+                  key={g.key}
+                  label={dayLabel(
+                    view === "scheduled" ? (g.items[0].scheduled_start ?? g.items[0].created_at) : started(g.items[0])
+                  )}
+                >
+                  {g.items.map((i) => {
+                    const updates = i.updates.length
+                    const page = byPage.get(i.page_id)
+                    const inbox = inboxOf(page)
+                    return (
+                      <FlatRow
+                        key={i.id}
+                        color={flatTone[incidentTone(i)]}
+                        cursor={i.id === cursorId}
+                        data-row-id={i.id}
+                        cols="grid-cols-[7px_minmax(0,1fr)_minmax(0,180px)_auto]"
+                        button={{ onClick: () => openRow(i.id), "data-testid": "status-incident-row" }}
+                        who={
+                          <span className="flex min-w-0 flex-col gap-0.5">
+                            <FlatWho strong>{i.title}</FlatWho>
+                            <span className="truncate text-small text-muted-foreground">
+                              {meta(i)} · <Plural value={updates} one="# update" other="# updates" />
+                            </span>
+                          </span>
+                        }
+                        end={
+                          <>
+                            {!i.published_at && (
+                              <span data-testid="status-incident-draft-badge">
+                                <FlatTag className="text-warn">
+                                  <Trans>Draft</Trans>
+                                </FlatTag>
+                              </span>
+                            )}
+                            <span className="text-small whitespace-nowrap">{text.incident[i.state]}</span>
+                          </>
+                        }
+                      >
+                        {page && (
+                          <span className="inline-flex min-w-0 items-center gap-1.5 text-small text-muted-foreground">
+                            <Dot color={inbox?.branding.color} className="size-[7px] rounded-[2px]" />
+                            <span className="truncate">{inbox?.name ?? page.name}</span>
+                          </span>
+                        )}
+                      </FlatRow>
+                    )
+                  })}
+                </ListGroup>
+              ))}
+            </div>
+          )}
+        </section>
+        {dialog}
+      </StatusLayout>
+    )
+  }
+
   return (
     <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="status-incidents">
       {phone && incidentId ? (
@@ -210,7 +453,7 @@ export function IncidentsPage() {
           <PaneBack to={to(view)} label={t`Incidents`} always />
         </div>
       ) : (
-        <PageTop
+        <StackTop
           title={<Trans>Incidents</Trans>}
           sub={<Trans>What went wrong and what you told people</Trans>}
           actions={
@@ -309,18 +552,7 @@ export function IncidentsPage() {
           {detail}
         </div>
       </div>
-      {creating && (
-        <IncidentDialog
-          pages={pages}
-          pageId={shown?.page_id}
-          kind={creating.kind}
-          onClose={() => setCreating(null)}
-          onDone={(i) => {
-            setCreating(null)
-            navigate(incidentLink(i.page_id, i.id, viewOf(i)))
-          }}
-        />
-      )}
+      {dialog}
     </main>
   )
 }

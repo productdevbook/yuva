@@ -15,7 +15,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router"
 
-import { Notice, Segmented, toast, useConfirm } from "@/components/common"
+import { Notice, PageTop as FlatTop, Segmented, toast, useConfirm } from "@/components/common"
 import { Pane, PaneBack } from "@/components/common/Column"
 import { alt, ENTRY_KEYS, keyLabel, mod } from "@/components/common/ShortcutSheet"
 import { formatDateTime } from "@/components/common/text"
@@ -32,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { broadcastLink, useBroadcasts } from "@/features/broadcasts/broadcastQueries"
 import { StateBadge } from "@/features/broadcasts/BroadcastParts"
+import { ChangelogLayout, ChangelogTrail } from "@/features/changelog/ChangelogFrame"
 import { MailDialog } from "@/features/changelog/MailDialog"
 import {
   changelogLink,
@@ -60,6 +61,7 @@ import { useLocaleName } from "@/features/help/text"
 import { Field } from "@/features/settings/ui"
 import { useDebounced } from "@/hooks/use-debounced"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { useLatest } from "@/hooks/use-latest"
 import {
   ApiError,
@@ -137,6 +139,7 @@ function Editor({
   onLocale: (l: string) => void
 }) {
   const { t, i18n } = useLingui()
+  const flat = !useIsPhone()
   const navigate = useNavigate()
   const { canManage } = useSession()
   const localeName = useLocaleName()
@@ -455,9 +458,14 @@ function Editor({
   }
 
   return (
-    <main className="min-h-0 flex-1 overflow-y-auto bg-background" data-testid="entry-editor">
-      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-4 px-6 pt-6 pb-24 phone:px-4 phone:pt-3">
-        <PaneBack to={changelogLink(changelog.id)} label={t`What’s new`} always />
+    <EditorFrame changelog={changelog}>
+      <div
+        className={cn(
+          "flex w-full flex-col gap-4",
+          flat ? "pb-16" : "mx-auto max-w-[1400px] px-6 pt-6 pb-24 phone:px-4 phone:pt-3"
+        )}
+      >
+        {!flat && <PaneBack to={changelogLink(changelog.id)} label={t`What’s new`} always />}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <div className="-my-1 max-w-full overflow-x-auto py-1">
             <Segmented
@@ -944,18 +952,52 @@ function Editor({
       )}
       {mailing && <MailDialog changelog={changelog} entry={entry} locale={locale} onClose={() => setMailing(false)} />}
       {confirmDialog}
-    </main>
+    </EditorFrame>
+  )
+}
+
+function EditorFrame({ changelog, children }: { changelog: Changelog; children: React.ReactNode }) {
+  const { t } = useLingui()
+  const flat = !useIsPhone()
+  if (!flat)
+    return (
+      <main className="min-h-0 flex-1 overflow-y-auto bg-background" data-testid="entry-editor">
+        {children}
+      </main>
+    )
+  return (
+    <ChangelogLayout place="entries" changelog={changelog} testId="entry-editor">
+      <FlatTop back={{ label: changelog.name, to: changelogLink(changelog.id) }}>
+        <ChangelogTrail place={t`Entries`} name={changelog.name} />
+      </FlatTop>
+      {children}
+    </ChangelogLayout>
   )
 }
 
 export function EntryEditorPage() {
   const { t } = useLingui()
+  const flat = !useIsPhone()
   const { changelogId = "", entryId = "" } = useParams()
   const [params, setParams] = useSearchParams()
   const changelog = useChangelog(changelogId)
   const entry = useEntry(changelogId, entryId)
   const c = changelog.data
   const e = entry.data
+  if (flat && (!c || !e))
+    return (
+      <ChangelogLayout place="entries" testId="entry-editor">
+        <FlatTop back={{ label: t`What’s new`, to: changelogLink(changelogId) }} />
+        {changelog.isPending || entry.isPending ? (
+          <div className="mt-3 flex max-w-[760px] flex-col gap-4" aria-busy="true">
+            <Skeleton className="h-8 w-60" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        ) : (
+          <ErrorLine error={changelog.error ?? entry.error} className="mt-3" />
+        )}
+      </ChangelogLayout>
+    )
   if (changelog.isPending || entry.isPending) {
     return (
       <Pane wide className="gap-4">

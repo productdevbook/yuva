@@ -2003,6 +2003,7 @@ msgstr "Лише дії"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "Активно"
 
@@ -2345,6 +2346,7 @@ msgstr "Додав(ла) домен {domain} для єдиного входу"
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "Адреса"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "Усі"
 
@@ -2491,6 +2494,10 @@ msgstr "Усі імпорти"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Усі скриньки"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "Усі інциденти"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "усі продукти"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "Усі продукти"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "Завершено о {endedAt}"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "Компонент"
 
@@ -4834,6 +4843,7 @@ msgstr "Компонент видалено"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "Компоненти"
@@ -6293,6 +6303,7 @@ msgstr "Сповіщення на робочому столі дозволено
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "Сповіщення на робочому столі заблоковано для цього сайту в налаштуваннях браузера, тому відтворюється лише звук."
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "Шифрування"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "Кінець дня (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "Завершено"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "IMAP для цієї скриньки вимкнено. Увімкніт
 msgid "IMAP server"
 msgstr "Сервер IMAP"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "Вплив"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "Вхідні обрізають теми довші за 80 символів."
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "Інцидент"
@@ -9059,6 +9076,7 @@ msgstr "Інцидент: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "Інциденти"
 
@@ -9526,6 +9544,7 @@ msgstr "Ключове слово"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Тип"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "Останнє читання {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "Останній результат"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "У понеділок зранку"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "Монітор"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "Монітор видалено"
 
@@ -10905,6 +10932,7 @@ msgstr "Спостереження"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "Монітори"
@@ -10912,6 +10940,10 @@ msgstr "Монітори"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Монітори задають стан компонента сторінки статусу. Спершу створіть сторінку статусу."
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "Монітори, не працюють: {down}"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "вимк."
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "Вимк."
 
@@ -13499,6 +13532,10 @@ msgstr "Відкрити вхідні"
 msgid "Open incident"
 msgstr "Відкрити інцидент"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "Відкриті інциденти"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "Відкриті включають розмови, що чекають на клієнта. Оцінка стає помаранчевою нижче 85 % добрих, коли продукт має 5 оцінок."
@@ -13840,6 +13877,7 @@ msgstr "З часом"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "Огляд"
@@ -13881,7 +13919,10 @@ msgstr "Темп (листів на секунду)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "Сторінка"
 
@@ -13897,6 +13938,7 @@ msgstr "Сторінка, де вони погодилися (необов'яз�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "Сторінки"
 
@@ -13967,6 +14009,7 @@ msgstr "Пароль задано"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "Минулі"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "Публічний"
 
@@ -16576,6 +16620,7 @@ msgstr "Запланувати запис"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Заплановано"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "Пошук"
 
@@ -17518,6 +17564,7 @@ msgstr "Налаштування…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Налаштування"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "Секрет підпису"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "З"
 
@@ -18497,6 +18545,7 @@ msgstr "Створіть свій список розсилки"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "Розпочато"
 
@@ -18520,6 +18569,7 @@ msgstr "Розпочав(ла) {starter} · {started}"
 msgid "Starting"
 msgstr "Запуск"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "Початок"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (порт 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "Стан"
 
@@ -18586,6 +18638,7 @@ msgstr "Стан у разі збою"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "Статус"
 
@@ -18593,6 +18646,7 @@ msgstr "Статус"
 msgid "Status and coming up"
 msgstr "Статус і що попереду"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "Сторінка статусу"
@@ -18605,6 +18659,7 @@ msgstr "Сторінку статусу видалено"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Сторінки статусу"
@@ -18744,6 +18799,7 @@ msgstr "Щойно підписався на список"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "Підписники"
@@ -20574,6 +20630,10 @@ msgstr "У цій скриньці поки немає списку розсил
 msgid "This inbox is for"
 msgstr "Ця скринька для"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "Цього інциденту більше немає, або ви не маєте до нього доступу."
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "Це стиснутий архів. Розпакуйте архів Takeout і завантажте файл .mbox."
@@ -20689,6 +20749,10 @@ msgstr "Це повідомлення"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Цю міграцію завершено, тож більше нічого завантажити не можна. Почніть нову для іншого файлу."
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "Цього монітора більше немає, або ви не маєте до нього доступу."
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "доступність {uptime} за {shown} днів"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "Доступність приховано на цій сторінці. Увімкніть її в налаштуваннях, щоб бачити тут кожен день."
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "Доступність, 24 години"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "перегляди"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Перегляди"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "Видимість"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

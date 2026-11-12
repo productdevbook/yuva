@@ -5,12 +5,21 @@ import { ArrowUpRightIcon, CircleAlertIcon, EyeIcon, PlusIcon, SparklesIcon, Tri
 import { cloneElement, useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router"
 
-import { InboxMark } from "@/components/common"
+import {
+  FlatEmpty,
+  InboxMark,
+  ListGroup,
+  PageHeading,
+  PageTop as FlatTop,
+  topButton,
+  topInk,
+} from "@/components/common"
 import { CHANGELOG_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ChangelogLayout, ChangelogTrail, useChangelogNames, type View } from "@/features/changelog/ChangelogFrame"
 import { CreateChangelogDialog } from "@/features/changelog/CreateChangelogDialog"
 import { EntriesTab, EntryPreview, EntryRow, NewEntryDialog } from "@/features/changelog/EntriesTab"
 import {
@@ -32,6 +41,7 @@ import { FrameTabs as ViewTabs, look, PageTop } from "@/features/inbox/PageFrame
 import { ChoiceSelect } from "@/features/settings/ui"
 import { FrameButton, FrameTabs, framePad, PageFrame } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { keys } from "@/lib/keys"
 import type { Changelog, ChangelogEntrySummary, ChangelogLabel, Inbox } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -44,7 +54,6 @@ const TABS = ["entries", "settings"] as const
 type Tab = (typeof TABS)[number]
 
 const VIEWS = ["all", "published", "scheduled", "draft"] as const
-type View = (typeof VIEWS)[number]
 
 function ChangelogPicker({
   items,
@@ -80,6 +89,8 @@ function ChangelogPicker({
 
 export function ChangelogHome() {
   const { t, i18n } = useLingui()
+  const phone = useIsPhone()
+  const clNames = useChangelogNames()
   const queryClient = useQueryClient()
   const [inboxId] = useInboxFilter()
   const [params] = useSearchParams()
@@ -205,6 +216,217 @@ export function ChangelogHome() {
   }[view]
   const firstFailed = failed[0]
   const firstFailedLog = firstFailed && byId.get(firstFailed.changelog_id)
+  const dialogs = (
+    <>
+      {writing && <NewEntryDialog changelog={writing} onClose={() => setWriting(null)} />}
+      {creating && (
+        <CreateChangelogDialog
+          inboxId={creating.id}
+          inboxName={creating.name}
+          onClose={() => setCreating(null)}
+          onCreated={(c) => {
+            setCreating(null)
+            navigate(changelogLink(c.id, "settings"))
+          }}
+        />
+      )}
+    </>
+  )
+  if (!phone) {
+    const place = { all: "all", published: "published", scheduled: "scheduled", draft: "draft" }[view] as View
+    const viewName = clNames[place]
+    return (
+      <ChangelogLayout
+        place={place}
+        testId="changelog-home"
+        aside={shown && shownLog && <EntryPreview changelog={shownLog} entry={shown} flat />}
+      >
+        <FlatTop
+          actions={
+            items.length > 0 ? (
+              <ChangelogPicker
+                items={items}
+                inboxOf={inboxOf}
+                onPick={setWriting}
+                button={<Button className={topInk} title={t`New post (${newKey})`} data-testid="new-entry" />}
+              >
+                <PlusIcon className="size-3.5" aria-hidden />
+                <Trans>New post</Trans>
+              </ChangelogPicker>
+            ) : (
+              missing && (
+                <Button
+                  className={topInk}
+                  onClick={() => setCreating(missing)}
+                  title={t`Create changelog (${createKey})`}
+                >
+                  <PlusIcon className="size-3.5" aria-hidden />
+                  <Trans>Create changelog</Trans>
+                </Button>
+              )
+            )
+          }
+        >
+          <ChangelogTrail place={viewName} />
+        </FlatTop>
+        <section className="flex max-w-[980px] flex-col">
+          <PageHeading
+            title={view === "all" ? t`What’s new` : `${t`What’s new`} · ${viewName}`}
+            lede={<Trans>Release notes shown in your products and on the web</Trans>}
+          />
+          {items.length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <Input
+                type="search"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value)
+                  setCursor(-1)
+                }}
+                placeholder={t`Search entries`}
+                aria-label={t`Search entries`}
+                className="h-[34px] w-64 rounded-[9px] bg-card"
+                data-testid="changelog-search"
+              />
+              <ViewChips<ChangelogLabel | "">
+                label={t`Label`}
+                value={label}
+                onChange={(v) => {
+                  setLabel(v)
+                  setCursor(-1)
+                }}
+                className="p-0"
+                items={[{ value: "", label: t`All labels` }, ...LABELS.map((l) => ({ value: l, label: labelText[l] }))]}
+              />
+              {locales.length > 1 && (
+                <ChoiceSelect
+                  value={locale}
+                  onChange={(v) => {
+                    setLocale(v)
+                    setCursor(-1)
+                  }}
+                  options={[["", t`All languages`] as const, ...locales.map((l) => [l, localeName(l)] as const)]}
+                  label={t`Language`}
+                  className="w-44 rounded-lg bg-card"
+                />
+              )}
+            </div>
+          )}
+          {changelogs.isPending || (items.length > 0 && entries.isPending) ? (
+            <div className="mt-7 flex flex-col gap-3" aria-busy data-testid="changelog-loading">
+              {[0, 1, 2].map((n) => (
+                <Skeleton key={n} className="h-5 w-full" />
+              ))}
+            </div>
+          ) : changelogs.error || entries.error ? (
+            <FlatEmpty>
+              <ErrorLine error={changelogs.error ?? entries.error} />
+              <Button
+                variant="outline"
+                className={topButton}
+                onClick={() => void queryClient.invalidateQueries({ queryKey: keys.changelog(workspaceId) })}
+              >
+                <Trans>Try again</Trans>
+              </Button>
+            </FlatEmpty>
+          ) : items.length === 0 ? (
+            <FlatEmpty>
+              <p className="m-0 max-w-xl">
+                <Trans>
+                  Tell your customers what is new, improved and fixed, on a public page, in the chat widget and by mail.
+                </Trans>
+              </p>
+              {missing && (
+                <Button
+                  variant="outline"
+                  className={topButton}
+                  onClick={() => setCreating(missing)}
+                  title={t`Create changelog (${createKey})`}
+                >
+                  <PlusIcon />
+                  <Trans>Create changelog</Trans>
+                </Button>
+              )}
+            </FlatEmpty>
+          ) : (
+            <>
+              {failed.length > 0 && firstFailed && firstFailedLog && (
+                <div
+                  role="alert"
+                  className="mt-6 flex flex-wrap items-center gap-3 border-y border-line-soft px-1 py-3"
+                  data-testid="changelog-failed-banner"
+                >
+                  <TriangleAlertIcon className="size-4 shrink-0 text-warn" />
+                  <p className="m-0 min-w-48 flex-1 text-body">
+                    <span className="font-semibold text-foreground">
+                      <Trans>Publishing on schedule failed.</Trans>
+                    </span>{" "}
+                    <span className="text-muted-foreground">
+                      {entryTitle(firstFailed.translations, firstFailedLog.default_locale)}
+                      {": "}
+                      {firstFailed.schedule_failed && failureText[firstFailed.schedule_failed.reason]}{" "}
+                      <Trans>Publish it now or schedule it again.</Trans>
+                    </span>
+                  </p>
+                  <Button
+                    variant="outline"
+                    className={look.btnSm}
+                    onClick={() =>
+                      navigate(entryLink(firstFailed.changelog_id, firstFailed.id, firstFailedLog.default_locale))
+                    }
+                  >
+                    <Trans>Review</Trans>
+                  </Button>
+                </div>
+              )}
+              {rows.length === 0 ? (
+                <FlatEmpty testId="changelog-entries-empty">
+                  <p className="m-0 font-semibold text-foreground">
+                    {filtering ? <Trans>No entry matches.</Trans> : <Trans>Nothing here.</Trans>}
+                  </p>
+                  <p className="m-0">{filtering ? <Trans>Try another word, label or language.</Trans> : emptyText}</p>
+                  {filtering && (
+                    <Button variant="outline" className={topButton} onClick={reset}>
+                      <Trans>Clear filters</Trans>
+                    </Button>
+                  )}
+                </FlatEmpty>
+              ) : (
+                <div ref={list} className="mt-7">
+                  {months.map((m) => (
+                    <ListGroup key={m.key} label={m.name}>
+                      <ul className="m-0 flex list-none flex-col p-0" aria-label={m.name}>
+                        {m.rows.map(({ e, i }) => {
+                          const c = byId.get(e.changelog_id)
+                          if (!c) return null
+                          return (
+                            <EntryRow
+                              key={e.id}
+                              e={e}
+                              changelog={c}
+                              inbox={items.length > 1 ? inboxOf(c) : undefined}
+                              locales
+                              flat
+                              current={i === cursor || (cursor < 0 && e.id === shown?.id)}
+                              onPick={() => {
+                                setPicked(e.id)
+                                setCursor(-1)
+                              }}
+                            />
+                          )
+                        })}
+                      </ul>
+                    </ListGroup>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </section>
+        {dialogs}
+      </ChangelogLayout>
+    )
+  }
   return (
     <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="changelog-home">
       <PageTop
@@ -414,24 +636,15 @@ export function ChangelogHome() {
           )}
         </div>
       </div>
-      {writing && <NewEntryDialog changelog={writing} onClose={() => setWriting(null)} />}
-      {creating && (
-        <CreateChangelogDialog
-          inboxId={creating.id}
-          inboxName={creating.name}
-          onClose={() => setCreating(null)}
-          onCreated={(c) => {
-            setCreating(null)
-            navigate(changelogLink(c.id, "settings"))
-          }}
-        />
-      )}
+      {dialogs}
     </main>
   )
 }
 
 export function ChangelogPane() {
   const { t } = useLingui()
+  const phone = useIsPhone()
+  const clNames = useChangelogNames()
   const { changelogId = "" } = useParams()
   const [params] = useSearchParams()
   const navigate = useNavigate()
@@ -455,6 +668,99 @@ export function ChangelogPane() {
     },
     !!c
   )
+
+  if (!phone) {
+    const back = { label: t`What’s new`, to: "/updates" }
+    if (!c)
+      return (
+        <ChangelogLayout place="entries" testId="changelog">
+          <FlatTop back={back} />
+          {changelog.isPending ? (
+            <div className="mt-3 flex max-w-[760px] flex-col gap-4">
+              <Skeleton className="h-8 w-60" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+          ) : (
+            <ErrorLine error={changelog.error} className="mt-3" />
+          )}
+        </ChangelogLayout>
+      )
+    const previewKey = keyLabel(CHANGELOG_KEYS.preview).join("")
+    const publishKey = keyLabel(CHANGELOG_KEYS.publish).join("")
+    return (
+      <ChangelogLayout place={tab} changelog={c} testId="changelog">
+        <FlatTop
+          back={back}
+          actions={
+            <>
+              <Button
+                variant="outline"
+                className={topButton}
+                onClick={() => setPreview(true)}
+                title={t`Preview (${previewKey})`}
+                data-testid="changelog-preview"
+              >
+                <EyeIcon />
+                <Trans>Preview</Trans>
+              </Button>
+              {c.published && (
+                <Button
+                  variant="outline"
+                  className={topButton}
+                  render={<a href={c.url} target="_blank" rel="noreferrer noopener" />}
+                  data-testid="changelog-open-public"
+                >
+                  <Trans>View changelog</Trans>
+                  <ArrowUpRightIcon className="rtl:-scale-x-100" />
+                </Button>
+              )}
+              {canManage && (
+                <Button
+                  variant={c.published ? "outline" : "default"}
+                  className={c.published ? topButton : topInk}
+                  disabled={patch.isPending}
+                  onClick={() => patch.mutate({ published: !c.published })}
+                  title={c.published ? t`Unpublish (${publishKey})` : t`Publish (${publishKey})`}
+                  data-testid="changelog-publish"
+                >
+                  {c.published ? <Trans>Unpublish</Trans> : <Trans>Publish</Trans>}
+                </Button>
+              )}
+            </>
+          }
+        >
+          <ChangelogTrail place={tab === "settings" ? clNames.settings : clNames.entries} name={c.name} />
+        </FlatTop>
+        <section key={c.id} className="@container flex flex-col">
+          <PageHeading
+            title={
+              <span className="inline-flex items-center gap-2.5">
+                {inbox && <InboxMark name={inbox.name} color={inbox.branding.color} className="size-6 text-caption" />}
+                <span data-testid="changelog-name">{c.name}</span>
+              </span>
+            }
+            lede={
+              <span data-testid="changelog-published">
+                <span dir="ltr">{c.url.replace(/^https?:\/\//, "")}</span>
+                {" · "}
+                {c.published ? <Trans>Published</Trans> : <Trans>Unpublished, only your team can see it</Trans>}
+              </span>
+            }
+          />
+          <ErrorLine error={patch.error} className="mt-3" />
+          <div className="mt-6">
+            {tab === "entries" && <EntriesTab changelog={c} flat />}
+            {tab === "settings" && canManage && (
+              <div className="max-w-[1040px]">
+                <SettingsTab changelog={c} />
+              </div>
+            )}
+          </div>
+        </section>
+        {preview && <PreviewDialog changelog={c} onClose={() => setPreview(false)} />}
+      </ChangelogLayout>
+    )
+  }
 
   if (changelog.isPending) {
     return (

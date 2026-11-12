@@ -2003,6 +2003,7 @@ msgstr "പ്രവർത്തനങ്ങൾ മാത്രം"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "സജീവം"
 
@@ -2345,6 +2346,7 @@ msgstr "സിംഗിൾ സൈൻ-ഓണിനായി ഡൊമെയ്ൻ
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "വിലാസം"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "എല്ലാം"
 
@@ -2491,6 +2494,10 @@ msgstr "എല്ലാ ഇറക്കുമതികളും"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "എല്ലാ ഇൻബോക്സുകളും"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "എല്ലാ സംഭവങ്ങളും"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "എല്ലാ ഉൽപ്പന്നങ്ങളും"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "എല്ലാ ഉൽപ്പന്നങ്ങളും"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "{endedAt}-ന് പൂർത്തിയായി"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "ഘടകം"
 
@@ -4834,6 +4843,7 @@ msgstr "ഘടകം ഇല്ലാതാക്കി"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "ഘടകങ്ങൾ"
@@ -6293,6 +6303,7 @@ msgstr "ഡെസ്ക്ടോപ്പ് അറിയിപ്പുകൾ �
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "ബ്രൗസറിന്റെ ക്രമീകരണങ്ങളിൽ ഈ സൈറ്റിന് ഡെസ്ക്ടോപ്പ് അറിയിപ്പുകൾ തടഞ്ഞിരിക്കുന്നു, അതിനാൽ ശബ്ദം മാത്രം പ്ലേ ആകും."
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "എൻക്രിപ്ഷൻ"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "ദിവസത്തിന്റെ അവസാനം (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "അവസാനിച്ചു"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "ഈ മെയിൽബോക്സിന് IMAP ഓഫാണ്. {provi
 msgid "IMAP server"
 msgstr "IMAP സെർവർ"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "സ്വാധീനം"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "ഇൻബോക്സുകൾ 80 അക്ഷരങ്ങളിൽ കൂടുതലുള്ള വിഷയങ്ങൾ മുറിക്കുന്നു."
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "സംഭവം"
@@ -9059,6 +9076,7 @@ msgstr "സംഭവം: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "സംഭവങ്ങൾ"
 
@@ -9526,6 +9544,7 @@ msgstr "കീവേഡ്"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "തരം"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "അവസാനം വായിച്ചത് {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "അവസാന ഫലം"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "തിങ്കളാഴ്ച രാവിലെ"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "മോണിറ്റർ"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "മോണിറ്റർ ഇല്ലാതാക്കി"
 
@@ -10905,6 +10932,7 @@ msgstr "നിരീക്ഷണത്തിൽ"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "മോണിറ്ററുകൾ"
@@ -10912,6 +10940,10 @@ msgstr "മോണിറ്ററുകൾ"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "മോണിറ്ററുകൾ സ്റ്റാറ്റസ് പേജിലെ ഒരു ഘടകത്തിന്റെ നില നിശ്ചയിക്കുന്നു. ആദ്യം ഒരു സ്റ്റാറ്റസ് പേജ് സൃഷ്ടിക്കുക."
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "മോണിറ്ററുകൾ, {down} പ്രവർത്തനരഹിതം"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "ഓഫ്"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "ഓഫ്"
 
@@ -13499,6 +13532,10 @@ msgstr "ഇൻബോക്സ് തുറക്കുക"
 msgid "Open incident"
 msgstr "സംഭവം തുറക്കുക"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "തുറന്ന സംഭവങ്ങൾ"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "തുറന്നവയിൽ ഉപഭോക്താവിന്റെ മറുപടിക്കായി കാത്തിരിക്കുന്ന സംഭാഷണങ്ങളും ഉൾപ്പെടുന്നു. ഒരു ഉൽപ്പന്നത്തിന് 5 റേറ്റിംഗുകൾ ആയാൽ, നല്ലത് 85% ൽ താഴെയെങ്കിൽ റേറ്റിംഗ് ഓറഞ്ചാകും."
@@ -13840,6 +13877,7 @@ msgstr "കാലക്രമേണ"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "അവലോകനം"
@@ -13881,7 +13919,10 @@ msgstr "വേഗത (സെക്കൻഡിൽ മെയിലുകൾ)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "പേജ്"
 
@@ -13897,6 +13938,7 @@ msgstr "അവർ സമ്മതിച്ച പേജ് (ഓപ്ഷണൽ)"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "പേജുകൾ"
 
@@ -13967,6 +14009,7 @@ msgstr "പാസ്‌വേഡ് സജ്ജമാക്കി"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "കഴിഞ്ഞവ"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "പൊതു"
 
@@ -16576,6 +16620,7 @@ msgstr "എൻട്രി ഷെഡ്യൂൾ ചെയ്യുക"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "ഷെഡ്യൂൾ ചെയ്തു"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "തിരയുക"
 
@@ -17518,6 +17564,7 @@ msgstr "സജ്ജീകരിക്കുന്നു…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "ക്രമീകരണങ്ങൾ"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "സൈനിംഗ് സീക്രട്ട്"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "മുതൽ"
 
@@ -18497,6 +18545,7 @@ msgstr "നിങ്ങളുടെ മെയിലിംഗ് ലിസ്റ�
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "ആരംഭിച്ചു"
 
@@ -18520,6 +18569,7 @@ msgstr "{starter} ആരംഭിച്ചത് · {started}"
 msgid "Starting"
 msgstr "ആരംഭിക്കുന്നു"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "ആരംഭം"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (പോർട്ട് 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "അവസ്ഥ"
 
@@ -18586,6 +18638,7 @@ msgstr "നിലച്ചാലുള്ള അവസ്ഥ"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "സ്റ്റാറ്റസ്"
 
@@ -18593,6 +18646,7 @@ msgstr "സ്റ്റാറ്റസ്"
 msgid "Status and coming up"
 msgstr "സ്റ്റാറ്റസും വരാനിരിക്കുന്നവയും"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "സ്റ്റാറ്റസ് പേജ്"
@@ -18605,6 +18659,7 @@ msgstr "സ്റ്റാറ്റസ് പേജ് ഇല്ലാതാക�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "സ്റ്റാറ്റസ് പേജുകൾ"
@@ -18744,6 +18799,7 @@ msgstr "ഇപ്പോൾ ലിസ്റ്റിൽ സബ്സ്ക്ര�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "സബ്സ്ക്രൈബർമാർ"
@@ -20574,6 +20630,10 @@ msgstr "ഈ ഇൻബോക്സിന് ഇതുവരെ മെയിലി
 msgid "This inbox is for"
 msgstr "ഈ ഇൻബോക്സ് ഇതിനുള്ളതാണ്"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "ഈ സംഭവം ഇപ്പോൾ നിലവിലില്ല, അല്ലെങ്കിൽ നിങ്ങൾക്ക് അത് കാണാനാകില്ല."
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "ഇത് ഒരു കംപ്രസ് ചെയ്ത ആർക്കൈവാണ്. Takeout ആർക്കൈവ് അൺസിപ്പ് ചെയ്ത് .mbox ഫയൽ അപ്‌ലോഡ് ചെയ്യുക."
@@ -20689,6 +20749,10 @@ msgstr "ഈ സന്ദേശം"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "ഈ മൈഗ്രേഷൻ അവസാനിച്ചു, അതിനാൽ ഇനി ഒന്നും അപ്‌ലോഡ് ചെയ്യാൻ കഴിയില്ല. മറ്റൊരു ഫയലിനായി പുതിയത് ആരംഭിക്കുക."
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "ഈ മോണിറ്റർ ഇപ്പോൾ നിലവിലില്ല, അല്ലെങ്കിൽ നിങ്ങൾക്ക് അത് കാണാനാകില്ല."
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "{shown} ദിവസത്തിൽ അപ്‌ടൈം {uptime}"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "ഈ പേജിൽ അപ്‌ടൈം മറച്ചിരിക്കുന്നു. ഓരോ ദിവസവും ഇവിടെ കാണാൻ ക്രമീകരണങ്ങളിൽ ഇത് ഓണാക്കുക."
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "പ്രവർത്തനസമയം, 24 മണിക്കൂർ"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "കാഴ്ചകൾ"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "കാഴ്ചകൾ"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "ദൃശ്യത"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

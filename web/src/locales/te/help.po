@@ -110,6 +110,7 @@ msgstr "ఉప-సేకరణను జోడించండి"
 msgid "Add locale"
 msgstr "Add locale"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -178,6 +179,7 @@ msgstr "కథనం వీక్షణలు"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "కథనాలు"
@@ -294,6 +296,7 @@ msgid "Collection"
 msgstr "సేకరణ"
 
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "సేకరణలు"
@@ -404,6 +407,8 @@ msgstr "చిత్తుప్రతి"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "చిత్తుప్రతి సమర్పించబడింది. యజమాని లేదా అడ్మిన్ దీన్ని ప్రచురించవచ్చు."
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "డ్రాఫ్ట్‌లు"
@@ -467,11 +472,13 @@ msgstr "శీర్షిక"
 
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "సహాయ కేంద్రం"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "సహాయ కేంద్రం సృష్టించబడింది. మొదటి వ్యాసం రాసి ప్రచురించండి."
@@ -481,6 +488,7 @@ msgid "Help center deleted"
 msgstr "సహాయ కేంద్రం తొలగించబడింది"
 
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help centers"
 msgstr "సహాయ కేంద్రాలు"
@@ -570,6 +578,10 @@ msgstr "గత {d} రోజులు"
 msgid "last 7 days"
 msgstr "గత 7 రోజులు"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Last 7 days"
+msgstr "గత 7 రోజులు"
+
 #: src/features/help/ImportCard.tsx
 msgid "Leave empty to read every site."
 msgstr "Leave empty to read every site."
@@ -657,6 +669,10 @@ msgstr "కొత్త సేకరణ"
 #: src/features/help/CollectionsTab.tsx
 msgid "New collection ({newKey})"
 msgstr "కొత్త సేకరణ ({newKey})"
+
+#: src/features/help/HelpFrame.tsx
+msgid "New help center for {product}"
+msgstr "{product} కోసం కొత్త సహాయ కేంద్రం"
 
 #: src/features/help/ReportTab.tsx
 msgid "No article got a “no” in this period."
@@ -842,18 +858,22 @@ msgstr "పబ్లిక్ చిరునామా"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "ప్రచురించు"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "ప్రచురించు ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
+#: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -881,6 +901,7 @@ msgstr "Redirects"
 msgid "Remove {0}"
 msgstr "{0} ను తీసివేయి"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Report"
 msgstr "నివేదిక"
@@ -956,6 +977,7 @@ msgstr "శోధన పదాలు"
 msgid "Searched for, found nothing"
 msgstr "వెతికారు, ఏమీ దొరకలేదు"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Searches"
 msgstr "శోధనలు"
@@ -976,6 +998,7 @@ msgstr "పంపినవి"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1008,6 +1031,10 @@ msgstr "హోమ్ పేజీలో పేరు కింద చూపబ�
 #: src/features/help/SettingsTab.tsx
 msgid "Shown when an article has no translation in the visitor’s language."
 msgstr "కథనానికి సందర్శకుడి భాషలో అనువాదం లేనప్పుడు చూపబడుతుంది."
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Site"
+msgstr "సైట్"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Site link"
@@ -1157,10 +1184,12 @@ msgstr "వెతకడానికి ఒక పదాన్ని టైప్
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish"
 msgstr "ప్రచురణ రద్దు చేయి"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "ప్రచురణ రద్దు చేయి ({publishKey})"
 
@@ -1177,8 +1206,10 @@ msgid "Unpublish this translation?"
 msgstr "ఈ అనువాదం ప్రచురణ రద్దు చేయాలా?"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "ప్రచురించబడలేదు"
 
@@ -1215,10 +1246,12 @@ msgid "View"
 msgstr "చూడు"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site"
 msgstr "సైట్‌ను చూడండి"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "సైట్‌ను చూడండి ({openKey})"
 
@@ -1230,6 +1263,10 @@ msgstr "వీక్షణలు"
 #: src/features/help/ArticlesTab.tsx
 msgid "Views · 7 days"
 msgstr "వ్యూలు · 7 రోజులు"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Visibility"
+msgstr "కనిపించే తీరు"
 
 #: src/features/help/CenterBar.tsx
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."

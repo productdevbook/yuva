@@ -110,6 +110,7 @@ msgstr "ઉપ-સંગ્રહ ઉમેરો"
 msgid "Add locale"
 msgstr "Add locale"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -178,6 +179,7 @@ msgstr "લેખ જોવાયા"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "લેખ"
@@ -294,6 +296,7 @@ msgid "Collection"
 msgstr "સંગ્રહ"
 
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "સંગ્રહ"
@@ -404,6 +407,8 @@ msgstr "ડ્રાફ્ટ"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "ડ્રાફ્ટ સબમિટ કર્યો. માલિક અથવા ઍડમિન તેને પ્રકાશિત કરી શકે છે."
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "ડ્રાફ્ટ"
@@ -467,11 +472,13 @@ msgstr "મથાળું"
 
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "મદદ કેન્દ્ર"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "હેલ્પ સેન્ટર બનાવાયું. પહેલો લેખ લખો, પછી પ્રકાશિત કરો."
@@ -481,6 +488,7 @@ msgid "Help center deleted"
 msgstr "મદદ કેન્દ્ર કાઢી નાખ્યું"
 
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help centers"
 msgstr "મદદ કેન્દ્રો"
@@ -570,6 +578,10 @@ msgstr "છેલ્લા {d} દિવસ"
 msgid "last 7 days"
 msgstr "છેલ્લા 7 દિવસ"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Last 7 days"
+msgstr "છેલ્લા 7 દિવસ"
+
 #: src/features/help/ImportCard.tsx
 msgid "Leave empty to read every site."
 msgstr "Leave empty to read every site."
@@ -657,6 +669,10 @@ msgstr "નવો સંગ્રહ"
 #: src/features/help/CollectionsTab.tsx
 msgid "New collection ({newKey})"
 msgstr "નવો સંગ્રહ ({newKey})"
+
+#: src/features/help/HelpFrame.tsx
+msgid "New help center for {product}"
+msgstr "{product} માટે નવું સહાય કેન્દ્ર"
 
 #: src/features/help/ReportTab.tsx
 msgid "No article got a “no” in this period."
@@ -842,18 +858,22 @@ msgstr "સાર્વજનિક સરનામું"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "પ્રકાશિત કરો"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "પ્રકાશિત કરો ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
+#: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -881,6 +901,7 @@ msgstr "Redirects"
 msgid "Remove {0}"
 msgstr "{0} દૂર કરો"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Report"
 msgstr "અહેવાલ"
@@ -956,6 +977,7 @@ msgstr "શોધ શબ્દો"
 msgid "Searched for, found nothing"
 msgstr "શોધ્યું, કંઈ મળ્યું નહીં"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Searches"
 msgstr "શોધ"
@@ -976,6 +998,7 @@ msgstr "મોકલ્યા"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1008,6 +1031,10 @@ msgstr "હોમ પેજ પર નામની નીચે બતાવા�
 #: src/features/help/SettingsTab.tsx
 msgid "Shown when an article has no translation in the visitor’s language."
 msgstr "લેખનો મુલાકાતીની ભાષામાં અનુવાદ ન હોય ત્યારે બતાવાય છે."
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Site"
+msgstr "સાઇટ"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Site link"
@@ -1157,10 +1184,12 @@ msgstr "શોધવા માટે એક શબ્દ ટાઇપ કરો.
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish"
 msgstr "પ્રકાશન રદ કરો"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "પ્રકાશન રદ કરો ({publishKey})"
 
@@ -1177,8 +1206,10 @@ msgid "Unpublish this translation?"
 msgstr "આ અનુવાદનું પ્રકાશન રદ કરવું?"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "અપ્રકાશિત"
 
@@ -1215,10 +1246,12 @@ msgid "View"
 msgstr "જુઓ"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site"
 msgstr "સાઇટ જુઓ"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "સાઇટ જુઓ ({openKey})"
 
@@ -1230,6 +1263,10 @@ msgstr "વ્યૂ"
 #: src/features/help/ArticlesTab.tsx
 msgid "Views · 7 days"
 msgstr "વ્યૂ · 7 દિવસ"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Visibility"
+msgstr "દૃશ્યતા"
 
 #: src/features/help/CenterBar.tsx
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."

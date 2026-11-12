@@ -225,6 +225,7 @@ export function EntryRow({
   onPick,
   locales,
   check,
+  flat,
 }: {
   e: ChangelogEntrySummary
   changelog: Changelog
@@ -233,6 +234,7 @@ export function EntryRow({
   onPick: () => void
   locales?: boolean
   check?: { checked: boolean; onToggle: (range: boolean) => void }
+  flat?: boolean
 }) {
   const { i18n } = useLingui()
   const stateText = useEntryStateText()
@@ -250,9 +252,14 @@ export function EntryRow({
   return (
     <li
       className={cn(
-        "relative flex items-start gap-3.5 rounded-[14px] border bg-card p-4 transition-colors hover:border-faint @max-xl:gap-3 @max-xl:p-3",
+        "relative flex items-start gap-3.5 transition-colors",
+        flat
+          ? "border-t border-line-soft px-1 py-4 hover:bg-subtle"
+          : "rounded-[14px] border bg-card p-4 hover:border-faint @max-xl:gap-3 @max-xl:p-3",
         current &&
-          "border-brand shadow-[0_0_0_3px_color-mix(in_srgb,var(--brand)_16%,transparent)] before:absolute before:inset-y-4 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand"
+          (flat
+            ? "bg-subtle shadow-[inset_2px_0_0_var(--brand)]"
+            : "border-brand shadow-[0_0_0_3px_color-mix(in_srgb,var(--brand)_16%,transparent)] before:absolute before:inset-y-4 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand")
       )}
       onClick={onPick}
       data-testid="entry-row"
@@ -299,7 +306,15 @@ export function EntryRow({
   )
 }
 
-export function EntryPreview({ changelog, entry }: { changelog: Changelog; entry: ChangelogEntrySummary }) {
+export function EntryPreview({
+  changelog,
+  entry,
+  flat,
+}: {
+  changelog: Changelog
+  entry: ChangelogEntrySummary
+  flat?: boolean
+}) {
   const inbox = (useInboxes().data ?? []).find((i) => i.id === changelog.inbox_id)
   const labelText = useLabelText()
   const { title, body } = useEntryText(changelog, entry)
@@ -307,11 +322,17 @@ export function EntryPreview({ changelog, entry }: { changelog: Changelog; entry
   const host = changelog.url.replace(/^https?:\/\//, "").replace(/\/$/, "")
   return (
     <aside
-      className="flex w-[320px] shrink-0 flex-col gap-3 rounded-[14px] border bg-card p-4"
+      className={cn("flex flex-col gap-3", !flat && "w-[320px] shrink-0 rounded-[14px] border bg-card p-4")}
       aria-label={title}
       data-testid="entry-preview"
     >
-      <h3 className="text-[11px] font-semibold tracking-[0.06em] text-faint uppercase">
+      <h3
+        className={
+          flat
+            ? "m-0 text-caption font-medium text-muted2"
+            : "text-[11px] font-semibold tracking-[0.06em] text-faint uppercase"
+        }
+      >
         {inbox ? <Trans>How it looks in {inbox.name}</Trans> : <Trans>How it looks</Trans>}
       </h3>
       <div className="overflow-hidden rounded-xl border bg-surface">
@@ -354,7 +375,7 @@ export function EntryPreview({ changelog, entry }: { changelog: Changelog; entry
   )
 }
 
-export function EntriesTab({ changelog }: { changelog: Changelog }) {
+export function EntriesTab({ changelog, flat }: { changelog: Changelog; flat?: boolean }) {
   const { t } = useLingui()
   const navigate = useNavigate()
   const stateText = useEntryStateText()
@@ -402,8 +423,8 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
 
   return (
     <div className="@container flex min-h-0 flex-1" data-testid="changelog-entries">
-      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-        <div className="flex flex-wrap items-center gap-2 border-b px-6 py-3 phone:px-4">
+      <div className={cn("flex min-w-0 flex-1 flex-col", !flat && "overflow-y-auto")}>
+        <div className={cn("flex flex-wrap items-center gap-2", flat ? "pb-4" : "border-b px-6 py-3 phone:px-4")}>
           <div className="flex items-center gap-2 phone:w-full">
             <ChoiceSelect
               value={state}
@@ -458,12 +479,13 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
             </p>
           </div>
         ) : (
-          <ul ref={list} className="flex flex-col gap-2.5 p-6 @max-xl:p-4">
+          <ul ref={list} className={cn("flex flex-col", flat ? "m-0 list-none p-0" : "gap-2.5 p-6 @max-xl:p-4")}>
             {items.map((e, i) => (
               <EntryRow
                 key={e.id}
                 e={e}
                 changelog={changelog}
+                flat={flat}
                 locales
                 check={
                   selection.selecting
@@ -492,7 +514,7 @@ export function EntriesTab({ changelog }: { changelog: Changelog }) {
         )}
       </div>
       {shown && (
-        <div className="hidden min-h-0 pt-6 pe-6 @min-[1000px]:flex">
+        <div className={cn("hidden min-h-0 @min-[1000px]:flex", flat ? "ps-6" : "pt-6 pe-6")}>
           <EntryPreview changelog={changelog} entry={shown} />
         </div>
       )}

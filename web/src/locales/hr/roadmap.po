@@ -12,6 +12,7 @@ msgid "{inboxName} has no web chat channel. Add one first, because the public bo
 msgstr "{inboxName} nema kanal web-chata. Najprije dodajte jedan, jer ga javna ploča ugrađuje."
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, one {# povratna informacija} few {# povratne informacije} other {# povratnih informacija}}"
 
@@ -21,6 +22,7 @@ msgstr "Čeka odobrenje: {pending}"
 
 #: src/features/roadmap/Board.tsx
 #: src/features/roadmap/LinkIdeaDialog.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{votes} votes"
 msgstr "Glasova: {votes}"
 
@@ -37,11 +39,13 @@ msgid "Add a web chat channel"
 msgstr "Dodaj kanal web-chata"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "Adresa"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "All boards"
 msgstr "Sve ploče"
 
@@ -52,6 +56,11 @@ msgstr "Sve promjene su spremljene."
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "Sve odgovarajuće povratne informacije iz {inboxName} već su povezane."
+
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "All stages"
+msgstr "Sve faze"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -88,6 +97,11 @@ msgstr "Ploča"
 msgid "Board deleted"
 msgstr "Ploča je izbrisana"
 
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "Boards"
+msgstr "Ploče"
+
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
 #: src/features/roadmap/NewIdeaDialog.tsx
@@ -117,12 +131,17 @@ msgid "Create board ({newKey})"
 msgstr "Izradi ploču ({newKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Create board for {name}"
 msgstr "Izradi ploču za {name}"
 
 #: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Create idea"
 msgstr "Izradi ideju"
+
+#: src/features/roadmap/pages.tsx
+msgid "Created"
+msgstr "Izrađeno"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Delete"
@@ -158,6 +177,10 @@ msgstr "Gotovo"
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "Objave svih objavljuju se odmah, osim objava autora koje ste označili kao neželjenu poštu."
 
+#: src/features/roadmap/pages.tsx
+msgid "Feedback"
+msgstr "Povratne informacije"
+
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Good news: “{title}” has shipped. Thank you for asking for it."
 msgstr "Dobre vijesti: „{title}” je isporučeno. Hvala što ste to tražili."
@@ -169,6 +192,10 @@ msgstr "Skriveno"
 #: src/features/roadmap/Board.tsx
 msgid "Hide"
 msgstr "Sakrij"
+
+#: src/features/roadmap/pages.tsx
+msgid "Idea"
+msgstr "Ideja"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Idea started"
@@ -236,22 +263,27 @@ msgid "Linked to {title}"
 msgstr "Povezano s incidentom {title}"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Load more"
 msgstr "Učitaj više"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "Učini privatnom"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "Učini privatnom ({publicKey})"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "Učini javnom"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "Učini javnom ({publicKey})"
 
@@ -319,6 +351,7 @@ msgid "No idea matches."
 msgstr "Nijedna ideja ne odgovara."
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "No ideas yet. New ones land here."
 msgstr "Još nema ideja. Nove stižu ovdje."
 
@@ -327,6 +360,7 @@ msgid "None"
 msgstr "Nema"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Nothing here yet."
 msgstr "Ovdje još nema ničega."
 
@@ -372,10 +406,12 @@ msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "Objavljuje se kao vaš javni odgovor na ideju. Markdown radi."
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "Privatno"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
 msgstr "Javno"
@@ -413,6 +449,7 @@ msgid "Review the reply"
 msgstr "Pregledaj odgovor"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "Plan razvoja"
 
@@ -433,6 +470,7 @@ msgid "Search ideas"
 msgstr "Traži ideje"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "Postavke"
 
@@ -449,6 +487,7 @@ msgid "Shown under the name on the public board."
 msgstr "Prikazuje se ispod naziva na javnoj ploči."
 
 #: src/features/roadmap/MoveDialog.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Stage"
 msgstr "Faza"
 
@@ -526,11 +565,18 @@ msgstr "Upotrijebite 3 do 48 slova, znamenki i unutarnjih crtica."
 msgid "View board"
 msgstr "Prikaži ploču"
 
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "Vidljivost"
 
+#: src/features/roadmap/pages.tsx
+msgid "Votes"
+msgstr "Glasovi"
+
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "Čeka odobrenje"
 

@@ -154,6 +154,10 @@ export function Layout() {
     section === "feedback" ||
     section === "contacts" ||
     section === "broadcasts" ||
+    section === "status" ||
+    section === "knowledge" ||
+    section === "board" ||
+    section === "updates" ||
     (section === "mail" && !/^\/mail\/[^/]+\/filters$/.test(pathname))
   if (!phone && flatPage) {
     return (

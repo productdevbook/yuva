@@ -110,6 +110,7 @@ msgstr "Προσθήκη υποσυλλογής"
 msgid "Add locale"
 msgstr "Add locale"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -178,6 +179,7 @@ msgstr "Προβολές άρθρων"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "Άρθρα"
@@ -294,6 +296,7 @@ msgid "Collection"
 msgstr "Συλλογή"
 
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "Συλλογές"
@@ -404,6 +407,8 @@ msgstr "Πρόχειρο"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "Το πρόχειρο υποβλήθηκε. Ένας ιδιοκτήτης ή διαχειριστής μπορεί να το δημοσιεύσει."
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "Πρόχειρα"
@@ -467,11 +472,13 @@ msgstr "Επικεφαλίδα"
 
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "Κέντρο βοήθειας"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "Το κέντρο βοήθειας δημιουργήθηκε. Γράψτε το πρώτο άρθρο και μετά δημοσιεύστε το."
@@ -481,6 +488,7 @@ msgid "Help center deleted"
 msgstr "Το κέντρο βοήθειας διαγράφηκε"
 
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help centers"
 msgstr "Κέντρα βοήθειας"
@@ -570,6 +578,10 @@ msgstr "Τελευταίες {d} ημέρες"
 msgid "last 7 days"
 msgstr "τελευταίες 7 ημέρες"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Last 7 days"
+msgstr "Τελευταίες 7 ημέρες"
+
 #: src/features/help/ImportCard.tsx
 msgid "Leave empty to read every site."
 msgstr "Leave empty to read every site."
@@ -657,6 +669,10 @@ msgstr "Νέα συλλογή"
 #: src/features/help/CollectionsTab.tsx
 msgid "New collection ({newKey})"
 msgstr "Νέα συλλογή ({newKey})"
+
+#: src/features/help/HelpFrame.tsx
+msgid "New help center for {product}"
+msgstr "Νέο κέντρο βοήθειας για {product}"
 
 #: src/features/help/ReportTab.tsx
 msgid "No article got a “no” in this period."
@@ -842,18 +858,22 @@ msgstr "Δημόσια διεύθυνση"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "Δημοσίευση"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "Δημοσίευση ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
+#: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -881,6 +901,7 @@ msgstr "Redirects"
 msgid "Remove {0}"
 msgstr "Αφαίρεση του {0}"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Report"
 msgstr "Αναφορά"
@@ -956,6 +977,7 @@ msgstr "Λέξεις αναζήτησης"
 msgid "Searched for, found nothing"
 msgstr "Αναζητήθηκε, δεν βρέθηκε τίποτα"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Searches"
 msgstr "Αναζητήσεις"
@@ -976,6 +998,7 @@ msgstr "Απεστάλη"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1008,6 +1031,10 @@ msgstr "Εμφανίζεται κάτω από το όνομα στην αρχι
 #: src/features/help/SettingsTab.tsx
 msgid "Shown when an article has no translation in the visitor’s language."
 msgstr "Εμφανίζεται όταν ένα άρθρο δεν έχει μετάφραση στη γλώσσα του επισκέπτη."
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Site"
+msgstr "Ιστότοπος"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Site link"
@@ -1157,10 +1184,12 @@ msgstr "Πληκτρολογήστε μια λέξη για αναζήτηση."
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish"
 msgstr "Αποδημοσίευση"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "Αποδημοσίευση ({publishKey})"
 
@@ -1177,8 +1206,10 @@ msgid "Unpublish this translation?"
 msgstr "Αποδημοσίευση αυτής της μετάφρασης;"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "Αδημοσίευτο"
 
@@ -1215,10 +1246,12 @@ msgid "View"
 msgstr "Προβολή"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site"
 msgstr "Προβολή ιστότοπου"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "Προβολή ιστότοπου ({openKey})"
 
@@ -1230,6 +1263,10 @@ msgstr "Προβολές"
 #: src/features/help/ArticlesTab.tsx
 msgid "Views · 7 days"
 msgstr "Προβολές · 7 ημέρες"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Visibility"
+msgstr "Ορατότητα"
 
 #: src/features/help/CenterBar.tsx
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."

@@ -2003,6 +2003,7 @@ msgstr "เฉพาะการดำเนินการ"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "ใช้งานอยู่"
 
@@ -2345,6 +2346,7 @@ msgstr "เพิ่มโดเมน {domain} สำหรับการล�
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "ที่อยู่"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "ทั้งหมด"
 
@@ -2491,6 +2494,10 @@ msgstr "การนำเข้าทั้งหมด"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "กล่องข้อความทั้งหมด"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "เหตุขัดข้องทั้งหมด"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "ผลิตภัณฑ์ทั้งหมด"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "ผลิตภัณฑ์ทั้งหมด"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "เสร็จสิ้นเมื่อ {endedAt}"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "คอมโพเนนต์"
 
@@ -4834,6 +4843,7 @@ msgstr "ลบส่วนประกอบแล้ว"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "ส่วนประกอบ"
@@ -6293,6 +6303,7 @@ msgstr "อนุญาตการแจ้งเตือนบนเดสก
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "การแจ้งเตือนบนเดสก์ท็อปถูกบล็อกสำหรับไซต์นี้ในการตั้งค่าของเบราว์เซอร์ จึงมีเพียงเสียงที่เล่น"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "การเข้ารหัส"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "สิ้นสุดวัน (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "สิ้นสุด"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "IMAP ปิดอยู่สำหรับกล่องจดหม�
 msgid "IMAP server"
 msgstr "เซิร์ฟเวอร์ IMAP"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "ผลกระทบ"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "กล่องข้อความตัดหัวเรื่องที่ยาวกว่า 80 ตัวอักษร"
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "เหตุการณ์"
@@ -9059,6 +9076,7 @@ msgstr "เหตุการณ์: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "เหตุการณ์"
 
@@ -9526,6 +9544,7 @@ msgstr "คีย์เวิร์ด"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "ประเภท"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "อ่านล่าสุด {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "ผลล่าสุด"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "เช้าวันจันทร์"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "ตัวตรวจสอบ"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "ลบมอนิเตอร์แล้ว"
 
@@ -10905,6 +10932,7 @@ msgstr "กำลังติดตาม"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "มอนิเตอร์"
@@ -10912,6 +10940,10 @@ msgstr "มอนิเตอร์"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "มอนิเตอร์กำหนดสถานะของส่วนประกอบในหน้าสถานะ สร้างหน้าสถานะก่อน"
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "ตัวตรวจสอบ ล่ม {down} ตัว"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "ปิด"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "ปิด"
 
@@ -13499,6 +13532,10 @@ msgstr "เปิดกล่องข้อความ"
 msgid "Open incident"
 msgstr "เปิดเหตุการณ์"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "เหตุขัดข้องที่ยังเปิดอยู่"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "บทสนทนาที่เปิดอยู่รวมถึงบทสนทนาที่รอลูกค้าตอบ คะแนนจะเป็นสีส้มเมื่อดีต่ำกว่า 85% หลังจากผลิตภัณฑ์มี 5 คะแนน"
@@ -13840,6 +13877,7 @@ msgstr "ตามช่วงเวลา"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "ภาพรวม"
@@ -13881,7 +13919,10 @@ msgstr "ความเร็ว (อีเมลต่อวินาที)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "หน้า"
 
@@ -13897,6 +13938,7 @@ msgstr "หน้าที่พวกเขายินยอม (ไม่บ�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "หน้า"
 
@@ -13967,6 +14009,7 @@ msgstr "ตั้งรหัสผ่านแล้ว"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "ที่ผ่านมา"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "สาธารณะ"
 
@@ -16576,6 +16620,7 @@ msgstr "ตั้งเวลารายการ"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "ตั้งเวลาแล้ว"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "ค้นหา"
 
@@ -17518,6 +17564,7 @@ msgstr "กำลังตั้งค่า…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "การตั้งค่า"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "Signing secret"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "ตั้งแต่"
 
@@ -18497,6 +18545,7 @@ msgstr "สร้างรายชื่อผู้รับจดหมาย
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "เริ่มแล้ว"
 
@@ -18520,6 +18569,7 @@ msgstr "เริ่มโดย {starter} · {started}"
 msgid "Starting"
 msgstr "กำลังเริ่ม"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "เริ่ม"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (พอร์ต 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "สถานะ"
 
@@ -18586,6 +18638,7 @@ msgstr "สถานะเมื่อล่ม"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "สถานะ"
 
@@ -18593,6 +18646,7 @@ msgstr "สถานะ"
 msgid "Status and coming up"
 msgstr "สถานะและสิ่งที่กำลังจะมา"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "หน้าสถานะ"
@@ -18605,6 +18659,7 @@ msgstr "ลบหน้าสถานะแล้ว"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "หน้าสถานะ"
@@ -18744,6 +18799,7 @@ msgstr "เพิ่งสมัครรับรายชื่อ"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "ผู้สมัครรับ"
@@ -20574,6 +20630,10 @@ msgstr "กล่องข้อความนี้ยังไม่มีร
 msgid "This inbox is for"
 msgstr "กล่องนี้ใช้สำหรับ"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "ไม่มีเหตุขัดข้องนี้แล้ว หรือคุณไม่มีสิทธิ์ดู"
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "นี่คือไฟล์เก็บถาวรที่บีบอัด แตกไฟล์เก็บถาวร Takeout แล้วอัปโหลดไฟล์ .mbox"
@@ -20689,6 +20749,10 @@ msgstr "ข้อความนี้"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "การย้ายนี้สิ้นสุดแล้ว จึงอัปโหลดเพิ่มไม่ได้ เริ่มการย้ายใหม่สำหรับไฟล์อื่น"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "ไม่มีตัวตรวจสอบนี้แล้ว หรือคุณไม่มีสิทธิ์ดู"
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "เวลาทำงาน {uptime} ใน {shown} วัน"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "หน้านี้ซ่อนเวลาทำงานไว้ เปิดในการตั้งค่าเพื่อดูแต่ละวันที่นี่"
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "เวลาทำงาน 24 ชั่วโมง"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "การดู"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "การดู"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "การมองเห็น"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

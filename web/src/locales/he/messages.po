@@ -2003,6 +2003,7 @@ msgstr "פעולות בלבד"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "פעיל"
 
@@ -2345,6 +2346,7 @@ msgstr "הוסיף/ה את הדומיין {domain} להתחברות יחידה"
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "כתובת"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "הכול"
 
@@ -2491,6 +2494,10 @@ msgstr "כל הייבואים"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "כל תיבות הדואר"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "כל התקלות"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "כל המוצרים"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "כל המוצרים"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "הושלם ב-{endedAt}"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "רכיב"
 
@@ -4834,6 +4843,7 @@ msgstr "הרכיב נמחק"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "רכיבים"
@@ -6293,6 +6303,7 @@ msgstr "התראות שולחן עבודה מותרות."
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "התראות שולחן עבודה חסומות לאתר הזה בהגדרות הדפדפן, ולכן מושמע רק הצליל."
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "הצפנה"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "סוף היום (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "הסתיים"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "IMAP כבוי לתיבת הדואר הזאת. הפעל אותו בהגד
 msgid "IMAP server"
 msgstr "שרת IMAP"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "השפעה"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "תיבות דואר חותכות נושאים ארוכים מ-80 תווים."
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "אירוע"
@@ -9059,6 +9076,7 @@ msgstr "אירוע: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "אירועים"
 
@@ -9526,6 +9544,7 @@ msgstr "מילת מפתח"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "סוג"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "נקרא לאחרונה {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "תוצאה אחרונה"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "יום שני בבוקר"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "מנטר"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "המוניטור נמחק"
 
@@ -10905,6 +10932,7 @@ msgstr "במעקב"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "מוניטורים"
@@ -10912,6 +10940,10 @@ msgstr "מוניטורים"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "מוניטורים קובעים את מצב הרכיב בדף הסטטוס. צרו קודם דף סטטוס."
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "מנטרים, {down} לא פעילים"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "כבוי"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "כבוי"
 
@@ -13499,6 +13532,10 @@ msgstr "פתיחת תיבת הדואר"
 msgid "Open incident"
 msgstr "פתיחת האירוע"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "תקלות פתוחות"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "פתוחות כוללות שיחות שממתינות ללקוח. הדירוג הופך לכתום מתחת ל־85% טובים כשלמוצר יש 5 דירוגים."
@@ -13840,6 +13877,7 @@ msgstr "לאורך זמן"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "סקירה כללית"
@@ -13881,7 +13919,10 @@ msgstr "קצב (הודעות בשנייה)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "דף"
 
@@ -13897,6 +13938,7 @@ msgstr "הדף שבו הסכימו (אופציונלי)"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "דפים"
 
@@ -13967,6 +14009,7 @@ msgstr "הסיסמה נקבעה"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "קודמים"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "ציבורי"
 
@@ -16576,6 +16620,7 @@ msgstr "תזמון הרשומה"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "מתוזמן"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "חיפוש"
 
@@ -17518,6 +17564,7 @@ msgstr "מגדיר…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "הגדרות"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "סוד חתימה"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "מאז"
 
@@ -18497,6 +18545,7 @@ msgstr "התחל את רשימת התפוצה שלך"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "התחיל"
 
@@ -18520,6 +18569,7 @@ msgstr "התחיל על ידי {starter} · {started}"
 msgid "Starting"
 msgstr "מתחיל"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "התחלה"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (פורט 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "מצב"
 
@@ -18586,6 +18638,7 @@ msgstr "מצב בנפילה"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "סטטוס"
 
@@ -18593,6 +18646,7 @@ msgstr "סטטוס"
 msgid "Status and coming up"
 msgstr "סטטוס ומה בהמשך"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "דף סטטוס"
@@ -18605,6 +18659,7 @@ msgstr "דף הסטטוס נמחק"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "דפי סטטוס"
@@ -18744,6 +18799,7 @@ msgstr "נרשם לרשימה הרגע"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "מנויים"
@@ -20574,6 +20630,10 @@ msgstr "לתיבת הדואר הזאת עדיין אין רשימת תפוצה. 
 msgid "This inbox is for"
 msgstr "התיבה הזו מיועדת ל"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "התקלה הזו כבר לא קיימת או שאין לך גישה אליה."
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "זה ארכיון דחוס. פתח את דחיסת ארכיון Takeout והעלה את קובץ ה-mbox."
@@ -20689,6 +20749,10 @@ msgstr "ההודעה הזאת"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "ההעברה הזאת הסתיימה, ולכן אי אפשר להעלות עוד. התחל חדשה לקובץ אחר."
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "המנטר הזה כבר לא קיים או שאין לך גישה אליו."
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "זמינות {uptime} ב־{shown} ימים"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "הזמינות מוסתרת בדף הזה. הפעילו אותה בהגדרות כדי לראות כאן כל יום."
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "זמינות, 24 שעות"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "צפיות"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "צפיות"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "חשיפה"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

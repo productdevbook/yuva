@@ -70,7 +70,17 @@ function History({ idea }: { idea: Discussion }) {
   )
 }
 
-export function IdeaPane({ board, ideaId, all }: { board: RoadmapBoard; ideaId: string; all: boolean }) {
+export function IdeaPane({
+  board,
+  ideaId,
+  all,
+  noBack,
+}: {
+  board: RoadmapBoard
+  ideaId: string
+  all: boolean
+  noBack?: boolean
+}) {
   const { t } = useLingui()
   const location = useLocation()
   const text = useEnumText()
@@ -98,7 +108,7 @@ export function IdeaPane({ board, ideaId, all }: { board: RoadmapBoard; ideaId: 
       <Thread
         embedded
         discussionId={ideaId}
-        back={{ to: all ? "/board" : boardLink(board.id), label: t`Board` }}
+        back={noBack ? undefined : { to: all ? "/board" : boardLink(board.id), label: t`Board` }}
         actions={(d) => (
           <>
             <Button

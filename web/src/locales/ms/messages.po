@@ -2003,6 +2003,7 @@ msgstr "Tindakan sahaja"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "Aktif"
 
@@ -2345,6 +2346,7 @@ msgstr "Menambah domain {domain} untuk log masuk tunggal"
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "Alamat"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "Semua"
 
@@ -2491,6 +2494,10 @@ msgstr "Semua import"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "Semua peti masuk"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "Semua insiden"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "semua produk"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "Semua produk"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "Selesai pada {endedAt}"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "Komponen"
 
@@ -4834,6 +4843,7 @@ msgstr "Komponen dipadam"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "Komponen"
@@ -6293,6 +6303,7 @@ msgstr "Pemberitahuan desktop dibenarkan."
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "Pemberitahuan desktop disekat untuk tapak ini dalam tetapan pelayar, jadi hanya bunyi dimainkan."
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "Penyulitan"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "Hujung hari (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "Tamat"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "IMAP dimatikan untuk peti mel ini. Hidupkan dalam tetapan {provider}, ke
 msgid "IMAP server"
 msgstr "Pelayan IMAP"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "Kesan"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "Peti masuk memotong subjek yang lebih panjang daripada 80 aksara."
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "Insiden"
@@ -9059,6 +9076,7 @@ msgstr "Insiden: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "Insiden"
 
@@ -9526,6 +9544,7 @@ msgstr "Kata kunci"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "Jenis"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "Dibaca terakhir {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "Keputusan terakhir"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "Isnin pagi"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "Pemantau"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "Monitor dipadam"
 
@@ -10905,6 +10932,7 @@ msgstr "Dipantau"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "Monitor"
@@ -10912,6 +10940,10 @@ msgstr "Monitor"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Monitor menetapkan keadaan komponen halaman status. Cipta halaman status dahulu."
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "Pemantau, {down} terputus"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "mati"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "Mati"
 
@@ -13499,6 +13532,10 @@ msgstr "Buka peti masuk"
 msgid "Open incident"
 msgstr "Buka insiden"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "Insiden terbuka"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "Terbuka termasuk perbualan yang menunggu pelanggan. Penilaian bertukar jingga di bawah 85% baik apabila produk mempunyai 5 penilaian."
@@ -13840,6 +13877,7 @@ msgstr "Dari semasa ke semasa"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "Gambaran keseluruhan"
@@ -13881,7 +13919,10 @@ msgstr "Kadar (mel sesaat)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "Halaman"
 
@@ -13897,6 +13938,7 @@ msgstr "Halaman tempat mereka bersetuju (pilihan)"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "Halaman"
 
@@ -13967,6 +14009,7 @@ msgstr "Kata laluan ditetapkan"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "Lepas"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "Awam"
 
@@ -16576,6 +16620,7 @@ msgstr "Jadualkan entri"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "Dijadualkan"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "Cari"
 
@@ -17518,6 +17564,7 @@ msgstr "Menyediakan…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "Tetapan"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "Rahsia tandatangan"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "Sejak"
 
@@ -18497,6 +18545,7 @@ msgstr "Mulakan senarai mel anda"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "Bermula"
 
@@ -18520,6 +18569,7 @@ msgstr "Dimulakan oleh {starter} · {started}"
 msgid "Starting"
 msgstr "Bermula"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "Mula"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (port 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "Keadaan"
 
@@ -18586,6 +18638,7 @@ msgstr "Status apabila tumbang"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "Status"
 
@@ -18593,6 +18646,7 @@ msgstr "Status"
 msgid "Status and coming up"
 msgstr "Status dan akan datang"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "Halaman status"
@@ -18605,6 +18659,7 @@ msgstr "Halaman status dipadam"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "Halaman status"
@@ -18744,6 +18799,7 @@ msgstr "Baru melanggan senarai"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "Pelanggan"
@@ -20574,6 +20630,10 @@ msgstr "Peti masuk ini belum mempunyai senarai mel. Siaran hanya pergi kepada or
 msgid "This inbox is for"
 msgstr "Peti masuk ini untuk"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "Insiden ini tidak wujud lagi atau anda tidak dapat melihatnya."
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "Ini arkib termampat. Nyahzip arkib Takeout dan muat naik fail .mbox."
@@ -20689,6 +20749,10 @@ msgstr "Mesej ini"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "Pemindahan ini telah tamat, jadi tiada lagi yang boleh dimuat naik. Mulakan yang baharu untuk fail lain."
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "Pemantau ini tidak wujud lagi atau anda tidak dapat melihatnya."
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "masa operasi {uptime} dalam {shown} hari"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "Masa operasi disembunyikan pada halaman ini. Hidupkan dalam tetapan untuk melihat setiap hari di sini."
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "Masa aktif, 24 jam"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "paparan"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Paparan"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "Keterlihatan"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

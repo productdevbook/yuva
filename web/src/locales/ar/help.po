@@ -110,6 +110,7 @@ msgstr "إضافة مجموعة فرعية"
 msgid "Add locale"
 msgstr "Add locale"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -178,6 +179,7 @@ msgstr "مشاهدات المقالات"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "المقالات"
@@ -294,6 +296,7 @@ msgid "Collection"
 msgstr "مجموعة"
 
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "المجموعات"
@@ -404,6 +407,8 @@ msgstr "مسودة"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "تم إرسال المسودة. يمكن للمالك أو المسؤول نشرها."
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "المسودات"
@@ -467,11 +472,13 @@ msgstr "عنوان رئيسي"
 
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "مركز المساعدة"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "تم إنشاء مركز المساعدة. اكتب المقال الأول ثم انشره."
@@ -481,6 +488,7 @@ msgid "Help center deleted"
 msgstr "تم حذف مركز المساعدة"
 
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help centers"
 msgstr "مراكز المساعدة"
@@ -570,6 +578,10 @@ msgstr "آخر {d} يومًا"
 msgid "last 7 days"
 msgstr "آخر 7 أيام"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Last 7 days"
+msgstr "آخر 7 أيام"
+
 #: src/features/help/ImportCard.tsx
 msgid "Leave empty to read every site."
 msgstr "Leave empty to read every site."
@@ -657,6 +669,10 @@ msgstr "مجموعة جديدة"
 #: src/features/help/CollectionsTab.tsx
 msgid "New collection ({newKey})"
 msgstr "مجموعة جديدة ({newKey})"
+
+#: src/features/help/HelpFrame.tsx
+msgid "New help center for {product}"
+msgstr "مركز مساعدة جديد لـ {product}"
 
 #: src/features/help/ReportTab.tsx
 msgid "No article got a “no” in this period."
@@ -842,18 +858,22 @@ msgstr "العنوان العام"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "نشر"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "نشر ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
+#: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -881,6 +901,7 @@ msgstr "Redirects"
 msgid "Remove {0}"
 msgstr "إزالة {0}"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Report"
 msgstr "التقرير"
@@ -956,6 +977,7 @@ msgstr "كلمات البحث"
 msgid "Searched for, found nothing"
 msgstr "بُحث عنه ولم يُعثر على شيء"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Searches"
 msgstr "عمليات البحث"
@@ -976,6 +998,7 @@ msgstr "المُرسَل"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1008,6 +1031,10 @@ msgstr "يظهر تحت الاسم في الصفحة الرئيسية."
 #: src/features/help/SettingsTab.tsx
 msgid "Shown when an article has no translation in the visitor’s language."
 msgstr "يظهر عندما لا تكون للمقالة ترجمة بلغة الزائر."
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Site"
+msgstr "الموقع"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Site link"
@@ -1157,10 +1184,12 @@ msgstr "اكتب كلمة للبحث عنها."
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish"
 msgstr "إلغاء النشر"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "إلغاء النشر ({publishKey})"
 
@@ -1177,8 +1206,10 @@ msgid "Unpublish this translation?"
 msgstr "إلغاء نشر هذه الترجمة؟"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "غير منشورة"
 
@@ -1215,10 +1246,12 @@ msgid "View"
 msgstr "عرض"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site"
 msgstr "عرض الموقع"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "عرض الموقع ({openKey})"
 
@@ -1230,6 +1263,10 @@ msgstr "المشاهدات"
 #: src/features/help/ArticlesTab.tsx
 msgid "Views · 7 days"
 msgstr "المشاهدات · 7 أيام"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Visibility"
+msgstr "الظهور"
 
 #: src/features/help/CenterBar.tsx
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."

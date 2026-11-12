@@ -6,9 +6,11 @@ import { useGo, useSection } from "@/app/Rail"
 import { useNavGroups, WorkspaceMark, WorkspaceMenu } from "@/app/Sidebar"
 import { UserMenu } from "@/app/UserMenu"
 import {
+  InfoColumn,
   NavGroup,
   NavList,
   NavRow,
+  PageLayout,
   PageSearch,
   SideColumn,
   SideTitle,
@@ -204,5 +206,39 @@ export function PageSidebar({
         <UserMenu row align="start" side="top" />
       </div>
     </SideColumn>
+  )
+}
+
+export function SectionPage({
+  title,
+  searchLabel,
+  nav,
+  aside,
+  testId,
+  children,
+}: {
+  title: string
+  searchLabel?: string
+  nav: React.ReactNode
+  aside?: React.ReactNode
+  testId?: string
+  children: React.ReactNode
+}) {
+  const { t } = useLingui()
+  const { canManage } = useSession()
+  return (
+    <PageLayout
+      testId={testId}
+      label={title}
+      sidebar={
+        <PageSidebar title={title} searchLabel={searchLabel}>
+          <NavList label={title}>{nav}</NavList>
+          {!canManage && <SectionNav products={false} />}
+        </PageSidebar>
+      }
+      aside={<InfoColumn label={t`Details`}>{aside}</InfoColumn>}
+    >
+      {children}
+    </PageLayout>
   )
 }

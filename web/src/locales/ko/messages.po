@@ -2003,6 +2003,7 @@ msgstr "동작만"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "활성"
 
@@ -2345,6 +2346,7 @@ msgstr "싱글 사인온용 도메인 {domain}을(를) 추가했습니다"
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "주소"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "전체"
 
@@ -2491,6 +2494,10 @@ msgstr "모든 가져오기"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "모든 받은 편지함"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "모든 인시던트"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "모든 제품"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "모든 제품"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "{endedAt}에 완료됨"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "구성 요소"
 
@@ -4834,6 +4843,7 @@ msgstr "구성 요소를 삭제했습니다"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "구성 요소"
@@ -6293,6 +6303,7 @@ msgstr "데스크톱 알림이 허용되어 있습니다."
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "브라우저 설정에서 이 사이트의 데스크톱 알림이 차단되어 있어 소리만 재생됩니다."
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "암호화"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "하루의 끝 (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "종료"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "이 메일함은 IMAP이 꺼져 있습니다. {provider} 설정에서 �
 msgid "IMAP server"
 msgstr "IMAP 서버"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "영향"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "받은 편지함은 80자를 넘는 제목을 잘라냅니다."
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "인시던트"
@@ -9059,6 +9076,7 @@ msgstr "인시던트: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "인시던트"
 
@@ -9526,6 +9544,7 @@ msgstr "키워드"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "종류"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "마지막으로 읽음 {when}"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "최근 결과"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "월요일 아침"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "모니터"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "모니터를 삭제했습니다"
 
@@ -10905,6 +10932,7 @@ msgstr "모니터링 중"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "모니터"
@@ -10912,6 +10940,10 @@ msgstr "모니터"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "모니터는 상태 페이지 구성 요소의 상태를 설정합니다. 먼저 상태 페이지를 만드세요."
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "모니터, {down}개 다운"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "꺼짐"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "끔"
 
@@ -13499,6 +13532,10 @@ msgstr "받은편지함 열기"
 msgid "Open incident"
 msgstr "인시던트 열기"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "진행 중인 인시던트"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "열린 대화에는 고객 답장을 기다리는 대화도 포함됩니다. 제품 평가가 5개 이상일 때 좋음 비율이 85% 미만이면 주황색으로 표시됩니다."
@@ -13840,6 +13877,7 @@ msgstr "시간 경과"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "개요"
@@ -13881,7 +13919,10 @@ msgstr "속도(초당 메일 수)"
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "페이지"
 
@@ -13897,6 +13938,7 @@ msgstr "동의한 페이지(선택)"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "페이지"
 
@@ -13967,6 +14009,7 @@ msgstr "비밀번호를 설정했습니다"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "지난 항목"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "공개"
 
@@ -16576,6 +16620,7 @@ msgstr "항목 예약"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "예약됨"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "검색"
 
@@ -17518,6 +17564,7 @@ msgstr "설정하는 중…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "설정"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "서명 시크릿"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "시작일"
 
@@ -18497,6 +18545,7 @@ msgstr "메일링 리스트를 시작하세요"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "시작됨"
 
@@ -18520,6 +18569,7 @@ msgstr "{starter}님이 시작 · {started}"
 msgid "Starting"
 msgstr "시작 중"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "시작"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS(포트 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "상태"
 
@@ -18586,6 +18638,7 @@ msgstr "다운 시 상태"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "상태"
 
@@ -18593,6 +18646,7 @@ msgstr "상태"
 msgid "Status and coming up"
 msgstr "상태와 예정"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "상태 페이지"
@@ -18605,6 +18659,7 @@ msgstr "상태 페이지를 삭제했습니다"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "상태 페이지"
@@ -18744,6 +18799,7 @@ msgstr "방금 목록을 구독함"
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "구독자"
@@ -20574,6 +20630,10 @@ msgstr "이 받은 편지함에는 아직 메일링 리스트가 없습니다. �
 msgid "This inbox is for"
 msgstr "이 받은 편지함의 용도"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "이 인시던트가 더 이상 없거나 볼 수 없습니다."
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "압축된 아카이브입니다. Takeout 아카이브의 압축을 풀고 .mbox 파일을 업로드하세요."
@@ -20689,6 +20749,10 @@ msgstr "이 메시지"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "이 이전은 종료되어 더 이상 업로드할 수 없습니다. 다른 파일은 새 이전을 시작하세요."
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "이 모니터가 더 이상 없거나 볼 수 없습니다."
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "{shown}일 가동률 {uptime}"
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "이 페이지에서는 가동률이 숨겨져 있습니다. 날마다의 가동률을 여기서 보려면 설정에서 켜세요."
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "가동률, 24시간"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "조회"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "조회"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "공개 범위"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

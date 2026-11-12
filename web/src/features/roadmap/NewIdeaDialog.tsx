@@ -46,7 +46,12 @@ export function NewIdeaDialog({
             if (ok)
               create.mutate(
                 { board_id: boardId, title: title.trim(), body: body.trim() },
-                { onSuccess: (d) => navigate(ideaLink(boardId, d.id)) }
+                {
+                  onSuccess: (d) => {
+                    onClose()
+                    navigate(ideaLink(boardId, d.id))
+                  },
+                }
               )
           }}
         >

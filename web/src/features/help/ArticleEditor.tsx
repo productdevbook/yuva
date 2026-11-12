@@ -13,7 +13,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import { useNavigate, useParams, useSearchParams } from "react-router"
 
-import { Notice, Segmented, toast, useConfirm } from "@/components/common"
+import { Notice, PageTop as FlatTop, Segmented, toast, useConfirm } from "@/components/common"
 import { Pane, PaneBack } from "@/components/common/Column"
 import { alt, HELP_KEYS, keyLabel, mod } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { EditorToolbar } from "@/features/help/EditorToolbar"
+import { HelpLayout, HelpTrail } from "@/features/help/HelpFrame"
 import { format, insertBlock, type Format } from "@/features/help/markdown"
 import { OriginalText, ArticlePreview } from "@/features/help/Preview"
 import {
@@ -42,6 +43,7 @@ import { Revisions } from "@/features/help/Revisions"
 import { collectionName, ErrorLine, useLocaleName, useStateText } from "@/features/help/text"
 import { ChoiceSelect, Field } from "@/features/settings/ui"
 import { useHotkeys } from "@/hooks/use-hotkeys"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { useLatest } from "@/hooks/use-latest"
 import {
   ApiError,
@@ -85,6 +87,24 @@ function StateDot({ state }: { state?: HelpArticleTranslation["state"] }) {
   )
 }
 
+function EditorFrame({ center, back, children }: { center: HelpCenter; back: string; children: React.ReactNode }) {
+  const flat = !useIsPhone()
+  if (!flat)
+    return (
+      <main className="min-h-0 flex-1 overflow-y-auto bg-surface" data-testid="help-editor">
+        {children}
+      </main>
+    )
+  return (
+    <HelpLayout place="articles" center={center} testId="help-editor">
+      <FlatTop back={{ label: back, to: centerLink(center.id) }}>
+        <HelpTrail place={back} center={center} />
+      </FlatTop>
+      {children}
+    </HelpLayout>
+  )
+}
+
 function Editor({
   center,
   article,
@@ -97,6 +117,7 @@ function Editor({
   onLocale: (l: string) => void
 }) {
   const { t, i18n } = useLingui()
+  const flat = !useIsPhone()
   const navigate = useNavigate()
   const localeName = useLocaleName()
   const stateText = useStateText()
@@ -389,9 +410,14 @@ function Editor({
     cn(pane === name ? "block" : "hidden", desktop ? "lg:block" : "lg:hidden")
 
   return (
-    <main className="min-h-0 flex-1 overflow-y-auto bg-surface" data-testid="help-editor">
-      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-4 px-6 pt-6 pb-24 phone:px-4 phone:pt-3">
-        <PaneBack to={centerLink(center.id)} label={t`Articles`} always />
+    <EditorFrame center={center} back={t`Articles`}>
+      <div
+        className={cn(
+          "flex w-full flex-col gap-4",
+          flat ? "pb-16" : "mx-auto max-w-[1400px] px-6 pt-6 pb-24 phone:px-4 phone:pt-3"
+        )}
+      >
+        {!flat && <PaneBack to={centerLink(center.id)} label={t`Articles`} always />}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <div className="-my-1 max-w-full overflow-x-auto py-1 phone:basis-full">
             <Segmented
@@ -769,18 +795,33 @@ function Editor({
         />
       )}
       {confirmDialog}
-    </main>
+    </EditorFrame>
   )
 }
 
 export function ArticleEditorPage() {
   const { t } = useLingui()
+  const flat = !useIsPhone()
   const { centerId = "", articleId = "" } = useParams()
   const [params, setParams] = useSearchParams()
   const center = useHelpCenter(centerId)
   const article = useHelpArticle(centerId, articleId)
   const c = center.data
   const a = article.data
+  if (flat && (!c || !a))
+    return (
+      <HelpLayout place="articles" testId="help-editor">
+        <FlatTop back={{ label: t`Articles`, to: centerLink(centerId) }} />
+        {center.isPending || article.isPending ? (
+          <div className="mt-3 flex max-w-[760px] flex-col gap-4" aria-busy="true">
+            <Skeleton className="h-8 w-60" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        ) : (
+          <ErrorLine error={center.error ?? article.error} className="mt-3" />
+        )}
+      </HelpLayout>
+    )
   if (center.isPending || article.isPending) {
     return (
       <Pane wide className="gap-4">

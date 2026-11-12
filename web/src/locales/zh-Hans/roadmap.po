@@ -12,6 +12,7 @@ msgid "{inboxName} has no web chat channel. Add one first, because the public bo
 msgstr "{inboxName} 没有网页聊天渠道。请先添加一个，因为公开看板会嵌入它。"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{linked, plural, one {# feedback} other {# feedback}}"
 msgstr "{linked, plural, other {# 条反馈}}"
 
@@ -21,6 +22,7 @@ msgstr "{pending} 个等待审核"
 
 #: src/features/roadmap/Board.tsx
 #: src/features/roadmap/LinkIdeaDialog.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "{votes} votes"
 msgstr "{votes} 票"
 
@@ -37,11 +39,13 @@ msgid "Add a web chat channel"
 msgstr "添加网页聊天渠道"
 
 #: src/features/roadmap/CreateBoardDialog.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Address"
 msgstr "地址"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "All boards"
 msgstr "所有看板"
 
@@ -52,6 +56,11 @@ msgstr "所有更改已保存。"
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "All feedback from {inboxName} that fits is already linked."
 msgstr "{inboxName} 中所有合适的反馈都已关联。"
+
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "All stages"
+msgstr "所有阶段"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Already linked"
@@ -88,6 +97,11 @@ msgstr "看板"
 msgid "Board deleted"
 msgstr "看板已删除"
 
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
+msgid "Boards"
+msgstr "看板"
+
 #: src/features/roadmap/CreateBoardDialog.tsx
 #: src/features/roadmap/MoveDialog.tsx
 #: src/features/roadmap/NewIdeaDialog.tsx
@@ -117,12 +131,17 @@ msgid "Create board ({newKey})"
 msgstr "创建看板（{newKey}）"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Create board for {name}"
 msgstr "为 {name} 创建看板"
 
 #: src/features/roadmap/NewIdeaDialog.tsx
 msgid "Create idea"
 msgstr "创建想法"
+
+#: src/features/roadmap/pages.tsx
+msgid "Created"
+msgstr "已创建"
 
 #: src/features/roadmap/Settings.tsx
 msgid "Delete"
@@ -158,6 +177,10 @@ msgstr "完成"
 msgid "Everyone's posts are published at once, except those of authors you marked as spam."
 msgstr "所有人的帖子都会立即发布,但你标记为垃圾的作者除外。"
 
+#: src/features/roadmap/pages.tsx
+msgid "Feedback"
+msgstr "反馈"
+
 #: src/features/roadmap/IdeaFeedback.tsx
 msgid "Good news: “{title}” has shipped. Thank you for asking for it."
 msgstr "好消息：“{title}”已发布。感谢你的提议。"
@@ -169,6 +192,10 @@ msgstr "已隐藏"
 #: src/features/roadmap/Board.tsx
 msgid "Hide"
 msgstr "隐藏"
+
+#: src/features/roadmap/pages.tsx
+msgid "Idea"
+msgstr "想法"
 
 #: src/features/roadmap/LinkIdeaDialog.tsx
 msgid "Idea started"
@@ -236,22 +263,27 @@ msgid "Linked to {title}"
 msgstr "已关联到 {title}"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Load more"
 msgstr "加载更多"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private"
 msgstr "设为私有"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make private ({publicKey})"
 msgstr "设为私有（{publicKey}）"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public"
 msgstr "设为公开"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Make public ({publicKey})"
 msgstr "设为公开（{publicKey}）"
 
@@ -319,6 +351,7 @@ msgid "No idea matches."
 msgstr "没有匹配的想法。"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "No ideas yet. New ones land here."
 msgstr "还没有想法。新的想法会出现在这里。"
 
@@ -327,6 +360,7 @@ msgid "None"
 msgstr "无"
 
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Nothing here yet."
 msgstr "这里还没有内容。"
 
@@ -372,10 +406,12 @@ msgid "Posted as your public reply on the idea. Markdown works."
 msgstr "将作为你对该想法的公开回复发布。支持 Markdown。"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Private"
 msgstr "私有"
 
 #: src/features/roadmap/BoardBar.tsx
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Public"
 msgstr "公开"
@@ -413,6 +449,7 @@ msgid "Review the reply"
 msgstr "检查回复"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Roadmap"
 msgstr "路线图"
 
@@ -433,6 +470,7 @@ msgid "Search ideas"
 msgstr "搜索想法"
 
 #: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Settings"
 msgstr "设置"
 
@@ -449,6 +487,7 @@ msgid "Shown under the name on the public board."
 msgstr "显示在公开看板的名称下方。"
 
 #: src/features/roadmap/MoveDialog.tsx
+#: src/features/roadmap/pages.tsx
 msgid "Stage"
 msgstr "阶段"
 
@@ -526,11 +565,18 @@ msgstr "使用 3 到 48 个字母、数字和中间的连字符。"
 msgid "View board"
 msgstr "查看看板"
 
+#: src/features/roadmap/pages.tsx
 #: src/features/roadmap/Settings.tsx
 msgid "Visibility"
 msgstr "可见性"
 
+#: src/features/roadmap/pages.tsx
+msgid "Votes"
+msgstr "票数"
+
 #: src/features/roadmap/Board.tsx
+#: src/features/roadmap/pages.tsx
+#: src/features/roadmap/RoadmapFrame.tsx
 msgid "Waiting for approval"
 msgstr "等待审核"
 

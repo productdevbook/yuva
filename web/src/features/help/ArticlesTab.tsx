@@ -3,6 +3,7 @@ import { FileTextIcon, FoldersIcon, LoaderIcon, PlusIcon, SearchIcon } from "luc
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
+import { InfoSection, KV } from "@/components/common"
 import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { HELP_KEYS, keyLabel } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
@@ -426,6 +427,8 @@ export function ArticlesTab({
   onQ,
   search,
   onWrite,
+  flat,
+  collection: picked,
 }: {
   center: HelpCenter
   drafts?: boolean
@@ -433,10 +436,13 @@ export function ArticlesTab({
   onQ: (q: string) => void
   search: React.RefObject<HTMLInputElement | null>
   onWrite: (title: string, collectionId: string) => void
+  flat?: boolean
+  collection?: string
 }) {
   const { t, i18n } = useLingui()
   const navigate = useNavigate()
-  const [collection, setCollection] = useState("")
+  const [own, setCollection] = useState("")
+  const collection = picked ?? own
   const [cursor, setCursor] = useState(-1)
   const report = useHelpReport(center.id, 7).data
   const list = useRef<HTMLUListElement>(null)
@@ -481,33 +487,47 @@ export function ArticlesTab({
     return c ? collectionName(c, ...prefer) : undefined
   }
 
+  const row = flat ? cn(grid, "px-1") : grid
   return (
     <div
-      className="grid grid-cols-[200px_minmax(0,1fr)] items-start gap-4 @max-3xl:grid-cols-1 @min-[1241px]:grid-cols-[220px_minmax(0,1fr)_290px]"
+      className={
+        flat
+          ? "flex flex-col"
+          : "grid grid-cols-[200px_minmax(0,1fr)] items-start gap-4 @max-3xl:grid-cols-1 @min-[1241px]:grid-cols-[220px_minmax(0,1fr)_290px]"
+      }
       data-testid="help-articles"
     >
-      <CollectionsCard
-        className="row-span-3 @max-3xl:row-span-1 @min-[1241px]:row-span-2 @min-[1241px]:row-start-1"
-        center={center}
-        cols={cols}
-        value={collection}
-        onChange={(id) => {
-          setCollection(id)
-          setCursor(-1)
-        }}
-      />
-      <Stats
-        center={center}
-        report={report}
-        className="col-start-2 @max-3xl:col-start-1 @min-[1241px]:col-start-3 @min-[1241px]:row-start-1"
-      />
-      <div className="flex min-w-0 flex-col gap-4 col-start-2 @max-3xl:col-start-1 @min-[1241px]:row-span-2 @min-[1241px]:row-start-1">
+      {!flat && (
+        <CollectionsCard
+          className="row-span-3 @max-3xl:row-span-1 @min-[1241px]:row-span-2 @min-[1241px]:row-start-1"
+          center={center}
+          cols={cols}
+          value={collection}
+          onChange={(id) => {
+            setCollection(id)
+            setCursor(-1)
+          }}
+        />
+      )}
+      {!flat && (
+        <Stats
+          center={center}
+          report={report}
+          className="col-start-2 @max-3xl:col-start-1 @min-[1241px]:col-start-3 @min-[1241px]:row-start-1"
+        />
+      )}
+      <div
+        className={cn(
+          "flex min-w-0 flex-col gap-4",
+          !flat && "col-start-2 @max-3xl:col-start-1 @min-[1241px]:row-span-2 @min-[1241px]:row-start-1"
+        )}
+      >
         <div
-          className={cn(look.card, "rounded-[14px]")}
+          className={flat ? "flex flex-col" : cn(look.card, "rounded-[14px]")}
           style={selection.selecting ? { ["--cb" as string]: "20px" } : undefined}
         >
           <ArticleBulkBar center={center} items={items} cols={cols} selection={selection} />
-          <div className="flex flex-wrap items-center gap-2 px-4 py-3">
+          <div className={cn("flex flex-wrap items-center gap-2", flat ? "pt-5 pb-3" : "px-4 py-3")}>
             <label className="flex h-[34px] min-w-0 max-w-sm flex-1 basis-52 items-center gap-2 rounded-[9px] border border-input bg-card px-2.5 focus-within:border-brand focus-within:ring-[3px] focus-within:ring-brand/20">
               <SearchIcon className="size-3.5 shrink-0 text-faint" aria-hidden />
               <input
@@ -524,7 +544,15 @@ export function ArticlesTab({
             <span className="flex-1" />
             {!selection.selecting && items.length > 0 && <SelectToggle selection={selection} />}
           </div>
-          <div className={cn(grid, "h-9 border-y bg-surface/50", look.over, "@max-3xl:hidden")} aria-hidden>
+          <div
+            className={cn(
+              row,
+              "h-9",
+              flat ? "text-caption font-medium text-muted2" : cn("border-y bg-surface/50", look.over),
+              "@max-3xl:hidden"
+            )}
+            aria-hidden
+          >
             <span />
             <span>
               <Trans>Article</Trans>
@@ -580,9 +608,12 @@ export function ArticlesTab({
                   <li
                     key={a.id}
                     className={cn(
-                      grid,
-                      "min-h-[58px] border-b py-2 last:border-b-0 hover:bg-surface/60",
-                      i === cursor && "bg-surface",
+                      row,
+                      "min-h-[58px] py-2",
+                      flat
+                        ? "border-t border-line-soft hover:bg-subtle"
+                        : "border-b last:border-b-0 hover:bg-surface/60",
+                      i === cursor && (flat ? "bg-subtle shadow-[inset_2px_0_0_var(--brand)]" : "bg-surface"),
                       selection.has(a.id) && "bg-brand/5"
                     )}
                     data-testid="help-article-row"
@@ -664,7 +695,7 @@ export function ArticlesTab({
             </ul>
           )}
           {articles.hasNextPage && (
-            <div className="flex justify-center border-t p-3">
+            <div className={cn("flex border-t", flat ? "border-line-soft pt-4" : "justify-center p-3")}>
               <Button
                 variant="outline"
                 className={look.btnSm}
@@ -677,11 +708,78 @@ export function ArticlesTab({
           )}
         </div>
       </div>
-      <Misses
-        report={report}
-        onWrite={(query) => onWrite(query, collection)}
-        className="col-start-2 @max-3xl:col-start-1 @min-[1241px]:col-start-3 @min-[1241px]:row-start-2"
-      />
+      {!flat && (
+        <Misses
+          report={report}
+          onWrite={(query) => onWrite(query, collection)}
+          className="col-start-2 @max-3xl:col-start-1 @min-[1241px]:col-start-3 @min-[1241px]:row-start-2"
+        />
+      )}
     </div>
+  )
+}
+
+export function HelpAside({ center, onWrite }: { center: HelpCenter; onWrite: (query: string) => void }) {
+  const { t, i18n } = useLingui()
+  const report = useHelpReport(center.id, 7).data
+  const n = new Intl.NumberFormat(i18n.locale)
+  const percent = new Intl.NumberFormat(i18n.locale, { style: "percent", maximumFractionDigits: 0 })
+  const drafts = Math.max(0, center.counts.articles - center.counts.published_articles)
+  const missed = report?.no_result_searches ?? 0
+  const { up, all } = rated(report)
+  const misses = (report?.no_result_queries ?? []).filter((q) => q.query !== "(scrubbed)").slice(0, 8)
+  return (
+    <>
+      <InfoSection title={<Trans>Site</Trans>}>
+        <KV label={<Trans>Address</Trans>} value={<span dir="ltr">{center.url.replace(/^https?:\/\//, "")}</span>} />
+        <KV
+          label={<Trans>Visibility</Trans>}
+          value={center.published ? t`Published` : t`Unpublished`}
+          tone={center.published ? "ok" : undefined}
+        />
+        <KV label={<Trans>Articles</Trans>} value={n.format(center.counts.articles)} testId="help-stat-articles" />
+        <KV label={<Trans>Drafts</Trans>} value={n.format(drafts)} tone={drafts ? "warn" : undefined} />
+      </InfoSection>
+      <InfoSection title={<Trans>Last 7 days</Trans>} testId="help-stats">
+        <KV label={<Trans>Views</Trans>} value={report ? n.format(report.views) : "–"} testId="help-stat-views" />
+        <KV label={<Trans>Searches</Trans>} value={report ? n.format(report.searches) : "–"} />
+        <KV
+          label={<Trans>Helpful</Trans>}
+          value={all ? percent.format(up / all) : "–"}
+          tone={all ? (up / all < 0.7 ? "warn" : "ok") : undefined}
+          testId="help-stat-helpful"
+        />
+        <KV
+          label={<Trans>Found nothing</Trans>}
+          value={report ? n.format(missed) : "–"}
+          tone={missed > 0 ? "warn" : undefined}
+          testId="help-stat-missed"
+        />
+      </InfoSection>
+      {misses.length > 0 && (
+        <InfoSection title={<Trans>Searched for, found nothing</Trans>} testId="help-misses">
+          {misses.map((q) => (
+            <div
+              key={`${q.locale}:${q.query}`}
+              className="flex items-center gap-2 py-[3px] text-small"
+              data-testid="help-miss"
+            >
+              <span dir="auto" className="min-w-0 flex-1 truncate text-muted-foreground">
+                “{q.query}”
+              </span>
+              <span className="font-mono text-[11px] text-muted2 tabular-nums">{n.format(q.searches)}×</span>
+              <button
+                type="button"
+                className="rounded-sm text-fg2 underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => onWrite(q.query)}
+                data-testid="help-miss-write"
+              >
+                <Trans>Write</Trans>
+              </button>
+            </div>
+          ))}
+        </InfoSection>
+      )}
+    </>
   )
 }

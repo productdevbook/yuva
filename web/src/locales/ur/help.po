@@ -110,6 +110,7 @@ msgstr "ذیلی مجموعہ شامل کریں"
 msgid "Add locale"
 msgstr "Add locale"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CreateCenterDialog.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Address"
@@ -178,6 +179,7 @@ msgstr "مضامین کے ملاحظات"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Articles"
 msgstr "مضامین"
@@ -294,6 +296,7 @@ msgid "Collection"
 msgstr "مجموعہ"
 
 #: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Collections"
 msgstr "مجموعے"
@@ -404,6 +407,8 @@ msgstr "مسودہ"
 msgid "Draft submitted. An owner or admin can publish it."
 msgstr "مسودہ جمع کر دیا گیا۔ مالک یا ایڈمن اسے شائع کر سکتا ہے۔"
 
+#: src/features/help/ArticlesTab.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Drafts"
 msgstr "مسودے"
@@ -467,11 +472,13 @@ msgstr "سرخی"
 
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/SettingsTab.tsx
 msgid "Help center"
 msgstr "مدد مرکز"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help center created. Write the first article, then publish it."
 msgstr "ہیلپ سینٹر بن گیا۔ پہلا مضمون لکھیں، پھر اسے شائع کریں۔"
@@ -481,6 +488,7 @@ msgid "Help center deleted"
 msgstr "مدد مرکز حذف ہو گیا"
 
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Help centers"
 msgstr "مدد مراکز"
@@ -570,6 +578,10 @@ msgstr "پچھلے {d} دن"
 msgid "last 7 days"
 msgstr "پچھلے 7 دن"
 
+#: src/features/help/ArticlesTab.tsx
+msgid "Last 7 days"
+msgstr "پچھلے 7 دن"
+
 #: src/features/help/ImportCard.tsx
 msgid "Leave empty to read every site."
 msgstr "Leave empty to read every site."
@@ -657,6 +669,10 @@ msgstr "نیا مجموعہ"
 #: src/features/help/CollectionsTab.tsx
 msgid "New collection ({newKey})"
 msgstr "نیا مجموعہ ({newKey})"
+
+#: src/features/help/HelpFrame.tsx
+msgid "New help center for {product}"
+msgstr "{product} کے لیے نیا ہیلپ سینٹر"
 
 #: src/features/help/ReportTab.tsx
 msgid "No article got a “no” in this period."
@@ -842,18 +858,22 @@ msgstr "عوامی پتہ"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish"
 msgstr "شائع کریں"
 
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Publish ({publishKey})"
 msgstr "شائع کریں ({publishKey})"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
 #: src/features/help/ImportCard.tsx
+#: src/features/help/pages.tsx
 #: src/features/help/Revisions.tsx
 #: src/features/help/SettingsTab.tsx
 #: src/features/help/text.tsx
@@ -881,6 +901,7 @@ msgstr "Redirects"
 msgid "Remove {0}"
 msgstr "{0} ہٹائیں"
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 msgid "Report"
 msgstr "رپورٹ"
@@ -956,6 +977,7 @@ msgstr "تلاش کے الفاظ"
 msgid "Searched for, found nothing"
 msgstr "تلاش کیا، کچھ نہیں ملا"
 
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/ReportTab.tsx
 msgid "Searches"
 msgstr "تلاشیں"
@@ -976,6 +998,7 @@ msgstr "بھیجے گئے"
 msgid "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 msgstr "Set these up at the old address yourself. A new address answers “not found” until you publish the article."
 
+#: src/features/help/HelpFrame.tsx
 #: src/features/help/pages.tsx
 #: src/features/help/text.tsx
 msgid "Settings"
@@ -1008,6 +1031,10 @@ msgstr "ہوم پیج پر نام کے نیچے دکھایا جاتا ہے۔"
 #: src/features/help/SettingsTab.tsx
 msgid "Shown when an article has no translation in the visitor’s language."
 msgstr "اس وقت دکھایا جاتا ہے جب مضمون کا زائر کی زبان میں ترجمہ نہ ہو۔"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Site"
+msgstr "سائٹ"
 
 #: src/features/help/SettingsTab.tsx
 msgid "Site link"
@@ -1157,10 +1184,12 @@ msgstr "تلاش کے لیے کوئی لفظ ٹائپ کریں۔"
 #: src/features/help/ArticleEditor.tsx
 #: src/features/help/Bulk.tsx
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish"
 msgstr "اشاعت منسوخ کریں"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublish ({publishKey})"
 msgstr "اشاعت منسوخ کریں ({publishKey})"
 
@@ -1177,8 +1206,10 @@ msgid "Unpublish this translation?"
 msgstr "اس ترجمے کی اشاعت منسوخ کریں؟"
 
 #: src/features/help/ArticleEditor.tsx
+#: src/features/help/ArticlesTab.tsx
 #: src/features/help/CenterBar.tsx
 #: src/features/help/HelpColumn.tsx
+#: src/features/help/pages.tsx
 msgid "Unpublished"
 msgstr "غیر شائع"
 
@@ -1215,10 +1246,12 @@ msgid "View"
 msgstr "دیکھیں"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site"
 msgstr "سائٹ دیکھیں"
 
 #: src/features/help/CenterBar.tsx
+#: src/features/help/pages.tsx
 msgid "View site ({openKey})"
 msgstr "سائٹ دیکھیں ({openKey})"
 
@@ -1230,6 +1263,10 @@ msgstr "ملاحظات"
 #: src/features/help/ArticlesTab.tsx
 msgid "Views · 7 days"
 msgstr "ملاحظات · 7 دن"
+
+#: src/features/help/ArticlesTab.tsx
+msgid "Visibility"
+msgstr "نمائش"
 
 #: src/features/help/CenterBar.tsx
 msgid "Visitors can no longer open it and the chat widget stops suggesting its articles. Your articles stay as they are."

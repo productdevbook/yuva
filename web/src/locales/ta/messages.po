@@ -2003,6 +2003,7 @@ msgstr "செயல்கள் மட்டும்"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/settings/OwnDomainCard.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Active"
 msgstr "செயலில்"
 
@@ -2345,6 +2346,7 @@ msgstr "ஒற்றை உள்நுழைவுக்காக {domain} ட�
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/MonitorToken.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Address"
 msgstr "முகவரி"
 
@@ -2458,6 +2460,7 @@ msgstr "Alertmanager"
 #: src/features/settings/automation/RunLog.tsx
 #: src/features/settings/webhooks/Deliveries.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusPages.tsx
 msgid "All"
 msgstr "அனைத்தும்"
 
@@ -2491,6 +2494,10 @@ msgstr "அனைத்து இறக்குமதிகள்"
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "All inboxes"
 msgstr "அனைத்து இன்பாக்ஸ்கள்"
+
+#: src/features/status/StatusPages.tsx
+msgid "All incidents"
+msgstr "அனைத்து சம்பவங்களும்"
 
 #: src/features/broadcasts/Report.tsx
 msgid "All languages"
@@ -2543,6 +2550,7 @@ msgstr "அனைத்து தயாரிப்புகள்"
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "All products"
 msgstr "எல்லாத் தயாரிப்புகளும்"
 
@@ -4824,6 +4832,7 @@ msgid "Completed at {endedAt}"
 msgstr "{endedAt} மணிக்கு முடிந்தது"
 
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Component"
 msgstr "கூறு"
 
@@ -4834,6 +4843,7 @@ msgstr "கூறு நீக்கப்பட்டது"
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Components"
 msgstr "கூறுகள்"
@@ -6293,6 +6303,7 @@ msgstr "டெஸ்க்டாப் அறிவிப்புகள் அ�
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "உலாவியின் அமைப்புகளில் இந்தத் தளத்துக்கு டெஸ்க்டாப் அறிவிப்புகள் தடுக்கப்பட்டுள்ளன, எனவே ஒலி மட்டுமே ஒலிக்கும்."
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7084,6 +7095,10 @@ msgstr "குறியாக்கம்"
 #: src/features/broadcasts/SendTime.tsx
 msgid "End of day (24:00)"
 msgstr "நாளின் முடிவு (24:00)"
+
+#: src/features/status/IncidentDetail.tsx
+msgid "Ended"
+msgstr "முடிந்தது"
 
 #: src/features/broadcasts/Import.tsx
 msgid "Ended {finished}"
@@ -8776,6 +8791,7 @@ msgstr "இந்த அஞ்சல்பெட்டிக்கு IMAP அ�
 msgid "IMAP server"
 msgstr "IMAP சேவையகம்"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Impact"
 msgstr "தாக்கம்"
@@ -9044,6 +9060,7 @@ msgid "Inboxes cut off subjects longer than 80 characters."
 msgstr "இன்பாக்ஸ்கள் 80 எழுத்துகளுக்கு நீளமான தலைப்புகளை வெட்டிவிடும்."
 
 #: src/features/home/HomeSide.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/text.tsx
 msgid "Incident"
 msgstr "சம்பவம்"
@@ -9059,6 +9076,7 @@ msgstr "சம்பவம்: {title} · {state}"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Incidents"
 msgstr "சம்பவங்கள்"
 
@@ -9526,6 +9544,7 @@ msgstr "முக்கிய சொல்"
 
 #: src/features/settings/automation/text.ts
 #: src/features/status/MonitorDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Kind"
 msgstr "வகை"
 
@@ -9701,6 +9720,10 @@ msgstr "Last read {fetched}"
 #: src/features/migrations/SwitchStep.tsx
 msgid "Last read {when}"
 msgstr "{when} கடைசியாகப் படித்தது"
+
+#: src/features/status/MonitorsPage.tsx
+msgid "Last result"
+msgstr "கடைசி முடிவு"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Last result {last}"
@@ -10895,6 +10918,10 @@ msgid "Monday morning"
 msgstr "திங்கள் காலை"
 
 #: src/features/status/MonitorsPage.tsx
+msgid "Monitor"
+msgstr "கண்காணிப்பான்"
+
+#: src/features/status/MonitorsPage.tsx
 msgid "Monitor deleted"
 msgstr "கண்காணிப்பு நீக்கப்பட்டது"
 
@@ -10905,6 +10932,7 @@ msgstr "கண்காணிப்பில்"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Monitors"
 msgstr "கண்காணிப்புகள்"
@@ -10912,6 +10940,10 @@ msgstr "கண்காணிப்புகள்"
 #: src/features/status/MonitorsPage.tsx
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "கண்காணிப்புகள் நிலைப் பக்கத்தின் கூறின் நிலையை அமைக்கின்றன. முதலில் நிலைப் பக்கத்தை உருவாக்கவும்."
+
+#: src/features/status/StatusFrame.tsx
+msgid "Monitors, {down} down"
+msgstr "கண்காணிப்பான்கள், {down} செயலிழப்பு"
 
 #: src/features/reports/TrendsReport.tsx
 msgid "Months"
@@ -12945,6 +12977,7 @@ msgstr "முடக்கம்"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Off"
 msgstr "அணை"
 
@@ -13499,6 +13532,10 @@ msgstr "இன்பாக்ஸைத் திற"
 msgid "Open incident"
 msgstr "சம்பவத்தைத் திற"
 
+#: src/features/status/StatusPages.tsx
+msgid "Open incidents"
+msgstr "திறந்த சம்பவங்கள்"
+
 #: src/features/home/HomePage.tsx
 msgid "Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5 ratings."
 msgstr "திறந்தவையில் வாடிக்கையாளரின் பதிலுக்குக் காத்திருக்கும் உரையாடல்களும் அடங்கும். ஒரு தயாரிப்புக்கு 5 மதிப்பீடுகள் வந்ததும், நல்லவை 85%க்குக் கீழ் சென்றால் மதிப்பீடு ஆரஞ்சாக மாறும்."
@@ -13840,6 +13877,7 @@ msgstr "காலப்போக்கில்"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Overview"
 msgstr "மேலோட்டம்"
@@ -13881,7 +13919,10 @@ msgstr "வேகம் (வினாடிக்கு அஞ்சல்கள
 #: src/features/conversation/Feedback.tsx
 #: src/features/docs/discussions/FromConversation.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/SettingsTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Page"
 msgstr "பக்கம்"
 
@@ -13897,6 +13938,7 @@ msgstr "அவர்கள் ஒப்புக்கொண்ட பக்க�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/status/StatusPages.tsx
 msgid "Pages"
 msgstr "பக்கங்கள்"
 
@@ -13967,6 +14009,7 @@ msgstr "கடவுச்சொல் அமைக்கப்பட்டத�
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Past"
 msgstr "கடந்தவை"
 
@@ -14864,6 +14907,7 @@ msgstr "Provider saved. Its metadata was read."
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Public"
 msgstr "பொது"
 
@@ -16576,6 +16620,7 @@ msgstr "உள்ளீட்டைத் திட்டமிடு"
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/text.tsx
 msgid "Scheduled"
 msgstr "திட்டமிடப்பட்டது"
@@ -16655,6 +16700,7 @@ msgstr "SDK"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "தேடு"
 
@@ -17518,6 +17564,7 @@ msgstr "அமைக்கிறது…"
 #: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Settings"
 msgstr "அமைப்புகள்"
@@ -18008,6 +18055,7 @@ msgid "Signing secret"
 msgstr "கையொப்ப ரகசியம்"
 
 #: src/features/migrations/Wizard.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "Since"
 msgstr "முதல்"
 
@@ -18497,6 +18545,7 @@ msgstr "உங்கள் அஞ்சல் பட்டியலைத் த
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
+#: src/features/status/IncidentDetail.tsx
 msgid "Started"
 msgstr "தொடங்கியது"
 
@@ -18520,6 +18569,7 @@ msgstr "{starter} தொடங்கினார் · {started}"
 msgid "Starting"
 msgstr "தொடங்குகிறது"
 
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
 msgid "Starts"
 msgstr "தொடக்கம்"
@@ -18547,7 +18597,9 @@ msgstr "STARTTLS (போர்ட் 587)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/status/ComponentDialogs.tsx
+#: src/features/status/IncidentDetail.tsx
 #: src/features/status/IncidentDialog.tsx
+#: src/features/status/MonitorsPage.tsx
 msgid "State"
 msgstr "நிலை"
 
@@ -18586,6 +18638,7 @@ msgstr "செயலிழந்தால் நிலை"
 #: src/features/settings/macros/MacroDialog.tsx
 #: src/features/settings/webhooks/AttemptLog.tsx
 #: src/features/settings/webhooks/events.tsx
+#: src/features/status/StatusFrame.tsx
 msgid "Status"
 msgstr "நிலை"
 
@@ -18593,6 +18646,7 @@ msgstr "நிலை"
 msgid "Status and coming up"
 msgstr "நிலை மற்றும் வரவிருப்பவை"
 
+#: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
 msgstr "நிலைப் பக்கம்"
@@ -18605,6 +18659,7 @@ msgstr "நிலைப் பக்கம் நீக்கப்பட்ட�
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Status pages"
 msgstr "நிலைப் பக்கங்கள்"
@@ -18744,6 +18799,7 @@ msgstr "இப்போதுதான் பட்டியலில் சந�
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
+#: src/features/status/StatusFrame.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
 msgstr "சந்தாதாரர்கள்"
@@ -20574,6 +20630,10 @@ msgstr "இந்த இன்பாக்ஸுக்கு இன்னும�
 msgid "This inbox is for"
 msgstr "இந்த இன்பாக்ஸ் இதற்கானது"
 
+#: src/features/status/IncidentsPage.tsx
+msgid "This incident no longer exists or you cannot see it."
+msgstr "இந்தச் சம்பவம் இனி இல்லை அல்லது அதை உங்களால் பார்க்க முடியாது."
+
 #: src/features/migrations/UploadStep.tsx
 msgid "This is a compressed archive. Unzip the Takeout archive and upload the .mbox file."
 msgstr "இது சுருக்கப்பட்ட காப்பகம். Takeout காப்பகத்தை அன்சிப் செய்து .mbox கோப்பைப் பதிவேற்றுங்கள்."
@@ -20689,6 +20749,10 @@ msgstr "இந்தச் செய்தி"
 #: src/features/migrations/UploadStep.tsx
 msgid "This migration has ended, so nothing more can be uploaded. Start a new one for another file."
 msgstr "இந்த இடம்பெயர்வு முடிந்துவிட்டது, எனவே மேலும் எதுவும் பதிவேற்ற முடியாது. வேறு கோப்புக்குப் புதியதைத் தொடங்குங்கள்."
+
+#: src/features/status/MonitorsPage.tsx
+msgid "This monitor no longer exists or you cannot see it."
+msgstr "இந்தக் கண்காணிப்பான் இனி இல்லை அல்லது அதை உங்களால் பார்க்க முடியாது."
 
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
@@ -21645,6 +21709,10 @@ msgstr "{shown} நாட்களில் இயக்க நேரம் {upt
 msgid "Uptime is hidden on this page. Turn it on in the settings to see each day here."
 msgstr "இந்தப் பக்கத்தில் இயக்க நேரம் மறைக்கப்பட்டுள்ளது. ஒவ்வொரு நாளையும் இங்கே பார்க்க அமைப்புகளில் இயக்கவும்."
 
+#: src/features/status/MonitorsPage.tsx
+msgid "Uptime, 24 hours"
+msgstr "இயக்க நேரம், 24 மணிநேரம்"
+
 #: src/components/common/text.ts
 #: src/features/inbox/ChatList.tsx
 msgid "Urgent"
@@ -21924,6 +21992,11 @@ msgstr "பார்வைகள்"
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "பார்வைகள்"
+
+#: src/features/status/IncidentDetail.tsx
+#: src/features/status/StatusPages.tsx
+msgid "Visibility"
+msgstr "தெரிவுநிலை"
 
 #: src/features/inbox/views/ViewDialog.tsx
 msgid "Visible to"

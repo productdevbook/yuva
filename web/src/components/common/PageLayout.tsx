@@ -277,7 +277,7 @@ export function PageTop({
             {back.label}
           </button>
         ))}
-      <div className="flex min-w-0 flex-1 basis-40 items-center gap-2 overflow-hidden font-mono text-caption tracking-[0.04em] whitespace-nowrap text-muted2 uppercase">
+      <div className="flex min-w-0 flex-1 basis-40 flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-caption tracking-[0.04em] text-muted2 uppercase">
         {children}
       </div>
       {(slot || actions) && (
@@ -289,6 +289,9 @@ export function PageTop({
     </div>
   )
 }
+
+export const topButton = "h-8 rounded-[9px] border-input bg-card px-3 font-normal"
+export const topInk = "h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
 
 export function TopSep() {
   return (
@@ -426,8 +429,8 @@ export function KV({
   const toneClass = { ok: "text-ok", warn: "text-warn", bad: "text-bad", brand: "text-brand" }
   const body = (
     <>
-      <span className="min-w-0 text-muted-foreground [overflow-wrap:anywhere]">{label}</span>
-      <span className={cn("min-w-0 text-end [overflow-wrap:anywhere]", tone && toneClass[tone])}>{value}</span>
+      <span className="shrink-0 whitespace-nowrap text-muted-foreground">{label}</span>
+      <span className={cn("min-w-0 flex-1 text-end [overflow-wrap:anywhere]", tone && toneClass[tone])}>{value}</span>
     </>
   )
   const className = "flex justify-between gap-3 py-[3px] text-small leading-5"
