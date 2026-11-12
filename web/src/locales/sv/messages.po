@@ -377,6 +377,10 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{count, plural, one {# report} other {# reports}}"
+msgstr "{count, plural, one {# rapport} other {# rapporter}}"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# behörighet} other {# behörigheter}}"
@@ -720,6 +724,10 @@ msgstr "{n} markerade som olästa"
 msgid "{n} moved to the Inbox"
 msgstr "{n} flyttade till Inkorgen"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{n} reports"
+msgstr "{n} rapporter"
+
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "{n} snoozade, tillbaka {when}"
@@ -832,6 +840,7 @@ msgid "{names} will be notified"
 msgstr "{names} får en avisering"
 
 #: src/components/common/Linked.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# öppen} other {# öppna}}"
@@ -1144,7 +1153,6 @@ msgstr "{views, plural, one {# visning} other {# visningar}}"
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
-#: src/features/feedback/RoadmapCard.tsx
 msgid "{votes} votes"
 msgstr "{votes} röster"
 
@@ -2415,7 +2423,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2500,6 +2507,8 @@ msgid "all products"
 msgstr "alla produkter"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -5089,7 +5098,6 @@ msgstr "Kontaktattribut"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 msgid "Contact details"
 msgstr "Kontaktuppgifter"
 
@@ -5175,10 +5183,6 @@ msgstr "Fortsätt med den nyare e-posten"
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Convers."
-msgstr "Konv."
-
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
@@ -5221,6 +5225,7 @@ msgstr "konversationer"
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -5599,6 +5604,7 @@ msgstr "Skapa, ändra och ta bort anpassade fält"
 msgid "Create, change, reorder and delete automation rules"
 msgstr "Skapa, ändra, ordna om och ta bort automatiseringsregler"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
@@ -6254,6 +6260,7 @@ msgstr "Skrivbordsaviseringar är blockerade för den här webbplatsen i webblä
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -6271,11 +6278,16 @@ msgid "Developers"
 msgstr "Utvecklare"
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "Enhet"
+
+#: src/features/feedback/FeedbackPage.tsx
+msgid "Device and app"
+msgstr "Enhet och app"
 
 #: src/features/contact/DeviceInfo.tsx
 msgid "Device language"
@@ -6683,6 +6695,7 @@ msgstr "Dubbletter"
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -7214,6 +7227,7 @@ msgstr "Varje öppen diskussion har ett svar."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Alla andra webbläsare och enheter loggas ut. Den här förblir inloggad."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
@@ -7243,6 +7257,7 @@ msgstr "Varje webbplats"
 msgid "Every step passed."
 msgstr "Alla steg godkändes."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "Varje typ"
@@ -7459,6 +7474,7 @@ msgstr "feedback"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -7483,10 +7499,6 @@ msgstr "Feedbackkategorier"
 msgid "Feedback category"
 msgstr "Feedbackkategori"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Feedback details"
-msgstr "Feedbackdetaljer"
-
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback form"
@@ -7503,6 +7515,10 @@ msgstr "Feedback skickad från en dokumentationssida"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
 msgstr "Feedback skickad från appen"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from the website chat"
+msgstr "Feedback från webbplatsens chatt"
 
 #: src/app/Rail.tsx
 msgid "Feedback, {feedback} open"
@@ -7705,6 +7721,7 @@ msgstr "första svar inom {first}"
 msgid "First reply, 90th percentile"
 msgstr "Första svar, 90:e percentilen"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "First reply, median"
 msgstr "Första svar, median"
@@ -8013,6 +8030,10 @@ msgstr "Från konversationens början till dess första stängning."
 msgid "From the terminal"
 msgstr "Från terminalen"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "From this person"
+msgstr "Från den här personen"
+
 #: src/components/common/text.ts
 msgid "From your site or app"
 msgstr "Från din webbplats eller app"
@@ -8291,6 +8312,7 @@ msgid "Has an attachment"
 msgstr "Har en bilaga"
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "Har en öppen konversation"
 
@@ -9516,6 +9538,7 @@ msgstr "Etiketter sorterar konversationer efter ämne, till exempel fakturering 
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -9638,6 +9661,7 @@ msgstr "Senast läst {when}"
 msgid "Last result {last}"
 msgstr "Senaste resultat {last}"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Last seen"
 msgstr "Senast sedd"
@@ -10889,6 +10913,7 @@ msgstr "Flest ”inte till hjälp”-betyg först"
 msgid "Most active"
 msgstr "Mest aktiva"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "Mest efterfrågade"
@@ -12594,6 +12619,7 @@ msgstr "Inte skräppost ({0})"
 msgid "Not subscribed to the lists"
 msgstr "Not subscribed to the lists"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "Inte samma"
@@ -13262,6 +13288,7 @@ msgstr "Bara ditt team ser den."
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13352,6 +13379,7 @@ msgid "Open conversation"
 msgstr "Öppna konversationen"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetail.tsx
 msgid "Open conversations"
 msgstr "Öppna konversationer"
 
@@ -13386,10 +13414,6 @@ msgstr "Öppna Företagsprogram"
 #: src/features/docs/PagesTab.tsx
 msgid "open feedback"
 msgstr "öppen feedback"
-
-#: src/features/contact/ContactDetail.tsx
-msgid "Open full page"
-msgstr "Öppna hela sidan"
 
 #: src/features/migrations/text.ts
 msgid "Open Google Takeout"
@@ -14020,6 +14044,7 @@ msgid "Pending deliveries are dropped with it."
 msgstr "Väntande leveranser kasseras med den."
 
 #: src/features/broadcasts/TriggeredPage.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
 
@@ -14248,10 +14273,6 @@ msgstr "Välj en sida för att se dess betyg, diskussioner och frågor."
 #: src/features/feedback/FeedbackList.tsx
 msgid "Pick a piece of feedback"
 msgstr "Välj en feedback"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Pick a piece of feedback to see it here."
-msgstr "Välj en feedback för att se den här."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14512,6 +14533,10 @@ msgstr "Pekar på"
 msgid "Port"
 msgstr "Port"
 
+#: src/features/contact/ContactDetail.tsx
+msgid "Possible duplicate"
+msgstr "Möjlig dubblett"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Post an update"
 msgstr "Posta en uppdatering"
@@ -14648,6 +14673,7 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -14962,6 +14988,7 @@ msgstr "Betygsatt som dåligt"
 msgid "rated good"
 msgstr "betygsatt som bra"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
 #: src/features/home/HomePage.tsx
 msgid "Rated good"
@@ -16144,6 +16171,7 @@ msgstr "Just nu"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Roadmap"
@@ -16578,6 +16606,7 @@ msgstr "Sök efter namn, e-post eller externt ID"
 msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
 msgstr "Sök efter namn, e-post eller det ID som din app ger dem, och öppna sedan en för att se deras konversationer, uppgifter och anteckningar."
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16612,6 +16641,7 @@ msgid "Search emoji (in English)"
 msgstr "Sök emoji (på engelska)"
 
 #: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackPage.tsx
 msgid "Search feedback"
 msgstr "Sök i feedback"
 
@@ -17486,7 +17516,6 @@ msgstr "Kortkommando"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18400,6 +18429,7 @@ msgid "Start your mailing list"
 msgstr "Starta din sändlista"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 msgid "Started"
@@ -21094,6 +21124,7 @@ msgstr "Avstängd av Yuva"
 msgid "TXT record"
 msgstr "TXT-post"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx

@@ -377,6 +377,10 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{count, plural, one {# report} other {# reports}}"
+msgstr "{count, plural, one {# నివేదిక} other {# నివేదికలు}}"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# అనుమతి} other {# అనుమతులు}}"
@@ -720,6 +724,10 @@ msgstr "{n} చదవనివిగా గుర్తించబడ్డా�
 msgid "{n} moved to the Inbox"
 msgstr "{n} ఇన్‌బాక్స్‌కు తిరిగి పంపాం"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{n} reports"
+msgstr "{n} నివేదికలు"
+
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "{n} వాయిదా వేశాం, {when} తిరిగి వస్తాయి"
@@ -832,6 +840,7 @@ msgid "{names} will be notified"
 msgstr "{names} కు తెలియజేయబడుతుంది"
 
 #: src/components/common/Linked.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# తెరిచి ఉంది} other {# తెరిచి ఉన్నాయి}}"
@@ -1144,7 +1153,6 @@ msgstr "{views, plural, one {# వీక్షణ} other {# వీక్షణ�
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
-#: src/features/feedback/RoadmapCard.tsx
 msgid "{votes} votes"
 msgstr "{votes} ఓట్లు"
 
@@ -2415,7 +2423,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2500,6 +2507,8 @@ msgid "all products"
 msgstr "అన్ని ఉత్పత్తులు"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -5089,7 +5098,6 @@ msgstr "సంప్రదింపు అట్రిబ్యూట్"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 msgid "Contact details"
 msgstr "కాంటాక్ట్ వివరాలు"
 
@@ -5175,10 +5183,6 @@ msgstr "కొత్త మెయిల్‌తో కొనసాగించ�
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Convers."
-msgstr "సంభా."
-
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
@@ -5221,6 +5225,7 @@ msgstr "సంభాషణలు"
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -5599,6 +5604,7 @@ msgstr "అనుకూల ఫీల్డ్‌లను సృష్టిం�
 msgid "Create, change, reorder and delete automation rules"
 msgstr "ఆటోమేషన్ నియమాలను సృష్టించండి, మార్చండి, క్రమం మార్చండి, తొలగించండి"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
@@ -6254,6 +6260,7 @@ msgstr "బ్రౌజర్ సెట్టింగ్‌లలో ఈ సై
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -6271,11 +6278,16 @@ msgid "Developers"
 msgstr "డెవలపర్‌లు"
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "పరికరం"
+
+#: src/features/feedback/FeedbackPage.tsx
+msgid "Device and app"
+msgstr "పరికరం మరియు యాప్"
 
 #: src/features/contact/DeviceInfo.tsx
 msgid "Device language"
@@ -6683,6 +6695,7 @@ msgstr "డూప్లికేట్‌లు"
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -7214,6 +7227,7 @@ msgstr "ప్రతి తెరిచి ఉన్న చర్చకు జ�
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "మిగతా అన్ని బ్రౌజర్‌లు, పరికరాల నుండి సైన్ అవుట్ అవుతుంది. ఈ పరికరం సైన్ ఇన్‌లోనే ఉంటుంది."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
@@ -7243,6 +7257,7 @@ msgstr "ప్రతి సైట్"
 msgid "Every step passed."
 msgstr "ప్రతి దశ పాస్ అయింది."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "ప్రతి రకం"
@@ -7459,6 +7474,7 @@ msgstr "అభిప్రాయం"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -7483,10 +7499,6 @@ msgstr "అభిప్రాయ వర్గాలు"
 msgid "Feedback category"
 msgstr "అభిప్రాయ వర్గం"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Feedback details"
-msgstr "అభిప్రాయ వివరాలు"
-
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback form"
@@ -7503,6 +7515,10 @@ msgstr "డాక్యుమెంటేషన్ పేజీ నుండి 
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
 msgstr "యాప్ నుండి పంపిన అభిప్రాయం"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from the website chat"
+msgstr "వెబ్‌సైట్ చాట్ నుండి పంపిన అభిప్రాయం"
 
 #: src/app/Rail.tsx
 msgid "Feedback, {feedback} open"
@@ -7705,6 +7721,7 @@ msgstr "{first} లో మొదటి జవాబు"
 msgid "First reply, 90th percentile"
 msgstr "మొదటి సమాధానం, 90వ పర్సంటైల్"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "First reply, median"
 msgstr "మొదటి జవాబు, మధ్యస్థం"
@@ -8013,6 +8030,10 @@ msgstr "సంభాషణ ప్రారంభం నుండి దాని
 msgid "From the terminal"
 msgstr "టెర్మినల్ నుండి"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "From this person"
+msgstr "ఈ వ్యక్తి నుండి"
+
 #: src/components/common/text.ts
 msgid "From your site or app"
 msgstr "మీ సైట్ లేదా యాప్ నుండి"
@@ -8291,6 +8312,7 @@ msgid "Has an attachment"
 msgstr "అటాచ్‌మెంట్ ఉంది"
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "తెరిచి ఉన్న సంభాషణ ఉంది"
 
@@ -9516,6 +9538,7 @@ msgstr "లేబుల్‌లు సంభాషణలను బిల్ల�
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -9638,6 +9661,7 @@ msgstr "{when} చివరిగా చదివింది"
 msgid "Last result {last}"
 msgstr "చివరి ఫలితం {last}"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Last seen"
 msgstr "చివరిగా చూసింది"
@@ -10889,6 +10913,7 @@ msgstr "అత్యధిక “ఉపయోగకరం కాదు” రే
 msgid "Most active"
 msgstr "అత్యంత చురుకైనవి"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "ఎక్కువగా అడిగినవి"
@@ -12594,6 +12619,7 @@ msgstr "స్పామ్ కాదు ({0})"
 msgid "Not subscribed to the lists"
 msgstr "Not subscribed to the lists"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "ఒకరు కాదు"
@@ -13262,6 +13288,7 @@ msgstr "మీ బృందం మాత్రమే దీన్ని చూ�
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13352,6 +13379,7 @@ msgid "Open conversation"
 msgstr "సంభాషణను తెరవండి"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetail.tsx
 msgid "Open conversations"
 msgstr "తెరిచి ఉన్న సంభాషణలు"
 
@@ -13386,10 +13414,6 @@ msgstr "Enterprise applications ను తెరవండి"
 #: src/features/docs/PagesTab.tsx
 msgid "open feedback"
 msgstr "తెరిచి ఉన్న అభిప్రాయాలు"
-
-#: src/features/contact/ContactDetail.tsx
-msgid "Open full page"
-msgstr "పూర్తి పేజీని తెరవండి"
 
 #: src/features/migrations/text.ts
 msgid "Open Google Takeout"
@@ -14020,6 +14044,7 @@ msgid "Pending deliveries are dropped with it."
 msgstr "పెండింగ్ డెలివరీలు దానితో పాటు వదిలివేయబడతాయి."
 
 #: src/features/broadcasts/TriggeredPage.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
 
@@ -14248,10 +14273,6 @@ msgstr "పేజీ రేటింగ్‌లు, చర్చలు, ప్�
 #: src/features/feedback/FeedbackList.tsx
 msgid "Pick a piece of feedback"
 msgstr "Pick a piece of feedback"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Pick a piece of feedback to see it here."
-msgstr "ఇక్కడ చూడటానికి ఒక అభిప్రాయాన్ని ఎంచుకోండి."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14512,6 +14533,10 @@ msgstr "దీనిని సూచిస్తుంది"
 msgid "Port"
 msgstr "పోర్ట్"
 
+#: src/features/contact/ContactDetail.tsx
+msgid "Possible duplicate"
+msgstr "సంభావ్య నకిలీ"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Post an update"
 msgstr "అప్‌డేట్‌ను ప్రచురించండి"
@@ -14648,6 +14673,7 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -14962,6 +14988,7 @@ msgstr "చెడ్డదిగా రేట్ చేయబడింది"
 msgid "rated good"
 msgstr "మంచిదిగా రేట్ చేయబడింది"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
 #: src/features/home/HomePage.tsx
 msgid "Rated good"
@@ -16144,6 +16171,7 @@ msgstr "ప్రస్తుతం"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Roadmap"
@@ -16578,6 +16606,7 @@ msgstr "పేరు, ఇమెయిల్ లేదా బాహ్య ID త�
 msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
 msgstr "పేరు, ఇమెయిల్ లేదా మీ యాప్ వారికి ఇచ్చే ID తో శోధించి, వారి సంభాషణలు, వివరాలు మరియు గమనికలను చూడటానికి ఒకదాన్ని తెరవండి."
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16612,6 +16641,7 @@ msgid "Search emoji (in English)"
 msgstr "ఎమోజీని శోధించండి (ఆంగ్లంలో)"
 
 #: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackPage.tsx
 msgid "Search feedback"
 msgstr "Search feedback"
 
@@ -17486,7 +17516,6 @@ msgstr "షార్ట్‌కట్"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18400,6 +18429,7 @@ msgid "Start your mailing list"
 msgstr "మీ మెయిలింగ్ లిస్ట్‌ను ప్రారంభించండి"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 msgid "Started"
@@ -21094,6 +21124,7 @@ msgstr "Yuva ఆఫ్ చేసింది"
 msgid "TXT record"
 msgstr "TXT రికార్డ్"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx

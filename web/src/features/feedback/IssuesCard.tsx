@@ -4,7 +4,8 @@ import { CircleDotIcon, ExternalLinkIcon, LinkIcon, PlusIcon, XIcon } from "luci
 import { Button } from "@/components/ui/button"
 import { IssueState, useUnlinkIssue } from "@/features/issues/IssueChips"
 import { providerName } from "@/features/issues/providers"
-import { Overline, look } from "@/features/inbox/PageFrame"
+import { SectionHeading } from "@/components/common"
+import { look } from "@/features/inbox/PageFrame"
 import type { Conversation } from "@/lib/api"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 
@@ -13,34 +14,29 @@ export function IssuesCard({ c, onCreate, onLink }: { c: Conversation; onCreate:
   const { unlink, pending } = useUnlinkIssue({ kind: "conversation", id: c.id })
   const items = c.issues ?? []
   return (
-    <section className="flex flex-col gap-2.5 border-b px-5 py-4" data-testid="feedback-issues">
-      <Overline>
-        <Trans>Issues</Trans>
-      </Overline>
+    <section data-testid="feedback-issues">
+      <SectionHeading
+        title={<Trans>Issues</Trans>}
+        lead={items.length > 0 && <Trans>The issue's state sets the progress the person sees.</Trans>}
+      />
       {items.length > 0 && (
-        <ul className="flex flex-col gap-2">
+        <ul className="m-0 mb-3 flex list-none flex-col border-t border-line-soft p-0">
           {items.map((l) => {
             const key = l.key
             return (
-              <li
-                key={l.id}
-                className="flex items-start gap-2.5 rounded-[10px] border bg-surface p-3"
-                data-testid="issue-row"
-              >
-                <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-wash text-brand">
-                  <CircleDotIcon className="size-[15px]" />
-                </span>
+              <li key={l.id} className="flex items-center gap-3 border-b border-line-soft py-3" data-testid="issue-row">
+                <CircleDotIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
                 <a
                   href={l.url}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="flex min-w-0 flex-1 flex-col leading-[1.35] outline-none hover:underline focus-visible:underline"
                 >
-                  <span className="flex items-center gap-1 font-semibold" dir="auto">
+                  <span className="flex items-center gap-1 font-medium text-foreground" dir="auto">
                     <span className="min-w-0 truncate">{l.title}</span>
                     <ExternalLinkIcon className="size-3.5 shrink-0 opacity-60" />
                   </span>
-                  <span className={look.faint}>
+                  <span className="text-small text-muted-foreground">
                     {providerName(l.provider)} · {l.key}
                   </span>
                 </a>
@@ -84,11 +80,6 @@ export function IssuesCard({ c, onCreate, onLink }: { c: Conversation; onCreate:
           <Trans>Link issue</Trans>
         </Button>
       </div>
-      {items.length > 0 && (
-        <p className={look.faint}>
-          <Trans>The issue's state sets the progress the person sees.</Trans>
-        </p>
-      )}
     </section>
   )
 }

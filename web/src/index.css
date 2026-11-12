@@ -246,6 +246,7 @@ body:has([data-separator="active"]) * {
   html {
     @apply bg-background font-sans text-foreground antialiased;
     overscroll-behavior: none;
+    scroll-padding-top: var(--page-top-h, 0px);
   }
   body {
     @apply bg-background text-body;

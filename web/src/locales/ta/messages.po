@@ -377,6 +377,10 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{count, plural, one {# report} other {# reports}}"
+msgstr "{count, plural, one {# அறிக்கை} other {# அறிக்கைகள்}}"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# அனுமதி} other {# அனுமதிகள்}}"
@@ -720,6 +724,10 @@ msgstr "{n} படிக்காததாகக் குறிக்கப்�
 msgid "{n} moved to the Inbox"
 msgstr "{n} இன்பாக்ஸுக்குத் திருப்பப்பட்டன"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{n} reports"
+msgstr "{n} அறிக்கைகள்"
+
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "{n} ஒத்திவைக்கப்பட்டன, {when} திரும்பும்"
@@ -832,6 +840,7 @@ msgid "{names} will be notified"
 msgstr "{names} அறிவிக்கப்படுவார்கள்"
 
 #: src/components/common/Linked.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# திறந்தது} other {# திறந்தவை}}"
@@ -1144,7 +1153,6 @@ msgstr "{views, plural, one {# பார்வை} other {# பார்வை�
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
-#: src/features/feedback/RoadmapCard.tsx
 msgid "{votes} votes"
 msgstr "{votes} வாக்குகள்"
 
@@ -2415,7 +2423,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2500,6 +2507,8 @@ msgid "all products"
 msgstr "அனைத்து தயாரிப்புகள்"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -5089,7 +5098,6 @@ msgstr "தொடர்பின் பண்புக்கூறு"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 msgid "Contact details"
 msgstr "தொடர்பு விவரங்கள்"
 
@@ -5175,10 +5183,6 @@ msgstr "புதிய அஞ்சலுடன் தொடர்"
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Convers."
-msgstr "உரை."
-
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
@@ -5221,6 +5225,7 @@ msgstr "உரையாடல்கள்"
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -5599,6 +5604,7 @@ msgstr "தனிப்பயன் புலங்களை உருவாக�
 msgid "Create, change, reorder and delete automation rules"
 msgstr "தானியங்கி விதிகளை உருவாக்கு, மாற்று, மறுவரிசைப்படுத்து, நீக்கு"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
@@ -6254,6 +6260,7 @@ msgstr "உலாவியின் அமைப்புகளில் இந�
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -6271,11 +6278,16 @@ msgid "Developers"
 msgstr "டெவலப்பர்கள்"
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "சாதனம்"
+
+#: src/features/feedback/FeedbackPage.tsx
+msgid "Device and app"
+msgstr "சாதனம் மற்றும் ஆப்"
 
 #: src/features/contact/DeviceInfo.tsx
 msgid "Device language"
@@ -6683,6 +6695,7 @@ msgstr "நகல்கள்"
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -7214,6 +7227,7 @@ msgstr "திறந்துள்ள ஒவ்வொரு விவாதத�
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "மற்ற எல்லா உலாவிகளிலிருந்தும் சாதனங்களிலிருந்தும் வெளியேற்றப்படும். இந்தச் சாதனம் உள்நுழைந்தே இருக்கும்."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
@@ -7243,6 +7257,7 @@ msgstr "ஒவ்வொரு தளமும்"
 msgid "Every step passed."
 msgstr "ஒவ்வொரு படியும் தேர்ச்சி பெற்றது."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "ஒவ்வொரு வகையும்"
@@ -7459,6 +7474,7 @@ msgstr "கருத்து"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -7483,10 +7499,6 @@ msgstr "கருத்து வகைகள்"
 msgid "Feedback category"
 msgstr "கருத்துப் பிரிவு"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Feedback details"
-msgstr "கருத்து விவரங்கள்"
-
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback form"
@@ -7503,6 +7515,10 @@ msgstr "ஆவணப் பக்கத்திலிருந்து அன�
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
 msgstr "ஆப்பிலிருந்து அனுப்பப்பட்ட கருத்து"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from the website chat"
+msgstr "இணையதள அரட்டையிலிருந்து அனுப்பிய கருத்து"
 
 #: src/app/Rail.tsx
 msgid "Feedback, {feedback} open"
@@ -7705,6 +7721,7 @@ msgstr "{first}-இல் முதல் பதில்"
 msgid "First reply, 90th percentile"
 msgstr "முதல் பதில், 90வது சதவீதம்"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "First reply, median"
 msgstr "முதல் பதில், இடைநிலை"
@@ -8013,6 +8030,10 @@ msgstr "உரையாடலின் தொடக்கத்திலிர�
 msgid "From the terminal"
 msgstr "டெர்மினலிலிருந்து"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "From this person"
+msgstr "இவரிடமிருந்து"
+
 #: src/components/common/text.ts
 msgid "From your site or app"
 msgstr "உங்கள் தளம் அல்லது ஆப்பிலிருந்து"
@@ -8291,6 +8312,7 @@ msgid "Has an attachment"
 msgstr "இணைப்பு உள்ளது"
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "திறந்த உரையாடல் உள்ளது"
 
@@ -9516,6 +9538,7 @@ msgstr "லேபிள்கள் உரையாடல்களை பில�
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -9638,6 +9661,7 @@ msgstr "{when} கடைசியாகப் படித்தது"
 msgid "Last result {last}"
 msgstr "கடைசி முடிவு {last}"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Last seen"
 msgstr "கடைசியாகப் பார்த்தது"
@@ -10889,6 +10913,7 @@ msgstr "அதிக “உதவவில்லை” மதிப்பீட�
 msgid "Most active"
 msgstr "மிகவும் செயலில்"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "அதிகம் கேட்கப்பட்டவை"
@@ -12594,6 +12619,7 @@ msgstr "ஸ்பேம் அல்ல ({0})"
 msgid "Not subscribed to the lists"
 msgstr "Not subscribed to the lists"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "ஒரே நபர் அல்ல"
@@ -13262,6 +13288,7 @@ msgstr "உங்கள் குழு மட்டுமே பார்க்
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13352,6 +13379,7 @@ msgid "Open conversation"
 msgstr "உரையாடலைத் திற"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetail.tsx
 msgid "Open conversations"
 msgstr "திறந்த உரையாடல்கள்"
 
@@ -13386,10 +13414,6 @@ msgstr "Enterprise applications-ஐத் திற"
 #: src/features/docs/PagesTab.tsx
 msgid "open feedback"
 msgstr "திறந்த கருத்துகள்"
-
-#: src/features/contact/ContactDetail.tsx
-msgid "Open full page"
-msgstr "முழுப் பக்கத்தைத் திற"
 
 #: src/features/migrations/text.ts
 msgid "Open Google Takeout"
@@ -14020,6 +14044,7 @@ msgid "Pending deliveries are dropped with it."
 msgstr "நிலுவையில் உள்ள விநியோகங்கள் இதனுடன் கைவிடப்படும்."
 
 #: src/features/broadcasts/TriggeredPage.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
 
@@ -14248,10 +14273,6 @@ msgstr "ஒரு பக்கத்தின் மதிப்பீடுக�
 #: src/features/feedback/FeedbackList.tsx
 msgid "Pick a piece of feedback"
 msgstr "Pick a piece of feedback"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Pick a piece of feedback to see it here."
-msgstr "இங்கே பார்க்க ஒரு கருத்தைத் தேர்ந்தெடுக்கவும்."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14512,6 +14533,10 @@ msgstr "இதைச் சுட்டுகிறது"
 msgid "Port"
 msgstr "போர்ட்"
 
+#: src/features/contact/ContactDetail.tsx
+msgid "Possible duplicate"
+msgstr "சாத்தியமான நகல்"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Post an update"
 msgstr "புதுப்பிப்பை வெளியிடு"
@@ -14648,6 +14673,7 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -14962,6 +14988,7 @@ msgstr "மோசம் என மதிப்பிடப்பட்டது"
 msgid "rated good"
 msgstr "நன்று என மதிப்பிடப்பட்டது"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
 #: src/features/home/HomePage.tsx
 msgid "Rated good"
@@ -16144,6 +16171,7 @@ msgstr "இப்போது"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Roadmap"
@@ -16578,6 +16606,7 @@ msgstr "பெயர், மின்னஞ்சல் அல்லது வ�
 msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
 msgstr "பெயர், மின்னஞ்சல் அல்லது உங்கள் ஆப் அவர்களுக்கு வழங்கும் ID மூலம் தேடி, அவர்களின் உரையாடல்கள், விவரங்கள், குறிப்புகளைக் காண ஒன்றைத் திறவுங்கள்."
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16612,6 +16641,7 @@ msgid "Search emoji (in English)"
 msgstr "ஈமோஜியைத் தேடு (ஆங்கிலத்தில்)"
 
 #: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackPage.tsx
 msgid "Search feedback"
 msgstr "Search feedback"
 
@@ -17486,7 +17516,6 @@ msgstr "குறுக்குவழி"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18400,6 +18429,7 @@ msgid "Start your mailing list"
 msgstr "உங்கள் அஞ்சல் பட்டியலைத் தொடங்குங்கள்"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 msgid "Started"
@@ -21094,6 +21124,7 @@ msgstr "Yuva அணைத்தது"
 msgid "TXT record"
 msgstr "TXT பதிவு"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx

@@ -377,6 +377,10 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{count, plural, one {# report} other {# reports}}"
+msgstr "{count, plural, one {# відгук} few {# відгуки} many {# відгуків} other {# відгуку}}"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# дозвіл} few {# дозволи} many {# дозволів} other {# дозволу}}"
@@ -720,6 +724,10 @@ msgstr "{n} позначено як непрочитані"
 msgid "{n} moved to the Inbox"
 msgstr "Повернуто до Вхідних: {n}"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{n} reports"
+msgstr "{n} відгуків"
+
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "Відкладено: {n}, повернуться {when}"
@@ -832,6 +840,7 @@ msgid "{names} will be notified"
 msgstr "Сповіщення отримають: {names}"
 
 #: src/components/common/Linked.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# відкрита} few {# відкриті} many {# відкритих} other {# відкритої}}"
@@ -1144,7 +1153,6 @@ msgstr "{views, plural, one {# перегляд} few {# перегляди} many
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
-#: src/features/feedback/RoadmapCard.tsx
 msgid "{votes} votes"
 msgstr "Голосів: {votes}"
 
@@ -2415,7 +2423,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2500,6 +2507,8 @@ msgid "all products"
 msgstr "усі продукти"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -5089,7 +5098,6 @@ msgstr "Атрибут контакту"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 msgid "Contact details"
 msgstr "Дані контакта"
 
@@ -5175,10 +5183,6 @@ msgstr "Продовжити з новішою поштою"
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Convers."
-msgstr "Розм."
-
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
@@ -5221,6 +5225,7 @@ msgstr "розмови"
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -5599,6 +5604,7 @@ msgstr "Створення, зміна та видалення власних п
 msgid "Create, change, reorder and delete automation rules"
 msgstr "Створення, зміна, впорядкування та видалення правил автоматизації"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
@@ -6254,6 +6260,7 @@ msgstr "Сповіщення на робочому столі заблокова
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -6271,11 +6278,16 @@ msgid "Developers"
 msgstr "Розробникам"
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "Пристрій"
+
+#: src/features/feedback/FeedbackPage.tsx
+msgid "Device and app"
+msgstr "Пристрій і застосунок"
 
 #: src/features/contact/DeviceInfo.tsx
 msgid "Device language"
@@ -6683,6 +6695,7 @@ msgstr "Дублікати"
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -7214,6 +7227,7 @@ msgstr "У кожного відкритого обговорення є від�
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "На всіх інших браузерах і пристроях буде виконано вихід. Цей пристрій залишиться в системі."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
@@ -7243,6 +7257,7 @@ msgstr "Кожен сайт"
 msgid "Every step passed."
 msgstr "Усі кроки пройдено."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "Кожен тип"
@@ -7459,6 +7474,7 @@ msgstr "відгуки"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -7483,10 +7499,6 @@ msgstr "Категорії відгуків"
 msgid "Feedback category"
 msgstr "Категорія відгуку"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Feedback details"
-msgstr "Дані відгуку"
-
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback form"
@@ -7503,6 +7515,10 @@ msgstr "Відгук, надісланий зі сторінки докумен�
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
 msgstr "Відгук, надісланий із застосунку"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from the website chat"
+msgstr "Відгук із чату на сайті"
 
 #: src/app/Rail.tsx
 msgid "Feedback, {feedback} open"
@@ -7705,6 +7721,7 @@ msgstr "перша відповідь у {first}"
 msgid "First reply, 90th percentile"
 msgstr "Перша відповідь, 90-й процентиль"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "First reply, median"
 msgstr "Перша відповідь, медіана"
@@ -8013,6 +8030,10 @@ msgstr "Від початку розмови до її першого закри
 msgid "From the terminal"
 msgstr "З терміналу"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "From this person"
+msgstr "Від цієї людини"
+
 #: src/components/common/text.ts
 msgid "From your site or app"
 msgstr "З вашого сайту або із застосунку"
@@ -8291,6 +8312,7 @@ msgid "Has an attachment"
 msgstr "Має вкладення"
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "Є відкрита розмова"
 
@@ -9516,6 +9538,7 @@ msgstr "Мітки сортують розмови за темою, наприк
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -9638,6 +9661,7 @@ msgstr "Останнє читання {when}"
 msgid "Last result {last}"
 msgstr "Останній результат {last}"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Last seen"
 msgstr "Останній візит"
@@ -10889,6 +10913,7 @@ msgstr "Спершу з найбільшою кількістю оцінок «�
 msgid "Most active"
 msgstr "Найактивніші"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "Найчастіше просять"
@@ -12594,6 +12619,7 @@ msgstr "Не спам ({0})"
 msgid "Not subscribed to the lists"
 msgstr "Not subscribed to the lists"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "Не збігаються"
@@ -13262,6 +13288,7 @@ msgstr "Це бачить лише ваша команда."
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13352,6 +13379,7 @@ msgid "Open conversation"
 msgstr "Відкрити розмову"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetail.tsx
 msgid "Open conversations"
 msgstr "Відкриті розмови"
 
@@ -13386,10 +13414,6 @@ msgstr "Відкрити корпоративні застосунки"
 #: src/features/docs/PagesTab.tsx
 msgid "open feedback"
 msgstr "відкриті відгуки"
-
-#: src/features/contact/ContactDetail.tsx
-msgid "Open full page"
-msgstr "Відкрити на всю сторінку"
 
 #: src/features/migrations/text.ts
 msgid "Open Google Takeout"
@@ -14020,6 +14044,7 @@ msgid "Pending deliveries are dropped with it."
 msgstr "Доставки в очікуванні видаляються разом з ним."
 
 #: src/features/broadcasts/TriggeredPage.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
 
@@ -14248,10 +14273,6 @@ msgstr "Виберіть сторінку, щоб побачити її оцін
 #: src/features/feedback/FeedbackList.tsx
 msgid "Pick a piece of feedback"
 msgstr "Виберіть відгук"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Pick a piece of feedback to see it here."
-msgstr "Виберіть відгук, щоб побачити його тут."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14512,6 +14533,10 @@ msgstr "Вказує на"
 msgid "Port"
 msgstr "Порт"
 
+#: src/features/contact/ContactDetail.tsx
+msgid "Possible duplicate"
+msgstr "Можливий дублікат"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Post an update"
 msgstr "Опублікувати оновлення"
@@ -14648,6 +14673,7 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -14962,6 +14988,7 @@ msgstr "Оцінено погано"
 msgid "rated good"
 msgstr "оцінено добре"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
 #: src/features/home/HomePage.tsx
 msgid "Rated good"
@@ -16144,6 +16171,7 @@ msgstr "Просто зараз"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Roadmap"
@@ -16578,6 +16606,7 @@ msgstr "Пошук за ім'ям, e-mail або зовнішнім ID"
 msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
 msgstr "Шукайте за ім'ям, e-mail або ID, який їм дає ваш застосунок, потім відкрийте контакт, щоб побачити його розмови, дані й нотатки."
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16612,6 +16641,7 @@ msgid "Search emoji (in English)"
 msgstr "Пошук емодзі (англійською)"
 
 #: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackPage.tsx
 msgid "Search feedback"
 msgstr "Пошук у відгуках"
 
@@ -17486,7 +17516,6 @@ msgstr "Комбінація клавіш"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18400,6 +18429,7 @@ msgid "Start your mailing list"
 msgstr "Створіть свій список розсилки"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 msgid "Started"
@@ -21094,6 +21124,7 @@ msgstr "Вимкнено Yuva"
 msgid "TXT record"
 msgstr "TXT-запис"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx

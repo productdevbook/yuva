@@ -377,6 +377,10 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{count, plural, one {# report} other {# reports}}"
+msgstr "{count, plural, one {# ਰਿਪੋਰਟ} other {# ਰਿਪੋਰਟਾਂ}}"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# ਇਜਾਜ਼ਤ} other {# ਇਜਾਜ਼ਤਾਂ}}"
@@ -720,6 +724,10 @@ msgstr "{n} ਨਾ-ਪੜ੍ਹੇ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ"
 msgid "{n} moved to the Inbox"
 msgstr "{n} ਇਨਬਾਕਸ ਵਿੱਚ ਵਾਪਸ ਭੇਜੇ"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{n} reports"
+msgstr "{n} ਰਿਪੋਰਟਾਂ"
+
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "{n} ਸਨੂਜ਼ ਕੀਤੇ, {when} ਵਾਪਸ ਆਉਣਗੇ"
@@ -832,6 +840,7 @@ msgid "{names} will be notified"
 msgstr "{names} ਨੂੰ ਸੂਚਿਤ ਕੀਤਾ ਜਾਵੇਗਾ"
 
 #: src/components/common/Linked.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# ਖੁੱਲ੍ਹੀ} other {# ਖੁੱਲ੍ਹੀਆਂ}}"
@@ -1144,7 +1153,6 @@ msgstr "{views, plural, one {# ਵਿਊ} other {# ਵਿਊ}}"
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
-#: src/features/feedback/RoadmapCard.tsx
 msgid "{votes} votes"
 msgstr "{votes} ਵੋਟਾਂ"
 
@@ -2415,7 +2423,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2500,6 +2507,8 @@ msgid "all products"
 msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -5089,7 +5098,6 @@ msgstr "ਸੰਪਰਕ ਦਾ ਗੁਣ"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 msgid "Contact details"
 msgstr "ਸੰਪਰਕ ਵੇਰਵੇ"
 
@@ -5175,10 +5183,6 @@ msgstr "ਨਵੀਂ ਮੇਲ ਨਾਲ ਜਾਰੀ ਰੱਖੋ"
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Convers."
-msgstr "ਗੱਲ."
-
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
@@ -5221,6 +5225,7 @@ msgstr "ਗੱਲਬਾਤਾਂ"
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -5599,6 +5604,7 @@ msgstr "ਕਸਟਮ ਫੀਲਡ ਬਣਾਓ, ਬਦਲੋ ਅਤੇ ਮਿਟ
 msgid "Create, change, reorder and delete automation rules"
 msgstr "ਆਟੋਮੇਸ਼ਨ ਨਿਯਮ ਬਣਾਓ, ਬਦਲੋ, ਕ੍ਰਮ ਬਦਲੋ ਅਤੇ ਮਿਟਾਓ"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
@@ -6254,6 +6260,7 @@ msgstr "ਬ੍ਰਾਊਜ਼ਰ ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਵਿੱ
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -6271,11 +6278,16 @@ msgid "Developers"
 msgstr "ਡਿਵੈਲਪਰ"
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "ਡਿਵਾਈਸ"
+
+#: src/features/feedback/FeedbackPage.tsx
+msgid "Device and app"
+msgstr "ਡਿਵਾਈਸ ਅਤੇ ਐਪ"
 
 #: src/features/contact/DeviceInfo.tsx
 msgid "Device language"
@@ -6683,6 +6695,7 @@ msgstr "ਡੁਪਲੀਕੇਟ"
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -7214,6 +7227,7 @@ msgstr "ਹਰ ਖੁੱਲ੍ਹੀ ਚਰਚਾ ਦਾ ਇੱਕ ਉੱਤਰ 
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "ਬਾਕੀ ਸਾਰੇ ਬ੍ਰਾਊਜ਼ਰਾਂ ਅਤੇ ਡਿਵਾਈਸਾਂ ਤੋਂ ਸਾਈਨ ਆਊਟ ਹੋ ਜਾਵੇਗਾ। ਇਹ ਡਿਵਾਈਸ ਸਾਈਨ ਇਨ ਰਹੇਗਾ।"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
@@ -7243,6 +7257,7 @@ msgstr "ਹਰ ਸਾਈਟ"
 msgid "Every step passed."
 msgstr "ਹਰ ਕਦਮ ਪਾਸ ਹੋਇਆ।"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "ਹਰ ਕਿਸਮ"
@@ -7459,6 +7474,7 @@ msgstr "ਫੀਡਬੈਕ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -7483,10 +7499,6 @@ msgstr "ਫੀਡਬੈਕ ਸ਼੍ਰੇਣੀਆਂ"
 msgid "Feedback category"
 msgstr "ਫੀਡਬੈਕ ਸ਼੍ਰੇਣੀ"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Feedback details"
-msgstr "ਫੀਡਬੈਕ ਦਾ ਵੇਰਵਾ"
-
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback form"
@@ -7503,6 +7515,10 @@ msgstr "ਡਾਕੂਮੈਂਟੇਸ਼ਨ ਪੰਨੇ ਤੋਂ ਭੇਜਿ
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
 msgstr "ਐਪ ਤੋਂ ਭੇਜਿਆ ਫੀਡਬੈਕ"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from the website chat"
+msgstr "ਵੈੱਬਸਾਈਟ ਚੈਟ ਤੋਂ ਭੇਜੀ ਫੀਡਬੈਕ"
 
 #: src/app/Rail.tsx
 msgid "Feedback, {feedback} open"
@@ -7705,6 +7721,7 @@ msgstr "{first} ਵਿੱਚ ਪਹਿਲਾ ਜਵਾਬ"
 msgid "First reply, 90th percentile"
 msgstr "ਪਹਿਲਾ ਜਵਾਬ, 90ਵਾਂ ਪਰਸੈਂਟਾਈਲ"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "First reply, median"
 msgstr "ਪਹਿਲਾ ਜਵਾਬ, ਮੱਧਕਾ"
@@ -8013,6 +8030,10 @@ msgstr "ਗੱਲਬਾਤ ਦੀ ਸ਼ੁਰੂਆਤ ਤੋਂ ਉਸਦੇ �
 msgid "From the terminal"
 msgstr "ਟਰਮੀਨਲ ਤੋਂ"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "From this person"
+msgstr "ਇਸ ਵਿਅਕਤੀ ਵੱਲੋਂ"
+
 #: src/components/common/text.ts
 msgid "From your site or app"
 msgstr "ਤੁਹਾਡੀ ਸਾਈਟ ਜਾਂ ਐਪ ਤੋਂ"
@@ -8291,6 +8312,7 @@ msgid "Has an attachment"
 msgstr "ਅਟੈਚਮੈਂਟ ਹੈ"
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "ਖੁੱਲ੍ਹੀ ਗੱਲਬਾਤ ਹੈ"
 
@@ -9516,6 +9538,7 @@ msgstr "ਲੇਬਲ ਗੱਲਬਾਤਾਂ ਨੂੰ ਵਿਸ਼ੇ ਅਨ�
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -9638,6 +9661,7 @@ msgstr "ਆਖ਼ਰੀ ਵਾਰ ਪੜ੍ਹਿਆ {when}"
 msgid "Last result {last}"
 msgstr "ਆਖ਼ਰੀ ਨਤੀਜਾ {last}"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Last seen"
 msgstr "ਆਖਰੀ ਵਾਰ ਦੇਖਿਆ"
@@ -10889,6 +10913,7 @@ msgstr "ਸਭ ਤੋਂ ਵੱਧ “ਮਦਦਗਾਰ ਨਹੀਂ” ਰੇ�
 msgid "Most active"
 msgstr "ਸਭ ਤੋਂ ਸਰਗਰਮ"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "ਸਭ ਤੋਂ ਵੱਧ ਮੰਗੇ ਗਏ"
@@ -12594,6 +12619,7 @@ msgstr "ਸਪੈਮ ਨਹੀਂ ({0})"
 msgid "Not subscribed to the lists"
 msgstr "Not subscribed to the lists"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "ਇੱਕੋ ਨਹੀਂ"
@@ -13262,6 +13288,7 @@ msgstr "ਸਿਰਫ਼ ਤੁਹਾਡੀ ਟੀਮ ਨੂੰ ਦਿਖਦਾ �
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13352,6 +13379,7 @@ msgid "Open conversation"
 msgstr "ਗੱਲਬਾਤ ਖੋਲ੍ਹੋ"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetail.tsx
 msgid "Open conversations"
 msgstr "ਖੁੱਲ੍ਹੀਆਂ ਗੱਲਬਾਤਾਂ"
 
@@ -13386,10 +13414,6 @@ msgstr "Enterprise applications ਖੋਲ੍ਹੋ"
 #: src/features/docs/PagesTab.tsx
 msgid "open feedback"
 msgstr "ਖੁੱਲ੍ਹੇ ਫੀਡਬੈਕ"
-
-#: src/features/contact/ContactDetail.tsx
-msgid "Open full page"
-msgstr "ਪੂਰਾ ਪੰਨਾ ਖੋਲ੍ਹੋ"
 
 #: src/features/migrations/text.ts
 msgid "Open Google Takeout"
@@ -14020,6 +14044,7 @@ msgid "Pending deliveries are dropped with it."
 msgstr "ਲੰਬਿਤ ਡਿਲਿਵਰੀਆਂ ਇਸਦੇ ਨਾਲ ਛੱਡ ਦਿੱਤੀਆਂ ਜਾਂਦੀਆਂ ਹਨ।"
 
 #: src/features/broadcasts/TriggeredPage.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
 
@@ -14248,10 +14273,6 @@ msgstr "ਕਿਸੇ ਪੰਨੇ ਦੀਆਂ ਰੇਟਿੰਗਾਂ, ਚਰ�
 #: src/features/feedback/FeedbackList.tsx
 msgid "Pick a piece of feedback"
 msgstr "Pick a piece of feedback"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Pick a piece of feedback to see it here."
-msgstr "ਇੱਥੇ ਦੇਖਣ ਲਈ ਇੱਕ ਫੀਡਬੈਕ ਚੁਣੋ।"
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14512,6 +14533,10 @@ msgstr "ਇਸ ਵੱਲ ਇਸ਼ਾਰਾ ਕਰਦਾ ਹੈ"
 msgid "Port"
 msgstr "ਪੋਰਟ"
 
+#: src/features/contact/ContactDetail.tsx
+msgid "Possible duplicate"
+msgstr "ਸੰਭਾਵਿਤ ਡੁਪਲੀਕੇਟ"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Post an update"
 msgstr "ਅੱਪਡੇਟ ਪ੍ਰਕਾਸ਼ਿਤ ਕਰੋ"
@@ -14648,6 +14673,7 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -14962,6 +14988,7 @@ msgstr "ਮਾੜਾ ਰੇਟ ਕੀਤਾ"
 msgid "rated good"
 msgstr "ਚੰਗਾ ਰੇਟ ਕੀਤਾ"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
 #: src/features/home/HomePage.tsx
 msgid "Rated good"
@@ -16144,6 +16171,7 @@ msgstr "ਇਸ ਵੇਲੇ"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Roadmap"
@@ -16578,6 +16606,7 @@ msgstr "ਨਾਮ, ਈ-ਮੇਲ ਜਾਂ ਬਾਹਰੀ id ਨਾਲ ਖੋ�
 msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
 msgstr "ਨਾਮ, ਈ-ਮੇਲ ਜਾਂ ਤੁਹਾਡੀ ਐਪ ਵੱਲੋਂ ਦਿੱਤੇ id ਨਾਲ ਖੋਜੋ, ਫਿਰ ਉਹਨਾਂ ਦੀਆਂ ਗੱਲਬਾਤਾਂ, ਵੇਰਵੇ ਅਤੇ ਨੋਟ ਵੇਖਣ ਲਈ ਇੱਕ ਖੋਲ੍ਹੋ।"
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16612,6 +16641,7 @@ msgid "Search emoji (in English)"
 msgstr "ਇਮੋਜੀ ਖੋਜੋ (ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ)"
 
 #: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackPage.tsx
 msgid "Search feedback"
 msgstr "Search feedback"
 
@@ -17486,7 +17516,6 @@ msgstr "ਸ਼ਾਰਟਕੱਟ"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18400,6 +18429,7 @@ msgid "Start your mailing list"
 msgstr "ਆਪਣੀ ਮੇਲਿੰਗ ਲਿਸਟ ਸ਼ੁਰੂ ਕਰੋ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 msgid "Started"
@@ -21094,6 +21124,7 @@ msgstr "Yuva ਵੱਲੋਂ ਬੰਦ ਕੀਤਾ ਗਿਆ"
 msgid "TXT record"
 msgstr "TXT ਰਿਕਾਰਡ"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx

@@ -151,6 +151,8 @@ export function Layout() {
     section === "home" ||
     isChats(pathname, apart) ||
     section === "mentions" ||
+    section === "feedback" ||
+    section === "contacts" ||
     (section === "mail" && !/^\/mail\/[^/]+\/filters$/.test(pathname))
   if (!phone && flatPage) {
     return (
@@ -162,8 +164,6 @@ export function Layout() {
   if (!phone) {
     const frame =
       isChats(pathname, apart) ||
-      pathname === "/feedback" ||
-      pathname.startsWith("/feedback/") ||
       section === "mail" ||
       section === "assistants" ||
       section === "board" ||

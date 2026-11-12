@@ -2,9 +2,23 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { CheckIcon, MessageSquareHeartIcon, PaperclipIcon, SearchIcon, XIcon } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 
-import { ErrorLine, hostPath, Kbd, useContactName } from "@/components/common"
+import {
+  dayOf,
+  ErrorLine,
+  FlatEmpty,
+  FlatRow,
+  FlatTime,
+  FlatWho,
+  groupRuns,
+  hostPath,
+  Kbd,
+  ListGroup,
+  UnreadBadge,
+  useContactName,
+  useDayLabel,
+} from "@/components/common"
 import { categoryTone, useFeedbackCategories } from "@/components/common/feedbackCategories"
-import { useEnumText } from "@/components/common/text"
+import { formatShort, useEnumText } from "@/components/common/text"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScoreMark } from "@/features/conversation/Feedback"
@@ -19,7 +33,7 @@ import { setListQuery, useListSearch } from "@/features/inbox/listSearch"
 import { useConversations, useCounts } from "@/features/inbox/queries"
 import type { ConversationListItem, Feedback, FeedbackCategory, FeedbackProgress } from "@/lib/api"
 import { cn } from "@/lib/utils"
-import { useChannelMap } from "@/lib/workspace"
+import { useChannelMap, useInboxes } from "@/lib/workspace"
 
 type Tab = "open" | "resolved"
 type Category = FeedbackCategory | "all"
@@ -28,9 +42,13 @@ let rememberedTab: Tab = "open"
 let rememberedCategory: Category = "all"
 let focused = 0
 
-function remember(tab: Tab, category: Category) {
+export function rememberFeedback(tab: Tab, category: Category) {
   rememberedTab = tab
   rememberedCategory = category
+}
+
+export function rememberedFeedbackCategory() {
+  return rememberedCategory
 }
 
 function useDebounced(value: string, ms: number) {
@@ -164,31 +182,100 @@ function Row({
   )
 }
 
+function FeedbackSearch({
+  inputRef,
+  onType,
+  onMove,
+  onOpen,
+  className,
+}: {
+  inputRef: React.RefObject<HTMLInputElement | null>
+  onType: () => void
+  onMove: (d: 1 | -1) => void
+  onOpen: () => void
+  className?: string
+}) {
+  const { t } = useLingui()
+  const { query } = useListSearch()
+  return (
+    <InputGroup
+      className={cn(
+        "h-8 min-w-0 flex-1 rounded-lg border-transparent bg-muted shadow-none focus-within:border-border focus-within:bg-card dark:bg-muted",
+        className
+      )}
+    >
+      <InputGroupAddon>
+        <SearchIcon className="size-[15px] text-faint" />
+      </InputGroupAddon>
+      <InputGroupInput
+        ref={inputRef}
+        name="list-search"
+        value={query}
+        onChange={(e) => {
+          setListQuery(e.target.value)
+          onType()
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+            e.preventDefault()
+            onMove(e.key === "ArrowDown" ? 1 : -1)
+          } else if (e.key === "Enter") {
+            e.preventDefault()
+            onOpen()
+          } else if (e.key === "Escape") {
+            if (query) setListQuery("")
+            else e.currentTarget.blur()
+          }
+        }}
+        placeholder={t`Search`}
+        aria-label={t`Search feedback`}
+        data-testid="list-search"
+      />
+      <InputGroupAddon align="inline-end">
+        {query ? (
+          <InputGroupButton size="icon-xs" onClick={() => setListQuery("")} aria-label={t`Clear the search`}>
+            <XIcon />
+          </InputGroupButton>
+        ) : (
+          <Kbd className="phone:hidden">/</Kbd>
+        )}
+      </InputGroupAddon>
+    </InputGroup>
+  )
+}
+
 export type FeedbackTab = Tab
+export type FeedbackCategoryFilter = Category
+
+export function useFeedbackTypes(inboxId: string, category: Category) {
+  const { t } = useLingui()
+  const counts = useCounts().data
+  const known = useFeedbackCategories(inboxId || undefined).list
+  const open = (k: Category) =>
+    k === "all" ? (counts?.feedback ?? 0) : (counts?.feedback_categories.find((x) => x.category === k)?.count ?? 0)
+  const keys = [
+    ...known.map((c) => c.key),
+    ...(counts?.feedback_categories ?? []).map((x) => x.category).filter((k) => !known.some((c) => c.key === k)),
+  ]
+  const types: { key: Category; name: string; icon?: string }[] = [
+    { key: "all", name: t`All` },
+    ...keys
+      .filter((k) => k !== "other" || category === "other" || open("other") > 0)
+      .map((k) => known.find((c) => c.key === k) ?? { key: k, name: k, icon: "tag" }),
+  ]
+  return { types, open }
+}
 
 export function rememberedFeedbackTab() {
   return rememberedTab
 }
 
-export function FeedbackList({
-  currentId,
-  onOpen,
-  embedded = false,
-  tab: controlledTab,
-  onRows,
-}: {
-  currentId: string | null
-  onOpen: (id: string) => void
-  embedded?: boolean
-  tab?: Tab
-  onRows?: (ids: string[]) => void
-}) {
+export function FeedbackList({ currentId, onOpen }: { currentId: string | null; onOpen: (id: string) => void }) {
   const { t, i18n } = useLingui()
   const { query, focus } = useListSearch()
   const q = useDebounced(query.trim(), 250)
   const [inboxId] = useInboxFilter()
-  const [ownTab, setTabState] = useState<Tab>(rememberedTab)
-  const tab = controlledTab ?? ownTab
+  const [tab, setTabState] = useState<Tab>(rememberedTab)
   const [category, setCategoryState] = useState<Category>(rememberedCategory)
   const search = useRef<HTMLInputElement>(null)
   const scroller = useRef<HTMLDivElement>(null)
@@ -206,10 +293,6 @@ export function FeedbackList({
   const loaded = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
   const rows = loaded
   const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(rows, currentId, onOpen, true, scroller)
-  const ids = rows.map((c) => c.id).join(" ")
-  useEffect(() => {
-    onRows?.(ids ? ids.split(" ") : [])
-  }, [ids, onRows])
 
   useEffect(() => {
     if (focus <= focused) return
@@ -237,77 +320,23 @@ export function FeedbackList({
     setCursorId(null)
     scroller.current?.scrollTo({ top: 0 })
   }
-  const [shownTab, setShownTab] = useState(tab)
-  if (shownTab !== tab) {
-    setShownTab(tab)
-    setCursorId(null)
-  }
   const setTab = (next: Tab) => {
-    remember(next, category)
+    rememberFeedback(next, category)
     setTabState(next)
     reset()
   }
   const setCategory = (next: Category) => {
-    remember(tab, next)
+    rememberFeedback(tab, next)
     setCategoryState(next)
     reset()
   }
 
   const fmt = new Intl.NumberFormat(i18n.locale)
-  const known = useFeedbackCategories(inboxId || undefined).list
-  const open = (k: Category) =>
-    k === "all" ? (counts?.feedback ?? 0) : (counts?.feedback_categories.find((x) => x.category === k)?.count ?? 0)
+  const { types: shownCategories, open } = useFeedbackTypes(inboxId, category)
   const showCount = !inboxId && tab === "open"
-  const keys = [
-    ...known.map((c) => c.key),
-    ...(counts?.feedback_categories ?? []).map((x) => x.category).filter((k) => !known.some((c) => c.key === k)),
-  ]
-  const shownCategories: { key: Category; name: string; icon?: string }[] = [
-    { key: "all", name: t`All` },
-    ...keys
-      .filter((k) => k !== "other" || category === "other" || open("other") > 0)
-      .map((k) => known.find((c) => c.key === k) ?? { key: k, name: k, icon: "tag" }),
-  ]
 
   const searchBox = (
-    <InputGroup className="h-8 min-w-0 flex-1 rounded-lg border-transparent bg-muted shadow-none focus-within:border-border focus-within:bg-card dark:bg-muted">
-      <InputGroupAddon>
-        <SearchIcon className="size-[15px] text-faint" />
-      </InputGroupAddon>
-      <InputGroupInput
-        ref={search}
-        name="list-search"
-        value={query}
-        onChange={(e) => {
-          setListQuery(e.target.value)
-          setCursorId(null)
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-            e.preventDefault()
-            moveCursor(e.key === "ArrowDown" ? 1 : -1)
-          } else if (e.key === "Enter") {
-            e.preventDefault()
-            openCursor()
-          } else if (e.key === "Escape") {
-            if (query) setListQuery("")
-            else e.currentTarget.blur()
-          }
-        }}
-        placeholder={t`Search`}
-        aria-label={t`Search feedback`}
-        data-testid="list-search"
-      />
-      <InputGroupAddon align="inline-end">
-        {query ? (
-          <InputGroupButton size="icon-xs" onClick={() => setListQuery("")} aria-label={t`Clear the search`}>
-            <XIcon />
-          </InputGroupButton>
-        ) : (
-          <Kbd className="phone:hidden">/</Kbd>
-        )}
-      </InputGroupAddon>
-    </InputGroup>
+    <FeedbackSearch inputRef={search} onType={() => setCursorId(null)} onMove={moveCursor} onOpen={openCursor} />
   )
   const pills = (
     <div
@@ -339,43 +368,36 @@ export function FeedbackList({
 
   return (
     <nav aria-label={t`Feedback`} className="flex h-full min-h-0 flex-col bg-background" data-testid="feedback-list">
-      {embedded ? (
-        <>
-          <div className="flex shrink-0 border-b px-6 py-2.5">{searchBox}</div>
-          <div className="flex shrink-0 border-b px-6 py-2.5">{pills}</div>
-        </>
-      ) : (
-        <>
-          <ListHead
-            title={<Trans>Feedback</Trans>}
-            sub={<Trans>Bugs, ideas and praise sent from your apps and pages</Trans>}
-          >
-            <div data-testid="feedback-tabs">
-              <UnderlineTabs
-                value={tab}
-                onChange={setTab}
-                label={t`Status`}
-                items={[
-                  {
-                    value: "open",
-                    label: <Trans>Open</Trans>,
-                    count: inboxId ? undefined : counts?.feedback,
-                    testId: "feedback-tab-open",
-                  },
-                  { value: "resolved", label: <Trans>Resolved</Trans>, testId: "feedback-tab-resolved" },
-                ]}
-              />
-            </div>
-          </ListHead>
-          <div className="flex shrink-0 flex-col gap-2 border-b px-3 py-2">
-            <div className="flex items-center gap-1.5">
-              {searchBox}
-              <InboxPicker className="max-w-36" />
-            </div>
-            {pills}
+      <>
+        <ListHead
+          title={<Trans>Feedback</Trans>}
+          sub={<Trans>Bugs, ideas and praise sent from your apps and pages</Trans>}
+        >
+          <div data-testid="feedback-tabs">
+            <UnderlineTabs
+              value={tab}
+              onChange={setTab}
+              label={t`Status`}
+              items={[
+                {
+                  value: "open",
+                  label: <Trans>Open</Trans>,
+                  count: inboxId ? undefined : counts?.feedback,
+                  testId: "feedback-tab-open",
+                },
+                { value: "resolved", label: <Trans>Resolved</Trans>, testId: "feedback-tab-resolved" },
+              ]}
+            />
           </div>
-        </>
-      )}
+        </ListHead>
+        <div className="flex shrink-0 flex-col gap-2 border-b px-3 py-2">
+          <div className="flex items-center gap-1.5">
+            {searchBox}
+            <InboxPicker className="max-w-36" />
+          </div>
+          {pills}
+        </div>
+      </>
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto" data-testid="list">
         {list.isPending ? (
           <div className="grid gap-1 p-3">
@@ -439,5 +461,180 @@ export function EmptyFeedback() {
         )}
       </p>
     </div>
+  )
+}
+
+function FlatFeedbackRow({ c, cursor, onOpen }: { c: ConversationListItem; cursor: boolean; onOpen: () => void }) {
+  const { t, i18n } = useLingui()
+  const channel = useChannelMap().get(c.channel_id ?? "")
+  const inbox = useInboxes().data?.find((i) => i.id === c.inbox_id)
+  const contactName = useContactName()
+  const name = contactName(c, channel, c.contact.name, c.contact.email)
+  const f = c.feedback
+  const where = feedbackPlace(f)
+  const answered = c.last_message?.author_type === "member" || c.last_message?.author_type === "bot"
+  return (
+    <FlatRow
+      color={inbox?.branding.color}
+      cursor={cursor}
+      button={{
+        onClick: onOpen,
+        title: inbox?.name,
+        "data-testid": "feedback-row",
+        "data-conversation-id": c.id,
+        "data-unread": c.unread || undefined,
+      }}
+      who={<FlatWho strong={c.unread}>{name}</FlatWho>}
+      end={
+        <>
+          {f && <CategoryPill category={f.category} inboxId={c.inbox_id} className="@max-xl/list:hidden" />}
+          {where && (
+            <span
+              className="max-w-40 min-w-0 truncate font-mono text-xs text-muted-foreground @max-3xl/list:hidden"
+              title={where}
+            >
+              {where}
+            </span>
+          )}
+          {c.idea && <IdeaMark idea={c.idea} pill className="max-w-36 @max-2xl/list:hidden" />}
+          {f?.progress && <ProgressPill progress={f.progress} />}
+          {answered && (
+            <CheckIcon className="size-3.5 shrink-0 text-ok" aria-label={t`answered`} data-testid="feedback-answered" />
+          )}
+          {c.unread && <UnreadBadge label={t`Unread`} testId="row-unread" />}
+          <FlatTime iso={c.last_activity_at}>{formatShort(c.last_activity_at, i18n.locale)}</FlatTime>
+        </>
+      }
+    >
+      <span className="flex min-w-0 items-center gap-1.5">
+        <span className="min-w-0 truncate text-foreground" dir="auto">
+          {f?.text || c.subject}
+        </span>
+        {!!f?.attachment_count && (
+          <span
+            className="inline-flex shrink-0 items-center gap-0.5 text-xs text-muted-foreground"
+            title={t`Screenshots attached`}
+            data-testid="feedback-attachments"
+          >
+            <PaperclipIcon className="size-3" aria-label={t`Screenshots attached`} />
+            {f.attachment_count}
+          </span>
+        )}
+        {f?.score ? <ScoreMark score={f.score} /> : null}
+      </span>
+    </FlatRow>
+  )
+}
+
+export function FeedbackFlatList({
+  tab,
+  category,
+  onOpen,
+  hidden,
+  head,
+}: {
+  tab: Tab
+  category: Category
+  onOpen: (id: string) => void
+  hidden: boolean
+  head: (shown: { count: number; more: boolean }) => React.ReactNode
+}) {
+  const { t } = useLingui()
+  const { query, focus } = useListSearch()
+  const q = useDebounced(query.trim(), 250)
+  const [inboxId] = useInboxFilter()
+  const dayLabel = useDayLabel()
+  const search = useRef<HTMLInputElement>(null)
+  const scroller = useRef<HTMLDivElement>(null)
+  const sentinel = useRef<HTMLDivElement>(null)
+  const [nearEnd, setNearEnd] = useState(false)
+  const list = useConversations({
+    kind: ["feedback"],
+    status: tab === "resolved" ? ["closed"] : ["open", "pending"],
+    category: category === "all" ? undefined : category,
+    inbox_id: inboxId || undefined,
+    q: q || undefined,
+  })
+  const rows = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data])
+  const { cursorId, setCursorId, moveCursor, openCursor } = useListCursor(
+    rows,
+    null,
+    onOpen,
+    !hidden,
+    scroller,
+    true,
+    true
+  )
+  const [scope, setScope] = useState(`${tab} ${category} ${inboxId}`)
+  if (scope !== `${tab} ${category} ${inboxId}`) {
+    setScope(`${tab} ${category} ${inboxId}`)
+    setCursorId(null)
+  }
+
+  useEffect(() => {
+    if (focus <= focused || hidden) return
+    focused = focus
+    requestAnimationFrame(() => search.current?.focus())
+  }, [focus, hidden])
+
+  useEffect(() => {
+    const el = sentinel.current
+    if (!el || typeof IntersectionObserver === "undefined") return
+    const io = new IntersectionObserver((entries) => setNearEnd(entries.some((e) => e.isIntersecting)), {
+      rootMargin: "400px",
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = list
+  useEffect(() => {
+    if (nearEnd && hasNextPage && !isFetchingNextPage && !hidden) void fetchNextPage()
+  }, [nearEnd, hasNextPage, isFetchingNextPage, fetchNextPage, rows.length, hidden])
+
+  return (
+    <nav
+      aria-label={t`Feedback`}
+      className={cn("@container/list flex min-w-0 flex-col", hidden && "hidden")}
+      data-testid="feedback-list"
+    >
+      {head({ count: rows.length, more: !!hasNextPage })}
+      <div className="mt-5 flex max-w-[420px]">
+        <FeedbackSearch inputRef={search} onType={() => setCursorId(null)} onMove={moveCursor} onOpen={openCursor} />
+      </div>
+      <div ref={scroller} data-testid="list">
+        {list.isPending ? (
+          <div className="mt-7 flex flex-col gap-3">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-5 w-full" />
+            ))}
+          </div>
+        ) : rows.length === 0 && !hasNextPage ? (
+          <FlatEmpty testId="list-empty">
+            <p className="m-0">
+              {q ? (
+                <Trans>Nothing matches your search here.</Trans>
+              ) : tab === "open" ? (
+                <Trans>No open feedback.</Trans>
+              ) : (
+                <Trans>Nothing is resolved yet.</Trans>
+              )}
+            </p>
+          </FlatEmpty>
+        ) : (
+          <div className="mt-7">
+            {groupRuns(rows, (c) => dayOf(c.last_activity_at)).map((g) => (
+              <ListGroup key={g.key} label={dayLabel(g.items[0].last_activity_at)}>
+                {g.items.map((c) => (
+                  <FlatFeedbackRow key={c.id} c={c} cursor={c.id === cursorId} onOpen={() => onOpen(c.id)} />
+                ))}
+              </ListGroup>
+            ))}
+          </div>
+        )}
+        <div ref={sentinel} className="h-px" />
+        {isFetchingNextPage && <Skeleton className="mt-2 h-5 w-1/2" />}
+        <ErrorLine error={list.error} className="py-2" />
+      </div>
+    </nav>
   )
 }

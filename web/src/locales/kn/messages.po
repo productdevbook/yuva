@@ -377,6 +377,10 @@ msgstr "{count, plural, one {# person} other {# people}} who confirmed before wo
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{count, plural, one {# report} other {# reports}}"
+msgstr "{count, plural, one {# ವರದಿ} other {# ವರದಿಗಳು}}"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# ಅನುಮತಿ} other {# ಅನುಮತಿಗಳು}}"
@@ -720,6 +724,10 @@ msgstr "{n} ಓದಿಲ್ಲ ಎಂದು ಗುರುತಿಸಲಾಗಿದ
 msgid "{n} moved to the Inbox"
 msgstr "{n} ಇನ್‌ಬಾಕ್ಸ್‌ಗೆ ಹಿಂತಿರುಗಿಸಲಾಗಿದೆ"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{n} reports"
+msgstr "{n} ವರದಿಗಳು"
+
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "{n} ಮುಂದೂಡಲಾಗಿದೆ, {when} ಹಿಂತಿರುಗುತ್ತವೆ"
@@ -832,6 +840,7 @@ msgid "{names} will be notified"
 msgstr "{names} ಅವರಿಗೆ ಸೂಚನೆ ನೀಡಲಾಗುತ್ತದೆ"
 
 #: src/components/common/Linked.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# ತೆರೆದಿದೆ} other {# ತೆರೆದಿವೆ}}"
@@ -1144,7 +1153,6 @@ msgstr "{views, plural, one {# ವೀಕ್ಷಣೆ} other {# ವೀಕ್ಷ�
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
-#: src/features/feedback/RoadmapCard.tsx
 msgid "{votes} votes"
 msgstr "{votes} ಮತಗಳು"
 
@@ -2415,7 +2423,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2500,6 +2507,8 @@ msgid "all products"
 msgstr "ಎಲ್ಲಾ ಉತ್ಪನ್ನಗಳು"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -5089,7 +5098,6 @@ msgstr "ಸಂಪರ್ಕದ ಗುಣಲಕ್ಷಣ"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 msgid "Contact details"
 msgstr "ಸಂಪರ್ಕ ವಿವರಗಳು"
 
@@ -5175,10 +5183,6 @@ msgstr "ಹೊಸ ಮೇಲ್‌ನೊಂದಿಗೆ ಮುಂದುವರಿ�
 msgid "Continue with your organisation's sign-in"
 msgstr "Continue with your organisation's sign-in"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Convers."
-msgstr "ಸಂಭಾ."
-
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
@@ -5221,6 +5225,7 @@ msgstr "ಸಂಭಾಷಣೆಗಳು"
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -5599,6 +5604,7 @@ msgstr "ಕಸ್ಟಮ್ ಫೀಲ್ಡ್‌ಗಳನ್ನು ರಚಿಸ�
 msgid "Create, change, reorder and delete automation rules"
 msgstr "ಸ್ವಯಂಚಾಲನ ನಿಯಮಗಳನ್ನು ರಚಿಸಿ, ಬದಲಿಸಿ, ಮರುಕ್ರಮಗೊಳಿಸಿ ಮತ್ತು ಅಳಿಸಿ"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
@@ -6254,6 +6260,7 @@ msgstr "ಬ್ರೌಸರ್‌ನ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್�
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -6271,11 +6278,16 @@ msgid "Developers"
 msgstr "ಡೆವಲಪರ್‌ಗಳು"
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "ಸಾಧನ"
+
+#: src/features/feedback/FeedbackPage.tsx
+msgid "Device and app"
+msgstr "ಸಾಧನ ಮತ್ತು ಆ್ಯಪ್"
 
 #: src/features/contact/DeviceInfo.tsx
 msgid "Device language"
@@ -6683,6 +6695,7 @@ msgstr "ನಕಲುಗಳು"
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -7214,6 +7227,7 @@ msgstr "ಪ್ರತಿ ತೆರೆದ ಚರ್ಚೆಗೂ ಉತ್ತರವ
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "ಉಳಿದ ಎಲ್ಲ ಬ್ರೌಸರ್‌ಗಳು ಮತ್ತು ಸಾಧನಗಳಿಂದ ಸೈನ್ ಔಟ್ ಆಗುತ್ತದೆ. ಈ ಸಾಧನ ಸೈನ್ ಇನ್ ಆಗಿಯೇ ಇರುತ್ತದೆ."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
@@ -7243,6 +7257,7 @@ msgstr "ಪ್ರತಿ ಸೈಟ್"
 msgid "Every step passed."
 msgstr "ಪ್ರತಿ ಹಂತವೂ ಪಾಸ್ ಆಗಿದೆ."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "ಪ್ರತಿ ಪ್ರಕಾರ"
@@ -7459,6 +7474,7 @@ msgstr "ಪ್ರತಿಕ್ರಿಯೆ"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -7483,10 +7499,6 @@ msgstr "ಪ್ರತಿಕ್ರಿಯೆ ವರ್ಗಗಳು"
 msgid "Feedback category"
 msgstr "ಪ್ರತಿಕ್ರಿಯೆ ವರ್ಗ"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Feedback details"
-msgstr "ಪ್ರತಿಕ್ರಿಯೆಯ ವಿವರಗಳು"
-
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback form"
@@ -7503,6 +7515,10 @@ msgstr "ಡಾಕ್ಯುಮೆಂಟೇಶನ್ ಪುಟದಿಂದ ಕಳ�
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
 msgstr "ಆ್ಯಪ್‌ನಿಂದ ಕಳುಹಿಸಿದ ಪ್ರತಿಕ್ರಿಯೆ"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from the website chat"
+msgstr "ವೆಬ್‌ಸೈಟ್ ಚಾಟ್‌ನಿಂದ ಕಳುಹಿಸಿದ ಪ್ರತಿಕ್ರಿಯೆ"
 
 #: src/app/Rail.tsx
 msgid "Feedback, {feedback} open"
@@ -7705,6 +7721,7 @@ msgstr "{first} ನಲ್ಲಿ ಮೊದಲ ಉತ್ತರ"
 msgid "First reply, 90th percentile"
 msgstr "ಮೊದಲ ಉತ್ತರ, ೯೦ನೇ ಪರ್ಸೆಂಟೈಲ್"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "First reply, median"
 msgstr "ಮೊದಲ ಉತ್ತರ, ಮಧ್ಯಮ"
@@ -8013,6 +8030,10 @@ msgstr "ಸಂಭಾಷಣೆಯ ಆರಂಭದಿಂದ ಅದರ ಮೊದಲ
 msgid "From the terminal"
 msgstr "ಟರ್ಮಿನಲ್‌ನಿಂದ"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "From this person"
+msgstr "ಈ ವ್ಯಕ್ತಿಯಿಂದ"
+
 #: src/components/common/text.ts
 msgid "From your site or app"
 msgstr "ನಿಮ್ಮ ಸೈಟ್ ಅಥವಾ ಆ್ಯಪ್‌ನಿಂದ"
@@ -8291,6 +8312,7 @@ msgid "Has an attachment"
 msgstr "ಲಗತ್ತು ಇದೆ"
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "ತೆರೆದ ಸಂಭಾಷಣೆ ಇದೆ"
 
@@ -9516,6 +9538,7 @@ msgstr "ಲೇಬಲ್‌ಗಳು ಸಂಭಾಷಣೆಗಳನ್ನು ಬ�
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -9638,6 +9661,7 @@ msgstr "ಕೊನೆಯ ಬಾರಿ ಓದಿದ್ದು {when}"
 msgid "Last result {last}"
 msgstr "ಕೊನೆಯ ಫಲಿತಾಂಶ {last}"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Last seen"
 msgstr "ಕೊನೆಯದಾಗಿ ಕಂಡದ್ದು"
@@ -10889,6 +10913,7 @@ msgstr "ಅತಿ ಹೆಚ್ಚು “ಸಹಾಯಕವಲ್ಲ” ರೇಟ
 msgid "Most active"
 msgstr "ಅತ್ಯಂತ ಸಕ್ರಿಯ"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "ಹೆಚ್ಚು ಕೇಳಲಾದವು"
@@ -12594,6 +12619,7 @@ msgstr "ಸ್ಪ್ಯಾಮ್ ಅಲ್ಲ ({0})"
 msgid "Not subscribed to the lists"
 msgstr "Not subscribed to the lists"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "ಒಬ್ಬರೇ ಅಲ್ಲ"
@@ -13262,6 +13288,7 @@ msgstr "ನಿಮ್ಮ ತಂಡಕ್ಕೆ ಮಾತ್ರ ಕಾಣುತ್
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13352,6 +13379,7 @@ msgid "Open conversation"
 msgstr "ಸಂಭಾಷಣೆ ತೆರೆಯಿರಿ"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetail.tsx
 msgid "Open conversations"
 msgstr "ತೆರೆದ ಸಂಭಾಷಣೆಗಳು"
 
@@ -13386,10 +13414,6 @@ msgstr "Enterprise applications ತೆರೆಯಿರಿ"
 #: src/features/docs/PagesTab.tsx
 msgid "open feedback"
 msgstr "ತೆರೆದ ಪ್ರತಿಕ್ರಿಯೆ"
-
-#: src/features/contact/ContactDetail.tsx
-msgid "Open full page"
-msgstr "ಪೂರ್ಣ ಪುಟ ತೆರೆಯಿರಿ"
 
 #: src/features/migrations/text.ts
 msgid "Open Google Takeout"
@@ -14020,6 +14044,7 @@ msgid "Pending deliveries are dropped with it."
 msgstr "ಬಾಕಿ ಇರುವ ವಿತರಣೆಗಳನ್ನು ಅದರೊಂದಿಗೆ ಕೈಬಿಡಲಾಗುತ್ತದೆ."
 
 #: src/features/broadcasts/TriggeredPage.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "People"
 
@@ -14248,10 +14273,6 @@ msgstr "ಪುಟದ ರೇಟಿಂಗ್, ಚರ್ಚೆ ಮತ್ತು ಪ�
 #: src/features/feedback/FeedbackList.tsx
 msgid "Pick a piece of feedback"
 msgstr "Pick a piece of feedback"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Pick a piece of feedback to see it here."
-msgstr "ಇಲ್ಲಿ ನೋಡಲು ಒಂದು ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಆರಿಸಿ."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14512,6 +14533,10 @@ msgstr "ಇದನ್ನು ಸೂಚಿಸುತ್ತದೆ"
 msgid "Port"
 msgstr "ಪೋರ್ಟ್"
 
+#: src/features/contact/ContactDetail.tsx
+msgid "Possible duplicate"
+msgstr "ಸಂಭವನೀಯ ನಕಲು"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Post an update"
 msgstr "ಅಪ್‌ಡೇಟ್ ಪ್ರಕಟಿಸಿ"
@@ -14648,6 +14673,7 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -14962,6 +14988,7 @@ msgstr "ಕೆಟ್ಟದು ಎಂದು ರೇಟ್ ಮಾಡಲಾಗಿದ
 msgid "rated good"
 msgstr "ಒಳ್ಳೆಯದು ಎಂದು ರೇಟ್ ಮಾಡಲಾಗಿದೆ"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
 #: src/features/home/HomePage.tsx
 msgid "Rated good"
@@ -16144,6 +16171,7 @@ msgstr "ಈಗ"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Roadmap"
@@ -16578,6 +16606,7 @@ msgstr "ಹೆಸರು, ಇಮೇಲ್ ಅಥವಾ ಬಾಹ್ಯ ID ಮೂ�
 msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
 msgstr "ಹೆಸರು, ಇಮೇಲ್ ಅಥವಾ ನಿಮ್ಮ ಆ್ಯಪ್ ಅವರಿಗೆ ನೀಡುವ ID ಮೂಲಕ ಹುಡುಕಿ, ನಂತರ ಅವರ ಸಂಭಾಷಣೆಗಳು, ವಿವರಗಳು ಮತ್ತು ಟಿಪ್ಪಣಿಗಳನ್ನು ನೋಡಲು ಒಂದನ್ನು ತೆರೆಯಿರಿ."
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16612,6 +16641,7 @@ msgid "Search emoji (in English)"
 msgstr "ಎಮೋಜಿ ಹುಡುಕಿ (ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ)"
 
 #: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackPage.tsx
 msgid "Search feedback"
 msgstr "Search feedback"
 
@@ -17486,7 +17516,6 @@ msgstr "ಶಾರ್ಟ್‌ಕಟ್"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18400,6 +18429,7 @@ msgid "Start your mailing list"
 msgstr "ನಿಮ್ಮ ಮೇಲಿಂಗ್ ಪಟ್ಟಿ ಆರಂಭಿಸಿ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 msgid "Started"
@@ -21094,6 +21124,7 @@ msgstr "Yuva ಆಫ್ ಮಾಡಿದೆ"
 msgid "TXT record"
 msgstr "TXT ದಾಖಲೆ"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx

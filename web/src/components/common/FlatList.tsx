@@ -67,7 +67,7 @@ export function FlatRow({
   return (
     <div
       className={cn(
-        "relative flex min-w-0 scroll-mt-24 scroll-mb-6 items-center border-t border-line-soft transition-colors hover:bg-subtle",
+        "relative flex min-w-0 scroll-mt-3 scroll-mb-6 items-center border-t border-line-soft transition-colors hover:bg-subtle",
         (current || cursor) && "bg-subtle shadow-[inset_2px_0_0_var(--brand)]",
         checked && "bg-brand-wash",
         className

@@ -3,7 +3,7 @@ import { ArrowLeftIcon, EllipsisIcon } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router"
 
-import { ContactAvatar, ErrorLine, toast } from "@/components/common"
+import { ContactAvatar, ErrorLine, InfoSection, KV, toast } from "@/components/common"
 import { formatDateTime, formatDuration, formatRelative } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -17,24 +17,28 @@ import {
   ConversationRows,
   filterStatus,
   Identities,
+  languageName,
   NewConversationDialog,
   sinceText,
   useContactConversations,
   type ConversationFilter,
 } from "@/features/contact/ContactDetails"
 import { DeleteContactDialog } from "@/features/contact/DeleteContactDialog"
+import { DeviceInfo } from "@/features/contact/DeviceInfo"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { useContact, useContactSummary, useContactVisits, useUpdateContact } from "@/features/contact/queries"
+import { useContactEntries } from "@/features/contact/entries"
 import { contactName } from "@/features/contact/Section"
 import { Overline } from "@/features/inbox/PageFrame"
 import { OverflowTabs } from "@/components/common/OverflowTabs"
+import type { Contact } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
 const inkButton = "h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
 const outlineButton = "h-8 rounded-[9px] border-input bg-card px-3 font-normal"
 
-type DetailTab = "details" | "activity" | "conversations" | "notes"
+type DetailTab = "details" | "activity" | "conversations" | "subscriptions" | "notes" | "device"
 
 function Block({
   page,
@@ -49,9 +53,16 @@ function Block({
 }) {
   return (
     <section
-      className={cn(page ? "rounded-2xl border bg-card px-4 py-3.5" : "border-b border-b-muted px-5 py-4", className)}
+      className={cn(
+        page ? "rounded-2xl border bg-card px-4 py-3.5" : "border-t border-line-soft py-5 first:border-t-0",
+        className
+      )}
     >
-      <Overline className="mb-2.5 font-semibold tracking-[0.06em]">{title}</Overline>
+      {page ? (
+        <Overline className="mb-2.5 font-semibold tracking-[0.06em]">{title}</Overline>
+      ) : (
+        <h2 className="m-0 mb-3 text-caption font-medium text-muted2">{title}</h2>
+      )}
       {children}
     </section>
   )
@@ -62,17 +73,6 @@ function Stat({ value, label }: { value: string; label: React.ReactNode }) {
     <div className="flex flex-col items-center gap-0.5 px-1.5 py-2.5">
       <span className="text-[17px] leading-6 font-semibold tabular-nums">{value}</span>
       <span className="text-caption text-faint">{label}</span>
-    </div>
-  )
-}
-
-function StatStrip({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="grid grid-cols-3 overflow-hidden rounded-xl border [&>*]:border-s [&>*:first-child]:border-s-0"
-      data-testid="contact-summary"
-    >
-      {children}
     </div>
   )
 }
@@ -105,17 +105,7 @@ function Banner({ tone, children, testId }: { tone: "danger" | "warn"; children:
   )
 }
 
-export function ContactDetail({
-  id,
-  page,
-  pageLink,
-  back,
-}: {
-  id: string
-  page: boolean
-  pageLink?: string
-  back?: { to: string; label: string }
-}) {
+export function ContactDetail({ id, page, back }: { id: string; page: boolean; back?: { to: string; label: string } }) {
   const { t, i18n } = useLingui()
   const { canManage } = useSession()
   const contact = useContact(id)
@@ -263,176 +253,91 @@ export function ContactDetail({
       label: <Trans>Conversations</Trans>,
       count: c.activity ? fmt.format(c.activity.conversations) : undefined,
     },
+    { key: "subscriptions", label: <Trans>Mailing lists</Trans> },
     { key: "notes", label: <Trans>Notes</Trans>, count: noteCount && noteCount !== "0" ? noteCount : undefined },
+    ...(c.client_info ? [{ key: "device" as const, label: <Trans>Device</Trans> }] : []),
   ]
 
-  return (
-    <div className={cn("flex min-w-0 flex-col", page ? "gap-4" : "h-full min-h-0")} data-testid="contact-panel">
-      {back && <BackLink {...back} />}
-      <header className={cn("@container flex shrink-0 flex-col gap-3.5", !page && "border-b px-5 pt-4 pb-4")}>
-        <div className="flex min-w-0 items-start gap-3.5">
-          <ContactAvatar
-            id={c.id}
-            name={name}
-            className={cn("shrink-0 font-semibold", page ? "size-16" : "size-14 text-lg")}
-          />
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <h2
-              className={cn(
-                "min-w-0 [overflow-wrap:anywhere]",
-                page ? "text-page" : "text-[18px] leading-6 font-semibold"
-              )}
-              data-testid="contact-name"
-            >
-              {name}
-            </h2>
-            {c.emails[0] && c.emails[0] !== name && (
-              <span className="truncate text-small text-muted-foreground">{c.emails[0]}</span>
-            )}
-            <span className="text-small text-faint">
-              <Trans>Contact since {since}</Trans>
-              {seen && (
-                <>
-                  {" · "}
-                  <span title={formatDateTime(seen, i18n.locale)} data-testid="contact-last-seen">
-                    <Trans>last seen {seenText}</Trans>
-                  </span>
-                </>
-              )}
-            </span>
-            {(blocked || undeliverable) && (
-              <span className="mt-1 flex flex-wrap gap-1.5">
-                {blocked && (
-                  <Tag tone="danger">
-                    <Trans>Blocked</Trans>
-                  </Tag>
-                )}
-                {undeliverable && (
-                  <Tag tone="warn">
-                    <Trans>Undeliverable</Trans>
-                  </Tag>
-                )}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            className={cn(inkButton, "min-w-0 flex-1")}
-            onClick={() => setStarting(true)}
-            data-testid="new-conversation-open"
-          >
-            <Trans>New conversation</Trans>
-          </Button>
-          {!page && pageLink && (
-            <Button variant="outline" className={cn(outlineButton, "@max-sm:hidden")} render={<Link to={pageLink} />}>
-              <Trans>Open full page</Trans>
-            </Button>
-          )}
-          {canManage && (
-            <Button
-              variant="outline"
-              className={outlineButton}
-              onClick={() => setMerging(true)}
-              data-testid="merge-contact"
-            >
-              <Trans>Merge…</Trans>
-            </Button>
-          )}
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button variant="outline" className={cn(outlineButton, "w-8 px-0")} />}
-              aria-label={t`More`}
-              data-testid="contact-more"
-            >
-              <EllipsisIcon />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-48">
-              {!page && pageLink && (
-                <DropdownMenuItem render={<Link to={pageLink} />} data-testid="open-contact-page">
-                  <Trans>Open full page</Trans>
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem
-                onClick={() => {
-                  void navigator.clipboard?.writeText(c.id)
-                  toast(t`Contact id copied`)
-                }}
-              >
-                <Trans>Copy contact id</Trans>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={toggleBlock} data-testid="contact-block">
-                {blocked ? <Trans>Unblock contact</Trans> : <Trans>Block contact</Trans>}
-              </DropdownMenuItem>
-              {canManage && (
-                <DropdownMenuItem variant="destructive" onClick={() => setDeleting(true)} data-testid="contact-delete">
-                  <Trans>Delete contact</Trans>
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <ErrorLine error={update.error} />
-        {blocked && (
-          <Banner tone="danger" testId="contact-blocked">
-            <Trans>
-              Blocked. Mail from this contact is refused and nothing new reaches the inbox. Unblock them from the menu.
-            </Trans>
-          </Banner>
-        )}
-        {undeliverable && (
-          <Banner tone="warn" testId="contact-undeliverable">
-            <Trans>
-              Some addresses are undeliverable. Clear them under Contact and identities once they work again.
-            </Trans>
-          </Banner>
-        )}
-        {!page && statCells && <StatStrip>{statCells}</StatStrip>}
-      </header>
-
-      {page ? (
-        <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] items-start gap-4 phone:grid-cols-1">
-          <div className="flex min-w-0 flex-col gap-4">
-            {convs}
-            {notes}
-          </div>
-          <div className="flex min-w-0 flex-col gap-4">
-            {identities}
-            {attributes}
-            {lists}
-            {stats}
-            {visitsBlock}
-          </div>
-        </div>
-      ) : (
+  const tags = (blocked || undeliverable) && (
+    <span className="mt-1 flex flex-wrap gap-1.5">
+      {blocked && (
+        <Tag tone="danger">
+          <Trans>Blocked</Trans>
+        </Tag>
+      )}
+      {undeliverable && (
+        <Tag tone="warn">
+          <Trans>Undeliverable</Trans>
+        </Tag>
+      )}
+    </span>
+  )
+  const since_ = (
+    <>
+      <Trans>Contact since {since}</Trans>
+      {seen && (
         <>
-          <OverflowTabs
-            label={t`Contact`}
-            current={tab}
-            className="mx-0 shrink-0 border-b px-5"
-            items={tabs.map((x) => ({
-              key: x.key,
-              label: x.label,
-              count: x.count,
-              testId: `contact-tab-${x.key}`,
-              onSelect: () => setTab(x.key),
-            }))}
-          />
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            {tab === "details" && (
-              <>
-                {identities}
-                {attributes}
-                {lists}
-              </>
-            )}
-            {tab === "activity" && visitsBlock}
-            {tab === "conversations" && convs}
-            {tab === "notes" && notes}
-          </div>
+          {" · "}
+          <span title={formatDateTime(seen, i18n.locale)} data-testid="contact-last-seen">
+            <Trans>last seen {seenText}</Trans>
+          </span>
         </>
       )}
-
+    </>
+  )
+  const more = (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={<Button variant="outline" className={cn(outlineButton, "w-8 px-0")} />}
+        aria-label={t`More`}
+        data-testid="contact-more"
+      >
+        <EllipsisIcon />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-48">
+        <DropdownMenuItem
+          onClick={() => {
+            void navigator.clipboard?.writeText(c.id)
+            toast(t`Contact id copied`)
+          }}
+        >
+          <Trans>Copy contact id</Trans>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={toggleBlock} data-testid="contact-block">
+          {blocked ? <Trans>Unblock contact</Trans> : <Trans>Block contact</Trans>}
+        </DropdownMenuItem>
+        {canManage && (
+          <DropdownMenuItem variant="destructive" onClick={() => setDeleting(true)} data-testid="contact-delete">
+            <Trans>Delete contact</Trans>
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+  const mergeButton = canManage && (
+    <Button variant="outline" className={outlineButton} onClick={() => setMerging(true)} data-testid="merge-contact">
+      <Trans>Merge…</Trans>
+    </Button>
+  )
+  const banners = (
+    <>
+      <ErrorLine error={update.error} />
+      {blocked && (
+        <Banner tone="danger" testId="contact-blocked">
+          <Trans>
+            Blocked. Mail from this contact is refused and nothing new reaches the inbox. Unblock them from the menu.
+          </Trans>
+        </Banner>
+      )}
+      {undeliverable && (
+        <Banner tone="warn" testId="contact-undeliverable">
+          <Trans>Some addresses are undeliverable. Clear them under Contact and identities once they work again.</Trans>
+        </Banner>
+      )}
+    </>
+  )
+  const dialogs = (
+    <>
       {canManage && <MergeContactDialog target={c} open={merging} onOpenChange={setMerging} />}
       {canManage && <DeleteContactDialog contact={c} name={name} open={deleting} onOpenChange={setDeleting} />}
       <NewConversationDialog
@@ -445,6 +350,119 @@ export function ContactDetail({
           toast(t`Conversation started`)
         }}
       />
+    </>
+  )
+
+  if (!page) {
+    return (
+      <article className="max-w-[760px]" data-testid="contact-panel">
+        <header className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
+          <ContactAvatar id={c.id} name={name} className="size-[52px] shrink-0 text-[17px] font-semibold" />
+          <div className="flex min-w-[200px] flex-1 flex-col">
+            <h1 className="m-0 text-page leading-[34px] [overflow-wrap:anywhere]" data-testid="contact-name">
+              {name}
+            </h1>
+            <p className="m-0 mt-0.5 text-reading text-muted-foreground">
+              {c.emails[0] && c.emails[0] !== name && (
+                <>
+                  <span className="font-mono text-small">{c.emails[0]}</span>
+                  {" · "}
+                </>
+              )}
+              {since_}
+            </p>
+            {tags}
+          </div>
+          <div className="flex gap-1.5">
+            <Button className={inkButton} onClick={() => setStarting(true)} data-testid="new-conversation-open">
+              <Trans>New conversation</Trans>
+            </Button>
+            {mergeButton}
+            {more}
+          </div>
+        </header>
+        <div className="mt-4 flex flex-col gap-2 empty:hidden">{banners}</div>
+        <OverflowTabs
+          label={t`Contact`}
+          current={tab}
+          className="mx-0 mt-6 border-b border-line-soft"
+          items={tabs.map((x) => ({
+            key: x.key,
+            label: x.label,
+            count: x.count,
+            testId: `contact-tab-${x.key}`,
+            onSelect: () => setTab(x.key),
+          }))}
+        />
+        <div className="pt-1">
+          {tab === "details" && (
+            <>
+              {identities}
+              <div className="contents min-[1180px]:hidden">
+                {attributes}
+                {stats}
+              </div>
+            </>
+          )}
+          {tab === "activity" && visitsBlock}
+          {tab === "conversations" && convs}
+          {tab === "subscriptions" && lists}
+          {tab === "notes" && notes}
+          {tab === "device" && (
+            <Block page={false} title={<Trans>Device</Trans>} className="max-w-[460px]">
+              <DeviceInfo contact={c} />
+            </Block>
+          )}
+        </div>
+        {dialogs}
+      </article>
+    )
+  }
+
+  return (
+    <div className="flex min-w-0 flex-col gap-4" data-testid="contact-panel">
+      {back && <BackLink {...back} />}
+      <header className="@container flex shrink-0 flex-col gap-3.5">
+        <div className="flex min-w-0 items-start gap-3.5">
+          <ContactAvatar id={c.id} name={name} className="size-16 shrink-0 font-semibold" />
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <h2 className="min-w-0 text-page [overflow-wrap:anywhere]" data-testid="contact-name">
+              {name}
+            </h2>
+            {c.emails[0] && c.emails[0] !== name && (
+              <span className="truncate text-small text-muted-foreground">{c.emails[0]}</span>
+            )}
+            <span className="text-small text-faint">{since_}</span>
+            {tags}
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            className={cn(inkButton, "min-w-0 flex-1")}
+            onClick={() => setStarting(true)}
+            data-testid="new-conversation-open"
+          >
+            <Trans>New conversation</Trans>
+          </Button>
+          {mergeButton}
+          {more}
+        </div>
+        {banners}
+      </header>
+      <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] items-start gap-4 phone:grid-cols-1">
+        <div className="flex min-w-0 flex-col gap-4">
+          {convs}
+          {notes}
+        </div>
+        <div className="flex min-w-0 flex-col gap-4">
+          {identities}
+          {attributes}
+          {lists}
+          {stats}
+          {visitsBlock}
+        </div>
+      </div>
+      {dialogs}
     </div>
   )
 }
@@ -459,5 +477,97 @@ function BackLink({ to, label }: { to: string; label: string }) {
       <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
       {label}
     </Link>
+  )
+}
+
+export function ContactInfo({ id, duplicate, onNotSame }: { id: string; duplicate?: Contact; onNotSame?: () => void }) {
+  const c = useContact(id).data
+  if (!c) return null
+  return <ContactInfoBody c={c} duplicate={duplicate} onNotSame={onNotSame} />
+}
+
+function ContactInfoBody({ c, duplicate, onNotSame }: { c: Contact; duplicate?: Contact; onNotSame?: () => void }) {
+  const { t, i18n } = useLingui()
+  const { canManage } = useSession()
+  const summary = useContactSummary(c.id).data
+  const [merging, setMerging] = useState(false)
+  const locale = i18n.locale
+  const entries = useContactEntries(c)
+  const fmt = new Intl.NumberFormat(locale)
+  const seen = c.activity?.last_seen_at
+  const good = summary?.ratings.good ?? 0
+  const rated = good + (summary?.ratings.bad ?? 0)
+  const other = duplicate ? contactName(duplicate, t`Unnamed contact`) : ""
+  const otherEmail = duplicate?.emails[0]
+  return (
+    <>
+      <InfoSection title={t`Contact`} testId="contact-info">
+        <KV label={t`E-mail`} value={<span className="font-mono text-xs">{c.emails[0] ?? "—"}</span>} />
+        {c.locale && <KV label={t`Language`} value={languageName(c.locale, locale)} />}
+        <KV label={t`Created`} value={sinceText(c, locale)} />
+        {seen && <KV label={t`Last seen`} value={formatRelative(seen, locale)} />}
+      </InfoSection>
+      {entries.length > 0 && (
+        <InfoSection title={t`Attributes`} testId="contact-attributes">
+          {entries.map((e) => (
+            <KV key={e.key} label={e.raw ? e.key : e.label} value={<span title={e.value}>{e.value}</span>} />
+          ))}
+        </InfoSection>
+      )}
+      {c.activity && (
+        <InfoSection title={t`Summary`}>
+          <KV label={t`Conversations`} value={fmt.format(c.activity.conversations)} />
+          <KV
+            label={t`Open conversations`}
+            value={fmt.format(c.activity.open_conversations)}
+            tone={c.activity.open_conversations > 0 ? "brand" : undefined}
+          />
+          <KV
+            label={t`First reply, median`}
+            value={
+              summary?.median_first_reply_seconds !== undefined
+                ? formatDuration(summary.median_first_reply_seconds, locale)
+                : "—"
+            }
+          />
+          <KV label={t`Rated good`} value={rated ? `${fmt.format(good)} / ${fmt.format(rated)}` : "—"} />
+        </InfoSection>
+      )}
+      {duplicate && (
+        <InfoSection title={t`Possible duplicate`} testId="contact-duplicate">
+          <p className="m-0 text-small leading-5 text-fg2">
+            <Link to={`/contacts/${duplicate.id}`} className="font-medium underline-offset-4 hover:underline">
+              {other}
+            </Link>
+            {otherEmail && otherEmail !== other && <span className="text-muted-foreground"> · {otherEmail}</span>}
+          </p>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {canManage && (
+              <Button
+                variant="outline"
+                className="h-7 rounded-lg border-input px-2.5 text-small font-normal"
+                onClick={() => setMerging(true)}
+                data-testid="duplicate-merge"
+              >
+                <Trans>Merge…</Trans>
+              </Button>
+            )}
+            {onNotSame && (
+              <Button
+                variant="ghost"
+                className="h-7 rounded-lg px-2.5 text-small font-normal"
+                onClick={onNotSame}
+                data-testid="duplicate-dismiss"
+              >
+                <Trans>Not the same</Trans>
+              </Button>
+            )}
+          </div>
+          {canManage && (
+            <MergeContactDialog target={c} initialSource={duplicate} open={merging} onOpenChange={setMerging} />
+          )}
+        </InfoSection>
+      )}
+    </>
   )
 }

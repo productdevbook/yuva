@@ -444,11 +444,13 @@ function FeedbackMessage({
   ctx,
   name,
   feedback,
+  channelKind,
 }: {
   m: Message
   ctx: ThreadContext
   name: string
   feedback: Feedback
+  channelKind?: Conversation["channel_kind"]
 }) {
   const category = feedback.category
   const { find } = useFeedbackCategories()
@@ -465,8 +467,12 @@ function FeedbackMessage({
           <ScoreMark score={feedback.score} className="me-2" />
           {feedback.page_url ? (
             <Trans>Feedback sent from a documentation page</Trans>
-          ) : (
+          ) : channelKind === "app" ? (
             <Trans>Feedback sent from the app</Trans>
+          ) : channelKind === "chat" ? (
+            <Trans>Feedback sent from the website chat</Trans>
+          ) : (
+            <Trans>Feedback</Trans>
           )}
         </MessageHeader>
         <Bubble variant="outline" className="max-w-full *:data-[slot=bubble-content]:bg-card">
@@ -1245,7 +1251,15 @@ function ThreadView({
       return <OwnDraftCard m={m} onEdit={(d) => ctx.onEditDraft?.(d)} onCancel={(d) => ctx.onCancelSchedule?.(d)} />
     if (m.draft) return <Draft m={m} ctx={ctx} />
     if (m.id === feedbackId && conversation.feedback)
-      return <FeedbackMessage m={m} ctx={ctx} name={name} feedback={conversation.feedback} />
+      return (
+        <FeedbackMessage
+          m={m}
+          ctx={ctx}
+          name={name}
+          feedback={conversation.feedback}
+          channelKind={conversation.channel_kind}
+        />
+      )
     if (isMail(m)) return <Mail m={m} ctx={ctx} name={name} me={me} subject={subjects.get(m.id)} />
     return (
       <Line

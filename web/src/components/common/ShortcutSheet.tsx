@@ -479,11 +479,13 @@ export function ShortcutSheet({
     {
       title: t`Contacts`,
       items: [
-        [["↑", "↓"], t`Move through the contacts`],
-        [["↵"], t`Open the contact`],
+        [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the contacts`],
+        [["↵", "o"], t`Open the contact`],
+        [[SHORTCUTS.search], t`Search contacts`],
         [k(SHORTCUTS.select), t`Select the contact under the cursor`],
         [["Del"], t`Delete the selected contacts`],
         [["Esc"], t`Clear the selection`],
+        [["Esc"], t`Back to the list`],
       ],
     },
     {

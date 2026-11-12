@@ -377,6 +377,10 @@ msgstr "{count, plural, one {# Person} other {# Personen}}, die ihr Abonnement v
 msgid "{count, plural, one {# person} other {# people}} who signed in before would get it too, before anyone who bounced, left or does not match is left out."
 msgstr "{count, plural, one {# Person} other {# Personen}}, die sich vorher angemeldet haben, bekämen sie auch; Adressen mit Bounce, Abgemeldete und nicht passende Kontakte sind darin noch nicht abgezogen."
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{count, plural, one {# report} other {# reports}}"
+msgstr "{count, plural, one {# Meldung} other {# Meldungen}}"
+
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# Berechtigung} other {# Berechtigungen}}"
@@ -720,6 +724,10 @@ msgstr "{n} als ungelesen markiert"
 msgid "{n} moved to the Inbox"
 msgstr "{n} in den Posteingang verschoben"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "{n} reports"
+msgstr "{n} Meldungen"
+
 #: src/features/mail/MailList.tsx
 msgid "{n} snoozed, back {when}"
 msgstr "{n} zurückgestellt, zurück {when}"
@@ -832,6 +840,7 @@ msgid "{names} will be notified"
 msgstr "{names} werden benachrichtigt"
 
 #: src/components/common/Linked.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "{open, plural, one {# open} other {# open}}"
 msgstr "{open, plural, one {# offen} other {# offen}}"
@@ -1144,7 +1153,6 @@ msgstr "{views, plural, one {# Aufruf} other {# Aufrufe}}"
 #: src/features/account/AccountPage.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
-#: src/features/feedback/RoadmapCard.tsx
 msgid "{votes} votes"
 msgstr "{votes} Stimmen"
 
@@ -2415,7 +2423,6 @@ msgstr "Alertmanager"
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -2500,6 +2507,8 @@ msgid "all products"
 msgstr "alle Produkte"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
@@ -5089,7 +5098,6 @@ msgstr "Kontaktattribut"
 #: src/app/Palette.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactSheet.tsx
-#: src/features/contact/ContactsPage.tsx
 msgid "Contact details"
 msgstr "Kontaktdaten"
 
@@ -5175,10 +5183,6 @@ msgstr "Mit der neueren Mail fortfahren"
 msgid "Continue with your organisation's sign-in"
 msgstr "Mit der Anmeldung Ihrer Organisation fortfahren"
 
-#: src/features/contact/ContactsPage.tsx
-msgid "Convers."
-msgstr "Unterh."
-
 #: src/features/inbox/InboxSide.tsx
 #: src/features/settings/automation/text.ts
 msgid "Conversation"
@@ -5221,6 +5225,7 @@ msgstr "Unterhaltungen"
 #: src/features/contact/MergePreview.tsx
 #: src/features/docs/FromDocs.tsx
 #: src/features/docs/PagesTab.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -5599,6 +5604,7 @@ msgstr "Eigene Felder anlegen, ändern und löschen"
 msgid "Create, change, reorder and delete automation rules"
 msgstr "Automatisierungsregeln erstellen, ändern, sortieren und löschen"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/webhooks/DeliverySheet.tsx
@@ -6254,6 +6260,7 @@ msgstr "Desktop-Benachrichtigungen sind für diese Website in den Browser-Einste
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -6271,11 +6278,16 @@ msgid "Developers"
 msgstr "Entwickler"
 
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/contact/DeviceInfo.tsx
 #: src/features/conversation/Feedback.tsx
 msgid "Device"
 msgstr "Gerät"
+
+#: src/features/feedback/FeedbackPage.tsx
+msgid "Device and app"
+msgstr "Gerät und App"
 
 #: src/features/contact/DeviceInfo.tsx
 msgid "Device language"
@@ -6683,6 +6695,7 @@ msgstr "Duplikate"
 #: src/components/common/Source.tsx
 #: src/components/common/text.ts
 #: src/features/account/AccountPage.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/migrations/MapStep.tsx
 #: src/features/settings/channels/AddChannelDialog.tsx
@@ -7214,6 +7227,7 @@ msgstr "Jede offene Diskussion hat eine Antwort."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Alle anderen Browser und Geräte werden abgemeldet. Dieses bleibt angemeldet."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "every product"
@@ -7243,6 +7257,7 @@ msgstr "Jede Website"
 msgid "Every step passed."
 msgstr "Jeder Schritt bestanden."
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 msgid "Every type"
 msgstr "Jeder Typ"
@@ -7459,6 +7474,7 @@ msgstr "Feedback"
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/conversation/messages/Thread.tsx
 #: src/features/docs/PagesTab.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -7483,10 +7499,6 @@ msgstr "Feedback-Kategorien"
 msgid "Feedback category"
 msgstr "Feedback-Kategorie"
 
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Feedback details"
-msgstr "Feedback-Details"
-
 #: src/features/feedback/FeedbackFormDialog.tsx
 #: src/features/feedback/FeedbackPage.tsx
 msgid "Feedback form"
@@ -7503,6 +7515,10 @@ msgstr "Von einer Dokumentationsseite gesendetes Feedback"
 #: src/features/conversation/messages/Thread.tsx
 msgid "Feedback sent from the app"
 msgstr "Aus der App gesendetes Feedback"
+
+#: src/features/conversation/messages/Thread.tsx
+msgid "Feedback sent from the website chat"
+msgstr "Feedback aus dem Website-Chat"
 
 #: src/app/Rail.tsx
 msgid "Feedback, {feedback} open"
@@ -7705,6 +7721,7 @@ msgstr "erste Antwort in {first}"
 msgid "First reply, 90th percentile"
 msgstr "Erste Antwort, 90. Perzentil"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/inbox/InboxSide.tsx
 msgid "First reply, median"
 msgstr "Erste Antwort, Median"
@@ -8013,6 +8030,10 @@ msgstr "Vom Beginn der Unterhaltung bis zum ersten Schließen."
 msgid "From the terminal"
 msgstr "Im Terminal"
 
+#: src/features/feedback/FeedbackPage.tsx
+msgid "From this person"
+msgstr "Von dieser Person"
+
 #: src/components/common/text.ts
 msgid "From your site or app"
 msgstr "Von Ihrer Website oder App"
@@ -8291,6 +8312,7 @@ msgid "Has an attachment"
 msgstr "Hat einen Anhang"
 
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "Has an open conversation"
 msgstr "Hat eine offene Unterhaltung"
 
@@ -9516,6 +9538,7 @@ msgstr "Labels sortieren Unterhaltungen nach Thema, etwa Abrechnung oder Fehler.
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TestSend.tsx
 #: src/features/contact/ContactCard.tsx
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
@@ -9638,6 +9661,7 @@ msgstr "Zuletzt gelesen {when}"
 msgid "Last result {last}"
 msgstr "Letztes Ergebnis {last}"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Last seen"
 msgstr "Zuletzt gesehen"
@@ -10889,6 +10913,7 @@ msgstr "Meiste „nicht hilfreich“-Bewertungen zuerst"
 msgid "Most active"
 msgstr "Am aktivsten"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Most asked for"
 msgstr "Am häufigsten gewünscht"
@@ -12594,6 +12619,7 @@ msgstr "Kein Spam ({0})"
 msgid "Not subscribed to the lists"
 msgstr "Nicht in den Listen angemeldet"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "Not the same"
 msgstr "Nicht dieselbe Person"
@@ -13262,6 +13288,7 @@ msgstr "Nur Ihr Team sieht sie."
 #: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetails.tsx
 #: src/features/contact/ContactsColumn.tsx
+#: src/features/contact/ContactsPage.tsx
 #: src/features/conversation/ConversationStatus.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -13352,6 +13379,7 @@ msgid "Open conversation"
 msgstr "Unterhaltung öffnen"
 
 #: src/app/Palette.tsx
+#: src/features/contact/ContactDetail.tsx
 msgid "Open conversations"
 msgstr "Offene Unterhaltungen"
 
@@ -13386,10 +13414,6 @@ msgstr "Unternehmensanwendungen öffnen"
 #: src/features/docs/PagesTab.tsx
 msgid "open feedback"
 msgstr "offenes Feedback"
-
-#: src/features/contact/ContactDetail.tsx
-msgid "Open full page"
-msgstr "Ganze Seite öffnen"
 
 #: src/features/migrations/text.ts
 msgid "Open Google Takeout"
@@ -14020,6 +14044,7 @@ msgid "Pending deliveries are dropped with it."
 msgstr "Ausstehende Zustellungen werden mit verworfen."
 
 #: src/features/broadcasts/TriggeredPage.tsx
+#: src/features/contact/ContactsPage.tsx
 msgid "People"
 msgstr "Personen"
 
@@ -14248,10 +14273,6 @@ msgstr "Wählen Sie eine Seite, um ihre Bewertungen, Diskussionen und Fragen zu 
 #: src/features/feedback/FeedbackList.tsx
 msgid "Pick a piece of feedback"
 msgstr "Feedback auswählen"
-
-#: src/features/feedback/FeedbackPage.tsx
-msgid "Pick a piece of feedback to see it here."
-msgstr "Wähle ein Feedback aus, um es hier zu sehen."
 
 #: src/features/broadcasts/ListPage.tsx
 msgid "Pick a sender in the settings"
@@ -14512,6 +14533,10 @@ msgstr "Verweist auf"
 msgid "Port"
 msgstr "Port"
 
+#: src/features/contact/ContactDetail.tsx
+msgid "Possible duplicate"
+msgstr "Mögliches Duplikat"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Post an update"
 msgstr "Update schreiben"
@@ -14648,6 +14673,7 @@ msgid "pro, team"
 msgstr "pro, team"
 
 #: src/features/contact/ContactsPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/InboxSide.tsx
@@ -14962,6 +14988,7 @@ msgstr "Als schlecht bewertet"
 msgid "rated good"
 msgstr "als gut bewertet"
 
+#: src/features/contact/ContactDetail.tsx
 #: src/features/conversation/rating.tsx
 #: src/features/home/HomePage.tsx
 msgid "Rated good"
@@ -16144,6 +16171,7 @@ msgstr "Gerade jetzt"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
 #: src/features/home/HomeSide.tsx
 msgid "Roadmap"
@@ -16578,6 +16606,7 @@ msgstr "Nach Name, E-Mail oder externer ID suchen"
 msgid "Search by name, e-mail or the id your app gives them, then open one to see their conversations, details and notes."
 msgstr "Suchen Sie nach Name, E-Mail oder der ID, die Ihre App ihnen gibt, und öffnen Sie dann einen, um seine Unterhaltungen, Details und Notizen zu sehen."
 
+#: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactsColumn.tsx
 #: src/features/contact/ContactSearch.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16612,6 +16641,7 @@ msgid "Search emoji (in English)"
 msgstr "Emoji suchen (auf Englisch)"
 
 #: src/features/feedback/FeedbackList.tsx
+#: src/features/feedback/FeedbackPage.tsx
 msgid "Search feedback"
 msgstr "Feedback durchsuchen"
 
@@ -17486,7 +17516,6 @@ msgstr "Tastenkürzel"
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsColumn.tsx
-#: src/features/contact/ContactsPage.tsx
 #: src/features/docs/discussions/ThreadPane.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
@@ -18400,6 +18429,7 @@ msgid "Start your mailing list"
 msgstr "Legen Sie Ihre Mailingliste an"
 
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/mail/MailSide.tsx
 msgid "Started"
@@ -21094,6 +21124,7 @@ msgstr "Von Yuva ausgeschaltet"
 msgid "TXT record"
 msgstr "TXT-Eintrag"
 
+#: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/fields/FieldDialog.tsx

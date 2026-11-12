@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react/macro"
 import { ArrowLeftIcon, MoonIcon, SearchIcon, SunIcon } from "lucide-react"
-import { createContext, useContext } from "react"
+import { createContext, useContext, useLayoutEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import { Link, type To } from "react-router"
 
@@ -245,10 +245,23 @@ export function PageTop({
   slot?: (el: HTMLElement | null) => void
   children?: React.ReactNode
 }) {
+  const bar = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = bar.current
+    if (!el || typeof ResizeObserver === "undefined") return
+    const root = document.documentElement
+    const io = new ResizeObserver(() => root.style.setProperty("--page-top-h", `${el.offsetHeight}px`))
+    io.observe(el)
+    return () => {
+      io.disconnect()
+      root.style.removeProperty("--page-top-h")
+    }
+  }, [])
   const backClass =
     "-ms-2 inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2 text-small text-fg2 outline-none hover:bg-line-soft hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
   return (
     <div
+      ref={bar}
       className="sticky top-0 z-20 flex min-h-8 flex-wrap items-center gap-x-3 gap-y-2 bg-background pt-3.5 pb-2.5"
       data-testid="page-top"
     >

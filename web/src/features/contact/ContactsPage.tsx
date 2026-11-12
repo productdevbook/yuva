@@ -1,9 +1,29 @@
+import { plural } from "@lingui/core/macro"
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftRightIcon, BookUserIcon, ChevronDownIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { ArrowLeftRightIcon, ChevronDownIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
-import { ContactAvatar, Dot, ErrorLine, toast } from "@/components/common"
+import {
+  ContactAvatar,
+  Dot,
+  ErrorLine,
+  FlatEmpty,
+  InfoColumn,
+  InfoSection,
+  KV,
+  NavGroup,
+  NavList,
+  PageHeading,
+  PageLayout,
+  PageSidebar,
+  PageTop,
+  ProductsGroup,
+  SectionNav,
+  toast,
+  TopSep,
+  UnreadBadge,
+} from "@/components/common"
 import { useErrorText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import {
@@ -26,13 +46,12 @@ import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { RowCheck, SelectToggle } from "@/components/common/Selection"
 import { ContactBulkBar } from "@/features/contact/ContactBulk"
-import { ContactDetail } from "@/features/contact/ContactDetail"
+import { ContactDetail, ContactInfo } from "@/features/contact/ContactDetail"
 import { MergeContactDialog } from "@/features/contact/MergeContactDialog"
 import { useContactDirectory, useCreateContact } from "@/features/contact/queries"
 import { contactName } from "@/features/contact/Section"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { Ago } from "@/features/inbox/PageFrame"
-import { PageTabs } from "@/features/settings/ui"
 import { useDebounced } from "@/hooks/use-debounced"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useSelection } from "@/hooks/use-selection"
@@ -42,9 +61,6 @@ import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 
 type Tab = "all" | "recent" | "duplicates"
-
-const GRID =
-  "grid grid-cols-[minmax(200px,2.2fr)_minmax(110px,1.2fr)_minmax(0,100px)_72px_96px] items-center gap-3 px-3 max-xl:grid-cols-[minmax(180px,2fr)_minmax(100px,1fr)_minmax(0,90px)_72px]"
 
 const chipBase =
   "inline-flex h-[34px] shrink-0 items-center gap-1.5 rounded-[9px] border px-2.5 text-small whitespace-nowrap outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring"
@@ -199,12 +215,14 @@ function Row({
   current,
   cursor,
   search,
+  onOpen,
   check,
 }: {
   c: Contact
   current: boolean
   cursor: boolean
   search: string
+  onOpen: () => void
   check?: { checked: boolean; onToggle: (range: boolean) => void }
 }) {
   const { t, i18n } = useLingui()
@@ -212,65 +230,61 @@ function Row({
   const name = contactName(c, t`Unnamed contact`)
   const sub = c.emails[0] && c.emails[0] !== name ? c.emails[0] : (c.external_ids[0]?.external_id ?? "")
   const seen = c.activity?.last_seen_at
+  const open = c.activity?.open_conversations ?? 0
   return (
-    <li className="flex items-center">
-      {check && <RowCheck className="ms-4" checked={check.checked} name={name} onToggle={check.onToggle} />}
+    <li
+      className={cn(
+        "relative flex scroll-mt-3 scroll-mb-6 items-center border-t border-line-soft transition-colors hover:bg-subtle",
+        (current || cursor) && "bg-subtle shadow-[inset_2px_0_0_var(--brand)] rtl:shadow-[inset_-2px_0_0_var(--brand)]",
+        check?.checked && "bg-brand-wash"
+      )}
+    >
+      {check && <RowCheck className="ms-1" checked={check.checked} name={name} onToggle={check.onToggle} />}
       <Link
         to={`/contacts/${c.id}${search}`}
-        onClick={
-          check
-            ? (e) => {
-                e.preventDefault()
-                check.onToggle(e.shiftKey)
-              }
-            : undefined
-        }
-        className={cn(
-          "min-w-0 flex-1",
-          GRID,
-          "relative min-h-14 border-b border-b-muted py-2 outline-none transition-colors hover:bg-muted/60 focus-visible:bg-muted/60",
-          current && "rounded-[10px] border-b-transparent bg-card shadow-[0_0_0_1px_var(--border)] hover:bg-card",
-          cursor && !current && "bg-muted/60",
-          (current || cursor) &&
-            "before:absolute before:inset-y-3 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand"
-        )}
+        onClick={(e) => {
+          if (!check) return onOpen()
+          e.preventDefault()
+          check.onToggle(e.shiftKey)
+        }}
+        className="flex min-w-0 flex-1 items-center gap-3.5 px-1 py-[11px] text-body text-fg2 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
         aria-current={current ? "page" : undefined}
         data-testid="contact-row"
       >
-        <span className="flex min-w-0 items-center gap-3">
-          <ContactAvatar id={c.id} name={name} className="size-[34px] shrink-0 text-caption font-semibold" />
-          <span className="flex min-w-0 flex-col">
-            <span className="flex min-w-0 items-center gap-1.5">
-              <span className="truncate text-[13.5px] font-semibold">{name}</span>
-              {c.blocked && (
-                <Tag tone="danger">
-                  <Trans>Blocked</Trans>
-                </Tag>
-              )}
-              {c.undeliverable.length > 0 && (
-                <Tag tone="warn">
-                  <Trans>Undeliverable</Trans>
-                </Tag>
-              )}
-            </span>
-            <span className="truncate text-caption text-faint">{sub || <Trans>Visitor</Trans>}</span>
+        <ContactAvatar id={c.id} name={name} className="size-7 shrink-0 text-[11px] font-semibold" />
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="flex min-w-0 items-center gap-1.5">
+            <span className="truncate font-medium text-foreground">{name}</span>
+            {c.blocked && (
+              <Tag tone="danger">
+                <Trans>Blocked</Trans>
+              </Tag>
+            )}
+            {c.undeliverable.length > 0 && (
+              <Tag tone="warn">
+                <Trans>Undeliverable</Trans>
+              </Tag>
+            )}
           </span>
+          <span className="truncate font-mono text-xs text-muted-foreground">{sub || <Trans>Visitor</Trans>}</span>
         </span>
-        <span className="flex min-w-0 flex-wrap gap-x-2.5 gap-y-1 overflow-hidden">
-          {c.inboxes.slice(0, 3).map((i) => (
-            <span key={i.id} className="inline-flex min-w-0 items-center gap-[5px] text-caption text-muted-foreground">
-              <Dot color={inboxes?.find((x) => x.id === i.id)?.branding.color} className="size-2 rounded-[3px]" />
-              <span className="truncate">{i.name}</span>
+        <span className="flex w-40 min-w-0 shrink-0 items-center gap-1.5 @max-2xl/list:hidden">
+          {c.inboxes.slice(0, 4).map((i) => (
+            <span key={i.id} title={i.name} className="inline-flex">
+              <Dot color={inboxes?.find((x) => x.id === i.id)?.branding.color} className="size-[7px] rounded-full" />
             </span>
           ))}
+          {c.inboxes.length === 1 && (
+            <span className="min-w-0 truncate text-small text-muted-foreground">{c.inboxes[0].name}</span>
+          )}
         </span>
-        <span className="truncate text-[12.5px] text-muted-foreground">
-          {countryOf(c, i18n.locale) ?? <span className="text-faint">—</span>}
+        <span className="w-24 shrink-0 truncate text-small text-muted-foreground @max-3xl/list:hidden">
+          {countryOf(c, i18n.locale) ?? "—"}
         </span>
-        <span className="text-small text-muted-foreground tabular-nums">
-          {c.activity ? new Intl.NumberFormat(i18n.locale).format(c.activity.conversations) : "—"}
+        <span className="w-20 shrink-0 truncate font-mono text-xs text-muted2">{seen ? <Ago iso={seen} /> : "—"}</span>
+        <span className="flex w-7 shrink-0 justify-end">
+          {open > 0 && <UnreadBadge label={plural(open, { one: "# open", other: "# open" })}>{open}</UnreadBadge>}
         </span>
-        <span className="truncate text-[12.5px] text-faint max-xl:hidden">{seen ? <Ago iso={seen} /> : "—"}</span>
       </Link>
     </li>
   )
@@ -304,13 +318,13 @@ function PairCard({ pair, onDismiss }: { pair: Pair; onDismiss: () => void }) {
   const shared = pair.inbox
   return (
     <li
-      className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_auto] items-center gap-3 rounded-[14px] border bg-card px-4 py-3.5 max-xl:grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)] max-xl:[&>:last-child]:col-span-full"
+      className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)_auto] items-center gap-3 border-t border-line-soft px-1 py-3.5 @max-3xl/list:grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)] @max-3xl/list:[&>:last-child]:col-span-full"
       data-testid="duplicate-pair"
     >
       <Side c={pair.a} />
       <ArrowLeftRightIcon className="mx-auto size-4 text-faint" aria-hidden />
       <Side c={pair.b} />
-      <div className="flex flex-col items-end gap-1.5 max-xl:items-start">
+      <div className="flex flex-col items-end gap-1.5 @max-3xl/list:items-start">
         <p className="text-caption text-faint">
           {shared ? <Trans>Same name, both wrote to {shared}.</Trans> : <Trans>Same name.</Trans>}
         </p>
@@ -414,6 +428,8 @@ function AddContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
   )
 }
 
+let listY = 0
+
 export function ContactsPage({ contactId }: { contactId?: string }) {
   const { t, i18n } = useLingui()
   const { canManage } = useSession()
@@ -429,11 +445,16 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   const product = inboxes?.find((i) => i.id === inboxId)?.name
   const q = params.get("q") ?? ""
   const country = params.get("country") ?? ""
+  const openOnly = params.get("open") === "1"
   const blockedOnly = params.get("blocked") === "1"
   const undeliverableOnly = params.get("undeliverable") === "1"
-  const fullPage = params.get("view") === "page" && !!contactId && tab !== "duplicates"
   const query = useDebounced(q.trim(), 250)
-  const directory = useContactDirectory(query, "all", inboxId, tab === "recent" ? "last_seen" : "created")
+  const directory = useContactDirectory(
+    query,
+    openOnly ? "open" : "all",
+    inboxId,
+    tab === "recent" ? "last_seen" : "created"
+  )
   const everyone = useContactDirectory("", "all", inboxId, "last_seen")
   const loaded = useMemo(() => directory.data?.pages.flatMap((p) => p.items) ?? [], [directory.data])
   const all = useMemo(() => everyone.data?.pages.flatMap((p) => p.items) ?? [], [everyone.data])
@@ -457,16 +478,26 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   const [adding, setAdding] = useState(false)
   const selection = useSelection(
     items.map((c) => c.id),
-    `${tab}|${query}|${inboxId}|${country}|${blockedOnly}|${undeliverableOnly}`
+    `${tab}|${query}|${inboxId}|${country}|${openOnly}|${blockedOnly}|${undeliverableOnly}`
   )
   const list = useRef<HTMLUListElement>(null)
   const search = useRef<HTMLInputElement>(null)
   const listParams = new URLSearchParams(params)
   listParams.delete("view")
   const suffix = listParams.toString() ? `?${listParams.toString()}` : ""
-  const shown = tab === "duplicates" ? undefined : (contactId ?? items[0]?.id)
-  const anyFilter = !!(q || chosen || country || blockedOnly || undeliverableOnly)
+  const anyFilter = !!(q || chosen || country || openOnly || blockedOnly || undeliverableOnly)
   const shownCount = new Intl.NumberFormat(i18n.locale).format(items.length)
+  const viewName = tab === "recent" ? t`Recently active` : tab === "duplicates" ? t`Duplicates` : t`People`
+  const pair = contactId ? pairs.find((p) => p.a.id === contactId || p.b.id === contactId) : undefined
+  const listPath = `/contacts${suffix}`
+
+  useLayoutEffect(() => {
+    window.scrollTo({ top: contactId ? 0 : listY })
+  }, [contactId])
+  const open = (id: string) => {
+    listY = window.scrollY
+    navigate(`/contacts/${id}${suffix}`)
+  }
 
   const set = (key: string, value: string) =>
     setParams(
@@ -483,13 +514,13 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
     next.delete("view")
     if (k === "all") next.delete("tab")
     else next.set("tab", k)
-    return { search: next.toString() ? `?${next.toString()}` : "" }
+    return { pathname: "/contacts", search: next.toString() ? `?${next.toString()}` : "" }
   }
   const clearFilters = () =>
     setParams(
       (prev) => {
         const next = new URLSearchParams(prev)
-        for (const k of ["q", "inbox", "country", "blocked", "undeliverable"]) next.delete(k)
+        for (const k of ["q", "inbox", "country", "open", "blocked", "undeliverable"]) next.delete(k)
         return next
       },
       { replace: true }
@@ -506,90 +537,95 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   }
 
   useHotkeys(
-    tab === "duplicates" || fullPage
-      ? {}
-      : {
-          j: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
-          k: () => setCursor((i) => Math.max(0, i - 1)),
-          ArrowDown: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
-          ArrowUp: () => setCursor((i) => Math.max(0, i - 1)),
-          Enter: () => cursor >= 0 && items[cursor] && navigate(`/contacts/${items[cursor].id}${suffix}`),
-          "/": () => search.current?.focus(),
-          ...(canManage
-            ? {
-                x: () => {
-                  const id = items[cursor]?.id ?? shown
-                  if (id) selection.toggle(id)
-                  else selection.start()
-                },
-              }
-            : {}),
-        }
+    contactId
+      ? { Escape: () => navigate(listPath) }
+      : tab === "duplicates"
+        ? {}
+        : {
+            j: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
+            k: () => setCursor((i) => Math.max(0, i - 1)),
+            ArrowDown: () => setCursor((i) => Math.min(items.length - 1, i + 1)),
+            ArrowUp: () => setCursor((i) => Math.max(0, i - 1)),
+            Enter: () => cursor >= 0 && items[cursor] && open(items[cursor].id),
+            o: () => cursor >= 0 && items[cursor] && open(items[cursor].id),
+            "/": () => search.current?.focus(),
+            ...(canManage
+              ? {
+                  x: () => {
+                    const id = items[cursor]?.id
+                    if (id) selection.toggle(id)
+                    else selection.start()
+                  },
+                }
+              : {}),
+          }
   )
   useEffect(() => {
     if (cursor >= 0)
       list.current?.querySelectorAll("[data-testid=contact-row]")[cursor]?.scrollIntoView({ block: "nearest" })
   }, [cursor])
 
-  const header = (
-    <header className="flex shrink-0 flex-col gap-3 px-6 pt-[18px]" data-testid="contacts-head">
-      <div className="flex min-w-0 flex-wrap items-center gap-3">
-        <div className="flex min-w-0 flex-1 basis-56 flex-col gap-0.5">
-          <h1 className="text-[22px] leading-7 font-semibold tracking-[-0.01em]">
-            <Trans>Contacts</Trans>
-          </h1>
-          <p className="truncate text-small text-faint">
-            {product ? (
-              <Trans>People who wrote to {product}</Trans>
-            ) : (
-              <Trans>Everyone who has written to your products</Trans>
-            )}
-          </p>
-        </div>
-        <Button className={actionInk} onClick={() => setAdding(true)} data-testid="add-contact-open">
-          <PlusIcon className="size-3.5" aria-hidden />
-          <Trans>Add contact</Trans>
-        </Button>
-      </div>
-      <PageTabs
-        label={t`Show`}
-        current={tab}
-        items={[
-          { key: "all", to: tabTo("all"), label: <Trans>All</Trans>, testId: "contacts-filter-all" },
-          {
-            key: "recent",
-            to: tabTo("recent"),
-            label: <Trans>Recently active</Trans>,
-            testId: "contacts-filter-recent",
-          },
-          {
-            key: "duplicates",
-            to: tabTo("duplicates"),
-            label: <Trans>Duplicates</Trans>,
-            count: everyone.data && !everyone.hasNextPage ? pairs.length : undefined,
-            testId: "contacts-filter-duplicates",
-          },
-        ]}
+  const sidebar = (
+    <PageSidebar title={t`Contacts`} searchLabel={t`Search contacts`}>
+      <NavList label={t`Contacts`}>
+        <NavGroup
+          items={[
+            { key: "all", label: t`People`, to: tabTo("all"), current: tab === "all", testId: "contacts-filter-all" },
+            {
+              key: "recent",
+              label: t`Recently active`,
+              to: tabTo("recent"),
+              current: tab === "recent",
+              testId: "contacts-filter-recent",
+            },
+            {
+              key: "duplicates",
+              label: t`Duplicates`,
+              to: tabTo("duplicates"),
+              current: tab === "duplicates",
+              count: everyone.data && !everyone.hasNextPage ? pairs.length : undefined,
+              testId: "contacts-filter-duplicates",
+            },
+          ]}
+        />
+        {canManage && <ProductsGroup />}
+      </NavList>
+      {!canManage && <SectionNav />}
+    </PageSidebar>
+  )
+
+  const heading = (
+    <div data-testid="contacts-head">
+      <PageHeading
+        title={viewName}
+        lede={
+          tab === "duplicates" ? (
+            <Trans>
+              These look like the same person. Merging keeps the left one and moves addresses, ids and conversations
+              into it. Nothing is merged until you have seen what changes.
+            </Trans>
+          ) : product ? (
+            <Trans>People who wrote to {product}</Trans>
+          ) : (
+            <Trans>Everyone who has written to your products</Trans>
+          )
+        }
       />
-    </header>
+    </div>
   )
 
   const duplicates = (
-    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-6 pt-4 pb-6" data-testid="duplicates">
-      <p className="max-w-3xl text-small text-faint">
-        <Trans>
-          These look like the same person. Merging keeps the left one and moves addresses, ids and conversations into
-          it. Nothing is merged until you have seen what changes.
-        </Trans>
-      </p>
+    <div className="mt-7 flex flex-col gap-3" data-testid="duplicates">
       {everyone.isPending ? (
-        <Skeleton className="h-24 w-full max-w-[980px] rounded-[14px]" />
+        <Skeleton className="h-16 w-full" />
       ) : pairs.length === 0 ? (
-        <p className="max-w-[980px] py-10 text-center text-small text-faint">
-          <Trans>No contacts look alike right now.</Trans>
-        </p>
+        <FlatEmpty>
+          <p className="m-0">
+            <Trans>No contacts look alike right now.</Trans>
+          </p>
+        </FlatEmpty>
       ) : (
-        <ul className="flex max-w-[980px] flex-col gap-2.5">
+        <ul className="m-0 flex list-none flex-col p-0">
           {pairs.map((p) => (
             <PairCard key={p.key} pair={p} onDismiss={() => dismiss(p.key)} />
           ))}
@@ -609,7 +645,7 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   )
 
   const toolbar = (
-    <div className="flex shrink-0 flex-wrap items-center gap-2 px-6 py-3" data-testid="contacts-filters">
+    <div className="mt-5 flex flex-wrap items-center gap-2" data-testid="contacts-filters">
       <label className="flex h-[34px] max-w-[360px] min-w-[220px] flex-1 items-center gap-2 rounded-[9px] border border-input bg-card px-2.5 focus-within:border-brand focus-within:ring-[3px] focus-within:ring-brand/20">
         <SearchIcon className="pointer-events-none size-3.5 shrink-0 text-faint" aria-hidden />
         <input
@@ -631,7 +667,7 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
             }
             if (e.key === "Enter" && items[0]) {
               e.preventDefault()
-              navigate(`/contacts/${items[cursor >= 0 ? cursor : 0].id}${suffix}`)
+              open(items[cursor >= 0 ? cursor : 0].id)
             }
           }}
           placeholder={t`Search name, e-mail or id…`}
@@ -672,6 +708,9 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
           testId="contacts-country"
         />
       )}
+      <ToggleChip on={openOnly} onClick={() => set("open", openOnly ? "" : "1")} testId="contacts-open">
+        <Trans>Has an open conversation</Trans>
+      </ToggleChip>
       <ToggleChip on={blockedOnly} onClick={() => set("blocked", blockedOnly ? "" : "1")} testId="contacts-blocked">
         <Trans>Blocked</Trans>
       </ToggleChip>
@@ -692,7 +731,7 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
           <Trans>Clear filters</Trans>
         </button>
       )}
-      <span className="ms-auto text-caption text-faint tabular-nums" data-testid="contacts-count">
+      <span className="ms-auto text-caption text-muted-foreground tabular-nums" data-testid="contacts-count">
         {directory.hasNextPage ? <Trans>People so far: {shownCount}</Trans> : <Trans>People: {shownCount}</Trans>}
       </span>
       {canManage && items.length > 0 && !selection.selecting && <SelectToggle selection={selection} />}
@@ -700,50 +739,40 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
   )
 
   const table = (
-    <div className="min-h-0 flex-1 overflow-auto px-4 pb-6">
+    <div className="mt-7">
       <div
-        className={cn(
-          GRID,
-          "sticky top-0 z-[2] h-[34px] border-b bg-surface text-[11px] font-semibold tracking-[0.05em] text-faint uppercase"
-        )}
+        className="flex items-center gap-3.5 px-1 pb-2 text-caption font-medium text-muted2"
         aria-hidden
+        data-testid="contacts-columns"
       >
-        <span>
+        <span className="w-7 shrink-0" />
+        <span className="min-w-0 flex-1">
           <Trans>Person</Trans>
         </span>
-        <span>
+        <span className="w-40 shrink-0 @max-2xl/list:hidden">
           <Trans>Products</Trans>
         </span>
-        <span>
+        <span className="w-24 shrink-0 @max-3xl/list:hidden">
           <Trans>Country</Trans>
         </span>
-        <span>
-          <Trans>Convers.</Trans>
-        </span>
-        <span className="max-xl:hidden">
+        <span className="w-20 shrink-0">
           <Trans>Last seen</Trans>
+        </span>
+        <span className="w-7 shrink-0 text-end">
+          <Trans>Open</Trans>
         </span>
       </div>
       {directory.isPending ? (
-        <div className="flex flex-col" aria-busy="true">
-          {[62, 48, 70, 54, 66, 44, 58, 50].map((w, i) => (
-            <div key={i} className="flex h-14 items-center gap-3 border-b border-b-muted px-3">
-              <Skeleton className="size-[34px] shrink-0 rounded-full" />
-              <div className="flex flex-1 flex-col gap-1.5">
-                <Skeleton className="h-3" style={{ width: `${w}%`, maxWidth: 240 }} />
-                <Skeleton className="h-2.5 w-30" />
-              </div>
-            </div>
+        <div className="flex flex-col gap-3 border-t border-line-soft pt-3" aria-busy="true">
+          {[62, 48, 70, 54, 66].map((w, i) => (
+            <Skeleton key={i} className="h-5" style={{ width: `${w}%` }} />
           ))}
         </div>
       ) : directory.error ? (
-        <ErrorLine error={directory.error} className="p-4" />
+        <ErrorLine error={directory.error} className="py-4" />
       ) : items.length === 0 ? (
-        <div className="mx-auto flex max-w-sm flex-col items-center gap-3 px-2 py-14 text-center">
-          <span className="grid size-12 place-items-center rounded-xl bg-brand-wash text-brand">
-            <BookUserIcon className="size-5" aria-hidden />
-          </span>
-          <p className="text-body text-faint">
+        <FlatEmpty>
+          <p className="m-0">
             {query ? (
               <Trans>No contact matches “{query}”.</Trans>
             ) : anyFilter ? (
@@ -761,16 +790,19 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
               <Trans>Add contact</Trans>
             </Button>
           )}
-        </div>
+        </FlatEmpty>
       ) : (
-        <ul ref={list} className="flex flex-col">
+        <ul ref={list} className="m-0 flex list-none flex-col p-0">
           {items.map((c, i) => (
             <Row
               key={c.id}
               c={c}
-              current={c.id === shown}
+              current={false}
               cursor={i === cursor}
               search={suffix}
+              onOpen={() => {
+                listY = window.scrollY
+              }}
               check={
                 canManage && selection.selecting
                   ? { checked: selection.has(c.id), onToggle: (range) => selection.toggle(c.id, range) }
@@ -781,7 +813,7 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
         </ul>
       )}
       {directory.hasNextPage && (
-        <div className="flex justify-center py-4">
+        <div className="flex border-t border-line-soft pt-4">
           <Button
             variant="outline"
             className={actionOutline}
@@ -796,51 +828,75 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
     </div>
   )
 
+  const withOpen = items.filter((c) => (c.activity?.open_conversations ?? 0) > 0).length
+  const fmt = new Intl.NumberFormat(i18n.locale)
+
   return (
-    <main className="flex h-svh min-h-0 flex-col bg-surface max-md:h-[calc(100svh-49px)]" data-testid="contacts-page">
-      {tab === "duplicates" ? (
-        <>
-          {header}
-          {duplicates}
-        </>
-      ) : fullPage ? (
-        <>
-          {header}
-          <div className="min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-16">
-            <ContactDetail
+    <PageLayout
+      testId="contacts-page"
+      label={t`Contacts`}
+      sidebar={sidebar}
+      aside={
+        <InfoColumn label={t`Details`}>
+          {contactId ? (
+            <ContactInfo
               key={contactId}
               id={contactId}
-              page
-              back={{ to: `/contacts/${contactId}${suffix}`, label: t`Contacts` }}
+              duplicate={pair ? (pair.a.id === contactId ? pair.b : pair.a) : undefined}
+              onNotSame={pair ? () => dismiss(pair.key) : undefined}
             />
-          </div>
-        </>
-      ) : (
-        <div
-          className={cn(
-            "grid min-h-0 flex-1",
-            shown ? "grid-cols-[minmax(0,1fr)_440px] max-xl:grid-cols-[minmax(0,1fr)_380px]" : "grid-cols-1"
-          )}
-        >
-          <section className="flex min-h-0 min-w-0 flex-col" aria-label={t`Contacts`}>
-            {header}
-            {toolbar}
-            {canManage && <ContactBulkBar items={items} selection={selection} className="px-6 pb-2" />}
-            {table}
-          </section>
-          {shown && (
-            <aside className="flex min-h-0 flex-col overflow-hidden border-s bg-card" aria-label={t`Contact details`}>
-              <ContactDetail
-                key={shown}
-                id={shown}
-                page={false}
-                pageLink={`/contacts/${shown}${suffix}${suffix ? "&" : "?"}view=page`}
+          ) : (
+            <InfoSection title={viewName} testId="contacts-summary">
+              <KV label={t`People`} value={`${shownCount}${directory.hasNextPage ? "+" : ""}`} />
+              <KV
+                label={t`Has an open conversation`}
+                value={fmt.format(withOpen)}
+                tone={withOpen > 0 ? "brand" : undefined}
               />
-            </aside>
+              {everyone.data && !everyone.hasNextPage && (
+                <KV label={t`Duplicates`} value={fmt.format(pairs.length)} to={tabTo("duplicates")} />
+              )}
+            </InfoSection>
           )}
-        </div>
+        </InfoColumn>
+      }
+    >
+      <PageTop
+        back={contactId ? { label: viewName, to: listPath } : undefined}
+        actions={
+          <Button className={actionInk} onClick={() => setAdding(true)} data-testid="add-contact-open">
+            <PlusIcon className="size-3.5" aria-hidden />
+            <span className={contactId ? "sr-only" : "max-lg:sr-only"}>
+              <Trans>Add contact</Trans>
+            </span>
+          </Button>
+        }
+      >
+        <span className="font-medium text-foreground">
+          <Trans>Contacts</Trans>
+        </span>
+        <TopSep />
+        <span className="truncate">{viewName}</span>
+        <TopSep />
+        <span className="truncate">{product ?? t`All products`}</span>
+      </PageTop>
+      {contactId ? (
+        <ContactDetail key={contactId} id={contactId} page={false} />
+      ) : (
+        <section aria-label={viewName} className="@container/list max-w-[860px]">
+          {heading}
+          {tab === "duplicates" ? (
+            duplicates
+          ) : (
+            <>
+              {toolbar}
+              {canManage && <ContactBulkBar items={items} selection={selection} className="mt-3" />}
+              {table}
+            </>
+          )}
+        </section>
       )}
       <AddContactDialog open={adding} onOpenChange={setAdding} />
-    </main>
+    </PageLayout>
   )
 }
