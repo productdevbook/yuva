@@ -348,6 +348,10 @@ msgstr "{count, plural, =0 {Ingen samtaler} one {# samtale} other {# samtaler}}"
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, one {# brand} other {# brands}}"
 
+#: src/features/broadcasts/Overview.tsx
+msgid "{count, plural, one {# broadcast} other {# broadcasts}}"
+msgstr "{count, plural, one {# udsendelse} other {# udsendelser}}"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "{count, plural, one {# condition} other {# conditions}}"
 msgstr "{count, plural, one {# betingelse} other {# betingelser}}"
@@ -360,6 +364,10 @@ msgstr "{count, plural, one {# mappe} other {# mapper}}"
 #: src/features/home/HomeSide.tsx
 msgid "{count, plural, one {# issue} other {# issues}}"
 msgstr "{count, plural, one {# problem} other {# problemer}}"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{count, plural, one {# list} other {# lists}}"
+msgstr "{count, plural, one {# liste} other {# lister}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
@@ -384,6 +392,10 @@ msgstr "{count, plural, one {# rapport} other {# rapporter}}"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, one {# tilladelse} other {# tilladelser}}"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
+msgstr "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
@@ -701,6 +713,10 @@ msgstr "{n} arkiveret"
 msgid "{n} attempts"
 msgstr "{n} forsøg"
 
+#: src/features/broadcasts/Overview.tsx
+msgid "{n} broadcasts"
+msgstr "{n} udsendelser"
+
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "{n} conversations"
@@ -709,6 +725,10 @@ msgstr "{n} samtaler"
 #: src/features/broadcasts/Pace.tsx
 msgid "{n} in 30 days"
 msgstr "{n} på 30 dage"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{n} lists"
+msgstr "{n} lister"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -735,6 +755,10 @@ msgstr "{n} udsat, tilbage {when}"
 #: src/features/mail/queries.ts
 msgid "{n} starred"
 msgstr "{n} stjernemarkeret"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{n} triggered e-mails"
+msgstr "{n} triggered e-mails"
 
 #: src/features/mail/queries.ts
 msgid "{n} unstarred"
@@ -1003,10 +1027,6 @@ msgstr "{rated, plural, one {# vurdering} other {# vurderinger}}"
 msgid "{ratedText} rated"
 msgstr "{ratedText} bedømt"
 
-#: src/features/broadcasts/Report.tsx
-msgid "{recipients} recipients · {failed} refused by the mail server · {left} skipped · {auto} automatic replies, only counted"
-msgstr "{recipients} modtagere · {failed} afvist af mailserveren · {left} sprunget over · {auto} automatiske svar, kun talt med"
-
 #: src/features/migrations/DoneStep.tsx
 msgid "{removable, plural, one {# imported conversation nobody wrote in since can be removed.} other {# imported conversations nobody wrote in since can be removed.}}"
 msgstr "{removable, plural, one {# importeret samtale, hvor ingen har skrevet siden, kan fjernes.} other {# importerede samtaler, hvor ingen har skrevet siden, kan fjernes.}}"
@@ -1052,6 +1072,10 @@ msgstr "{sent} af {all} færdige"
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{sent} sent"
 msgstr "{sent} sent"
+
+#: src/features/broadcasts/Report.tsx
+msgid "{sentTo, plural, one {# recipient} other {# recipients}} · {failed} refused by the mail server · {left} skipped · {autoCount, plural, one {# automatic reply, only counted} other {# automatic replies, only counted}}"
+msgstr "{sentTo, plural, one {# modtager} other {# modtagere}} · {failed} afvist af mailserveren · {left} sprunget over · {autoCount, plural, one {# automatisk svar, kun talt med} other {# automatiske svar, kun talt med}}"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{share} helpful"
@@ -2417,6 +2441,7 @@ msgstr "Giv mig besked, mens fanen er i baggrunden"
 msgid "Alertmanager"
 msgstr "Alertmanager"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -2507,6 +2532,7 @@ msgid "all products"
 msgstr "alle produkter"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -2560,6 +2586,7 @@ msgstr "Tillad skrivebordsnotifikationer"
 msgid "Allow it to"
 msgstr "Tillad den at"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Allowed"
 msgstr "Tilladt"
@@ -2745,6 +2772,7 @@ msgstr "en API-nøgle"
 msgid "An API key"
 msgstr "En API-nøgle"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "An API key or assistant"
 msgstr "En API-nøgle eller assistent"
@@ -3510,6 +3538,8 @@ msgstr "attribut, fx plan"
 msgid "Attributes"
 msgstr "Attributter"
 
+#: src/features/broadcasts/BroadcastAside.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Målgruppe"
@@ -3882,6 +3912,7 @@ msgstr "Masseudsendelse"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -4100,7 +4131,7 @@ msgstr "Færdige svar og makroer, i svarfeltet"
 msgid "Canned reply"
 msgstr "Færdigt svar"
 
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
 msgid "Catch-all without a From address"
 msgstr "Catch-all uden afsenderadresse"
 
@@ -4821,6 +4852,7 @@ msgid "Condition"
 msgstr "Betingelse"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "Betingelser"
@@ -5604,6 +5636,8 @@ msgstr "Opret, ændr og slet brugerdefinerede felter"
 msgid "Create, change, reorder and delete automation rules"
 msgstr "Opret, ændr, omsortér og slet automatiseringsregler"
 
+#: src/features/broadcasts/BroadcastAside.tsx
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
@@ -6191,6 +6225,7 @@ msgstr "Sletter listen, dens abonnementer og deres samtykkebeviser. Download fø
 msgid "Deletes the page with its components, their history, incidents and updates. The public address stops working."
 msgstr "Sletter siden med dens komponenter, deres historik, hændelser og opdateringer. Den offentlige adresse holder op med at virke."
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
@@ -6229,6 +6264,7 @@ msgid "Description (optional)"
 msgstr "Beskrivelse (valgfrit)"
 
 #: src/components/common/DesignChoice.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
@@ -6241,6 +6277,7 @@ msgstr "Design: {title}"
 #: src/app/Sidebar.tsx
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 msgid "Designs"
 msgstr "Designs"
 
@@ -6256,6 +6293,7 @@ msgstr "Skrivebordsnotifikationer er tilladt."
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "Skrivebordsnotifikationer er blokeret for dette websted i browserens indstillinger, så kun lyden afspilles."
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
@@ -6534,6 +6572,7 @@ msgctxt "feedback progress"
 msgid "Done"
 msgstr "Færdig"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Double opt-in"
 msgstr "Dobbelt opt-in"
@@ -6627,6 +6666,7 @@ msgstr "Kladdetekst"
 msgid "Draft:"
 msgstr "Kladde:"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/mail/MailDrafts.tsx
@@ -7227,6 +7267,9 @@ msgstr "Hver åben diskussion har et svar."
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "Alle andre browsere og enheder bliver logget ud. Denne forbliver logget ind."
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -9560,6 +9603,7 @@ msgid "Language to keep"
 msgstr "Sprog, der skal beholdes"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
@@ -9593,6 +9637,7 @@ msgstr "Seneste 14 dage"
 msgid "Last 3 months"
 msgstr "Seneste 3 måneder"
 
+#: src/features/broadcasts/Overview.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9972,6 +10017,7 @@ msgid "Links will point at this server’s link domain instead of your own. Spam
 msgstr "Links peger på denne servers linkdomæne i stedet for dit eget. Spamfiltre ser på linkdomæner."
 
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -10331,7 +10377,9 @@ msgid "Mailing list (List-Id)"
 msgstr "Mailingliste (List-Id)"
 
 #: src/app/Palette.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetail.tsx
 msgid "Mailing lists"
 msgstr "Mailinglister"
@@ -11302,6 +11350,7 @@ msgstr "Venter på dig"
 msgid "never"
 msgstr "aldrig"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Never"
 msgstr "Aldrig"
@@ -11697,6 +11746,7 @@ msgstr "Vælg derefter, hvor de skal hen."
 msgid "Nightly backup"
 msgstr "Natlig sikkerhedskopi"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
@@ -11790,6 +11840,7 @@ msgstr "Ingen kanal"
 msgid "No channel that can send is chosen. Until there is one, nobody gets a confirmation or a notice."
 msgstr "Der er ikke valgt nogen kanal, der kan sende. Indtil der er det, får ingen en bekræftelse eller en underretning."
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "No channel yet"
 msgstr "Ingen kanal endnu"
@@ -12206,6 +12257,7 @@ msgstr "Ingen kørsler de seneste 30 dage."
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 msgid "No sender yet"
 msgstr "Ingen afsender endnu"
@@ -12222,7 +12274,7 @@ msgstr "No signature"
 msgid "no SMTP account"
 msgstr "ingen SMTP-konto"
 
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
 msgid "No SMTP account"
 msgstr "Ingen SMTP-konto"
 
@@ -14145,6 +14197,7 @@ msgstr "Pr. måned (30 dage)"
 msgid "Period"
 msgstr "Periode"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Permission to send"
 msgstr "Tilladelse til at sende"
@@ -14810,6 +14863,7 @@ msgstr "Provider saved. Its metadata was read."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 msgid "Public"
 msgstr "Offentlig"
 
@@ -15176,6 +15230,7 @@ msgstr "Klar"
 msgid "Ready to import"
 msgstr "Klar til import"
 
+#: src/features/broadcasts/BroadcastParts.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Ready to send"
 msgstr "Klar til at sende"
@@ -15237,6 +15292,7 @@ msgid "recipient address"
 msgstr "modtagerens adresse"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
@@ -16278,6 +16334,7 @@ msgstr "Regler reagerer, når en samtale ændres: De sætter etiketter, tildeler
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "Regler, der sætter etiketter, tildeler, svarer og kalder webhooks"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
 msgstr "Kør et tjek"
@@ -16516,6 +16573,7 @@ msgstr "Planlæg indlægget"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/text.tsx
@@ -16527,6 +16585,7 @@ msgctxt "mail folder"
 msgid "Scheduled"
 msgstr "Planlagt"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "Planlagt af"
@@ -16591,6 +16650,7 @@ msgstr "SDK"
 
 #: src/app/Palette.tsx
 #: src/components/common/PageLayout.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -17060,7 +17120,9 @@ msgstr "Send til"
 msgid "Send to a webhook endpoint"
 msgstr "Send til et webhook-endpoint"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
@@ -17188,8 +17250,10 @@ msgstr "Sendes {when}"
 msgid "Sends {when} to {to}"
 msgstr "Sendes {when} til {to}"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/Overview.tsx
 msgid "Sends from"
 msgstr "Sendes fra"
 
@@ -17226,6 +17290,7 @@ msgstr "sendt"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
@@ -18592,6 +18657,7 @@ msgstr "Stop the triggered e-mail"
 
 #: src/components/common/SlaBadge.tsx
 #: src/features/broadcasts/BroadcastParts.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Stopped"
 msgstr "Stoppet"
@@ -18676,6 +18742,7 @@ msgstr "Tilmeldt listen nu"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
@@ -18775,6 +18842,7 @@ msgstr "support@example.com"
 msgid "support@your-company.com"
 msgstr "support@din-virksomhed.dk"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Suspended"
 msgstr "Suspenderet"
@@ -18969,6 +19037,7 @@ msgstr "Test igen"
 msgid "Test connection"
 msgstr "Test forbindelsen"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Test mail"
 msgstr "Testmail"
@@ -21007,7 +21076,9 @@ msgid "Trigger"
 msgstr "Udløser"
 
 #: src/app/Sidebar.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Triggered"
 msgstr "Triggered"
@@ -21111,6 +21182,7 @@ msgstr "Slå e-mailabonnenter til i sidens indstillinger, så besøgende kan abo
 msgid "Turn on for this device"
 msgstr "Slå til for denne enhed"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "Slået fra"
@@ -21412,6 +21484,7 @@ msgstr "afmeldte"
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/Growth.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
@@ -21958,6 +22031,7 @@ msgstr "venter på godkendelse"
 #: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
@@ -21972,6 +22046,7 @@ msgstr "venter på bekræftelse"
 
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/ListsHome.tsx
 msgid "Waiting for confirmation"
 msgstr "Venter på bekræftelse"
 
@@ -22526,6 +22601,7 @@ msgstr "Hvem der ændrede medlemmer, adgang, nøgler, webhooks, mailkonti, opbev
 msgid "Who confirmed it and when is saved in the audit log."
 msgstr "Who confirmed it and when is saved in the audit log."
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Who gets it"
 msgstr "Who gets it"
@@ -22661,6 +22737,7 @@ msgstr "Arbejder…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -22762,6 +22839,7 @@ msgstr "Skriv hvor og hvornår de sagde ja."
 msgid "Write your mail…"
 msgstr "Skriv din mail…"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx

@@ -3,8 +3,7 @@ import { CheckIcon, LockIcon, LoaderIcon, MailWarningIcon, TriangleAlertIcon } f
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
-import { ErrorLine, InboxMark, Notice, PersonAvatar, Segmented, useConfirm } from "@/components/common"
-import { PageBar } from "@/components/common/PageBar"
+import { ErrorLine, InboxMark, InfoSection, Notice, PersonAvatar, Segmented, useConfirm } from "@/components/common"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDuration, useLanguageName } from "@/components/common/text"
 import { useScrollFade } from "@/components/common/useScrollFade"
@@ -20,7 +19,9 @@ import {
   useReview,
   useUpdateBroadcast,
 } from "@/features/broadcasts/broadcastQueries"
-import { keyHint, senderState, StatusNotice, useNumber, type SenderState } from "@/features/broadcasts/BroadcastParts"
+import { keyHint, senderState, StatusNotice, useNumber, useSenderText } from "@/features/broadcasts/BroadcastParts"
+import { ApprovalSection, AudienceSection, SenderSection } from "@/features/broadcasts/BroadcastAside"
+import { backOf, DetailFrame, DetailTrail, useFlat, useViewNames, viewOf } from "@/features/broadcasts/BroadcastsFrame"
 import { DesignPicker } from "@/features/broadcasts/DesignPicker"
 import {
   BasisChoice,
@@ -47,7 +48,7 @@ import { TestSendDialog, useTestSend } from "@/features/broadcasts/TestSend"
 import { versions } from "@/features/designs/doc"
 import { designLink, useDesign } from "@/features/designs/queries"
 import { Card, Field, Section, ToggleRow } from "@/features/settings/ui"
-import { FrameButton, framePad } from "@/features/status/PageFrame"
+import { FrameButton } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import type {
   Broadcast,
@@ -225,15 +226,6 @@ export function SaveState({
   )
 }
 
-function useSenderText(): Record<SenderState, string> {
-  const { t } = useLingui()
-  return {
-    ready: t`Ready to send`,
-    no_smtp: t`No SMTP account`,
-    no_from: t`Catch-all without a From address`,
-  }
-}
-
 function SenderPicker({
   b,
   value,
@@ -371,20 +363,31 @@ const asSeen = (s: string) =>
     .replace(/\{\{\s*[^|}]*?\s*(?:\|\s*"([^"]*)"\s*)?\}\}/g, (_, fallback?: string) => fallback ?? "")
     .replace(/\s{2,}/g, " ")
 
+function FlatBox({ className, children, ...rest }: React.ComponentProps<"section">) {
+  return (
+    <section className={cn("flex flex-col border-y border-line-soft py-4", className)} {...rest}>
+      {children}
+    </section>
+  )
+}
+
 function InboxPreview({
   sender,
   address,
   subject,
   preheader,
+  flat,
 }: {
   sender: string
   address: string
   subject: string
   preheader: string
+  flat?: boolean
 }) {
   const { t } = useLingui()
+  const Box = flat ? FlatBox : Card
   return (
-    <Card className="gap-3" data-testid="inbox-preview">
+    <Box className="gap-3" data-testid="inbox-preview">
       <span className="text-small font-medium text-faint">
         <Trans>In the inbox</Trans>
       </span>
@@ -401,7 +404,7 @@ function InboxPreview({
           </p>
         </div>
       </div>
-    </Card>
+    </Box>
   )
 }
 
@@ -419,6 +422,33 @@ function Counter({ value, max, soft }: { value: string; max: number; soft?: numb
   )
 }
 
+function Block({
+  flat,
+  title,
+  id,
+  children,
+}: {
+  flat: boolean
+  title: React.ReactNode
+  id: string
+  children: React.ReactNode
+}) {
+  if (flat)
+    return (
+      <section className="flex flex-col gap-4 border-t border-line-soft pt-5">
+        <h2 className="m-0 text-base font-semibold tracking-[-0.01em]">{title}</h2>
+        <div id={id} className="flex flex-col gap-5">
+          {children}
+        </div>
+      </section>
+    )
+  return (
+    <Section title={title}>
+      <Card id={id}>{children}</Card>
+    </Section>
+  )
+}
+
 function Rail({
   b,
   review,
@@ -427,6 +457,7 @@ function Rail({
   design,
   onFix,
   action,
+  flat,
 }: {
   b: Broadcast
   review: BroadcastReview | undefined
@@ -435,6 +466,7 @@ function Rail({
   design: string
   onFix: (spot: Spot) => void
   action: React.ReactNode
+  flat?: boolean
 }) {
   const { t } = useLingui()
   const num = useNumber()
@@ -448,7 +480,60 @@ function Rail({
     { part: "subject", name: <Trans>Subject</Trans> },
   ]
   const spot: Record<Part, Spot> = { sender: "sender", audience: "audience", content: "content", subject: "content" }
-  if (b.state !== "draft") return <aside className="flex flex-col gap-4">{preview}</aside>
+  if (b.state !== "draft") return flat ? null : <aside className="flex flex-col gap-4">{preview}</aside>
+  const checks = review ? (
+    <ul className="flex flex-col gap-3">
+      {parts.map(({ part, name }) => {
+        const items = review.items.filter((it) => PART_OF[it.key] === part)
+        const status = worstOf(items)
+        const worst = items.find((it) => it.status === status && status !== "ok")
+        const text = worst
+          ? (problem(worst) ?? titles[worst.key])
+          : part === "sender"
+            ? sender
+            : part === "audience"
+              ? review.recipients > 0 && !triggered
+                ? t`${people} people`
+                : ""
+              : part === "content"
+                ? design
+                : ""
+        return (
+          <li key={part} className="flex items-start gap-3" data-testid="before-row" data-part={part}>
+            <CheckState status={status} className="mt-0.5" />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <span className="text-body font-medium">{name}</span>
+              {text && <span className="text-small break-words text-muted-foreground">{text}</span>}
+              {worst && (
+                <button
+                  type="button"
+                  onClick={() => onFix(spot[part])}
+                  className="w-fit text-small text-brand underline-offset-4 hover:underline"
+                >
+                  <Trans>Fix it</Trans>
+                </button>
+              )}
+            </div>
+          </li>
+        )
+      })}
+    </ul>
+  ) : (
+    <div className="flex flex-col gap-2">
+      <Skeleton className="h-8 w-full" />
+      <Skeleton className="h-8 w-full" />
+      <Skeleton className="h-8 w-full" />
+    </div>
+  )
+  if (flat)
+    return (
+      <InfoSection title={<Trans>Before you send</Trans>} testId="review-panel">
+        <div className="flex flex-col gap-3 pt-1" data-testid="before-you-send">
+          {checks}
+          {action}
+        </div>
+      </InfoSection>
+    )
   return (
     <aside className="flex flex-col gap-4" data-testid="review-panel">
       {preview}
@@ -456,50 +541,7 @@ function Rail({
         <span className="text-small font-medium text-faint">
           <Trans>Before you send</Trans>
         </span>
-        {review ? (
-          <ul className="flex flex-col gap-3">
-            {parts.map(({ part, name }) => {
-              const items = review.items.filter((it) => PART_OF[it.key] === part)
-              const status = worstOf(items)
-              const worst = items.find((it) => it.status === status && status !== "ok")
-              const text = worst
-                ? (problem(worst) ?? titles[worst.key])
-                : part === "sender"
-                  ? sender
-                  : part === "audience"
-                    ? review.recipients > 0 && !triggered
-                      ? t`${people} people`
-                      : ""
-                    : part === "content"
-                      ? design
-                      : ""
-              return (
-                <li key={part} className="flex items-start gap-3" data-testid="before-row" data-part={part}>
-                  <CheckState status={status} className="mt-0.5" />
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="text-body font-medium">{name}</span>
-                    {text && <span className="text-small break-words text-muted-foreground">{text}</span>}
-                    {worst && (
-                      <button
-                        type="button"
-                        onClick={() => onFix(spot[part])}
-                        className="w-fit text-small text-brand underline-offset-4 hover:underline"
-                      >
-                        <Trans>Fix it</Trans>
-                      </button>
-                    )}
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        ) : (
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-8 w-full" />
-            <Skeleton className="h-8 w-full" />
-            <Skeleton className="h-8 w-full" />
-          </div>
-        )}
+        {checks}
         {action}
       </Card>
     </aside>
@@ -511,6 +553,8 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   const navigate = useNavigate()
   const triggered = b.kind === "triggered"
   const draft = b.state === "draft"
+  const flat = useFlat()
+  const views = useViewNames()
   const open = openFields(b)
   const ro = (f: Field) => readOnly || !open(f)
   const [d, setD] = useState<Draft>(() => draftOf(b))
@@ -652,388 +696,415 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
     },
     !testing && !reviewing
   )
-  return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="broadcast-page">
-      <PageBar
-        back={triggered ? (draft ? "/broadcasts/triggered" : broadcastLink(b.id)) : "/broadcasts"}
-        label={triggered ? (draft ? t`Triggered` : b.name) : t`Broadcasts`}
-      >
-        <Input
-          id="broadcast-name"
-          aria-label={t`Name`}
-          value={d.name}
-          maxLength={200}
-          disabled={ro("name")}
-          onChange={(e) => set({ name: e.target.value }, e.target.value.trim() ? { name: e.target.value.trim() } : {})}
-          className="h-[34px] w-80 max-w-full border-transparent bg-transparent text-[15px] font-semibold hover:border-input focus-visible:border-ring"
-          data-testid="broadcast-name"
-        />
-        {!readOnly && <SaveState saving={auto.saving} error={auto.error} draft={draft} held={held} />}
-        <span className="flex-1" />
-        {!readOnly && !draft && (
-          <FrameButton ink render={<Link to={broadcastLink(b.id)} />} data-testid="triggered-done">
-            <Trans>Done</Trans>
-          </FrameButton>
-        )}
-        {!readOnly && draft && (
-          <>
-            <FrameButton
-              onClick={() =>
-                confirm({
-                  title: <Trans>Delete “{name}”?</Trans>,
-                  description: (
-                    <Trans>
-                      Its report and the list of recipients are deleted. Conversations opened by replies stay.
-                    </Trans>
-                  ),
-                  confirm: <Trans>Delete</Trans>,
-                  run: () =>
-                    remove.mutate(b.id, {
-                      onSuccess: () => navigate(triggered ? "/broadcasts/triggered" : "/broadcasts"),
-                    }),
-                })
-              }
-              data-testid="broadcast-delete"
-            >
-              <Trans>Delete draft</Trans>
-            </FrameButton>
-            <FrameButton onClick={() => setTesting(true)} title={testTitle} data-testid="open-test">
-              <Trans>Send a test</Trans>
-            </FrameButton>
-            <FrameButton ink onClick={openReview} title={sendTitle} data-testid="open-review">
-              {triggered ? <Trans>Review and start</Trans> : <Trans>Review and send</Trans>}
-            </FrameButton>
-          </>
-        )}
-      </PageBar>
-      <div className="@container min-h-0 flex-1 in-data-frame:overflow-y-auto">
-        <div className={cn(framePad, "max-w-[1200px]")}>
-          <StatusNotice />
-          <ErrorLine error={remove.error} />
-          {!draft && (
-            <Notice icon={LockIcon} data-testid="triggered-locked">
-              <p>
-                {b.state === "paused" ? (
+  const nameInput = (
+    <Input
+      id="broadcast-name"
+      aria-label={t`Name`}
+      value={d.name}
+      maxLength={200}
+      disabled={ro("name")}
+      onChange={(e) => set({ name: e.target.value }, e.target.value.trim() ? { name: e.target.value.trim() } : {})}
+      className={
+        flat
+          ? "h-auto w-full border-transparent bg-transparent px-0 py-0.5 text-page leading-[34px] font-semibold shadow-none hover:border-input focus-visible:border-ring md:text-page"
+          : "h-[34px] w-80 max-w-full border-transparent bg-transparent text-[15px] font-semibold hover:border-input focus-visible:border-ring"
+      }
+      data-testid="broadcast-name"
+    />
+  )
+  const saveState = !readOnly && <SaveState saving={auto.saving} error={auto.error} draft={draft} held={held} />
+  const buttons = (
+    <>
+      {!readOnly && !draft && (
+        <FrameButton ink render={<Link to={broadcastLink(b.id)} />} data-testid="triggered-done">
+          <Trans>Done</Trans>
+        </FrameButton>
+      )}
+      {!readOnly && draft && (
+        <>
+          <FrameButton
+            onClick={() =>
+              confirm({
+                title: <Trans>Delete “{name}”?</Trans>,
+                description: (
                   <Trans>
-                    While it is paused you can change the content, the conditions, the delay and the sending options.
-                    Resuming checks it again.
+                    Its report and the list of recipients are deleted. Conversations opened by replies stay.
                   </Trans>
-                ) : (
-                  <Trans>
-                    You can change the delay, the pace, the sending hours and turn click counting off. Pause it to
-                    change the content.
-                  </Trans>
-                )}
-              </p>
-              <p className="text-muted-foreground">
-                <Trans>What starts it, why people get it, its lists, its sender and its name stay as they are.</Trans>
-              </p>
-            </Notice>
-          )}
-          <div
-            className="grid grid-cols-[minmax(0,1fr)] items-start gap-6 @4xl:grid-cols-[minmax(0,1fr)_21rem]"
-            data-testid="broadcast-composer"
+                ),
+                confirm: <Trans>Delete</Trans>,
+                run: () =>
+                  remove.mutate(b.id, {
+                    onSuccess: () => navigate(triggered ? "/broadcasts/triggered" : "/broadcasts"),
+                  }),
+              })
+            }
+            data-testid="broadcast-delete"
           >
-            <div className="flex min-w-0 flex-col gap-6">
-              {triggered && (
-                <Section title={<Trans>Trigger</Trans>}>
-                  <Card id="broadcast-trigger">
-                    <TriggerEvent
-                      trigger={d.trigger}
-                      inboxId={b.inbox_id}
-                      disabled={ro("event")}
-                      onChange={setTrigger}
-                    />
-                    <DelayFields value={d.delay} onChange={setDelay} disabled={ro("delay")} />
-                  </Card>
-                </Section>
-              )}
-              <Section title={<Trans>Sender</Trans>}>
-                <Card id="broadcast-sender">
-                  <SenderPicker
-                    b={b}
-                    value={d.channel_id}
-                    disabled={ro("channel")}
-                    onChange={(id) => set({ channel_id: id ?? "" }, { channel_id: id }, 0)}
-                  />
-                </Card>
-              </Section>
-              <Section title={triggered ? <Trans>Who gets it</Trans> : <Trans>Audience</Trans>}>
-                <Card id="broadcast-audience">
-                  {triggered && (
-                    <BasisChoice
-                      value={d.basis}
-                      disabled={ro("basis")}
-                      inboxName={inboxName}
-                      onChange={(basis) =>
-                        setWho(basis, basis === "service" ? { ...d.audience, list_ids: [] } : d.audience)
-                      }
-                    />
-                  )}
-                  <AudienceBuilder
-                    inboxId={b.inbox_id}
-                    value={d.audience}
-                    disabled={ro("audience")}
-                    listsLocked={ro("lists")}
-                    hideLists={triggered && d.basis === "service"}
-                    onChange={(audience) =>
-                      triggered ? setWho(d.basis, audience) : set({ audience }, { audience: audienceInput(audience) })
-                    }
-                  />
-                  {triggered ? (
-                    <p className="text-small text-faint">
-                      <Trans>
-                        Each person is checked once, when their mail is due: someone who left, bounced or no longer
-                        matches gets nothing.
-                      </Trans>
-                    </p>
-                  ) : (
-                    <AudienceCount
-                      count={d.audience.list_ids.length ? count.data : undefined}
-                      loading={count.isPending && d.audience.list_ids.length > 0}
-                      stale={auto.saving || count.isFetching}
-                      error={count.error ? <ErrorLine error={count.error} /> : null}
-                      listNames={listNames}
-                    />
-                  )}
-                </Card>
-              </Section>
-              <Section title={<Trans>Content</Trans>}>
-                <Card id="broadcast-content">
-                  <DesignPicker
-                    inboxId={b.inbox_id}
-                    value={d.design_id}
-                    disabled={ro("content")}
-                    onChange={(id) => set({ design_id: id ?? "" }, { design_id: id }, 0)}
-                  />
-                  {tags.length > 1 && (
-                    <div
-                      {...tabScroll}
-                      className="-mx-1 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                    >
-                      <Segmented
-                        value={version ?? tags[0]}
-                        onChange={(v) => setTab(v === tags[0] ? null : v)}
-                        label={t`Language`}
-                        items={tags.map((tag) => ({
-                          value: tag,
-                          label: languageName(tag),
-                          testId: "subject-language",
-                        }))}
-                        itemClassName="whitespace-nowrap"
-                      />
-                    </div>
-                  )}
-                  <Field
-                    label={
-                      <span className="flex w-full items-center justify-between gap-2">
-                        <Trans>Subject</Trans>
-                        <Counter value={subject} max={SUBJECT_MAX} soft={SUBJECT_SOFT} />
-                      </span>
-                    }
-                    htmlFor="broadcast-subject"
-                    hint={
-                      version ? (
-                        <Trans>Empty uses the {baseLanguage} subject. Merge fields work here too.</Trans>
-                      ) : (
-                        <Trans>Merge fields work here too, for example {merge}.</Trans>
-                      )
-                    }
-                  >
-                    <Input
-                      id="broadcast-subject"
-                      value={subject}
-                      maxLength={SUBJECT_MAX}
-                      disabled={ro("content")}
-                      placeholder={version ? d.subject : t`What is new in October`}
-                      onChange={(e) => setText("subject", e.target.value)}
-                      data-testid="broadcast-subject"
-                    />
-                  </Field>
-                  <Field
-                    label={
-                      <span className="flex w-full items-center justify-between gap-2">
-                        <Trans>Preview text</Trans>
-                        <Counter value={preheader} max={PREHEADER_MAX} />
-                      </span>
-                    }
-                    htmlFor="broadcast-preheader"
-                    hint={<Trans>Shown after the subject in most inboxes. Empty uses the design’s own.</Trans>}
-                  >
-                    <Input
-                      id="broadcast-preheader"
-                      value={preheader}
-                      maxLength={PREHEADER_MAX}
-                      disabled={ro("content")}
-                      placeholder={inherited || t`A line that makes people open it`}
-                      onChange={(e) => setText("preheader", e.target.value)}
-                      data-testid="broadcast-preheader"
-                    />
-                  </Field>
-                </Card>
-              </Section>
-              <Section title={<Trans>Options</Trans>}>
-                <Card id="broadcast-options">
-                  <ToggleRow
-                    title={<Trans>Count clicks</Trans>}
-                    hint={
-                      <Trans>
-                        Off by default. When on, every link goes through this server’s link domain first, so the report
-                        can count who opened which link. Clicks are approximate: security scanners that open every link
-                        are left out. Yuva never counts opens.
-                      </Trans>
-                    }
-                  >
-                    <Switch
-                      checked={d.click_tracking}
-                      disabled={ro("clicks") || (!draft && b.state !== "paused" && !d.click_tracking)}
-                      onCheckedChange={(on) => set({ click_tracking: on }, { click_tracking: on }, 0)}
-                      aria-label={t`Count clicks`}
-                      data-testid="broadcast-click-tracking"
-                    />
-                  </ToggleRow>
-                  <ToggleRow
-                    title={<Trans>Campaign in links</Trans>}
-                    hint={
-                      <Trans>
-                        On by default. Links to your sites get utm_source=newsletter, utm_medium=email and the campaign
-                        name, so Analytics shows the visits this broadcast brings. Links with their own utm_ parameters
-                        keep them.
-                      </Trans>
-                    }
-                  >
-                    <Switch
-                      checked={d.utm}
-                      disabled={ro("utm")}
-                      onCheckedChange={(on) => set({ utm: on }, { utm: on }, 0)}
-                      aria-label={t`Campaign in links`}
-                      data-testid="broadcast-utm"
-                    />
-                  </ToggleRow>
-                  {d.utm && (
-                    <Field
-                      label={<Trans>Campaign name</Trans>}
-                      htmlFor="broadcast-utm-campaign"
-                      hint={
-                        campaignBad ? undefined : (
-                          <Trans>
-                            Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent.
-                          </Trans>
-                        )
-                      }
-                      error={
-                        campaignBad ? (
-                          <Trans>
-                            Use lowercase letters, digits, dashes, underscores and dots, starting with a letter or
-                            digit.
-                          </Trans>
-                        ) : undefined
-                      }
-                    >
-                      <Input
-                        id="broadcast-utm-campaign"
-                        dir="ltr"
-                        value={d.utm_campaign}
-                        maxLength={100}
-                        disabled={ro("utm")}
-                        aria-invalid={campaignBad || undefined}
-                        onChange={(e) => {
-                          const v = e.target.value.toLowerCase().replace(/\s+/g, "-")
-                          set({ utm_campaign: v }, CAMPAIGN.test(v) ? { utm_campaign: v } : {})
-                        }}
-                        data-testid="broadcast-utm-campaign"
-                      />
-                    </Field>
-                  )}
-                  <div id="broadcast-pace" className="flex flex-col gap-4">
-                    <ToggleRow
-                      title={<Trans>Limit the pace</Trans>}
-                      hint={
-                        <Trans>
-                          Off sends as fast as the channel and the workspace’s daily limit allow. On spreads the mails
-                          evenly, so no 60 minutes, 24 hours or 30 days get more than you set.
-                        </Trans>
-                      }
-                    >
-                      <Switch
-                        checked={d.pace_on}
-                        disabled={ro("pace")}
-                        onCheckedChange={(on) =>
-                          on
-                            ? setD((x) => ({ ...x, pace_on: true }))
-                            : set({ pace_on: false, pace: paceTextOf(undefined) }, { pace: {} }, 0)
-                        }
-                        aria-label={t`Limit the pace`}
-                        data-testid="broadcast-pace-on"
-                      />
-                    </ToggleRow>
-                    {d.pace_on && (
-                      <>
-                        <PaceFields
-                          value={d.pace}
-                          disabled={ro("pace")}
-                          windowed={d.hours.on}
-                          rate={channel?.email?.broadcast_rate}
-                          onChange={(pace) =>
-                            set({ pace }, paceInvalid(pace) || !hasPace(paceOf(pace)) ? {} : { pace: paceOf(pace) })
-                          }
-                        />
-                        {paceSecs !== undefined && (
-                          <p className="text-small text-muted-foreground" data-testid="broadcast-pace-duration">
-                            <Trans>At this pace, sending takes about {paceDuration}.</Trans>
-                          </p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <div id="broadcast-hours" className="flex flex-col gap-4 border-t pt-4">
-                    <SendTimeFields
-                      zone={d.timezone}
-                      onZone={(timezone) => set({ timezone }, { timezone })}
-                      hours={d.hours}
-                      onHours={(hours) =>
-                        set({ hours }, hoursInvalid(hours) ? {} : { send_window: hours.on ? windowOf(hours) : null })
-                      }
-                      disabled={ro("hours")}
-                      inboxZone={inboxZone}
-                      days={Math.ceil((review.data?.days ?? 1) + 7)}
-                    />
-                  </div>
-                </Card>
-              </Section>
-            </div>
-            <div className="@4xl:sticky @4xl:top-28 @4xl:self-start">
-              <Rail
-                b={b}
-                review={review.data}
-                sender={from}
-                design={design.data?.name ?? ""}
-                onFix={fix}
-                preview={
-                  <InboxPreview
-                    sender={channel?.email?.display_name || channel?.name || ""}
-                    address={from}
-                    subject={shownSubject}
-                    preheader={shownPreheader}
-                  />
-                }
-                action={
-                  readOnly ? null : (
-                    <FrameButton
-                      ink
-                      className="w-full justify-center"
-                      onClick={openReview}
-                      title={sendTitle}
-                      data-testid="open-send"
-                    >
-                      {triggered ? <Trans>Review and start</Trans> : <Trans>Review and send</Trans>}
-                    </FrameButton>
+            <Trans>Delete draft</Trans>
+          </FrameButton>
+          <FrameButton onClick={() => setTesting(true)} title={testTitle} data-testid="open-test">
+            <Trans>Send a test</Trans>
+          </FrameButton>
+          <FrameButton ink onClick={openReview} title={sendTitle} data-testid="open-review">
+            {triggered ? <Trans>Review and start</Trans> : <Trans>Review and send</Trans>}
+          </FrameButton>
+        </>
+      )}
+    </>
+  )
+  const preview = (
+    <InboxPreview
+      flat={flat}
+      sender={channel?.email?.display_name || channel?.name || ""}
+      address={from}
+      subject={shownSubject}
+      preheader={shownPreheader}
+    />
+  )
+  const rail = (railFlat: boolean) => (
+    <Rail
+      flat={railFlat}
+      b={b}
+      review={review.data}
+      sender={from}
+      design={design.data?.name ?? ""}
+      onFix={fix}
+      preview={preview}
+      action={
+        readOnly ? null : (
+          <FrameButton
+            ink
+            className="w-full justify-center"
+            onClick={openReview}
+            title={sendTitle}
+            data-testid="open-send"
+          >
+            {triggered ? <Trans>Review and start</Trans> : <Trans>Review and send</Trans>}
+          </FrameButton>
+        )
+      }
+    />
+  )
+  const place = viewOf(b)
+  return (
+    <DetailFrame
+      testId="broadcast-page"
+      place={place}
+      back={triggered && !draft ? { to: broadcastLink(b.id), label: b.name } : backOf(place, views)}
+      bar={{
+        back: triggered ? (draft ? "/broadcasts/triggered" : broadcastLink(b.id)) : "/broadcasts",
+        label: triggered ? (draft ? t`Triggered` : b.name) : t`Broadcasts`,
+        content: (
+          <>
+            {nameInput}
+            {saveState}
+            <span className="flex-1" />
+            {buttons}
+          </>
+        ),
+      }}
+      heading={
+        <div className="flex flex-col items-start gap-1">
+          {nameInput}
+          {saveState}
+        </div>
+      }
+      eyebrow={<DetailTrail b={b} />}
+      actions={buttons}
+      aside={
+        <>
+          {rail(true)}
+          <AudienceSection b={b} />
+          <SenderSection inboxId={b.inbox_id} channelId={d.channel_id} />
+          <ApprovalSection b={b} />
+        </>
+      }
+    >
+      <StatusNotice />
+      <ErrorLine error={remove.error} />
+      {!draft && (
+        <Notice icon={LockIcon} data-testid="triggered-locked">
+          <p>
+            {b.state === "paused" ? (
+              <Trans>
+                While it is paused you can change the content, the conditions, the delay and the sending options.
+                Resuming checks it again.
+              </Trans>
+            ) : (
+              <Trans>
+                You can change the delay, the pace, the sending hours and turn click counting off. Pause it to change
+                the content.
+              </Trans>
+            )}
+          </p>
+          <p className="text-muted-foreground">
+            <Trans>What starts it, why people get it, its lists, its sender and its name stay as they are.</Trans>
+          </p>
+        </Notice>
+      )}
+      {flat && preview}
+      <div
+        className={
+          flat
+            ? "flex flex-col gap-6"
+            : "grid grid-cols-[minmax(0,1fr)] items-start gap-6 @4xl:grid-cols-[minmax(0,1fr)_21rem]"
+        }
+        data-testid="broadcast-composer"
+      >
+        <div className="flex min-w-0 flex-col gap-6">
+          {triggered && (
+            <Block flat={flat} title={<Trans>Trigger</Trans>} id="broadcast-trigger">
+              <TriggerEvent trigger={d.trigger} inboxId={b.inbox_id} disabled={ro("event")} onChange={setTrigger} />
+              <DelayFields value={d.delay} onChange={setDelay} disabled={ro("delay")} />
+            </Block>
+          )}
+          <Block flat={flat} title={<Trans>Sender</Trans>} id="broadcast-sender">
+            <SenderPicker
+              b={b}
+              value={d.channel_id}
+              disabled={ro("channel")}
+              onChange={(id) => set({ channel_id: id ?? "" }, { channel_id: id }, 0)}
+            />
+          </Block>
+          <Block
+            flat={flat}
+            title={triggered ? <Trans>Who gets it</Trans> : <Trans>Audience</Trans>}
+            id="broadcast-audience"
+          >
+            {triggered && (
+              <BasisChoice
+                value={d.basis}
+                disabled={ro("basis")}
+                inboxName={inboxName}
+                onChange={(basis) => setWho(basis, basis === "service" ? { ...d.audience, list_ids: [] } : d.audience)}
+              />
+            )}
+            <AudienceBuilder
+              inboxId={b.inbox_id}
+              value={d.audience}
+              disabled={ro("audience")}
+              listsLocked={ro("lists")}
+              hideLists={triggered && d.basis === "service"}
+              onChange={(audience) =>
+                triggered ? setWho(d.basis, audience) : set({ audience }, { audience: audienceInput(audience) })
+              }
+            />
+            {triggered ? (
+              <p className="text-small text-faint">
+                <Trans>
+                  Each person is checked once, when their mail is due: someone who left, bounced or no longer matches
+                  gets nothing.
+                </Trans>
+              </p>
+            ) : (
+              <AudienceCount
+                count={d.audience.list_ids.length ? count.data : undefined}
+                loading={count.isPending && d.audience.list_ids.length > 0}
+                stale={auto.saving || count.isFetching}
+                error={count.error ? <ErrorLine error={count.error} /> : null}
+                listNames={listNames}
+              />
+            )}
+          </Block>
+          <Block flat={flat} title={<Trans>Content</Trans>} id="broadcast-content">
+            <DesignPicker
+              inboxId={b.inbox_id}
+              value={d.design_id}
+              disabled={ro("content")}
+              onChange={(id) => set({ design_id: id ?? "" }, { design_id: id }, 0)}
+            />
+            {tags.length > 1 && (
+              <div
+                {...tabScroll}
+                className="-mx-1 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                <Segmented
+                  value={version ?? tags[0]}
+                  onChange={(v) => setTab(v === tags[0] ? null : v)}
+                  label={t`Language`}
+                  items={tags.map((tag) => ({
+                    value: tag,
+                    label: languageName(tag),
+                    testId: "subject-language",
+                  }))}
+                  itemClassName="whitespace-nowrap"
+                />
+              </div>
+            )}
+            <Field
+              label={
+                <span className="flex w-full items-center justify-between gap-2">
+                  <Trans>Subject</Trans>
+                  <Counter value={subject} max={SUBJECT_MAX} soft={SUBJECT_SOFT} />
+                </span>
+              }
+              htmlFor="broadcast-subject"
+              hint={
+                version ? (
+                  <Trans>Empty uses the {baseLanguage} subject. Merge fields work here too.</Trans>
+                ) : (
+                  <Trans>Merge fields work here too, for example {merge}.</Trans>
+                )
+              }
+            >
+              <Input
+                id="broadcast-subject"
+                value={subject}
+                maxLength={SUBJECT_MAX}
+                disabled={ro("content")}
+                placeholder={version ? d.subject : t`What is new in October`}
+                onChange={(e) => setText("subject", e.target.value)}
+                data-testid="broadcast-subject"
+              />
+            </Field>
+            <Field
+              label={
+                <span className="flex w-full items-center justify-between gap-2">
+                  <Trans>Preview text</Trans>
+                  <Counter value={preheader} max={PREHEADER_MAX} />
+                </span>
+              }
+              htmlFor="broadcast-preheader"
+              hint={<Trans>Shown after the subject in most inboxes. Empty uses the design’s own.</Trans>}
+            >
+              <Input
+                id="broadcast-preheader"
+                value={preheader}
+                maxLength={PREHEADER_MAX}
+                disabled={ro("content")}
+                placeholder={inherited || t`A line that makes people open it`}
+                onChange={(e) => setText("preheader", e.target.value)}
+                data-testid="broadcast-preheader"
+              />
+            </Field>
+          </Block>
+          <Block flat={flat} title={<Trans>Options</Trans>} id="broadcast-options">
+            <ToggleRow
+              title={<Trans>Count clicks</Trans>}
+              hint={
+                <Trans>
+                  Off by default. When on, every link goes through this server’s link domain first, so the report can
+                  count who opened which link. Clicks are approximate: security scanners that open every link are left
+                  out. Yuva never counts opens.
+                </Trans>
+              }
+            >
+              <Switch
+                checked={d.click_tracking}
+                disabled={ro("clicks") || (!draft && b.state !== "paused" && !d.click_tracking)}
+                onCheckedChange={(on) => set({ click_tracking: on }, { click_tracking: on }, 0)}
+                aria-label={t`Count clicks`}
+                data-testid="broadcast-click-tracking"
+              />
+            </ToggleRow>
+            <ToggleRow
+              title={<Trans>Campaign in links</Trans>}
+              hint={
+                <Trans>
+                  On by default. Links to your sites get utm_source=newsletter, utm_medium=email and the campaign name,
+                  so Analytics shows the visits this broadcast brings. Links with their own utm_ parameters keep them.
+                </Trans>
+              }
+            >
+              <Switch
+                checked={d.utm}
+                disabled={ro("utm")}
+                onCheckedChange={(on) => set({ utm: on }, { utm: on }, 0)}
+                aria-label={t`Campaign in links`}
+                data-testid="broadcast-utm"
+              />
+            </ToggleRow>
+            {d.utm && (
+              <Field
+                label={<Trans>Campaign name</Trans>}
+                htmlFor="broadcast-utm-campaign"
+                hint={
+                  campaignBad ? undefined : (
+                    <Trans>
+                      Lowercase letters, digits, dashes, underscores and dots. Fixed once the broadcast is sent.
+                    </Trans>
                   )
                 }
+                error={
+                  campaignBad ? (
+                    <Trans>
+                      Use lowercase letters, digits, dashes, underscores and dots, starting with a letter or digit.
+                    </Trans>
+                  ) : undefined
+                }
+              >
+                <Input
+                  id="broadcast-utm-campaign"
+                  dir="ltr"
+                  value={d.utm_campaign}
+                  maxLength={100}
+                  disabled={ro("utm")}
+                  aria-invalid={campaignBad || undefined}
+                  onChange={(e) => {
+                    const v = e.target.value.toLowerCase().replace(/\s+/g, "-")
+                    set({ utm_campaign: v }, CAMPAIGN.test(v) ? { utm_campaign: v } : {})
+                  }}
+                  data-testid="broadcast-utm-campaign"
+                />
+              </Field>
+            )}
+            <div id="broadcast-pace" className="flex flex-col gap-4">
+              <ToggleRow
+                title={<Trans>Limit the pace</Trans>}
+                hint={
+                  <Trans>
+                    Off sends as fast as the channel and the workspace’s daily limit allow. On spreads the mails evenly,
+                    so no 60 minutes, 24 hours or 30 days get more than you set.
+                  </Trans>
+                }
+              >
+                <Switch
+                  checked={d.pace_on}
+                  disabled={ro("pace")}
+                  onCheckedChange={(on) =>
+                    on
+                      ? setD((x) => ({ ...x, pace_on: true }))
+                      : set({ pace_on: false, pace: paceTextOf(undefined) }, { pace: {} }, 0)
+                  }
+                  aria-label={t`Limit the pace`}
+                  data-testid="broadcast-pace-on"
+                />
+              </ToggleRow>
+              {d.pace_on && (
+                <>
+                  <PaceFields
+                    value={d.pace}
+                    disabled={ro("pace")}
+                    windowed={d.hours.on}
+                    rate={channel?.email?.broadcast_rate}
+                    onChange={(pace) =>
+                      set({ pace }, paceInvalid(pace) || !hasPace(paceOf(pace)) ? {} : { pace: paceOf(pace) })
+                    }
+                  />
+                  {paceSecs !== undefined && (
+                    <p className="text-small text-muted-foreground" data-testid="broadcast-pace-duration">
+                      <Trans>At this pace, sending takes about {paceDuration}.</Trans>
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+            <div id="broadcast-hours" className="flex flex-col gap-4 border-t pt-4">
+              <SendTimeFields
+                zone={d.timezone}
+                onZone={(timezone) => set({ timezone }, { timezone })}
+                hours={d.hours}
+                onHours={(hours) =>
+                  set({ hours }, hoursInvalid(hours) ? {} : { send_window: hours.on ? windowOf(hours) : null })
+                }
+                disabled={ro("hours")}
+                inboxZone={inboxZone}
+                days={Math.ceil((review.data?.days ?? 1) + 7)}
               />
             </div>
-          </div>
+          </Block>
         </div>
+        {!flat && <div className="@4xl:sticky @4xl:top-28 @4xl:self-start">{rail(false)}</div>}
       </div>
       {testing && draft && <TestSendDialog b={b} state={test} disabled={readOnly} onClose={() => setTesting(false)} />}
       {reviewing && (
@@ -1048,6 +1119,6 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
         />
       )}
       {confirmDialog}
-    </div>
+    </DetailFrame>
   )
 }

@@ -5,7 +5,6 @@ import { useState } from "react"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router"
 
 import { ErrorLine, Notice, useConfirm } from "@/components/common"
-import { PageBar } from "@/components/common/PageBar"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDateTime, formatDuration, useEnumText } from "@/components/common/text"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -30,6 +29,18 @@ import {
 } from "@/features/broadcasts/BroadcastParts"
 import { Composer } from "@/features/broadcasts/Composer"
 import { DesignThumb } from "@/features/broadcasts/DesignPicker"
+import { ApprovalSection, AudienceSection, SenderSection } from "@/features/broadcasts/BroadcastAside"
+import {
+  DetailFrame,
+  backOf,
+  DetailHeading,
+  DetailTrail,
+  rememberedList,
+  TopTrail,
+  useViewNames,
+  viewLink,
+  viewOf,
+} from "@/features/broadcasts/BroadcastsFrame"
 import { useInboxChannels, useLists } from "@/features/broadcasts/queries"
 import { Deliveries, Report, ReportStats } from "@/features/broadcasts/Report"
 import { paceGap, PaceDialog, usePaceSummary } from "@/features/broadcasts/Pace"
@@ -37,11 +48,10 @@ import { SendTimeDialog } from "@/features/broadcasts/SendTime"
 import { useTriggerSentence } from "@/features/broadcasts/Trigger"
 import { designLink } from "@/features/designs/queries"
 import { Card, Section } from "@/features/settings/ui"
-import { FrameButton, FrameTabs, framePad, ProductTag } from "@/features/status/PageFrame"
+import { FrameButton, FrameTabs, ProductTag } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import type { Broadcast } from "@/lib/api"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { useInboxes, useMemberMap } from "@/lib/workspace"
 import {
   addDays,
@@ -399,6 +409,7 @@ export function BroadcastPage() {
       ? raw
       : "report"
   const name = b?.name ?? ""
+  const views = useViewNames()
 
   const run = (a: BroadcastAction) => {
     if (a === "cancel")
@@ -455,13 +466,22 @@ export function BroadcastPage() {
   )
 
   if (broadcast.isPending || !b) {
+    const back = rememberedList().view
     return (
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
-        <PageBar back="/broadcasts" label={t`Broadcasts`}>
-          {broadcast.isPending ? <Skeleton className="h-7 w-60" /> : <ErrorLine error={broadcast.error} />}
-        </PageBar>
-        <div className={framePad}>{broadcast.isPending && <Skeleton className="h-40 w-full rounded-2xl" />}</div>
-      </div>
+      <DetailFrame
+        testId="broadcast-loading"
+        place={back}
+        back={{ to: viewLink(back), label: views[back] }}
+        bar={{
+          back: "/broadcasts",
+          label: t`Broadcasts`,
+          content: broadcast.isPending ? <Skeleton className="h-7 w-60" /> : <ErrorLine error={broadcast.error} />,
+        }}
+        heading={broadcast.isPending ? <Skeleton className="h-8 w-2/3" /> : <ErrorLine error={broadcast.error} />}
+        eyebrow={<TopTrail place={back} />}
+      >
+        {broadcast.isPending && <Skeleton className="h-40 w-full rounded-2xl" />}
+      </DetailFrame>
     )
   }
   if (draft) return <Composer key={b.id} b={b} readOnly={!canManage} />
@@ -476,55 +496,72 @@ export function BroadcastPage() {
       label: names[v],
       testId: `broadcast-tab-${v}`,
     }))
+  const place = viewOf(b)
+  const actions = canManage && (
+    <Actions
+      b={b}
+      run={run}
+      pending={action.isPending}
+      onDelete={onDelete}
+      onPace={() => setPacing(true)}
+      onHours={() => setHoursOpen(true)}
+    />
+  )
   return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="broadcast-page" key={b.id}>
-      <PageBar back="/broadcasts" label={t`Broadcasts`}>
-        <div className="flex min-w-48 flex-1 basis-64 flex-col leading-snug">
-          <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
-            <h1 className="min-w-0 truncate text-[17px] font-semibold" data-testid="broadcast-name-heading">
-              {b.name}
-            </h1>
-            <StateBadge state={b.state} />
-            {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
-          </span>
-          {b.subject && <span className="truncate text-small text-muted-foreground">{b.subject}</span>}
-        </div>
-        {canManage && (
-          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
-            <Actions
-              b={b}
-              run={run}
-              pending={action.isPending}
-              onDelete={onDelete}
-              onPace={() => setPacing(true)}
-              onHours={() => setHoursOpen(true)}
-            />
-          </div>
-        )}
-      </PageBar>
-      <div className="@container min-h-0 flex-1 in-data-frame:overflow-y-auto">
-        <div className={cn(framePad, "max-w-[1200px]")}>
-          <ErrorLine error={action.error ?? remove.error} />
-          {b.state === "failed" && (
-            <Notice tone="danger" icon={CircleAlertIcon} data-testid="broadcast-failed">
-              <p>
-                <Trans>Sending stopped and cannot go on, for example because its channel was removed.</Trans>
-              </p>
-              {b.state_detail && <p className="text-muted-foreground">{b.state_detail}</p>}
-            </Notice>
-          )}
-          {(scheduled || isActive(b)) && <Banner b={b} at={broadcast.dataUpdatedAt} />}
-          {!scheduled && <ReportStats b={b} />}
-          {tabs.length > 1 && (
-            <div className="border-b">
-              <FrameTabs label={t`Broadcast`} items={tabs} current={tab} />
+    <DetailFrame
+      testId="broadcast-page"
+      place={place}
+      wide
+      back={backOf(place, views)}
+      bar={{
+        back: "/broadcasts",
+        label: t`Broadcasts`,
+        content: (
+          <>
+            <div className="flex min-w-48 flex-1 basis-64 flex-col leading-snug">
+              <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
+                <h1 className="min-w-0 truncate text-[17px] font-semibold" data-testid="broadcast-name-heading">
+                  {b.name}
+                </h1>
+                <StateBadge state={b.state} />
+                {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
+              </span>
+              {b.subject && <span className="truncate text-small text-muted-foreground">{b.subject}</span>}
             </div>
-          )}
-          {tab === "report" && <Report b={b} />}
-          {tab === "recipients" && <Deliveries b={b} />}
-          {tab === "broadcast" && <Summary b={b} />}
+            {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">{actions}</div>}
+          </>
+        ),
+      }}
+      heading={<DetailHeading b={b} />}
+      eyebrow={<DetailTrail b={b} />}
+      actions={actions}
+      aside={
+        <>
+          <AudienceSection b={b} />
+          <SenderSection inboxId={b.inbox_id} channelId={b.channel_id} />
+          <ApprovalSection b={b} />
+        </>
+      }
+    >
+      <ErrorLine error={action.error ?? remove.error} />
+      {b.state === "failed" && (
+        <Notice tone="danger" icon={CircleAlertIcon} data-testid="broadcast-failed">
+          <p>
+            <Trans>Sending stopped and cannot go on, for example because its channel was removed.</Trans>
+          </p>
+          {b.state_detail && <p className="text-muted-foreground">{b.state_detail}</p>}
+        </Notice>
+      )}
+      {(scheduled || isActive(b)) && <Banner b={b} at={broadcast.dataUpdatedAt} />}
+      {!scheduled && <ReportStats b={b} />}
+      {tabs.length > 1 && (
+        <div className="border-b">
+          <FrameTabs label={t`Broadcast`} items={tabs} current={tab} />
         </div>
-      </div>
+      )}
+      {tab === "report" && <Report b={b} />}
+      {tab === "recipients" && <Deliveries b={b} />}
+      {tab === "broadcast" && <Summary b={b} />}
       {pacing && <PaceDialog b={b} rate={rate} onClose={() => setPacing(false)} />}
       {hoursOpen && <SendTimeDialog b={b} inboxZone={inbox?.timezone} onClose={() => setHoursOpen(false)} />}
       {action.isPending && (
@@ -534,6 +571,6 @@ export function BroadcastPage() {
         </span>
       )}
       {confirmDialog}
-    </div>
+    </DetailFrame>
   )
 }

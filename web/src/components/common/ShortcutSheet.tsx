@@ -443,8 +443,9 @@ export function ShortcutSheet({
     {
       title: t`Broadcasts`,
       items: [
-        [["↑", "↓"], t`Move through the broadcasts`],
-        [["↵"], t`Open the broadcast`],
+        [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the broadcasts`],
+        [["↵", "o"], t`Open the broadcast`],
+        [["Esc"], t`Back to the list`],
         [k(BROADCAST_KEYS.create), t`New broadcast`],
         [k(BROADCAST_KEYS.design), t`Edit the design`],
         [k(BROADCAST_KEYS.test), t`Send a test`],
@@ -462,8 +463,9 @@ export function ShortcutSheet({
     {
       title: t`Triggered e-mails`,
       items: [
-        [["↑", "↓"], t`Move through the triggered e-mails`],
-        [["↵"], t`Open the triggered e-mail`],
+        [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the triggered e-mails`],
+        [["↵", "o"], t`Open the triggered e-mail`],
+        [["Esc"], t`Back to the list`],
         [k(TRIGGERED_KEYS.create), t`New triggered e-mail`],
         [k(BROADCAST_KEYS.test), t`Send a test`],
         [k(BROADCAST_KEYS.send), t`Review, then start or schedule`],
@@ -491,8 +493,9 @@ export function ShortcutSheet({
     {
       title: t`Lists`,
       items: [
-        [["↑", "↓"], t`Move through the lists`],
-        [["↵"], t`Open the list`],
+        [["↑", "↓", k(SHORTCUTS.next)[0], k(SHORTCUTS.previous)[0]], t`Move through the lists`],
+        [["↵", "o"], t`Open the list`],
+        [["Esc"], t`Back to the list`],
         [k(LIST_KEYS.create), t`New list`],
         [k(LIST_KEYS.import), t`Import CSV`],
         [k(LIST_KEYS.lists), t`Lists`],

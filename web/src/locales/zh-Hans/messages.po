@@ -348,6 +348,10 @@ msgstr "{count, plural, =0 {没有对话} other {# 个对话}}"
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# 个品牌}}"
 
+#: src/features/broadcasts/Overview.tsx
+msgid "{count, plural, one {# broadcast} other {# broadcasts}}"
+msgstr "{count, plural, other {# 个群发}}"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "{count, plural, one {# condition} other {# conditions}}"
 msgstr "{count, plural, other {# 个条件}}"
@@ -360,6 +364,10 @@ msgstr "{count, plural, other {# 个文件夹}}"
 #: src/features/home/HomeSide.tsx
 msgid "{count, plural, one {# issue} other {# issues}}"
 msgstr "{count, plural, other {# 个问题}}"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{count, plural, one {# list} other {# lists}}"
+msgstr "{count, plural, other {# 个列表}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
@@ -384,6 +392,10 @@ msgstr "{count, plural, other {# 条反馈}}"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, other {# 项权限}}"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
+msgstr "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
@@ -701,6 +713,10 @@ msgstr "已归档 {n} 个"
 msgid "{n} attempts"
 msgstr "{n} 次尝试"
 
+#: src/features/broadcasts/Overview.tsx
+msgid "{n} broadcasts"
+msgstr "{n} 个群发"
+
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "{n} conversations"
@@ -709,6 +725,10 @@ msgstr "{n} 个对话"
 #: src/features/broadcasts/Pace.tsx
 msgid "{n} in 30 days"
 msgstr "30 天内 {n} 个"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{n} lists"
+msgstr "{n} 个列表"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -735,6 +755,10 @@ msgstr "已推迟 {n} 个，{when}回来"
 #: src/features/mail/queries.ts
 msgid "{n} starred"
 msgstr "已为 {n} 个加星标"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{n} triggered e-mails"
+msgstr "{n} triggered e-mails"
 
 #: src/features/mail/queries.ts
 msgid "{n} unstarred"
@@ -1003,10 +1027,6 @@ msgstr "{rated, plural, other {# 个评分}}"
 msgid "{ratedText} rated"
 msgstr "{ratedText} 条评价"
 
-#: src/features/broadcasts/Report.tsx
-msgid "{recipients} recipients · {failed} refused by the mail server · {left} skipped · {auto} automatic replies, only counted"
-msgstr "{recipients} 位收件人 · {failed} 位被邮件服务器拒绝 · {left} 位已跳过 · {auto} 封自动回复,仅计数"
-
 #: src/features/migrations/DoneStep.tsx
 msgid "{removable, plural, one {# imported conversation nobody wrote in since can be removed.} other {# imported conversations nobody wrote in since can be removed.}}"
 msgstr "{removable, plural, other {可以移除 # 个此后无人回复的导入对话。}}"
@@ -1052,6 +1072,10 @@ msgstr "{sent} / {all} 已完成"
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{sent} sent"
 msgstr "{sent} sent"
+
+#: src/features/broadcasts/Report.tsx
+msgid "{sentTo, plural, one {# recipient} other {# recipients}} · {failed} refused by the mail server · {left} skipped · {autoCount, plural, one {# automatic reply, only counted} other {# automatic replies, only counted}}"
+msgstr "{sentTo, plural, other {# 位收件人}} · {failed} 位被邮件服务器拒绝 · {left} 位已跳过 · {autoCount, plural, other {# 封自动回复,仅计数}}"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{share} helpful"
@@ -2417,6 +2441,7 @@ msgstr "标签页在后台时提醒我"
 msgid "Alertmanager"
 msgstr "Alertmanager"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -2507,6 +2532,7 @@ msgid "all products"
 msgstr "所有产品"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -2560,6 +2586,7 @@ msgstr "允许桌面通知"
 msgid "Allow it to"
 msgstr "允许其执行"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Allowed"
 msgstr "已允许"
@@ -2745,6 +2772,7 @@ msgstr "API 密钥"
 msgid "An API key"
 msgstr "API 密钥"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "An API key or assistant"
 msgstr "API 密钥或助手"
@@ -3510,6 +3538,8 @@ msgstr "属性,例如 plan"
 msgid "Attributes"
 msgstr "属性"
 
+#: src/features/broadcasts/BroadcastAside.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "受众"
@@ -3882,6 +3912,7 @@ msgstr "群发发送"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -4100,7 +4131,7 @@ msgstr "预设回复和宏，在回复框中"
 msgid "Canned reply"
 msgstr "快捷回复"
 
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
 msgid "Catch-all without a From address"
 msgstr "不带发件人地址的全部接收"
 
@@ -4821,6 +4852,7 @@ msgid "Condition"
 msgstr "条件"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "条件"
@@ -5604,6 +5636,8 @@ msgstr "创建、更改和删除自定义字段"
 msgid "Create, change, reorder and delete automation rules"
 msgstr "创建、修改、排序和删除自动化规则"
 
+#: src/features/broadcasts/BroadcastAside.tsx
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
@@ -6191,6 +6225,7 @@ msgstr "会删除该列表、其订阅及同意记录。如果以后可能需要
 msgid "Deletes the page with its components, their history, incidents and updates. The public address stops working."
 msgstr "删除页面及其组件、历史、事件和更新。公开地址将停止工作。"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
@@ -6229,6 +6264,7 @@ msgid "Description (optional)"
 msgstr "描述(可选)"
 
 #: src/components/common/DesignChoice.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
@@ -6241,6 +6277,7 @@ msgstr "设计：{title}"
 #: src/app/Sidebar.tsx
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 msgid "Designs"
 msgstr "设计"
 
@@ -6256,6 +6293,7 @@ msgstr "已允许桌面通知。"
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "浏览器设置中已屏蔽此站点的桌面通知,因此只会播放提示音。"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
@@ -6534,6 +6572,7 @@ msgctxt "feedback progress"
 msgid "Done"
 msgstr "已完成"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Double opt-in"
 msgstr "双重确认订阅"
@@ -6627,6 +6666,7 @@ msgstr "草稿文本"
 msgid "Draft:"
 msgstr "草稿:"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/mail/MailDrafts.tsx
@@ -7227,6 +7267,9 @@ msgstr "每个未关闭的讨论都有回答。"
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "其他所有浏览器和设备都将退出登录，当前设备保持登录。"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -9560,6 +9603,7 @@ msgid "Language to keep"
 msgstr "要保留的语言"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
@@ -9593,6 +9637,7 @@ msgstr "最近 14 天"
 msgid "Last 3 months"
 msgstr "最近 3 个月"
 
+#: src/features/broadcasts/Overview.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9972,6 +10017,7 @@ msgid "Links will point at this server’s link domain instead of your own. Spam
 msgstr "链接将指向此服务器的链接域名,而不是你自己的域名。垃圾邮件过滤器会查看链接域名。"
 
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -10331,7 +10377,9 @@ msgid "Mailing list (List-Id)"
 msgstr "邮件列表 (List-Id)"
 
 #: src/app/Palette.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetail.tsx
 msgid "Mailing lists"
 msgstr "邮件列表"
@@ -11302,6 +11350,7 @@ msgstr "待你处理"
 msgid "never"
 msgstr "从不"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Never"
 msgstr "从不"
@@ -11697,6 +11746,7 @@ msgstr "接下来选择它们去哪里。"
 msgid "Nightly backup"
 msgstr "夜间备份"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
@@ -11790,6 +11840,7 @@ msgstr "无渠道"
 msgid "No channel that can send is chosen. Until there is one, nobody gets a confirmation or a notice."
 msgstr "尚未选择可发送的渠道。在选择之前,没有人会收到确认邮件或通知。"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "No channel yet"
 msgstr "还没有渠道"
@@ -12206,6 +12257,7 @@ msgstr "最近 30 天没有运行记录。"
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 msgid "No sender yet"
 msgstr "还没有发件人"
@@ -12222,7 +12274,7 @@ msgstr "No signature"
 msgid "no SMTP account"
 msgstr "无 SMTP 账号"
 
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
 msgid "No SMTP account"
 msgstr "无 SMTP 账号"
 
@@ -14145,6 +14197,7 @@ msgstr "每月(30 天)"
 msgid "Period"
 msgstr "时间段"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Permission to send"
 msgstr "发送权限"
@@ -14810,6 +14863,7 @@ msgstr "Provider saved. Its metadata was read."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 msgid "Public"
 msgstr "公开"
 
@@ -15176,6 +15230,7 @@ msgstr "就绪"
 msgid "Ready to import"
 msgstr "可以导入"
 
+#: src/features/broadcasts/BroadcastParts.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Ready to send"
 msgstr "可以发送"
@@ -15237,6 +15292,7 @@ msgid "recipient address"
 msgstr "收件人地址"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
@@ -16278,6 +16334,7 @@ msgstr "规则会对对话的变化作出反应:打标签、分配、回复、�
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "打标签、分配、回复和调用 Webhook 的规则"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
 msgstr "运行检查"
@@ -16516,6 +16573,7 @@ msgstr "安排条目"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/text.tsx
@@ -16527,6 +16585,7 @@ msgctxt "mail folder"
 msgid "Scheduled"
 msgstr "定时"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "安排者"
@@ -16591,6 +16650,7 @@ msgstr "SDK"
 
 #: src/app/Palette.tsx
 #: src/components/common/PageLayout.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -17060,7 +17120,9 @@ msgstr "发送给"
 msgid "Send to a webhook endpoint"
 msgstr "发送到 Webhook 端点"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
@@ -17188,8 +17250,10 @@ msgstr "{when} 发送"
 msgid "Sends {when} to {to}"
 msgstr "{when} 发送给 {to}"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/Overview.tsx
 msgid "Sends from"
 msgstr "发送自"
 
@@ -17226,6 +17290,7 @@ msgstr "已发送"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
@@ -18592,6 +18657,7 @@ msgstr "Stop the triggered e-mail"
 
 #: src/components/common/SlaBadge.tsx
 #: src/features/broadcasts/BroadcastParts.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Stopped"
 msgstr "已停止"
@@ -18676,6 +18742,7 @@ msgstr "刚刚订阅了列表"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
@@ -18775,6 +18842,7 @@ msgstr "support@example.com"
 msgid "support@your-company.com"
 msgstr "support@your-company.com"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Suspended"
 msgstr "已暂停使用"
@@ -18969,6 +19037,7 @@ msgstr "再次测试"
 msgid "Test connection"
 msgstr "测试连接"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Test mail"
 msgstr "测试邮件"
@@ -21007,7 +21076,9 @@ msgid "Trigger"
 msgstr "触发器"
 
 #: src/app/Sidebar.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Triggered"
 msgstr "Triggered"
@@ -21111,6 +21182,7 @@ msgstr "在页面设置中开启邮件订阅,访客即可订阅通知。"
 msgid "Turn on for this device"
 msgstr "在此设备上开启"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "已关闭"
@@ -21412,6 +21484,7 @@ msgstr "已退订"
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/Growth.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
@@ -21958,6 +22031,7 @@ msgstr "等待审核"
 #: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
@@ -21972,6 +22046,7 @@ msgstr "等待确认"
 
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/ListsHome.tsx
 msgid "Waiting for confirmation"
 msgstr "等待确认"
 
@@ -22526,6 +22601,7 @@ msgstr "按时间从新到旧显示谁更改了成员、访问权限、密钥、
 msgid "Who confirmed it and when is saved in the audit log."
 msgstr "Who confirmed it and when is saved in the audit log."
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Who gets it"
 msgstr "Who gets it"
@@ -22661,6 +22737,7 @@ msgstr "处理中…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -22762,6 +22839,7 @@ msgstr "写明他们是在哪里、何时同意的。"
 msgid "Write your mail…"
 msgstr "写下你的邮件…"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx

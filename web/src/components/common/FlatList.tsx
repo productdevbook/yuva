@@ -43,11 +43,13 @@ export function FlatRow({
   children,
   end,
   lead,
+  before,
   after,
   current,
   cursor,
   checked,
   className,
+  cols,
   button,
   ...rest
 }: {
@@ -56,11 +58,13 @@ export function FlatRow({
   children?: React.ReactNode
   end?: React.ReactNode
   lead?: React.ReactNode
+  before?: React.ReactNode
   after?: React.ReactNode
   current?: boolean
   cursor?: boolean
   checked?: boolean
   className?: string
+  cols?: string
   button?: ButtonProps
 } & Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "className"> &
   Record<`data-${string}`, string | boolean | undefined>) {
@@ -74,13 +78,15 @@ export function FlatRow({
       )}
       {...rest}
     >
+      {before}
       <button
         type="button"
         className={cn(
           "grid min-w-0 flex-1 items-center gap-x-3.5 px-1 py-[13px] text-start text-body leading-5 text-fg2 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-          lead
-            ? "grid-cols-[auto_7px_minmax(0,170px)_minmax(0,1fr)_auto]"
-            : "grid-cols-[7px_minmax(0,170px)_minmax(0,1fr)_auto]"
+          cols ??
+            (lead
+              ? "grid-cols-[auto_7px_minmax(0,170px)_minmax(0,1fr)_auto]"
+              : "grid-cols-[7px_minmax(0,170px)_minmax(0,1fr)_auto]")
         )}
         {...button}
       >

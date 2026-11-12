@@ -426,8 +426,8 @@ export function KV({
   const toneClass = { ok: "text-ok", warn: "text-warn", bad: "text-bad", brand: "text-brand" }
   const body = (
     <>
-      <span className="shrink-0 text-muted-foreground">{label}</span>
-      <span className={cn("min-w-0 truncate text-end", tone && toneClass[tone])}>{value}</span>
+      <span className="min-w-0 text-muted-foreground [overflow-wrap:anywhere]">{label}</span>
+      <span className={cn("min-w-0 text-end [overflow-wrap:anywhere]", tone && toneClass[tone])}>{value}</span>
     </>
   )
   const className = "flex justify-between gap-3 py-[3px] text-small leading-5"

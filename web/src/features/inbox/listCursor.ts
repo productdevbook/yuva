@@ -15,7 +15,9 @@ export function useListCursor(
   const [cursorId, setCursorId] = useState<string | null>(null)
   const reveal = (id: string) =>
     requestAnimationFrame(() =>
-      scroller.current?.querySelector(`[data-conversation-id="${id}"]`)?.scrollIntoView({ block: "nearest" })
+      scroller.current
+        ?.querySelector(`[data-conversation-id="${id}"], [data-row-id="${id}"]`)
+        ?.scrollIntoView({ block: "nearest" })
     )
   const index = (id: string | null) => (id ? rows.findIndex((c) => c.id === id) : -1)
   const moveCursor = (d: 1 | -1) => {

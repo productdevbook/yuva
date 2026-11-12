@@ -3,7 +3,7 @@ import { BanIcon, ClockIcon, ShieldAlertIcon } from "lucide-react"
 import { Link } from "react-router"
 
 import { Notice } from "@/components/common"
-import { formatDateTime, formatRelative, useEnumText } from "@/components/common/text"
+import { formatDateTime, formatRelative, formatShort, useEnumText } from "@/components/common/text"
 import { keyLabel } from "@/components/common/ShortcutSheet"
 import type { Broadcast, BroadcastKind, BroadcastState, Channel, WorkspaceBroadcasts } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -21,6 +21,15 @@ export function senderState(ch: Channel): SenderState {
   if (!e || (!e.smtp && !e.broadcast_smtp)) return "no_smtp"
   if (e.address.startsWith("*@") && !e.from_address) return "no_from"
   return "ready"
+}
+
+export function useSenderText(): Record<SenderState, string> {
+  const { t } = useLingui()
+  return {
+    ready: t`Ready to send`,
+    no_smtp: t`No SMTP account`,
+    no_from: t`Catch-all without a From address`,
+  }
 }
 
 const tones: Record<BroadcastState, string> = {
@@ -60,6 +69,44 @@ export function StateBadge({
         <span className="size-1.5 animate-pulse rounded-full bg-current" aria-hidden />
       )}
       {kind === "triggered" && state === "cancelled" ? t`Stopped` : text.broadcastState[state]}
+    </span>
+  )
+}
+
+const dots: Record<BroadcastState, string> = {
+  draft: "bg-muted2",
+  scheduled: "bg-brand",
+  preparing: "bg-brand",
+  sending: "bg-brand",
+  active: "bg-brand",
+  paused: "bg-warn",
+  sent: "bg-ok",
+  cancelled: "bg-muted2",
+  failed: "bg-bad",
+}
+
+export function StateLine({ state, kind, at }: { state: BroadcastState; kind?: BroadcastKind; at?: string }) {
+  const { t, i18n } = useLingui()
+  const text = useEnumText()
+  const live = state === "sending" || state === "preparing" || state === "active"
+  return (
+    <span
+      className="flex min-w-0 items-center gap-1.5 text-small text-fg2"
+      data-testid="broadcast-state"
+      data-state={state}
+    >
+      <span aria-hidden className={cn("size-1.5 shrink-0 rounded-full", dots[state], live && "animate-pulse")} />
+      <span className="min-w-0 truncate">
+        {kind === "triggered" && state === "cancelled" ? t`Stopped` : text.broadcastState[state]}
+        {at && (
+          <>
+            {" · "}
+            <time dateTime={at} className="text-muted-foreground">
+              {formatShort(at, i18n.locale)}
+            </time>
+          </>
+        )}
+      </span>
     </span>
   )
 }

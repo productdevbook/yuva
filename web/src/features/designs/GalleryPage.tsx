@@ -1,11 +1,11 @@
 import "@/features/designs/i18n"
 
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArchiveIcon, LanguagesIcon, LayoutTemplateIcon, SearchIcon, TriangleAlertIcon } from "lucide-react"
+import { ArchiveIcon, LanguagesIcon, LayoutTemplateIcon, PlusIcon, SearchIcon, TriangleAlertIcon } from "lucide-react"
 import { useRef, useState } from "react"
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router"
 
-import { ErrorLine, Notice, Segmented, toast } from "@/components/common"
+import { ErrorLine, Notice, PageHeading, PageTop, Segmented, toast } from "@/components/common"
 import { PaneEmpty } from "@/components/common/Column"
 import { MailFrame } from "@/components/common/MailFrame"
 import { DESIGN_KEYS } from "@/components/common/ShortcutSheet"
@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { keyHint } from "@/features/broadcasts/BroadcastParts"
+import { BroadcastsLayout, TopTrail, useFlat } from "@/features/broadcasts/BroadcastsFrame"
 import { DesignBulkBar } from "@/features/designs/Bulk"
 import { NewDesignDialog, type NewDesign } from "@/features/designs/NewDesignDialog"
 import {
@@ -376,6 +377,7 @@ export default function GalleryPage() {
   const asked = slug ? templates.data?.find((x) => x.slug === slug) : undefined
   const unknown = !!slug && !!templates.data && !asked
   const gallery = useLocation().pathname.endsWith("/new")
+  const flat = useFlat()
   useHotkeys(
     {
       [DESIGN_KEYS.create]: () => setChoice("choose"),
@@ -384,12 +386,14 @@ export default function GalleryPage() {
     },
     canManage
   )
-  if (!canManage)
-    return (
+  if (!canManage) {
+    const empty = (
       <PaneEmpty icon={LayoutTemplateIcon} title={<Trans>E-mail designs</Trans>} testId="designs-read-only">
         <Trans>Owners and admins make e-mail designs and send broadcasts.</Trans>
       </PaneEmpty>
     )
+    return flat ? <BroadcastsLayout current="designs">{empty}</BroadcastsLayout> : empty
+  }
   const open: NewDesign | null = choice ?? (asked ? { use: asked } : null)
   const close = () => {
     setChoice(null)
@@ -399,6 +403,74 @@ export default function GalleryPage() {
     { key: "mine", to: "/broadcasts/designs", label: t`Mine`, testId: "designs-tab-mine" },
     { key: "gallery", to: "/broadcasts/designs/new", label: t`Gallery`, testId: "designs-tab-gallery" },
   ]
+  const localePicker = gallery && (
+    <Segmented
+      value={locale}
+      onChange={setLocale}
+      label={t`Template language`}
+      items={localeNames.map((l) => ({ ...l, testId: `template-locale-${l.value}` }))}
+    />
+  )
+  const body = (
+    <>
+      {unknown && (
+        <Notice tone="warning" icon={TriangleAlertIcon} data-testid="template-unknown">
+          <p>
+            <Trans>This server does not have the template “{slug}”. It may need a newer Yuva.</Trans>
+          </p>
+        </Notice>
+      )}
+      {gallery ? (
+        <Gallery locale={locale} onUse={(tpl) => setChoice({ use: tpl })} />
+      ) : (
+        <Mine onNew={() => setChoice("choose")} />
+      )}
+    </>
+  )
+  const dialog = open && (
+    <NewDesignDialog key={open === "choose" ? "choose" : open.use.slug} mode={open} locale={locale} onClose={close} />
+  )
+  if (flat)
+    return (
+      <BroadcastsLayout
+        current="designs"
+        testId="design-gallery"
+        sub={tabs.map((x) => ({
+          key: x.key,
+          label: x.label,
+          to: x.to,
+          current: x.key === (gallery ? "gallery" : "mine"),
+          testId: x.testId,
+        }))}
+      >
+        <PageTop
+          actions={
+            <>
+              {localePicker}
+              <Button
+                className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
+                onClick={() => setChoice("choose")}
+                title={keyHint(t`New design`, DESIGN_KEYS.create)}
+                data-testid="designs-home-new"
+              >
+                <PlusIcon className="size-3.5" aria-hidden />
+                <Trans>New design</Trans>
+              </Button>
+            </>
+          }
+        >
+          <TopTrail place="designs" />
+        </PageTop>
+        <section className="flex max-w-[980px] flex-col gap-5">
+          <PageHeading
+            title={gallery ? `${t`Designs`} · ${t`Gallery`}` : t`Designs`}
+            lede={<Trans>E-mail layouts you reuse across broadcasts</Trans>}
+          />
+          {body}
+        </section>
+        {dialog}
+      </BroadcastsLayout>
+    )
   return (
     <PageFrame
       testId="design-gallery"
@@ -406,14 +478,7 @@ export default function GalleryPage() {
       description={<Trans>E-mail layouts you reuse across broadcasts</Trans>}
       actions={
         <>
-          {gallery && (
-            <Segmented
-              value={locale}
-              onChange={setLocale}
-              label={t`Template language`}
-              items={localeNames.map((l) => ({ ...l, testId: `template-locale-${l.value}` }))}
-            />
-          )}
+          {localePicker}
           <FrameButton
             ink
             onClick={() => setChoice("choose")}
@@ -426,28 +491,8 @@ export default function GalleryPage() {
       }
       tabs={<FrameTabs label={t`Designs`} items={tabs} current={gallery ? "gallery" : "mine"} />}
     >
-      <div className={framePad}>
-        {unknown && (
-          <Notice tone="warning" icon={TriangleAlertIcon} data-testid="template-unknown">
-            <p>
-              <Trans>This server does not have the template “{slug}”. It may need a newer Yuva.</Trans>
-            </p>
-          </Notice>
-        )}
-        {gallery ? (
-          <Gallery locale={locale} onUse={(tpl) => setChoice({ use: tpl })} />
-        ) : (
-          <Mine onNew={() => setChoice("choose")} />
-        )}
-      </div>
-      {open && (
-        <NewDesignDialog
-          key={open === "choose" ? "choose" : open.use.slug}
-          mode={open}
-          locale={locale}
-          onClose={close}
-        />
-      )}
+      <div className={framePad}>{body}</div>
+      {dialog}
     </PageFrame>
   )
 }

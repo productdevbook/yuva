@@ -1,4 +1,4 @@
-import { Trans, useLingui } from "@lingui/react/macro"
+import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { ChartLineIcon, ExternalLinkIcon, MessageSquareReplyIcon, SearchIcon, XIcon } from "lucide-react"
 import { useState } from "react"
 import { Link, useSearchParams } from "react-router"
@@ -62,9 +62,9 @@ function Tiles({ b, report }: { b: Broadcast; report: BroadcastReport }) {
   if (b.click_tracking)
     tiles.push({ key: "clicked", value: c.clicked, label: t`clicked a link, roughly`, rate: r.clicked })
   const skipped = Object.values(c.skipped).reduce((n, v) => n + (v ?? 0), 0)
-  const recipients = num(c.recipients)
+  const sentTo = c.recipients
+  const autoCount = c.auto_replied
   const failed = num(c.failed)
-  const auto = num(c.auto_replied)
   const left = num(skipped)
   return (
     <div className="flex flex-col gap-2">
@@ -81,8 +81,9 @@ function Tiles({ b, report }: { b: Broadcast; report: BroadcastReport }) {
       </div>
       <p className="mx-1 text-small text-faint" data-testid="report-other">
         <Trans>
-          {recipients} recipients · {failed} refused by the mail server · {left} skipped · {auto} automatic replies,
-          only counted
+          <Plural value={sentTo} one="# recipient" other="# recipients" /> · {failed} refused by the mail server ·{" "}
+          {left} skipped ·{" "}
+          <Plural value={autoCount} one="# automatic reply, only counted" other="# automatic replies, only counted" />
         </Trans>
       </p>
     </div>

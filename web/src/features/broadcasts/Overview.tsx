@@ -1,10 +1,20 @@
 import { plural } from "@lingui/core/macro"
-import { Trans, useLingui } from "@lingui/react/macro"
-import { ChevronRightIcon, CircleAlertIcon, MailIcon } from "lucide-react"
-import { useState } from "react"
+import { Plural, Trans, useLingui } from "@lingui/react/macro"
+import { ChevronRightIcon, CircleAlertIcon, MailIcon, PlusIcon } from "lucide-react"
+import { useLayoutEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
-import { ErrorLine } from "@/components/common"
+import {
+  ErrorLine,
+  FlatEmpty,
+  FlatRow,
+  FlatWho,
+  InfoSection,
+  KV,
+  ListGroup,
+  PageHeading,
+  PageTop as FlatTop,
+} from "@/components/common"
 import { BROADCAST_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDateTime, formatRelative, formatShort, useEnumText } from "@/components/common/text"
 import { RowCheck, SelectToggle } from "@/components/common/Selection"
@@ -18,22 +28,35 @@ import {
   useBroadcastAction,
   useBroadcasts,
 } from "@/features/broadcasts/broadcastQueries"
+import { atBreak } from "@/features/broadcasts/BroadcastAside"
 import { BroadcastBulkBar } from "@/features/broadcasts/BroadcastBulk"
 import { BroadcastSteps, broadcastWhen } from "@/features/broadcasts/BroadcastList"
 import {
   keyHint,
   progressOf,
   ProgressBar,
+  senderState,
   StateBadge,
+  StateLine,
   StatusNotice,
   useBroadcastsStatus,
   useNumber,
   usePercent,
+  useSenderText,
 } from "@/features/broadcasts/BroadcastParts"
+import {
+  BroadcastsLayout,
+  rememberedList,
+  rememberList,
+  TopTrail,
+  useFlat,
+  useViewNames,
+} from "@/features/broadcasts/BroadcastsFrame"
 import { NewBroadcastDialog } from "@/features/broadcasts/NewBroadcastDialog"
-import { listLink, useLists, useSender } from "@/features/broadcasts/queries"
+import { listLink, useInboxChannels, useLists, useSender } from "@/features/broadcasts/queries"
 import { TestSendDialog, useTestSend } from "@/features/broadcasts/TestSend"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { useListCursor } from "@/features/inbox/listCursor"
 import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import { FrameButton, ProductTag } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
@@ -156,7 +179,7 @@ function ListsCard({ lists, pending }: { lists: MailingList[]; pending: boolean 
   )
 }
 
-function NextSend({ b, lists }: { b: Broadcast; lists: Map<string, MailingList> }) {
+function NextSend({ b, lists, flat }: { b: Broadcast; lists: Map<string, MailingList>; flat?: boolean }) {
   const { t, i18n } = useLingui()
   const num = useNumber()
   const inbox = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)
@@ -182,7 +205,10 @@ function NextSend({ b, lists }: { b: Broadcast; lists: Map<string, MailingList> 
   ]
   return (
     <div
-      className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-[14px] border bg-card px-4 py-3.5"
+      className={cn(
+        "flex flex-wrap items-center gap-x-4 gap-y-3",
+        flat ? "border-t border-line-soft py-3.5" : "rounded-[14px] border bg-card px-4 py-3.5"
+      )}
       data-testid="broadcasts-next"
     >
       <time
@@ -333,7 +359,7 @@ function BroadcastRow({
   )
 }
 
-function SendingNow({ b }: { b: Broadcast }) {
+function SendingNow({ b, flat }: { b: Broadcast; flat?: boolean }) {
   const { t } = useLingui()
   const { canManage } = useSession()
   const num = useNumber()
@@ -346,7 +372,12 @@ function SendingNow({ b }: { b: Broadcast }) {
   const paused = b.state === "paused"
   return (
     <div
-      className="relative flex flex-col gap-3 rounded-[14px] border bg-card p-4 before:absolute before:inset-y-4 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand"
+      className={cn(
+        "relative flex flex-col gap-3",
+        flat
+          ? "border-t border-line-soft py-4"
+          : "rounded-[14px] border bg-card p-4 before:absolute before:inset-y-4 before:start-1 before:w-[3px] before:rounded-[3px] before:bg-brand"
+      )}
       data-testid="broadcasts-sending"
     >
       <span className="flex flex-col">
@@ -404,21 +435,30 @@ function Empty({
   scope,
   canCreate,
   onNew,
+  flat,
 }: {
   filter: Filter
   scope?: string
   canCreate: boolean
   onNew: () => void
+  flat?: boolean
 }) {
   const first = filter === "all"
   return (
     <div
-      className="mx-auto flex w-[min(560px,100%)] flex-col items-center gap-3 rounded-[14px] border bg-card px-6 py-10 text-center text-body text-muted-foreground"
+      className={cn(
+        "flex flex-col gap-3 text-body text-muted-foreground",
+        flat
+          ? "mt-7 items-start border-t border-line-soft pt-4"
+          : "mx-auto w-[min(560px,100%)] items-center rounded-[14px] border bg-card px-6 py-10 text-center"
+      )}
       data-testid={first ? "broadcasts-home-empty" : "broadcasts-tab-empty"}
     >
-      <span className="grid size-10 place-items-center rounded-xl bg-brand-wash text-brand">
-        <MailIcon className="size-5" aria-hidden />
-      </span>
+      {!flat && (
+        <span className="grid size-10 place-items-center rounded-xl bg-brand-wash text-brand">
+          <MailIcon className="size-5" aria-hidden />
+        </span>
+      )}
       <p className="font-semibold text-foreground">
         {first ? <Trans>No broadcasts yet</Trans> : <Trans>Nothing here.</Trans>}
       </p>
@@ -451,7 +491,7 @@ function Empty({
   )
 }
 
-export function BroadcastsOverview() {
+function StackedOverview() {
   const { t } = useLingui()
   const navigate = useNavigate()
   const [params] = useSearchParams()
@@ -668,4 +708,387 @@ export function BroadcastsOverview() {
       )}
     </main>
   )
+}
+
+function FlatBroadcastRow({
+  b,
+  lists,
+  cursor,
+  onOpen,
+  check,
+}: {
+  b: Broadcast
+  lists: Map<string, MailingList>
+  cursor: boolean
+  onOpen: () => void
+  check?: { checked: boolean; onToggle: (range: boolean) => void } | "none"
+}) {
+  const { t } = useLingui()
+  const num = useNumber()
+  const percent = usePercent()
+  const inbox = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)
+  const c = b.counts
+  const names = b.audience.list_ids.map((id) => lists.get(id)?.name).filter(Boolean)
+  const listed = b.audience.list_ids.reduce((n, id) => n + (lists.get(id)?.counts.subscribed ?? 0), 0)
+  const sub = [names.join(", "), b.subject || t`No subject yet`].filter(Boolean).join(" · ")
+  const clicks = b.click_tracking && c.sent > 0 ? percent(c.clicked / c.sent) : "–"
+  const left = c.sent > 0 ? num(c.unsubscribed) : "–"
+  return (
+    <FlatRow
+      color={inbox?.branding.color}
+      cursor={cursor}
+      data-row-id={b.id}
+      cols="grid-cols-[7px_minmax(0,1fr)_minmax(0,170px)_auto]"
+      before={
+        check === "none" ? (
+          <span className="ms-1 size-5 shrink-0" aria-hidden />
+        ) : check ? (
+          <RowCheck className="ms-1" checked={check.checked} name={b.name} onToggle={check.onToggle} />
+        ) : undefined
+      }
+      button={{ onClick: onOpen, title: inbox?.name, "data-testid": "broadcasts-table-row" }}
+      who={
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <FlatWho strong>{b.name}</FlatWho>
+          <span className="truncate text-small text-muted-foreground">{sub}</span>
+          {isActive(b) && <ProgressBar b={b} className="mt-1" />}
+        </span>
+      }
+      end={
+        <>
+          <span
+            className="w-20 text-end font-mono text-xs text-fg2 tabular-nums @max-2xl/list:hidden"
+            title={c.recipients > 0 ? t`Recipients` : t`Subscribed to the list now`}
+          >
+            {c.recipients > 0 ? num(c.recipients) : listed > 0 ? num(listed) : "–"}
+          </span>
+          <span
+            className="w-28 text-end font-mono text-xs text-muted-foreground tabular-nums @max-xl/list:hidden"
+            title={b.click_tracking ? `${t`Clicked`} · ${t`Unsubscribed`}` : t`Clicks not tracked`}
+          >
+            {clicks} · {left}
+          </span>
+        </>
+      }
+    >
+      <StateLine state={b.state} at={broadcastWhen(b) ?? undefined} />
+    </FlatRow>
+  )
+}
+
+function SenderRow({ inboxId, channelId }: { inboxId: string; channelId: string }) {
+  const stateText = useSenderText()
+  const channel = useInboxChannels(inboxId).data?.find((c) => c.id === channelId)
+  if (!channel) return null
+  const state = senderState(channel)
+  const address = channel.email?.from_address || channel.email?.address || channel.name
+  return (
+    <KV
+      label={
+        <span className="font-mono text-xs" dir="ltr">
+          {atBreak(address)}
+        </span>
+      }
+      value={stateText[state]}
+      tone={state === "ready" ? "ok" : "warn"}
+    />
+  )
+}
+
+function OverviewInfo({ items, lists, complete }: { items: Broadcast[]; lists: MailingList[]; complete: boolean }) {
+  const { t } = useLingui()
+  const num = useNumber()
+  const percent = usePercent()
+  const now = useNow(60_000)
+  const recent = items.filter((b) => {
+    const at = b.state === "sent" || b.state === "failed" ? (b.finished_at ?? b.started_at) : undefined
+    return !!at && b.counts.sent > 0 && now - Date.parse(at) <= 30 * DAY
+  })
+  const sum = (pick: (b: Broadcast) => number) => recent.reduce((n, b) => n + pick(b), 0)
+  const sent = sum((b) => b.counts.sent)
+  const top = [...lists].sort((a, b) => b.counts.subscribed - a.counts.subscribed).slice(0, 6)
+  const senders = [
+    ...new Map(
+      items
+        .filter((b) => b.channel_id && (b.state === "draft" || b.state === "scheduled" || isActive(b)))
+        .map((b) => [b.channel_id!, b.inbox_id])
+    ),
+  ].slice(0, 4)
+  return (
+    <>
+      {complete && recent.length > 0 && (
+        <InfoSection title={t`Last 30 days`} testId="broadcasts-tiles">
+          <KV label={t`Broadcasts`} value={num(recent.length)} />
+          <KV label={t`Sent`} value={num(sent)} />
+          <KV label={t`Clicked`} value={sent > 0 ? percent(sum((b) => b.counts.clicked) / sent) : "–"} tone="brand" />
+          <KV label={t`Replied`} value={num(sum((b) => b.counts.replied))} />
+          <KV label={t`Unsubscribed`} value={num(sum((b) => b.counts.unsubscribed))} />
+          <KV label={t`Bounced`} value={num(sum((b) => b.counts.bounced))} />
+        </InfoSection>
+      )}
+      {top.length > 0 && (
+        <InfoSection title={t`Mailing lists`} testId="broadcasts-lists">
+          {top.map((l) => (
+            <KV key={l.id} label={l.name} value={num(l.counts.subscribed)} to={listLink(l.id)} />
+          ))}
+        </InfoSection>
+      )}
+      {senders.length > 0 && (
+        <InfoSection title={t`Sends from`} testId="broadcasts-senders">
+          {senders.map(([channelId, inboxId]) => (
+            <SenderRow key={channelId} inboxId={inboxId} channelId={channelId} />
+          ))}
+        </InfoSection>
+      )}
+    </>
+  )
+}
+
+const ORDER: { key: string; label: (names: Record<string, string>) => string; test: (b: Broadcast) => boolean }[] = [
+  { key: "drafts", label: (n) => n.drafts, test: (b) => b.state === "draft" },
+  { key: "scheduled", label: (n) => n.scheduled, test: (b) => b.state === "scheduled" },
+  { key: "active", label: (n) => n.active, test: isActive },
+  { key: "sent", label: (n) => n.sent, test: (b) => FINISHED.includes(b.state) },
+]
+
+function FlatOverview() {
+  const { t, i18n } = useLingui()
+  const navigate = useNavigate()
+  const [params] = useSearchParams()
+  const { canManage } = useSession()
+  const status = useBroadcastsStatus()
+  const [inboxId] = useInboxFilter()
+  const inboxes = useInboxes().data ?? []
+  const views = useViewNames()
+  const broadcasts = useBroadcasts(inboxId, undefined, "once")
+  const lists = useLists(inboxId, false)
+  const archived = useLists(inboxId, true)
+  const [creating, setCreating] = useState(false)
+  const [query, setQuery] = useState("")
+  const raw = params.get("tab") as Filter | null
+  const filter: Filter = raw && FILTERS.includes(raw) ? raw : "all"
+  const items = useMemo(() => broadcasts.data?.pages.flatMap((p) => p.items) ?? [], [broadcasts.data])
+  const byId = new Map(
+    [...(lists.data?.pages ?? []), ...(archived.data?.pages ?? [])].flatMap((p) => p.items).map((l) => [l.id, l])
+  )
+  const q = query.trim().toLowerCase()
+  const shown = items.filter(
+    (b) => matches(filter, b) && (!q || b.name.toLowerCase().includes(q) || b.subject.toLowerCase().includes(q))
+  )
+  const groupNames: Record<string, string> = {
+    drafts: views.drafts,
+    scheduled: views.scheduled,
+    active: t`Going out now`,
+    sent: views.sent,
+  }
+  const groups =
+    filter === "all"
+      ? ORDER.map((g) => ({ key: g.key, label: g.label(groupNames), items: shown.filter(g.test) })).filter(
+          (g) => g.items.length > 0
+        )
+      : [{ key: filter, label: "", items: shown }]
+  const rows = groups.flatMap((g) => g.items)
+  const next = items
+    .filter((b) => b.state === "scheduled" && b.scheduled_at)
+    .sort((a, b) => a.scheduled_at!.localeCompare(b.scheduled_at!))[0]
+  const sending = items.find(isActive)
+  const selection = useSelection(
+    shown.filter((b) => b.state === "draft").map((b) => b.id),
+    `${filter}|${inboxId}`
+  )
+  const listRef = useRef<HTMLDivElement>(null)
+  const open = (id: string) => {
+    rememberList(filter)
+    navigate(broadcastLink(id))
+  }
+  const { cursorId, setCursorId } = useListCursor(rows, null, open, !creating, listRef, true, true)
+  const [scope, setScope] = useState(`${filter}|${inboxId}|${q}`)
+  if (scope !== `${filter}|${inboxId}|${q}`) {
+    setScope(`${filter}|${inboxId}|${q}`)
+    setCursorId(null)
+  }
+  useLayoutEffect(() => {
+    const back = rememberedList()
+    if (back.y) window.scrollTo({ top: back.y })
+    rememberList(back.view, 0)
+  }, [])
+  const mayCreate = canManage && status?.mode !== "off"
+  const product = inboxId ? inboxes.find((i) => i.id === inboxId)?.name : undefined
+  useHotkeys(
+    {
+      ...(mayCreate ? { [BROADCAST_KEYS.create]: () => setCreating(true) } : {}),
+      ...Object.fromEntries(
+        FILTERS.map((f, i) => [String(i + 1), () => navigate(f === "all" ? "/broadcasts" : `/broadcasts?tab=${f}`)])
+      ),
+    },
+    !creating
+  )
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const count = shown.length
+  const n = `${fmt.format(count)}${broadcasts.hasNextPage ? "+" : ""}`
+  return (
+    <BroadcastsLayout
+      current={filter}
+      testId="broadcasts-home"
+      aside={
+        <OverviewInfo
+          items={items}
+          lists={lists.data?.pages.flatMap((p) => p.items) ?? []}
+          complete={!!broadcasts.data && !broadcasts.hasNextPage}
+        />
+      }
+    >
+      <FlatTop
+        actions={
+          mayCreate && (
+            <Button
+              className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
+              onClick={() => setCreating(true)}
+              title={keyHint(t`New broadcast`, BROADCAST_KEYS.create)}
+              data-testid="broadcasts-home-new"
+            >
+              <PlusIcon className="size-3.5" aria-hidden />
+              <Trans>New broadcast</Trans>
+            </Button>
+          )
+        }
+      >
+        <TopTrail place={filter} />
+      </FlatTop>
+      <section aria-label={views[filter]} className="@container/list flex max-w-[980px] flex-col">
+        <PageHeading
+          title={filter === "all" ? t`Broadcasts` : views[filter]}
+          lede={
+            <span data-testid="list-lede">
+              {broadcasts.hasNextPage ? (
+                <Trans>{n} broadcasts</Trans>
+              ) : (
+                <Plural value={count} one="# broadcast" other="# broadcasts" />
+              )}
+              {" · "}
+              {product ?? t`every product`}
+              {". "}
+              <Trans>Yuva counts clicks and replies. It does not track opens.</Trans>
+            </span>
+          }
+        />
+        <StatusNotice className="mt-5" />
+        {broadcasts.isPending ? (
+          <div className="mt-7 flex flex-col gap-3" aria-busy data-testid="broadcasts-loading">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-5 w-full" />
+            ))}
+          </div>
+        ) : broadcasts.error && items.length === 0 ? (
+          <FlatEmpty>
+            <ErrorLine error={broadcasts.error} />
+            <Button variant="outline" className={look.btn} onClick={() => void broadcasts.refetch()}>
+              <Trans>Try again</Trans>
+            </Button>
+          </FlatEmpty>
+        ) : items.length === 0 ? (
+          <Empty filter="all" scope={product} canCreate={mayCreate} onNew={() => setCreating(true)} flat />
+        ) : (
+          <>
+            <ErrorLine error={broadcasts.error} />
+            <div className="mt-6 flex flex-col empty:hidden">
+              {sending && filter === "all" && <SendingNow b={sending} flat />}
+              {next && (filter === "all" || filter === "scheduled") && <NextSend b={next} lists={byId} flat />}
+            </div>
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <Input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t`Search`}
+                aria-label={t`Search`}
+                className="h-[34px] w-64 rounded-[9px] bg-card"
+              />
+              <span className="flex-1" />
+              {canManage && !selection.selecting && shown.some((b) => b.state === "draft") && (
+                <SelectToggle selection={selection} />
+              )}
+            </div>
+            <BroadcastBulkBar items={items} selection={selection} />
+            {shown.length === 0 && !q ? (
+              <Empty filter={filter} scope={product} canCreate={mayCreate} onNew={() => setCreating(true)} flat />
+            ) : shown.length === 0 ? (
+              <FlatEmpty>
+                <p className="m-0">
+                  <Trans>Nothing here.</Trans>
+                </p>
+              </FlatEmpty>
+            ) : (
+              <div ref={listRef} className="mt-7" data-testid="broadcasts-table">
+                <div
+                  className="grid grid-cols-[7px_minmax(0,1fr)_minmax(0,170px)_auto] gap-x-3.5 px-1 pb-2 text-caption font-medium text-muted2"
+                  aria-hidden
+                >
+                  <span />
+                  <span>
+                    <Trans>Broadcast</Trans>
+                  </span>
+                  <span>
+                    <Trans>Status</Trans>
+                  </span>
+                  <span className="flex justify-end gap-2">
+                    <span className="w-20 text-end @max-2xl/list:hidden">
+                      <Trans>Recipients</Trans>
+                    </span>
+                    <span className="w-28 text-end @max-xl/list:hidden">{`${t`Clicked`} · ${t`Unsubscribed`}`}</span>
+                  </span>
+                </div>
+                {groups.map((g) => (
+                  <ListGroup key={g.key} label={g.label || undefined}>
+                    {g.items.map((b) => (
+                      <FlatBroadcastRow
+                        key={b.id}
+                        b={b}
+                        lists={byId}
+                        cursor={b.id === cursorId}
+                        onOpen={() => open(b.id)}
+                        check={
+                          selection.selecting
+                            ? b.state === "draft"
+                              ? { checked: selection.has(b.id), onToggle: (range) => selection.toggle(b.id, range) }
+                              : "none"
+                            : undefined
+                        }
+                      />
+                    ))}
+                  </ListGroup>
+                ))}
+              </div>
+            )}
+            {broadcasts.hasNextPage && (
+              <div className="flex border-t border-line-soft pt-4">
+                <Button
+                  variant="outline"
+                  className={look.btn}
+                  onClick={() => void broadcasts.fetchNextPage()}
+                  disabled={broadcasts.isFetchingNextPage}
+                >
+                  <Trans>Load more</Trans>
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+      {creating && (
+        <NewBroadcastDialog
+          inboxId={inboxId}
+          onClose={() => setCreating(false)}
+          onCreated={(b) => {
+            setCreating(false)
+            navigate(broadcastLink(b.id))
+          }}
+        />
+      )}
+    </BroadcastsLayout>
+  )
+}
+
+export function BroadcastsOverview() {
+  return useFlat() ? <FlatOverview /> : <StackedOverview />
 }

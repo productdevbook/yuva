@@ -1,19 +1,28 @@
-import { Trans, useLingui } from "@lingui/react/macro"
-import { CircleAlertIcon, ZapIcon } from "lucide-react"
-import { useState } from "react"
+import { Plural, Trans, useLingui } from "@lingui/react/macro"
+import { CircleAlertIcon, PlusIcon, ZapIcon } from "lucide-react"
+import { useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
-import { ErrorLine } from "@/components/common"
+import { ErrorLine, FlatEmpty, FlatRow, FlatWho, InfoSection, KV, PageHeading, PageTop } from "@/components/common"
 import { TRIGGERED_KEYS } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { broadcastLink, useBroadcasts } from "@/features/broadcasts/broadcastQueries"
-import { keyHint, StateBadge, StatusNotice, useBroadcastsStatus, useNumber } from "@/features/broadcasts/BroadcastParts"
+import {
+  keyHint,
+  StateBadge,
+  StateLine,
+  StatusNotice,
+  useBroadcastsStatus,
+  useNumber,
+} from "@/features/broadcasts/BroadcastParts"
+import { BroadcastsLayout, TopTrail, useFlat } from "@/features/broadcasts/BroadcastsFrame"
 import { NewBroadcastDialog } from "@/features/broadcasts/NewBroadcastDialog"
 import { sentenceCase, useTriggerSentence } from "@/features/broadcasts/Trigger"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
+import { FrameTabs, look, PageTop as StackTop } from "@/features/inbox/PageFrame"
+import { useListCursor } from "@/features/inbox/listCursor"
 import { ProductTag } from "@/features/status/PageFrame"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useRowFocus } from "@/hooks/use-row-focus"
@@ -88,16 +97,33 @@ function Row({ b }: { b: Broadcast }) {
   )
 }
 
-function Empty({ filter, canCreate, onNew }: { filter: Filter; canCreate: boolean; onNew: () => void }) {
+function Empty({
+  filter,
+  canCreate,
+  onNew,
+  flat,
+}: {
+  filter: Filter
+  canCreate: boolean
+  onNew: () => void
+  flat?: boolean
+}) {
   const first = filter === "all"
   return (
     <div
-      className="mx-auto flex w-[min(560px,100%)] flex-col items-center gap-3 rounded-[14px] border bg-card px-6 py-10 text-center text-body text-muted-foreground"
+      className={cn(
+        "flex flex-col gap-3 text-body text-muted-foreground",
+        flat
+          ? "mt-7 items-start border-t border-line-soft pt-4"
+          : "mx-auto w-[min(560px,100%)] items-center rounded-[14px] border bg-card px-6 py-10 text-center"
+      )}
       data-testid={first ? "triggered-empty" : "triggered-tab-empty"}
     >
-      <span className="grid size-10 place-items-center rounded-xl bg-brand-wash text-brand">
-        <ZapIcon className="size-5" aria-hidden />
-      </span>
+      {!flat && (
+        <span className="grid size-10 place-items-center rounded-xl bg-brand-wash text-brand">
+          <ZapIcon className="size-5" aria-hidden />
+        </span>
+      )}
       <p className="font-semibold text-foreground">
         {first ? <Trans>Send a mail a set time after people sign up, once each</Trans> : <Trans>Nothing here.</Trans>}
       </p>
@@ -119,7 +145,7 @@ function Empty({ filter, canCreate, onNew }: { filter: Filter; canCreate: boolea
   )
 }
 
-export function TriggeredHome() {
+function StackedTriggered() {
   const { t } = useLingui()
   const navigate = useNavigate()
   const [params] = useSearchParams()
@@ -167,7 +193,7 @@ export function TriggeredHome() {
   )
   return (
     <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-surface" data-testid="triggered-home">
-      <PageTop
+      <StackTop
         title={<Trans>Triggered e-mails</Trans>}
         sub={<Trans>One mail to each person, a set time after they sign in</Trans>}
         actions={
@@ -278,4 +304,252 @@ export function TriggeredHome() {
       )}
     </main>
   )
+}
+
+function FlatTriggeredRow({ b, cursor, onOpen }: { b: Broadcast; cursor: boolean; onOpen: () => void }) {
+  const { t, i18n } = useLingui()
+  const num = useNumber()
+  const inbox = (useInboxes().data ?? []).find((i) => i.id === b.inbox_id)
+  const sentence = sentenceCase(useTriggerSentence(b), i18n.locale)
+  return (
+    <FlatRow
+      color={inbox?.branding.color}
+      cursor={cursor}
+      data-row-id={b.id}
+      cols="grid-cols-[7px_minmax(0,1fr)_minmax(0,140px)_auto]"
+      button={{ onClick: onOpen, title: inbox?.name, "data-testid": "triggered-row" }}
+      who={
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <FlatWho strong>{b.name}</FlatWho>
+          <span className="truncate text-small text-muted-foreground">{sentence}</span>
+        </span>
+      }
+      end={
+        <>
+          <span className="w-16 text-end font-mono text-xs text-fg2 tabular-nums" title={t`Waiting`}>
+            {num(b.counts.waiting ?? 0)}
+          </span>
+          <span className="w-16 text-end font-mono text-xs text-fg2 tabular-nums @max-xl/list:hidden" title={t`Sent`}>
+            {num(b.counts.sent)}
+          </span>
+          <span
+            className="w-16 text-end font-mono text-xs text-muted-foreground tabular-nums @max-2xl/list:hidden"
+            title={t`Replied`}
+          >
+            {b.counts.sent > 0 ? num(b.counts.replied) : "–"}
+          </span>
+        </>
+      }
+    >
+      <StateLine state={b.state} kind={b.kind} />
+    </FlatRow>
+  )
+}
+
+function FlatTriggered() {
+  const { t, i18n } = useLingui()
+  const navigate = useNavigate()
+  const [params] = useSearchParams()
+  const { canManage } = useSession()
+  const status = useBroadcastsStatus()
+  const [inboxId] = useInboxFilter()
+  const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
+  const broadcasts = useBroadcasts(inboxId, undefined, "triggered")
+  const [creating, setCreating] = useState(false)
+  const [query, setQuery] = useState("")
+  const raw = params.get("tab") as Filter | null
+  const filter: Filter = raw && FILTERS.includes(raw) ? raw : "all"
+  const items = useMemo(() => broadcasts.data?.pages.flatMap((p) => p.items) ?? [], [broadcasts.data])
+  const q = query.trim().toLowerCase()
+  const rows = items.filter((b) => matches(filter, b) && (!q || b.name.toLowerCase().includes(q)))
+  const names: Record<Filter, string> = {
+    all: t`All`,
+    active: t`Active`,
+    paused: t`Paused`,
+    drafts: t`Drafts`,
+    stopped: t`Stopped`,
+  }
+  const complete = !!broadcasts.data && !broadcasts.hasNextPage
+  const sub = FILTERS.map((f) => ({
+    key: f,
+    label: names[f],
+    to: f === "all" ? "/broadcasts/triggered" : `/broadcasts/triggered?tab=${f}`,
+    current: filter === f,
+    count: f !== "all" && complete ? items.filter((b) => matches(f, b)).length : undefined,
+    testId: `triggered-filter-${f}`,
+  }))
+  const listRef = useRef<HTMLDivElement>(null)
+  const open = (id: string) => navigate(broadcastLink(id))
+  const { cursorId, setCursorId } = useListCursor(rows, null, open, !creating, listRef, true, true)
+  const [scope, setScope] = useState(`${filter}|${inboxId}|${q}`)
+  if (scope !== `${filter}|${inboxId}|${q}`) {
+    setScope(`${filter}|${inboxId}|${q}`)
+    setCursorId(null)
+  }
+  const mayCreate = canManage && status?.mode !== "off"
+  useHotkeys(
+    {
+      ...(mayCreate ? { [TRIGGERED_KEYS.create]: () => setCreating(true) } : {}),
+      ...Object.fromEntries(
+        FILTERS.map((f, i) => [
+          String(i + 1),
+          () => navigate(f === "all" ? "/broadcasts/triggered" : `/broadcasts/triggered?tab=${f}`),
+        ])
+      ),
+    },
+    !creating
+  )
+  const num = useNumber()
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const count = rows.length
+  const n = `${fmt.format(count)}${broadcasts.hasNextPage ? "+" : ""}`
+  const sum = (pick: (b: Broadcast) => number) => items.reduce((x, b) => x + pick(b), 0)
+  return (
+    <BroadcastsLayout
+      current="triggered"
+      sub={sub}
+      testId="triggered-home"
+      aside={
+        complete &&
+        items.length > 0 && (
+          <InfoSection title={t`Triggered e-mails`} testId="triggered-summary">
+            <KV label={t`Active`} value={num(items.filter((b) => b.state === "active").length)} tone="brand" />
+            <KV label={t`Waiting`} value={num(sum((b) => b.counts.waiting ?? 0))} />
+            <KV label={t`Sent`} value={num(sum((b) => b.counts.sent))} />
+            <KV label={t`Replied`} value={num(sum((b) => b.counts.replied))} />
+          </InfoSection>
+        )
+      }
+    >
+      <PageTop
+        actions={
+          mayCreate && (
+            <Button
+              className="h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
+              onClick={() => setCreating(true)}
+              title={keyHint(t`New triggered e-mail`, TRIGGERED_KEYS.create)}
+              data-testid="triggered-new"
+            >
+              <PlusIcon className="size-3.5" aria-hidden />
+              <Trans>New triggered e-mail</Trans>
+            </Button>
+          )
+        }
+      >
+        <TopTrail place="triggered" />
+      </PageTop>
+      <section aria-label={t`Triggered e-mails`} className="@container/list flex max-w-[980px] flex-col">
+        <PageHeading
+          title={filter === "all" ? t`Triggered e-mails` : `${t`Triggered`} · ${names[filter]}`}
+          lede={
+            <span data-testid="list-lede">
+              {broadcasts.hasNextPage ? (
+                <Trans>{n} triggered e-mails</Trans>
+              ) : (
+                <Plural value={count} one="# triggered e-mail" other="# triggered e-mails" />
+              )}
+              {" · "}
+              {product ?? t`every product`}
+              {". "}
+              <Trans>One mail to each person, a set time after they sign in</Trans>
+            </span>
+          }
+        />
+        <StatusNotice className="mt-5" />
+        {broadcasts.isPending ? (
+          <div className="mt-7 flex flex-col gap-3" aria-busy data-testid="triggered-loading">
+            {[0, 1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-5 w-full" />
+            ))}
+          </div>
+        ) : broadcasts.error && items.length === 0 ? (
+          <FlatEmpty>
+            <ErrorLine error={broadcasts.error} />
+            <Button variant="outline" className={look.btn} onClick={() => void broadcasts.refetch()}>
+              <Trans>Try again</Trans>
+            </Button>
+          </FlatEmpty>
+        ) : items.length === 0 ? (
+          <Empty filter="all" canCreate={mayCreate} onNew={() => setCreating(true)} flat />
+        ) : (
+          <>
+            <ErrorLine error={broadcasts.error} />
+            <div className="mt-5 flex">
+              <Input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t`Search`}
+                aria-label={t`Search`}
+                className="h-[34px] w-64 rounded-[9px] bg-card"
+              />
+            </div>
+            {rows.length === 0 ? (
+              <FlatEmpty testId="triggered-tab-empty">
+                <p className="m-0">
+                  <Trans>Nothing here.</Trans>
+                </p>
+              </FlatEmpty>
+            ) : (
+              <div ref={listRef} className="mt-7" data-testid="triggered-table">
+                <div
+                  className="grid grid-cols-[7px_minmax(0,1fr)_minmax(0,140px)_auto] gap-x-3.5 px-1 pb-2 text-caption font-medium text-muted2"
+                  aria-hidden
+                >
+                  <span />
+                  <span>
+                    <Trans>Triggered e-mail</Trans>
+                  </span>
+                  <span>
+                    <Trans>Status</Trans>
+                  </span>
+                  <span className="flex justify-end gap-2">
+                    <span className="w-16 text-end">
+                      <Trans>Waiting</Trans>
+                    </span>
+                    <span className="w-16 text-end @max-xl/list:hidden">
+                      <Trans>Sent</Trans>
+                    </span>
+                    <span className="w-16 text-end @max-2xl/list:hidden">
+                      <Trans>Replied</Trans>
+                    </span>
+                  </span>
+                </div>
+                {rows.map((b) => (
+                  <FlatTriggeredRow key={b.id} b={b} cursor={b.id === cursorId} onOpen={() => open(b.id)} />
+                ))}
+              </div>
+            )}
+            {broadcasts.hasNextPage && (
+              <div className="flex border-t border-line-soft pt-4">
+                <Button
+                  variant="outline"
+                  className={look.btn}
+                  onClick={() => void broadcasts.fetchNextPage()}
+                  disabled={broadcasts.isFetchingNextPage}
+                >
+                  <Trans>Load more</Trans>
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+      {creating && (
+        <NewBroadcastDialog
+          inboxId={inboxId}
+          triggered
+          onClose={() => setCreating(false)}
+          onCreated={(b) => {
+            setCreating(false)
+            navigate(broadcastLink(b.id))
+          }}
+        />
+      )}
+    </BroadcastsLayout>
+  )
+}
+
+export function TriggeredHome() {
+  return useFlat() ? <FlatTriggered /> : <StackedTriggered />
 }

@@ -30,7 +30,7 @@ import { useSession } from "@/lib/session"
 
 type Tone = "ok" | "warn" | "bad" | "unknown"
 
-const icons: Record<Tone, React.ReactNode> = {
+export const icons: Record<Tone, React.ReactNode> = {
   ok: <CircleCheckIcon className="mt-0.5 size-4 shrink-0 text-success" />,
   warn: <TriangleAlertIcon className="mt-0.5 size-4 shrink-0 text-warning" />,
   bad: <CircleAlertIcon className="mt-0.5 size-4 shrink-0 text-destructive" />,
@@ -39,7 +39,7 @@ const icons: Record<Tone, React.ReactNode> = {
 
 type Line = { key: string; title: string; tone: Tone; text: string; record?: string }
 
-function useLines(c: DeliverabilityCheck): Line[] {
+export function useLines(c: DeliverabilityCheck): Line[] {
   const { t } = useLingui()
   const read = c.state === "received"
   const from = c.domain

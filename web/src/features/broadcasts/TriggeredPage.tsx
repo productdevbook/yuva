@@ -4,7 +4,6 @@ import { useState } from "react"
 import { Link, useNavigate, useSearchParams } from "react-router"
 
 import { ErrorLine, Notice, PersonAvatar, useConfirm } from "@/components/common"
-import { PageBar } from "@/components/common/PageBar"
 import { BROADCAST_KEYS, TRIGGERED_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDateTime, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -16,7 +15,9 @@ import {
   useEnrollments,
   useRemoveEnrollment,
 } from "@/features/broadcasts/broadcastQueries"
+import { ApprovalSection, AudienceSection, SenderSection } from "@/features/broadcasts/BroadcastAside"
 import { Summary } from "@/features/broadcasts/BroadcastPage"
+import { backOf, DetailFrame, DetailHeading, DetailTrail, useViewNames } from "@/features/broadcasts/BroadcastsFrame"
 import { keyHint, PaceLine, StateBadge, useNumber, WaitingLine, WindowLine } from "@/features/broadcasts/BroadcastParts"
 import { Composer } from "@/features/broadcasts/Composer"
 import { useItemText } from "@/features/broadcasts/ReviewPanel"
@@ -25,13 +26,12 @@ import { TestSendDialog, useTestSend } from "@/features/broadcasts/TestSend"
 import { sentenceCase, useTriggerSentence } from "@/features/broadcasts/Trigger"
 import { designLink } from "@/features/designs/queries"
 import { Card, EmptyRow, Row, Rows, Section } from "@/features/settings/ui"
-import { FrameButton, FrameTabs, framePad, ProductTag } from "@/features/status/PageFrame"
+import { FrameButton, FrameTabs, ProductTag } from "@/features/status/PageFrame"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { useNow } from "@/hooks/use-now"
 import type { Broadcast } from "@/lib/api"
 import { useSession } from "@/lib/session"
-import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
 import { utcLine, zoneLabel, zonedDateTime } from "@/lib/zones"
 
@@ -279,6 +279,7 @@ export function TriggeredPage({ b }: { b: Broadcast }) {
   const test = useTestSend(b.id)
   const [testing, setTesting] = useState(false)
   const sentence = sentenceCase(useTriggerSentence(b), i18n.locale)
+  const views = useViewNames()
   const waiting = b.counts.waiting ?? 0
   const name = b.name
   const draft = b.state === "draft"
@@ -368,120 +369,138 @@ export function TriggeredPage({ b }: { b: Broadcast }) {
       testId: `triggered-tab-${v}`,
     }))
   const pending = action.isPending
+  const actions = canManage && (
+    <>
+      {scheduled && (
+        <FrameButton
+          disabled={pending}
+          onClick={() => action.mutate("unschedule")}
+          title={keyHint(t`Back to draft`, BROADCAST_KEYS.unschedule)}
+          data-testid="triggered-unschedule"
+        >
+          <Trans>Back to draft</Trans>
+        </FrameButton>
+      )}
+      {live && (
+        <FrameButton onClick={edit} title={keyHint(t`Edit`, TRIGGERED_KEYS.edit)} data-testid="triggered-edit">
+          <Trans>Edit</Trans>
+        </FrameButton>
+      )}
+      {b.design_id && (
+        <FrameButton
+          onClick={() => setTesting(true)}
+          title={keyHint(t`Send a test`, BROADCAST_KEYS.test)}
+          data-testid="triggered-test"
+        >
+          <Trans>Send a test</Trans>
+        </FrameButton>
+      )}
+      {active && (
+        <FrameButton
+          ink
+          disabled={pending}
+          onClick={() => action.mutate("pause")}
+          title={keyHint(t`Pause`, BROADCAST_KEYS.pause)}
+          data-testid="triggered-pause"
+        >
+          <Trans>Pause</Trans>
+        </FrameButton>
+      )}
+      {paused && (
+        <FrameButton
+          ink
+          disabled={pending}
+          onClick={() => action.mutate("resume")}
+          title={keyHint(t`Resume`, BROADCAST_KEYS.pause)}
+          data-testid="triggered-resume"
+        >
+          <Trans>Resume</Trans>
+        </FrameButton>
+      )}
+      {live && (
+        <FrameButton
+          disabled={pending}
+          onClick={stop}
+          title={keyHint(t`Stop the triggered e-mail`, TRIGGERED_KEYS.stop)}
+          data-testid="triggered-stop"
+        >
+          <Trans>Stop</Trans>
+        </FrameButton>
+      )}
+      {!live && (
+        <FrameButton onClick={onDelete} data-testid="broadcast-delete">
+          <Trans>Delete</Trans>
+        </FrameButton>
+      )}
+    </>
+  )
   return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" data-testid="triggered-page">
-      <PageBar back="/broadcasts/triggered" label={t`Triggered`}>
-        <div className="flex min-w-48 flex-1 basis-64 flex-col leading-snug">
-          <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
-            <h1 className="min-w-0 truncate text-[17px] font-semibold" data-testid="broadcast-name-heading">
-              {b.name}
-            </h1>
-            <StateBadge state={b.state} kind={b.kind} />
-            {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
-          </span>
-          <span className="truncate text-small text-muted-foreground" data-testid="triggered-sentence">
-            {sentence}
-          </span>
-        </div>
-        {canManage && (
-          <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
-            {scheduled && (
-              <FrameButton
-                disabled={pending}
-                onClick={() => action.mutate("unschedule")}
-                title={keyHint(t`Back to draft`, BROADCAST_KEYS.unschedule)}
-                data-testid="triggered-unschedule"
-              >
-                <Trans>Back to draft</Trans>
-              </FrameButton>
-            )}
-            {live && (
-              <FrameButton onClick={edit} title={keyHint(t`Edit`, TRIGGERED_KEYS.edit)} data-testid="triggered-edit">
-                <Trans>Edit</Trans>
-              </FrameButton>
-            )}
-            {b.design_id && (
-              <FrameButton
-                onClick={() => setTesting(true)}
-                title={keyHint(t`Send a test`, BROADCAST_KEYS.test)}
-                data-testid="triggered-test"
-              >
-                <Trans>Send a test</Trans>
-              </FrameButton>
-            )}
-            {active && (
-              <FrameButton
-                ink
-                disabled={pending}
-                onClick={() => action.mutate("pause")}
-                title={keyHint(t`Pause`, BROADCAST_KEYS.pause)}
-                data-testid="triggered-pause"
-              >
-                <Trans>Pause</Trans>
-              </FrameButton>
-            )}
-            {paused && (
-              <FrameButton
-                ink
-                disabled={pending}
-                onClick={() => action.mutate("resume")}
-                title={keyHint(t`Resume`, BROADCAST_KEYS.pause)}
-                data-testid="triggered-resume"
-              >
-                <Trans>Resume</Trans>
-              </FrameButton>
-            )}
-            {live && (
-              <FrameButton
-                disabled={pending}
-                onClick={stop}
-                title={keyHint(t`Stop the triggered e-mail`, TRIGGERED_KEYS.stop)}
-                data-testid="triggered-stop"
-              >
-                <Trans>Stop</Trans>
-              </FrameButton>
-            )}
-            {!live && (
-              <FrameButton onClick={onDelete} data-testid="broadcast-delete">
-                <Trans>Delete</Trans>
-              </FrameButton>
-            )}
-          </div>
-        )}
-      </PageBar>
-      <div className="@container min-h-0 flex-1 in-data-frame:overflow-y-auto">
-        <div className={cn(framePad, "max-w-[1200px]")}>
-          {action.error && action.variables === "resume" ? (
-            <ResumeProblem b={b} error={action.error} />
-          ) : (
-            <ErrorLine error={action.error ?? remove.error} />
-          )}
-          {b.state === "failed" && (
-            <Notice tone="danger" icon={CircleAlertIcon} data-testid="broadcast-failed">
-              <p>
-                <Trans>Sending stopped and cannot go on, for example because its channel was removed.</Trans>
-              </p>
-              {b.state_detail && <p className="text-muted-foreground">{b.state_detail}</p>}
-            </Notice>
-          )}
-          <Banner b={b} />
-          {!scheduled && <ReportStats b={b} />}
-          {tabs.length > 1 && (
-            <div className="border-b">
-              <FrameTabs label={t`Triggered e-mail`} items={tabs} current={tab} />
+    <DetailFrame
+      testId="triggered-page"
+      place="triggered"
+      wide
+      back={backOf("triggered", views)}
+      bar={{
+        back: "/broadcasts/triggered",
+        label: t`Triggered`,
+        content: (
+          <>
+            <div className="flex min-w-48 flex-1 basis-64 flex-col leading-snug">
+              <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
+                <h1 className="min-w-0 truncate text-[17px] font-semibold" data-testid="broadcast-name-heading">
+                  {b.name}
+                </h1>
+                <StateBadge state={b.state} kind={b.kind} />
+                {inbox && <ProductTag name={inbox.name} color={inbox.branding.color} />}
+              </span>
+              <span className="truncate text-small text-muted-foreground" data-testid="triggered-sentence">
+                {sentence}
+              </span>
             </div>
-          )}
-          {tab === "report" && (
-            <>
-              <Counts b={b} />
-              <Report b={b} />
-            </>
-          )}
-          {tab === "waiting" && <Waiting b={b} />}
-          {tab === "sent" && <Deliveries b={b} />}
-          {tab === "settings" && <Summary b={b} />}
+            {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">{actions}</div>}
+          </>
+        ),
+      }}
+      heading={<DetailHeading b={b} sub={<span data-testid="triggered-sentence">{sentence}</span>} />}
+      eyebrow={<DetailTrail b={b} />}
+      actions={actions}
+      aside={
+        <>
+          <AudienceSection b={b} />
+          <SenderSection inboxId={b.inbox_id} channelId={b.channel_id} />
+          <ApprovalSection b={b} />
+        </>
+      }
+    >
+      {action.error && action.variables === "resume" ? (
+        <ResumeProblem b={b} error={action.error} />
+      ) : (
+        <ErrorLine error={action.error ?? remove.error} />
+      )}
+      {b.state === "failed" && (
+        <Notice tone="danger" icon={CircleAlertIcon} data-testid="broadcast-failed">
+          <p>
+            <Trans>Sending stopped and cannot go on, for example because its channel was removed.</Trans>
+          </p>
+          {b.state_detail && <p className="text-muted-foreground">{b.state_detail}</p>}
+        </Notice>
+      )}
+      <Banner b={b} />
+      {!scheduled && <ReportStats b={b} />}
+      {tabs.length > 1 && (
+        <div className="border-b">
+          <FrameTabs label={t`Triggered e-mail`} items={tabs} current={tab} />
         </div>
-      </div>
+      )}
+      {tab === "report" && (
+        <>
+          <Counts b={b} />
+          <Report b={b} />
+        </>
+      )}
+      {tab === "waiting" && <Waiting b={b} />}
+      {tab === "sent" && <Deliveries b={b} />}
+      {tab === "settings" && <Summary b={b} />}
       {testing && <TestSendDialog b={b} state={test} disabled={false} onClose={() => setTesting(false)} />}
       {pending && (
         <span className="fixed bottom-6 left-1/2 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-caption text-background shadow-lg">
@@ -490,6 +509,6 @@ export function TriggeredPage({ b }: { b: Broadcast }) {
         </span>
       )}
       {confirmDialog}
-    </div>
+    </DetailFrame>
   )
 }

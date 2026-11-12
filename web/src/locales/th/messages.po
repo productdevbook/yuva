@@ -348,6 +348,10 @@ msgstr "{count, plural, =0 {ไม่มีการสนทนา} other {# �
 msgid "{count, plural, one {# brand} other {# brands}}"
 msgstr "{count, plural, other {# แบรนด์}}"
 
+#: src/features/broadcasts/Overview.tsx
+msgid "{count, plural, one {# broadcast} other {# broadcasts}}"
+msgstr "{count, plural, other {# บรอดคาสต์}}"
+
 #: src/features/settings/sla/SlaPage.tsx
 msgid "{count, plural, one {# condition} other {# conditions}}"
 msgstr "{count, plural, other {# เงื่อนไข}}"
@@ -360,6 +364,10 @@ msgstr "{count, plural, other {# โฟลเดอร์}}"
 #: src/features/home/HomeSide.tsx
 msgid "{count, plural, one {# issue} other {# issues}}"
 msgstr "{count, plural, other {# ปัญหา}}"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{count, plural, one {# list} other {# lists}}"
+msgstr "{count, plural, other {# รายชื่อ}}"
 
 #: src/features/migrations/SignInConnectStep.tsx
 msgid "{count, plural, one {# mailbox} other {# mailboxes}}"
@@ -384,6 +392,10 @@ msgstr "{count, plural, other {# รายการ}}"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "{count, plural, one {# scope} other {# scopes}}"
 msgstr "{count, plural, other {# สิทธิ์}}"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
+msgstr "{count, plural, one {# triggered e-mail} other {# triggered e-mails}}"
 
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "{count, plural, one {It goes to # recipient.} other {It goes to # recipients.}}"
@@ -701,6 +713,10 @@ msgstr "เก็บถาวร {n} รายการแล้ว"
 msgid "{n} attempts"
 msgstr "{n} ครั้งที่ลอง"
 
+#: src/features/broadcasts/Overview.tsx
+msgid "{n} broadcasts"
+msgstr "{n} บรอดคาสต์"
+
 #: src/features/contact/ContactsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 msgid "{n} conversations"
@@ -709,6 +725,10 @@ msgstr "{n} การสนทนา"
 #: src/features/broadcasts/Pace.tsx
 msgid "{n} in 30 days"
 msgstr "{n} ใน 30 วัน"
+
+#: src/features/broadcasts/ListsHome.tsx
+msgid "{n} lists"
+msgstr "{n} รายชื่อ"
 
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailList.tsx
@@ -735,6 +755,10 @@ msgstr "เลื่อน {n} รายการไว้ก่อน กลั
 #: src/features/mail/queries.ts
 msgid "{n} starred"
 msgstr "ติดดาว {n} รายการแล้ว"
+
+#: src/features/broadcasts/TriggeredHome.tsx
+msgid "{n} triggered e-mails"
+msgstr "{n} triggered e-mails"
 
 #: src/features/mail/queries.ts
 msgid "{n} unstarred"
@@ -1003,10 +1027,6 @@ msgstr "{rated, plural, other {# คะแนน}}"
 msgid "{ratedText} rated"
 msgstr "ให้คะแนนแล้ว {ratedText}"
 
-#: src/features/broadcasts/Report.tsx
-msgid "{recipients} recipients · {failed} refused by the mail server · {left} skipped · {auto} automatic replies, only counted"
-msgstr "ผู้รับ {recipients} คน · เซิร์ฟเวอร์อีเมลปฏิเสธ {failed} · ข้าม {left} · ตอบกลับอัตโนมัติ {auto} นับเท่านั้น"
-
 #: src/features/migrations/DoneStep.tsx
 msgid "{removable, plural, one {# imported conversation nobody wrote in since can be removed.} other {# imported conversations nobody wrote in since can be removed.}}"
 msgstr "{removable, plural, other {การสนทนาที่นำเข้ามา # รายการซึ่งไม่มีใครเขียนต่อหลังจากนั้นสามารถลบได้}}"
@@ -1052,6 +1072,10 @@ msgstr "{sent} จาก {all} เสร็จแล้ว"
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "{sent} sent"
 msgstr "{sent} sent"
+
+#: src/features/broadcasts/Report.tsx
+msgid "{sentTo, plural, one {# recipient} other {# recipients}} · {failed} refused by the mail server · {left} skipped · {autoCount, plural, one {# automatic reply, only counted} other {# automatic replies, only counted}}"
+msgstr "{sentTo, plural, other {ผู้รับ # คน}} · เซิร์ฟเวอร์อีเมลปฏิเสธ {failed} · ข้าม {left} · {autoCount, plural, other {ตอบกลับอัตโนมัติ # นับเท่านั้น}}"
 
 #: src/features/docs/PagesTab.tsx
 msgid "{share} helpful"
@@ -2417,6 +2441,7 @@ msgstr "แจ้งเตือนฉันขณะที่แท็บทำ
 msgid "Alertmanager"
 msgstr "Alertmanager"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
@@ -2507,6 +2532,7 @@ msgid "all products"
 msgstr "ผลิตภัณฑ์ทั้งหมด"
 
 #: src/components/common/PageSidebar.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -2560,6 +2586,7 @@ msgstr "อนุญาตการแจ้งเตือนบนเดสก
 msgid "Allow it to"
 msgstr "อนุญาตให้"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Allowed"
 msgstr "อนุญาตแล้ว"
@@ -2745,6 +2772,7 @@ msgstr "คีย์ API"
 msgid "An API key"
 msgstr "คีย์ API"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "An API key or assistant"
 msgstr "คีย์ API หรือผู้ช่วย"
@@ -3510,6 +3538,8 @@ msgstr "แอตทริบิวต์ เช่น plan"
 msgid "Attributes"
 msgstr "แอตทริบิวต์"
 
+#: src/features/broadcasts/BroadcastAside.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "กลุ่มเป้าหมาย"
@@ -3882,6 +3912,7 @@ msgstr "การส่งบรอดคาสต์"
 #: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -4100,7 +4131,7 @@ msgstr "คำตอบสำเร็จรูปและมาโคร ใ�
 msgid "Canned reply"
 msgstr "คำตอบสำเร็จรูป"
 
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
 msgid "Catch-all without a From address"
 msgstr "Catch-all ที่ไม่มีที่อยู่ From"
 
@@ -4821,6 +4852,7 @@ msgid "Condition"
 msgstr "เงื่อนไข"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Conditions"
 msgstr "เงื่อนไข"
@@ -5604,6 +5636,8 @@ msgstr "สร้าง เปลี่ยน และลบฟิลด์ท�
 msgid "Create, change, reorder and delete automation rules"
 msgstr "สร้าง เปลี่ยน จัดลำดับใหม่ และลบกฎระบบอัตโนมัติ"
 
+#: src/features/broadcasts/BroadcastAside.tsx
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/channels/Frame.tsx
@@ -6191,6 +6225,7 @@ msgstr "ลบรายชื่อ การสมัครรับ และ�
 msgid "Deletes the page with its components, their history, incidents and updates. The public address stops working."
 msgstr "ลบหน้าพร้อมส่วนประกอบ ประวัติของส่วนประกอบ เหตุการณ์ และการอัปเดต ที่อยู่สาธารณะจะใช้งานไม่ได้อีก"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
@@ -6229,6 +6264,7 @@ msgid "Description (optional)"
 msgstr "คำอธิบาย (ไม่บังคับ)"
 
 #: src/components/common/DesignChoice.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/DesignPicker.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Design"
@@ -6241,6 +6277,7 @@ msgstr "ดีไซน์: {title}"
 #: src/app/Sidebar.tsx
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 msgid "Designs"
 msgstr "ดีไซน์"
 
@@ -6256,6 +6293,7 @@ msgstr "อนุญาตการแจ้งเตือนบนเดสก
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "การแจ้งเตือนบนเดสก์ท็อปถูกบล็อกสำหรับไซต์นี้ในการตั้งค่าของเบราว์เซอร์ จึงมีเพียงเสียงที่เล่น"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactDetail.tsx
@@ -6534,6 +6572,7 @@ msgctxt "feedback progress"
 msgid "Done"
 msgstr "Done"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 msgid "Double opt-in"
 msgstr "ยืนยันสองขั้น"
@@ -6627,6 +6666,7 @@ msgstr "ข้อความฉบับร่าง"
 msgid "Draft:"
 msgstr "ฉบับร่าง:"
 
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/mail/MailDrafts.tsx
@@ -7227,6 +7267,9 @@ msgstr "ทุกกระทู้ที่เปิดอยู่มีคำ
 msgid "Every other browser and device is signed out. This one stays signed in."
 msgstr "เบราว์เซอร์และอุปกรณ์อื่นทั้งหมดจะถูกออกจากระบบ อุปกรณ์นี้ยังคงเข้าสู่ระบบอยู่"
 
+#: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/SidePanels.tsx
@@ -9560,6 +9603,7 @@ msgid "Language to keep"
 msgstr "ภาษาที่จะเก็บ"
 
 #: src/features/broadcasts/AudienceBuilder.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Languages"
@@ -9593,6 +9637,7 @@ msgstr "14 วันที่ผ่านมา"
 msgid "Last 3 months"
 msgstr "3 เดือนที่ผ่านมา"
 
+#: src/features/broadcasts/Overview.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -9972,6 +10017,7 @@ msgid "Links will point at this server’s link domain instead of your own. Spam
 msgstr "ลิงก์จะชี้ไปที่โดเมนลิงก์ของเซิร์ฟเวอร์นี้แทนของคุณเอง ตัวกรองสแปมดูโดเมนของลิงก์"
 
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Trigger.tsx
 #: src/features/setup/NewsletterStep.tsx
@@ -10331,7 +10377,9 @@ msgid "Mailing list (List-Id)"
 msgstr "เมลลิงลิสต์ (List-Id)"
 
 #: src/app/Palette.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/ListsHome.tsx
+#: src/features/broadcasts/Overview.tsx
 #: src/features/contact/ContactDetail.tsx
 msgid "Mailing lists"
 msgstr "รายชื่อผู้รับจดหมาย"
@@ -11302,6 +11350,7 @@ msgstr "รอคุณอยู่"
 msgid "never"
 msgstr "ไม่เคย"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/api-keys/ApiKeyWizard.tsx
 msgid "Never"
 msgstr "ไม่เคย"
@@ -11697,6 +11746,7 @@ msgstr "ถัดไป เลือกว่าพวกเขาจะไป�
 msgid "Nightly backup"
 msgstr "การสำรองข้อมูลกลางคืน"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
@@ -11790,6 +11840,7 @@ msgstr "ไม่มีช่องทาง"
 msgid "No channel that can send is chosen. Until there is one, nobody gets a confirmation or a notice."
 msgstr "ยังไม่ได้เลือกช่องทางที่ส่งได้ จนกว่าจะมี จะไม่มีใครได้รับการยืนยันหรือการแจ้งเตือน"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "No channel yet"
 msgstr "ยังไม่มีช่องทาง"
@@ -12206,6 +12257,7 @@ msgstr "ไม่มีการทำงานใน 30 วันที่ผ�
 msgid "No secret yet. Make one, then paste it into GitHub."
 msgstr "No secret yet. Make one, then paste it into GitHub."
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
 msgid "No sender yet"
 msgstr "ยังไม่มีผู้ส่ง"
@@ -12222,7 +12274,7 @@ msgstr "No signature"
 msgid "no SMTP account"
 msgstr "ไม่มีบัญชี SMTP"
 
-#: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/BroadcastParts.tsx
 msgid "No SMTP account"
 msgstr "ไม่มีบัญชี SMTP"
 
@@ -14145,6 +14197,7 @@ msgstr "ต่อเดือน (30 วัน)"
 msgid "Period"
 msgstr "ช่วงเวลา"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Permission to send"
 msgstr "สิทธิ์ในการส่ง"
@@ -14810,6 +14863,7 @@ msgstr "Provider saved. Its metadata was read."
 
 #: src/features/broadcasts/ListForm.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 msgid "Public"
 msgstr "สาธารณะ"
 
@@ -15176,6 +15230,7 @@ msgstr "พร้อม"
 msgid "Ready to import"
 msgstr "พร้อมนำเข้า"
 
+#: src/features/broadcasts/BroadcastParts.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Ready to send"
 msgstr "พร้อมส่ง"
@@ -15237,6 +15292,7 @@ msgid "recipient address"
 msgstr "ที่อยู่ผู้รับ"
 
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
@@ -16278,6 +16334,7 @@ msgstr "กฎตอบสนองเมื่อการสนทนาเป
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "กฎที่ติดป้ายกำกับ มอบหมาย ตอบกลับ และเรียกเว็บฮุก"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/channels/email/Deliverability.tsx
 msgid "Run a check"
 msgstr "ตรวจสอบ"
@@ -16516,6 +16573,7 @@ msgstr "ตั้งเวลารายการ"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/text.ts
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/text.tsx
@@ -16527,6 +16585,7 @@ msgctxt "mail folder"
 msgid "Scheduled"
 msgstr "ตั้งเวลาไว้"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 msgid "Scheduled by"
 msgstr "ตั้งเวลาโดย"
@@ -16591,6 +16650,7 @@ msgstr "SDK"
 
 #: src/app/Palette.tsx
 #: src/components/common/PageLayout.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -17060,7 +17120,9 @@ msgstr "ส่งถึง"
 msgid "Send to a webhook endpoint"
 msgstr "ส่งไปยังปลายทางเว็บฮุก"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListSettings.tsx
 #: src/features/settings/automation/text.ts
 #: src/features/setup/NewsletterStep.tsx
@@ -17188,8 +17250,10 @@ msgstr "ส่ง {when}"
 msgid "Sends {when} to {to}"
 msgstr "ส่ง {when} ถึง {to}"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/Overview.tsx
 msgid "Sends from"
 msgstr "ส่งจาก"
 
@@ -17226,6 +17290,7 @@ msgstr "ส่งแล้ว"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
@@ -18592,6 +18657,7 @@ msgstr "Stop the triggered e-mail"
 
 #: src/components/common/SlaBadge.tsx
 #: src/features/broadcasts/BroadcastParts.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 msgid "Stopped"
 msgstr "หยุดแล้ว"
@@ -18676,6 +18742,7 @@ msgstr "เพิ่งสมัครรับรายชื่อ"
 
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/status/StatusPages.tsx
 msgid "Subscribers"
@@ -18775,6 +18842,7 @@ msgstr "support@example.com"
 msgid "support@your-company.com"
 msgstr "support@your-company.com"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/workspace/BroadcastsSettings.tsx
 msgid "Suspended"
 msgstr "ถูกระงับ"
@@ -18969,6 +19037,7 @@ msgstr "ทดสอบอีกครั้ง"
 msgid "Test connection"
 msgstr "ทดสอบการเชื่อมต่อ"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/ReviewPanel.tsx
 msgid "Test mail"
 msgstr "อีเมลทดสอบ"
@@ -21007,7 +21076,9 @@ msgid "Trigger"
 msgstr "ตัวกระตุ้น"
 
 #: src/app/Sidebar.tsx
+#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
+#: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Triggered"
 msgstr "Triggered"
@@ -21111,6 +21182,7 @@ msgstr "เปิดผู้สมัครรับอีเมลในกา
 msgid "Turn on for this device"
 msgstr "เปิดสำหรับอุปกรณ์นี้"
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/settings/OwnDomainCard.tsx
 msgid "Turned off"
 msgstr "ปิดอยู่"
@@ -21412,6 +21484,7 @@ msgstr "ยกเลิกการสมัครรับแล้ว"
 #: src/components/common/text.ts
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/Growth.tsx
+#: src/features/broadcasts/ListsHome.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
@@ -21958,6 +22031,7 @@ msgstr "รออนุมัติ"
 #: src/components/common/AddressState.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/docs/discussions/DiscussionsPane.tsx
 #: src/features/docs/discussions/parts.tsx
 #: src/features/docs/DiscussionsTab.tsx
@@ -21972,6 +22046,7 @@ msgstr "รอการยืนยัน"
 
 #: src/components/common/text.ts
 #: src/features/broadcasts/Import.tsx
+#: src/features/broadcasts/ListsHome.tsx
 msgid "Waiting for confirmation"
 msgstr "รอการยืนยัน"
 
@@ -22526,6 +22601,7 @@ msgstr "ใครเปลี่ยนสมาชิก การเข้า�
 msgid "Who confirmed it and when is saved in the audit log."
 msgstr "Who confirmed it and when is saved in the audit log."
 
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Who gets it"
 msgstr "Who gets it"
@@ -22661,6 +22737,7 @@ msgstr "กำลังทำงาน…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -22762,6 +22839,7 @@ msgstr "เขียนว่าพวกเขายินยอมที่ไ
 msgid "Write your mail…"
 msgstr "เขียนเมลของคุณ…"
 
+#: src/features/broadcasts/ListPage.tsx
 #: src/features/fields/FieldFilter.tsx
 #: src/features/fields/value.ts
 #: src/features/inbox/SourceFilter.tsx
