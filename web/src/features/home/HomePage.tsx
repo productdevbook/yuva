@@ -1,32 +1,36 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro"
-import { CheckIcon, XIcon } from "lucide-react"
+import { CheckIcon } from "lucide-react"
 import { useRef } from "react"
 import { Link, useSearchParams } from "react-router"
 
-import { ContactAvatar, isVisitor, Kbd, toast, useContactName, VisitorAvatar } from "@/components/common"
-import { HOME_KEYS } from "@/components/common/ShortcutSheet"
-import { formatDuration, useEnumText, useErrorText } from "@/components/common/text"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useBroadcastsStatus } from "@/features/broadcasts/BroadcastParts"
 import {
-  cardClass,
-  ComingUp,
-  eyebrowClass,
-  NeedsYou,
-  OnlineNow,
-  Publish,
-  Status,
-  TextLink,
-} from "@/features/home/HomeSide"
-import { SiteCard } from "@/features/home/SiteCard"
+  ContactAvatar,
+  InfoColumn,
+  InfoSection,
+  isVisitor,
+  Kbd,
+  MoreLink,
+  PageHeading,
+  PageLayout,
+  PageSidebar,
+  PageTop,
+  SectionHeading,
+  toast,
+  TopSep,
+  useContactName,
+  VisitorAvatar,
+} from "@/components/common"
+import { HOME_KEYS } from "@/components/common/ShortcutSheet"
+import { formatDuration, useErrorText } from "@/components/common/text"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useBroadcastsStatus } from "@/features/broadcasts/BroadcastParts"
+import { cardClass, ComingUp, NeedsYou, OnlineNow, Publish, Status, TextLink } from "@/features/home/HomeSide"
+import { SiteRow } from "@/features/home/SiteCard"
 import { useHome } from "@/features/home/queries"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { useBulkUpdateConversations } from "@/features/inbox/queries"
 import { share } from "@/features/reports/data"
-import { Page } from "@/features/settings/ui"
 import { hubTarget, useHubPlaces } from "@/features/setup/SetupHub"
 import { orderByFocus, type HubId, type SetupState } from "@/features/setup/setup"
 import { useHotkeys } from "@/hooks/use-hotkeys"
@@ -35,10 +39,12 @@ import type { Home } from "@/lib/api"
 import { useRealtimeStatus } from "@/lib/realtime"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useInboxes, useMembers } from "@/lib/workspace"
+import { isSupport, useInboxes, useMembers } from "@/lib/workspace"
 
 const PERIODS = [7, 14, 30] as const
 type Period = (typeof PERIODS)[number]
+
+const boxClass = "overflow-hidden rounded-[10px] border bg-background"
 
 function usePeriod(): [Period, (p: Period) => void] {
   const [params, setParams] = useSearchParams()
@@ -81,25 +87,27 @@ function LiveState({ failed, updatedAt }: { failed: boolean; updatedAt: number }
     : ""
   const offline = failed || status === "offline"
   return (
-    <span role="status" className="inline-flex items-center gap-2 text-caption text-faint" data-testid="home-live">
+    <span role="status" className="inline-flex min-w-0 items-center gap-2" data-testid="home-live">
       <span
         aria-hidden
         className={cn(
-          "size-[7px] rounded-full",
-          offline ? "bg-warning" : status === "connecting" ? "bg-faint/60" : "bg-success"
+          "size-[7px] shrink-0 rounded-full",
+          offline ? "bg-warn" : status === "connecting" ? "bg-muted2/60" : "bg-ok"
         )}
       />
-      {offline ? (
-        time ? (
-          <Trans>Offline · last updated {time}</Trans>
+      <span className={cn("truncate", !offline && status !== "connecting" && "text-foreground")}>
+        {offline ? (
+          time ? (
+            <Trans>Offline · last updated {time}</Trans>
+          ) : (
+            <Trans>Offline</Trans>
+          )
+        ) : status === "connecting" ? (
+          <Trans>Connecting</Trans>
         ) : (
-          <Trans>Offline</Trans>
-        )
-      ) : status === "connecting" ? (
-        <Trans>Connecting</Trans>
-      ) : (
-        <Trans>Live</Trans>
-      )}
+          <Trans>Live</Trans>
+        )}
+      </span>
     </span>
   )
 }
@@ -125,9 +133,15 @@ function Tail({ h, mailOnly, fresh }: { h?: Home; mailOnly: boolean; fresh: bool
     return <Plural value={left} one="# setup step left." other="# setup steps left." />
   }
   const oldest = h.inbox.oldest_waiting
-  if (h.inbox.waiting === 0 || !oldest) return <Trans>Nobody is waiting.</Trans>
+  const waiting = h.inbox.waiting
+  if (waiting === 0 || !oldest) return <Trans>Nobody is waiting.</Trans>
   const waited = ago(oldest.since)
-  return <Trans>Oldest has waited {waited}.</Trans>
+  return (
+    <>
+      <Plural value={waiting} one="# conversation is waiting." other="# conversations are waiting." />{" "}
+      <Trans>Oldest has waited {waited}.</Trans>
+    </>
+  )
 }
 
 function Yesterday({ h }: { h: Home }) {
@@ -137,20 +151,55 @@ function Yesterday({ h }: { h: Home }) {
   const created = y.conversations
   const bad = y.bad
   return (
-    <p className="text-small text-muted-foreground" data-testid="home-yesterday">
-      <span className="text-faint">{t`Yesterday`}:</span>{" "}
+    <p className="m-0 mt-1 text-small text-muted-foreground" data-testid="home-yesterday">
+      <span className="text-muted2">{t`Yesterday`}:</span>{" "}
       <Link to="/reports/today" className="whitespace-nowrap hover:text-foreground hover:underline">
         <Plural value={created} one="# new" other="# new" />
       </Link>
       {bad > 0 && (
         <>
           {" · "}
-          <Link to="/reports/ratings" className="whitespace-nowrap text-warning hover:underline">
+          <Link to="/reports/ratings" className="whitespace-nowrap text-warn hover:underline">
             <Plural value={bad} one="# bad rating" other="# bad ratings" />
           </Link>
         </>
       )}
     </p>
+  )
+}
+
+function Scope({ mailOnly }: { mailOnly: boolean }) {
+  const [inboxId, setInboxId] = useInboxFilter()
+  const products = (useInboxes().data ?? []).filter(isSupport)
+  const product = products.find((i) => i.id === inboxId)?.name
+  if (mailOnly || products.length < 2) return null
+  return (
+    <div className="mt-3.5 inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 self-start rounded-lg border px-2.5 py-1.5 text-small text-fg2">
+      {product ? (
+        <>
+          <span className="min-w-0 truncate">
+            <Trans>Showing {product} only.</Trans>
+          </span>
+          <button
+            type="button"
+            onClick={() => setInboxId("")}
+            className="rounded-sm px-1 text-foreground underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            data-testid="home-scope"
+          >
+            <Trans>Show all products</Trans>
+          </button>
+        </>
+      ) : (
+        <>
+          <span>
+            <Trans>Showing every product.</Trans>
+          </span>
+          <span className="text-muted-foreground max-md:hidden">
+            <Trans>Pick one in the sidebar.</Trans>
+          </span>
+        </>
+      )}
+    </div>
   )
 }
 
@@ -169,8 +218,6 @@ function HomeHeader({
 }) {
   const { t, i18n } = useLingui()
   const { me } = useSession()
-  const [inboxId, setInboxId] = useInboxFilter()
-  const product = (useInboxes().data ?? []).find((i) => i.id === inboxId)?.name
   const now = useNow(60_000)
   const first = (me.person.name || me.person.email).split(/[\s@]/)[0]
   const hour = new Date(now).getHours()
@@ -178,35 +225,31 @@ function HomeHeader({
     hour < 12 ? t`Good morning, ${first}.` : hour < 18 ? t`Good afternoon, ${first}.` : t`Good evening, ${first}.`
   const date = new Intl.DateTimeFormat(i18n.locale, { weekday: "long", day: "numeric", month: "long" }).format(now)
   return (
-    <header className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
-      <div className="flex min-w-0 flex-[1_1_260px] flex-col gap-1">
-        <span className="font-mono text-caption tracking-[0.04em] text-faint uppercase">{date}</span>
-        {product && !mailOnly && (
-          <button
-            type="button"
-            onClick={() => setInboxId("")}
-            aria-label={t`Showing ${product} only. Show all products`}
-            className="inline-flex max-w-full items-center gap-2 self-start rounded-full bg-foreground py-1 ps-3 pe-1.5 text-small font-medium text-background outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            data-testid="home-scope"
-          >
-            <span className="truncate">
-              <Trans>{product} only</Trans>
+    <>
+      <PageTop>
+        <span className="max-md:hidden">
+          <Trans>Home</Trans>
+        </span>
+        <span className="max-md:hidden">
+          <TopSep />
+        </span>
+        <span className="truncate">{date}</span>
+        <TopSep />
+        <LiveState failed={failed} updatedAt={updatedAt} />
+      </PageTop>
+      <div className="mt-1 flex flex-col">
+        <PageHeading
+          title={greeting}
+          lede={
+            <span data-testid="home-summary">
+              <Tail h={h} mailOnly={mailOnly} fresh={fresh} />
             </span>
-            <span aria-hidden className="grid size-5 shrink-0 place-items-center rounded-full bg-background/20">
-              <XIcon className="size-3" />
-            </span>
-          </button>
-        )}
-        <h1 className="m-0 text-[30px] leading-9 font-semibold tracking-[-0.02em] phone:text-2xl phone:leading-[30px]">
-          {greeting}{" "}
-          <span className="text-faint">
-            <Tail h={h} mailOnly={mailOnly} fresh={fresh} />
-          </span>
-        </h1>
+          }
+        />
         {h && !mailOnly && !fresh && <Yesterday h={h} />}
+        <Scope mailOnly={mailOnly} />
       </div>
-      <LiveState failed={failed} updatedAt={updatedAt} />
-    </header>
+    </>
   )
 }
 
@@ -234,28 +277,6 @@ function RefreshAlert({ h, updatedAt, retry }: { h?: Home; updatedAt: number; re
       <TextLink to="/conversations">
         <Trans>Open inbox</Trans>
       </TextLink>
-    </div>
-  )
-}
-
-function HomeSkeleton() {
-  return (
-    <div aria-hidden className="flex flex-col gap-4" data-testid="home-loading">
-      <Skeleton className="h-14 rounded-xl" />
-      <Skeleton className="h-[92px] rounded-2xl" />
-      <div className="flex flex-wrap gap-6">
-        <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-2.5">
-          <Skeleton className="h-[120px] rounded-2xl" />
-          <Skeleton className="h-[52px] rounded-lg" />
-          <Skeleton className="h-[52px] rounded-lg" />
-          <Skeleton className="h-[52px] rounded-lg" />
-        </div>
-        <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-4">
-          <Skeleton className="h-40 rounded-2xl" />
-          <Skeleton className="h-[120px] rounded-2xl" />
-          <Skeleton className="h-[120px] rounded-2xl" />
-        </div>
-      </div>
     </div>
   )
 }
@@ -432,87 +453,90 @@ function SetupCard({ setup }: { setup: NonNullable<Home["setup"]> }) {
   )
 }
 
-function NowStrip({ h, solo }: { h: Home; solo: boolean }) {
-  const { t, i18n } = useLingui()
-  const ago = useAgo()
-  const fmt = new Intl.NumberFormat(i18n.locale)
-  const oldest = h.inbox.oldest_waiting
-  const waited = oldest ? ago(oldest.since) : ""
-  const tiles = [
-    {
-      key: "waiting",
-      to: "/conversations",
-      name: t`Waiting`,
-      value: h.inbox.waiting,
-      hint: oldest && h.inbox.waiting > 0 ? t`oldest ${waited}` : t`nobody is waiting`,
-      testId: "home-inbox-waiting",
-    },
-    ...(solo
-      ? []
-      : [
-          {
-            key: "unassigned",
-            to: "/conversations",
-            name: t`Unassigned`,
-            value: h.inbox.unassigned,
-            hint: t`no owner yet`,
-            testId: "home-unassigned",
-          },
-        ]),
-    {
-      key: "feedback",
-      to: "/feedback",
-      name: t`New feedback`,
-      value: h.inbox.feedback,
-      hint: t`to triage`,
-      testId: "home-feedback",
-    },
-  ]
+function HomeSkeleton() {
   return (
-    <section
-      aria-label={t`Right now`}
-      className={cn(cardClass, "grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] overflow-hidden phone:grid-cols-2")}
-      data-testid="home-inbox"
-    >
-      {tiles.map((k) => (
-        <Link
-          key={k.key}
-          to={k.to}
-          className="-me-px flex min-w-0 flex-col gap-1.5 border-e px-5 py-4 outline-none transition-colors hover:bg-surface focus-visible:bg-surface phone:-mb-px phone:border-b phone:last:odd:col-span-2"
-          data-testid={k.testId}
-        >
-          <span className="truncate text-small text-muted-foreground">{k.name}</span>
-          <b
-            className={cn(
-              "text-[28px] leading-[34px] font-semibold tracking-[-0.02em] tabular-nums",
-              k.value === 0 && "text-faint"
-            )}
-          >
-            {fmt.format(k.value)}
-          </b>
-          <span className="truncate text-caption text-faint">{k.hint}</span>
-        </Link>
-      ))}
-    </section>
+    <div aria-hidden className="mt-9 flex flex-col gap-4" data-testid="home-loading">
+      <Skeleton className="h-[92px] rounded-[10px]" />
+      <Skeleton className="h-[52px] rounded-lg" />
+      <Skeleton className="h-[52px] rounded-lg" />
+      <Skeleton className="h-[260px] rounded-[10px]" />
+    </div>
   )
 }
 
-function ProductMark({ color, name }: { color?: string; name: string }) {
-  return (
+function Stat({
+  value,
+  label,
+  hint,
+  to,
+  quiet,
+  tone,
+  testId,
+}: {
+  value: React.ReactNode
+  label: string
+  hint?: string
+  to?: string
+  quiet?: boolean
+  tone?: "brand"
+  testId?: string
+}) {
+  const body = (
     <>
-      <span
-        aria-hidden
-        className="size-2 shrink-0 rounded-[2px]"
-        style={{ backgroundColor: color || "var(--faint)" }}
-      />
-      <span className="truncate">{name}</span>
+      <b
+        className={cn(
+          "text-[26px] leading-8 font-semibold tracking-[-0.02em] tabular-nums",
+          quiet && "text-muted2",
+          tone === "brand" && "text-brand"
+        )}
+      >
+        {value}
+      </b>
+      <span className="truncate text-caption text-muted-foreground">{label}</span>
+      {hint && <span className="truncate font-mono text-[11px] text-muted2">{hint}</span>}
     </>
   )
+  const className = "flex min-w-0 flex-col gap-1 border-e border-b border-line-soft px-[18px] py-4"
+  if (to)
+    return (
+      <Link
+        to={to}
+        className={cn(className, "outline-none transition-colors hover:bg-subtle focus-visible:bg-subtle")}
+        data-testid={testId}
+      >
+        {body}
+      </Link>
+    )
+  return (
+    <div className={className} data-testid={testId}>
+      {body}
+    </div>
+  )
 }
 
-function Waiting({ h, className }: { h: Home; className?: string }) {
+function Stats({ children, label, testId }: { children: React.ReactNode; label?: string; testId?: string }) {
+  return (
+    <div
+      role={label ? "group" : undefined}
+      aria-label={label}
+      className="-me-px -mb-px grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] phone:grid-cols-2"
+      data-testid={testId}
+    >
+      {children}
+    </div>
+  )
+}
+
+function Tag({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="max-w-[140px] shrink-0 truncate rounded border border-input px-1.5 font-mono text-[10px] leading-4 tracking-[0.03em] text-muted-foreground uppercase phone:hidden">
+      {children}
+    </span>
+  )
+}
+
+function NeedsYouMain({ h, fresh, solo }: { h: Home; fresh: boolean; solo: boolean }) {
   const { t, i18n } = useLingui()
-  const text = useEnumText()
   const ago = useAgo()
   const errorText = useErrorText()
   const { membership } = useSession()
@@ -520,9 +544,8 @@ function Waiting({ h, className }: { h: Home; className?: string }) {
   const byId = new Map(inboxes.map((i) => [i.id, i]))
   const many = inboxes.length > 1
   const bulk = useBulkUpdateConversations()
-  const list = useRef<HTMLElement>(null)
+  const list = useRef<HTMLDivElement>(null)
   const rows = h.inbox.waiting_conversations
-  const [top, ...queue] = rows
   const links = () => Array.from(list.current?.querySelectorAll<HTMLAnchorElement>("a[data-waiting]") ?? [])
   const move = (step: number) => {
     const all = links()
@@ -542,173 +565,140 @@ function Waiting({ h, className }: { h: Home; className?: string }) {
     )
   }
   useHotkeys({ [HOME_KEYS.next]: () => move(1), [HOME_KEYS.previous]: () => move(-1), [HOME_KEYS.take]: take })
-  const waiting = h.inbox.waiting
-  const total = new Intl.NumberFormat(i18n.locale).format(waiting)
   const contactName = useContactName()
   const who = (c: (typeof rows)[number]) => contactName({}, undefined, c.contact.name, c.contact.email)
-  const avatar = (c: (typeof rows)[number], className: string) =>
-    isVisitor(c.contact.name, c.contact.email) ? (
-      <VisitorAvatar className={className} />
-    ) : (
-      <ContactAvatar id={c.contact.id} name={who(c)} className={className} />
-    )
-  const product = (id: string) => {
-    const inbox = many ? byId.get(id) : undefined
-    return inbox ? <ProductMark color={inbox.branding.color} name={inbox.name} /> : null
-  }
-  if (!top) return null
-  const topChannel = top.channel_kind ? text.channel[top.channel_kind] : ""
-  const topMeta = [topChannel, top.contact.email].filter(Boolean).join(" · ")
-  return (
-    <section
-      ref={list}
-      aria-label={t`Waiting longest`}
-      className={cn(cardClass, "overflow-hidden rounded-2xl", className)}
-      data-testid="home-needs-card"
-    >
-      <div className="flex items-baseline justify-between gap-3 border-b px-[18px] py-3.5">
-        <h2 className={eyebrowClass}>
-          <Trans>Waiting longest</Trans>
-        </h2>
-        <span className="flex items-baseline gap-3.5">
-          <span
-            aria-hidden
-            className="inline-flex items-center gap-1 text-caption text-faint phone:hidden [@media(hover:none)]:hidden"
-          >
-            <Kbd>{HOME_KEYS.next}</Kbd>
-            <Kbd>{HOME_KEYS.previous}</Kbd>
-            <Trans>move</Trans> · <Kbd>{HOME_KEYS.take}</Kbd>
-            <Trans>take</Trans>
-          </span>
-          <TextLink to="/conversations" testId="home-inbox-link">
-            <Plural value={waiting} one="Open in Inbox" other={`All ${total} in Inbox`} />
-          </TextLink>
-        </span>
-      </div>
-      <ul data-testid="home-needs">
-        <li className="border-b bg-surface/40">
-          <Link
-            to={`/conversations/${top.id}`}
-            data-waiting={top.id}
-            className="flex flex-col gap-2.5 px-[18px] pt-5 pb-[18px] outline-none transition-colors hover:bg-surface focus-visible:bg-surface"
-            data-testid="home-oldest-waiting"
-          >
-            <span className="flex items-center gap-3">
-              {avatar(top, "size-10 text-caption font-semibold")}
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate font-semibold">{who(top)}</span>
-                <span className="flex min-w-0 items-center gap-1.5 text-caption text-faint">
-                  {product(top.inbox_id)}
-                  {topMeta && (
-                    <span className="truncate">
-                      {many && byId.has(top.inbox_id) ? " · " : ""}
-                      {topMeta}
-                    </span>
-                  )}
-                </span>
-              </span>
-              <span className="flex shrink-0 flex-col items-end">
-                <span className="font-mono text-xl font-medium">{ago(top.since)}</span>
-                <span className="text-caption text-faint">
-                  <Trans>waiting</Trans>
-                </span>
-              </span>
-            </span>
-            {top.subject && (
-              <span className="text-[17px] leading-6 font-semibold tracking-[-0.01em] break-words">{top.subject}</span>
-            )}
-            {top.preview && (
-              <span className="line-clamp-3 max-w-[72ch] text-body leading-[22px] text-muted-foreground">
-                {top.preview}
-              </span>
-            )}
-          </Link>
-        </li>
-        {queue.map((c) => {
-          const channel = c.channel_kind ? text.channel[c.channel_kind] : ""
-          return (
-            <li key={c.id} className="border-b last:border-b-0">
-              <Link
-                to={`/conversations/${c.id}`}
-                data-waiting={c.id}
-                className="grid grid-cols-[32px_minmax(0,1fr)_minmax(0,0.9fr)_64px] items-center gap-3.5 px-[18px] py-[11px] outline-none transition-colors hover:bg-surface focus-visible:bg-surface phone:grid-cols-[32px_minmax(0,1fr)_64px]"
-                data-testid={`home-waiting-${c.id}`}
-              >
-                {avatar(c, "size-8 text-caption font-semibold")}
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate font-medium">{who(c)}</span>
-                  <span className="flex min-w-0 items-center gap-1.5 text-caption whitespace-nowrap text-faint">
-                    {product(c.inbox_id)}
-                    {channel && (
-                      <span className="truncate">
-                        {many && byId.has(c.inbox_id) ? " · " : ""}
-                        {channel}
-                      </span>
-                    )}
-                  </span>
-                </span>
-                <span className="truncate text-small text-muted-foreground phone:hidden">{c.subject || c.preview}</span>
-                <span className="text-end font-mono text-small text-faint">{ago(c.since)}</span>
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    </section>
-  )
-}
-
-function NothingWaiting({ h, fresh, className }: { h: Home; fresh: boolean; className?: string }) {
-  const { i18n } = useLingui()
+  const fmt = new Intl.NumberFormat(i18n.locale)
+  const waiting = h.inbox.waiting
+  const total = fmt.format(waiting)
+  const oldest = h.inbox.oldest_waiting
   const median = h.activity.days.at(-1)?.median_first_reply_seconds
   const took = median !== undefined ? formatDuration(median, i18n.locale) : ""
+  const any = waiting > 0 && rows.length > 0
   return (
-    <section
-      className={cn(cardClass, "flex flex-wrap items-center gap-3 px-6 py-[22px]", className)}
-      data-testid="home-needs-empty"
-    >
-      <span className="flex min-w-0 flex-[1_1_260px] flex-col gap-0.5">
-        <h2 className="m-0 text-base leading-[22px] font-semibold">
-          <Trans>Nothing is waiting.</Trans>
-        </h2>
-        <span className="text-small text-faint">
-          {fresh ? (
-            <Trans>Conversations show up here as soon as the first customer writes.</Trans>
-          ) : took ? (
-            <Trans>First replies today took {took} at the median.</Trans>
-          ) : (
-            <Trans>New conversations and feedback show up here.</Trans>
-          )}
-        </span>
-      </span>
-      <TextLink to="/conversations" testId="home-inbox-link">
-        <Trans>Open inbox</Trans>
-      </TextLink>
+    <section aria-labelledby="home-needs-title" data-testid="home-needs-card">
+      <SectionHeading
+        id="home-needs-title"
+        title={<Trans>Needs you</Trans>}
+        lead={
+          <span className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <span>
+              <Trans>Conversations waiting for an answer, oldest first.</Trans>
+            </span>
+            {any && (
+              <span
+                aria-hidden
+                className="inline-flex items-center gap-1 text-caption text-muted2 phone:hidden [@media(hover:none)]:hidden"
+              >
+                <Kbd>{HOME_KEYS.next}</Kbd>
+                <Kbd>{HOME_KEYS.previous}</Kbd>
+                <Trans>move</Trans> · <Kbd>{HOME_KEYS.take}</Kbd>
+                <Trans>take</Trans>
+              </span>
+            )}
+          </span>
+        }
+        more={
+          <MoreLink to="/conversations" testId="home-inbox-link">
+            {any ? (
+              <Plural value={waiting} one="Open in Inbox" other={`All ${total} in Inbox`} />
+            ) : (
+              <Trans>Open inbox</Trans>
+            )}
+          </MoreLink>
+        }
+      />
+      <div ref={list} className={boxClass}>
+        {!fresh && (
+          <Stats label={t`Right now`} testId="home-inbox">
+            <Stat
+              value={fmt.format(waiting)}
+              label={t`Waiting`}
+              to="/conversations"
+              quiet={waiting === 0}
+              testId="home-inbox-waiting"
+            />
+            {!solo && (
+              <Stat
+                value={fmt.format(h.inbox.unassigned)}
+                label={t`Unassigned`}
+                to="/conversations"
+                quiet={h.inbox.unassigned === 0}
+                testId="home-unassigned"
+              />
+            )}
+            <Stat value={oldest && waiting > 0 ? ago(oldest.since) : "–"} label={t`Oldest wait`} quiet={!any} />
+            <Stat
+              value={fmt.format(h.inbox.feedback)}
+              label={t`New feedback`}
+              to="/feedback"
+              quiet={h.inbox.feedback === 0}
+              tone={h.inbox.feedback > 0 ? "brand" : undefined}
+              testId="home-feedback"
+            />
+          </Stats>
+        )}
+        {any ? (
+          <ul className="m-0 list-none p-0" data-testid="home-needs">
+            {rows.map((c, i) => {
+              const inbox = many ? byId.get(c.inbox_id) : undefined
+              const name = who(c)
+              return (
+                <li key={c.id} className="border-t border-line-soft first:border-t-0">
+                  <Link
+                    to={`/conversations/${c.id}`}
+                    data-waiting={c.id}
+                    className="flex items-center gap-3 px-4 py-3 text-body outline-none transition-colors hover:bg-subtle focus-visible:bg-subtle"
+                    data-testid={i === 0 ? "home-oldest-waiting" : `home-waiting-${c.id}`}
+                  >
+                    {isVisitor(c.contact.name, c.contact.email) ? (
+                      <VisitorAvatar className="size-7 text-[11px] font-semibold" />
+                    ) : (
+                      <ContactAvatar id={c.contact.id} name={name} className="size-7 text-[11px] font-semibold" />
+                    )}
+                    <span className="min-w-0 flex-1 truncate">
+                      <b className="font-medium">{name}</b>
+                      {(c.subject || c.preview) && (
+                        <span className="text-muted-foreground"> · {c.subject || c.preview}</span>
+                      )}
+                    </span>
+                    {inbox && <Tag>{inbox.name}</Tag>}
+                    <span className="w-16 shrink-0 text-end font-mono text-caption text-warn">{ago(c.since)}</span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        ) : (
+          <div className="flex flex-col gap-0.5 border-t border-line-soft px-4 py-4" data-testid="home-needs-empty">
+            <span className="font-medium">
+              <Trans>Nothing is waiting.</Trans>
+            </span>
+            <span className="text-small text-muted-foreground">
+              {fresh ? (
+                <Trans>Conversations show up here as soon as the first customer writes.</Trans>
+              ) : took ? (
+                <Trans>First replies today took {took} at the median.</Trans>
+              ) : (
+                <Trans>New conversations and feedback show up here.</Trans>
+              )}
+            </span>
+          </div>
+        )}
+      </div>
     </section>
   )
 }
 
 function Delta({ children, good }: { children: React.ReactNode; good: boolean }) {
-  return (
-    <span
-      className={cn(
-        "rounded-full px-1.5 text-caption font-medium tabular-nums",
-        good ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
-      )}
-    >
-      {children}
-    </span>
-  )
+  return <span className={cn("font-mono text-[11px] tabular-nums", good ? "text-ok" : "text-warn")}>{children}</span>
 }
 
-function KeepingUp({ h, className }: { h: Home; className?: string }) {
+function KeepingUp({ h }: { h: Home }) {
   const { t, i18n } = useLingui()
   const [days, setDays] = usePeriod()
   const slots = h.activity.days
   const n = slots.length
   const peak = Math.max(1, ...slots.map((d) => Math.max(d.conversations, d.first_replies)))
-  const every = n <= 7 ? 1 : n <= 14 ? 2 : 5
-  const dayNum = new Intl.DateTimeFormat(i18n.locale, { day: "numeric", timeZone: "UTC" })
   const dayFull = new Intl.DateTimeFormat(i18n.locale, { day: "numeric", month: "short", timeZone: "UTC" })
   const fmt = new Intl.NumberFormat(i18n.locale)
   const pct = new Intl.NumberFormat(i18n.locale, { style: "percent" })
@@ -726,120 +716,131 @@ function KeepingUp({ h, className }: { h: Home; className?: string }) {
       ? Math.round(good * 100) - Math.round(goodBefore * 100)
       : 0
   const ptsText = points.format(pts)
-  const ratedText = fmt.format(rated)
-  const goodText = good !== undefined ? pct.format(good) : ""
   const created = fmt.format(h.activity.conversations)
   const replied = fmt.format(h.activity.first_replies)
+  const shown = fmt.format(n)
   const labels: Record<Period, string> = { 7: t`Last 7 days`, 14: t`Last 14 days`, 30: t`Last 30 days` }
   return (
-    <section
-      aria-label={t`Keeping up`}
-      className={cn(cardClass, "flex flex-col gap-3.5 p-[18px]", className)}
-      data-testid="home-chart"
-    >
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <span className="flex min-w-0 flex-col">
-          <h2 className="m-0 text-body font-semibold">
-            <Trans>Keeping up</Trans>
-          </h2>
-          <span className="text-caption text-faint">
-            <Trans>new conversations against first replies, per day</Trans>
-          </span>
-        </span>
-        <span className="inline-flex items-center gap-2 text-small text-muted-foreground">
-          <span aria-hidden>
-            <Trans>Period</Trans>
-          </span>
-          <Select value={String(days)} items={labels} onValueChange={(v) => v && setDays(Number(v) as Period)}>
-            <SelectTrigger size="sm" className="rounded-lg" aria-label={t`Period`} data-testid="home-period">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PERIODS.map((p) => (
-                <SelectItem key={p} value={String(p)} data-testid={`home-period-${p}`}>
-                  {labels[p]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </span>
-      </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-caption text-faint phone:hidden">
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="size-2.5 rounded-[2px] bg-faint/60" />
-          <Trans>New conversations</Trans>
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="h-[3px] w-3 rounded-[2px] bg-foreground" />
-          <Trans>First replies</Trans>
-        </span>
-      </div>
-      <div
-        className="grid h-[150px] items-end phone:hidden"
-        style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, gap: n > 14 ? 3 : 8 }}
-        role="img"
-        aria-label={t`${created} new conversations and ${replied} first replies in the period`}
-      >
-        {slots.map((d, i) => {
-          const at = new Date(`${d.day}T00:00:00Z`)
-          const date = dayFull.format(at)
-          const newCount = fmt.format(d.conversations)
-          const replyCount = fmt.format(d.first_replies)
-          return (
-            <span
-              key={d.day}
-              title={t`${date}: ${newCount} new, ${replyCount} first replies`}
-              className="flex h-full flex-col justify-end gap-1.5"
-            >
-              <span className="relative block h-[126px]">
-                <span
-                  className="absolute inset-x-0 bottom-0 rounded-t-[4px] rounded-b-[1px] bg-faint/60"
-                  style={{ height: Math.round((126 * d.conversations) / peak) }}
-                />
-                {d.first_replies > 0 && (
-                  <span
-                    className="absolute -inset-x-0.5 h-[3px] rounded-[2px] bg-foreground"
-                    style={{ bottom: Math.max(0, Math.round((126 * d.first_replies) / peak) - 1) }}
-                  />
-                )}
-              </span>
-              <span
-                className={cn(
-                  "h-3.5 text-center font-mono text-[11px]",
-                  i === n - 1 ? "text-foreground" : "text-faint"
-                )}
+    <section aria-labelledby="home-keeping-title" data-testid="home-chart">
+      <SectionHeading
+        id="home-keeping-title"
+        title={<Trans>Keeping up</Trans>}
+        lead={<Trans>New conversations against first replies, per day.</Trans>}
+        more={
+          <MoreLink to="/reports">
+            <Trans>Reports</Trans>
+          </MoreLink>
+        }
+      />
+      <div className={boxClass}>
+        <div className="flex h-12 items-stretch gap-[22px] overflow-x-auto border-b px-4">
+          <div
+            role="tablist"
+            aria-label={t`Period`}
+            className="flex items-stretch gap-[22px]"
+            data-testid="home-period"
+          >
+            {PERIODS.map((p) => (
+              <button
+                key={p}
+                type="button"
+                role="tab"
+                aria-selected={p === days}
+                onClick={() => setDays(p)}
+                className="-mb-px flex shrink-0 items-center border-b-2 border-transparent px-0.5 text-body font-medium whitespace-nowrap text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring aria-selected:border-brand aria-selected:font-semibold aria-selected:text-foreground"
+                data-testid={`home-period-${p}`}
               >
-                {(n - 1 - i) % every === 0 ? dayNum.format(at) : ""}
-              </span>
+                {labels[p]}
+              </button>
+            ))}
+          </div>
+          <span className="flex-1" />
+          <span className="inline-flex shrink-0 items-center gap-1.5 text-caption text-muted-foreground phone:hidden">
+            <span aria-hidden className="size-2.5 rounded-[2px] bg-brand" />
+            <Trans>New</Trans>
+          </span>
+          <span className="inline-flex shrink-0 items-center gap-1.5 text-caption text-muted-foreground phone:hidden">
+            <span aria-hidden className="size-2.5 rounded-[2px] bg-bar2" />
+            <Trans>First replies</Trans>
+          </span>
+        </div>
+        <div className="bg-subtle bg-[radial-gradient(var(--input)_1px,transparent_1px)] bg-size-[18px_18px] px-6 pt-7 pb-4 phone:px-4">
+          <div
+            className="flex h-[180px] items-end border-b border-input"
+            style={{ gap: n > 14 ? 4 : 8 }}
+            role="img"
+            aria-label={t`${created} new conversations and ${replied} first replies in the period`}
+          >
+            {slots.map((d) => {
+              const date = dayFull.format(new Date(`${d.day}T00:00:00Z`))
+              const newCount = fmt.format(d.conversations)
+              const replyCount = fmt.format(d.first_replies)
+              return (
+                <span
+                  key={d.day}
+                  title={t`${date}: ${newCount} new, ${replyCount} first replies`}
+                  className="flex h-full min-w-0 flex-1 items-end gap-0.5"
+                >
+                  <span
+                    className="min-w-px flex-1 rounded-t-[2px] bg-brand"
+                    style={{ height: `${(100 * d.conversations) / peak}%` }}
+                  />
+                  <span
+                    className="min-w-px flex-1 rounded-t-[2px] bg-bar2"
+                    style={{ height: `${(100 * d.first_replies) / peak}%` }}
+                  />
+                </span>
+              )
+            })}
+          </div>
+          <div className="flex justify-between pt-1.5 font-mono text-[11px] text-muted2">
+            <span>
+              <Plural value={n} one="# day ago" other="# days ago" />
             </span>
-          )
-        })}
-      </div>
-      <div className="flex flex-wrap gap-x-6 gap-y-2 border-t pt-3 text-small text-muted-foreground">
-        <span className="inline-flex items-center gap-2" data-testid="home-first-reply">
-          <Trans>First reply, median</Trans>
-          <b className="font-mono font-medium text-foreground">
-            {median !== undefined ? formatDuration(median, i18n.locale) : "–"}
-          </b>
-          {change !== undefined && change !== 0 && <Delta good={change < 0}>{signed.format(change)}</Delta>}
-        </span>
-        <span className="inline-flex items-center gap-2" data-testid="home-rating">
-          <Trans>Rating</Trans>
-          <b className="font-mono font-medium text-foreground">
-            {rated < 5 ? (
-              <Plural value={rated} _0="no ratings" one="# rating" other="# ratings" />
-            ) : (
-              t`${goodText} good of ${ratedText}`
-            )}
-          </b>
-          {pts !== 0 && <Delta good={pts > 0}>{t`${ptsText} pts`}</Delta>}
-        </span>
+            <span>
+              <Trans>Today</Trans>
+            </span>
+          </div>
+        </div>
+        <div className="border-t">
+          <Stats>
+            <Stat value={created} label={t`New conversations`} hint={t`last ${shown} days`} />
+            <Stat value={replied} label={t`First replies`} />
+            <div
+              className="flex min-w-0 flex-col gap-1 border-e border-b border-line-soft px-[18px] py-4"
+              data-testid="home-first-reply"
+            >
+              <b className="text-[26px] leading-8 font-semibold tracking-[-0.02em] tabular-nums">
+                {median !== undefined ? formatDuration(median, i18n.locale) : "–"}
+              </b>
+              <span className="truncate text-caption text-muted-foreground">
+                <Trans>Median first reply</Trans>
+              </span>
+              {change !== undefined && change !== 0 && <Delta good={change < 0}>{signed.format(change)}</Delta>}
+            </div>
+            <div
+              className="flex min-w-0 flex-col gap-1 border-e border-b border-line-soft px-[18px] py-4"
+              data-testid="home-rating"
+            >
+              <b className="text-[26px] leading-8 font-semibold tracking-[-0.02em] tabular-nums">
+                {rated < 5 || good === undefined ? "–" : pct.format(good)}
+              </b>
+              <span className="truncate text-caption text-muted-foreground">
+                <Trans>Rated good</Trans>
+              </span>
+              <span className="truncate font-mono text-[11px] text-muted2">
+                <Plural value={rated} _0="no ratings" one="# rating" other="# ratings" />
+              </span>
+              {pts !== 0 && <Delta good={pts > 0}>{t`${ptsText} pts`}</Delta>}
+            </div>
+          </Stats>
+        </div>
       </div>
     </section>
   )
 }
 
-function Products({ h, className }: { h: Home; className?: string }) {
+function Products({ h }: { h: Home }) {
   const { t, i18n } = useLingui()
   const [, setInboxId] = useInboxFilter()
   const byInbox = new Map((useInboxes().data ?? []).map((i) => [i.id, i]))
@@ -852,72 +853,63 @@ function Products({ h, className }: { h: Home; className?: string }) {
     })
     .sort((a, b) => b.p.open - a.p.open)
   const shown = fmt.format(h.period.days)
+  const th = "border-b px-4 py-2.5 text-caption font-medium text-muted2"
+  const td = "border-b border-line-soft px-4 py-[11px] text-fg2"
   return (
-    <section
-      aria-label={t`Products`}
-      className={cn(cardClass, "overflow-hidden", className)}
-      data-testid="home-products"
-    >
-      <div className="flex items-baseline justify-between gap-3 border-b px-[18px] py-3.5">
-        <h2 className={eyebrowClass}>
-          <Trans>Products</Trans>
-        </h2>
-        <span className="text-caption text-faint">
-          <Trans>last {shown} days</Trans>
-        </span>
-      </div>
-      <Table className="text-body">
-        <TableHeader>
-          <TableRow className="border-b-0 text-caption text-faint hover:bg-transparent">
-            <TableHead className="h-auto px-[18px] py-2 font-medium text-faint">
-              <Trans>Product</Trans>
-            </TableHead>
-            <TableHead className="h-auto px-2.5 py-2 text-end font-medium text-faint phone:hidden">
-              <Trans>New</Trans>
-            </TableHead>
-            <TableHead className="h-auto px-2.5 py-2 text-end font-medium text-faint">
-              <Trans>Rating</Trans>
-            </TableHead>
-            <TableHead className="h-auto py-2 ps-2.5 pe-[18px] text-end font-medium text-faint">
-              <Trans>Open</Trans>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map(({ p, inbox }) => {
-            const name = inbox.name
-            const rated = p.good + p.bad
-            const good = share(p.good, p.bad)
-            return (
-              <TableRow
-                key={inbox.id}
-                className="border-t border-b-0 tabular-nums hover:bg-transparent"
-                data-testid={`home-product-${inbox.id}`}
-              >
-                <TableHead scope="row" className="h-auto px-[18px] py-2.5 text-start font-medium text-foreground">
-                  <button
-                    type="button"
-                    onClick={() => setInboxId(inbox.id)}
-                    title={inbox.name}
-                    aria-label={t`Show only ${name}`}
-                    className="inline-flex max-w-[260px] items-center gap-2.5 rounded-md outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring phone:max-w-[150px]"
-                  >
-                    <span
-                      aria-hidden
-                      className="size-[9px] shrink-0 rounded-[3px]"
-                      style={{ backgroundColor: inbox.branding.color || "var(--faint)" }}
-                    />
-                    <span className="min-w-0 truncate">{inbox.name}</span>
-                  </button>
-                </TableHead>
-                <TableCell className="px-2.5 py-2.5 text-end font-mono phone:hidden">
-                  {fmt.format(p.conversations)}
-                </TableCell>
-                <TableCell className="px-2.5 py-2.5 text-end">
-                  <span
+    <section aria-labelledby="home-products-title" data-testid="home-products">
+      <SectionHeading
+        id="home-products-title"
+        title={<Trans>Products</Trans>}
+        lead={<Trans>Open conversations now, new ones and ratings over the last {shown} days.</Trans>}
+      />
+      <div className={cn(boxClass, "overflow-x-auto")}>
+        <table className="w-full border-collapse text-body [&_tr:last-child>*]:border-b-0">
+          <thead>
+            <tr>
+              <th scope="col" className={cn(th, "text-start")}>
+                <Trans>Product</Trans>
+              </th>
+              <th scope="col" className={cn(th, "text-end")}>
+                <Trans>Open</Trans>
+              </th>
+              <th scope="col" className={cn(th, "text-end phone:hidden")}>
+                <Trans>New</Trans>
+              </th>
+              <th scope="col" className={cn(th, "text-end")}>
+                <Trans>Rating</Trans>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(({ p, inbox }) => {
+              const name = inbox.name
+              const rated = p.good + p.bad
+              const good = share(p.good, p.bad)
+              return (
+                <tr key={inbox.id} className="tabular-nums" data-testid={`home-product-${inbox.id}`}>
+                  <th scope="row" className={cn(td, "text-start font-medium")}>
+                    <button
+                      type="button"
+                      onClick={() => setInboxId(inbox.id)}
+                      title={inbox.name}
+                      aria-label={t`Show only ${name}`}
+                      className="inline-flex max-w-[260px] items-center gap-2 rounded-sm text-foreground underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring phone:max-w-[150px]"
+                    >
+                      <span
+                        aria-hidden
+                        className="size-[7px] shrink-0 rounded-full bg-muted2"
+                        style={inbox.branding.color ? { backgroundColor: inbox.branding.color } : undefined}
+                      />
+                      <span className="min-w-0 truncate">{inbox.name}</span>
+                    </button>
+                  </th>
+                  <td className={cn(td, "text-end font-mono")}>{fmt.format(p.open)}</td>
+                  <td className={cn(td, "text-end font-mono phone:hidden")}>{fmt.format(p.conversations)}</td>
+                  <td
                     className={cn(
-                      "text-small",
-                      rated < 5 ? "text-faint" : good !== undefined && good < 0.85 ? "font-medium text-warning" : ""
+                      td,
+                      "text-end text-small",
+                      rated < 5 ? "text-muted2" : good !== undefined && good < 0.85 && "font-medium text-warn"
                     )}
                   >
                     {rated < 5 ? (
@@ -925,17 +917,14 @@ function Products({ h, className }: { h: Home; className?: string }) {
                     ) : (
                       t`${pct.format(good ?? 0)} good`
                     )}
-                  </span>
-                </TableCell>
-                <TableCell className="py-2.5 ps-2.5 pe-[18px] text-end font-mono text-faint">
-                  {fmt.format(p.open)}
-                </TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
-      <p className="m-0 border-t px-[18px] pt-2.5 pb-3 text-caption text-faint">
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="m-0 mt-2 text-caption text-muted2">
         <Trans>
           Open includes conversations waiting on the customer. Rating turns amber below 85% good once a product has 5
           ratings.
@@ -945,79 +934,137 @@ function Products({ h, className }: { h: Home; className?: string }) {
   )
 }
 
-function Sites({ h, className }: { h: Home; className?: string }) {
-  const properties = h.analytics?.properties ?? []
-  if (properties.length === 0) return null
+function Later({ h, mailOnly, support }: { h: Home; mailOnly: boolean; support: boolean }) {
   return (
-    <section className={cn("flex flex-col gap-3", className)} data-testid="home-analytics">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 className={eyebrowClass}>
-          <Trans>Sites</Trans>
-        </h2>
-        <TextLink to="/analytics">
-          <Trans>Analytics</Trans>
-        </TextLink>
-      </div>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3">
-        {properties.map((p) => (
-          <SiteCard key={p.id} property={p} />
-        ))}
+    <section aria-labelledby="home-later-title" className="hidden has-[[data-home-box]]:block">
+      <SectionHeading id="home-later-title" title={<Trans>Status and coming up</Trans>} />
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] items-start gap-4">
+        {support && <Status h={h} />}
+        <ComingUp h={h} mailOnly={mailOnly} />
+        <Publish h={h} mailOnly={mailOnly} />
       </div>
     </section>
   )
 }
 
-function HomeBlocks({ h, mailOnly, fresh }: { h: Home; mailOnly: boolean; fresh: boolean }) {
-  const members = useMembers().data ?? []
-  const [inboxId] = useInboxFilter()
-  const solo = members.length <= 1
-  const support = !mailOnly
-  const showSetup = !!h.setup && (fresh || (mailOnly && h.setup.items.some((i) => !i.done)))
+function Sites({ h }: { h: Home }) {
+  const { t } = useLingui()
+  const properties = h.analytics?.properties ?? []
+  if (properties.length === 0) return null
   return (
-    <div className="flex flex-col gap-6 phone:gap-5">
-      <BroadcastBanner h={h} mailOnly={mailOnly} />
-      {showSetup && h.setup && <SetupCard setup={h.setup} />}
-      {support && !fresh && <NowStrip h={h} solo={solo} />}
-      <div className="flex flex-wrap items-start gap-6 phone:flex-col phone:flex-nowrap phone:items-stretch phone:gap-5">
-        <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-4 phone:contents">
-          {support &&
-            (h.inbox.waiting > 0 && h.inbox.waiting_conversations.length > 0 ? (
-              <Waiting h={h} className="phone:order-1" />
-            ) : (
-              <NothingWaiting h={h} fresh={fresh} className="phone:order-1" />
-            ))}
-          {support && !fresh && <KeepingUp h={h} className="phone:order-5" />}
-          {support && !fresh && !inboxId && h.products.length > 1 && <Products h={h} className="phone:order-6" />}
-          {!fresh && <Sites h={h} className="phone:order-7" />}
-        </div>
-        <aside className="flex min-w-0 flex-[1_1_300px] flex-col gap-4 empty:hidden phone:contents">
-          {support && !fresh && <NeedsYou className="phone:order-2" />}
-          {support && !fresh && <Status h={h} className="phone:order-3" />}
-          {!fresh && <ComingUp h={h} mailOnly={mailOnly} className="phone:order-4" />}
-          {!fresh && <Publish h={h} mailOnly={mailOnly} className="phone:order-8" />}
-          {support && !solo && <OnlineNow h={h} className="phone:order-9" />}
-        </aside>
-      </div>
-    </div>
+    <InfoSection
+      title={t`Visitors · 7 days`}
+      testId="home-analytics"
+      action={
+        <Link
+          to="/analytics"
+          className="shrink-0 rounded-sm font-normal text-fg2 underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Trans>Analytics</Trans>
+        </Link>
+      }
+    >
+      {properties.map((p) => (
+        <SiteRow key={p.id} property={p} />
+      ))}
+    </InfoSection>
+  )
+}
+
+type Anchor = { id: string; label: string }
+
+function OnThisPage({ anchors }: { anchors: Anchor[] }) {
+  const { t } = useLingui()
+  if (anchors.length < 2) return null
+  return (
+    <InfoSection title={t`On this page`} testId="home-toc">
+      {anchors.map((a) => (
+        <a
+          key={a.id}
+          href={`#${a.id}`}
+          onClick={(e) => {
+            e.preventDefault()
+            document.getElementById(a.id)?.scrollIntoView({ block: "start" })
+          }}
+          className="block rounded-sm py-[3px] text-small leading-5 text-fg2 underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {a.label}
+        </a>
+      ))}
+    </InfoSection>
+  )
+}
+
+function HomeInfo({ h, anchors, support, solo }: { h?: Home; anchors: Anchor[]; support: boolean; solo: boolean }) {
+  return (
+    <>
+      <OnThisPage anchors={anchors} />
+      {h && support && <NeedsYou />}
+      {h && <Sites h={h} />}
+      {h && support && !solo && <OnlineNow h={h} />}
+    </>
   )
 }
 
 export function HomePage() {
+  const { t } = useLingui()
   const { membership } = useSession()
   const mailOnly = membership.workspace.focus === "mail"
   const [days] = usePeriod()
   const [inboxId] = useInboxFilter()
+  const members = useMembers().data ?? []
+  const solo = members.length <= 1
   const home = useHome(true, { days, inboxId })
   const h = home.data
   const fresh = h ? isFresh(h, mailOnly) : false
   const failed = !!home.error
+  const support = !mailOnly
+  const showSetup = !!h?.setup && (fresh || (mailOnly && h.setup.items.some((i) => !i.done)))
+  const showChart = !!h && support && !fresh
+  const showProducts = !!h && support && !fresh && !inboxId && h.products.length > 1
+  const anchors: Anchor[] = h
+    ? [
+        ...(support ? [{ id: "home-needs-title", label: t`Needs you` }] : []),
+        ...(showChart ? [{ id: "home-keeping-title", label: t`Keeping up` }] : []),
+        ...(showProducts ? [{ id: "home-products-title", label: t`Products` }] : []),
+      ]
+    : []
   return (
-    <Page testId="home">
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6 pt-8 phone:gap-5 phone:pt-4">
+    <PageLayout
+      testId="home"
+      label={t`Home`}
+      sidebar={<PageSidebar title={t`Home`} />}
+      aside={
+        <InfoColumn label={t`Details`}>
+          <HomeInfo h={h} anchors={anchors} support={support} solo={solo} />
+        </InfoColumn>
+      }
+    >
+      <div className="max-w-[920px]">
         <HomeHeader h={h} mailOnly={mailOnly} fresh={fresh} failed={failed} updatedAt={home.dataUpdatedAt} />
-        {failed && <RefreshAlert h={h} updatedAt={home.dataUpdatedAt} retry={() => void home.refetch()} />}
-        {!h ? !failed && <HomeSkeleton /> : <HomeBlocks h={h} mailOnly={mailOnly} fresh={fresh} />}
+        {failed && (
+          <div className="mt-6">
+            <RefreshAlert h={h} updatedAt={home.dataUpdatedAt} retry={() => void home.refetch()} />
+          </div>
+        )}
+        {!h ? (
+          !failed && <HomeSkeleton />
+        ) : (
+          <>
+            <div className="mt-6 flex flex-col gap-4 empty:hidden">
+              <BroadcastBanner h={h} mailOnly={mailOnly} />
+              {showSetup && h.setup && <SetupCard setup={h.setup} />}
+            </div>
+            {support && <NeedsYouMain h={h} fresh={fresh} solo={solo} />}
+            {showChart && <KeepingUp h={h} />}
+            {showProducts && <Products h={h} />}
+            {!fresh && <Later h={h} mailOnly={mailOnly} support={support} />}
+            <div className="mt-9 grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-x-8 min-[1180px]:hidden [&>section]:border-t-0 [&>section]:pt-0">
+              <HomeInfo h={h} anchors={[]} support={support} solo={solo} />
+            </div>
+          </>
+        )}
       </div>
-    </Page>
+    </PageLayout>
   )
 }

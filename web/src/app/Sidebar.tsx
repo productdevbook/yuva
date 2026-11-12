@@ -111,7 +111,7 @@ function Count({ n, hot, id }: { n: number; hot?: boolean; id: string }) {
   )
 }
 
-function WorkspaceMark({ name, className }: { name: string; className?: string }) {
+export function WorkspaceMark({ name, className }: { name: string; className?: string }) {
   return (
     <span
       aria-hidden
@@ -125,11 +125,50 @@ function WorkspaceMark({ name, className }: { name: string; className?: string }
   )
 }
 
-function WorkspaceSwitcher() {
-  const { t } = useLingui()
+export function WorkspaceMenu() {
   const navigate = useNavigate()
   const { me, membership, switchWorkspace } = useSession()
   const signup = useVersion().data?.signup
+  return (
+    <DropdownMenuContent align="start" className="w-(--anchor-width) min-w-62" data-testid="workspace-menu">
+      <DropdownMenuGroup>
+        <DropdownMenuLabel>
+          <Trans>Workspaces</Trans>
+        </DropdownMenuLabel>
+        {me.memberships.map((m) => {
+          const current = m.workspace.id === membership.workspace.id
+          return (
+            <DropdownMenuItem
+              key={m.workspace.id}
+              onClick={() => !current && switchWorkspace(m.workspace.id)}
+              aria-current={current ? "true" : undefined}
+              data-testid="workspace-option"
+            >
+              <WorkspaceMark name={m.workspace.name} className="size-[22px] rounded-md text-[11px]" />
+              <span className="min-w-0 flex-1 truncate">{m.workspace.name}</span>
+              <CheckIcon className={cn("size-3.5 text-foreground", !current && "invisible")} />
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuGroup>
+      <DropdownMenuSeparator />
+      {signup === "open" && (
+        <DropdownMenuItem onClick={() => navigate("/workspaces/new")} data-testid="workspace-create">
+          <PlusIcon />
+          <Trans>Create a workspace</Trans>
+        </DropdownMenuItem>
+      )}
+      <DropdownMenuItem onClick={() => navigate("/settings/workspace")} data-testid="workspace-settings">
+        <SettingsIcon />
+        <Trans>Workspace settings</Trans>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  )
+}
+
+function WorkspaceSwitcher() {
+  const { t } = useLingui()
+  const { membership } = useSession()
   const name = membership.workspace.name
   return (
     <SidebarMenu>
@@ -161,39 +200,7 @@ function WorkspaceSwitcher() {
             </span>
             <ChevronsUpDownIcon className="text-sidebar-muted group-data-[collapsible=icon]:hidden" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-(--anchor-width) min-w-62" data-testid="workspace-menu">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>
-                <Trans>Workspaces</Trans>
-              </DropdownMenuLabel>
-              {me.memberships.map((m) => {
-                const current = m.workspace.id === membership.workspace.id
-                return (
-                  <DropdownMenuItem
-                    key={m.workspace.id}
-                    onClick={() => !current && switchWorkspace(m.workspace.id)}
-                    aria-current={current ? "true" : undefined}
-                    data-testid="workspace-option"
-                  >
-                    <WorkspaceMark name={m.workspace.name} className="size-[22px] rounded-md text-[11px]" />
-                    <span className="min-w-0 flex-1 truncate">{m.workspace.name}</span>
-                    <CheckIcon className={cn("size-3.5 text-foreground", !current && "invisible")} />
-                  </DropdownMenuItem>
-                )
-              })}
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            {signup === "open" && (
-              <DropdownMenuItem onClick={() => navigate("/workspaces/new")} data-testid="workspace-create">
-                <PlusIcon />
-                <Trans>Create a workspace</Trans>
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem onClick={() => navigate("/settings/workspace")} data-testid="workspace-settings">
-              <SettingsIcon />
-              <Trans>Workspace settings</Trans>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
+          <WorkspaceMenu />
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>

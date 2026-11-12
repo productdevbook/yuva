@@ -475,10 +475,6 @@ msgstr "{down, plural, one {# εκτός λειτουργίας} other {# εκτ
 msgid "{down} not helpful"
 msgstr "μη χρήσιμα: {down}"
 
-#: src/features/home/HomeSide.tsx
-msgid "{drafts, plural, one {Assistant draft to review} other {Assistant drafts to review}}"
-msgstr "{drafts, plural, one {Πρόχειρο βοηθού για έλεγχο} other {Πρόχειρα βοηθού για έλεγχο}}"
-
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "Το {existing} είναι ήδη στο Yuva"
@@ -522,10 +518,6 @@ msgstr "Το {from} δεν έχει εγγραφή SPF. Δημοσιεύστε �
 #: src/features/contact/ContactDetails.tsx
 msgid "{good} good"
 msgstr "καλά: {good}"
-
-#: src/features/home/HomePage.tsx
-msgid "{goodText} good of {ratedText}"
-msgstr "{goodText} καλές από {ratedText}"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
@@ -591,17 +583,9 @@ msgstr "Απομένουν {left} κατά την επανέναρξη"
 msgid "{listName} is ready"
 msgstr "Η λίστα {listName} είναι έτοιμη"
 
-#: src/features/home/SiteCard.tsx
-msgid "{live} now"
-msgstr "{live} τώρα"
-
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} τα τελευταία 30 λεπτά"
-
-#: src/features/home/HomeSide.tsx
-msgid "{mentions, plural, one {Mention of you} other {Mentions of you}}"
-msgstr "{mentions, plural, one {Αναφορά σε εσάς} other {Αναφορές σε εσάς}}"
 
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
@@ -642,6 +626,10 @@ msgstr "{n, plural, one {# εφαρμογή} other {# εφαρμογές}}"
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# day ago} other {# days ago}}"
+msgstr "{n, plural, one {πριν από # ημέρα} other {πριν από # ημέρες}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -902,10 +890,6 @@ msgstr "Ο/Η {person} αποχώρησε από τον χώρο εργασία�
 msgid "{picked} selected"
 msgstr "{picked} επιλεγμένες"
 
-#: src/features/home/HomePage.tsx
-msgid "{product} only"
-msgstr "Μόνο {product}"
-
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
 msgstr "Οι συνομιλίες του {product}"
@@ -1020,6 +1004,10 @@ msgstr "{replies, plural, one {# απάντηση} other {# απαντήσεις
 msgid "{replies} replies"
 msgstr "Απαντήσεις: {replies}"
 
+#: src/components/common/PageSidebar.tsx
+msgid "{rest, plural, one {# more} other {# more}}"
+msgstr "{rest, plural, one {# ακόμη} other {# ακόμη}}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {και # ακόμη σελίδα} other {και # ακόμη σελίδες}}"
@@ -1080,10 +1068,6 @@ msgstr "{text} σε σχέση με την προηγούμενη περίοδο
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "Ανοιχτές συζητήσεις: {threads}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{total, plural, one {# item} other {# items}}"
-msgstr "{total, plural, one {# στοιχείο} other {# στοιχεία}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1147,6 +1131,10 @@ msgstr "Ψήφοι: {votes}"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
+msgstr "{waiting, plural, one {# συνομιλία περιμένει.} other {# συνομιλίες περιμένουν.}}"
 
 #: src/features/home/HomePage.tsx
 msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
@@ -2485,6 +2473,7 @@ msgstr "Όλα τα μέρη έφτασαν. Ανάγνωση του αρχεί�
 msgid "all products"
 msgstr "όλα τα προϊόντα"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -5247,6 +5236,10 @@ msgstr "Οι συνομιλίες που ξεκίνησαν σε αυτό κρα
 msgid "Conversations that started on this channel keep their messages."
 msgstr "Οι συνομιλίες που ξεκίνησαν σε αυτό το κανάλι κρατούν τα μηνύματά τους."
 
+#: src/features/home/HomePage.tsx
+msgid "Conversations waiting for an answer, oldest first."
+msgstr "Συνομιλίες που περιμένουν απάντηση, πρώτα η παλαιότερη."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "Οι συνομιλίες στις οποίες έγραψε η ομάδα σας παραμένουν. Τίποτα δεν αλλάζει στο {address}."
@@ -5691,6 +5684,10 @@ msgstr "Σκούρο"
 #: src/app/Palette.tsx
 msgid "Dark appearance"
 msgstr "Σκούρα εμφάνιση"
+
+#: src/components/common/PageLayout.tsx
+msgid "Dark mode"
+msgstr "Σκούρο θέμα"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Dark mode logo URL"
@@ -6223,6 +6220,7 @@ msgstr "Οι ειδοποιήσεις επιφάνειας εργασίας εί
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6594,6 +6592,10 @@ msgstr "Πρόχειρα"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "Τα πρόχειρα και τα συμβάντα του χρονολογίου δεν μπορούν να αφαιρεθούν."
+
+#: src/features/home/HomeSide.tsx
+msgid "Drafts to review"
+msgstr "Πρόχειρα για έλεγχο"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7550,6 +7552,10 @@ msgstr "Φιλτράρισμα μηνυμάτων όπως αυτό"
 msgid "Filters"
 msgstr "Φίλτρα"
 
+#: src/components/common/PageSidebar.tsx
+msgid "Find a product"
+msgstr "Εύρεση προϊόντος"
+
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
 msgstr "Βρείτε τον αριθμό λογαριασμού στη διεύθυνση του Chatwoot: ο αριθμός μετά το /app/accounts/."
@@ -7654,10 +7660,6 @@ msgstr "πρώτη απάντηση σε {first}"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "Πρώτη απάντηση, 90ό εκατοστημόριο"
-
-#: src/features/home/HomePage.tsx
-msgid "First reply, median"
-msgstr "Πρώτη απάντηση, διάμεσος"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -8431,7 +8433,9 @@ msgstr "Το ιστορικό αφαιρέθηκε"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 msgid "Home"
 msgstr "Αρχική"
 
@@ -10492,6 +10496,10 @@ msgstr "διάμεσος {median}"
 msgid "median first reply"
 msgstr "διάμεση πρώτη απάντηση"
 
+#: src/features/home/HomePage.tsx
+msgid "Median first reply"
+msgstr "Πρώτη απάντηση, διάμεσος"
+
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "διάμεσος σήμερα"
@@ -10545,6 +10553,7 @@ msgstr "σας ανέφερε"
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -11166,6 +11175,10 @@ msgstr "NameID format"
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
 msgstr "Περιορίστε τι μπορεί να επισυναφθεί σε αυτό το κανάλι. Τα όρια του διακομιστή παραμένουν το ανώτατο όριο: ένα κανάλι μπορεί να τα μειώσει, ποτέ να τα αυξήσει."
 
+#: src/components/common/PageSidebar.tsx
+msgid "Navigation"
+msgstr "Πλοήγηση"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Απαραίτητο για μαζικές αποστολές"
@@ -11195,7 +11208,7 @@ msgstr "Χρειάζεται προσοχή"
 msgid "Needs the operator’s approval"
 msgstr "Χρειάζεται έγκριση του διαχειριστή"
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomePage.tsx
 msgid "Needs you"
 msgstr "Σας περιμένουν"
 
@@ -11298,8 +11311,8 @@ msgid "New conversations"
 msgstr "Νέες συνομιλίες"
 
 #: src/features/home/HomePage.tsx
-msgid "new conversations against first replies, per day"
-msgstr "νέες συνομιλίες έναντι πρώτων απαντήσεων, ανά ημέρα"
+msgid "New conversations against first replies, per day."
+msgstr "Νέες συνομιλίες έναντι πρώτων απαντήσεων, ανά ημέρα."
 
 #: src/features/home/HomePage.tsx
 msgid "New conversations and feedback show up here."
@@ -12041,10 +12054,6 @@ msgstr "Καμία άλλη συνομιλία."
 msgid "No owner"
 msgstr "Χωρίς ιδιοκτήτη"
 
-#: src/features/home/HomePage.tsx
-msgid "no owner yet"
-msgstr "χωρίς υπεύθυνο ακόμη"
-
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Καμία σελίδα ακόμη"
@@ -12056,6 +12065,10 @@ msgstr "Δεν υπάρχουν εκκρεμείς προσκλήσεις."
 #: src/features/settings/sla/SlaPage.tsx
 msgid "No policies yet."
 msgstr "Δεν υπάρχουν ακόμη πολιτικές."
+
+#: src/components/common/PageSidebar.tsx
+msgid "No product by that name."
+msgstr "Δεν υπάρχει προϊόν με αυτό το όνομα."
 
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
@@ -12273,10 +12286,6 @@ msgstr "Κανείς δεν είναι συνδεδεμένος τώρα."
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "Κανείς δεν είναι ακόμη εγγεγραμμένος: κάθε νέα διεύθυνση λαμβάνει το e-mail επιβεβαίωσης της λίστας, κατανεμημένο σε ημέρες από το ημερήσιο όριο αποστολής, και μπαίνει μόνο αφού το πατήσει."
-
-#: src/features/home/HomePage.tsx
-msgid "nobody is waiting"
-msgstr "κανείς δεν περιμένει"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nobody is waiting for a reply."
@@ -12868,12 +12877,12 @@ msgid "Older visits"
 msgstr "Παλαιότερες επισκέψεις"
 
 #: src/features/home/HomePage.tsx
-msgid "oldest {waited}"
-msgstr "παλαιότερη {waited}"
-
-#: src/features/home/HomePage.tsx
 msgid "Oldest has waited {waited}."
 msgstr "Η παλαιότερη περιμένει {waited}."
+
+#: src/features/home/HomePage.tsx
+msgid "Oldest wait"
+msgstr "Μεγαλύτερη αναμονή"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -12909,6 +12918,7 @@ msgstr "Στα πακέτα Team και Enterprise ένας ιδιοκτήτης
 msgid "On the web"
 msgstr "Στον ιστό"
 
+#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13285,6 +13295,10 @@ msgstr "Ανοιχτές συνομιλίες"
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "Ανοιχτές συνομιλίες σε ανάθεση"
+
+#: src/features/home/HomePage.tsx
+msgid "Open conversations now, new ones and ratings over the last {shown} days."
+msgstr "Ανοιχτές συνομιλίες τώρα, νέες και αξιολογήσεις των τελευταίων {shown} ημερών."
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -14275,6 +14289,10 @@ msgstr "Επιλέξτε μόνοι σας κάθε εύρος πρόσβαση�
 msgid "Pick mails"
 msgstr "Επιλέξτε e-mail"
 
+#: src/features/home/HomePage.tsx
+msgid "Pick one in the sidebar."
+msgstr "Επιλέξτε ένα στην πλαϊνή στήλη."
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "Επιλέξτε έναν αργότερα στις ρυθμίσεις της λίστας."
@@ -14615,6 +14633,7 @@ msgid "Production backend"
 msgstr "Backend παραγωγής"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -14883,6 +14902,7 @@ msgid "rated good"
 msgstr "βαθμολογήθηκε καλά"
 
 #: src/features/conversation/rating.tsx
+#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "Βαθμολογήθηκε καλά"
 
@@ -15801,6 +15821,7 @@ msgstr "Αναφερθείσα αποτυχία"
 
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "Reports"
@@ -16471,6 +16492,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -16611,6 +16633,7 @@ msgstr "Secret set"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "Ενότητες"
 
@@ -17410,6 +17433,10 @@ msgstr "Εμφάνιση {nRevoked} ανακληθέντων"
 msgid "Show all authors"
 msgstr "Εμφάνιση όλων των συντακτών"
 
+#: src/features/home/HomePage.tsx
+msgid "Show all products"
+msgstr "Εμφάνιση όλων των προϊόντων"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "Εμφάνιση αρχειοθετημένων σχεδίων"
@@ -17527,8 +17554,12 @@ msgid "Show who is online"
 msgstr "Εμφάνιση ποιος είναι συνδεδεμένος"
 
 #: src/features/home/HomePage.tsx
-msgid "Showing {product} only. Show all products"
-msgstr "Εμφανίζεται μόνο {product}. Εμφάνιση όλων των προϊόντων"
+msgid "Showing {product} only."
+msgstr "Εμφανίζεται μόνο το {product}."
+
+#: src/features/home/HomePage.tsx
+msgid "Showing every product."
+msgstr "Εμφανίζονται όλα τα προϊόντα."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -17866,7 +17897,6 @@ msgstr "Σύνδεσμος ιστότοπου"
 msgid "Site name"
 msgstr "Όνομα ιστότοπου"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
@@ -18386,6 +18416,10 @@ msgstr "Κατάσταση όταν πέσει"
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
 msgstr "Κατάσταση"
+
+#: src/features/home/HomePage.tsx
+msgid "Status and coming up"
+msgstr "Κατάσταση και επερχόμενα"
 
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
@@ -20752,10 +20786,6 @@ msgstr "Προς"
 msgid "To let assistants send on their own, turn on <0>Bots may send</0>."
 msgstr "Για να στέλνουν οι βοηθοί μόνοι τους, ενεργοποιήστε το <0>Επιτρέπεται η αποστολή από bots</0>."
 
-#: src/features/home/HomePage.tsx
-msgid "to triage"
-msgstr "για διαλογή"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Προς: {emailTo}"
@@ -20767,6 +20797,7 @@ msgstr "Προς: {who}"
 
 #: src/app/Sidebar.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21600,10 +21631,6 @@ msgstr "Όνομα χρήστη"
 msgid "Username"
 msgstr "Όνομα χρήστη"
 
-#: src/features/home/SiteCard.tsx
-msgid "users today"
-msgstr "χρήστες σήμερα"
-
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Using the inbox default"
 msgstr "Using the inbox default"
@@ -21737,6 +21764,10 @@ msgstr "επισκέπτες"
 msgid "Visitors"
 msgstr "Επισκέπτες"
 
+#: src/features/home/HomePage.tsx
+msgid "Visitors · 7 days"
+msgstr "Επισκέπτες · 7 ημέρες"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Οι επισκέπτες μπορούν να συνομιλούν χωρίς διακριτικό ταυτότητας από το backend σας."
@@ -21754,7 +21785,6 @@ msgid "Visitors subscribe on the page and get a mail when an incident or mainten
 msgstr "Οι επισκέπτες εγγράφονται στη σελίδα και λαμβάνουν e-mail όταν αλλάζει κάποιο περιστατικό ή εργασία συντήρησης."
 
 #: src/features/home/PropertyCard.tsx
-#: src/features/home/SiteCard.tsx
 msgid "visitors today"
 msgstr "επισκέπτες σήμερα"
 
@@ -21778,10 +21808,6 @@ msgstr "Επισκέψεις στους ιστότοπούς σας με utm_cam
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Vouched for by the server's operator on {when}."
 msgstr "Εγγυήθηκε ο διαχειριστής του διακομιστή στις {when}."
-
-#: src/features/home/HomePage.tsx
-msgid "waiting"
-msgstr "σε αναμονή"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -21898,10 +21924,13 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "Αναμονή για επικύρωση"
 
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "Περιμένουν περισσότερο"
+
+#: src/features/home/HomeSide.tsx
+msgid "Waiting on you"
+msgstr "Σας περιμένουν"
 
 #: src/features/home/HomeSide.tsx
 msgid "waits for approval"
@@ -22538,6 +22567,7 @@ msgid "Workspace settings"
 msgstr "Ρυθμίσεις χώρου εργασίας"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Workspace: {name}"
 msgstr "Χώρος εργασίας: {name}"
 

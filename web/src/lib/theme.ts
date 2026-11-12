@@ -20,7 +20,7 @@ function apply() {
   const dark = t === "dark" || (t === "system" && media.matches)
   document.documentElement.classList.toggle("dark", dark)
   for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'))
-    meta.content = dark ? "#0a0a0c" : "#fbfaf9"
+    meta.content = dark ? "#161616" : "#f8f8f6"
 }
 
 export function setTheme(t: Theme) {

@@ -475,10 +475,6 @@ msgstr "{down, plural, one {# недоступен} few {# недоступны}
 msgid "{down} not helpful"
 msgstr "не помогло: {down}"
 
-#: src/features/home/HomeSide.tsx
-msgid "{drafts, plural, one {Assistant draft to review} other {Assistant drafts to review}}"
-msgstr "{drafts, plural, one {Черновик ассистента на проверку} few {Черновика ассистента на проверку} many {Черновиков ассистента на проверку} other {Черновика ассистента на проверку}}"
-
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} уже в Yuva"
@@ -522,10 +518,6 @@ msgstr "У {from} нет записи SPF. Опубликуйте запись, 
 #: src/features/contact/ContactDetails.tsx
 msgid "{good} good"
 msgstr "хорошо: {good}"
-
-#: src/features/home/HomePage.tsx
-msgid "{goodText} good of {ratedText}"
-msgstr "{goodText} хороших из {ratedText}"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
@@ -591,17 +583,9 @@ msgstr "После возобновления останется {left}"
 msgid "{listName} is ready"
 msgstr "{listName} готов"
 
-#: src/features/home/SiteCard.tsx
-msgid "{live} now"
-msgstr "{live} сейчас"
-
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} за последние 30 минут"
-
-#: src/features/home/HomeSide.tsx
-msgid "{mentions, plural, one {Mention of you} other {Mentions of you}}"
-msgstr "{mentions, plural, one {Упоминание вас} few {Упоминания вас} many {Упоминаний вас} other {Упоминания вас}}"
 
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
@@ -642,6 +626,10 @@ msgstr "{n, plural, one {# приложение} few {# приложения} ma
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# day ago} other {# days ago}}"
+msgstr "{n, plural, one {# день назад} few {# дня назад} many {# дней назад} other {# дня назад}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -902,10 +890,6 @@ msgstr "{person} покинул(а) рабочее пространство, у�
 msgid "{picked} selected"
 msgstr "Выбрано: {picked}"
 
-#: src/features/home/HomePage.tsx
-msgid "{product} only"
-msgstr "Только {product}"
-
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
 msgstr "Диалоги {product}"
@@ -1020,6 +1004,10 @@ msgstr "{replies, plural, one {# ответ} few {# ответа} many {# отв
 msgid "{replies} replies"
 msgstr "Ответов: {replies}"
 
+#: src/components/common/PageSidebar.tsx
+msgid "{rest, plural, one {# more} other {# more}}"
+msgstr "{rest, plural, one {ещё #} few {ещё #} many {ещё #} other {ещё #}}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {и ещё # страница} few {и ещё # страницы} many {и ещё # страниц} other {и ещё # страницы}}"
@@ -1080,10 +1068,6 @@ msgstr "{text} к предыдущему периоду"
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "Открытых обсуждений: {threads}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{total, plural, one {# item} other {# items}}"
-msgstr "{total, plural, one {# пункт} few {# пункта} many {# пунктов} other {# пункта}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1147,6 +1131,10 @@ msgstr "Голосов: {votes}"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
+msgstr "{waiting, plural, one {# разговор ждёт.} few {# разговора ждут.} many {# разговоров ждут.} other {# разговора ждут.}}"
 
 #: src/features/home/HomePage.tsx
 msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
@@ -2485,6 +2473,7 @@ msgstr "Все части получены. Чтение файла…"
 msgid "all products"
 msgstr "все продукты"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -5247,6 +5236,10 @@ msgstr "Диалоги, начатые в нём, сохраняют свои с
 msgid "Conversations that started on this channel keep their messages."
 msgstr "Диалоги, начатые в этом канале, сохраняют свои сообщения."
 
+#: src/features/home/HomePage.tsx
+msgid "Conversations waiting for an answer, oldest first."
+msgstr "Разговоры, ждущие ответа, сначала самые старые."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "Диалоги, в которых писала ваша команда, остаются. В {address} ничего не меняется."
@@ -5691,6 +5684,10 @@ msgstr "Тёмная"
 #: src/app/Palette.tsx
 msgid "Dark appearance"
 msgstr "Тёмное оформление"
+
+#: src/components/common/PageLayout.tsx
+msgid "Dark mode"
+msgstr "Тёмная тема"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Dark mode logo URL"
@@ -6223,6 +6220,7 @@ msgstr "Уведомления на рабочем столе заблокиро
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6594,6 +6592,10 @@ msgstr "Черновики"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "Черновики и события в хронологии удалить нельзя."
+
+#: src/features/home/HomeSide.tsx
+msgid "Drafts to review"
+msgstr "Черновики на проверку"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7550,6 +7552,10 @@ msgstr "Фильтровать сообщения, как это"
 msgid "Filters"
 msgstr "Фильтры"
 
+#: src/components/common/PageSidebar.tsx
+msgid "Find a product"
+msgstr "Найти продукт"
+
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
 msgstr "Номер аккаунта указан в адресе Chatwoot: это число после /app/accounts/."
@@ -7654,10 +7660,6 @@ msgstr "первый ответ в {first}"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "Первый ответ, 90-й процентиль"
-
-#: src/features/home/HomePage.tsx
-msgid "First reply, median"
-msgstr "Первый ответ, медиана"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -8431,7 +8433,9 @@ msgstr "История удалена"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 msgid "Home"
 msgstr "Главная"
 
@@ -10492,6 +10496,10 @@ msgstr "медиана {median}"
 msgid "median first reply"
 msgstr "медианное время первого ответа"
 
+#: src/features/home/HomePage.tsx
+msgid "Median first reply"
+msgstr "Первый ответ, медиана"
+
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "медиана за сегодня"
@@ -10545,6 +10553,7 @@ msgstr "упомянул(а) вас"
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -11166,6 +11175,10 @@ msgstr "NameID format"
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
 msgstr "Ограничьте то, что можно прикреплять в этом канале. Пределы сервера остаются потолком: канал может их понизить, но не повысить."
 
+#: src/components/common/PageSidebar.tsx
+msgid "Navigation"
+msgstr "Навигация"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Нужно для рассылок"
@@ -11195,7 +11208,7 @@ msgstr "Требует внимания"
 msgid "Needs the operator’s approval"
 msgstr "Нужно одобрение оператора"
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomePage.tsx
 msgid "Needs you"
 msgstr "Ждёт вас"
 
@@ -11298,8 +11311,8 @@ msgid "New conversations"
 msgstr "Новые диалоги"
 
 #: src/features/home/HomePage.tsx
-msgid "new conversations against first replies, per day"
-msgstr "новые разговоры и первые ответы по дням"
+msgid "New conversations against first replies, per day."
+msgstr "Новые разговоры и первые ответы по дням."
 
 #: src/features/home/HomePage.tsx
 msgid "New conversations and feedback show up here."
@@ -12041,10 +12054,6 @@ msgstr "Других диалогов нет."
 msgid "No owner"
 msgstr "Нет владельца"
 
-#: src/features/home/HomePage.tsx
-msgid "no owner yet"
-msgstr "пока без ответственного"
-
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Страниц пока нет"
@@ -12056,6 +12065,10 @@ msgstr "Ожидающих приглашений нет."
 #: src/features/settings/sla/SlaPage.tsx
 msgid "No policies yet."
 msgstr "Политик пока нет."
+
+#: src/components/common/PageSidebar.tsx
+msgid "No product by that name."
+msgstr "Продукта с таким названием нет."
 
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
@@ -12273,10 +12286,6 @@ msgstr "Сейчас никого нет в сети."
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "Подписанных пока нет: каждый новый адрес получает письмо с подтверждением списка, растянутое на дни дневным лимитом отправки, и вступает только после перехода по ссылке."
-
-#: src/features/home/HomePage.tsx
-msgid "nobody is waiting"
-msgstr "никто не ждёт"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nobody is waiting for a reply."
@@ -12868,12 +12877,12 @@ msgid "Older visits"
 msgstr "Более старые визиты"
 
 #: src/features/home/HomePage.tsx
-msgid "oldest {waited}"
-msgstr "самый старый {waited}"
-
-#: src/features/home/HomePage.tsx
 msgid "Oldest has waited {waited}."
 msgstr "Самый старый ждёт {waited}."
+
+#: src/features/home/HomePage.tsx
+msgid "Oldest wait"
+msgstr "Самое долгое ожидание"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -12909,6 +12918,7 @@ msgstr "В тарифах Team и Enterprise владелец добавляет
 msgid "On the web"
 msgstr "В вебе"
 
+#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13285,6 +13295,10 @@ msgstr "Открытые диалоги"
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "Назначено открытых диалогов"
+
+#: src/features/home/HomePage.tsx
+msgid "Open conversations now, new ones and ratings over the last {shown} days."
+msgstr "Открытые сейчас разговоры, новые и оценки за последние {shown} дн."
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -14275,6 +14289,10 @@ msgstr "Выберите каждую область доступа сами."
 msgid "Pick mails"
 msgstr "Выберите письма"
 
+#: src/features/home/HomePage.tsx
+msgid "Pick one in the sidebar."
+msgstr "Выберите один на боковой панели."
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "Выберите его позже в настройках списка."
@@ -14615,6 +14633,7 @@ msgid "Production backend"
 msgstr "Рабочий бэкенд"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -14883,6 +14902,7 @@ msgid "rated good"
 msgstr "оценено хорошо"
 
 #: src/features/conversation/rating.tsx
+#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "Оценено хорошо"
 
@@ -15801,6 +15821,7 @@ msgstr "Сообщённый сбой"
 
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "Reports"
@@ -16471,6 +16492,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -16611,6 +16633,7 @@ msgstr "Secret set"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "Разделы"
 
@@ -17410,6 +17433,10 @@ msgstr "Показать отозванные: {nRevoked}"
 msgid "Show all authors"
 msgstr "Показать всех авторов"
 
+#: src/features/home/HomePage.tsx
+msgid "Show all products"
+msgstr "Показать все продукты"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "Показать архивные дизайны"
@@ -17527,8 +17554,12 @@ msgid "Show who is online"
 msgstr "Показывать, кто в сети"
 
 #: src/features/home/HomePage.tsx
-msgid "Showing {product} only. Show all products"
-msgstr "Показан только {product}. Показать все продукты"
+msgid "Showing {product} only."
+msgstr "Показан только {product}."
+
+#: src/features/home/HomePage.tsx
+msgid "Showing every product."
+msgstr "Показаны все продукты."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -17866,7 +17897,6 @@ msgstr "Ссылка на сайт"
 msgid "Site name"
 msgstr "Название сайта"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
@@ -18386,6 +18416,10 @@ msgstr "Состояние при сбое"
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
 msgstr "Статус"
+
+#: src/features/home/HomePage.tsx
+msgid "Status and coming up"
+msgstr "Статус и что впереди"
 
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
@@ -20752,10 +20786,6 @@ msgstr "Кому"
 msgid "To let assistants send on their own, turn on <0>Bots may send</0>."
 msgstr "Чтобы ассистенты могли отправлять самостоятельно, включите <0>Боты могут отправлять</0>."
 
-#: src/features/home/HomePage.tsx
-msgid "to triage"
-msgstr "на разбор"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Кому: {emailTo}"
@@ -20767,6 +20797,7 @@ msgstr "Кому: {who}"
 
 #: src/app/Sidebar.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21600,10 +21631,6 @@ msgstr "Имя пользователя"
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: src/features/home/SiteCard.tsx
-msgid "users today"
-msgstr "пользователей сегодня"
-
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Using the inbox default"
 msgstr "Using the inbox default"
@@ -21737,6 +21764,10 @@ msgstr "посетители"
 msgid "Visitors"
 msgstr "Посетители"
 
+#: src/features/home/HomePage.tsx
+msgid "Visitors · 7 days"
+msgstr "Посетители · 7 дней"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Посетители могут чатиться без токена личности от вашего бэкенда."
@@ -21754,7 +21785,6 @@ msgid "Visitors subscribe on the page and get a mail when an incident or mainten
 msgstr "Посетители подписываются на странице и получают письмо, когда меняется статус инцидента или планового обслуживания."
 
 #: src/features/home/PropertyCard.tsx
-#: src/features/home/SiteCard.tsx
 msgid "visitors today"
 msgstr "посетителей сегодня"
 
@@ -21778,10 +21808,6 @@ msgstr "Визиты на ваши сайты с utm_campaign={campaign} с на
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Vouched for by the server's operator on {when}."
 msgstr "Поручился оператор сервера, {when}."
-
-#: src/features/home/HomePage.tsx
-msgid "waiting"
-msgstr "ждёт"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -21898,10 +21924,13 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "Ожидание проверки"
 
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "Ждут дольше всех"
+
+#: src/features/home/HomeSide.tsx
+msgid "Waiting on you"
+msgstr "Ждёт вас"
 
 #: src/features/home/HomeSide.tsx
 msgid "waits for approval"
@@ -22538,6 +22567,7 @@ msgid "Workspace settings"
 msgstr "Настройки рабочего пространства"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Workspace: {name}"
 msgstr "Рабочее пространство: {name}"
 

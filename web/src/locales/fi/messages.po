@@ -475,10 +475,6 @@ msgstr "{down, plural, one {# alhaalla} other {# alhaalla}}"
 msgid "{down} not helpful"
 msgstr "{down} ei hyödyllinen"
 
-#: src/features/home/HomeSide.tsx
-msgid "{drafts, plural, one {Assistant draft to review} other {Assistant drafts to review}}"
-msgstr "{drafts, plural, one {Tarkistettava avustajan luonnos} other {Tarkistettavat avustajan luonnokset}}"
-
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} jo Yuvassa"
@@ -522,10 +518,6 @@ msgstr "Verkkotunnuksella {from} ei ole SPF-tietuetta. Julkaise sellainen, joka 
 #: src/features/contact/ContactDetails.tsx
 msgid "{good} good"
 msgstr "{good} hyvää"
-
-#: src/features/home/HomePage.tsx
-msgid "{goodText} good of {ratedText}"
-msgstr "{goodText} hyviä, arvioita {ratedText}"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
@@ -591,17 +583,9 @@ msgstr "{left} jäljellä jatkettaessa"
 msgid "{listName} is ready"
 msgstr "{listName} on valmis"
 
-#: src/features/home/SiteCard.tsx
-msgid "{live} now"
-msgstr "{live} nyt"
-
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "{liveText} viimeisen 30 minuutin aikana"
-
-#: src/features/home/HomeSide.tsx
-msgid "{mentions, plural, one {Mention of you} other {Mentions of you}}"
-msgstr "{mentions, plural, one {Maininta sinusta} other {Mainintoja sinusta}}"
 
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
@@ -642,6 +626,10 @@ msgstr "{n, plural, one {# sovellus} other {# sovellusta}}"
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# day ago} other {# days ago}}"
+msgstr "{n, plural, one {# päivä sitten} other {# päivää sitten}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -902,10 +890,6 @@ msgstr "{person} poistui työtilasta poistamalla tilinsä"
 msgid "{picked} selected"
 msgstr "{picked} valittu"
 
-#: src/features/home/HomePage.tsx
-msgid "{product} only"
-msgstr "Vain {product}"
-
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
 msgstr "Tuotteen {product} keskustelut"
@@ -1020,6 +1004,10 @@ msgstr "{replies, plural, one {# vastaus} other {# vastausta}}"
 msgid "{replies} replies"
 msgstr "{replies} vastausta"
 
+#: src/components/common/PageSidebar.tsx
+msgid "{rest, plural, one {# more} other {# more}}"
+msgstr "{rest, plural, one {# lisää} other {# lisää}}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {ja # sivu lisää} other {ja # sivua lisää}}"
@@ -1080,10 +1068,6 @@ msgstr "{text} edelliseen jaksoon verrattuna"
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} avointa keskustelua"
-
-#: src/features/home/HomeSide.tsx
-msgid "{total, plural, one {# item} other {# items}}"
-msgstr "{total, plural, one {# kohta} other {# kohtaa}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1147,6 +1131,10 @@ msgstr "{votes} ääntä"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
+msgstr "{waiting, plural, one {# keskustelu odottaa.} other {# keskustelua odottaa.}}"
 
 #: src/features/home/HomePage.tsx
 msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
@@ -2485,6 +2473,7 @@ msgstr "Kaikki osat saapuivat. Luetaan tiedostoa …"
 msgid "all products"
 msgstr "kaikki tuotteet"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -5247,6 +5236,10 @@ msgstr "Sen kautta alkaneet keskustelut säilyttävät viestinsä."
 msgid "Conversations that started on this channel keep their messages."
 msgstr "Tämän kanavan kautta alkaneet keskustelut säilyttävät viestinsä."
 
+#: src/features/home/HomePage.tsx
+msgid "Conversations waiting for an answer, oldest first."
+msgstr "Vastausta odottavat keskustelut, vanhin ensin."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "Keskustelut, joihin tiimisi on kirjoittanut, säilyvät. Osoitteessa {address} ei muutu mikään."
@@ -5691,6 +5684,10 @@ msgstr "Tumma"
 #: src/app/Palette.tsx
 msgid "Dark appearance"
 msgstr "Tumma ulkoasu"
+
+#: src/components/common/PageLayout.tsx
+msgid "Dark mode"
+msgstr "Tumma tila"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Dark mode logo URL"
@@ -6223,6 +6220,7 @@ msgstr "Työpöytäilmoitukset on estetty tälle sivustolle selaimen asetuksissa
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6594,6 +6592,10 @@ msgstr "Luonnokset"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "Luonnoksia ja aikajanan tapahtumia ei voi poistaa."
+
+#: src/features/home/HomeSide.tsx
+msgid "Drafts to review"
+msgstr "Tarkistettavat luonnokset"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7550,6 +7552,10 @@ msgstr "Suodata viestit kuten tämä"
 msgid "Filters"
 msgstr "Suodattimet"
 
+#: src/components/common/PageSidebar.tsx
+msgid "Find a product"
+msgstr "Etsi tuote"
+
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
 msgstr "Löydät tilinumeron Chatwootin osoitteesta: numero merkkijonon /app/accounts/ jälkeen."
@@ -7654,10 +7660,6 @@ msgstr "ensimmäinen vastaus ajassa {first}"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "Ensimmäinen vastaus, 90. persentiili"
-
-#: src/features/home/HomePage.tsx
-msgid "First reply, median"
-msgstr "Ensimmäinen vastaus, mediaani"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -8431,7 +8433,9 @@ msgstr "Historia poistettu"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 msgid "Home"
 msgstr "Etusivu"
 
@@ -10492,6 +10496,10 @@ msgstr "mediaani {median}"
 msgid "median first reply"
 msgstr "ensimmäisen vastauksen mediaani"
 
+#: src/features/home/HomePage.tsx
+msgid "Median first reply"
+msgstr "Ensimmäinen vastaus, mediaani"
+
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "mediaani tänään"
@@ -10545,6 +10553,7 @@ msgstr "mainitsi sinut"
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -11166,6 +11175,10 @@ msgstr "NameID format"
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
 msgstr "Rajaa, mitä tähän kanavaan voi liittää. Palvelimen omat rajat pysyvät katona: kanava voi laskea niitä mutta ei nostaa."
 
+#: src/components/common/PageSidebar.tsx
+msgid "Navigation"
+msgstr "Navigointi"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "Tarvitaan joukkolähetyksiin"
@@ -11195,7 +11208,7 @@ msgstr "Vaatii huomiota"
 msgid "Needs the operator’s approval"
 msgstr "Tarvitsee ylläpitäjän hyväksynnän"
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomePage.tsx
 msgid "Needs you"
 msgstr "Odottaa sinua"
 
@@ -11298,8 +11311,8 @@ msgid "New conversations"
 msgstr "Uudet keskustelut"
 
 #: src/features/home/HomePage.tsx
-msgid "new conversations against first replies, per day"
-msgstr "uudet keskustelut ja ensimmäiset vastaukset päivittäin"
+msgid "New conversations against first replies, per day."
+msgstr "Uudet keskustelut ja ensimmäiset vastaukset päivittäin."
 
 #: src/features/home/HomePage.tsx
 msgid "New conversations and feedback show up here."
@@ -12041,10 +12054,6 @@ msgstr "Ei muita keskusteluja."
 msgid "No owner"
 msgstr "Ei omistajaa"
 
-#: src/features/home/HomePage.tsx
-msgid "no owner yet"
-msgstr "ei vielä vastuuhenkilöä"
-
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "Ei vielä sivuja"
@@ -12056,6 +12065,10 @@ msgstr "Ei odottavia kutsuja."
 #: src/features/settings/sla/SlaPage.tsx
 msgid "No policies yet."
 msgstr "Ei vielä käytäntöjä."
+
+#: src/components/common/PageSidebar.tsx
+msgid "No product by that name."
+msgstr "Tämännimistä tuotetta ei ole."
 
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
@@ -12273,10 +12286,6 @@ msgstr "Kukaan ei ole nyt paikalla."
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "Kukaan ei ole vielä tilaaja: jokainen uusi osoite saa listan vahvistusviestin, levitettynä päiville päivittäisellä lähetysrajalla, ja liittyy vasta napsautettuaan sitä."
-
-#: src/features/home/HomePage.tsx
-msgid "nobody is waiting"
-msgstr "kukaan ei odota"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nobody is waiting for a reply."
@@ -12868,12 +12877,12 @@ msgid "Older visits"
 msgstr "Vanhemmat käynnit"
 
 #: src/features/home/HomePage.tsx
-msgid "oldest {waited}"
-msgstr "vanhin {waited}"
-
-#: src/features/home/HomePage.tsx
 msgid "Oldest has waited {waited}."
 msgstr "Vanhin on odottanut {waited}."
+
+#: src/features/home/HomePage.tsx
+msgid "Oldest wait"
+msgstr "Pisin odotus"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -12909,6 +12918,7 @@ msgstr "Team- ja Enterprise-paketeissa omistaja lisää sen kerran kohdassa <0>O
 msgid "On the web"
 msgstr "Verkossa"
 
+#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13285,6 +13295,10 @@ msgstr "Avoimet keskustelut"
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "Avoimet osoitetut keskustelut"
+
+#: src/features/home/HomePage.tsx
+msgid "Open conversations now, new ones and ratings over the last {shown} days."
+msgstr "Nyt avoimet keskustelut, uudet ja arviot viimeiseltä {shown} päivältä."
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -14275,6 +14289,10 @@ msgstr "Valitse jokainen scope itse."
 msgid "Pick mails"
 msgstr "Valitse viestit"
 
+#: src/features/home/HomePage.tsx
+msgid "Pick one in the sidebar."
+msgstr "Valitse yksi sivupalkista."
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "Valitse tili myöhemmin listan asetuksista."
@@ -14615,6 +14633,7 @@ msgid "Production backend"
 msgstr "Tuotannon taustajärjestelmä"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -14883,6 +14902,7 @@ msgid "rated good"
 msgstr "arvioitu hyväksi"
 
 #: src/features/conversation/rating.tsx
+#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "Arvioitu hyväksi"
 
@@ -15801,6 +15821,7 @@ msgstr "Ilmoitettu virhe"
 
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "Reports"
@@ -16471,6 +16492,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -16611,6 +16633,7 @@ msgstr "Secret set"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "Osiot"
 
@@ -17410,6 +17433,10 @@ msgstr "Näytä {nRevoked} mitätöityä"
 msgid "Show all authors"
 msgstr "Näytä kaikki tekijät"
 
+#: src/features/home/HomePage.tsx
+msgid "Show all products"
+msgstr "Näytä kaikki tuotteet"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "Näytä arkistoidut ulkoasut"
@@ -17527,8 +17554,12 @@ msgid "Show who is online"
 msgstr "Näytä, kuka on paikalla"
 
 #: src/features/home/HomePage.tsx
-msgid "Showing {product} only. Show all products"
-msgstr "Näytetään vain {product}. Näytä kaikki tuotteet"
+msgid "Showing {product} only."
+msgstr "Näytetään vain {product}."
+
+#: src/features/home/HomePage.tsx
+msgid "Showing every product."
+msgstr "Näytetään kaikki tuotteet."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -17866,7 +17897,6 @@ msgstr "Sivuston linkki"
 msgid "Site name"
 msgstr "Sivuston nimi"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
@@ -18386,6 +18416,10 @@ msgstr "Tila kaatuessa"
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
 msgstr "Tila"
+
+#: src/features/home/HomePage.tsx
+msgid "Status and coming up"
+msgstr "Tila ja tulossa"
 
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
@@ -20752,10 +20786,6 @@ msgstr "Vastaanottaja"
 msgid "To let assistants send on their own, turn on <0>Bots may send</0>."
 msgstr "Jotta avustajat voivat lähettää itse, ota käyttöön <0>Botit saavat lähettää</0>."
 
-#: src/features/home/HomePage.tsx
-msgid "to triage"
-msgstr "lajiteltavana"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "Vastaanottaja: {emailTo}"
@@ -20767,6 +20797,7 @@ msgstr "Vastaanottaja: {who}"
 
 #: src/app/Sidebar.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21600,10 +21631,6 @@ msgstr "Käyttäjätunnus"
 msgid "Username"
 msgstr "Käyttäjätunnus"
 
-#: src/features/home/SiteCard.tsx
-msgid "users today"
-msgstr "käyttäjää tänään"
-
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Using the inbox default"
 msgstr "Using the inbox default"
@@ -21737,6 +21764,10 @@ msgstr "kävijää"
 msgid "Visitors"
 msgstr "Kävijät"
 
+#: src/features/home/HomePage.tsx
+msgid "Visitors · 7 days"
+msgstr "Kävijät · 7 päivää"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "Kävijät voivat chattailla ilman taustajärjestelmäsi identiteettitunnistetta."
@@ -21754,7 +21785,6 @@ msgid "Visitors subscribe on the page and get a mail when an incident or mainten
 msgstr "Kävijät tilaavat sivulla ja saavat viestin, kun häiriö tai huolto muuttuu."
 
 #: src/features/home/PropertyCard.tsx
-#: src/features/home/SiteCard.tsx
 msgid "visitors today"
 msgstr "kävijää tänään"
 
@@ -21778,10 +21808,6 @@ msgstr "Käynnit sivustoillesi, joilla on utm_campaign={campaign}, lähetyksen a
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Vouched for by the server's operator on {when}."
 msgstr "Palvelimen ylläpitäjä vahvisti {when}."
-
-#: src/features/home/HomePage.tsx
-msgid "waiting"
-msgstr "odottaa"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -21898,10 +21924,13 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "Odotetaan vahvistusta"
 
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "Odottanut pisimpään"
+
+#: src/features/home/HomeSide.tsx
+msgid "Waiting on you"
+msgstr "Odottaa sinua"
 
 #: src/features/home/HomeSide.tsx
 msgid "waits for approval"
@@ -22538,6 +22567,7 @@ msgid "Workspace settings"
 msgstr "Työtilan asetukset"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Workspace: {name}"
 msgstr "Työtila: {name}"
 

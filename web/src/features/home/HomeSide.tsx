@@ -3,6 +3,7 @@ import { Link, type To } from "react-router"
 
 import { byPresence } from "@/app/TeamMenu"
 import { useGo } from "@/app/Rail"
+import { InfoSection, KV } from "@/components/common/PageLayout"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
 import { useBroadcastsStatus } from "@/features/broadcasts/BroadcastParts"
@@ -20,9 +21,9 @@ import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useInboxes, useMembers } from "@/lib/workspace"
 
-export const cardClass = "rounded-2xl border bg-card"
+export const cardClass = "rounded-[10px] border bg-background"
 export const eyebrowClass = "m-0 text-small font-semibold tracking-[0.04em] text-muted-foreground uppercase"
-const titleClass = "m-0 text-body font-semibold"
+const titleClass = "m-0 text-body font-medium"
 
 export function Arrow() {
   return (
@@ -44,11 +45,8 @@ export function TextLink({ to, children, testId }: { to: To; children: React.Rea
   )
 }
 
-const rowClass =
-  "-mx-2 flex min-h-9 w-[calc(100%+1rem)] items-center gap-2.5 rounded-lg px-2 text-start outline-none transition-colors hover:bg-surface focus-visible:bg-surface"
-
-export function NeedsYou({ className }: { className?: string }) {
-  const { t, i18n } = useLingui()
+export function NeedsYou() {
+  const { t } = useLingui()
   const go = useGo()
   const [inboxId] = useInboxFilter()
   const mentions = (useMentions().data?.pages[0]?.items ?? []).filter(
@@ -57,46 +55,24 @@ export function NeedsYou({ className }: { className?: string }) {
   const botDrafts = Number(useDrafts({ author: "bot" }).data?.pages[0]?.total ?? 0)
   const assistantDrafts = Number(useDrafts({ author: "assistant" }).data?.pages[0]?.total ?? 0)
   const drafts = botDrafts + assistantDrafts
-  const total = mentions + drafts
-  if (total === 0) return null
-  const fmt = new Intl.NumberFormat(i18n.locale)
+  if (mentions + drafts === 0) return null
   return (
-    <section
-      aria-label={t`Needs you`}
-      className={cn(cardClass, "flex flex-col gap-1 px-[18px] py-4", className)}
-      data-testid="home-approvals"
-    >
-      <div className="flex items-baseline justify-between pb-1.5">
-        <h2 className={titleClass}>
-          <Trans>Needs you</Trans>
-        </h2>
-        <span className="text-caption text-faint">
-          <Plural value={total} one="# item" other="# items" />
-        </span>
-      </div>
-      {mentions > 0 && (
-        <Link to="/mentions" className={rowClass} data-testid="home-mention">
-          <span className="min-w-5 text-end font-mono font-medium">{fmt.format(mentions)}</span>
-          <span className="min-w-0 flex-1">
-            <Plural value={mentions} one="Mention of you" other="Mentions of you" />
-          </span>
-          <span className="text-faint">
-            <Arrow />
-          </span>
-        </Link>
-      )}
+    <InfoSection title={t`Waiting on you`} testId="home-approvals">
+      {mentions > 0 && <KV to="/mentions" label={t`Mentions`} value={mentions} tone="brand" testId="home-mention" />}
       {drafts > 0 && (
-        <button type="button" onClick={() => go("assistants")} className={rowClass} data-testid="home-drafts">
-          <span className="min-w-5 text-end font-mono font-medium">{fmt.format(drafts)}</span>
-          <span className="min-w-0 flex-1">
-            <Plural value={drafts} one="Assistant draft to review" other="Assistant drafts to review" />
+        <button
+          type="button"
+          onClick={() => go("assistants")}
+          className="flex w-full justify-between gap-3 rounded-sm py-[3px] text-start text-small leading-5 outline-none hover:[&>span:first-child]:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          data-testid="home-drafts"
+        >
+          <span className="shrink-0 text-muted-foreground">
+            <Trans>Drafts to review</Trans>
           </span>
-          <span className="text-faint">
-            <Arrow />
-          </span>
+          <span className="text-end">{drafts}</span>
         </button>
       )}
-    </section>
+    </InfoSection>
   )
 }
 
@@ -157,6 +133,7 @@ export function Status({ h, className }: { h: Home; className?: string }) {
       aria-label={t`Status`}
       className={cn(cardClass, "flex flex-col gap-2.5 px-[18px] py-4", className)}
       data-testid="home-status"
+      data-home-box
     >
       <div className="flex items-baseline justify-between gap-2">
         <h2 className={titleClass}>
@@ -232,6 +209,7 @@ export function ComingUp({ h, mailOnly, className }: { h: Home; mailOnly: boolea
       aria-label={t`Coming up`}
       className={cn(cardClass, "flex flex-col gap-3 px-[18px] py-4", className)}
       data-testid="home-upcoming"
+      data-home-box
     >
       <h2 className={titleClass}>
         <Trans>Coming up</Trans>
@@ -303,6 +281,7 @@ export function Publish({ h, mailOnly, className }: { h: Home; mailOnly: boolean
       aria-label={t`Publish`}
       className={cn(cardClass, "flex flex-col gap-3 px-[18px] py-4", className)}
       data-testid="home-publish"
+      data-home-box
     >
       <h2 className={titleClass}>
         <Trans>Publish</Trans>
@@ -369,7 +348,7 @@ export function Publish({ h, mailOnly, className }: { h: Home; mailOnly: boolean
   )
 }
 
-export function OnlineNow({ h, className }: { h: Home; className?: string }) {
+export function OnlineNow({ h }: { h: Home }) {
   const { t, i18n } = useLingui()
   const { membership } = useSession()
   const members = useMembers().data ?? []
@@ -381,24 +360,20 @@ export function OnlineNow({ h, className }: { h: Home; className?: string }) {
   const off = fmt.format(away.length)
   const offOpen = fmt.format(awayOpen)
   return (
-    <section
-      aria-label={t`Team`}
-      className={cn(cardClass, "flex flex-col gap-2.5 px-[18px] py-4", className)}
-      data-testid="home-team"
-    >
-      <div className="flex items-baseline justify-between gap-2">
-        <h2 className={titleClass}>
-          <Trans>Online now</Trans>
-        </h2>
+    <InfoSection
+      title={t`Online now`}
+      testId="home-team"
+      action={
         <Link
           to="/team"
-          className="text-caption font-medium text-muted-foreground hover:text-foreground hover:underline"
+          className="shrink-0 rounded-sm font-normal text-fg2 underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
         >
           {away.length === 0 ? t`Team` : awayOpen > 0 ? t`+${off} offline · ${offOpen} open` : t`+${off} offline`}
         </Link>
-      </div>
+      }
+    >
       {online.length === 0 ? (
-        <p className="m-0 text-small text-faint">
+        <p className="m-0 text-small text-muted-foreground">
           <Trans>Nobody is online right now.</Trans>
         </p>
       ) : (
@@ -409,18 +384,20 @@ export function OnlineNow({ h, className }: { h: Home; className?: string }) {
             <Link
               key={m.id}
               to={`/team/${m.id}`}
-              className="flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex items-center gap-2 rounded-sm py-[3px] text-small leading-5 outline-none hover:[&>span:nth-child(2)]:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
               data-testid={`home-member-${m.id}`}
             >
-              <Face id={m.id} name={name} online={m.online} away={m.availability === "away"} className="size-7" />
-              <span className="min-w-0 flex-1 truncate">{m.id === membership.member_id ? t`${name} (you)` : name}</span>
-              <span className="shrink-0 font-mono text-caption text-faint">
+              <Face id={m.id} name={name} online={m.online} away={m.availability === "away"} className="size-5" />
+              <span className="min-w-0 flex-1 truncate text-fg2">
+                {m.id === membership.member_id ? t`${name} (you)` : name}
+              </span>
+              <span className="shrink-0 font-mono text-caption text-muted-foreground">
                 <Plural value={open} one="# open" other="# open" />
               </span>
             </Link>
           )
         })
       )}
-    </section>
+    </InfoSection>
   )
 }

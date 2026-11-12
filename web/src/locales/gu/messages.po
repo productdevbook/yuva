@@ -475,10 +475,6 @@ msgstr "{down, plural, one {# બંધ} other {# બંધ}}"
 msgid "{down} not helpful"
 msgstr "{down} ઉપયોગી નથી"
 
-#: src/features/home/HomeSide.tsx
-msgid "{drafts, plural, one {Assistant draft to review} other {Assistant drafts to review}}"
-msgstr "{drafts, plural, one {સમીક્ષા માટે સહાયકનો ડ્રાફ્ટ} other {સમીક્ષા માટે સહાયકના ડ્રાફ્ટ}}"
-
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} પહેલેથી Yuva માં"
@@ -522,10 +518,6 @@ msgstr "{from} પાસે SPF રેકોર્ડ નથી. તમારા
 #: src/features/contact/ContactDetails.tsx
 msgid "{good} good"
 msgstr "{good} સારા"
-
-#: src/features/home/HomePage.tsx
-msgid "{goodText} good of {ratedText}"
-msgstr "{ratedText} માંથી {goodText} સારી"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
@@ -591,17 +583,9 @@ msgstr "ફરી શરૂ થતાં {left} બાકી રહેશે"
 msgid "{listName} is ready"
 msgstr "{listName} તૈયાર છે"
 
-#: src/features/home/SiteCard.tsx
-msgid "{live} now"
-msgstr "હમણાં {live}"
-
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "છેલ્લી 30 મિનિટમાં {liveText}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{mentions, plural, one {Mention of you} other {Mentions of you}}"
-msgstr "{mentions, plural, one {તમારો ઉલ્લેખ} other {તમારા ઉલ્લેખ}}"
 
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
@@ -642,6 +626,10 @@ msgstr "{n, plural, one {# ઍપ} other {# ઍપ}}"
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# day ago} other {# days ago}}"
+msgstr "{n, plural, one {# દિવસ પહેલાં} other {# દિવસ પહેલાં}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -902,10 +890,6 @@ msgstr "{person} એ ખાતું કાઢી નાખીને વર્�
 msgid "{picked} selected"
 msgstr "{picked} પસંદ કરેલ"
 
-#: src/features/home/HomePage.tsx
-msgid "{product} only"
-msgstr "ફક્ત {product}"
-
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
 msgstr "{product}ની વાતચીતો"
@@ -1020,6 +1004,10 @@ msgstr "{replies, plural, one {# જવાબ} other {# જવાબો}}"
 msgid "{replies} replies"
 msgstr "{replies} જવાબો"
 
+#: src/components/common/PageSidebar.tsx
+msgid "{rest, plural, one {# more} other {# more}}"
+msgstr "{rest, plural, one {વધુ #} other {વધુ #}}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {અને # વધુ પેજ} other {અને # વધુ પેજ}}"
@@ -1080,10 +1068,6 @@ msgstr "અગાઉના સમયગાળાની તુલનામાં 
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} ખુલ્લી ચર્ચાઓ"
-
-#: src/features/home/HomeSide.tsx
-msgid "{total, plural, one {# item} other {# items}}"
-msgstr "{total, plural, one {# આઇટમ} other {# આઇટમ}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1147,6 +1131,10 @@ msgstr "{votes} મત"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
+msgstr "{waiting, plural, one {# વાતચીત રાહ જુએ છે.} other {# વાતચીતો રાહ જુએ છે.}}"
 
 #: src/features/home/HomePage.tsx
 msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
@@ -2485,6 +2473,7 @@ msgstr "બધા ભાગ આવી ગયા. ફાઇલ વાંચી �
 msgid "all products"
 msgstr "બધા ઉત્પાદનો"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -5247,6 +5236,10 @@ msgstr "તેના પર શરૂ થયેલી વાતચીતો ત�
 msgid "Conversations that started on this channel keep their messages."
 msgstr "આ ચૅનલ પર શરૂ થયેલી વાતચીતો તેમના સંદેશા રાખે છે."
 
+#: src/features/home/HomePage.tsx
+msgid "Conversations waiting for an answer, oldest first."
+msgstr "જવાબની રાહ જોતી વાતચીતો, સૌથી જૂની પહેલાં."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "તમારી ટીમે જેમાં લખ્યું હોય તે વાતચીતો રહે છે. {address} માં કશું બદલાતું નથી."
@@ -5691,6 +5684,10 @@ msgstr "ડાર્ક"
 #: src/app/Palette.tsx
 msgid "Dark appearance"
 msgstr "ડાર્ક દેખાવ"
+
+#: src/components/common/PageLayout.tsx
+msgid "Dark mode"
+msgstr "ડાર્ક મોડ"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Dark mode logo URL"
@@ -6223,6 +6220,7 @@ msgstr "બ્રાઉઝરના સેટિંગ્સમાં આ સા
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6594,6 +6592,10 @@ msgstr "ડ્રાફ્ટ"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "ડ્રાફ્ટ અને ટાઇમલાઇનની ઘટનાઓ દૂર કરી શકાતી નથી."
+
+#: src/features/home/HomeSide.tsx
+msgid "Drafts to review"
+msgstr "સમીક્ષા માટેના ડ્રાફ્ટ"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7550,6 +7552,10 @@ msgstr "આના જેવા સંદેશા ફિલ્ટર કરો"
 msgid "Filters"
 msgstr "ફિલ્ટર"
 
+#: src/components/common/PageSidebar.tsx
+msgid "Find a product"
+msgstr "પ્રોડક્ટ શોધો"
+
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
 msgstr "Chatwootના સરનામામાં એકાઉન્ટ નંબર શોધો: /app/accounts/ પછીનો નંબર."
@@ -7654,10 +7660,6 @@ msgstr "{first} માં પહેલો જવાબ"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "પહેલો જવાબ, ૯૦મો પર્સેન્ટાઇલ"
-
-#: src/features/home/HomePage.tsx
-msgid "First reply, median"
-msgstr "પ્રથમ જવાબ, મધ્યક"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -8431,7 +8433,9 @@ msgstr "ઇતિહાસ દૂર કર્યો"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 msgid "Home"
 msgstr "હોમ"
 
@@ -10492,6 +10496,10 @@ msgstr "મધ્યસ્થ {median}"
 msgid "median first reply"
 msgstr "પહેલા જવાબનો મધ્યક"
 
+#: src/features/home/HomePage.tsx
+msgid "Median first reply"
+msgstr "પહેલો જવાબ, મધ્યક"
+
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "આજનું મધ્યસ્થ"
@@ -10545,6 +10553,7 @@ msgstr "એ તમારો ઉલ્લેખ કર્યો"
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -11166,6 +11175,10 @@ msgstr "NameID format"
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
 msgstr "આ ચૅનલમાં શું જોડી શકાય તે મર્યાદિત કરો. સર્વરની પોતાની મર્યાદા ટોચમર્યાદા રહે છે: ચૅનલ તેને ઘટાડી શકે, વધારી નહીં."
 
+#: src/components/common/PageSidebar.tsx
+msgid "Navigation"
+msgstr "નેવિગેશન"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "બ્રૉડકાસ્ટ માટે જરૂરી"
@@ -11195,7 +11208,7 @@ msgstr "ધ્યાન જોઈએ"
 msgid "Needs the operator’s approval"
 msgstr "ઑપરેટરની મંજૂરી જોઈએ"
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomePage.tsx
 msgid "Needs you"
 msgstr "તમારી રાહ જુએ છે"
 
@@ -11298,8 +11311,8 @@ msgid "New conversations"
 msgstr "નવી વાતચીતો"
 
 #: src/features/home/HomePage.tsx
-msgid "new conversations against first replies, per day"
-msgstr "દરરોજ નવી વાતચીત સામે પ્રથમ જવાબ"
+msgid "New conversations against first replies, per day."
+msgstr "દરરોજની નવી વાતચીતો સામે પહેલા જવાબો."
 
 #: src/features/home/HomePage.tsx
 msgid "New conversations and feedback show up here."
@@ -12041,10 +12054,6 @@ msgstr "બીજી કોઈ વાતચીત નથી."
 msgid "No owner"
 msgstr "કોઈ માલિક નથી"
 
-#: src/features/home/HomePage.tsx
-msgid "no owner yet"
-msgstr "હજી કોઈ જવાબદાર નથી"
-
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "હજી કોઈ પેજ નથી"
@@ -12056,6 +12065,10 @@ msgstr "કોઈ બાકી આમંત્રણ નથી."
 #: src/features/settings/sla/SlaPage.tsx
 msgid "No policies yet."
 msgstr "હજી કોઈ નીતિ નથી."
+
+#: src/components/common/PageSidebar.tsx
+msgid "No product by that name."
+msgstr "આ નામની કોઈ પ્રોડક્ટ નથી."
 
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
@@ -12273,10 +12286,6 @@ msgstr "હમણાં કોઈ ઑનલાઇન નથી."
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "હજી કોઈ સબ્સ્ક્રાઇબ થયું નથી: દરેક નવા સરનામાને લિસ્ટનો પુષ્ટિ મેઇલ મળે છે, દૈનિક મોકલવાની મર્યાદાથી દિવસો સુધી ફેલાયેલો, અને તેના પર ક્લિક કર્યા પછી જ જોડાય છે."
-
-#: src/features/home/HomePage.tsx
-msgid "nobody is waiting"
-msgstr "કોઈ રાહ જોતું નથી"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nobody is waiting for a reply."
@@ -12868,12 +12877,12 @@ msgid "Older visits"
 msgstr "જૂની મુલાકાતો"
 
 #: src/features/home/HomePage.tsx
-msgid "oldest {waited}"
-msgstr "સૌથી જૂની {waited}"
-
-#: src/features/home/HomePage.tsx
 msgid "Oldest has waited {waited}."
 msgstr "સૌથી જૂની વાતચીત {waited} થી રાહ જુએ છે."
+
+#: src/features/home/HomePage.tsx
+msgid "Oldest wait"
+msgstr "સૌથી લાંબી રાહ"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -12909,6 +12918,7 @@ msgstr "Team અને Enterprise પ્લાન પર માલિક તે�
 msgid "On the web"
 msgstr "વેબ પર"
 
+#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13285,6 +13295,10 @@ msgstr "ખુલ્લી વાતચીતો"
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "ખુલ્લી વાતચીતો સોંપાયેલી"
+
+#: src/features/home/HomePage.tsx
+msgid "Open conversations now, new ones and ratings over the last {shown} days."
+msgstr "હમણાં ખુલ્લી વાતચીતો, છેલ્લા {shown} દિવસની નવી વાતચીતો અને રેટિંગ."
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -14275,6 +14289,10 @@ msgstr "દરેક સ્કોપ જાતે પસંદ કરો."
 msgid "Pick mails"
 msgstr "મેલ પસંદ કરો"
 
+#: src/features/home/HomePage.tsx
+msgid "Pick one in the sidebar."
+msgstr "સાઇડબારમાંથી એક પસંદ કરો."
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "પછીથી લિસ્ટ સેટિંગ્સમાં એક પસંદ કરો."
@@ -14615,6 +14633,7 @@ msgid "Production backend"
 msgstr "પ્રોડક્શન બૅકએન્ડ"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -14883,6 +14902,7 @@ msgid "rated good"
 msgstr "સારું રેટિંગ"
 
 #: src/features/conversation/rating.tsx
+#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "સારું રેટિંગ"
 
@@ -15801,6 +15821,7 @@ msgstr "જાણ કરેલી નિષ્ફળતા"
 
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "Reports"
@@ -16471,6 +16492,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -16611,6 +16633,7 @@ msgstr "Secret set"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "વિભાગો"
 
@@ -17410,6 +17433,10 @@ msgstr "રદ કરેલી {nRevoked} બતાવો"
 msgid "Show all authors"
 msgstr "બધા લેખકો બતાવો"
 
+#: src/features/home/HomePage.tsx
+msgid "Show all products"
+msgstr "બધી પ્રોડક્ટ બતાવો"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "આર્કાઇવ કરેલી ડિઝાઇન બતાવો"
@@ -17527,8 +17554,12 @@ msgid "Show who is online"
 msgstr "કોણ ઑનલાઇન છે તે બતાવો"
 
 #: src/features/home/HomePage.tsx
-msgid "Showing {product} only. Show all products"
-msgstr "ફક્ત {product} બતાવાય છે. બધી પ્રોડક્ટ બતાવો"
+msgid "Showing {product} only."
+msgstr "ફક્ત {product} બતાવાય છે."
+
+#: src/features/home/HomePage.tsx
+msgid "Showing every product."
+msgstr "બધી પ્રોડક્ટ બતાવાય છે."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -17866,7 +17897,6 @@ msgstr "સાઇટની લિંક"
 msgid "Site name"
 msgstr "સાઇટનું નામ"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
@@ -18386,6 +18416,10 @@ msgstr "બંધ થાય ત્યારે સ્થિતિ"
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
 msgstr "સ્થિતિ"
+
+#: src/features/home/HomePage.tsx
+msgid "Status and coming up"
+msgstr "સ્ટેટસ અને આગળ શું"
 
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
@@ -20752,10 +20786,6 @@ msgstr "To"
 msgid "To let assistants send on their own, turn on <0>Bots may send</0>."
 msgstr "આસિસ્ટન્ટને જાતે મોકલવા દેવા, <0>બૉટ મોકલી શકે</0> ચાલુ કરો."
 
-#: src/features/home/HomePage.tsx
-msgid "to triage"
-msgstr "વર્ગીકરણ માટે"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "To: {emailTo}"
@@ -20767,6 +20797,7 @@ msgstr "પ્રતિ: {who}"
 
 #: src/app/Sidebar.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21600,10 +21631,6 @@ msgstr "વપરાશકર્તા નામ"
 msgid "Username"
 msgstr "વપરાશકર્તા નામ"
 
-#: src/features/home/SiteCard.tsx
-msgid "users today"
-msgstr "આજના વપરાશકર્તા"
-
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Using the inbox default"
 msgstr "Using the inbox default"
@@ -21737,6 +21764,10 @@ msgstr "મુલાકાતીઓ"
 msgid "Visitors"
 msgstr "મુલાકાતીઓ"
 
+#: src/features/home/HomePage.tsx
+msgid "Visitors · 7 days"
+msgstr "મુલાકાતીઓ · 7 દિવસ"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "મુલાકાતીઓ તમારા બૅકએન્ડના આઇડેન્ટિટી ટોકન વિના ચૅટ કરી શકે છે."
@@ -21754,7 +21785,6 @@ msgid "Visitors subscribe on the page and get a mail when an incident or mainten
 msgstr "મુલાકાતીઓ પેજ પર સબ્સ્ક્રાઇબ કરે છે અને ઘટના કે મેન્ટેનન્સમાં ફેરફાર થાય ત્યારે મેઇલ મેળવે છે."
 
 #: src/features/home/PropertyCard.tsx
-#: src/features/home/SiteCard.tsx
 msgid "visitors today"
 msgstr "આજે મુલાકાતીઓ"
 
@@ -21778,10 +21808,6 @@ msgstr "મોકલવાનું શરૂ થયું ત્યારથી
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Vouched for by the server's operator on {when}."
 msgstr "{when} એ સર્વરના સંચાલકે ખાતરી આપી."
-
-#: src/features/home/HomePage.tsx
-msgid "waiting"
-msgstr "રાહ જુએ છે"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -21898,10 +21924,13 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "ચકાસણીની રાહ"
 
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "સૌથી લાંબી રાહ જુએ છે"
+
+#: src/features/home/HomeSide.tsx
+msgid "Waiting on you"
+msgstr "તમારી રાહ"
 
 #: src/features/home/HomeSide.tsx
 msgid "waits for approval"
@@ -22538,6 +22567,7 @@ msgid "Workspace settings"
 msgstr "વર્કસ્પેસ સેટિંગ્સ"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Workspace: {name}"
 msgstr "વર્કસ્પેસ: {name}"
 

@@ -106,6 +106,22 @@ function Desktop({ frame, children }: { frame: boolean; children: React.ReactNod
   )
 }
 
+function MobileSidebar() {
+  const { isMobile } = useSidebar()
+  return isMobile ? <AppSidebar /> : null
+}
+
+function Flat({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider style={widths} className="flex-col" data-testid="shell">
+      <TopBar />
+      <MobileSidebar />
+      <CloseOnNavigate />
+      {children}
+    </SidebarProvider>
+  )
+}
+
 function CloseOnNavigate() {
   const { pathname } = useLocation()
   const { setOpenMobile } = useSidebar()
@@ -131,6 +147,13 @@ export function Layout() {
   const { apart } = useSession()
   const section = useSection()
   useMentionsView(pathname, apart)
+  if (!phone && section === "home") {
+    return (
+      <Flat>
+        <Outlet />
+      </Flat>
+    )
+  }
   if (!phone) {
     const frame =
       isChats(pathname, apart) ||

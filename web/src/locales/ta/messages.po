@@ -475,10 +475,6 @@ msgstr "{down, plural, one {# செயலிழப்பு} other {# செய
 msgid "{down} not helpful"
 msgstr "{down} உதவவில்லை"
 
-#: src/features/home/HomeSide.tsx
-msgid "{drafts, plural, one {Assistant draft to review} other {Assistant drafts to review}}"
-msgstr "{drafts, plural, one {சரிபார்க்க வேண்டிய உதவியாளர் வரைவு} other {சரிபார்க்க வேண்டிய உதவியாளர் வரைவுகள்}}"
-
 #: src/features/migrations/ReviewStep.tsx
 msgid "{existing} already in Yuva"
 msgstr "{existing} ஏற்கெனவே Yuva-வில் உள்ளன"
@@ -522,10 +518,6 @@ msgstr "{from}-க்கு SPF பதிவு இல்லை. உங்கள
 #: src/features/contact/ContactDetails.tsx
 msgid "{good} good"
 msgstr "{good} நன்று"
-
-#: src/features/home/HomePage.tsx
-msgid "{goodText} good of {ratedText}"
-msgstr "{ratedText} இல் {goodText} நல்லவை"
 
 #: src/features/migrations/ReviewStep.tsx
 msgid "{hidden, plural, one {# earlier message} other {# earlier messages}}"
@@ -591,17 +583,9 @@ msgstr "மீண்டும் தொடங்கும்போது {left} 
 msgid "{listName} is ready"
 msgstr "{listName} தயார்"
 
-#: src/features/home/SiteCard.tsx
-msgid "{live} now"
-msgstr "இப்போது {live}"
-
 #: src/features/home/PropertyCard.tsx
 msgid "{liveText} in the last 30 minutes"
 msgstr "கடந்த 30 நிமிடங்களில் {liveText}"
-
-#: src/features/home/HomeSide.tsx
-msgid "{mentions, plural, one {Mention of you} other {Mentions of you}}"
-msgstr "{mentions, plural, one {உங்களைப் பற்றிய குறிப்பு} other {உங்களைப் பற்றிய குறிப்புகள்}}"
 
 #: src/features/reports/ReportPages.tsx
 msgid "{met} met, {breached} breached"
@@ -642,6 +626,10 @@ msgstr "{n, plural, one {# ஆப்} other {# ஆப்கள்}}"
 #: src/features/broadcasts/Trigger.tsx
 msgid "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
 msgstr "{n, plural, one {# day after someone first signs in to {inbox}} other {# days after someone first signs in to {inbox}}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{n, plural, one {# day ago} other {# days ago}}"
+msgstr "{n, plural, one {# நாள் முன்} other {# நாட்கள் முன்}}"
 
 #: src/features/setup/SetupHub.tsx
 msgid "{n, plural, one {# documentation site} other {# documentation sites}}"
@@ -902,10 +890,6 @@ msgstr "{person} கணக்கை நீக்கி பணியிடத்�
 msgid "{picked} selected"
 msgstr "{picked} தேர்ந்தெடுக்கப்பட்டது"
 
-#: src/features/home/HomePage.tsx
-msgid "{product} only"
-msgstr "{product} மட்டும்"
-
 #: src/features/inbox/ChatsPage.tsx
 msgid "{product}’s conversations"
 msgstr "{product} உரையாடல்கள்"
@@ -1020,6 +1004,10 @@ msgstr "{replies, plural, one {# பதில்} other {# பதில்கள
 msgid "{replies} replies"
 msgstr "{replies} பதில்கள்"
 
+#: src/components/common/PageSidebar.tsx
+msgid "{rest, plural, one {# more} other {# more}}"
+msgstr "{rest, plural, one {மேலும் #} other {மேலும் #}}"
+
 #: src/features/contact/ContactVisits.tsx
 msgid "{rest, plural, one {and # more page} other {and # more pages}}"
 msgstr "{rest, plural, one {மேலும் # பக்கம்} other {மேலும் # பக்கங்கள்}}"
@@ -1080,10 +1068,6 @@ msgstr "முந்தைய காலத்துடன் ஒப்பிட�
 #: src/features/docs/PagesTab.tsx
 msgid "{threads} open discussions"
 msgstr "{threads} திறந்த விவாதங்கள்"
-
-#: src/features/home/HomeSide.tsx
-msgid "{total, plural, one {# item} other {# items}}"
-msgstr "{total, plural, one {# உருப்படி} other {# உருப்படிகள்}}"
 
 #: src/features/broadcasts/Overview.tsx
 msgid "{total, plural, one {Last 30 days · # broadcast} other {Last 30 days · # broadcasts}}"
@@ -1147,6 +1131,10 @@ msgstr "{votes} வாக்குகள்"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
 msgstr "{waiting, plural, =0 {Nobody is waiting.} one {# person is waiting and will not get it.} other {# people are waiting and will not get it.}}"
+
+#: src/features/home/HomePage.tsx
+msgid "{waiting, plural, one {# conversation is waiting.} other {# conversations are waiting.}}"
+msgstr "{waiting, plural, one {# உரையாடல் காத்திருக்கிறது.} other {# உரையாடல்கள் காத்திருக்கின்றன.}}"
 
 #: src/features/home/HomePage.tsx
 msgid "{waiting, plural, one {Open in Inbox} other {All {total} in Inbox}}"
@@ -2485,6 +2473,7 @@ msgstr "அனைத்துப் பகுதிகளும் வந்த�
 msgid "all products"
 msgstr "அனைத்து தயாரிப்புகள்"
 
+#: src/components/common/PageSidebar.tsx
 #: src/features/inbox/InboxPicker.tsx
 #: src/features/inbox/ProductSwitcher.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
@@ -5247,6 +5236,10 @@ msgstr "அதில் தொடங்கிய உரையாடல்கள�
 msgid "Conversations that started on this channel keep their messages."
 msgstr "இந்தச் சேனலில் தொடங்கிய உரையாடல்கள் தம் செய்திகளை வைத்திருக்கும்."
 
+#: src/features/home/HomePage.tsx
+msgid "Conversations waiting for an answer, oldest first."
+msgstr "பதிலுக்காகக் காத்திருக்கும் உரையாடல்கள், பழையது முதலில்."
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Conversations your team wrote in stay. Nothing changes in {address}."
 msgstr "உங்கள் குழு எழுதிய உரையாடல்கள் இருக்கும். {address}-இல் எதுவும் மாறாது."
@@ -5691,6 +5684,10 @@ msgstr "இருண்ட"
 #: src/app/Palette.tsx
 msgid "Dark appearance"
 msgstr "இருண்ட தோற்றம்"
+
+#: src/components/common/PageLayout.tsx
+msgid "Dark mode"
+msgstr "இருண்ட பயன்முறை"
 
 #: src/features/status/SettingsTab.tsx
 msgid "Dark mode logo URL"
@@ -6223,6 +6220,7 @@ msgstr "உலாவியின் அமைப்புகளில் இந�
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/migrations/ConnectStep.tsx
 #: src/features/migrations/ImportBanner.tsx
 #: src/features/migrations/TokenConnectStep.tsx
@@ -6594,6 +6592,10 @@ msgstr "வரைவுகள்"
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
 msgstr "வரைவுகளையும் காலவரிசை நிகழ்வுகளையும் நீக்க முடியாது."
+
+#: src/features/home/HomeSide.tsx
+msgid "Drafts to review"
+msgstr "மதிப்பாய்வுக்கான வரைவுகள்"
 
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Drafts waiting"
@@ -7550,6 +7552,10 @@ msgstr "இது போன்ற செய்திகளை வடிகட்
 msgid "Filters"
 msgstr "வடிகட்டிகள்"
 
+#: src/components/common/PageSidebar.tsx
+msgid "Find a product"
+msgstr "தயாரிப்பைத் தேடு"
+
 #: src/features/migrations/text.ts
 msgid "Find the account number in Chatwoot's address: the number after /app/accounts/."
 msgstr "Chatwoot முகவரியில் கணக்கு எண்ணைக் கண்டறியுங்கள்: /app/accounts/ க்குப் பின் உள்ள எண்."
@@ -7654,10 +7660,6 @@ msgstr "{first}-இல் முதல் பதில்"
 #: src/features/reports/TrendsReport.tsx
 msgid "First reply, 90th percentile"
 msgstr "முதல் பதில், 90வது சதவீதம்"
-
-#: src/features/home/HomePage.tsx
-msgid "First reply, median"
-msgstr "முதல் பதில், இடைநிலை"
 
 #: src/features/broadcasts/Import.tsx
 msgid "First rows of the file"
@@ -8431,7 +8433,9 @@ msgstr "வரலாறு அகற்றப்பட்டது"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 msgid "Home"
 msgstr "முகப்பு"
 
@@ -10492,6 +10496,10 @@ msgstr "இடைநிலை {median}"
 msgid "median first reply"
 msgstr "முதல் பதிலின் இடைநிலை"
 
+#: src/features/home/HomePage.tsx
+msgid "Median first reply"
+msgstr "முதல் பதில், இடைநிலை"
+
 #: src/features/reports/ReportPages.tsx
 msgid "median today"
 msgstr "இன்றைய இடைநிலை"
@@ -10545,6 +10553,7 @@ msgstr "உங்களைக் குறிப்பிட்டார்"
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomeSide.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Mentions"
@@ -11166,6 +11175,10 @@ msgstr "NameID format"
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
 msgstr "இந்தச் சேனலில் எதை இணைக்கலாம் என்பதைக் குறுக்கவும். சேவையகத்தின் சொந்த வரம்புகளே உச்சவரம்பு: சேனல் அவற்றைக் குறைக்கலாம், ஒருபோதும் உயர்த்த முடியாது."
 
+#: src/components/common/PageSidebar.tsx
+msgid "Navigation"
+msgstr "வழிசெலுத்தல்"
+
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
 msgstr "ஒளிபரப்புகளுக்குத் தேவை"
@@ -11195,7 +11208,7 @@ msgstr "கவனம் தேவை"
 msgid "Needs the operator’s approval"
 msgstr "இயக்குநரின் ஒப்புதல் தேவை"
 
-#: src/features/home/HomeSide.tsx
+#: src/features/home/HomePage.tsx
 msgid "Needs you"
 msgstr "உங்களுக்காகக் காத்திருப்பவை"
 
@@ -11298,8 +11311,8 @@ msgid "New conversations"
 msgstr "புதிய உரையாடல்கள்"
 
 #: src/features/home/HomePage.tsx
-msgid "new conversations against first replies, per day"
-msgstr "நாள்தோறும் புதிய உரையாடல்கள் மற்றும் முதல் பதில்கள்"
+msgid "New conversations against first replies, per day."
+msgstr "நாள்தோறும் புதிய உரையாடல்கள் மற்றும் முதல் பதில்கள்."
 
 #: src/features/home/HomePage.tsx
 msgid "New conversations and feedback show up here."
@@ -12041,10 +12054,6 @@ msgstr "வேறு உரையாடல்கள் இல்லை."
 msgid "No owner"
 msgstr "உரிமையாளர் இல்லை"
 
-#: src/features/home/HomePage.tsx
-msgid "no owner yet"
-msgstr "இன்னும் பொறுப்பாளர் இல்லை"
-
 #: src/features/docs/PagesTab.tsx
 msgid "No pages yet"
 msgstr "இன்னும் பக்கங்கள் இல்லை"
@@ -12056,6 +12065,10 @@ msgstr "நிலுவையில் உள்ள அழைப்புகள�
 #: src/features/settings/sla/SlaPage.tsx
 msgid "No policies yet."
 msgstr "இன்னும் கொள்கைகள் இல்லை."
+
+#: src/components/common/PageSidebar.tsx
+msgid "No product by that name."
+msgstr "இந்தப் பெயரில் தயாரிப்பு இல்லை."
 
 #: src/features/settings/ProductsPage.tsx
 msgid "No products yet"
@@ -12273,10 +12286,6 @@ msgstr "இப்போது யாரும் ஆன்லைனில் இ
 #: src/features/broadcasts/Import.tsx
 msgid "Nobody is subscribed yet: each new address gets the list’s confirmation mail, spread over days by the daily sending limit, and joins only after clicking it."
 msgstr "இன்னும் யாரும் சந்தா செய்யவில்லை: ஒவ்வொரு புதிய முகவரிக்கும் பட்டியலின் உறுதிப்படுத்தல் அஞ்சல் கிடைக்கும், தினசரி அனுப்பு வரம்பால் நாட்களுக்குப் பரவி, அதைக் கிளிக் செய்த பிறகே சேரும்."
-
-#: src/features/home/HomePage.tsx
-msgid "nobody is waiting"
-msgstr "யாரும் காத்திருக்கவில்லை"
 
 #: src/features/inbox/ChatList.tsx
 msgid "Nobody is waiting for a reply."
@@ -12868,12 +12877,12 @@ msgid "Older visits"
 msgstr "பழைய வருகைகள்"
 
 #: src/features/home/HomePage.tsx
-msgid "oldest {waited}"
-msgstr "மிகப் பழையது {waited}"
-
-#: src/features/home/HomePage.tsx
 msgid "Oldest has waited {waited}."
 msgstr "மிகப் பழையது {waited} காத்திருக்கிறது."
+
+#: src/features/home/HomePage.tsx
+msgid "Oldest wait"
+msgstr "நீண்ட காத்திருப்பு"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/settings/SettingsColumn.tsx
@@ -12909,6 +12918,7 @@ msgstr "Team மற்றும் Enterprise திட்டங்களில�
 msgid "On the web"
 msgstr "இணையத்தில்"
 
+#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "On this page"
@@ -13285,6 +13295,10 @@ msgstr "திறந்த உரையாடல்கள்"
 #: src/features/team/TeamPage.tsx
 msgid "Open conversations assigned"
 msgstr "ஒதுக்கப்பட்ட திறந்த உரையாடல்கள்"
+
+#: src/features/home/HomePage.tsx
+msgid "Open conversations now, new ones and ratings over the last {shown} days."
+msgstr "இப்போது திறந்திருக்கும் உரையாடல்கள், கடந்த {shown} நாட்களின் புதியவை மற்றும் மதிப்பீடுகள்."
 
 #: src/features/status/LinkConversationsDialog.tsx
 msgid "Open conversations of this product that may be about {title}."
@@ -14275,6 +14289,10 @@ msgstr "ஒவ்வொரு நோக்கெல்லையையும் �
 msgid "Pick mails"
 msgstr "அஞ்சல்களைத் தேர்ந்தெடுக்கவும்"
 
+#: src/features/home/HomePage.tsx
+msgid "Pick one in the sidebar."
+msgstr "பக்கப்பட்டியில் ஒன்றைத் தேர்ந்தெடுக்கவும்."
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
 msgstr "பின்னர் பட்டியல் அமைப்புகளில் ஒன்றைத் தேர்ந்தெடுங்கள்."
@@ -14615,6 +14633,7 @@ msgid "Production backend"
 msgstr "உற்பத்திப் பின்தளம்"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -14883,6 +14902,7 @@ msgid "rated good"
 msgstr "நன்று என மதிப்பிடப்பட்டது"
 
 #: src/features/conversation/rating.tsx
+#: src/features/home/HomePage.tsx
 msgid "Rated good"
 msgstr "நன்று என மதிப்பிடப்பட்டது"
 
@@ -15801,6 +15821,7 @@ msgstr "புகாரளிக்கப்பட்ட தோல்வி"
 
 #: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 msgid "Reports"
@@ -16471,6 +16492,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
@@ -16611,6 +16633,7 @@ msgstr "Secret set"
 
 #: src/app/Rail.tsx
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Sections"
 msgstr "பிரிவுகள்"
 
@@ -17410,6 +17433,10 @@ msgstr "திரும்பப் பெற்ற {nRevoked}-ஐக் கா�
 msgid "Show all authors"
 msgstr "எல்லா எழுத்தாளர்களையும் காட்டு"
 
+#: src/features/home/HomePage.tsx
+msgid "Show all products"
+msgstr "எல்லா தயாரிப்புகளையும் காட்டு"
+
 #: src/components/common/ShortcutSheet.tsx
 msgid "Show archived designs"
 msgstr "காப்பகப்படுத்தப்பட்ட வடிவமைப்புகளைக் காட்டு"
@@ -17527,8 +17554,12 @@ msgid "Show who is online"
 msgstr "யார் ஆன்லைனில் உள்ளனர் எனக் காட்டு"
 
 #: src/features/home/HomePage.tsx
-msgid "Showing {product} only. Show all products"
-msgstr "{product} மட்டும் காட்டப்படுகிறது. அனைத்து தயாரிப்புகளையும் காட்டு"
+msgid "Showing {product} only."
+msgstr "{product} மட்டும் காட்டப்படுகிறது."
+
+#: src/features/home/HomePage.tsx
+msgid "Showing every product."
+msgstr "எல்லா தயாரிப்புகளும் காட்டப்படுகின்றன."
 
 #: src/features/broadcasts/Composer.tsx
 msgid "Shown after the subject in most inboxes. Empty uses the design’s own."
@@ -17866,7 +17897,6 @@ msgstr "தளத்தின் இணைப்பு"
 msgid "Site name"
 msgstr "தளப் பெயர்"
 
-#: src/features/home/HomePage.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
 #: src/features/setup/SetupLayout.tsx
 msgid "Sites"
@@ -18386,6 +18416,10 @@ msgstr "செயலிழந்தால் நிலை"
 #: src/features/settings/webhooks/events.tsx
 msgid "Status"
 msgstr "நிலை"
+
+#: src/features/home/HomePage.tsx
+msgid "Status and coming up"
+msgstr "நிலை மற்றும் வரவிருப்பவை"
 
 #: src/features/status/StatusPages.tsx
 msgid "Status page"
@@ -20752,10 +20786,6 @@ msgstr "To"
 msgid "To let assistants send on their own, turn on <0>Bots may send</0>."
 msgstr "உதவியாளர்கள் தாமாக அனுப்ப, <0>பாட்கள் அனுப்பலாம்</0>-ஐ இயக்குங்கள்."
 
-#: src/features/home/HomePage.tsx
-msgid "to triage"
-msgstr "வகைப்படுத்த"
-
 #: src/features/conversation/composer/ReplyBox.tsx
 msgid "To: {emailTo}"
 msgstr "To: {emailTo}"
@@ -20767,6 +20797,7 @@ msgstr "பெறுநர்: {who}"
 
 #: src/app/Sidebar.tsx
 #: src/features/conversation/messages/Thread.tsx
+#: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
@@ -21600,10 +21631,6 @@ msgstr "பயனர் பெயர்"
 msgid "Username"
 msgstr "பயனர் பெயர்"
 
-#: src/features/home/SiteCard.tsx
-msgid "users today"
-msgstr "இன்றைய பயனர்கள்"
-
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Using the inbox default"
 msgstr "Using the inbox default"
@@ -21737,6 +21764,10 @@ msgstr "பார்வையாளர்கள்"
 msgid "Visitors"
 msgstr "பார்வையாளர்கள்"
 
+#: src/features/home/HomePage.tsx
+msgid "Visitors · 7 days"
+msgstr "பார்வையாளர்கள் · 7 நாட்கள்"
+
 #: src/features/settings/channels/chat/ChatFields.tsx
 msgid "Visitors can chat without an identity token from your backend."
 msgstr "பார்வையாளர்கள் உங்கள் பின்தளத்தின் அடையாளக் குறியீடு இல்லாமல் அரட்டையடிக்கலாம்."
@@ -21754,7 +21785,6 @@ msgid "Visitors subscribe on the page and get a mail when an incident or mainten
 msgstr "பார்வையாளர்கள் பக்கத்தில் சந்தா செலுத்துவார்கள்; சம்பவம் அல்லது பராமரிப்பில் மாற்றம் ஏற்படும்போது அவர்களுக்கு அஞ்சல் வரும்."
 
 #: src/features/home/PropertyCard.tsx
-#: src/features/home/SiteCard.tsx
 msgid "visitors today"
 msgstr "இன்று பார்வையாளர்கள்"
 
@@ -21778,10 +21808,6 @@ msgstr "அனுப்புதல் தொடங்கியதிலிர�
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "Vouched for by the server's operator on {when}."
 msgstr "{when} அன்று சேவையகத்தின் இயக்குநர் உறுதிப்படுத்தினார்."
-
-#: src/features/home/HomePage.tsx
-msgid "waiting"
-msgstr "காத்திருக்கிறது"
 
 #: src/components/common/Linked.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -21898,10 +21924,13 @@ msgstr "waiting for their time"
 msgid "Waiting for validation"
 msgstr "சரிபார்ப்புக்காகக் காத்திருக்கிறது"
 
-#: src/features/home/HomePage.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Waiting longest"
 msgstr "அதிக நேரம் காத்திருப்பவை"
+
+#: src/features/home/HomeSide.tsx
+msgid "Waiting on you"
+msgstr "உங்களுக்காகக் காத்திருப்பவை"
 
 #: src/features/home/HomeSide.tsx
 msgid "waits for approval"
@@ -22538,6 +22567,7 @@ msgid "Workspace settings"
 msgstr "பணியிட அமைப்புகள்"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/PageSidebar.tsx
 msgid "Workspace: {name}"
 msgstr "பணியிடம்: {name}"
 
