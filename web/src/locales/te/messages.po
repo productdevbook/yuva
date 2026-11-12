@@ -2542,7 +2542,7 @@ msgstr "అన్ని భాగాలు వచ్చాయి. ఫైల్�
 msgid "all products"
 msgstr "అన్ని ఉత్పత్తులు"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "నిలువు వరుసలకు తిరిగి"
 msgid "Back to draft"
 msgstr "డ్రాఫ్ట్‌కు తిరిగి"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "హోమ్‌కు తిరిగి వెళ్లండి"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "సెటప్‌కు తిరిగి"
@@ -4028,6 +4033,7 @@ msgstr "లింక్‌లలో ప్రచారం"
 msgid "Campaign name"
 msgstr "ప్రచారం పేరు"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "ఇలాంటి సందేశాలను ఫిల్టర్ చ
 msgid "Filters"
 msgstr "ఫిల్టర్లు"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "ప్రోడక్ట్‌ను కనుగొనండి"
 
@@ -8604,7 +8610,6 @@ msgstr "చరిత్ర తొలగించబడింది"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "కొత్త విలువ"
 msgid "New webhook endpoint"
 msgstr "కొత్త వెబ్‌హుక్ ఎండ్‌పాయింట్"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "కొత్త వర్క్‌స్పేస్"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "కొత్త మెయిల్ మరియు మార్పిడి"
@@ -12292,7 +12301,7 @@ msgstr "పెండింగ్ ఆహ్వానాలు లేవు."
 msgid "No policies yet."
 msgstr "ఇంకా విధానాలు లేవు."
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "ఈ పేరుతో ప్రోడక్ట్ లేదు."
 
@@ -14836,6 +14845,7 @@ msgstr "ప్రైవేట్"
 msgid "pro, team"
 msgstr "pro, team"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "ప్రొడక్షన్ బ్యాకెండ్"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "షార్ట్‌కట్"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "చూపండి"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "మరో {hidden} చూపించు"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "పని చేస్తోంది…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "వర్క్‌స్పేస్ పేరు"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "వర్క్‌స్పేస్ సెట్టింగ్‌లు"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "వర్క్‌స్పేస్: {name}"
 

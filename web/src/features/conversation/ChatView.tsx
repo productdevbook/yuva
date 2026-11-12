@@ -26,7 +26,7 @@ import {
   VisitorAvatar,
 } from "@/components/common"
 import { inboxRoot } from "@/app/shell"
-import { TopPortal } from "@/components/common/PageLayout"
+import { TopPortal, usePhoneBackTarget } from "@/components/common/PageLayout"
 import { SHORTCUTS } from "@/components/common/ShortcutSheet"
 import { useEnumText, useErrorText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
@@ -116,11 +116,13 @@ const LinkIdeaDialog = lazy(() => import("@/features/roadmap/LinkIdeaDialog"))
 
 function BackButton({ onBack }: { onBack?: () => void }) {
   const { t } = useLingui()
+  usePhoneBackTarget(onBack ? { label: t`Back to the list`, onClick: onBack } : undefined)
   if (!onBack) return null
   return (
     <Button
       variant="ghost"
       size="icon-sm"
+      className="max-md:hidden"
       onClick={onBack}
       aria-label={t`Back to the list`}
       title={t`Back to the list`}

@@ -2542,7 +2542,7 @@ msgstr "ಎಲ್ಲಾ ಭಾಗಗಳು ತಲುಪಿವೆ. ಫೈಲ್ �
 msgid "all products"
 msgstr "ಎಲ್ಲಾ ಉತ್ಪನ್ನಗಳು"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "ಕಾಲಮ್‌ಗಳಿಗೆ ಹಿಂತಿರುಗಿ"
 msgid "Back to draft"
 msgstr "ಡ್ರಾಫ್ಟ್‌ಗೆ ಹಿಂತಿರುಗಿ"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "ಸೆಟಪ್‌ಗೆ ಹಿಂತಿರುಗಿ"
@@ -4028,6 +4033,7 @@ msgstr "ಲಿಂಕ್‌ಗಳಲ್ಲಿ ಅಭಿಯಾನ"
 msgid "Campaign name"
 msgstr "ಅಭಿಯಾನದ ಹೆಸರು"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "ಇದರಂತಹ ಸಂದೇಶಗಳನ್ನು ಫಿಲ್ಟರ�
 msgid "Filters"
 msgstr "ಫಿಲ್ಟರ್‌ಗಳು"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "ಪ್ರಾಡಕ್ಟ್ ಹುಡುಕಿ"
 
@@ -8604,7 +8610,6 @@ msgstr "ಇತಿಹಾಸ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "ಹೊಸ ಮೌಲ್ಯ"
 msgid "New webhook endpoint"
 msgstr "ಹೊಸ ವೆಬ್‌ಹುಕ್ ಎಂಡ್‌ಪಾಯಿಂಟ್"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "ಹೊಸ ವರ್ಕ್‌ಸ್ಪೇಸ್"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "ಹೊಸ ಮೇಲ್ ಮತ್ತು ಬದಲಾವಣೆ"
@@ -12292,7 +12301,7 @@ msgstr "ಬಾಕಿ ಇರುವ ಆಹ್ವಾನಗಳಿಲ್ಲ."
 msgid "No policies yet."
 msgstr "ಇನ್ನೂ ನೀತಿಗಳಿಲ್ಲ."
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "ಈ ಹೆಸರಿನ ಪ್ರಾಡಕ್ಟ್ ಇಲ್ಲ."
 
@@ -14836,6 +14845,7 @@ msgstr "ಖಾಸಗಿ"
 msgid "pro, team"
 msgstr "pro, team"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "ಪ್ರೊಡಕ್ಷನ್ ಬ್ಯಾಕೆಂಡ್"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "ಶಾರ್ಟ್‌ಕಟ್"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "ತೋರಿಸಿ"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "ಇನ್ನೂ {hidden} ತೋರಿಸಿ"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "ಕೆಲಸ ಮಾಡುತ್ತಿದೆ…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್ ಹೆಸರು"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "ವರ್ಕ್‌ಸ್ಪೇಸ್: {name}"
 

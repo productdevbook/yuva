@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, EllipsisIcon } from "lucide-react"
+import { EllipsisIcon } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router"
 
@@ -34,6 +34,7 @@ import { OverflowTabs } from "@/components/common/OverflowTabs"
 import type { Contact } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
+import { PageBackLink } from "@/components/common/PageLayout"
 
 const inkButton = "h-8 rounded-[9px] bg-foreground px-3.5 font-semibold text-background hover:bg-foreground/90"
 const outlineButton = "h-8 rounded-[9px] border-input bg-card px-3 font-normal"
@@ -469,14 +470,12 @@ export function ContactDetail({ id, page, back }: { id: string; page: boolean; b
 
 function BackLink({ to, label }: { to: string; label: string }) {
   return (
-    <Link
+    <PageBackLink
       to={to}
+      label={label}
       className="inline-flex w-fit items-center gap-1.5 text-body text-faint transition-colors hover:text-foreground"
-      data-testid="contact-back"
-    >
-      <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
-      {label}
-    </Link>
+      testId="contact-back"
+    />
   )
 }
 

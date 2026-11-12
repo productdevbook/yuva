@@ -2542,7 +2542,7 @@ msgstr "ได้รับครบทุกส่วนแล้ว กำล�
 msgid "all products"
 msgstr "ผลิตภัณฑ์ทั้งหมด"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "กลับไปที่คอลัมน์"
 msgid "Back to draft"
 msgstr "กลับไปที่ฉบับร่าง"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "กลับไปหน้าหลัก"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "กลับไปที่การตั้งค่า"
@@ -4028,6 +4033,7 @@ msgstr "แคมเปญในลิงก์"
 msgid "Campaign name"
 msgstr "ชื่อแคมเปญ"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "กรองข้อความที่คล้ายนี้"
 msgid "Filters"
 msgstr "ตัวกรอง"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "ค้นหาผลิตภัณฑ์"
 
@@ -8604,7 +8610,6 @@ msgstr "ลบประวัติแล้ว"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "ค่าใหม่"
 msgid "New webhook endpoint"
 msgstr "เอนด์พอยต์เว็บฮุกใหม่"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "เวิร์กสเปซใหม่"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "อีเมลที่ใหม่กว่าและการสลับ"
@@ -12292,7 +12301,7 @@ msgstr "ไม่มีคำเชิญที่รออยู่"
 msgid "No policies yet."
 msgstr "ยังไม่มีนโยบาย"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "ไม่มีผลิตภัณฑ์ชื่อนี้"
 
@@ -14836,6 +14845,7 @@ msgstr "ส่วนตัว"
 msgid "pro, team"
 msgstr "pro, team"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "แบ็กเอนด์โปรดักชัน"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "แป้นพิมพ์ลัด"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "แสดง"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "แสดงอีก {hidden} รายการ"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "กำลังทำงาน…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "ชื่อพื้นที่ทำงาน"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "การตั้งค่าพื้นที่ทำงาน"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "พื้นที่ทำงาน: {name}"
 

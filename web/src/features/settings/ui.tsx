@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react"
+import { ChevronRightIcon } from "lucide-react"
 import { createContext, useContext } from "react"
 import { Link, useNavigate, type To } from "react-router"
 
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+import { PageBackLink } from "@/components/common/PageLayout"
 
 const Band = createContext(false)
 
@@ -124,18 +125,16 @@ export function PageHeader({
       )}
     >
       {to && (
-        <Link
+        <PageBackLink
           to={to.to}
+          label={to.label}
           className={cn(
             "w-fit items-center gap-1.5 text-body text-faint transition-colors hover:text-foreground",
             band ? "-mb-1" : "mb-4.5",
-            back === undefined ? "hidden phone:inline-flex" : "inline-flex"
+            back === undefined ? "hidden" : "inline-flex"
           )}
-          data-testid="settings-back"
-        >
-          <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
-          {to.label}
-        </Link>
+          testId="settings-back"
+        />
       )}
       {eyebrow && <p className={cn("text-small text-faint", !band && "mb-2.5")}>{eyebrow}</p>}
       <div className={cn("flex flex-wrap items-center gap-3", band && !tabs && "pb-4")}>

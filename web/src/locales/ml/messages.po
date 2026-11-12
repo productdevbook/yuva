@@ -2542,7 +2542,7 @@ msgstr "എല്ലാ ഭാഗങ്ങളും എത്തി. ഫയൽ �
 msgid "all products"
 msgstr "എല്ലാ ഉൽപ്പന്നങ്ങളും"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "കോളങ്ങളിലേക്ക് തിരികെ"
 msgid "Back to draft"
 msgstr "ഡ്രാഫ്റ്റിലേക്ക് തിരികെ"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "ഹോമിലേക്ക് മടങ്ങുക"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "സെറ്റപ്പിലേക്ക് തിരികെ"
@@ -4028,6 +4033,7 @@ msgstr "ലിങ്കുകളിലെ ക്യാമ്പെയ്ൻ"
 msgid "Campaign name"
 msgstr "ക്യാമ്പെയ്ൻ പേര്"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "ഇതുപോലുള്ള സന്ദേശങ്ങൾ ഫിൽ�
 msgid "Filters"
 msgstr "ഫിൽട്ടറുകൾ"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "പ്രോഡക്റ്റ് കണ്ടെത്തുക"
 
@@ -8604,7 +8610,6 @@ msgstr "ചരിത്രം നീക്കം ചെയ്തു"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "പുതിയ മൂല്യം"
 msgid "New webhook endpoint"
 msgstr "പുതിയ വെബ്ഹൂക്ക് എൻഡ്‌പോയിന്റ്"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "പുതിയ വർക്ക്‌സ്‌പേസ്"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "പുതിയ മെയിലും സ്വിച്ചും"
@@ -12292,7 +12301,7 @@ msgstr "തീർപ്പാക്കാത്ത ക്ഷണങ്ങളി�
 msgid "No policies yet."
 msgstr "ഇതുവരെ നയങ്ങളില്ല."
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "ഈ പേരിൽ പ്രോഡക്റ്റ് ഇല്ല."
 
@@ -14836,6 +14845,7 @@ msgstr "സ്വകാര്യം"
 msgid "pro, team"
 msgstr "pro, team"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "പ്രൊഡക്ഷൻ ബാക്കെൻഡ്"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "കുറുക്കുവഴി"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "കാണിക്കുക"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "{hidden} എണ്ണം കൂടി കാണിക്കുക"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "പ്രവർത്തിക്കുന്നു…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "വർക്ക്സ്പേസ് പേര്"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "വർക്ക്സ്പേസ് ക്രമീകരണങ്ങൾ"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "വർക്ക്സ്പേസ്: {name}"
 

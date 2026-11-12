@@ -8,6 +8,7 @@ import { ErrorLine, Notice } from "@/components/common"
 import { SaveBarProvider } from "@/components/common/SaveBar"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useConversations } from "@/features/inbox/queries"
 import { useHotkeys } from "@/hooks/use-hotkeys"
@@ -59,6 +60,7 @@ import { api, unwrap, type Channel } from "@/lib/api"
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { useAllInboxes, useChannel } from "@/lib/workspace"
+import { usePhoneBackTarget } from "@/components/common/PageLayout"
 
 const HASH_TAB: Record<string, ChannelTab> = {
   ses: "deliverability",
@@ -252,6 +254,7 @@ function Body({ ch, tab }: { ch: Channel; tab: ChannelTab }) {
 
 function Crumb({ ch, inboxName }: { ch: Channel; inboxName?: string }) {
   const { t } = useLingui()
+  usePhoneBackTarget({ to: "/settings?view=channels", label: t`Channels` })
   const link =
     "min-w-0 truncate text-faint transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
   return (
@@ -259,10 +262,10 @@ function Crumb({ ch, inboxName }: { ch: Channel; inboxName?: string }) {
       aria-label={t`Channel`}
       className="flex min-w-0 shrink-0 items-center gap-1.5 px-6 pt-4 text-body phone:px-4 phone:pt-3"
     >
-      <Link to="/settings?view=channels" className={link} data-testid="settings-back">
+      <Link to="/settings?view=channels" className={cn(link, "max-md:hidden")} data-testid="settings-back">
         <Trans>Channels</Trans>
       </Link>
-      <ChevronRightIcon className="size-3.5 shrink-0 text-faint rtl:rotate-180" aria-hidden />
+      <ChevronRightIcon className="size-3.5 shrink-0 text-faint max-md:hidden rtl:rotate-180" aria-hidden />
       <Link to={`/settings/inboxes/${ch.inbox_id}`} className={link}>
         {inboxName ?? <Trans>Product</Trans>}
       </Link>

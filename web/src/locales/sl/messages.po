@@ -2542,7 +2542,7 @@ msgstr "Vsi deli so prispeli. Branje datoteke …"
 msgid "all products"
 msgstr "vsi izdelki"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "Nazaj na stolpce"
 msgid "Back to draft"
 msgstr "Nazaj na osnutek"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "Nazaj na domačo stran"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "Nazaj na nastavitev"
@@ -4028,6 +4033,7 @@ msgstr "Kampanja v povezavah"
 msgid "Campaign name"
 msgstr "Ime kampanje"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "Filtriraj sporočila, kot je to"
 msgid "Filters"
 msgstr "Filtri"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "Najdi izdelek"
 
@@ -8604,7 +8610,6 @@ msgstr "Zgodovina odstranjena"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "Nova vrednost"
 msgid "New webhook endpoint"
 msgstr "Nova končna točka spletne kljuke"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "Nov delovni prostor"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "Novejša pošta in preklop"
@@ -12292,7 +12301,7 @@ msgstr "Ni čakajočih povabil."
 msgid "No policies yet."
 msgstr "Še ni pravil."
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "Ni izdelka s tem imenom."
 
@@ -14836,6 +14845,7 @@ msgstr "Zasebno"
 msgid "pro, team"
 msgstr "pro, ekipa"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "Produkcijsko zaledje"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "Bližnjica"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "Pokaži"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "Pokaži še {hidden}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "Delam …"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "Ime delovnega prostora"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "Nastavitve delovnega prostora"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "Delovni prostor: {name}"
 

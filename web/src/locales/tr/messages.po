@@ -2542,7 +2542,7 @@ msgstr "Tüm parçalar ulaştı. Dosya okunuyor…"
 msgid "all products"
 msgstr "tüm ürünler"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "Sütunlara dön"
 msgid "Back to draft"
 msgstr "Taslağa dön"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "Ana sayfaya dön"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "Kuruluma dön"
@@ -4028,6 +4033,7 @@ msgstr "Bağlantılarda kampanya"
 msgid "Campaign name"
 msgstr "Kampanya adı"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "Buna benzeyen iletileri filtrele"
 msgid "Filters"
 msgstr "Filtreler"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "Ürün bul"
 
@@ -8604,7 +8610,6 @@ msgstr "Geçmiş kaldırıldı"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "Yeni değer"
 msgid "New webhook endpoint"
 msgstr "Yeni webhook uç noktası"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "Yeni çalışma alanı"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "Yeni e-postalar ve geçiş"
@@ -12292,7 +12301,7 @@ msgstr "Bekleyen davet yok."
 msgid "No policies yet."
 msgstr "Henüz politika yok."
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "Bu adla bir ürün yok."
 
@@ -14836,6 +14845,7 @@ msgstr "Özel"
 msgid "pro, team"
 msgstr "pro, ekip"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "Canlı sunucu"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "Kısayol"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "Göster"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "{hidden} tane daha göster"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "Çalışılıyor…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "Çalışma alanı adı"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "Çalışma alanı ayarları"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "Çalışma alanı: {name}"
 

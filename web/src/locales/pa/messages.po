@@ -2542,7 +2542,7 @@ msgstr "ਸਾਰੇ ਹਿੱਸੇ ਪਹੁੰਚ ਗਏ। ਫ਼ਾਈਲ �
 msgid "all products"
 msgstr "ਸਾਰੇ ਉਤਪਾਦ"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "ਕਾਲਮਾਂ ਉੱਤੇ ਵਾਪਸ"
 msgid "Back to draft"
 msgstr "ਡਰਾਫਟ ਉੱਤੇ ਵਾਪਸ"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "ਹੋਮ ਤੇ ਵਾਪਸ ਜਾਓ"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "ਸੈੱਟਅੱਪ ਉੱਤੇ ਵਾਪਸ"
@@ -4028,6 +4033,7 @@ msgstr "ਲਿੰਕਾਂ ਵਿੱਚ ਮੁਹਿੰਮ"
 msgid "Campaign name"
 msgstr "ਮੁਹਿੰਮ ਦਾ ਨਾਮ"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "ਇਸ ਵਰਗੇ ਸੁਨੇਹੇ ਫ਼ਿਲਟਰ ਕਰੋ"
 msgid "Filters"
 msgstr "ਫ਼ਿਲਟਰ"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "ਪ੍ਰੋਡਕਟ ਲੱਭੋ"
 
@@ -8604,7 +8610,6 @@ msgstr "ਇਤਿਹਾਸ ਹਟਾਇਆ ਗਿਆ"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "ਨਵਾਂ ਮੁੱਲ"
 msgid "New webhook endpoint"
 msgstr "ਨਵਾਂ ਵੈੱਬਹੁੱਕ ਐਂਡਪੁਆਇੰਟ"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "ਨਵੀਂ ਵਰਕਸਪੇਸ"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "ਨਵੀਂ ਮੇਲ ਅਤੇ ਬਦਲਾਅ"
@@ -12292,7 +12301,7 @@ msgstr "ਕੋਈ ਲੰਬਿਤ ਸੱਦਾ ਨਹੀਂ।"
 msgid "No policies yet."
 msgstr "ਹਾਲੇ ਕੋਈ ਨੀਤੀ ਨਹੀਂ।"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "ਇਸ ਨਾਂ ਦਾ ਕੋਈ ਪ੍ਰੋਡਕਟ ਨਹੀਂ।"
 
@@ -14836,6 +14845,7 @@ msgstr "ਨਿੱਜੀ"
 msgid "pro, team"
 msgstr "pro, team"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "ਪ੍ਰੋਡਕਸ਼ਨ ਬੈਕਐਂਡ"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "ਸ਼ਾਰਟਕੱਟ"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "ਵਿਖਾਓ"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "ਹੋਰ {hidden} ਦਿਖਾਓ"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "ਕੰਮ ਹੋ ਰਿਹਾ ਹੈ…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "ਵਰਕਸਪੇਸ ਦਾ ਨਾਮ"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "ਵਰਕਸਪੇਸ ਸੈਟਿੰਗਾਂ"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "ਵਰਕਸਪੇਸ: {name}"
 

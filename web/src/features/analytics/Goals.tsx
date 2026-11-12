@@ -42,6 +42,7 @@ import { useListCursor } from "@/features/inbox/listCursor"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { useOptionalSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
+import { usePhoneBackTarget } from "@/components/common/PageLayout"
 
 export function useGoalText() {
   const { t, i18n } = useLingui()
@@ -349,6 +350,7 @@ function GoalDetail({ goal, onBack, flat }: { goal: AnalyticsGoal; onBack: () =>
   const remove = useDeleteGoal(property.id)
   const [ask, confirm] = useConfirm()
   const [editing, setEditing] = useState(false)
+  usePhoneBackTarget(flat ? undefined : { label: t`All goals`, onClick: onBack })
   const q = useAnalytics(property.id, {
     metrics: [...GOAL_KPIS, "revenue"],
     range: view.range,
@@ -365,7 +367,7 @@ function GoalDetail({ goal, onBack, flat }: { goal: AnalyticsGoal; onBack: () =>
     <section className="flex flex-col gap-4" data-testid="analytics-goal">
       <div className="flex flex-col items-start gap-1">
         {!flat && (
-          <Button variant="ghost" size="sm" className="-ms-2" onClick={onBack}>
+          <Button variant="ghost" size="sm" className="-ms-2 max-md:hidden" onClick={onBack}>
             <ArrowLeftIcon className="rtl:rotate-180" />
             <Trans>All goals</Trans>
           </Button>

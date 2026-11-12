@@ -26,7 +26,6 @@ import { Link, useNavigate } from "react-router"
 import { SearchError, isSearchError } from "@/components/common/SearchError"
 import { useShell } from "@/app/shell"
 import { TeamMenu } from "@/app/TeamMenu"
-import { UserMenu } from "@/app/UserMenu"
 import {
   ContactAvatar,
   Dot,
@@ -695,15 +694,11 @@ export function ListMenu({ className }: { className?: string }) {
 
 function PhoneHeader({ children }: { children: React.ReactNode }) {
   const { t } = useLingui()
-  const { membership } = useSession()
   const [starting, setStarting] = useState(false)
   return (
     <div className="flex shrink-0 flex-col border-b">
       <div className="flex h-15 shrink-0 items-center gap-1 ps-2 pe-1.5">
-        <UserMenu align="start" />
-        <span className="min-w-0 flex-1 truncate ps-1 text-title" data-testid="workspace-name">
-          {membership.workspace.name}
-        </span>
+        <span className="flex-1" />
         <TeamMenu />
         <Button
           variant="ghost"

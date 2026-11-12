@@ -13,6 +13,7 @@ import { useView } from "@/features/analytics/state"
 import { formatMetric, formatMoney, num, OTHER, useAnalyticsText, valueText } from "@/features/analytics/text"
 import type { AnalyticsDimension, AnalyticsFilter, AnalyticsQuery, AnalyticsRevenue, AnalyticsRow } from "@/lib/api"
 import { cn } from "@/lib/utils"
+import { usePhoneBackTarget } from "@/components/common/PageLayout"
 
 const BUILT_IN_URL = ["outbound_click", "file_download"]
 
@@ -200,6 +201,16 @@ function EventDetail({ name }: { name: string }) {
   const { view, addFilter } = useView()
   const share = useShare()
   const [params, setParams] = useSearchParams()
+  usePhoneBackTarget({
+    label: t`All events`,
+    onClick: () =>
+      setParams((p) => {
+        const n = new URLSearchParams(p)
+        n.delete("event")
+        n.delete("prop")
+        return n
+      }),
+  })
   const [other, setOther] = useState("")
   const key = params.get("prop") ?? ""
   const children = property.audience === "children"
@@ -232,7 +243,7 @@ function EventDetail({ name }: { name: string }) {
   return (
     <section className="flex flex-col gap-4" data-testid="analytics-event">
       <div className="flex flex-col items-start gap-1">
-        <Button variant="ghost" size="sm" className="-ms-2" onClick={() => setParam("event", null)}>
+        <Button variant="ghost" size="sm" className="-ms-2 max-md:hidden" onClick={() => setParam("event", null)}>
           <ArrowLeftIcon className="rtl:rotate-180" />
           <Trans>All events</Trans>
         </Button>

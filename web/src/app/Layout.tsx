@@ -135,6 +135,7 @@ function Phone({ children }: { children: React.ReactNode }) {
       <AppSidebar />
       <CloseOnNavigate />
       <div className="flex h-svh min-h-0 flex-col" data-frame data-testid="shell">
+        <TopBar />
         {children}
       </div>
     </SidebarProvider>

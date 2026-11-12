@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
-import { ArrowLeftIcon, ArrowUpRightIcon, MailIcon, UsersIcon } from "lucide-react"
+import { ArrowUpRightIcon, MailIcon, UsersIcon } from "lucide-react"
 import { useLayoutEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
 
@@ -57,6 +57,7 @@ import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useAllInboxes, useInboxes, useMembers, useTeams } from "@/lib/workspace"
+import { PageBackLink } from "@/components/common/PageLayout"
 
 type Presence = "here" | "away" | "offline"
 
@@ -1032,13 +1033,11 @@ function StackedTeam({ tab }: { tab: "members" | "invites" }) {
       ) : single ? (
         memberId ? (
           <div className="flex min-h-0 flex-1 flex-col">
-            <Link
+            <PageBackLink
               to="/team"
+              label={t`Team`}
               className="inline-flex w-fit items-center gap-1.5 px-4 pt-3 text-body text-faint hover:text-foreground"
-            >
-              <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
-              <Trans>Team</Trans>
-            </Link>
+            />
             <div className="min-h-0 flex-1 overflow-y-auto">{detail}</div>
           </div>
         ) : (

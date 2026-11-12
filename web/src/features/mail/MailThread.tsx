@@ -19,7 +19,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { ContactAvatar, EmptyState, Kbd, Notice, PersonAvatar, toast, useContactName } from "@/components/common"
-import { TopPortal } from "@/components/common/PageLayout"
+import { TopPortal, usePhoneBackTarget } from "@/components/common/PageLayout"
 import { MAIL_KEYS } from "@/components/common/ShortcutSheet"
 import { formatDateTime, useErrorText } from "@/components/common/text"
 import { useConfirm } from "@/components/common/ConfirmDialog"
@@ -77,11 +77,13 @@ type Props = { id: string; flat?: boolean; onBack?: () => void; onLeave: () => v
 
 function BackButton({ onBack }: { onBack?: () => void }) {
   const { t } = useLingui()
+  usePhoneBackTarget(onBack ? { label: t`Back to the list`, onClick: onBack } : undefined)
   if (!onBack) return null
   return (
     <Button
       variant="ghost"
       size="icon-sm"
+      className="max-md:hidden"
       onClick={onBack}
       aria-label={t`Back to the list`}
       title={t`Back to the list`}

@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react/macro"
 import { ArrowLeftIcon, MoonIcon, SearchIcon, SunIcon } from "lucide-react"
-import { createContext, useContext, useLayoutEffect, useRef } from "react"
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom"
 import { Link, type To } from "react-router"
 
@@ -87,21 +87,28 @@ export function BackArrow({ className }: { className?: string }) {
   return <ArrowLeftIcon aria-hidden className={cn("shrink-0 rtl:-scale-x-100", className)} />
 }
 
-export function SideTitle({ title, back }: { title: React.ReactNode; back?: { to: To; label: string } }) {
+export function SideTitle({ title }: { title: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-0.5 px-2.5" data-testid="page-title">
-      {back && (
-        <Link
-          to={back.to}
-          className="inline-flex items-center gap-1.5 self-start rounded-sm text-caption leading-[18px] text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-          data-testid="page-title-back"
-        >
-          <BackArrow className="size-3" />
-          {back.label}
-        </Link>
-      )}
+    <div className="px-2.5" data-testid="page-title">
       <div className="text-title text-foreground">{title}</div>
     </div>
+  )
+}
+
+export function BackButton({ to, label, className }: { to: To; label: string; className?: string }) {
+  return (
+    <Link
+      to={to}
+      aria-label={label}
+      title={label}
+      className={cn(
+        "grid size-9 shrink-0 place-items-center rounded-md border bg-subtle text-fg2 outline-none transition-colors hover:bg-raise hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+        className
+      )}
+      data-testid="page-title-back"
+    >
+      <BackArrow className="size-4" />
+    </Link>
   )
 }
 
@@ -115,7 +122,7 @@ export function PageSearch({ label }: { label?: string }) {
       onClick={openPalette}
       aria-label={`${text} ${mod} K`}
       title={text}
-      className="flex h-9 w-full items-center gap-2 rounded-md border bg-subtle px-3.5 text-body text-muted-foreground outline-none transition-colors hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring"
+      className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border bg-subtle px-3.5 text-body text-muted-foreground outline-none transition-colors hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring"
       data-testid="page-search"
     >
       <SearchIcon aria-hidden className="size-[15px] shrink-0" />
@@ -235,6 +242,63 @@ export function TopPortal({ children }: { children: React.ReactNode }) {
   return slot ? createPortal(children, slot) : children
 }
 
+export type PhoneBack = { label: string; to?: To; run: () => void }
+
+let phoneBack: PhoneBack | undefined
+const phoneBackListeners = new Set<() => void>()
+
+function setPhoneBack(next: PhoneBack | undefined) {
+  phoneBack = next
+  phoneBackListeners.forEach((l) => l())
+}
+
+export function usePhoneBack() {
+  return useSyncExternalStore(
+    (l) => {
+      phoneBackListeners.add(l)
+      return () => phoneBackListeners.delete(l)
+    },
+    () => phoneBack
+  )
+}
+
+export function usePhoneBackTarget(back?: { label: string; to?: To; onClick?: () => void }) {
+  const latest = useRef(back)
+  useEffect(() => {
+    latest.current = back
+  })
+  const key = back ? `${JSON.stringify(back.to ?? null)}|${back.label}` : ""
+  useEffect(() => {
+    if (!key) return
+    const { label, to } = latest.current!
+    const mine: PhoneBack = { label, to, run: () => latest.current?.onClick?.() }
+    setPhoneBack(mine)
+    return () => {
+      if (phoneBack === mine) setPhoneBack(undefined)
+    }
+  }, [key])
+}
+
+export function PageBackLink({
+  to,
+  label,
+  className,
+  testId,
+}: {
+  to: string
+  label: string
+  className?: string
+  testId?: string
+}) {
+  usePhoneBackTarget({ to, label })
+  return (
+    <Link to={to} className={cn("max-md:hidden", className)} data-testid={testId}>
+      <BackArrow className="size-3.5" />
+      {label}
+    </Link>
+  )
+}
+
 export function PageTop({
   back,
   actions,
@@ -258,8 +322,9 @@ export function PageTop({
       root.style.removeProperty("--page-top-h")
     }
   }, [])
+  usePhoneBackTarget(back)
   const backClass =
-    "-ms-2 inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2 text-small text-fg2 outline-none hover:bg-line-soft hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+    "-ms-2 inline-flex max-md:hidden h-7 shrink-0 items-center gap-1.5 rounded-md px-2 text-small text-fg2 outline-none hover:bg-line-soft hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
   return (
     <div
       ref={bar}

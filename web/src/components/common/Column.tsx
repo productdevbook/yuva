@@ -1,7 +1,7 @@
-import { ArrowLeftIcon } from "lucide-react"
-import { Link, NavLink } from "react-router"
+import { NavLink } from "react-router"
 
 import { cn } from "@/lib/utils"
+import { PageBackLink } from "@/components/common/PageLayout"
 
 export function Column({
   title,
@@ -110,16 +110,14 @@ export function PaneEmpty({
 
 export function PaneBack({ to, label, always }: { to: string; label: string; always?: boolean }) {
   return (
-    <Link
+    <PageBackLink
       to={to}
+      label={label}
       className={cn(
         "mb-4.5 w-fit items-center gap-1.5 text-body text-faint transition-colors hover:text-foreground",
         always ? "inline-flex" : "hidden phone:inline-flex"
       )}
-      data-testid="pane-back"
-    >
-      <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
-      {label}
-    </Link>
+      testId="pane-back"
+    />
   )
 }

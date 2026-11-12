@@ -685,7 +685,7 @@ export function AppSidebar() {
         <WorkspaceSwitcher />
         <ProductScope />
         <SearchButton />
-        <div className="empty:hidden group-data-[collapsible=icon]:hidden">
+        <div className="empty:hidden group-data-[collapsible=icon]:hidden in-data-[mobile=true]:hidden">
           <ProductSwitcher />
         </div>
       </SidebarHeader>

@@ -1,37 +1,72 @@
 import { useLingui } from "@lingui/react/macro"
-import { MenuIcon } from "lucide-react"
+import { MenuIcon, SearchIcon } from "lucide-react"
+import { Link } from "react-router"
 
-import { Button } from "@/components/ui/button"
+import { useSection } from "@/app/Rail"
+import { useShell } from "@/app/shell"
+import { BackArrow, usePhoneBack } from "@/components/common/PageLayout"
+import { PhoneSelector } from "@/components/common/WorkspaceSelector"
 import { useSidebar } from "@/components/ui/sidebar"
 import { useSession } from "@/lib/session"
+
+const buttonClass =
+  "grid size-11 shrink-0 place-items-center rounded-lg text-foreground outline-none transition-colors hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring"
 
 export function TopBar() {
   const { t } = useLingui()
   const { isMobile, setOpenMobile } = useSidebar()
-  const name = useSession().membership.workspace.name
+  const { homePath, canManage } = useSession()
+  const section = useSection()
+  const { openPalette } = useShell()
+  const detail = usePhoneBack()
   if (!isMobile) return null
+  const back = !!detail || (canManage && section !== "home")
   return (
     <header
-      className="flex h-[49px] w-full shrink-0 items-center gap-2.5 border-b border-sidebar-border bg-sidebar px-4 text-sidebar-accent-foreground"
+      className="flex shrink-0 items-center gap-1 border-b border-line-soft bg-background px-2 py-1.5 pt-[max(0.375rem,env(safe-area-inset-top))]"
       data-testid="top-bar"
     >
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={() => setOpenMobile(true)}
-        aria-label={t`Menu`}
-        className="-ms-1.5 size-8 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent"
-        data-testid="sidebar-toggle"
+      {detail && detail.to === undefined ? (
+        <button
+          type="button"
+          onClick={detail.run}
+          aria-label={detail.label}
+          className={buttonClass}
+          data-testid="top-back"
+        >
+          <BackArrow className="size-5" />
+        </button>
+      ) : back ? (
+        <Link
+          to={detail?.to ?? homePath}
+          onClick={detail?.run}
+          aria-label={detail ? detail.label : t`Back to Home`}
+          className={buttonClass}
+          data-testid="top-back"
+        >
+          <BackArrow className="size-5" />
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpenMobile(true)}
+          aria-label={t`Menu`}
+          className={buttonClass}
+          data-testid="sidebar-toggle"
+        >
+          <MenuIcon className="size-5" />
+        </button>
+      )}
+      <PhoneSelector />
+      <button
+        type="button"
+        onClick={openPalette}
+        aria-label={t`Search`}
+        className={buttonClass}
+        data-testid="top-bar-search"
       >
-        <MenuIcon />
-      </Button>
-      <span
-        aria-hidden
-        className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-solid text-small font-bold text-white uppercase"
-      >
-        {Array.from(name.trim())[0] ?? ""}
-      </span>
-      <span className="min-w-0 flex-1 truncate font-semibold">{name}</span>
+        <SearchIcon className="size-5" />
+      </button>
     </header>
   )
 }

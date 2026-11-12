@@ -2542,7 +2542,7 @@ msgstr "وصلت كل الأجزاء. جارٍ قراءة الملف…"
 msgid "all products"
 msgstr "كل المنتجات"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "العودة إلى الأعمدة"
 msgid "Back to draft"
 msgstr "العودة إلى المسودة"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "العودة إلى الرئيسية"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "العودة إلى الإعداد"
@@ -4028,6 +4033,7 @@ msgstr "الحملة في الروابط"
 msgid "Campaign name"
 msgstr "اسم الحملة"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "تصفية الرسائل المشابهة لهذه"
 msgid "Filters"
 msgstr "المرشّحات"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "ابحث عن منتج"
 
@@ -8604,7 +8610,6 @@ msgstr "أُزيل السجل"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "قيمة جديدة"
 msgid "New webhook endpoint"
 msgstr "نقطة نهاية جديدة لخطاف الويب"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "مساحة عمل جديدة"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "البريد الأحدث والتحويل"
@@ -12292,7 +12301,7 @@ msgstr "لا دعوات معلّقة."
 msgid "No policies yet."
 msgstr "لا توجد سياسات بعد."
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "لا يوجد منتج بهذا الاسم."
 
@@ -14836,6 +14845,7 @@ msgstr "خاص"
 msgid "pro, team"
 msgstr "pro، team"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "الخلفية البرمجية للإنتاج"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "الاختصار"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "إظهار"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "عرض {hidden} أخرى"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "جارٍ العمل…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "اسم مساحة العمل"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "إعدادات مساحة العمل"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "مساحة العمل: {name}"
 

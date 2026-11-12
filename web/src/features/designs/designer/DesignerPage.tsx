@@ -40,7 +40,7 @@ import {
   XIcon,
 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router"
+import { Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 
 import { useShell } from "@/app/shell"
 import { ErrorLine, Kbd, Notice, Segmented, toast, useConfirm } from "@/components/common"
@@ -123,6 +123,7 @@ import type { EmailDesign, EmailDesignIssue } from "@/lib/api"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { useInboxes } from "@/lib/workspace"
+import { PageBackLink } from "@/components/common/PageLayout"
 
 type RightTab = "block" | "design" | "versions"
 
@@ -183,13 +184,11 @@ export default function DesignerPage() {
   if (!design.data)
     return (
       <div className="mx-auto flex max-w-lg flex-col gap-4 px-6 py-16">
-        <Link
+        <PageBackLink
           to="/broadcasts/designs"
+          label={t`Designs`}
           className="inline-flex items-center gap-1.5 text-body text-faint hover:text-foreground"
-        >
-          <ArrowLeftIcon className="size-3.5 rtl:rotate-180" />
-          {t`Designs`}
-        </Link>
+        />
         <ErrorLine error={design.error} />
       </div>
     )

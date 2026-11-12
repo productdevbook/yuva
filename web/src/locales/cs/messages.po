@@ -2542,7 +2542,7 @@ msgstr "Všechny části dorazily. Čtu soubor…"
 msgid "all products"
 msgstr "všechny produkty"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
@@ -3644,6 +3644,11 @@ msgstr "Zpět ke sloupcům"
 msgid "Back to draft"
 msgstr "Zpět k návrhu"
 
+#: src/app/TopBar.tsx
+#: src/components/common/PageSidebar.tsx
+msgid "Back to Home"
+msgstr "Zpět na domovskou stránku"
+
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
 msgstr "Zpět k nastavení"
@@ -4028,6 +4033,7 @@ msgstr "Kampaň v odkazech"
 msgid "Campaign name"
 msgstr "Název kampaně"
 
+#: src/app/Palette.tsx
 #: src/components/common/ConfirmDialog.tsx
 #: src/components/common/Linked.tsx
 #: src/components/common/Selection.tsx
@@ -7710,7 +7716,7 @@ msgstr "Filtrovat zprávy jako tato"
 msgid "Filters"
 msgstr "Filtry"
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Find a product"
 msgstr "Najít produkt"
 
@@ -8604,7 +8610,6 @@ msgstr "Historie odstraněna"
 #: src/app/Palette.tsx
 #: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 msgid "Home"
@@ -11737,6 +11742,10 @@ msgstr "Nová hodnota"
 msgid "New webhook endpoint"
 msgstr "Nový koncový bod webhooku"
 
+#: src/components/common/WorkspaceSelector.tsx
+msgid "New workspace"
+msgstr "Nový pracovní prostor"
+
 #: src/features/migrations/DoneStep.tsx
 msgid "Newer mail and the switch"
 msgstr "Novější pošta a přepnutí"
@@ -12292,7 +12301,7 @@ msgstr "Žádné čekající pozvánky."
 msgid "No policies yet."
 msgstr "Zatím žádné politiky."
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "No product by that name."
 msgstr "Žádný produkt s tímto názvem."
 
@@ -14836,6 +14845,7 @@ msgstr "Soukromá"
 msgid "pro, team"
 msgstr "pro, tým"
 
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/contact/ContactsPage.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/home/HomePage.tsx
@@ -14884,7 +14894,6 @@ msgid "Production backend"
 msgstr "Produkční backend"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -16779,6 +16788,7 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
+#: src/app/TopBar.tsx
 #: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -17734,6 +17744,10 @@ msgstr "Zkratka"
 #: src/features/status/MonitorsPage.tsx
 msgid "Show"
 msgstr "Zobrazit"
+
+#: src/components/common/WorkspaceSelector.tsx
+msgid "Show {hidden} more"
+msgstr "Zobrazit dalších {hidden}"
 
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 msgid "Show {nRevoked} revoked"
@@ -22933,6 +22947,7 @@ msgstr "Pracuje se…"
 #: src/app/Palette.tsx
 #: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
+#: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
@@ -22952,11 +22967,12 @@ msgid "Workspace name"
 msgstr "Název pracovního prostoru"
 
 #: src/app/Sidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "Nastavení pracovního prostoru"
 
 #: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "Pracovní prostor: {name}"
 

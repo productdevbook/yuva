@@ -1,5 +1,6 @@
 import { Command as CommandPrimitive } from "cmdk"
 import { Trans, useLingui } from "@lingui/react/macro"
+import { SearchIcon } from "lucide-react"
 import { useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router"
 
@@ -24,7 +25,9 @@ import { focusListSearch, setListQuery } from "@/features/inbox/listSearch"
 import { useConversation } from "@/features/conversation/queries"
 import { useConversations } from "@/features/inbox/queries"
 import { useAnalyticsVisible } from "@/features/analytics/properties"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { useSession } from "@/lib/session"
+import { cn } from "@/lib/utils"
 import { isSupport, useChannelMap, useInboxes } from "@/lib/workspace"
 import { setTheme } from "@/lib/theme"
 
@@ -199,22 +202,31 @@ function useItems(open: boolean): Item[] {
 
 type PaletteProps = { open: boolean; onOpenChange: (open: boolean) => void }
 
+const phoneDialog =
+  "top-0 start-0 h-svh max-h-none w-full max-w-none translate-x-0 translate-y-0 rounded-none! border-0 shadow-none rtl:translate-x-0 sm:max-w-none"
+
 export function Palette({ open, onOpenChange }: PaletteProps) {
   const { t } = useLingui()
+  const phone = useIsMobile()
   return (
     <CommandDialog
       open={open}
       onOpenChange={onOpenChange}
       title={t`Everything`}
       description={t`Search people, actions or settings`}
-      className="top-[14vh] w-[560px] max-w-[calc(100%-32px)] gap-0 rounded-[18px]! border bg-card p-0 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.35)] sm:max-w-[560px]"
+      className={cn(
+        "gap-0 bg-card p-0",
+        phone
+          ? phoneDialog
+          : "top-[14vh] w-[560px] max-w-[calc(100%-32px)] rounded-[18px]! border shadow-[0_30px_80px_-20px_rgb(0_0_0/0.35)] sm:max-w-[560px]"
+      )}
     >
-      <PaletteBody open={open} onOpenChange={onOpenChange} />
+      <PaletteBody open={open} onOpenChange={onOpenChange} phone={phone} />
     </CommandDialog>
   )
 }
 
-function PaletteBody({ open, onOpenChange }: PaletteProps) {
+function PaletteBody({ open, onOpenChange, phone }: PaletteProps & { phone: boolean }) {
   const { t } = useLingui()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -236,15 +248,42 @@ function PaletteBody({ open, onOpenChange }: PaletteProps) {
   }
   const search = q.trim()
   return (
-    <Command className="rounded-[18px]! bg-card p-0" data-testid="palette" loop>
-      <CommandPrimitive.Input
-        value={q}
-        onValueChange={setQ}
-        placeholder={t`Search people, actions or settings…`}
-        aria-label={t`Search people, actions or settings`}
-        className="w-full border-b bg-transparent px-[18px] py-4 text-base outline-none md:text-body placeholder:text-faint"
-      />
-      <CommandList className="max-h-[50vh] p-1.5">
+    <Command
+      className={cn("bg-card p-0", phone ? "h-full rounded-none!" : "rounded-[18px]!")}
+      data-testid="palette"
+      loop
+    >
+      {phone ? (
+        <div className="flex shrink-0 items-center gap-1 border-b px-2 py-1.5 pt-[max(0.375rem,env(safe-area-inset-top))]">
+          <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border bg-subtle px-3 text-muted-foreground">
+            <SearchIcon aria-hidden className="size-4 shrink-0" />
+            <CommandPrimitive.Input
+              value={q}
+              onValueChange={setQ}
+              placeholder={t`Search`}
+              aria-label={t`Search people, actions or settings`}
+              className="min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-faint"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            className="h-11 shrink-0 rounded-lg px-3 text-body text-fg2 outline-none hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring"
+            data-testid="palette-cancel"
+          >
+            <Trans>Cancel</Trans>
+          </button>
+        </div>
+      ) : (
+        <CommandPrimitive.Input
+          value={q}
+          onValueChange={setQ}
+          placeholder={t`Search people, actions or settings…`}
+          aria-label={t`Search people, actions or settings`}
+          className="w-full border-b bg-transparent px-[18px] py-4 text-base outline-none md:text-body placeholder:text-faint"
+        />
+      )}
+      <CommandList className={cn("p-1.5", phone ? "max-h-none min-h-0 flex-1" : "max-h-[50vh]")}>
         <CommandEmpty className="py-10 text-faint">
           <Trans>No results</Trans>
         </CommandEmpty>

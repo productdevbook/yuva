@@ -1,6 +1,7 @@
 import { ArrowLeftIcon } from "lucide-react"
 import { Link } from "react-router"
 
+import { usePhoneBackTarget } from "@/components/common/PageLayout"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -15,6 +16,7 @@ export function PageBar({
   children: React.ReactNode
   className?: string
 }) {
+  usePhoneBackTarget({ to: back, label })
   return (
     <header
       className={cn(
@@ -26,7 +28,7 @@ export function PageBar({
       <Button
         variant="outline"
         size="icon-sm"
-        className="rounded-lg border-input"
+        className="rounded-lg border-input max-md:hidden"
         render={<Link to={back} />}
         aria-label={label}
         title={label}

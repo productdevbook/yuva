@@ -2,6 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro"
 import { ArrowLeftIcon } from "lucide-react"
 import { Link, Navigate, useParams } from "react-router"
 
+import { usePhoneBackTarget } from "@/components/common/PageLayout"
 import { Button } from "@/components/ui/button"
 import { PageTop } from "@/features/inbox/PageFrame"
 import { mailPath, useFilterAccess, useMailInboxes } from "@/features/mail/folders"
@@ -15,6 +16,7 @@ export function MailFiltersPage() {
   const inboxes = useMailInboxes()
   const allowed = useFilterAccess(box)
   const inbox = inboxes.find((i) => i.id === box)
+  usePhoneBackTarget({ to: mailPath(box, "inbox"), label: t`Mail` })
   if (loading) return null
   if (!inbox || !allowed) return <Navigate to="/mail" replace />
   return (
@@ -25,7 +27,7 @@ export function MailFiltersPage() {
         actions={
           <Button
             variant="outline"
-            className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal"
+            className="h-8 gap-1.5 rounded-[9px] border-input bg-card px-3 font-normal max-md:hidden"
             render={<Link to={mailPath(box, "inbox")} />}
             aria-label={t`Back to the mail`}
           >
