@@ -18,8 +18,8 @@ export type SenderState = "ready" | "no_smtp" | "no_from"
 
 export function senderState(ch: Channel): SenderState {
   const e = ch.email
-  if (!e || (!e.smtp && !e.broadcast_smtp)) return "no_smtp"
-  if (e.address.startsWith("*@") && !e.from_address) return "no_from"
+  if (!e || (!e.smtp?.host && !e.broadcast_smtp?.host)) return "no_smtp"
+  if ((e.from_address || e.address).startsWith("*@")) return "no_from"
   return "ready"
 }
 
