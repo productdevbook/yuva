@@ -1943,6 +1943,12 @@ remote images, http(s)):
 - Connect an assistant (Settings › Connected apps): one page per client (Claude, Claude Code, Codex,
   ChatGPT, Cursor, VS Code, other MCP clients) with the server's own `/mcp` URL, a copyable command
   or config, install links where the client has them, and the steps; a new grant shows up there live.
+- Main screen, from M41 (`docs/specs/panel-redesign.md`): a 40px header that does not stick
+  (workspace and product selector, the current page as a menu of all pages, search, bell, account)
+  and inside a section a single-select sidebar of the section's places (one highlighted item,
+  filters and scopes never in it, a horizontal strip on a phone); Home is an overview with setup as
+  a card on it; every control is a shadcn component. M41.1 rewrites the rail description below,
+  which holds until then.
 - Main screen, in the shape of a messaging app: a narrow icon rail and three columns on a desktop.
   Every page except setup and the OAuth consent page lives in this shell: the rail picks what the
   left column lists, and the chosen item opens in the main area (nothing chosen shows a short

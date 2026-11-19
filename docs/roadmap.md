@@ -743,6 +743,24 @@ nothing unless the start back-filled them; a marketing one skips a contact not s
 list; a reply becomes a conversation in the inbox; the report shows each language; a hosted
 workspace cannot start one before approval; another workspace sees none of it.
 
+## M41 — Panel redesign
+
+Status: planned; spec `docs/specs/panel-redesign.md`, decision in `architecture.md` › Panel. Panel
+only (`web/`), on shadcn; every route, endpoint and shortcut stays.
+
+- **M41.1 Shell:** a 40px header (workspace and product, the pages menu, search, bell, account)
+  and a single-select section sidebar replace the icon rail and the list column.
+- **M41.2 Home:** an overview (my conversations, waiting for you, today, later today, products,
+  recent) with setup as a card on it.
+- **M41.3–M41.7 Pages:** Inbox and Mail; People, Team, Reports; Broadcasts and Analytics; Feedback
+  and roadmap, Help center, Status; Settings, Imports and the setup flows, each with plain inline
+  forms, one form per step for multi-step work, and bulk actions on its lists.
+
+Accept: every route that worked before M41 still opens; each section shows its sidebar with exactly
+one highlighted item; no page scrolls sideways on a 390px phone; light and dark both pass; an
+agent's Home shows their own conversations and no approvals; an owner finishes mail setup from the
+Home card and lands back on Home at 1 of 4.
+
 ## Later
 
 - M10, native apps for members (#18, #19): not scheduled; not part of 0.1.0.
