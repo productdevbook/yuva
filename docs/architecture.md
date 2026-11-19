@@ -1880,6 +1880,25 @@ app, documentation pages, analytics, newsletter); a card that is set up links to
 is not runs its flow inside the setup layout, and `/analytics/new` opens the same analytics flow. The
 panel no longer jumps to `/setup` on its own; Home shows what is left.
 
+Home data added in M41.2. `GET /v1/conversations/counts` adds `unassigned_inboxes`: `unassigned`
+per inbox, read from the same grouped query as `outbound_inboxes`, so no extra query; MCP
+`get_counts` returns it. Recent is `GET /v1/activity?inbox_id&limit&cursor` (member sessions only,
+like `GET /v1/home`, so no scope and no MCP tool): `conversation.closed`, `conversation.rated`,
+`incident.updated`, `article.published` and `broadcast.sent`, newest first by `(at, id)`, 20 per
+page and at most 50, cursor-paged like the audit log. It is one read-only union over rows the
+server already keeps, nothing recorded for it: the `status_changed` (to closed) and `rated` events
+in conversation timelines, `status_incident_updates` of published incidents,
+`help_article_revisions` of kind `publish`, and broadcasts in state `sent` at `finished_at`; each
+branch filters by `workspace_id`, applies the cursor and its own limit before the union. Permission
+rule: every kind belongs to one inbox (a conversation's, its status page's, its help center's, the
+broadcast's), and an item is shown to whoever can see that inbox, the rule `GET /v1/home` and the
+status page, help center and broadcast endpoints already apply; a personal mailbox's broadcasts only
+to its owner. Conversation items follow Home's conversation rule: support inboxes only, spam, trash,
+imported history and other members' private drafts left out, feedback never rated. Articles and
+broadcasts are left out when the server has no help center or sends no broadcasts. `actor` is the
+member who closed, posted, published or scheduled; it is absent for ratings (the contact is not
+named) and for what automation or an API key did.
+
 E-mail HTML has two views, both in a sandboxed `srcdoc` iframe under a CSP of its own (no
 scripts, no forms, images only from `data:`, the server's attachments and, once the member allows
 remote images, http(s)):

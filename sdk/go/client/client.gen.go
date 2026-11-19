@@ -21,6 +21,57 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Defines values for ActivityKind.
+const (
+	ActivityArticlePublished   ActivityKind = "article.published"
+	ActivityBroadcastSent      ActivityKind = "broadcast.sent"
+	ActivityConversationClosed ActivityKind = "conversation.closed"
+	ActivityConversationRated  ActivityKind = "conversation.rated"
+	ActivityIncidentUpdated    ActivityKind = "incident.updated"
+)
+
+// Valid indicates whether the value is a known member of the ActivityKind enum.
+func (e ActivityKind) Valid() bool {
+	switch e {
+	case ActivityArticlePublished:
+		return true
+	case ActivityBroadcastSent:
+		return true
+	case ActivityConversationClosed:
+		return true
+	case ActivityConversationRated:
+		return true
+	case ActivityIncidentUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ActivityTargetType.
+const (
+	ActivityTargetArticle      ActivityTargetType = "article"
+	ActivityTargetBroadcast    ActivityTargetType = "broadcast"
+	ActivityTargetConversation ActivityTargetType = "conversation"
+	ActivityTargetIncident     ActivityTargetType = "incident"
+)
+
+// Valid indicates whether the value is a known member of the ActivityTargetType enum.
+func (e ActivityTargetType) Valid() bool {
+	switch e {
+	case ActivityTargetArticle:
+		return true
+	case ActivityTargetBroadcast:
+		return true
+	case ActivityTargetConversation:
+		return true
+	case ActivityTargetIncident:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AlertmanagerAlertStatus.
 const (
 	AlertmanagerAlertStatusFiring   AlertmanagerAlertStatus = "firing"
@@ -8589,6 +8640,63 @@ type AccountDeletion struct {
 	Email string `json:"email"`
 }
 
+// ActivityActor The member who did it.
+type ActivityActor struct {
+	MemberId uuid.UUID `json:"member_id"`
+	Name     string    `json:"name"`
+}
+
+// ActivityDetail defines model for ActivityDetail.
+type ActivityDetail struct {
+	// Locale `article.published`: the published translation's locale.
+	Locale *string `json:"locale,omitempty"`
+	Rating *Rating `json:"rating,omitempty"`
+
+	// State `incident.updated`: the incident or maintenance state the update set.
+	State *string `json:"state,omitempty"`
+}
+
+// ActivityItem defines model for ActivityItem.
+type ActivityItem struct {
+	// Actor The member who did it.
+	Actor  *ActivityActor  `json:"actor,omitempty"`
+	At     time.Time       `json:"at"`
+	Detail *ActivityDetail `json:"detail,omitempty"`
+
+	// Id The timeline event, incident update, article revision or broadcast it was read from.
+	Id      uuid.UUID      `json:"id"`
+	InboxId uuid.UUID      `json:"inbox_id"`
+	Kind    ActivityKind   `json:"kind"`
+	Target  ActivityTarget `json:"target"`
+}
+
+// ActivityKind defines model for ActivityKind.
+type ActivityKind string
+
+// ActivityPage defines model for ActivityPage.
+type ActivityPage struct {
+	Items []ActivityItem `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// ActivityTarget defines model for ActivityTarget.
+type ActivityTarget struct {
+	Id uuid.UUID `json:"id"`
+
+	// ParentId The status page of an incident or the help center of an article.
+	ParentId *uuid.UUID `json:"parent_id,omitempty"`
+
+	// Title The conversation's subject (written by the contact for conversations they started),
+	// the incident's title, the article title as published, or the broadcast's name.
+	Title string             `json:"title"`
+	Type  ActivityTargetType `json:"type"`
+}
+
+// ActivityTargetType defines model for ActivityTarget.Type.
+type ActivityTargetType string
+
 // AlertmanagerAlert defines model for AlertmanagerAlert.
 type AlertmanagerAlert struct {
 	Annotations  *map[string]string       `json:"annotations,omitempty"`
@@ -14935,6 +15043,9 @@ type ConversationCounts struct {
 	// `confirm_count`. `0` for callers who see no trash.
 	Trash      int64 `json:"trash"`
 	Unassigned int64 `json:"unassigned"`
+
+	// UnassignedInboxes Open conversations without an assignee, per inbox id; inboxes without any are left out.
+	UnassignedInboxes []CountByID `json:"unassigned_inboxes"`
 }
 
 // ConversationCreate defines model for ConversationCreate.
@@ -27055,6 +27166,21 @@ type ListReaderNotificationsParams struct {
 	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
+// ListActivityParams defines parameters for ListActivity.
+type ListActivityParams struct {
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 50; 20 by default.
+	Limit *int32 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListAnalyticsPropertiesParams defines parameters for ListAnalyticsProperties.
 type ListAnalyticsPropertiesParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -38234,6 +38360,36 @@ type ClientInterface interface {
 	// Corresponds with POST /v1/account/reader-tokens (the `CreateReaderToken` operationId).
 	CreateReaderToken(ctx context.Context, body CreateReaderTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListActivity What the team did lately
+	//
+	// The panel's Recent block: what happened lately in the inboxes the member can see, newest
+	// first. Member sessions only (API keys and OAuth tokens answer `403 member_session_required`),
+	// like `GET /v1/home`. It is read from the rows the server already keeps; nothing is recorded
+	// for it.
+	//
+	// - `conversation.closed`: a conversation was closed (the `status_changed` event in its
+	//   timeline). `actor` is the member who closed it, absent when automation, an API key or
+	//   the contact did.
+	// - `conversation.rated`: the contact rated a conversation; `detail.rating` is the rating.
+	//   No `actor`: the contact is not named here.
+	// - `incident.updated`: an update was posted on an incident or maintenance of the status page
+	//   of the inbox; `detail.state` is the state it set. The first update is the one that
+	//   opened it.
+	// - `article.published`: a help article's translation was published (each publish counts);
+	//   `detail.locale` is the translation's locale. Left out when the server has no help center.
+	// - `broadcast.sent`: a broadcast finished sending; `actor` is the member who scheduled it,
+	//   absent when an API key did. Left out when the server sends no broadcasts.
+	//
+	// Conversations count as on `GET /v1/home`: only in support inboxes, spam, trash, imported
+	// history and other members' private drafts left out, and feedback is never rated.
+	// Incidents, articles and broadcasts belong to the inbox of their status page, help center
+	// or broadcast and are shown to whoever can see that inbox; a broadcast of a personal
+	// mailbox only to its owner. `inbox_id` narrows the list to one inbox (`404` when the
+	// caller cannot see it).
+	//
+	// Corresponds with GET /v1/activity (the `ListActivity` operationId).
+	ListActivity(ctx context.Context, params *ListActivityParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListAnalyticsProperties List analytics properties
 	//
 	// The properties the caller can see, oldest first, with today's visitors (in each property's
@@ -41071,6 +41227,8 @@ type ClientInterface interface {
 	// `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
 	// sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
 	// the other counts too.
+	//
+	// `unassigned_inboxes` counts `unassigned` per inbox.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -51118,6 +51276,46 @@ func (c *Client) CreateReaderToken(ctx context.Context, body CreateReaderTokenJS
 	return c.Client.Do(req)
 }
 
+// ListActivity What the team did lately
+//
+// The panel's Recent block: what happened lately in the inboxes the member can see, newest
+// first. Member sessions only (API keys and OAuth tokens answer `403 member_session_required`),
+// like `GET /v1/home`. It is read from the rows the server already keeps; nothing is recorded
+// for it.
+//
+//   - `conversation.closed`: a conversation was closed (the `status_changed` event in its
+//     timeline). `actor` is the member who closed it, absent when automation, an API key or
+//     the contact did.
+//   - `conversation.rated`: the contact rated a conversation; `detail.rating` is the rating.
+//     No `actor`: the contact is not named here.
+//   - `incident.updated`: an update was posted on an incident or maintenance of the status page
+//     of the inbox; `detail.state` is the state it set. The first update is the one that
+//     opened it.
+//   - `article.published`: a help article's translation was published (each publish counts);
+//     `detail.locale` is the translation's locale. Left out when the server has no help center.
+//   - `broadcast.sent`: a broadcast finished sending; `actor` is the member who scheduled it,
+//     absent when an API key did. Left out when the server sends no broadcasts.
+//
+// Conversations count as on `GET /v1/home`: only in support inboxes, spam, trash, imported
+// history and other members' private drafts left out, and feedback is never rated.
+// Incidents, articles and broadcasts belong to the inbox of their status page, help center
+// or broadcast and are shown to whoever can see that inbox; a broadcast of a personal
+// mailbox only to its owner. `inbox_id` narrows the list to one inbox (`404` when the
+// caller cannot see it).
+//
+// Corresponds with GET /v1/activity (the `ListActivity` operationId).
+func (c *Client) ListActivity(ctx context.Context, params *ListActivityParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListActivityRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListAnalyticsProperties List analytics properties
 //
 // The properties the caller can see, oldest first, with today's visitors (in each property's
@@ -55865,6 +56063,8 @@ func (c *Client) BulkUpdateConversations(ctx context.Context, params *BulkUpdate
 // `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
 // sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
 // the other counts too.
+//
+// `unassigned_inboxes` counts `unassigned` per inbox.
 //
 // Scope: `conversations:read`.
 //
@@ -71557,6 +71757,99 @@ func NewCreateReaderTokenRequestWithBody(server string, contentType string, body
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListActivityRequest constructs an http.Request for the ListActivity method
+func NewListActivityRequest(server string, params *ListActivityParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/activity")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.InboxId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inbox_id", *params.InboxId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int32"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.YuvaWorkspace != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Yuva-Workspace", *params.YuvaWorkspace, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: "uuid"})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Yuva-Workspace", headerParam0)
+		}
+
+	}
 
 	return req, nil
 }
@@ -104379,6 +104672,38 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /v1/account/reader-tokens (the `CreateReaderToken` operationId).
 	CreateReaderTokenWithResponse(ctx context.Context, body CreateReaderTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateReaderTokenResponse, error)
 
+	// ListActivityWithResponse What the team did lately
+	//
+	// The panel's Recent block: what happened lately in the inboxes the member can see, newest
+	// first. Member sessions only (API keys and OAuth tokens answer `403 member_session_required`),
+	// like `GET /v1/home`. It is read from the rows the server already keeps; nothing is recorded
+	// for it.
+	//
+	// - `conversation.closed`: a conversation was closed (the `status_changed` event in its
+	//   timeline). `actor` is the member who closed it, absent when automation, an API key or
+	//   the contact did.
+	// - `conversation.rated`: the contact rated a conversation; `detail.rating` is the rating.
+	//   No `actor`: the contact is not named here.
+	// - `incident.updated`: an update was posted on an incident or maintenance of the status page
+	//   of the inbox; `detail.state` is the state it set. The first update is the one that
+	//   opened it.
+	// - `article.published`: a help article's translation was published (each publish counts);
+	//   `detail.locale` is the translation's locale. Left out when the server has no help center.
+	// - `broadcast.sent`: a broadcast finished sending; `actor` is the member who scheduled it,
+	//   absent when an API key did. Left out when the server sends no broadcasts.
+	//
+	// Conversations count as on `GET /v1/home`: only in support inboxes, spam, trash, imported
+	// history and other members' private drafts left out, and feedback is never rated.
+	// Incidents, articles and broadcasts belong to the inbox of their status page, help center
+	// or broadcast and are shown to whoever can see that inbox; a broadcast of a personal
+	// mailbox only to its owner. `inbox_id` narrows the list to one inbox (`404` when the
+	// caller cannot see it).
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /v1/activity (the `ListActivity` operationId).
+	ListActivityWithResponse(ctx context.Context, params *ListActivityParams, reqEditors ...RequestEditorFn) (*ListActivityResponse, error)
+
 	// ListAnalyticsPropertiesWithResponse List analytics properties
 	//
 	// The properties the caller can see, oldest first, with today's visitors (in each property's
@@ -107384,6 +107709,8 @@ type ClientWithResponsesInterface interface {
 	// `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
 	// sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
 	// the other counts too.
+	//
+	// `unassigned_inboxes` counts `unassigned` per inbox.
 	//
 	// Scope: `conversations:read`.
 	//
@@ -119814,6 +120141,75 @@ func (r CreateReaderTokenResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CreateReaderTokenResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListActivityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ActivityPage
+	// ApplicationproblemJSON400 the response for an HTTP 400 `application/problem+json` response
+	ApplicationproblemJSON400 *Problem
+	// ApplicationproblemJSON401 the response for an HTTP 401 `application/problem+json` response
+	ApplicationproblemJSON401 *Problem
+	// ApplicationproblemJSON403 the response for an HTTP 403 `application/problem+json` response
+	ApplicationproblemJSON403 *Problem
+	// ApplicationproblemJSON404 the response for an HTTP 404 `application/problem+json` response
+	ApplicationproblemJSON404 *Problem
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListActivityResponse) GetJSON200() *ActivityPage {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSON400 returns the response for an HTTP 400 `application/problem+json` response
+func (r ListActivityResponse) GetApplicationproblemJSON400() *Problem {
+	return r.ApplicationproblemJSON400
+}
+
+// GetApplicationproblemJSON401 returns the response for an HTTP 401 `application/problem+json` response
+func (r ListActivityResponse) GetApplicationproblemJSON401() *Problem {
+	return r.ApplicationproblemJSON401
+}
+
+// GetApplicationproblemJSON403 returns the response for an HTTP 403 `application/problem+json` response
+func (r ListActivityResponse) GetApplicationproblemJSON403() *Problem {
+	return r.ApplicationproblemJSON403
+}
+
+// GetApplicationproblemJSON404 returns the response for an HTTP 404 `application/problem+json` response
+func (r ListActivityResponse) GetApplicationproblemJSON404() *Problem {
+	return r.ApplicationproblemJSON404
+}
+
+// GetBody returns the raw response body bytes
+func (r ListActivityResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListActivityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListActivityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListActivityResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -154553,6 +154949,44 @@ func (c *ClientWithResponses) CreateReaderTokenWithResponse(ctx context.Context,
 	return ParseCreateReaderTokenResponse(rsp)
 }
 
+// ListActivityWithResponse What the team did lately
+//
+// The panel's Recent block: what happened lately in the inboxes the member can see, newest
+// first. Member sessions only (API keys and OAuth tokens answer `403 member_session_required`),
+// like `GET /v1/home`. It is read from the rows the server already keeps; nothing is recorded
+// for it.
+//
+//   - `conversation.closed`: a conversation was closed (the `status_changed` event in its
+//     timeline). `actor` is the member who closed it, absent when automation, an API key or
+//     the contact did.
+//   - `conversation.rated`: the contact rated a conversation; `detail.rating` is the rating.
+//     No `actor`: the contact is not named here.
+//   - `incident.updated`: an update was posted on an incident or maintenance of the status page
+//     of the inbox; `detail.state` is the state it set. The first update is the one that
+//     opened it.
+//   - `article.published`: a help article's translation was published (each publish counts);
+//     `detail.locale` is the translation's locale. Left out when the server has no help center.
+//   - `broadcast.sent`: a broadcast finished sending; `actor` is the member who scheduled it,
+//     absent when an API key did. Left out when the server sends no broadcasts.
+//
+// Conversations count as on `GET /v1/home`: only in support inboxes, spam, trash, imported
+// history and other members' private drafts left out, and feedback is never rated.
+// Incidents, articles and broadcasts belong to the inbox of their status page, help center
+// or broadcast and are shown to whoever can see that inbox; a broadcast of a personal
+// mailbox only to its owner. `inbox_id` narrows the list to one inbox (`404` when the
+// caller cannot see it).
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /v1/activity (the `ListActivity` operationId).
+func (c *ClientWithResponses) ListActivityWithResponse(ctx context.Context, params *ListActivityParams, reqEditors ...RequestEditorFn) (*ListActivityResponse, error) {
+	rsp, err := c.ListActivity(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListActivityResponse(rsp)
+}
+
 // ListAnalyticsPropertiesWithResponse List analytics properties
 //
 // The properties the caller can see, oldest first, with today's visitors (in each property's
@@ -158704,6 +159138,8 @@ func (c *ClientWithResponses) BulkUpdateConversationsWithResponse(ctx context.Co
 // `outbound` and `outbound_inboxes` count the open conversations that answer mail the team
 // sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
 // the other counts too.
+//
+// `unassigned_inboxes` counts `unassigned` per inbox.
 //
 // Scope: `conversations:read`.
 //
@@ -172983,6 +173419,60 @@ func ParseCreateReaderTokenResponse(rsp *http.Response) (*CreateReaderTokenRespo
 			return nil, err
 		}
 		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Problem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListActivityResponse parses an HTTP response from a ListActivityWithResponse call
+func ParseListActivityResponse(rsp *http.Response) (*ListActivityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListActivityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ActivityPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest Problem

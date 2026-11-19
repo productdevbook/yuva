@@ -23,6 +23,57 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Defines values for ActivityKind.
+const (
+	ActivityArticlePublished   ActivityKind = "article.published"
+	ActivityBroadcastSent      ActivityKind = "broadcast.sent"
+	ActivityConversationClosed ActivityKind = "conversation.closed"
+	ActivityConversationRated  ActivityKind = "conversation.rated"
+	ActivityIncidentUpdated    ActivityKind = "incident.updated"
+)
+
+// Valid indicates whether the value is a known member of the ActivityKind enum.
+func (e ActivityKind) Valid() bool {
+	switch e {
+	case ActivityArticlePublished:
+		return true
+	case ActivityBroadcastSent:
+		return true
+	case ActivityConversationClosed:
+		return true
+	case ActivityConversationRated:
+		return true
+	case ActivityIncidentUpdated:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ActivityTargetType.
+const (
+	ActivityTargetArticle      ActivityTargetType = "article"
+	ActivityTargetBroadcast    ActivityTargetType = "broadcast"
+	ActivityTargetConversation ActivityTargetType = "conversation"
+	ActivityTargetIncident     ActivityTargetType = "incident"
+)
+
+// Valid indicates whether the value is a known member of the ActivityTargetType enum.
+func (e ActivityTargetType) Valid() bool {
+	switch e {
+	case ActivityTargetArticle:
+		return true
+	case ActivityTargetBroadcast:
+		return true
+	case ActivityTargetConversation:
+		return true
+	case ActivityTargetIncident:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AlertmanagerAlertStatus.
 const (
 	AlertmanagerAlertStatusFiring   AlertmanagerAlertStatus = "firing"
@@ -8543,6 +8594,63 @@ type AccountDeletion struct {
 	Email string `json:"email"`
 }
 
+// ActivityActor The member who did it.
+type ActivityActor struct {
+	MemberId uuid.UUID `json:"member_id"`
+	Name     string    `json:"name"`
+}
+
+// ActivityDetail defines model for ActivityDetail.
+type ActivityDetail struct {
+	// Locale `article.published`: the published translation's locale.
+	Locale *string `json:"locale,omitempty"`
+	Rating *Rating `json:"rating,omitempty"`
+
+	// State `incident.updated`: the incident or maintenance state the update set.
+	State *string `json:"state,omitempty"`
+}
+
+// ActivityItem defines model for ActivityItem.
+type ActivityItem struct {
+	// Actor The member who did it.
+	Actor  *ActivityActor  `json:"actor,omitempty"`
+	At     time.Time       `json:"at"`
+	Detail *ActivityDetail `json:"detail,omitempty"`
+
+	// Id The timeline event, incident update, article revision or broadcast it was read from.
+	Id      uuid.UUID      `json:"id"`
+	InboxId uuid.UUID      `json:"inbox_id"`
+	Kind    ActivityKind   `json:"kind"`
+	Target  ActivityTarget `json:"target"`
+}
+
+// ActivityKind defines model for ActivityKind.
+type ActivityKind string
+
+// ActivityPage defines model for ActivityPage.
+type ActivityPage struct {
+	Items []ActivityItem `json:"items"`
+
+	// NextCursor Absent on the last page.
+	NextCursor *string `json:"next_cursor,omitempty"`
+}
+
+// ActivityTarget defines model for ActivityTarget.
+type ActivityTarget struct {
+	Id uuid.UUID `json:"id"`
+
+	// ParentId The status page of an incident or the help center of an article.
+	ParentId *uuid.UUID `json:"parent_id,omitempty"`
+
+	// Title The conversation's subject (written by the contact for conversations they started),
+	// the incident's title, the article title as published, or the broadcast's name.
+	Title string             `json:"title"`
+	Type  ActivityTargetType `json:"type"`
+}
+
+// ActivityTargetType defines model for ActivityTarget.Type.
+type ActivityTargetType string
+
 // AlertmanagerAlert defines model for AlertmanagerAlert.
 type AlertmanagerAlert struct {
 	Annotations  *map[string]string       `json:"annotations,omitempty"`
@@ -14889,6 +14997,9 @@ type ConversationCounts struct {
 	// `confirm_count`. `0` for callers who see no trash.
 	Trash      int64 `json:"trash"`
 	Unassigned int64 `json:"unassigned"`
+
+	// UnassignedInboxes Open conversations without an assignee, per inbox id; inboxes without any are left out.
+	UnassignedInboxes []CountByID `json:"unassigned_inboxes"`
 }
 
 // ConversationCreate defines model for ConversationCreate.
@@ -26955,6 +27066,21 @@ type ListReaderNotificationsParams struct {
 	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
+// ListActivityParams defines parameters for ListActivity.
+type ListActivityParams struct {
+	// InboxId Only this inbox (`404` when the caller cannot see it).
+	InboxId *uuid.UUID `form:"inbox_id,omitempty" json:"inbox_id,omitempty"`
+
+	// Cursor The `next_cursor` of the previous page.
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+
+	// Limit Page size, 1 to 50; 20 by default.
+	Limit *int32 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// YuvaWorkspace The workspace to act on; see "Workspace selection".
+	YuvaWorkspace *WorkspaceHeader `json:"Yuva-Workspace,omitempty"`
+}
+
 // ListAnalyticsPropertiesParams defines parameters for ListAnalyticsProperties.
 type ListAnalyticsPropertiesParams struct {
 	// YuvaWorkspace The workspace to act on; see "Workspace selection".
@@ -36569,6 +36695,9 @@ type ServerInterface interface {
 	// CreateReaderToken Hand a reader token to a documentation site
 	// (POST /v1/account/reader-tokens)
 	CreateReaderToken(w http.ResponseWriter, r *http.Request)
+	// ListActivity What the team did lately
+	// (GET /v1/activity)
+	ListActivity(w http.ResponseWriter, r *http.Request, params ListActivityParams)
 	// ListAnalyticsProperties List analytics properties
 	// (GET /v1/analytics/properties)
 	ListAnalyticsProperties(w http.ResponseWriter, r *http.Request, params ListAnalyticsPropertiesParams)
@@ -40092,6 +40221,86 @@ func (siw *ServerInterfaceWrapper) CreateReaderToken(w http.ResponseWriter, r *h
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CreateReaderToken(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListActivity operation middleware
+func (siw *ServerInterfaceWrapper) ListActivity(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListActivityParams
+
+	// ------------- Optional query parameter "inbox_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "inbox_id", r.URL.Query(), &params.InboxId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "inbox_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "inbox_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int32"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Yuva-Workspace" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Yuva-Workspace")]; found {
+		var YuvaWorkspace WorkspaceHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Yuva-Workspace", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Yuva-Workspace", valueList[0], &YuvaWorkspace, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "uuid"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Yuva-Workspace", Err: err})
+			return
+		}
+
+		params.YuvaWorkspace = &YuvaWorkspace
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListActivity(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -69412,6 +69621,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/v1/conversations/mail", wrapper.ComposeMail)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/conversations/counts", wrapper.GetConversationCounts)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/home", wrapper.GetHome)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/activity", wrapper.ListActivity)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/stats", wrapper.GetStats)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/reports", wrapper.GetReport)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/v1/reports/export", wrapper.ExportReport)
@@ -78505,6 +78715,86 @@ func (response CreateReaderToken403ApplicationProblemPlusJSONResponse) VisitCrea
 type CreateReaderToken404ApplicationProblemPlusJSONResponse Problem
 
 func (response CreateReaderToken404ApplicationProblemPlusJSONResponse) VisitCreateReaderTokenResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListActivityRequestObject struct {
+	Params ListActivityParams
+}
+
+type ListActivityResponseObject interface {
+	VisitListActivityResponse(w http.ResponseWriter) error
+}
+
+type ListActivity200JSONResponse ActivityPage
+
+func (response ListActivity200JSONResponse) VisitListActivityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListActivity400ApplicationProblemPlusJSONResponse struct {
+	ProblemApplicationProblemPlusJSONResponse
+}
+
+func (response ListActivity400ApplicationProblemPlusJSONResponse) VisitListActivityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListActivity401ApplicationProblemPlusJSONResponse Problem
+
+func (response ListActivity401ApplicationProblemPlusJSONResponse) VisitListActivityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListActivity403ApplicationProblemPlusJSONResponse Problem
+
+func (response ListActivity403ApplicationProblemPlusJSONResponse) VisitListActivityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListActivity404ApplicationProblemPlusJSONResponse Problem
+
+func (response ListActivity404ApplicationProblemPlusJSONResponse) VisitListActivityResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -117063,6 +117353,9 @@ type StrictServerInterface interface {
 	// CreateReaderToken Hand a reader token to a documentation site
 	// (POST /v1/account/reader-tokens)
 	CreateReaderToken(ctx context.Context, request CreateReaderTokenRequestObject) (CreateReaderTokenResponseObject, error)
+	// ListActivity What the team did lately
+	// (GET /v1/activity)
+	ListActivity(ctx context.Context, request ListActivityRequestObject) (ListActivityResponseObject, error)
 	// ListAnalyticsProperties List analytics properties
 	// (GET /v1/analytics/properties)
 	ListAnalyticsProperties(ctx context.Context, request ListAnalyticsPropertiesRequestObject) (ListAnalyticsPropertiesResponseObject, error)
@@ -120333,6 +120626,32 @@ func (sh *strictHandler) CreateReaderToken(w http.ResponseWriter, r *http.Reques
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CreateReaderTokenResponseObject); ok {
 		if err := validResponse.VisitCreateReaderTokenResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListActivity operation middleware
+func (sh *strictHandler) ListActivity(w http.ResponseWriter, r *http.Request, params ListActivityParams) {
+	var request ListActivityRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListActivity(ctx, request.(ListActivityRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListActivity")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListActivityResponseObject); ok {
+		if err := validResponse.VisitListActivityResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

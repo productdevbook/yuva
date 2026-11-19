@@ -749,13 +749,13 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 	}
 	out := oas.GetConversationCounts200JSONResponse{
 		Inboxes: []oas.CountByID{}, Assignees: []oas.CountByID{}, Teams: []oas.CountByID{}, Labels: make([]oas.CountByID, 0, len(byLabel)), FeedbackCategories: make([]oas.FeedbackCount, 0, len(feedback)),
-		OutboundInboxes: []oas.CountByID{}, Starred: starred,
+		OutboundInboxes: []oas.CountByID{}, UnassignedInboxes: []oas.CountByID{}, Starred: starred,
 	}
 	for _, r := range feedback {
 		out.Feedback += r.N
 		out.FeedbackCategories = append(out.FeedbackCategories, oas.FeedbackCount{Category: oas.FeedbackCategory(r.Category), Count: r.N})
 	}
-	perInbox, perAssignee, perTeam, perOutbound := map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}
+	perInbox, perAssignee, perTeam, perOutbound, perUnassigned := map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}, map[uuid.UUID]int64{}
 	for _, r := range rows {
 		if r.Spam {
 			out.Spam += r.N
@@ -765,6 +765,7 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 		switch {
 		case r.AssigneeID == nil:
 			out.Unassigned += r.N
+			perUnassigned[r.InboxID] += r.N
 		default:
 			perAssignee[*r.AssigneeID] += r.N
 			if member != nil && *r.AssigneeID == *member {
@@ -783,7 +784,7 @@ func (s *Server) GetConversationCounts(ctx context.Context, req oas.GetConversat
 			perOutbound[r.InboxID] += r.N
 		}
 	}
-	out.Inboxes, out.Assignees, out.Teams, out.OutboundInboxes = sortedCounts(perInbox), sortedCounts(perAssignee), sortedCounts(perTeam), sortedCounts(perOutbound)
+	out.Inboxes, out.Assignees, out.Teams, out.OutboundInboxes, out.UnassignedInboxes = sortedCounts(perInbox), sortedCounts(perAssignee), sortedCounts(perTeam), sortedCounts(perOutbound), sortedCounts(perUnassigned)
 	for _, r := range byLabel {
 		out.Labels = append(out.Labels, oas.CountByID{Id: r.LabelID, Count: r.N})
 	}

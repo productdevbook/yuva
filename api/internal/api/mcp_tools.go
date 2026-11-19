@@ -355,6 +355,7 @@ type mcpCounts struct {
 	All                int64              `json:"all" jsonschema:"open conversations the caller can see"`
 	Mine               int64              `json:"mine" jsonschema:"open conversations assigned to the calling member"`
 	Unassigned         int64              `json:"unassigned"`
+	UnassignedInboxes  []mcpCount         `json:"unassigned_inboxes" jsonschema:"open unassigned conversations per inbox id"`
 	Spam               int64              `json:"spam"`
 	Feedback           int64              `json:"feedback"`
 	Inboxes            []mcpCount         `json:"inboxes" jsonschema:"open conversations per inbox id"`
@@ -764,9 +765,12 @@ var mcpTools = append([]mcpTool{
 			}
 			r := res.(oas.GetConversationCounts200JSONResponse)
 			out := mcpCounts{All: r.All, Mine: r.Mine, Unassigned: r.Unassigned, Spam: r.Spam, Feedback: r.Feedback, Outbound: r.Outbound,
-				Inboxes: []mcpCount{}, OutboundInboxes: []mcpCount{}, Labels: []mcpCount{}, FeedbackCategories: []mcpCategoryCount{}}
+				Inboxes: []mcpCount{}, UnassignedInboxes: []mcpCount{}, OutboundInboxes: []mcpCount{}, Labels: []mcpCount{}, FeedbackCategories: []mcpCategoryCount{}}
 			for _, x := range r.Inboxes {
 				out.Inboxes = append(out.Inboxes, mcpCount{ID: x.Id, Count: x.Count})
+			}
+			for _, x := range r.UnassignedInboxes {
+				out.UnassignedInboxes = append(out.UnassignedInboxes, mcpCount{ID: x.Id, Count: x.Count})
 			}
 			for _, x := range r.OutboundInboxes {
 				out.OutboundInboxes = append(out.OutboundInboxes, mcpCount{ID: x.Id, Count: x.Count})

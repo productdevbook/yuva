@@ -5328,6 +5328,8 @@ paths:
         sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
         the other counts too.
 
+        `unassigned_inboxes` counts `unassigned` per inbox.
+
         Scope: `conversations:read`.
       tags: [conversations]
       parameters:
@@ -5424,6 +5426,68 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Home"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "401":
+          $ref: "#/components/responses/Problem"
+        "403":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+  /v1/activity:
+    get:
+      operationId: listActivity
+      summary: What the team did lately
+      description: |
+        The panel's Recent block: what happened lately in the inboxes the member can see, newest
+        first. Member sessions only (API keys and OAuth tokens answer `403 member_session_required`),
+        like `GET /v1/home`. It is read from the rows the server already keeps; nothing is recorded
+        for it.
+
+        - `conversation.closed`: a conversation was closed (the `status_changed` event in its
+          timeline). `actor` is the member who closed it, absent when automation, an API key or
+          the contact did.
+        - `conversation.rated`: the contact rated a conversation; `detail.rating` is the rating.
+          No `actor`: the contact is not named here.
+        - `incident.updated`: an update was posted on an incident or maintenance of the status page
+          of the inbox; `detail.state` is the state it set. The first update is the one that
+          opened it.
+        - `article.published`: a help article's translation was published (each publish counts);
+          `detail.locale` is the translation's locale. Left out when the server has no help center.
+        - `broadcast.sent`: a broadcast finished sending; `actor` is the member who scheduled it,
+          absent when an API key did. Left out when the server sends no broadcasts.
+
+        Conversations count as on `GET /v1/home`: only in support inboxes, spam, trash, imported
+        history and other members' private drafts left out, and feedback is never rated.
+        Incidents, articles and broadcasts belong to the inbox of their status page, help center
+        or broadcast and are shown to whoever can see that inbox; a broadcast of a personal
+        mailbox only to its owner. `inbox_id` narrows the list to one inbox (`404` when the
+        caller cannot see it).
+      tags: [workspace]
+      parameters:
+        - $ref: "#/components/parameters/WorkspaceHeader"
+        - name: inbox_id
+          in: query
+          description: Only this inbox (`404` when the caller cannot see it).
+          schema:
+            type: string
+            format: uuid
+        - $ref: "#/components/parameters/Cursor"
+        - name: limit
+          in: query
+          description: Page size, 1 to 50; 20 by default.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 50
+      responses:
+        "200":
+          description: A page of activity, newest first.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityPage"
         "400":
           $ref: "#/components/responses/Problem"
         "401":
@@ -27001,7 +27065,7 @@ components:
     ConversationCounts:
       type: object
       description: Open conversations in the inboxes the caller can see.
-      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams, starred, trash, outbound, outbound_inboxes]
+      required: [all, mine, unassigned, spam, inboxes, labels, assignees, feedback, feedback_categories, teams, mine_teams, starred, trash, outbound, outbound_inboxes, unassigned_inboxes]
       properties:
         trash:
           type: integer
@@ -27071,6 +27135,89 @@ components:
           description: Open conversations that answer mail the team sent, per inbox id; inboxes without any are left out.
           items:
             $ref: "#/components/schemas/CountByID"
+        unassigned_inboxes:
+          type: array
+          description: Open conversations without an assignee, per inbox id; inboxes without any are left out.
+          items:
+            $ref: "#/components/schemas/CountByID"
+    ActivityKind:
+      type: string
+      enum: [conversation.closed, conversation.rated, incident.updated, article.published, broadcast.sent]
+      x-enum-varnames: [ActivityConversationClosed, ActivityConversationRated, ActivityIncidentUpdated, ActivityArticlePublished, ActivityBroadcastSent]
+    ActivityActor:
+      type: object
+      description: The member who did it.
+      required: [member_id, name]
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    ActivityTarget:
+      type: object
+      required: [type, id, title]
+      properties:
+        type:
+          type: string
+          enum: [conversation, incident, article, broadcast]
+          x-enum-varnames: [ActivityTargetConversation, ActivityTargetIncident, ActivityTargetArticle, ActivityTargetBroadcast]
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          description: |
+            The conversation's subject (written by the contact for conversations they started),
+            the incident's title, the article title as published, or the broadcast's name.
+        parent_id:
+          type: string
+          format: uuid
+          description: The status page of an incident or the help center of an article.
+    ActivityDetail:
+      type: object
+      properties:
+        rating:
+          $ref: "#/components/schemas/Rating"
+        state:
+          type: string
+          description: "`incident.updated`: the incident or maintenance state the update set."
+        locale:
+          type: string
+          description: "`article.published`: the published translation's locale."
+    ActivityItem:
+      type: object
+      required: [id, kind, at, inbox_id, target]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The timeline event, incident update, article revision or broadcast it was read from.
+        kind:
+          $ref: "#/components/schemas/ActivityKind"
+        at:
+          type: string
+          format: date-time
+        inbox_id:
+          type: string
+          format: uuid
+        actor:
+          $ref: "#/components/schemas/ActivityActor"
+        target:
+          $ref: "#/components/schemas/ActivityTarget"
+        detail:
+          $ref: "#/components/schemas/ActivityDetail"
+    ActivityPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityItem"
+        next_cursor:
+          type: string
+          description: Absent on the last page.
     Home:
       type: object
       description: The Home blocks; a block the member may not see is absent.

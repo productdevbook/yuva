@@ -2942,6 +2942,8 @@ export interface paths {
          *     sent (`origin=outbound` on `GET /v1/conversations`), spam left out; they are included in
          *     the other counts too.
          *
+         *     `unassigned_inboxes` counts `unassigned` per inbox.
+         *
          *     Scope: `conversations:read`.
          */
         get: operations["getConversationCounts"];
@@ -3006,6 +3008,49 @@ export interface paths {
          *       `get_setup_state` tool. Not narrowed by `inbox_id`.
          */
         get: operations["getHome"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * What the team did lately
+         * @description The panel's Recent block: what happened lately in the inboxes the member can see, newest
+         *     first. Member sessions only (API keys and OAuth tokens answer `403 member_session_required`),
+         *     like `GET /v1/home`. It is read from the rows the server already keeps; nothing is recorded
+         *     for it.
+         *
+         *     - `conversation.closed`: a conversation was closed (the `status_changed` event in its
+         *       timeline). `actor` is the member who closed it, absent when automation, an API key or
+         *       the contact did.
+         *     - `conversation.rated`: the contact rated a conversation; `detail.rating` is the rating.
+         *       No `actor`: the contact is not named here.
+         *     - `incident.updated`: an update was posted on an incident or maintenance of the status page
+         *       of the inbox; `detail.state` is the state it set. The first update is the one that
+         *       opened it.
+         *     - `article.published`: a help article's translation was published (each publish counts);
+         *       `detail.locale` is the translation's locale. Left out when the server has no help center.
+         *     - `broadcast.sent`: a broadcast finished sending; `actor` is the member who scheduled it,
+         *       absent when an API key did. Left out when the server sends no broadcasts.
+         *
+         *     Conversations count as on `GET /v1/home`: only in support inboxes, spam, trash, imported
+         *     history and other members' private drafts left out, and feedback is never rated.
+         *     Incidents, articles and broadcasts belong to the inbox of their status page, help center
+         *     or broadcast and are shown to whoever can see that inbox; a broadcast of a personal
+         *     mailbox only to its owner. `inbox_id` narrows the list to one inbox (`404` when the
+         *     caller cannot see it).
+         */
+        get: operations["listActivity"];
         put?: never;
         post?: never;
         delete?: never;
@@ -16465,6 +16510,59 @@ export interface components {
             outbound: number;
             /** @description Open conversations that answer mail the team sent, per inbox id; inboxes without any are left out. */
             outbound_inboxes: components["schemas"]["CountByID"][];
+            /** @description Open conversations without an assignee, per inbox id; inboxes without any are left out. */
+            unassigned_inboxes: components["schemas"]["CountByID"][];
+        };
+        /** @enum {string} */
+        ActivityKind: "conversation.closed" | "conversation.rated" | "incident.updated" | "article.published" | "broadcast.sent";
+        /** @description The member who did it. */
+        ActivityActor: {
+            /** Format: uuid */
+            member_id: string;
+            name: string;
+        };
+        ActivityTarget: {
+            /** @enum {string} */
+            type: "conversation" | "incident" | "article" | "broadcast";
+            /** Format: uuid */
+            id: string;
+            /**
+             * @description The conversation's subject (written by the contact for conversations they started),
+             *     the incident's title, the article title as published, or the broadcast's name.
+             */
+            title: string;
+            /**
+             * Format: uuid
+             * @description The status page of an incident or the help center of an article.
+             */
+            parent_id?: string;
+        };
+        ActivityDetail: {
+            rating?: components["schemas"]["Rating"];
+            /** @description `incident.updated`: the incident or maintenance state the update set. */
+            state?: string;
+            /** @description `article.published`: the published translation's locale. */
+            locale?: string;
+        };
+        ActivityItem: {
+            /**
+             * Format: uuid
+             * @description The timeline event, incident update, article revision or broadcast it was read from.
+             */
+            id: string;
+            kind: components["schemas"]["ActivityKind"];
+            /** Format: date-time */
+            at: string;
+            /** Format: uuid */
+            inbox_id: string;
+            actor?: components["schemas"]["ActivityActor"];
+            target: components["schemas"]["ActivityTarget"];
+            detail?: components["schemas"]["ActivityDetail"];
+        };
+        ActivityPage: {
+            items: components["schemas"]["ActivityItem"][];
+            /** @description Absent on the last page. */
+            next_cursor?: string;
         };
         /** @description The Home blocks; a block the member may not see is absent. */
         Home: {
@@ -33095,6 +33193,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Home"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            403: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listActivity: {
+        parameters: {
+            query?: {
+                /** @description Only this inbox (`404` when the caller cannot see it). */
+                inbox_id?: string;
+                /** @description The `next_cursor` of the previous page. */
+                cursor?: components["parameters"]["Cursor"];
+                /** @description Page size, 1 to 50; 20 by default. */
+                limit?: number;
+            };
+            header?: {
+                /** @description The workspace to act on; see "Workspace selection". */
+                "Yuva-Workspace"?: components["parameters"]["WorkspaceHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of activity, newest first. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivityPage"];
                 };
             };
             400: components["responses"]["Problem"];
