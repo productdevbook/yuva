@@ -3,19 +3,18 @@ import { CheckIcon, ListFilterIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Link, useLocation, useSearchParams } from "react-router"
 
-import { groupLabelClass, rowClass } from "@/app/Sidebar"
 import { inboxRoot, isChats } from "@/app/shell"
 import { toast } from "@/components/common"
+import {
+  PlaceCount,
+  placeButtonClass,
+  placeItemClass,
+  placeLabelClass,
+  placeMenuClass,
+} from "@/components/common/SectionSidebar"
 import { useErrorText } from "@/components/common/text"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import {
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuBadge,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
+import { SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { viewSearch } from "@/features/inbox/views/filters"
 import { byPosition, useViewCountRefresh, useViewMutations, useViews } from "@/features/inbox/views/queries"
 import type { SavedView } from "@/lib/api"
@@ -28,14 +27,13 @@ type Section = { key: string; title: string; views: SavedView[]; writable: boole
 
 function CountBadge({ view }: { view: SavedView }) {
   if (view.count === undefined || view.count_unavailable) return null
-  return (
-    <SidebarMenuBadge
-      className="top-1.5 right-auto end-2.5 font-mono text-caption font-normal text-sidebar-muted in-data-[mobile=true]:top-3"
-      data-testid="view-count"
-    >
-      {view.count_capped ? "1000+" : view.count}
-    </SidebarMenuBadge>
-  )
+  if (view.count_capped)
+    return (
+      <span className="ms-auto shrink-0 ps-2 text-caption font-medium text-muted-foreground" data-testid="view-count">
+        1000+
+      </span>
+    )
+  return <PlaceCount n={view.count} testId="view-count" />
 }
 
 function ViewRow({
@@ -56,7 +54,6 @@ function ViewRow({
   onMove: (id: string, by: -1 | 1) => void
 }) {
   const { apart } = useSession()
-  const { setOpenMobile } = useSidebar()
   const to = { pathname: inboxRoot(apart), search: viewSearch(view.id, view.filters) }
   return (
     <SidebarMenuItem
@@ -71,6 +68,7 @@ function ViewRow({
         e.preventDefault()
         onDrop(view.id)
       }}
+      className={placeItemClass}
       data-testid="view-item"
     >
       <SidebarMenuButton
@@ -78,22 +76,21 @@ function ViewRow({
         isActive={active}
         aria-current={active ? "page" : undefined}
         title={writable ? `${view.name} · ${reorderTitle}` : view.name}
-        className={cn(rowClass, "h-8 pe-14 [&_svg]:size-[15px] [&_svg]:text-sidebar-muted")}
-        onClick={() => setOpenMobile(false)}
+        className={cn(placeButtonClass, "[&_svg]:size-[15px] [&_svg]:text-muted-foreground")}
         onKeyDown={(e) => {
           if (!writable || !e.altKey || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return
           e.preventDefault()
           e.stopPropagation()
           onMove(view.id, e.key === "ArrowUp" ? -1 : 1)
         }}
-        data-rail-item
+        data-place
         data-view-id={view.id}
         data-testid="view-link"
       >
         <ListFilterIcon />
         <span className="min-w-0 flex-1 truncate">{view.name}</span>
+        <CountBadge view={view} />
       </SidebarMenuButton>
-      <CountBadge view={view} />
     </SidebarMenuItem>
   )
 }
@@ -183,14 +180,14 @@ export function ViewsGroup() {
   const activeId = isChats(pathname, apart) ? params.get("view") : null
   return (
     <div
-      className="mt-2 flex flex-col gap-px group-data-[collapsible=icon]:hidden"
+      className="flex flex-col max-[899px]:contents"
       role="group"
       aria-label={t`Saved views`}
       data-testid="views-group"
     >
       {sections.map((s) => (
-        <SidebarMenu key={s.key} className="gap-px" data-testid="views-section">
-          <SidebarGroupLabel render={<li />} className={cn(groupLabelClass, "block truncate pt-1.5")}>
+        <SidebarMenu key={s.key} className={placeMenuClass} data-testid="views-section">
+          <SidebarGroupLabel render={<li />} className={cn(placeLabelClass, "block truncate")}>
             {s.title}
           </SidebarGroupLabel>
           {s.views.map((v) => (
@@ -208,14 +205,12 @@ export function ViewsGroup() {
         </SidebarMenu>
       ))}
       {strangers.length > 0 && (
-        <SidebarMenu className="gap-px">
-          <SidebarMenuItem>
+        <SidebarMenu className={placeMenuClass}>
+          <SidebarMenuItem className={placeItemClass}>
             <DropdownMenu>
               <DropdownMenuTrigger
-                render={
-                  <SidebarMenuButton className="h-[30px] rounded-lg px-2.5 text-small text-sidebar-muted in-data-[mobile=true]:h-11 in-data-[mobile=true]:text-base" />
-                }
-                data-rail-item
+                render={<SidebarMenuButton className={cn(placeButtonClass, "text-muted-foreground")} />}
+                data-place
                 data-testid="views-browse"
               >
                 <span className="min-w-0 flex-1 truncate">

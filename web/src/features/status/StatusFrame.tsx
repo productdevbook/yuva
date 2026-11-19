@@ -47,73 +47,53 @@ export function useStatusNames(): Record<StatusPlace | IncidentView, string> {
 }
 
 function StatusNav({ place, view }: { place: StatusPlace; view?: IncidentView }) {
-  const { t } = useLingui()
   const { canManage } = useSession()
   const [params] = useSearchParams()
   const { items } = useStatusScope()
   const counts = useStatusCounts()
   const names = useStatusNames()
   const page = items.find((p) => p.id === params.get("page")) ?? items[0]
-  const down = counts.down
-  const incidentSub: NavItem[] = (["active", "scheduled", "past"] as const).map((v) => ({
-    key: v,
-    label: names[v],
-    to: incidentsTo(v),
-    count: v === "past" ? undefined : counts[v],
-    current: place === "incidents" && view === v,
-    sub: true,
-    testId: `status-nav-incidents-${v}`,
-  }))
-  const main: NavItem[] = [
-    {
-      key: "overview",
-      label: names.overview,
-      to: page ? statusLink(page.id) : "/status",
-      current: place === "overview",
-      testId: "status-nav-overview",
-    },
-    {
-      key: "incidents",
-      label: names.incidents,
-      to: "/incidents",
-      count: counts.active,
-      hot: true,
-      current: place === "incidents" && !view,
-      testId: "status-nav-incidents",
-    },
-    ...(place === "incidents" ? incidentSub : []),
-    {
-      key: "monitors",
-      label: names.monitors,
-      to: "/monitors",
-      count: counts.down || counts.monitors,
-      hot: counts.down > 0,
-      ariaLabel: down > 0 ? t`Monitors, ${down} down` : undefined,
-      current: place === "monitors",
-      testId: "status-nav-monitors",
-    },
-    {
-      key: "pages",
-      label: names.pages,
-      to: "/status?tab=pages",
-      count: counts.pages,
-      current: place === "pages",
-      testId: "status-nav-pages",
-    },
-  ]
+  if (place === "monitors") return null
+  if (place === "incidents") {
+    const shown = view ?? "active"
+    return (
+      <NavGroup
+        title={names.incidents}
+        items={(["active", "scheduled", "past"] as const).map((v) => ({
+          key: v,
+          label: names[v],
+          to: incidentsTo(v),
+          count: v === "past" ? undefined : counts[v],
+          current: shown === v,
+          testId: `status-nav-incidents-${v}`,
+        }))}
+      />
+    )
+  }
   const pageViews: NavItem[] = page
-    ? (["components", "subscribers", ...(canManage ? (["settings"] as const) : [])] as const).map((v) => ({
+    ? (["overview", "components", "subscribers", ...(canManage ? (["settings"] as const) : [])] as const).map((v) => ({
         key: v,
         label: names[v],
-        to: statusLink(page.id, v),
+        to: statusLink(page.id, v === "overview" ? undefined : v),
         current: place === v,
         testId: `status-nav-${v}`,
       }))
     : []
   return (
     <>
-      <NavGroup items={main} />
       {page && <NavGroup title={page.name} items={pageViews} />}
+      <NavGroup
+        items={[
+          {
+            key: "pages",
+            label: names.pages,
+            to: "/status?tab=pages",
+            count: counts.pages,
+            current: place === "pages",
+            testId: "status-nav-pages",
+          },
+        ]}
+      />
     </>
   )
 }
@@ -133,13 +113,7 @@ export function StatusLayout({
 }) {
   const { t } = useLingui()
   return (
-    <SectionPage
-      title={t`Status`}
-      searchLabel={t`Search`}
-      nav={<StatusNav place={place} view={view} />}
-      aside={aside}
-      testId={testId}
-    >
+    <SectionPage title={t`Status`} nav={<StatusNav place={place} view={view} />} aside={aside} testId={testId}>
       {children}
     </SectionPage>
   )

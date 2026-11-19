@@ -1,32 +1,14 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import { Link } from "react-router"
 
-import {
-  ContactAvatar,
-  InfoSection,
-  KV,
-  NavGroup,
-  NavList,
-  PageSidebar,
-  SectionNav,
-  useContactName,
-  type NavItem,
-} from "@/components/common"
+import { ContactAvatar, InfoSection, KV, useContactName } from "@/components/common"
 import { formatDateTime, formatShort, useEnumText } from "@/components/common/text"
 import { useContact } from "@/features/contact/queries"
 import { useConversation, useMessages } from "@/features/conversation/queries"
 import { useAuthorLabel } from "@/features/inbox/SidePanels"
 import { useConversations } from "@/features/inbox/queries"
-import {
-  mailPath,
-  useFilterAccess,
-  useFolderLabels,
-  useFolders,
-  useMailInboxes,
-  type Folder,
-} from "@/features/mail/folders"
+import { mailPath, useFolderLabels, useMailInboxes, type Folder } from "@/features/mail/folders"
 import { useMailCounts } from "@/features/mail/queries"
-import { useSession } from "@/lib/session"
 import { useChannelMap } from "@/lib/workspace"
 
 export function useFolderCounts(box: string): Partial<Record<Folder, number>> {
@@ -34,67 +16,6 @@ export function useFolderCounts(box: string): Partial<Record<Folder, number>> {
   if (!counts) return {}
   if (box === "all") return { inbox: counts.all, starred: counts.starred }
   return { inbox: counts.inboxes.find((c) => c.id === box)?.count ?? 0 }
-}
-
-export function MailSidebar({ box, folder }: { box: string; folder: Folder }) {
-  const { t } = useLingui()
-  const { canManage } = useSession()
-  const folders = useFolders()
-  const labels = useFolderLabels()
-  const counts = useFolderCounts(box)
-  const all = useMailCounts()
-  const inboxes = useMailInboxes()
-  const filters = useFilterAccess(box)
-  const folderItems: NavItem[] = folders.map((f) => ({
-    key: f,
-    label: labels[f],
-    count: counts[f],
-    hot: f === "inbox",
-    current: folder === f,
-    to: mailPath(box, f),
-    testId: `mail-folder-${f}`,
-  }))
-  const boxItems: NavItem[] = [
-    {
-      key: "all",
-      label: t`All mail`,
-      color: "",
-      count: all?.all,
-      current: box === "all",
-      to: mailPath("all", folder),
-      testId: "mail-box-all",
-    },
-    ...inboxes.map((i) => ({
-      key: i.id,
-      label: i.name,
-      color: i.branding.color ?? "",
-      count: all?.inboxes.find((c) => c.id === i.id)?.count,
-      current: box === i.id,
-      to: mailPath(i.id, folder),
-      title: i.mailbox?.addresses[0],
-      testId: "mail-box-option",
-    })),
-    {
-      key: "new",
-      label: t`New mailbox`,
-      sub: true,
-      to: "/setup/mail",
-      state: { back: "/mail" },
-      testId: "mail-box-new",
-    },
-    ...(filters
-      ? [{ key: "filters", label: t`Filters`, sub: true, to: `/mail/${box}/filters`, testId: "mail-filters-link" }]
-      : []),
-  ]
-  return (
-    <PageSidebar title={t`Mail`} searchLabel={t`Search or jump to…`}>
-      <NavList label={t`Mail`}>
-        <NavGroup items={folderItems} />
-        <NavGroup title={t`Mailboxes`} items={boxItems} />
-      </NavList>
-      {!canManage && <SectionNav />}
-    </PageSidebar>
-  )
 }
 
 export function MailListInfo({ box, folder }: { box: string; folder: Folder }) {

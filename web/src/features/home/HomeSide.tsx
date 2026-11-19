@@ -2,7 +2,7 @@ import { Plural, Trans, useLingui } from "@lingui/react/macro"
 import { Link, type To } from "react-router"
 
 import { byPresence } from "@/app/TeamMenu"
-import { useGo } from "@/app/Rail"
+import { useGo } from "@/app/nav"
 import { InfoSection, KV } from "@/components/common/PageLayout"
 import { useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"

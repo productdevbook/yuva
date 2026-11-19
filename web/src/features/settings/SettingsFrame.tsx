@@ -4,7 +4,7 @@ import { createContext, useContext, useState } from "react"
 import { createPortal } from "react-dom"
 import { useLocation } from "react-router"
 
-import { InfoSection, KV, NavGroup, SectionPage, TopSep, TopSlotProvider, type NavItem } from "@/components/common"
+import { InfoSection, KV, SectionPage, TopSep, TopSlotProvider } from "@/components/common"
 import { useEnumText } from "@/components/common/text"
 import { useIssueIntegrations } from "@/features/issues/queries"
 import { useMigrations } from "@/features/migrations/queries"
@@ -12,7 +12,6 @@ import { useAutomationRules } from "@/features/settings/automation/queries"
 import { needsAttention } from "@/features/settings/channels/ChannelState"
 import { useGrants } from "@/features/settings/connected-apps/queries"
 import { useInboxChannels } from "@/features/settings/SettingsColumn"
-import { useSlack } from "@/features/settings/slack/queries"
 import { FlatSettingsProvider } from "@/features/settings/ui"
 import { api, unwrap, useVersion } from "@/lib/api"
 import { keys } from "@/lib/keys"
@@ -148,7 +147,7 @@ function useAbout(): Partial<Record<SettingsPlace, string>> {
   }
 }
 
-function useCounts(): Partial<Record<SettingsPlace, number>> & { attention?: number } {
+export function useSettingsCounts(): Partial<Record<SettingsPlace, number>> & { attention?: number } {
   const { canManage, workspaceId: ws } = useSession()
   const inboxes = useInboxChannels()
   const members = useMembers().data
@@ -194,7 +193,7 @@ function useCounts(): Partial<Record<SettingsPlace, number>> & { attention?: num
   }
 }
 
-const TO: Record<SettingsPlace, string> = {
+export const SETTINGS_TO: Record<SettingsPlace, string> = {
   profile: "/settings/profile",
   signature: "/settings/signature",
   addresses: "/settings/addresses",
@@ -221,7 +220,7 @@ const TO: Record<SettingsPlace, string> = {
   "audit-log": "/settings/audit-log",
 }
 
-const TEST_IDS: Partial<Record<SettingsPlace, string>> = {
+export const SETTINGS_TEST_IDS: Partial<Record<SettingsPlace, string>> = {
   profile: "settings-profile",
   appearance: "settings-appearance",
   workspace: "general-tab-workspace",
@@ -242,7 +241,7 @@ const TEST_IDS: Partial<Record<SettingsPlace, string>> = {
   "audit-log": "settings-audit-log",
 }
 
-const MANAGERS: SettingsPlace[] = [
+export const SETTINGS_MANAGERS: SettingsPlace[] = [
   "teams",
   "migrations",
   "fields",
@@ -253,35 +252,7 @@ const MANAGERS: SettingsPlace[] = [
   "issue-trackers",
   "slack",
 ]
-const OWNERS: SettingsPlace[] = ["sso", "audit-log"]
-
-function SettingsNav({ place }: { place: SettingsPlace }) {
-  const { t } = useLingui()
-  const { canManage, isOwner } = useSession()
-  const names = useSettingsNames()
-  const counts = useCounts()
-  const slack = useSlack(canManage).data
-  const allowed = (p: SettingsPlace) => (OWNERS.includes(p) ? isOwner : MANAGERS.includes(p) ? canManage : true)
-  const attention = counts.attention ?? 0
-  return (
-    <>
-      {GROUPS.map(([g, items]) => {
-        const rows: NavItem[] = items.filter(allowed).map((p) => ({
-          key: p,
-          label: names.place[p],
-          to: TO[p],
-          count: p === "channels" && attention > 0 ? attention : counts[p],
-          hot: p === "channels" && attention > 0,
-          ariaLabel: p === "channels" && attention > 0 ? t`Channels needing attention: ${attention}` : undefined,
-          title: p === "slack" && slack?.available ? (slack.connected ? t`On` : t`Off`) : undefined,
-          current: p === place,
-          testId: TEST_IDS[p] ?? `settings-nav-${p}`,
-        }))
-        return rows.length > 0 && <NavGroup key={g} title={names.group[g]} items={rows} />
-      })}
-    </>
-  )
-}
+export const SETTINGS_OWNERS: SettingsPlace[] = ["sso", "audit-log"]
 
 const AsideSlot = createContext<HTMLElement | null>(null)
 
@@ -344,13 +315,7 @@ export function SettingsLayout({ children }: { children: React.ReactNode }) {
   const [slot, setSlot] = useState<HTMLElement | null>(null)
   const [top, setTop] = useState<HTMLElement | null>(null)
   return (
-    <SectionPage
-      title={t`Settings`}
-      searchLabel={t`Search`}
-      nav={<SettingsNav place={place} />}
-      aside={<Aside place={place} slot={setSlot} />}
-      testId="settings-page"
-    >
+    <SectionPage title={t`Settings`} aside={<Aside place={place} slot={setSlot} />} testId="settings-page">
       <AsideSlot.Provider value={slot}>
         <TopSlotProvider value={top}>
           <FlatSettingsProvider value={{ trail: <SettingsTrail place={place} />, slot: setTop }}>

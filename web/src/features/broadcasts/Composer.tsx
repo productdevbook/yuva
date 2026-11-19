@@ -789,7 +789,7 @@ export function Composer({ b, readOnly }: { b: Broadcast; readOnly: boolean }) {
   return (
     <DetailFrame
       testId="broadcast-page"
-      place={place}
+
       back={triggered && !draft ? { to: broadcastLink(b.id), label: b.name } : backOf(place, views)}
       bar={{
         back: triggered ? (draft ? "/broadcasts/triggered" : broadcastLink(b.id)) : "/broadcasts",

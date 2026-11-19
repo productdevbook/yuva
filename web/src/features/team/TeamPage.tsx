@@ -14,14 +14,12 @@ import {
   InfoSection,
   KV,
   ListRow,
-  NavGroup,
   PageHeading,
   PageTop as PageTopLine,
   SectionPage,
   topButton,
   topInk,
   TopSep,
-  type NavItem,
 } from "@/components/common"
 import { formatDate, initials, ROLES, useEnumText } from "@/components/common/text"
 import { Button } from "@/components/ui/button"
@@ -56,7 +54,7 @@ import { api, ApiError, unwrap, type Invite, type Locale, type Member, type Role
 import { keys } from "@/lib/keys"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
-import { useAllInboxes, useInboxes, useMembers, useTeams } from "@/lib/workspace"
+import { useAllInboxes, useInboxes, useMembers } from "@/lib/workspace"
 import { PageBackLink } from "@/components/common/PageLayout"
 
 type Presence = "here" | "away" | "offline"
@@ -1163,7 +1161,6 @@ function FlatTeam({ tab }: { tab: "members" | "invites" }) {
   const text = useEnumText()
   const status = useMemberStatus()
   const { canManage, membership } = useSession()
-  const teams = useTeams().data
   const team = useTeam(tab)
   const { memberId, members, stats, inviting, setInviting, invites, load, where, order, peak } = team
   const { available, total, unassigned, assigned, num, tabKey } = team
@@ -1192,36 +1189,6 @@ function FlatTeam({ tab }: { tab: "members" | "invites" }) {
   const fmt = new Intl.NumberFormat(i18n.locale)
   const presence = (p: Presence) => order.filter((m) => presenceOf(m) === p).length
   const names = { members: t`Members`, invites: t`Invites` }
-  const nav: NavItem[] = [
-    {
-      key: "members",
-      label: names.members,
-      to: "/team",
-      count: members.data ? order.length : undefined,
-      current: tabKey === "members",
-      testId: "team-tab-members",
-    },
-    ...(canManage
-      ? [
-          {
-            key: "invites",
-            label: names.invites,
-            to: "/team/invites",
-            count: invites.data?.length,
-            hot: true,
-            current: tabKey === "invites",
-            testId: "team-tab-invites",
-          },
-          {
-            key: "teams",
-            label: t`Teams`,
-            to: "/settings/teams",
-            count: teams?.length,
-            testId: "team-nav-teams",
-          },
-        ]
-      : []),
-  ]
   const today = current ? stats?.members.find((x) => x.member_id === current.id) : undefined
   const aside = current ? (
     <>
@@ -1282,7 +1249,7 @@ function FlatTeam({ tab }: { tab: "members" | "invites" }) {
     </>
   )
   return (
-    <SectionPage title={t`Team`} nav={<NavGroup items={nav} />} aside={aside} testId="team-home">
+    <SectionPage title={t`Team`} aside={aside} testId="team-home">
       <PageTopLine
         back={detail ? { label: names.members, to: "/team" } : undefined}
         actions={

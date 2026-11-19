@@ -12,7 +12,6 @@ import {
   MoreLink,
   PageHeading,
   PageLayout,
-  PageSidebar,
   PageTop,
   SectionHeading,
   toast,
@@ -196,7 +195,7 @@ function Scope({ mailOnly }: { mailOnly: boolean }) {
             <Trans>Showing every product.</Trans>
           </span>
           <span className="text-muted-foreground max-md:hidden">
-            <Trans>Pick one in the sidebar.</Trans>
+            <Trans>Pick one at the top of the page.</Trans>
           </span>
         </>
       )}
@@ -971,7 +970,6 @@ export function HomePage() {
     <PageLayout
       testId="home"
       label={t`Home`}
-      sidebar={<PageSidebar title={t`Home`} />}
       aside={
         <InfoColumn label={t`Details`}>
           <HomeInfo h={h} anchors={anchors} support={support} solo={solo} />

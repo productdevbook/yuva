@@ -392,7 +392,7 @@ export default function GalleryPage() {
         <Trans>Owners and admins make e-mail designs and send broadcasts.</Trans>
       </PaneEmpty>
     )
-    return flat ? <BroadcastsLayout current="designs">{empty}</BroadcastsLayout> : empty
+    return flat ? <BroadcastsLayout>{empty}</BroadcastsLayout> : empty
   }
   const open: NewDesign | null = choice ?? (asked ? { use: asked } : null)
   const close = () => {
@@ -433,7 +433,6 @@ export default function GalleryPage() {
   if (flat)
     return (
       <BroadcastsLayout
-        current="designs"
         testId="design-gallery"
         sub={tabs.map((x) => ({
           key: x.key,

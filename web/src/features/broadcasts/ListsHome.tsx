@@ -455,7 +455,6 @@ function FlatLists() {
   const scope = product
   return (
     <BroadcastsLayout
-      current="lists"
       sub={sub}
       testId="lists-home"
       aside={

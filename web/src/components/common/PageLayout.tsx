@@ -1,25 +1,31 @@
 import { useLingui } from "@lingui/react/macro"
-import { ArrowLeftIcon, MoonIcon, SearchIcon, SunIcon } from "lucide-react"
+import { ArrowLeftIcon, CheckIcon, ChevronDownIcon, MoonIcon, SunIcon } from "lucide-react"
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom"
-import { Link, type To } from "react-router"
+import { Link, useNavigate, type To } from "react-router"
 
-import { moveFocus } from "@/app/Rail"
-import { useShell } from "@/app/shell"
-import { KeyHint } from "@/app/Sidebar"
 import { useDark } from "@/components/common/EmailHtml"
-import { mod } from "@/components/common/ShortcutSheet"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { setTheme } from "@/lib/theme"
 import { cn } from "@/lib/utils"
 
 export function PageLayout({
-  sidebar,
+  nav,
   aside,
   label,
   testId,
   children,
 }: {
-  sidebar?: React.ReactNode
+  nav?: React.ReactNode
   aside?: React.ReactNode
   label?: string
   testId?: string
@@ -30,27 +36,14 @@ export function PageLayout({
       className="flex min-w-0 flex-1 flex-col bg-background in-data-frame:min-h-0 in-data-frame:overflow-y-auto"
       data-testid={testId}
     >
-      <div aria-hidden className="h-0.5 shrink-0 bg-brand max-md:hidden" />
       <div className="mx-auto flex w-full max-w-[1440px] flex-1 items-stretch">
-        {sidebar}
         <main aria-label={label} className="min-w-0 flex-[999_1_560px] ps-8 pe-7 pb-16 max-md:px-6 phone:px-4">
+          {nav}
           {children}
         </main>
         {aside}
       </div>
     </div>
-  )
-}
-
-export function SideColumn({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <aside
-      aria-label={label}
-      className="relative flex w-60 shrink-0 flex-col gap-5 border-e border-line-soft pt-5 ps-5 pe-4 pb-8 max-md:hidden"
-      data-testid="page-sidebar"
-    >
-      {children}
-    </aside>
   )
 }
 
@@ -87,14 +80,6 @@ export function BackArrow({ className }: { className?: string }) {
   return <ArrowLeftIcon aria-hidden className={cn("shrink-0 rtl:-scale-x-100", className)} />
 }
 
-export function SideTitle({ title }: { title: React.ReactNode }) {
-  return (
-    <div className="px-2.5" data-testid="page-title">
-      <div className="text-title text-foreground">{title}</div>
-    </div>
-  )
-}
-
 export function BackButton({ to, label, className }: { to: To; label: string; className?: string }) {
   return (
     <Link
@@ -109,26 +94,6 @@ export function BackButton({ to, label, className }: { to: To; label: string; cl
     >
       <BackArrow className="size-4" />
     </Link>
-  )
-}
-
-export function PageSearch({ label }: { label?: string }) {
-  const { t } = useLingui()
-  const { openPalette } = useShell()
-  const text = label ?? t`Search`
-  return (
-    <button
-      type="button"
-      onClick={openPalette}
-      aria-label={`${text} ${mod} K`}
-      title={text}
-      className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border bg-subtle px-3.5 text-body text-muted-foreground outline-none transition-colors hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring"
-      data-testid="page-search"
-    >
-      <SearchIcon aria-hidden className="size-[15px] shrink-0" />
-      <span className="min-w-0 flex-1 truncate text-start">{t`Search`}</span>
-      <KeyHint keys={[mod, "K"]} className="rounded border border-input bg-background px-1.5 text-muted-foreground" />
-    </button>
   )
 }
 
@@ -148,78 +113,135 @@ export type NavItem = {
   testId?: string
 }
 
-const rowClass =
-  "group flex w-full items-center gap-2 rounded-sm px-2.5 py-1 text-start text-body leading-5 text-fg2 outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:font-medium aria-[current=page]:text-foreground"
+const MENU_AT = 7
 
-const labelClass =
-  "-mb-0.5 min-w-0 flex-1 truncate pb-0.5 underline-offset-4 group-hover:underline group-aria-[current=page]:underline group-aria-[current=page]:decoration-brand group-aria-[current=page]:decoration-2"
-
-export function NavRow({ item }: { item: NavItem }) {
-  const current = item.current ? ("page" as const) : undefined
-  const className = cn(rowClass, item.sub && "py-[3px] ps-[26px] text-small leading-[18px] text-muted-foreground")
-  const inner = (
-    <>
-      {item.color !== undefined && (
-        <span
-          aria-hidden
-          className="size-[7px] shrink-0 rounded-full bg-muted2"
-          style={item.color ? { backgroundColor: item.color } : undefined}
-        />
-      )}
-      <span className={labelClass}>{item.label}</span>
-      {!!item.count && (
-        <span
-          className={cn("shrink-0 font-mono text-[11px] text-muted-foreground", item.hot && "font-semibold text-brand")}
-          data-testid={item.testId ? `${item.testId}-count` : undefined}
-        >
-          {item.count > 999 ? "999+" : item.count}
-        </span>
-      )}
-    </>
-  )
-  if (item.to !== undefined)
-    return (
-      <Link
-        to={item.to}
-        state={item.state}
-        onClick={item.onSelect}
-        aria-current={current}
-        aria-label={item.ariaLabel}
-        title={item.title}
-        className={className}
-        data-rail-item
-        data-testid={item.testId}
-      >
-        {inner}
-      </Link>
-    )
+function Count({ item }: { item: NavItem }) {
+  if (!item.count) return null
   return (
-    <button
-      type="button"
-      onClick={item.onSelect}
-      aria-current={current}
-      aria-label={item.ariaLabel}
-      title={item.title}
-      className={className}
-      data-rail-item
-      data-testid={item.testId}
+    <span
+      className={cn(
+        "shrink-0 text-caption font-normal text-muted-foreground tabular-nums",
+        item.hot && "font-semibold text-brand"
+      )}
+      data-testid={item.testId ? `${item.testId}-count` : undefined}
     >
-      {inner}
-    </button>
+      {item.count > 999 ? "999+" : item.count}
+    </span>
   )
 }
 
-export function NavGroupLabel({ children }: { children: React.ReactNode }) {
-  return <div className="px-2.5 pb-1.5 text-caption font-medium text-muted2">{children}</div>
+function ColorDot({ color }: { color?: string }) {
+  if (color === undefined) return null
+  return (
+    <span
+      aria-hidden
+      className="size-[7px] shrink-0 rounded-full bg-muted2"
+      style={color ? { backgroundColor: color } : undefined}
+    />
+  )
 }
 
-export function NavGroup({ title, items, children }: { title?: string; items: NavItem[]; children?: React.ReactNode }) {
+function useOpen() {
+  const navigate = useNavigate()
+  return (item: NavItem) => {
+    item.onSelect?.()
+    if (item.to !== undefined) navigate(item.to, item.state === undefined ? undefined : { state: item.state })
+  }
+}
+
+function MenuGroup({ title, items }: { title?: string; items: NavItem[] }) {
+  const { t } = useLingui()
+  const open = useOpen()
+  const current = items.find((i) => i.current)
+  const name = current?.label ?? title ?? t`Show`
   return (
-    <div role="group" aria-label={title}>
-      {title && <NavGroupLabel>{title}</NavGroupLabel>}
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={<Button variant="outline" size="sm" className="h-8 max-w-64 gap-1.5 bg-card font-normal" />}
+        aria-label={title ? `${title}: ${name}` : name}
+        data-testid="page-nav-menu"
+      >
+        <ColorDot color={current?.color} />
+        {title && current && <span className="shrink-0 text-muted-foreground">{title}</span>}
+        <span className="min-w-0 truncate font-medium">{name}</span>
+        <ChevronDownIcon className="size-3.5 text-muted-foreground" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="max-h-[60svh] min-w-56">
+        <DropdownMenuGroup>
+          {title && <DropdownMenuLabel>{title}</DropdownMenuLabel>}
+          {items.map((i) => (
+            <DropdownMenuItem
+              key={i.key}
+              onClick={() => open(i)}
+              aria-current={i.current ? "page" : undefined}
+              aria-label={i.ariaLabel}
+              title={i.title}
+              className={cn(i.sub && "ps-6")}
+              data-testid={i.testId}
+            >
+              <ColorDot color={i.color} />
+              <span className="min-w-0 flex-1 truncate">{i.label}</span>
+              <Count item={i} />
+              <CheckIcon className={cn("size-3.5", !i.current && "invisible")} />
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+function ToggleRow({ title, items }: { title?: string; items: NavItem[] }) {
+  const { t } = useLingui()
+  const open = useOpen()
+  const current = items.find((i) => i.current)?.key
+  return (
+    <ToggleGroup
+      value={current ? [current] : []}
+      onValueChange={(v) => {
+        const item = items.find((i) => i.key === v[0])
+        if (item) open(item)
+      }}
+      aria-label={title ?? t`Show`}
+      size="sm"
+      spacing={1}
+      className="flex-wrap"
+    >
       {items.map((i) => (
-        <NavRow key={i.key} item={i} />
+        <ToggleGroupItem
+          key={i.key}
+          value={i.key}
+          aria-label={i.ariaLabel}
+          title={i.title}
+          className="h-8 gap-1.5 rounded-[7px] px-2.5 font-normal text-fg2 aria-pressed:bg-raise aria-pressed:font-semibold aria-pressed:text-foreground"
+          data-testid={i.testId}
+        >
+          <ColorDot color={i.color} />
+          {i.label}
+          <Count item={i} />
+        </ToggleGroupItem>
       ))}
+    </ToggleGroup>
+  )
+}
+
+export function NavGroup({
+  title,
+  items,
+  menu: asMenu,
+  children,
+}: {
+  title?: string
+  items: NavItem[]
+  menu?: boolean
+  children?: React.ReactNode
+}) {
+  if (items.length === 0 && !children) return null
+  const menu = asMenu || items.length >= MENU_AT || items.some((i) => i.color !== undefined)
+  return (
+    <div role="group" aria-label={title} className="flex min-w-0 items-center gap-2">
+      {items.length > 0 &&
+        (menu ? <MenuGroup title={title} items={items} /> : <ToggleRow title={title} items={items} />)}
       {children}
     </div>
   )
@@ -227,7 +249,11 @@ export function NavGroup({ title, items, children }: { title?: string; items: Na
 
 export function NavList({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <nav aria-label={label} onKeyDown={moveFocus} className="flex flex-col gap-[22px]" data-testid="page-nav">
+    <nav
+      aria-label={label}
+      className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 pt-3 empty:hidden"
+      data-testid="page-nav"
+    >
       {children}
     </nav>
   )

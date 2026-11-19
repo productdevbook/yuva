@@ -41,26 +41,19 @@ function HelpNav({ place, center }: { place?: HelpPlace; center?: HelpCenter }) 
   const [creating, setCreating] = useState<Inbox | null>(null)
   const picked = params.get("collection") ?? ""
   const prefer = [i18n.locale, center?.default_locale ?? "en"]
-  const views: NavItem[] = center
-    ? (["articles", "drafts", "collections", "report", ...(canManage ? (["settings"] as const) : [])] as const).map(
-        (v) => ({
+  const listing = place === "articles" || place === "drafts"
+  const views: NavItem[] =
+    center && listing
+      ? (["articles", "drafts"] as const).map((v) => ({
           key: v,
           label: names[v],
           to: centerLink(center.id, v === "articles" ? undefined : v),
-          count:
-            v === "articles"
-              ? center.counts.articles
-              : v === "drafts"
-                ? center.counts.articles - center.counts.published_articles
-                : v === "collections"
-                  ? center.counts.collections
-                  : undefined,
+          count: v === "articles" ? center.counts.articles : center.counts.articles - center.counts.published_articles,
           hot: v === "drafts",
           current: place === v && !(v === "articles" && picked),
           testId: `help-tab-${v}`,
-        })
-      )
-    : []
+        }))
+      : []
   const ordered = cols
     .filter((c) => !c.parent_id)
     .sort((a, b) => a.position - b.position || a.number - b.number)
@@ -68,17 +61,18 @@ function HelpNav({ place, center }: { place?: HelpPlace; center?: HelpCenter }) 
       top,
       ...cols.filter((c) => c.parent_id === top.id).sort((a, b) => a.position - b.position || a.number - b.number),
     ])
-  const collections: NavItem[] = center
-    ? ordered.map((c) => ({
-        key: c.id,
-        label: collectionName(c, ...prefer),
-        to: collectionTo(center.id, c.id),
-        count: c.article_count,
-        sub: !!c.parent_id,
-        current: place === "articles" && picked === c.id,
-        testId: "help-collection",
-      }))
-    : []
+  const collections: NavItem[] =
+    center && listing
+      ? ordered.map((c) => ({
+          key: c.id,
+          label: collectionName(c, ...prefer),
+          to: collectionTo(center.id, c.id),
+          count: c.article_count,
+          sub: !!c.parent_id,
+          current: place === "articles" && picked === c.id,
+          testId: "help-collection",
+        }))
+      : []
   const sites: NavItem[] = inboxes.flatMap((inbox) => {
     const c = centers.find((x) => x.inbox_id === inbox.id)
     if (c)
@@ -109,7 +103,7 @@ function HelpNav({ place, center }: { place?: HelpPlace; center?: HelpCenter }) 
   return (
     <>
       {views.length > 0 && <NavGroup items={views} />}
-      {collections.length > 0 && <NavGroup title={names.collections} items={collections} />}
+      {collections.length > 0 && <NavGroup title={names.collections} items={collections} menu />}
       {sites.length > 0 && <NavGroup title={t`Help centers`} items={sites} />}
       {creating && (
         <CreateCenterDialog

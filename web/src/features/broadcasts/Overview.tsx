@@ -928,7 +928,6 @@ function FlatOverview() {
   const n = `${fmt.format(count)}${broadcasts.hasNextPage ? "+" : ""}`
   return (
     <BroadcastsLayout
-      current={filter}
       testId="broadcasts-home"
       aside={
         <OverviewInfo

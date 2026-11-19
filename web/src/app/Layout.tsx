@@ -1,19 +1,17 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from "react"
+import { lazy, Suspense, useCallback, useEffect } from "react"
 import { Outlet, useLocation, useMatch, useNavigate } from "react-router"
 
-import { TabBar, useSection } from "@/app/Rail"
-import { isChats, isInboxRoot, isSectionHome } from "@/app/shell"
-import { AppSidebar } from "@/app/Sidebar"
-import { TopBar } from "@/app/TopBar"
-import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
+import { Header } from "@/app/Header"
+import { useSection } from "@/app/nav"
+import { SectionPlacesSidebar } from "@/app/places"
+import { isChats, isInboxRoot, isSectionHome, type Section } from "@/app/shell"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { ContactsColumn } from "@/features/contact/ContactsColumn"
 import { FeedbackList } from "@/features/feedback/FeedbackList"
-import { ChatList } from "@/features/inbox/ChatList"
-import { setRailView } from "@/features/inbox/railView"
 import { AssistantsPanel } from "@/features/inbox/AssistantsPage"
+import { ChatList, rememberChip, rememberInbox, useRememberedChip, useRememberedInbox } from "@/features/inbox/ChatList"
+import { setRailView } from "@/features/inbox/railView"
 import { MentionsPanel } from "@/features/inbox/SidePanels"
-import { ReportsColumn } from "@/features/reports/ReportsColumn"
-import { SettingsColumn } from "@/features/settings/SettingsColumn"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { useSession } from "@/lib/session"
 import { cn } from "@/lib/utils"
@@ -21,49 +19,43 @@ import { cn } from "@/lib/utils"
 const HelpColumn = lazy(() => import("@/features/help/HelpColumn"))
 const AnalyticsColumn = lazy(() => import("@/features/analytics/AnalyticsColumn"))
 
-function LeftColumn() {
-  const section = useSection()
+const COLUMNS: Section[] = ["conversations", "mentions", "assistants", "feedback", "contacts", "knowledge", "analytics"]
+
+function PhoneList() {
   const navigate = useNavigate()
   const { search } = useLocation()
   const currentId = useMatch("/conversations/:conversationId")?.params.conversationId ?? null
   const open = useCallback((id: string) => navigate(`/conversations/${id}${search}`), [navigate, search])
-  const chats = section === "conversations"
+  const chip = useRememberedChip()
+  const inbox = useRememberedInbox()
   return (
-    <>
-      {chats && (
-        <div className="flex min-h-0 flex-1 flex-col">
-          <ChatList currentId={currentId} onOpen={open} active />
-        </div>
-      )}
-      <SectionColumn />
-    </>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <ChatList
+        currentId={currentId}
+        onOpen={open}
+        chip={chip}
+        onChip={rememberChip}
+        inbox={inbox}
+        onInbox={rememberInbox}
+        active
+      />
+    </div>
   )
 }
 
-function SectionColumn() {
-  const section = useSection()
+function PhoneColumn({ section }: { section: Section }) {
   const navigate = useNavigate()
   const feedbackId = useMatch("/feedback/:conversationId")?.params.conversationId ?? null
   const openFeedback = useCallback((id: string) => navigate(`/feedback/${id}`), [navigate])
+  if (section === "conversations") return <PhoneList />
+  if (section === "feedback") return <FeedbackList currentId={feedbackId} onOpen={openFeedback} />
+  if (section === "mentions") return <MentionsPanel />
+  if (section === "assistants") return <AssistantsPanel />
+  if (section === "contacts") return <ContactsColumn />
   return (
-    <>
-      {section === "feedback" && <FeedbackList currentId={feedbackId} onOpen={openFeedback} />}
-      {section === "mentions" && <MentionsPanel />}
-      {section === "assistants" && <AssistantsPanel />}
-      {section === "contacts" && <ContactsColumn />}
-      {section === "reports" && <ReportsColumn />}
-      {section === "knowledge" && (
-        <Suspense fallback={<div className="flex-1 bg-background" />}>
-          <HelpColumn />
-        </Suspense>
-      )}
-      {section === "analytics" && (
-        <Suspense fallback={<div className="flex-1 bg-background" />}>
-          <AnalyticsColumn />
-        </Suspense>
-      )}
-      {section === "settings" && <SettingsColumn />}
-    </>
+    <Suspense fallback={<div className="flex-1 bg-background" />}>
+      {section === "knowledge" ? <HelpColumn /> : <AnalyticsColumn />}
+    </Suspense>
   )
 }
 
@@ -75,72 +67,32 @@ function useMentionsView(pathname: string, manager: boolean) {
   }, [pathname, manager])
 }
 
-function sidebarOpenAtStart() {
-  const saved = document.cookie.match(/(?:^|; )sidebar_state=(true|false)/)?.[1]
-  return saved ? saved === "true" : window.matchMedia("(min-width: 1100px)").matches
-}
-
-const widths = { "--sidebar-width": "15.5rem", "--sidebar-width-icon": "4rem" } as React.CSSProperties
-
-function Desktop({ frame, children }: { frame: boolean; children: React.ReactNode }) {
-  const [open] = useState(sidebarOpenAtStart)
+function isPhoneDetail(pathname: string) {
   return (
-    <SidebarProvider
-      defaultOpen={open}
-      style={widths}
-      className="*:data-[slot=sidebar]:bg-sidebar max-md:flex-col"
-      data-testid="shell"
-    >
-      <TopBar />
-      <AppSidebar />
-      <div
-        className={cn(
-          "flex min-w-0 flex-1 flex-col",
-          frame && "sticky top-0 h-svh max-md:static max-md:h-[calc(100svh-49px)]"
-        )}
-        data-frame={frame || undefined}
-      >
-        {children}
-      </div>
-    </SidebarProvider>
+    /^\/(conversations|feedback|contacts)\/[^/]+/.test(pathname) ||
+    (pathname.startsWith("/mail/") && pathname.split("/").length > 4)
   )
 }
 
-function MobileSidebar() {
-  const { isMobile } = useSidebar()
-  return isMobile ? <AppSidebar /> : null
-}
-
-function Flat({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider style={widths} className="flex-col" data-testid="shell">
-      <TopBar />
-      <MobileSidebar />
-      <CloseOnNavigate />
-      {children}
-    </SidebarProvider>
-  )
-}
-
-function CloseOnNavigate() {
+function Phone() {
   const { pathname } = useLocation()
-  const { setOpenMobile } = useSidebar()
-  useEffect(() => setOpenMobile(false), [pathname, setOpenMobile])
-  return null
-}
-
-function Phone({ children }: { children: React.ReactNode }) {
+  const section = useSection()
+  const column = isSectionHome(pathname) && COLUMNS.includes(section)
+  if (pathname.startsWith("/migrations/")) return <Outlet />
   return (
     <SidebarProvider className="contents">
-      <AppSidebar />
-      <CloseOnNavigate />
       <div className="flex h-svh min-h-0 flex-col" data-frame data-testid="shell">
-        <TopBar />
-        {children}
+        <Header />
+        {!isPhoneDetail(pathname) && <SectionPlacesSidebar />}
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          {column ? <PhoneColumn section={section} /> : <Outlet />}
+        </div>
       </div>
     </SidebarProvider>
   )
 }
+
+const width = { "--sidebar-width": "232px" } as React.CSSProperties
 
 export function Layout() {
   const phone = useIsPhone()
@@ -148,92 +100,22 @@ export function Layout() {
   const { apart } = useSession()
   const section = useSection()
   useMentionsView(pathname, apart)
-  const flatPage =
-    section === "home" ||
-    isChats(pathname, apart) ||
-    section === "mentions" ||
-    section === "feedback" ||
-    section === "contacts" ||
-    section === "broadcasts" ||
-    section === "status" ||
-    section === "knowledge" ||
-    section === "board" ||
-    section === "updates" ||
-    section === "analytics" ||
-    section === "reports" ||
-    section === "settings" ||
-    section === "team" ||
-    section === "assistants" ||
-    pathname.startsWith("/migrations/") ||
-    (section === "mail" && !/^\/mail\/[^/]+\/filters$/.test(pathname))
-  if (!phone && flatPage) {
-    return (
-      <Flat>
-        <Outlet />
-      </Flat>
-    )
-  }
-  if (pathname.startsWith("/migrations/")) return <Outlet />
-  if (!phone) {
-    const frame =
-      isChats(pathname, apart) ||
-      section === "mail" ||
-      section === "assistants" ||
-      section === "board" ||
-      section === "docs" ||
-      section === "status"
-    return (
-      <Desktop frame={frame}>
-        <Outlet />
-      </Desktop>
-    )
-  }
-  if (section === "mail") {
-    const thread = pathname.split("/").length > 4
-    return (
-      <Phone>
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <Outlet />
-        </div>
-        {!thread && <TabBar />}
-      </Phone>
-    )
-  }
-  if (
-    section === "home" ||
-    section === "board" ||
-    section === "docs" ||
-    section === "status" ||
-    pathname === "/team" ||
-    pathname === "/updates" ||
-    pathname === "/updates/changelogs" ||
-    pathname === "/broadcasts" ||
-    pathname === "/broadcasts/lists" ||
-    pathname === "/broadcasts/triggered" ||
-    pathname === "/broadcasts/designs"
-  ) {
-    return (
-      <Phone>
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <Outlet />
-        </div>
-        <TabBar />
-      </Phone>
-    )
-  }
-  if (!isSectionHome(pathname)) {
-    return (
-      <Phone>
-        <Outlet />
-      </Phone>
-    )
-  }
+  if (phone) return <Phone />
+  const frame = isChats(pathname, apart) || section === "docs" || /^\/mail\/[^/]+\/filters$/.test(pathname)
   return (
-    <Phone>
-      <div className="flex min-h-0 flex-1 flex-col">
-        <LeftColumn />
+    <SidebarProvider
+      className={cn("flex-col", frame && "h-svh min-h-0 overflow-hidden")}
+      style={width}
+      data-frame={frame || undefined}
+      data-testid="shell"
+    >
+      <Header />
+      <div className="flex min-h-0 min-w-0 flex-1 max-[899px]:flex-col">
+        <SectionPlacesSidebar />
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <Outlet />
+        </div>
       </div>
-      <TabBar />
-    </Phone>
+    </SidebarProvider>
   )
 }

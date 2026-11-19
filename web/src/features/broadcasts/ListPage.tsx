@@ -119,7 +119,7 @@ export function ListPage() {
     return (
       <DetailFrame
         testId="list-loading"
-        place="lists"
+
         back={backOf("lists", views)}
         bar={{
           back: "/broadcasts/lists",
@@ -175,7 +175,7 @@ export function ListPage() {
   return (
     <DetailFrame
       testId="list-page"
-      place="lists"
+
       wide
       back={backOf("lists", views)}
       bar={{

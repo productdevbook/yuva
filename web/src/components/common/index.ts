@@ -64,16 +64,11 @@ export {
   listRowClass,
   MoreLink,
   NavGroup,
-  NavGroupLabel,
   NavList,
-  NavRow,
   PageHeading,
   PageLayout,
-  PageSearch,
   PageTop,
   SectionHeading,
-  SideColumn,
-  SideTitle,
   ThemeToggle,
   TopPortal,
   topButton,
@@ -93,4 +88,11 @@ export {
   UnreadBadge,
   useDayLabel,
 } from "@/components/common/FlatList"
-export { PageSidebar, SectionNav, SectionPage } from "@/components/common/PageSidebar"
+export { SectionPage } from "@/components/common/SectionPage"
+export {
+  PlaceButton,
+  PlaceCount,
+  SectionSidebar,
+  type Place,
+  type PlaceGroup,
+} from "@/components/common/SectionSidebar"

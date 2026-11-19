@@ -1,18 +1,7 @@
 import { useLingui } from "@lingui/react/macro"
 import { useNavigate, type To } from "react-router"
 
-import {
-  InfoColumn,
-  NavGroup,
-  NavList,
-  PageLayout,
-  PageSidebar,
-  PageTop,
-  SectionNav,
-  Dot,
-  TopSep,
-  type NavItem,
-} from "@/components/common"
+import { InfoColumn, NavGroup, NavList, PageLayout, PageTop, Dot, TopSep, type NavItem } from "@/components/common"
 import { useEnumText } from "@/components/common/text"
 import { PageBar } from "@/components/common/PageBar"
 import { FINISHED, isActive, useBroadcasts } from "@/features/broadcasts/broadcastQueries"
@@ -113,73 +102,12 @@ export function useBroadcastCounts(): Record<BroadcastsPlace, number | undefined
   }
 }
 
-function BroadcastsSidebar({ current, sub }: { current: BroadcastsPlace; sub?: NavItem[] }) {
-  const { t } = useLingui()
-  const { canManage } = useSession()
-  const names = useViewNames()
-  const counts = useBroadcastCounts()
-  const withSub = (items: NavItem[]) =>
-    items.flatMap((i) => (i.key === current && sub ? [i, ...sub.map((s) => ({ ...s, sub: true }))] : [i]))
-  const views: NavItem[] = [
-    ...VIEWS.map((v) => ({
-      key: v,
-      label: names[v],
-      to: viewLink(v),
-      count: counts[v],
-      hot: v === "drafts",
-      current: current === v,
-      testId: `broadcasts-filter-${v}`,
-    })),
-    {
-      key: "triggered",
-      label: names.triggered,
-      to: "/broadcasts/triggered",
-      count: counts.triggered,
-      current: current === "triggered",
-      testId: "broadcasts-nav-triggered",
-    },
-  ]
-  const audience: NavItem[] = [
-    {
-      key: "lists",
-      label: names.lists,
-      to: "/broadcasts/lists",
-      count: counts.lists,
-      current: current === "lists",
-      testId: "broadcasts-nav-lists",
-    },
-    ...(canManage
-      ? [
-          {
-            key: "designs",
-            label: names.designs,
-            to: "/broadcasts/designs",
-            count: counts.designs,
-            current: current === "designs",
-            testId: "broadcasts-nav-designs",
-          },
-        ]
-      : []),
-  ]
-  return (
-    <PageSidebar title={t`Broadcasts`} searchLabel={t`Search`}>
-      <NavList label={t`Broadcasts`}>
-        <NavGroup items={withSub(views)} />
-        <NavGroup title={t`Audience`} items={withSub(audience)} />
-      </NavList>
-      {!canManage && <SectionNav />}
-    </PageSidebar>
-  )
-}
-
 export function BroadcastsLayout({
-  current,
   sub,
   aside,
   testId,
   children,
 }: {
-  current: BroadcastsPlace
   sub?: NavItem[]
   aside?: React.ReactNode
   testId?: string
@@ -190,7 +118,14 @@ export function BroadcastsLayout({
     <PageLayout
       testId={testId}
       label={t`Broadcasts`}
-      sidebar={<BroadcastsSidebar current={current} sub={sub} />}
+      nav={
+        sub &&
+        sub.length > 0 && (
+          <NavList label={t`Broadcasts`}>
+            <NavGroup items={sub} />
+          </NavList>
+        )
+      }
       aside={<InfoColumn label={t`Details`}>{aside}</InfoColumn>}
     >
       {children}
@@ -216,7 +151,6 @@ export function TopTrail({ place }: { place: BroadcastsPlace }) {
 
 export function DetailFrame({
   testId,
-  place,
   back,
   bar,
   heading,
@@ -227,7 +161,6 @@ export function DetailFrame({
   children,
 }: {
   testId: string
-  place: BroadcastsPlace
   back: { to: To & string; label: string }
   bar: { back: string; label: string; content: React.ReactNode }
   heading: React.ReactNode
@@ -252,7 +185,6 @@ export function DetailFrame({
   return (
     <FlatDetail
       testId={testId}
-      place={place}
       back={back}
       heading={heading}
       eyebrow={eyebrow}
@@ -267,7 +199,6 @@ export function DetailFrame({
 
 function FlatDetail({
   testId,
-  place,
   back,
   heading,
   eyebrow,
@@ -277,7 +208,6 @@ function FlatDetail({
   children,
 }: {
   testId: string
-  place: BroadcastsPlace
   back: { to: string; label: string }
   heading: React.ReactNode
   eyebrow: React.ReactNode
@@ -289,7 +219,7 @@ function FlatDetail({
   const navigate = useNavigate()
   useHotkeys({ Escape: () => navigate(back.to) })
   return (
-    <BroadcastsLayout current={place} aside={aside} testId={testId}>
+    <BroadcastsLayout aside={aside} testId={testId}>
       <PageTop
         back={{ label: back.label, to: back.to }}
         actions={actions && <div className="flex flex-wrap items-center gap-1.5">{actions}</div>}

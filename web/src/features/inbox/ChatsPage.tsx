@@ -12,15 +12,16 @@ import { FeedbackPage } from "@/features/feedback/FeedbackPage"
 import {
   ChatList,
   rememberChip,
+  rememberInbox,
   useRememberedChip,
+  useRememberedInbox,
   StartConversation,
   useChipLabels,
-  type Chip,
   type ListShown,
 } from "@/features/inbox/ChatList"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
 import { AssistantsPage } from "@/features/inbox/AssistantsPage"
-import { ConversationEyebrow, ConversationInfo, ConversationsSidebar, ListInfo } from "@/features/inbox/InboxSide"
+import { ConversationEyebrow, ConversationInfo, ListInfo } from "@/features/inbox/InboxSide"
 import { useOpenOnly, useOrigin } from "@/features/inbox/SourceFilter"
 import { MentionsPage } from "@/features/inbox/SidePanels"
 import { useCounts, useStats } from "@/features/inbox/queries"
@@ -140,11 +141,10 @@ function InboxPage({ id }: { id: string | null }) {
   const openOnly = useOpenOnly()
   const [origin] = useOrigin()
   const rail = useRailView()
-  const initialChip = useRememberedChip()
-  const [chip, setChip] = useState<Chip>(initialChip)
+  const chip = useRememberedChip()
   const [starting, setStarting] = useState(false)
   const [sidebarInbox] = useInboxFilter()
-  const [chipInbox, setChipInbox] = useState("")
+  const chipInbox = useRememberedInbox()
   const [slot, setSlot] = useState<HTMLElement | null>(null)
   const inboxId = sidebarInbox || chipInbox
   const product = useInboxes().data?.find((i) => i.id === inboxId)?.name
@@ -176,12 +176,6 @@ function InboxPage({ id }: { id: string | null }) {
         ? { label: t`Assistants`, to: "/assistants" }
         : { label: viewName, to: listPath }
   useHotkeys({ Escape: () => navigate(back.to) }, !!id)
-  const pickChip = (k: Chip) => {
-    rememberChip(k)
-    setChip(k)
-    if (id) navigate(inboxRoot(apart))
-    else view.clear(!view.id)
-  }
   const fmt = new Intl.NumberFormat(i18n.locale)
   const where = product ?? t`every product`
   const heading = ({ shown, unread, more }: ListShown) => {
@@ -214,13 +208,6 @@ function InboxPage({ id }: { id: string | null }) {
     <PageLayout
       testId={id ? "chats" : "inbox-page"}
       label={t`Conversations`}
-      sidebar={
-        <ConversationsSidebar
-          current={view.id || openOnly || origin === "outbound" ? null : chip}
-          onChip={pickChip}
-          inboxId={inboxId}
-        />
-      }
       aside={
         <InfoColumn label={t`Details`}>
           {id ? (
@@ -267,9 +254,9 @@ function InboxPage({ id }: { id: string | null }) {
           currentId={id}
           onOpen={open}
           chip={chip}
-          onChip={setChip}
+          onChip={rememberChip}
           inbox={chipInbox}
-          onInbox={setChipInbox}
+          onInbox={rememberInbox}
           flat
           hidden={!!id}
           head={heading}

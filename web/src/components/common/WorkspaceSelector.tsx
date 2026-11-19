@@ -3,7 +3,6 @@ import { CheckIcon, ChevronsUpDownIcon, PlusIcon, SearchIcon, SettingsIcon } fro
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
-import { WorkspaceMark } from "@/app/Sidebar"
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer"
 import {
   DropdownMenu,
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { useIsPhone } from "@/hooks/use-media-query"
 import { useCounts } from "@/features/inbox/queries"
 import { useVersion } from "@/lib/api"
 import { useSession } from "@/lib/session"
@@ -83,19 +83,6 @@ function ProductDot({ color, className }: { color?: string; className?: string }
   )
 }
 
-function ProductLine({ s, className }: { s: Selector; className?: string }) {
-  if (!s.products) return null
-  return (
-    <span
-      className={cn("flex min-w-0 items-center gap-1.5 text-small font-normal text-muted-foreground", className)}
-      data-testid="page-product-current"
-    >
-      {s.picked && <ProductDot color={s.picked.branding.color} className="size-1.5" />}
-      <span className="truncate">{s.picked ? s.picked.name : <Trans>All products</Trans>}</span>
-    </span>
-  )
-}
-
 function Count({ n }: { n: number | undefined }) {
   return <span className="font-mono text-[11px] text-muted-foreground">{n ?? 0}</span>
 }
@@ -105,7 +92,7 @@ function DesktopMenu({ s }: { s: Selector }) {
   const hidden = s.hidden
   const navigate = useNavigate()
   return (
-    <DropdownMenuContent align="start" className="w-(--anchor-width) min-w-62" data-testid="workspace-menu">
+    <DropdownMenuContent align="start" className="w-72" data-testid="workspace-menu">
       <DropdownMenuGroup>
         <DropdownMenuLabel>
           <Trans>Workspace</Trans>
@@ -192,31 +179,6 @@ function DesktopMenu({ s }: { s: Selector }) {
         <Trans>Workspace settings</Trans>
       </DropdownMenuItem>
     </DropdownMenuContent>
-  )
-}
-
-export function WorkspaceSelector() {
-  const { t } = useLingui()
-  const s = useSelector()
-  const name = s.name
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className="flex w-full min-w-0 items-center gap-2.5 rounded-md px-2.5 py-1 text-start outline-none transition-colors hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring data-popup-open:bg-raise"
-        aria-label={t`Workspace: ${name}`}
-        data-testid="page-workspace"
-      >
-        <WorkspaceMark name={name} className="size-[22px] rounded-md text-[11px]" />
-        <span className="flex min-w-0 flex-1 flex-col leading-tight">
-          <span className="flex min-w-0 items-center gap-1">
-            <span className="truncate text-base font-semibold tracking-[-0.01em] text-foreground">{name}</span>
-            <ChevronsUpDownIcon aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
-          </span>
-          <ProductLine s={s} />
-        </span>
-      </DropdownMenuTrigger>
-      <DesktopMenu s={s} />
-    </DropdownMenu>
   )
 }
 
@@ -356,11 +318,59 @@ function SheetBody({ s, close }: { s: Selector; close: () => void }) {
   )
 }
 
-export function PhoneSelector() {
+export function WorkspaceMark({ name, className }: { name: string; className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "grid size-[18px] shrink-0 place-items-center rounded-[5px] bg-foreground text-[10px] font-bold text-background uppercase",
+        className
+      )}
+    >
+      {Array.from(name.trim())[0] ?? ""}
+    </span>
+  )
+}
+
+const triggerClass =
+  "flex h-7 max-w-60 min-w-0 shrink items-center gap-1.5 rounded-md px-1.5 text-small font-semibold text-foreground outline-none transition-colors hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring data-popup-open:bg-raise aria-expanded:bg-raise max-sm:max-w-36"
+
+function Trigger({ s }: { s: Selector }) {
+  return (
+    <>
+      <WorkspaceMark name={s.name} />
+      <span className="min-w-0 truncate max-sm:sr-only" data-testid="header-workspace">
+        {s.name}
+      </span>
+      {s.products && (
+        <span
+          className="flex h-[18px] max-w-32 min-w-0 shrink items-center gap-1 rounded-[4px] bg-brand-wash px-1.5 text-[11.5px] font-semibold text-brand-ink max-sm:hidden"
+          data-testid="page-product-current"
+        >
+          {s.picked && <ProductDot color={s.picked.branding.color} className="size-1.5" />}
+          <span className="truncate">{s.picked ? s.picked.name : <Trans>All products</Trans>}</span>
+        </span>
+      )}
+      <ChevronsUpDownIcon aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
+    </>
+  )
+}
+
+export function WorkspaceSelector() {
   const { t } = useLingui()
   const s = useSelector()
+  const phone = useIsPhone()
   const [open, setOpen] = useState(false)
   const name = s.name
+  if (!phone)
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger className={triggerClass} aria-label={t`Workspace: ${name}`} data-testid="page-workspace">
+          <Trigger s={s} />
+        </DropdownMenuTrigger>
+        <DesktopMenu s={s} />
+      </DropdownMenu>
+    )
   return (
     <>
       <button
@@ -369,14 +379,10 @@ export function PhoneSelector() {
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={t`Workspace: ${name}`}
-        className="flex h-11 min-w-0 flex-1 flex-col items-center justify-center rounded-lg px-2 outline-none transition-colors hover:bg-raise focus-visible:ring-2 focus-visible:ring-ring"
+        className={triggerClass}
         data-testid="page-workspace"
       >
-        <span className="flex max-w-full items-center gap-1.5 text-[15px] leading-[19px] font-semibold text-foreground">
-          <span className="truncate">{name}</span>
-          <ChevronsUpDownIcon aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
-        </span>
-        <ProductLine s={s} className="text-caption leading-4" />
+        <Trigger s={s} />
       </button>
       <Drawer open={open} onOpenChange={setOpen} showSwipeHandle>
         <DrawerContent data-testid="workspace-menu">

@@ -1,8 +1,8 @@
 import { Trans, useLingui } from "@lingui/react/macro"
 import {
   BellIcon,
-  BookUserIcon,
   BuildingIcon,
+  CompassIcon,
   DownloadIcon,
   LanguagesIcon,
   LogOutIcon,
@@ -45,22 +45,9 @@ function statusClass(a: Availability, live: boolean) {
   return live ? "bg-success" : "bg-faint"
 }
 
-function statusTone(a: Availability, live: boolean) {
-  if (a === "away") return "text-warning"
-  return live ? "text-success" : "text-sidebar-muted"
-}
-
-export function UserMenu({
-  align = "end",
-  side = "bottom",
-  row,
-}: {
-  align?: "start" | "end"
-  side?: "bottom" | "inline-end" | "top"
-  row?: boolean
-}) {
+export function UserMenu() {
   const { t, i18n } = useLingui()
-  const { me, membership, switchWorkspace } = useSession()
+  const { me, membership, switchWorkspace, canManage } = useSession()
   const { openShortcuts } = useShell()
   const theme = useTheme()
   const navigate = useNavigate()
@@ -77,50 +64,22 @@ export function UserMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={
-          row ? (
-            <button
-              type="button"
-              className="flex h-11 w-full min-w-0 items-center gap-2.5 rounded-[10px] px-1.5 text-start text-sidebar-accent-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
-            />
-          ) : (
-            <Button variant="ghost" size="icon" className="relative" />
-          )
-        }
+        render={<Button variant="ghost" size="icon-sm" className="relative ms-1 size-7 rounded-full" />}
         aria-label={t`${name} · ${statusText}`}
-        title={row ? undefined : statusText}
+        title={statusText}
         data-testid="user-menu"
       >
-        <span className={row ? "relative flex shrink-0" : "contents"}>
-          <PersonAvatar
-            name={name}
-            className={cn(
-              "size-8",
-              row ? "bg-brand-wash text-brand-ink" : "size-[30px] bg-muted-foreground text-background"
-            )}
-          />
-          <span
-            className={cn(
-              "absolute rounded-full",
-              row
-                ? "end-[-1px] bottom-[-1px] size-2.5 ring-2 ring-sidebar"
-                : "end-px bottom-px size-[9px] ring-2 ring-background",
-              statusClass(availability, live)
-            )}
-            data-testid="availability-dot"
-            data-availability={availability}
-          />
-        </span>
-        {row && (
-          <span className="flex min-w-0 flex-1 flex-col leading-4 group-data-[collapsible=icon]:hidden">
-            <span className="truncate text-body font-medium">{name}</span>
-            <span aria-live="polite" className={cn("truncate text-caption", statusTone(availability, live))}>
-              {statusText}
-            </span>
-          </span>
-        )}
+        <PersonAvatar name={name} className="size-6 bg-foreground text-[10px] text-background" />
+        <span
+          className={cn(
+            "absolute end-0 bottom-0 size-2 rounded-full ring-2 ring-background",
+            statusClass(availability, live)
+          )}
+          data-testid="availability-dot"
+          data-availability={availability}
+        />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align} side={side} className="w-64">
+      <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex items-center gap-2.5 py-2">
             <PersonAvatar name={name} className="size-8 bg-muted-foreground text-background" />
@@ -157,6 +116,12 @@ export function UserMenu({
           )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+        {canManage && (
+          <DropdownMenuItem onClick={() => navigate("/setup")} data-testid="menu-setup">
+            <CompassIcon />
+            <Trans>Getting started</Trans>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={() => navigate("/settings/profile")}>
           <UserIcon />
           <Trans>My profile</Trans>
@@ -218,7 +183,7 @@ export function UserMenu({
           <Trans>Keyboard shortcuts</Trans>
           <DropdownMenuShortcut>?</DropdownMenuShortcut>
         </DropdownMenuItem>
-        {!row && (me.memberships.length > 1 || signup === "open") && (
+        {(me.memberships.length > 1 || signup === "open") && (
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <BuildingIcon />
@@ -246,16 +211,6 @@ export function UserMenu({
               )}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
-        )}
-        {!row && (
-          <DropdownMenuItem
-            onClick={() => navigate("/contacts")}
-            className="hidden phone:flex"
-            data-testid="menu-contacts"
-          >
-            <BookUserIcon />
-            <Trans>Contacts</Trans>
-          </DropdownMenuItem>
         )}
         {install && (
           <DropdownMenuItem onClick={() => void install()} data-testid="install-app">

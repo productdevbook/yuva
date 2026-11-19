@@ -1962,35 +1962,33 @@ remote images, http(s)):
 - Connect an assistant (Settings › Connected apps): one page per client (Claude, Claude Code, Codex,
   ChatGPT, Cursor, VS Code, other MCP clients) with the server's own `/mcp` URL, a copyable command
   or config, install links where the client has them, and the steps; a new grant shows up there live.
-- Main screen, from M41 (`docs/specs/panel-redesign.md`): a 40px header that does not stick
-  (workspace and product selector, the current page as a menu of all pages, search, bell, account)
-  and inside a section a single-select sidebar of the section's places (one highlighted item,
-  filters and scopes never in it, a horizontal strip on a phone); Home is an overview with setup as
-  a card on it; every control is a shadcn component. M41.1 rewrites the rail description below,
-  which holds until then.
-- Main screen, in the shape of a messaging app: a narrow icon rail and three columns on a desktop.
-  Every page except setup and the OAuth consent page lives in this shell: the rail picks what the
-  left column lists, and the chosen item opens in the main area (nothing chosen shows a short
-  placeholder there). Contacts (`/contacts`) lists the directory with its search and filters on
-  the left and opens a contact's page in the main area; Settings (`/settings`) lists the settings
-  groups on the left (You, Inboxes, Team, Developer for owners and admins, Workspace) and opens
-  each page in the main area, at the same URLs as before.
-  The rail switches the left column between Conversations (with the number of unread
-  conversations among the loaded ones), Mentions (the notes that mention the member from
-  `/v1/me/mentions`, unseen ones marked and counted on the rail from `unseen`), Team (`/team`: each member's presence, what they are looking at
-  and their open load from `assignees` in `/v1/conversations/counts`; a member opens in the main
-  area with their open assigned conversations and today's replies and closes), Reports (`/reports`:
-  today's `/v1/stats` in three pages opened in the main area: replies, closes and first replies;
-  ratings, in total and per inbox; per member) and Assistants
-  (the pending drafts from `/v1/drafts`, filtered by author kind and inbox, with `total` on the
-  rail, above the connected apps from `/v1/oauth/grants`); both lists refresh from the realtime
-  events named with their endpoints, and a row opens its conversation at the note or draft
-  (`?m=<message id>`, loading older pages until it is there). The rail also leads to contacts and
-  settings and holds
-  the member's avatar with the availability switch. Each entry has a tooltip and a `G` shortcut.
-  On a phone the rail is a tab bar under the left column, and every section has the two screens
-  of the conversations: the list first, then the chosen page with a back button. The conversations column has the workspace, new
-  conversation and a menu to contacts, setup, the command palette and the shortcuts; a search field (Postgres FTS over people and messages);
+- Main screen (M41, `docs/specs/panel-redesign.md`): every page except setup, the OAuth consent
+  page and an import's own steps lives in one shell, built from shadcn components. A 40px header
+  that does not stick holds the Yuva mark (to Home), the workspace and product selector, "/", the
+  current page as a menu of every page in three groups (Work: Home, Inbox, Mail, People; Reach:
+  Broadcasts, Analytics, Feedback and roadmap, Help center, Status; Workspace: Reports, Team,
+  Settings, Imports), each with its `G` shortcut and, for Inbox, Mail and Feedback, the count
+  already loaded; then search, which opens the command palette (⌘K), a bell with the latest
+  mentions from `/v1/me/mentions` (unseen ones marked, a dot while any is unseen, mark all as read,
+  all mentions), and the avatar menu (availability, theme, Getting started for owners and admins,
+  account, sign out). The menu follows the product filter and permissions: Home and Imports for
+  owners and admins, Mail when a mailbox exists, Analytics when a property does. Inside a section
+  a 232px sidebar lists the section's places under small headings with plain counts where the data
+  is already loaded, exactly one highlighted (`aria-current="page"`); filters and scopes never go
+  in it, they stay above the list or page they narrow. Inbox has its views (Mine, Unassigned,
+  Waiting, My teams, Snoozed, Done, All, Spam, Trash as the role allows, with the counts from
+  `/v1/conversations/counts`), replies to mail we sent, Mentions, Assistants (pending drafts from
+  `/v1/drafts`), the saved views and one item per support inbox; Mail its folders and mailboxes;
+  Settings its places in Workspace, Channels, Conversations, Developers, Security and You; Home
+  has none. Below 900px the sidebar is a horizontal strip under the header. Contacts
+  (`/contacts`), Team (`/team`: each member's presence, what they are looking at and their open
+  load from `assignees` in `/v1/conversations/counts`), Reports (`/reports`: today's `/v1/stats`,
+  trends, ratings, per member) and Settings open their pages in the main area at the same URLs as
+  before; Mentions and Assistants refresh from the realtime events named with their endpoints,
+  and a row opens its conversation at the note or draft (`?m=<message id>`, loading older pages
+  until it is there). On a phone every list section has the two screens of the conversations:
+  the list first, then the chosen page with a back button in the header. The conversations list
+  has new conversation and a menu to the command palette and the shortcuts; a search field (Postgres FTS over people and messages);
   filter chips (All, Unread, Mine, Unassigned, Snoozed, Done, which are the list filters `status`
   and `assignee`, Unread filtering the loaded rows by `unread`) and an inbox picker; a Filter
   popover after the chips narrows by type (Live chat, E-mail, App: `kind=conversation` with that

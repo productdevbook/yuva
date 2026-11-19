@@ -29,12 +29,6 @@ export const VIEWS = [
 ] as const
 export type ViewKey = (typeof VIEWS)[number]
 
-const GROUPS: { key: "traffic" | "behaviour" | "live"; views: ViewKey[] }[] = [
-  { key: "traffic", views: ["overview", "pages", "sources", "locations", "devices"] },
-  { key: "behaviour", views: ["events", "goals", "funnels", "retention", "support"] },
-  { key: "live", views: ["realtime"] },
-]
-
 export function useViewNames(): Record<ViewKey, string> {
   const { t } = useLingui()
   const text = useAnalyticsText()
@@ -86,63 +80,25 @@ export function useScopedProperties() {
 function AnalyticsNav({ property, current }: { property?: AnalyticsProperty; current?: ViewKey }) {
   const { t } = useLingui()
   const { canManage } = useSession()
-  const names = useViewNames()
   const search = useViewSearch(true)
   const { items } = useScopedProperties()
-  const live = useRealtime(property?.id ?? "", !!property).data?.visitors
-  const target = property ?? items[0]
-  const titles = { traffic: t`Traffic`, behaviour: t`Behaviour`, live: t`Live` }
-  const keep = property ? search : ""
-  const views = (vs: ViewKey[]): NavItem[] =>
-    vs.map((v) => ({
-      key: v,
-      label: names[v],
-      to: target ? viewLink(target.id, v, keep) : "/analytics",
-      count: v === "realtime" ? live : undefined,
-      hot: v === "realtime",
-      current: !!property && current === v,
-      testId: `analytics-nav-${v}`,
-    }))
   const sites: NavItem[] = [
     ...(items.length > 1
       ? [{ key: "all", label: t`All sites`, to: "/analytics", current: !property, testId: "analytics-nav-all" }]
       : []),
-    ...items.flatMap((p): NavItem[] => {
-      const row: NavItem = {
-        key: p.id,
-        label: p.name,
-        to: viewLink(
-          p.id,
-          current && current !== "settings" ? current : "overview",
-          p.id === property?.id ? search : ""
-        ),
-        count: p.visitors_today,
-        current: p.id === property?.id && current !== "settings",
-        testId: "analytics-nav-property",
-      }
-      if (p.id !== property?.id) return [row]
-      return [
-        row,
-        {
-          key: `${p.id}-settings`,
-          label: names.settings,
-          to: viewLink(p.id, "settings"),
-          current: current === "settings",
-          sub: true,
-          testId: "analytics-nav-settings",
-        },
-      ]
-    }),
+    ...items.map((p): NavItem => ({
+      key: p.id,
+      label: p.name,
+      to: viewLink(p.id, current ?? "overview", p.id === property?.id ? search : ""),
+      count: p.visitors_today,
+      current: p.id === property?.id,
+      testId: "analytics-nav-property",
+    })),
     ...(canManage
       ? [{ key: "add", label: t`Add a website`, to: "/analytics/new", testId: "analytics-add" } satisfies NavItem]
       : []),
   ]
-  return (
-    <>
-      {target && GROUPS.map((g) => <NavGroup key={g.key} title={titles[g.key]} items={views(g.views)} />)}
-      <NavGroup title={t`Sites and apps`} items={sites} />
-    </>
-  )
+  return <NavGroup title={t`Sites and apps`} items={sites} menu />
 }
 
 function useRangeText() {

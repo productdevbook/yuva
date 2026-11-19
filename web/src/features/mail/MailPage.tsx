@@ -17,7 +17,7 @@ import {
 } from "@/components/common"
 import { useEnumText } from "@/components/common/text"
 import { useConversation } from "@/features/conversation/queries"
-import { MailListInfo, MailSidebar, MailThreadInfo, useFolderCounts } from "@/features/mail/MailSide"
+import { MailListInfo, MailThreadInfo, useFolderCounts } from "@/features/mail/MailSide"
 import { MAIL_KEYS } from "@/components/common/ShortcutSheet"
 import { Button } from "@/components/ui/button"
 import {
@@ -210,7 +210,6 @@ function NoMailInboxesPage() {
     <PageLayout
       testId="mail"
       label={t`Mail`}
-      sidebar={<MailSidebar box="all" folder="inbox" />}
       aside={
         <InfoColumn label={t`Details`}>
           <MailListInfo box="all" folder="inbox" />
@@ -380,7 +379,6 @@ export function MailPage() {
     <PageLayout
       testId="mail"
       label={t`Mail`}
-      sidebar={<MailSidebar box={box} folder={folder} />}
       aside={
         <InfoColumn label={t`Details`}>
           {id ? <MailThreadInfo id={id} box={box} folder={folder} /> : <MailListInfo box={box} folder={folder} />}

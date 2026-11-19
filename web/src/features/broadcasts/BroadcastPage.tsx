@@ -470,7 +470,7 @@ export function BroadcastPage() {
     return (
       <DetailFrame
         testId="broadcast-loading"
-        place={back}
+
         back={{ to: viewLink(back), label: views[back] }}
         bar={{
           back: "/broadcasts",
@@ -510,7 +510,7 @@ export function BroadcastPage() {
   return (
     <DetailFrame
       testId="broadcast-page"
-      place={place}
+
       wide
       back={backOf(place, views)}
       bar={{

@@ -118,7 +118,6 @@ msgstr "{0} (private)"
 
 #. placeholder {0}: fmt.format(s.members.length)
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "{0} active today"
 msgstr "{0} активны сегодня"
 
@@ -175,7 +174,6 @@ msgstr "{0} из {1}"
 #. placeholder {0}: fmt.format(s.replies)
 #. placeholder {1}: fmt.format(s.closed)
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "{0} replies · {1} closed"
 msgstr "{0} ответов · {1} закрыто"
 
@@ -880,7 +878,6 @@ msgid "{out, plural, one {# row is left out} other {# rows are left out}}"
 msgstr "{out, plural, one {# строка пропущена} few {# строки пропущены} many {# строк пропущено} other {# строки пропущено}}"
 
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "{pct} satisfied"
 msgstr "довольны: {pct}"
 
@@ -1206,6 +1203,10 @@ msgstr "{watching, plural, one {Наблюдает # монитор} few {Наб
 #: src/features/reports/ReportPages.tsx
 msgid "{who} · answered by {name}"
 msgstr "{who} · ответил(а) {name}"
+
+#: src/app/Header.tsx
+msgid "{who} in {where}"
+msgstr "{who} в {where}"
 
 #: src/features/inbox/SidePanels.tsx
 msgid "{who} mentioned you in {contact}, {subject}. Open the conversation"
@@ -1772,7 +1773,6 @@ msgstr "Сообщения читателя ждут участника, пок�
 msgid "A real address where you receive post"
 msgstr "Настоящий адрес, на который вы получаете почту"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "A reply and its actions in one step"
 msgstr "Ответ и его действия за один шаг"
@@ -2148,7 +2148,6 @@ msgstr "Добавить изображение"
 #: src/features/inbox/ChatList.tsx
 #: src/features/mail/MailPage.tsx
 #: src/features/settings/notifications/InboxOverrides.tsx
-#: src/features/settings/SettingsColumn.tsx
 msgid "Add an inbox"
 msgstr "Добавить ящик"
 
@@ -2507,6 +2506,7 @@ msgstr "Все инциденты"
 msgid "All languages"
 msgstr "Все языки"
 
+#: src/app/places.tsx
 #: src/features/mail/MailPage.tsx
 #: src/features/mail/MailSide.tsx
 #: src/features/migrations/text.ts
@@ -2517,6 +2517,7 @@ msgstr "Вся почта"
 msgid "All marked as read"
 msgstr "Всё отмечено как прочитанное"
 
+#: src/app/Header.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "All mentions"
 msgstr "Все упоминания"
@@ -2538,6 +2539,10 @@ msgstr "Всё работает"
 msgid "All parts arrived. Reading the file…"
 msgstr "Все части получены. Чтение файла…"
 
+#: src/app/places.tsx
+msgid "All people"
+msgstr "Все люди"
+
 #: src/features/reports/ReportPages.tsx
 msgid "all products"
 msgstr "все продукты"
@@ -2549,7 +2554,6 @@ msgstr "все продукты"
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
 #: src/features/inbox/InboxPicker.tsx
-#: src/features/inbox/ProductSwitcher.tsx
 #: src/features/inbox/SidePanels.tsx
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/webhooks/sections.tsx
@@ -2914,8 +2918,9 @@ msgstr "неизвестный человек"
 msgid "An upload was cut off: {count} parts, {size}, are already on the server."
 msgstr "Загрузка прервалась: на сервере уже {count} частей, {size}."
 
+#: src/app/nav.tsx
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/settings/webhooks/events.tsx
@@ -3117,11 +3122,9 @@ msgstr "Всё, что использует этот ключ, перестан�
 msgid "API"
 msgstr "API"
 
-#: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "API & MCP"
@@ -3141,7 +3144,6 @@ msgstr "Ключ API"
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "API keys"
 msgstr "Ключи API"
@@ -3193,7 +3195,6 @@ msgstr "Показывать «в сети» только в рабочее вр
 #: src/app/Palette.tsx
 #: src/app/UserMenu.tsx
 #: src/features/settings/appearance/AppearancePage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Appearance"
 msgstr "Оформление"
@@ -3291,6 +3292,7 @@ msgstr "Пришло на {address} напрямую, {verifiedAt}."
 msgid "Arrived through forwarding, {verifiedAt}."
 msgstr "Пришло через пересылку, {verifiedAt}."
 
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Articles"
 msgstr "Статьи"
@@ -3432,7 +3434,7 @@ msgstr "Ответственный"
 msgid "Assistant"
 msgstr "Ассистент"
 
-#: src/app/Rail.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/inbox/ChatsPage.tsx
@@ -3458,10 +3460,6 @@ msgstr "Ассистенты работают в Yuva через MCP на это
 #: src/features/inbox/AssistantsPage.tsx
 msgid "Assistants work in Yuva through MCP, acting as the member who connected them, with only the access that member approved."
 msgstr "Ассистенты работают в Yuva через MCP от имени участника, который их подключил, и только с тем доступом, который он одобрил."
-
-#: src/app/Rail.tsx
-msgid "Assistants, {drafts} drafts waiting"
-msgstr "Ассистенты, черновиков ждёт: {drafts}"
 
 #: src/components/common/text.ts
 #: src/features/settings/AddProductDialog.tsx
@@ -3556,15 +3554,14 @@ msgstr "атрибут, например plan"
 msgid "Attributes"
 msgstr "Атрибуты"
 
+#: src/app/places.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
 msgid "Audience"
 msgstr "Аудитория"
 
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Audit log"
 msgstr "Журнал аудита"
@@ -3597,7 +3594,6 @@ msgid "Automatic mail never triggers an automatic reply."
 msgstr "Автоматическая почта никогда не вызывает автоответ."
 
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Automation"
 msgstr "Автоматизация"
@@ -3643,11 +3639,6 @@ msgstr "Назад к столбцам"
 #: src/features/broadcasts/TriggeredPage.tsx
 msgid "Back to draft"
 msgstr "Назад к черновику"
-
-#: src/app/TopBar.tsx
-#: src/components/common/PageSidebar.tsx
-msgid "Back to Home"
-msgstr "Назад на главную"
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Back to setup"
@@ -3910,7 +3901,6 @@ msgstr "Нарушено"
 msgid "Breached, met late at {at}"
 msgstr "Нарушено, выполнено с опозданием в {at}"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Bring a mailbox's history from Gmail, Yandex or any IMAP server"
 msgstr "Перенесите историю ящика из Gmail, Яндекса или любого сервера IMAP"
@@ -3940,9 +3930,9 @@ msgstr "Рассылка"
 msgid "Broadcast sending"
 msgstr "Отправка рассылок"
 
+#: src/app/nav.tsx
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
@@ -4012,7 +4002,6 @@ msgid "By language"
 msgstr "По языкам"
 
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "By member"
 msgstr "По участнику"
 
@@ -4153,7 +4142,6 @@ msgstr "Отменено. Добавленное ранее остаётся."
 #: src/features/conversation/composer/CannedMenu.tsx
 #: src/features/conversation/composer/ReplyBox.tsx
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Canned replies"
 msgstr "Готовые ответы"
@@ -4356,7 +4344,7 @@ msgstr "Канал удалён"
 msgid "Channel settings"
 msgstr "Настройки канала"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/Frame.tsx
@@ -4371,7 +4359,7 @@ msgstr "Каналы"
 msgid "Channels and inboxes"
 msgstr "Каналы и ящики"
 
-#: src/features/settings/SettingsFrame.tsx
+#: src/app/places.tsx
 msgid "Channels needing attention: {attention}"
 msgstr "Каналы, требующие внимания: {attention}"
 
@@ -4665,7 +4653,6 @@ msgstr "Секрет клиента"
 msgid "Clocks change on {date}; the hours stay {start}–{end} local time."
 msgstr "Часы переводятся {date}; часы остаются {start}–{end} по местному времени."
 
-#: src/app/Sidebar.tsx
 #: src/components/ui/dialog.tsx
 #: src/components/ui/sheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -4783,18 +4770,11 @@ msgstr "Код отправлен"
 msgid "Collapse"
 msgstr "Свернуть"
 
-#: src/components/common/ShortcutSheet.tsx
-msgid "Collapse or expand the sidebar"
-msgstr "Свернуть или развернуть боковую панель"
-
-#: src/app/Sidebar.tsx
-msgid "Collapse the sidebar"
-msgstr "Свернуть боковую панель"
-
 #: src/features/home/HomePage.tsx
 msgid "Collect ratings on your docs pages"
 msgstr "Собирайте оценки на страницах документации"
 
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 msgid "Collections"
 msgstr "Коллекции"
@@ -5001,7 +4981,6 @@ msgstr "Connect a tracker"
 msgid "Connect an assistant"
 msgstr "Подключить ассистента"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Connect an assistant such as Claude or ChatGPT"
 msgstr "Подключите ассистента, например Claude или ChatGPT"
@@ -5031,7 +5010,6 @@ msgstr "Подключиться к {host}"
 msgid "Connect your iOS or Android app"
 msgstr "Подключите приложение для iOS или Android"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Connect your servers and bots to Yuva"
 msgstr "Подключите свои серверы и ботов к Yuva"
@@ -5069,12 +5047,10 @@ msgid "Connected {created}"
 msgstr "Подключено {created}"
 
 #: src/app/Palette.tsx
-#: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "Connected apps"
@@ -5197,8 +5173,6 @@ msgid "Contact since {since}"
 msgstr "Контакт с {since}"
 
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
-#: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactPage.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -5221,6 +5195,7 @@ msgstr "Контакты сохраняют свои значения; они о
 msgid "contains"
 msgstr "содержит"
 
+#: src/app/places.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Content"
@@ -5297,6 +5272,7 @@ msgstr "Диалог начат"
 msgid "conversations"
 msgstr "диалоги"
 
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/contact/ContactDetail.tsx
 #: src/features/contact/ContactDetails.tsx
@@ -5307,7 +5283,6 @@ msgstr "диалоги"
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/inbox/ChatList.tsx
 #: src/features/inbox/ChatsPage.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/migrations/DoneStep.tsx
 #: src/features/migrations/ReviewStep.tsx
 #: src/features/settings/inboxes/Mailbox.tsx
@@ -5368,7 +5343,7 @@ msgstr "Диалоги, в которых писала ваша команда, 
 msgid "Conversations your team wrote in stay. Nothing changes in {provider}."
 msgstr "Диалоги, в которых писала ваша команда, остаются. В {provider} ничего не меняется."
 
-#: src/app/Rail.tsx
+#: src/app/nav.tsx
 msgid "Conversations, {unread} unread"
 msgstr "Диалоги, непрочитанных: {unread}"
 
@@ -5537,10 +5512,6 @@ msgstr "Создайте ключ, если ваш SMTP-провайдер не 
 #: src/features/migrations/text.ts
 msgid "Create a new app password with access to mail over IMAP, named “Yuva”."
 msgstr "Создайте новый пароль приложения с доступом к почте по IMAP и назовите его «Yuva»."
-
-#: src/app/Sidebar.tsx
-msgid "Create a workspace"
-msgstr "Создать рабочее пространство"
 
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Create an API token in {provider}"
@@ -5760,14 +5731,9 @@ msgid "Custom field"
 msgstr "Пользовательское поле"
 
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Custom fields"
 msgstr "Пользовательские поля"
-
-#: src/app/Sidebar.tsx
-msgid "Customers"
-msgstr "Клиенты"
 
 #: src/features/status/MonitorsPage.tsx
 msgid "Customers cannot see this yet. Tell them with an incident."
@@ -6323,7 +6289,6 @@ msgstr "Дизайн"
 msgid "Design: {title}"
 msgstr "Дизайн: {title}"
 
-#: src/app/Sidebar.tsx
 #: src/components/common/DesignChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
@@ -6342,7 +6307,7 @@ msgstr "Уведомления на рабочем столе разрешены
 msgid "Desktop notifications are blocked for this site in the browser's settings, so only the sound plays."
 msgstr "Уведомления на рабочем столе заблокированы для этого сайта в настройках браузера, поэтому воспроизводится только звук."
 
-#: src/components/common/PageSidebar.tsx
+#: src/components/common/SectionPage.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/SubscriberSheet.tsx
 #: src/features/contact/ContactCard.tsx
@@ -6383,7 +6348,7 @@ msgstr "Устройство и приложение"
 msgid "Device language"
 msgstr "Язык устройства"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 msgid "Devices"
 msgstr "Устройства"
 
@@ -6458,6 +6423,7 @@ msgid "Discussion started"
 msgstr "Обсуждение начато"
 
 #: src/app/Palette.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DiscussionsTab.tsx
 #: src/features/docs/DocsPage.tsx
@@ -6555,7 +6521,7 @@ msgid "Do this later"
 msgstr "Сделать позже"
 
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
@@ -6731,6 +6697,10 @@ msgstr "Черновики"
 msgctxt "mail folder"
 msgid "Drafts"
 msgstr "Черновики"
+
+#: src/app/places.tsx
+msgid "Drafts and approvals"
+msgstr "Черновики и одобрения"
 
 #: src/components/common/text.ts
 msgid "Drafts and timeline events cannot be removed."
@@ -7256,7 +7226,7 @@ msgstr "Ошибка"
 msgid "Error or answer"
 msgstr "Ошибка или ответ"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/features/settings/webhooks/sections.tsx
 #: src/features/settings/webhooks/WebhookWizard.tsx
 msgid "Events"
@@ -7447,10 +7417,6 @@ msgstr "ООО «Пример»"
 msgid "Expand or collapse every message"
 msgstr "Развернуть или свернуть все письма"
 
-#: src/app/Sidebar.tsx
-msgid "Expand the sidebar"
-msgstr "Развернуть боковую панель"
-
 #: src/features/status/MonitorDialog.tsx
 #: src/features/status/MonitorsPage.tsx
 msgid "Expected every"
@@ -7574,7 +7540,7 @@ msgid "feedback"
 msgstr "отзывы"
 
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/components/common/Source.tsx
 #: src/features/contact/ContactCard.tsx
@@ -7590,6 +7556,11 @@ msgstr "Отзывы"
 #: src/features/settings/inboxes/FeedbackCategories.tsx
 msgid "Feedback already sent as {name} moves to Other when you save."
 msgstr "Отзывы, уже отправленные как «{name}», при сохранении перейдут в «Другое»."
+
+#: src/app/nav.tsx
+#: src/app/places.tsx
+msgid "Feedback and roadmap"
+msgstr "Отзывы и дорожная карта"
 
 #: src/components/common/text.ts
 msgid "Feedback arrived"
@@ -7624,7 +7595,7 @@ msgstr "Отзыв, отправленный из приложения"
 msgid "Feedback sent from the website chat"
 msgstr "Отзыв из чата на сайте"
 
-#: src/app/Rail.tsx
+#: src/app/nav.tsx
 msgid "Feedback, {feedback} open"
 msgstr "Отзывы, открытых: {feedback}"
 
@@ -7710,9 +7681,9 @@ msgstr "Фильтровать сообщения, как последнее п�
 msgid "Filter messages like this"
 msgstr "Фильтровать сообщения, как это"
 
+#: src/app/places.tsx
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailPage.tsx
-#: src/features/mail/MailSide.tsx
 msgid "Filters"
 msgstr "Фильтры"
 
@@ -7861,6 +7832,7 @@ msgstr "Исправить"
 msgid "Fix the address or the channel's SMTP settings, then send the reply again."
 msgstr "Исправьте адрес или настройки SMTP канала, затем отправьте ответ снова."
 
+#: src/app/places.tsx
 #: src/features/mail/MailPage.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -8171,7 +8143,7 @@ msgstr "Полное имя"
 msgid "Fumadocs / React"
 msgstr "Fumadocs / React"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 msgid "Funnels"
 msgstr "Воронки"
 
@@ -8191,11 +8163,9 @@ msgstr "Дал(а) пользователю {person} доступ к {inbox}"
 msgid "Gave the team {team} access to {inbox}"
 msgstr "Дал(а) команде {team} доступ к {inbox}"
 
-#: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 msgid "General"
@@ -8234,6 +8204,10 @@ msgstr "Получить фрагменты"
 #: src/features/setup/NewsletterStep.tsx
 msgid "Get the subscribe form"
 msgstr "Получить форму подписки"
+
+#: src/app/UserMenu.tsx
+msgid "Getting started"
+msgstr "Начало работы"
 
 #: src/features/settings/issues/IssueTrackersPage.tsx
 msgid "GitHub Enterprise Server API"
@@ -8284,7 +8258,7 @@ msgstr "Перейти к последнему сообщению"
 msgid "Go to the lists"
 msgstr "Перейти к спискам"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 msgid "Goals"
 msgstr "Цели"
 
@@ -8370,7 +8344,6 @@ msgstr "Groups attribute"
 msgid "Groups claim"
 msgstr "Groups claim"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Groups of members and the inboxes they cover"
 msgstr "Группы участников и ящики, которые они охватывают"
@@ -8481,7 +8454,8 @@ msgstr "Статья справки"
 msgid "Help articles"
 msgstr "Статьи справки"
 
-#: src/app/Rail.tsx
+#: src/app/nav.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/PagesTab.tsx
 msgid "Help center"
@@ -8607,8 +8581,8 @@ msgstr "История загружена. Yuva читает {provider} кажд
 msgid "History removed"
 msgstr "История удалена"
 
+#: src/app/nav.tsx
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
@@ -8914,6 +8888,11 @@ msgstr "Импорт истории из {address} · {percent}% · новая �
 msgid "Importing…"
 msgstr "Импорт…"
 
+#: src/app/nav.tsx
+#: src/app/places.tsx
+msgid "Imports"
+msgstr "Импорт данных"
+
 #: src/features/broadcasts/Import.tsx
 msgid "Imports run one at a time in the workspace. Try again when the other one ends."
 msgstr "Импорты в рабочем пространстве выполняются по одному. Повторите, когда другой закончится."
@@ -9057,8 +9036,10 @@ msgstr "В настройках Яндекс Почты в разделе «По
 msgid "In Zoho Mail, open Settings › Mail accounts › IMAP access and turn IMAP on."
 msgstr "В Zoho Mail откройте «Настройки › Почтовые аккаунты › Доступ по IMAP» и включите IMAP."
 
+#: src/app/Header.tsx
+#: src/app/nav.tsx
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
+#: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/ListForm.tsx
@@ -9093,6 +9074,7 @@ msgstr "Inbox default"
 msgid "Inbox for {name}"
 msgstr "Ящик для {name}"
 
+#: src/app/places.tsx
 #: src/features/contact/ContactSheet.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
@@ -9122,7 +9104,7 @@ msgstr "Инцидент открыт"
 msgid "Incident: {title} · {state}"
 msgstr "Инцидент: {title} · {state}"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/StatusFrame.tsx
@@ -9157,10 +9139,6 @@ msgstr "Информация"
 msgid "Inside business hours"
 msgstr "В рабочее время"
 
-#: src/app/Sidebar.tsx
-msgid "Insights"
-msgstr "Аналитика"
-
 #: src/features/settings/channels/app/AppSections.tsx
 #: src/features/settings/channels/ChannelPage.tsx
 #: src/features/settings/channels/ChannelState.tsx
@@ -9189,10 +9167,6 @@ msgstr "Установите сервер в VS Code; он откроет стр
 msgid "Installation"
 msgstr "Установка"
 
-#: src/features/settings/SettingsColumn.tsx
-msgid "Integrations"
-msgstr "Integrations"
-
 #: src/features/status/text.tsx
 msgid "Investigating"
 msgstr "Расследуется"
@@ -9217,6 +9191,7 @@ msgstr "Пригласите свою команду"
 msgid "Invited {email} as {role}"
 msgstr "Пригласил(а) {email} с ролью {role}"
 
+#: src/app/places.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Invites"
 msgstr "Приглашения"
@@ -9287,7 +9262,6 @@ msgstr "Issue address"
 
 #: src/app/Palette.tsx
 #: src/features/settings/issues/IssueTrackersPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Issue trackers"
 msgstr "Issue trackers"
@@ -9629,7 +9603,6 @@ msgstr "Только метка: его почта приходит из «Вс�
 #: src/features/settings/automation/text.ts
 #: src/features/settings/GeneralTabs.tsx
 #: src/features/settings/macros/MacroDialog.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/PolicyDialog.tsx
 msgid "Labels"
@@ -9917,7 +9890,6 @@ msgstr "Ключам и ассистентам разрешено планиро
 msgid "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
 msgstr "Let your team sign in through your company's identity provider. Their e-mail address decides which provider they use."
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Let your team sign in through your identity provider"
 msgstr "Let your team sign in through your identity provider"
@@ -10134,7 +10106,6 @@ msgstr "Ожидание письма…"
 msgid "Listing the tickets…"
 msgstr "Получение списка тикетов…"
 
-#: src/app/Sidebar.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/AudienceBuilder.tsx
 #: src/features/broadcasts/BroadcastPage.tsx
@@ -10202,7 +10173,7 @@ msgstr "Загрузка…"
 msgid "Locale"
 msgstr "Локаль"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 msgid "Locations"
 msgstr "Места"
 
@@ -10296,7 +10267,6 @@ msgstr "Макрос"
 
 #: src/app/Palette.tsx
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Macros"
 msgstr "Макросы"
@@ -10309,14 +10279,14 @@ msgstr "Сделал(а) единый вход необязательным"
 msgid "Made single sign-on required"
 msgstr "Сделал(а) единый вход обязательным"
 
+#: src/app/nav.tsx
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
+#: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/mail/MailFiltersPage.tsx
 #: src/features/mail/MailList.tsx
 #: src/features/mail/MailPage.tsx
-#: src/features/mail/MailSide.tsx
 msgid "Mail"
 msgstr "Почта"
 
@@ -10368,10 +10338,6 @@ msgstr "Письма уходят в темпе каждой рассылки, �
 msgid "mail made"
 msgstr "mail made"
 
-#: src/features/settings/SettingsColumn.tsx
-msgid "Mail only you read"
-msgstr "Почта, которую читаете только вы"
-
 #: src/features/settings/addresses/AddressesPage.tsx
 msgid "Mail queued from it fails instead of going out from another address."
 msgstr "Письмо в очереди с этого адреса завершится ошибкой, а не уйдёт с другого адреса."
@@ -10420,7 +10386,7 @@ msgstr "Почта на этот адрес вернулась или на не�
 msgid "Mail to your support address, answered from it"
 msgstr "Почта на ваш адрес поддержки, ответы с него"
 
-#: src/app/Rail.tsx
+#: src/app/nav.tsx
 msgid "Mail, {mailUnread} unread"
 msgstr "Почта, непрочитанных: {mailUnread}"
 
@@ -10436,7 +10402,7 @@ msgstr "Адрес ящика"
 msgid "Mailbox: {name}"
 msgstr "Почтовый ящик: {name}"
 
-#: src/features/mail/MailSide.tsx
+#: src/app/places.tsx
 #: src/features/migrations/ChooseStep.tsx
 #: src/features/migrations/CopyStep.tsx
 #: src/features/migrations/MapStep.tsx
@@ -10557,6 +10523,7 @@ msgstr "вручную"
 msgid "Map"
 msgstr "Сопоставление"
 
+#: src/app/Header.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Mark all as read"
@@ -10726,10 +10693,9 @@ msgid "Member"
 msgstr "Участник"
 
 #: src/app/Palette.tsx
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/teams/TeamDialog.tsx
 #: src/features/settings/teams/TeamsPage.tsx
@@ -10758,7 +10724,8 @@ msgstr "Упомянуть коллегу"
 msgid "mentioned you"
 msgstr "упомянул(а) вас"
 
-#: src/app/Rail.tsx
+#: src/app/Header.tsx
+#: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomeSide.tsx
@@ -10768,7 +10735,8 @@ msgstr "упомянул(а) вас"
 msgid "Mentions"
 msgstr "Упоминания"
 
-#: src/app/Rail.tsx
+#: src/app/Header.tsx
+#: src/app/places.tsx
 msgid "Mentions, {unseen} unseen"
 msgstr "Упоминания, непросмотренных: {unseen}"
 
@@ -10776,9 +10744,6 @@ msgstr "Упоминания, непросмотренных: {unseen}"
 msgid "Mentions: {names}"
 msgstr "Упоминания: {names}"
 
-#: src/app/Rail.tsx
-#: src/app/Sidebar.tsx
-#: src/app/TopBar.tsx
 #: src/features/inbox/ChatList.tsx
 msgid "Menu"
 msgstr "Меню"
@@ -10983,7 +10948,7 @@ msgstr "Монитор удалён"
 msgid "Monitoring"
 msgstr "Наблюдение"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/MonitorsPage.tsx
 #: src/features/status/StatusFrame.tsx
@@ -10995,7 +10960,7 @@ msgstr "Мониторы"
 msgid "Monitors set the state of a status page component. Create a status page first."
 msgstr "Мониторы задают состояние компонента страницы статуса. Сначала создайте страницу статуса."
 
-#: src/features/status/StatusFrame.tsx
+#: src/app/places.tsx
 msgid "Monitors, {down} down"
 msgstr "Мониторы, не работают: {down}"
 
@@ -11236,7 +11201,6 @@ msgstr "Переместить в корзину (#)"
 
 #: src/features/migrations/Wizard.tsx
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Move to Yuva"
 msgstr "Перейти в Yuva"
@@ -11401,10 +11365,6 @@ msgstr "NameID format"
 #: src/features/settings/channels/Attachments.tsx
 msgid "Narrow what people can attach in this channel. The server’s own limits stay the ceiling: a channel can lower them, never raise them."
 msgstr "Ограничьте то, что можно прикреплять в этом канале. Пределы сервера остаются потолком: канал может их понизить, но не повысить."
-
-#: src/components/common/PageSidebar.tsx
-msgid "Navigation"
-msgstr "Навигация"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 msgid "Needed for broadcasts"
@@ -11606,6 +11566,10 @@ msgstr "Новая идея из этого"
 msgid "New identity secret"
 msgstr "Новый секрет личности"
 
+#: src/app/places.tsx
+msgid "New import"
+msgstr "Новый импорт"
+
 #: src/features/broadcasts/Growth.tsx
 msgid "new in the last {days} days"
 msgstr "новые за последние {days} дн."
@@ -11647,8 +11611,8 @@ msgstr "Новый макрос"
 msgid "New mail"
 msgstr "Новое письмо"
 
+#: src/app/places.tsx
 #: src/features/mail/MailPage.tsx
-#: src/features/mail/MailSide.tsx
 msgid "New mailbox"
 msgstr "Новый ящик"
 
@@ -11688,10 +11652,6 @@ msgstr "Новая страница"
 #: src/features/settings/channels/email/EmailFields.tsx
 msgid "New password"
 msgstr "Новый пароль"
-
-#: src/features/settings/SettingsColumn.tsx
-msgid "New personal mailbox"
-msgstr "Новый личный ящик"
 
 #: src/features/settings/sla/PolicyDialog.tsx
 #: src/features/settings/sla/SlaPage.tsx
@@ -11943,7 +11903,6 @@ msgid "No channel yet"
 msgstr "Канала пока нет"
 
 #: src/features/settings/ProductsPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 msgid "No channels yet"
 msgstr "Каналов пока нет"
 
@@ -12285,7 +12244,6 @@ msgid "No other conversations."
 msgstr "Других диалогов нет."
 
 #: src/features/settings/inboxes/Mailbox.tsx
-#: src/features/settings/SettingsColumn.tsx
 msgid "No owner"
 msgstr "Нет владельца"
 
@@ -12322,7 +12280,6 @@ msgid "No ratings in this window."
 msgstr "Нет оценок за этот период."
 
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "No ratings today"
 msgstr "Сегодня нет оценок"
 
@@ -12504,6 +12461,7 @@ msgstr "Никто другой его не читает, пока вы не р�
 msgid "Nobody else reads this mailbox."
 msgstr "Никто другой не читает этот ящик."
 
+#: src/app/Header.tsx
 #: src/features/inbox/SidePanels.tsx
 msgid "Nobody has mentioned you yet"
 msgstr "Вас пока никто не упоминал"
@@ -12576,7 +12534,6 @@ msgstr "Это письмо никто не получит. Выберите с�
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/slack/SlackPage.tsx
 #: src/features/setup/email/EmailTestStep.tsx
 #: src/features/status/MonitorDialog.tsx
@@ -12988,7 +12945,6 @@ msgstr "Уведомления подписчикам"
 #: src/app/UserMenu.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/settings/notifications/NotificationsPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Notifications"
 msgstr "Уведомления"
@@ -13042,8 +12998,6 @@ msgstr "выкл."
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
 #: src/features/settings/channels/chat/ChatFields.tsx
-#: src/features/settings/SettingsColumn.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sla/SlaPage.tsx
 #: src/features/settings/webhooks/parts.tsx
 #: src/features/status/StatusPages.tsx
@@ -13129,8 +13083,6 @@ msgstr "Самое долгое ожидание"
 
 #: src/features/broadcasts/BroadcastPage.tsx
 #: src/features/inbox/AssistantsPage.tsx
-#: src/features/settings/SettingsColumn.tsx
-#: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/parts.tsx
 msgid "On"
 msgstr "Вкл."
@@ -13214,10 +13166,6 @@ msgstr "По одному в строке, например application/pdf ил
 #: src/features/setup/AddChannelStep.tsx
 msgid "One per line, up to 20."
 msgstr "По одному в строке, до 20."
-
-#: src/features/settings/SettingsColumn.tsx
-msgid "One per product or brand"
-msgstr "По одному на продукт или бренд"
 
 #: src/features/settings/channels/email/AddressProof.tsx
 msgid "One record proves every channel of this workspace on the domain."
@@ -13950,7 +13898,7 @@ msgstr "лимит превышен"
 msgid "Over time"
 msgstr "Со временем"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/reports/ReportPages.tsx
 #: src/features/status/StatusFrame.tsx
@@ -14010,7 +13958,11 @@ msgstr "Настройки страницы"
 msgid "Page where they agreed (optional)"
 msgstr "Страница, где они согласились (необязательно)"
 
-#: src/app/Sidebar.tsx
+#: src/app/Header.tsx
+msgid "Page: {name}"
+msgstr "Страница: {name}"
+
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/docs/DocsPage.tsx
 #: src/features/docs/PagesTab.tsx
@@ -14214,6 +14166,8 @@ msgstr "В ожидании"
 msgid "Pending deliveries are dropped with it."
 msgstr "Ожидающие доставки удаляются вместе с ним."
 
+#: src/app/nav.tsx
+#: src/app/places.tsx
 #: src/features/broadcasts/TriggeredPage.tsx
 #: src/features/contact/ContactsPage.tsx
 msgid "People"
@@ -14343,7 +14297,6 @@ msgid "Personal for a member"
 msgstr "Личный для участника"
 
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 msgid "Personal mailbox"
 msgstr "Личный ящик"
 
@@ -14542,8 +14495,8 @@ msgid "Pick mails"
 msgstr "Выберите письма"
 
 #: src/features/home/HomePage.tsx
-msgid "Pick one in the sidebar."
-msgstr "Выберите один на боковой панели."
+msgid "Pick one at the top of the page."
+msgstr "Выберите вверху страницы."
 
 #: src/features/setup/NewsletterStep.tsx
 msgid "Pick one later in the list settings."
@@ -14717,7 +14670,6 @@ msgstr "Опубликовать обновление"
 msgid "Post an update ({updateKey})"
 msgstr "Опубликовать обновление ({updateKey})"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Post conversations to a channel and answer from it"
 msgstr "Post conversations to a channel and answer from it"
@@ -14880,10 +14832,6 @@ msgstr "Новости продукта"
 msgid "Product settings"
 msgstr "Настройки продукта"
 
-#: src/features/inbox/ProductSwitcher.tsx
-msgid "Product: {label}"
-msgstr "Продукт: {label}"
-
 #: src/features/settings/channels/app/PushSection.tsx
 msgid "Production"
 msgstr "Продакшен"
@@ -14893,7 +14841,6 @@ msgstr "Продакшен"
 msgid "Production backend"
 msgstr "Рабочий бэкенд"
 
-#: src/app/Sidebar.tsx
 #: src/components/common/SettingsStrip.tsx
 #: src/features/contact/ContactCard.tsx
 #: src/features/contact/ContactsPage.tsx
@@ -14904,7 +14851,6 @@ msgstr "Рабочий бэкенд"
 #: src/features/settings/api-keys/ApiKeysPage.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
 #: src/features/team/TeamPage.tsx
@@ -15007,11 +14953,6 @@ msgstr "Публичные страницы, где видно, работают
 #: src/features/status/StatusPages.tsx
 msgid "Publish"
 msgstr "Опубликовать"
-
-#: src/app/Sidebar.tsx
-msgctxt "sidebar group"
-msgid "Publish"
-msgstr "Публикации"
 
 #: src/features/status/IncidentDetail.tsx
 #: src/features/status/StatusPages.tsx
@@ -15181,9 +15122,8 @@ msgstr "Оценка"
 msgid "Rating is the share of rated conversations a member answered that people marked good, across all products."
 msgstr "Оценка — доля оцененных бесед участника, которые отмечены как хорошие, по всем продуктам."
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 #: src/features/settings/ProductsPage.tsx
 msgid "Ratings"
 msgstr "Оценки"
@@ -15203,6 +15143,10 @@ msgstr "Оценки по дням"
 #: src/features/docs/DocsPage.tsx
 msgid "Ratings, questions and discussions from the documentation pages on your own site"
 msgstr "Оценки, вопросы и обсуждения со страниц документации на вашем сайте"
+
+#: src/app/nav.tsx
+msgid "Reach"
+msgstr "Охват"
 
 #: src/features/conversation/messages/MessageActions.tsx
 msgid "Read"
@@ -15363,7 +15307,7 @@ msgstr "Готово к импорту"
 msgid "Ready to send"
 msgstr "Готово к отправке"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 msgid "Realtime"
 msgstr "В реальном времени"
 
@@ -15872,7 +15816,6 @@ msgid "Replies and answers in the discussions you follow"
 msgstr "Ответы и решения в обсуждениях, за которыми вы следите"
 
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "Replies and closes"
 msgstr "Ответы и закрытия"
 
@@ -15908,9 +15851,8 @@ msgstr "Ответы на {mxDomain} получают {hosts}."
 msgid "Replies to a broadcast"
 msgstr "Ответы на рассылку"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/features/inbox/ChatsPage.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/SourceFilter.tsx
 #: src/features/reports/TrendsReport.tsx
 msgid "Replies to mail we sent"
@@ -15974,7 +15916,6 @@ msgstr "Ответить всем (A)"
 msgid "Reply and resolution targets for the conversations a policy matches. The first enabled policy that matches a conversation applies, so keep the most specific ones on top. Targets count in the business hours of each inbox."
 msgstr "Цели по ответу и решению для диалогов, которым соответствует политика. Применяется первая включённая политика, подходящая диалогу, поэтому самые конкретные держите вверху. Цели считаются по рабочим часам каждого ящика."
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Reply and resolution targets with due times"
 msgstr "Цели по ответу и решению со сроками"
@@ -16096,11 +16037,11 @@ msgstr "Жалоба на спам"
 msgid "Reported failure"
 msgstr "Сообщённый сбой"
 
-#: src/app/Rail.tsx
+#: src/app/nav.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "Reports"
 msgstr "Отчёты"
 
@@ -16253,7 +16194,7 @@ msgstr "Результаты за последние 24 часа"
 msgid "Resume"
 msgstr "Возобновить"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 msgid "Retention"
 msgstr "Удержание"
 
@@ -16356,7 +16297,7 @@ msgid "Right now"
 msgstr "Прямо сейчас"
 
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/feedback/FeedbackPage.tsx
 #: src/features/feedback/RoadmapCard.tsx
@@ -16463,7 +16404,6 @@ msgstr "Правила"
 msgid "Rules react to a conversation changing: they label, assign, reply, snooze or call a webhook. They run in the order of this list, each at most once per trigger, and what a rule changes never starts another rule."
 msgstr "Правила реагируют на изменение разговора: ставят метки, назначают, отвечают, откладывают или вызывают вебхук. Они выполняются в порядке этого списка, не больше одного раза на триггер, а то, что изменило одно правило, никогда не запускает другое."
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Rules that label, assign, reply and call webhooks"
 msgstr "Правила, которые ставят метки, назначают, отвечают и вызывают вебхуки"
@@ -16628,7 +16568,6 @@ msgid "Saved"
 msgstr "Сохранено"
 
 #: src/app/ViewsGroup.tsx
-#: src/features/inbox/InboxSide.tsx
 #: src/features/inbox/views/ViewsMenu.tsx
 msgid "Saved views"
 msgstr "Сохранённые представления"
@@ -16788,15 +16727,10 @@ msgid "SDK"
 msgstr "SDK"
 
 #: src/app/Palette.tsx
-#: src/app/TopBar.tsx
-#: src/components/common/PageLayout.tsx
-#: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Overview.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
 #: src/features/feedback/FeedbackList.tsx
 #: src/features/inbox/ChatList.tsx
-#: src/features/settings/SettingsFrame.tsx
-#: src/features/status/StatusFrame.tsx
 msgid "Search"
 msgstr "Поиск"
 
@@ -16843,9 +16777,12 @@ msgid "Search emoji (in English)"
 msgstr "Поиск эмодзи (по-английски)"
 
 #: src/features/feedback/FeedbackList.tsx
-#: src/features/feedback/FeedbackPage.tsx
 msgid "Search feedback"
 msgstr "Поиск по отзывам"
+
+#: src/app/places.tsx
+msgid "Search gaps"
+msgstr "Пробелы в поиске"
 
 #: src/features/conversation/composer/ArticlePicker.tsx
 msgid "Search help articles…"
@@ -16881,9 +16818,7 @@ msgstr "Поиск по имени, e-mail или ID…"
 msgid "Search operators"
 msgstr "Операторы поиска"
 
-#: src/app/Sidebar.tsx
-#: src/features/inbox/InboxSide.tsx
-#: src/features/mail/MailSide.tsx
+#: src/app/Header.tsx
 msgid "Search or jump to…"
 msgstr "Поиск или переход…"
 
@@ -16934,12 +16869,6 @@ msgstr "Секрет"
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Secret set"
 msgstr "Secret set"
-
-#: src/app/Rail.tsx
-#: src/app/Sidebar.tsx
-#: src/components/common/PageSidebar.tsx
-msgid "Sections"
-msgstr "Разделы"
 
 #: src/features/settings/SettingsFrame.tsx
 msgid "Security"
@@ -17139,7 +17068,6 @@ msgstr "Отправлять черновики"
 msgid "Send events"
 msgstr "Отправлять события"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Send events to your own server"
 msgstr "Отправлять события на свой сервер"
@@ -17183,7 +17111,6 @@ msgstr "Отправить позже ({laterKey})"
 msgid "Send later, in an e-mail reply"
 msgstr "Отправить позже, в ответе по почте"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Send mail from your own address"
 msgstr "Отправляйте письма со своего адреса"
@@ -17656,8 +17583,9 @@ msgstr "Настройка арендатора…"
 msgid "Setting up…"
 msgstr "Настройка…"
 
+#: src/app/nav.tsx
 #: src/app/Palette.tsx
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/account/AccountPage.tsx
 #: src/features/broadcasts/ListPage.tsx
@@ -17667,7 +17595,6 @@ msgstr "Настройка…"
 #: src/features/settings/channels/ChannelState.tsx
 #: src/features/settings/channels/sections.tsx
 #: src/features/settings/ProductsPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/ui.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -17732,6 +17659,7 @@ msgstr "Выпущено"
 msgid "Shortcut"
 msgstr "Сочетание клавиш"
 
+#: src/components/common/PageLayout.tsx
 #: src/features/broadcasts/Report.tsx
 #: src/features/broadcasts/Subscribers.tsx
 #: src/features/contact/ContactsColumn.tsx
@@ -18106,7 +18034,6 @@ msgstr "Лист записи на весенней ярмарке"
 
 #: src/app/Palette.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/signature/SignaturePage.tsx
 msgid "Signature"
@@ -18186,7 +18113,6 @@ msgstr "Одинарное подтверждение"
 
 #: src/app/Palette.tsx
 #: src/features/settings/profile/Sessions.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/sso/SsoPage.tsx
 msgid "Single sign-on"
@@ -18290,7 +18216,6 @@ msgid "SLA met / breached"
 msgstr "SLA выполнено / нарушено"
 
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "SLA policies"
 msgstr "Политики SLA"
@@ -18299,7 +18224,6 @@ msgstr "Политики SLA"
 msgid "SLA targets (W)"
 msgstr "Цели SLA (W)"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/slack/SlackPage.tsx
 msgid "Slack"
@@ -18502,7 +18426,6 @@ msgstr "Сортировка"
 msgid "Sort conversations by topic. Each label also gets its own view in the sidebar."
 msgstr "Сортируйте диалоги по темам. Каждая метка получает и собственное представление в боковой панели."
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Sort conversations your way"
 msgstr "Сортируйте диалоги по-своему"
@@ -18511,7 +18434,7 @@ msgstr "Сортируйте диалоги по-своему"
 msgid "Source"
 msgstr "Источник"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 msgid "Sources"
 msgstr "Источники"
 
@@ -18739,7 +18662,9 @@ msgstr "состояние беседы"
 msgid "State while down"
 msgstr "Состояние при сбое"
 
+#: src/app/nav.tsx
 #: src/app/Palette.tsx
+#: src/app/places.tsx
 #: src/app/UserMenu.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/Overview.tsx
@@ -18773,7 +18698,6 @@ msgstr "Страница статуса"
 msgid "Status page deleted"
 msgstr "Страница статуса удалена"
 
-#: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/status/IncidentsPage.tsx
 #: src/features/status/MonitorsPage.tsx
@@ -18865,10 +18789,6 @@ msgstr "Stored encrypted and never shown again."
 msgid "Struck-out values are not taken: this contact keeps its own value for those keys."
 msgstr "Зачёркнутые значения не берутся: у этого контакта для этих ключей остаётся своё значение."
 
-#: src/app/Sidebar.tsx
-msgid "Sub-pages of {label}"
-msgstr "Подстраницы: {label}"
-
 #: src/features/migrations/SignInConnectStep.tsx
 #: src/features/migrations/TokenConnectStep.tsx
 msgid "Subdomain"
@@ -18914,6 +18834,7 @@ msgstr "подписались сейчас"
 msgid "Subscribed to the list now"
 msgstr "Только что подписался на список"
 
+#: src/app/places.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/broadcasts/ListPage.tsx
 #: src/features/broadcasts/ListsHome.tsx
@@ -18972,7 +18893,7 @@ msgstr "Сводка"
 msgid "Sunday"
 msgstr "Воскресенье"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/components/common/FocusChoice.tsx
 #: src/components/common/PurposeChoice.tsx
 #: src/features/settings/inboxes/InboxPage.tsx
@@ -19106,7 +19027,8 @@ msgstr "TCP"
 msgid "TCP check"
 msgstr "TCP-проверка"
 
-#: src/app/Rail.tsx
+#: src/app/nav.tsx
+#: src/app/places.tsx
 #: src/app/TeamMenu.tsx
 #: src/components/common/DiscussionAuthor.tsx
 #: src/components/common/ShortcutSheet.tsx
@@ -19120,7 +19042,6 @@ msgstr "TCP-проверка"
 #: src/features/reports/TrendsReport.tsx
 #: src/features/settings/automation/ActionRow.tsx
 #: src/features/settings/automation/text.ts
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Team"
 msgstr "Команда"
@@ -19187,12 +19108,11 @@ msgid "teammate@company.com"
 msgstr "teammate@company.com"
 
 #: src/app/Palette.tsx
+#: src/app/places.tsx
 #: src/features/conversation/HeaderActions.tsx
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/events.tsx
-#: src/features/team/TeamPage.tsx
 msgid "Teams"
 msgstr "Команды"
 
@@ -20434,7 +20354,6 @@ msgstr "Их отчёты и списки получателей удаляют�
 msgid "Theme"
 msgstr "Тема"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Theme and e-mail view on this device"
 msgstr "Тема и вид писем на этом устройстве"
@@ -20992,6 +20911,10 @@ msgstr "Достигнут лимит этого сервера"
 msgid "This sets what you see first. You can change it later in the workspace settings."
 msgstr "Это определяет, что вы увидите в первую очередь. Позже это можно изменить в настройках рабочего пространства."
 
+#: src/app/places.tsx
+msgid "This site"
+msgstr "Этот сайт"
+
 #: src/features/account/ConnectPage.tsx
 msgid "This site cannot connect"
 msgstr "Этот сайт не может подключиться"
@@ -21158,13 +21081,12 @@ msgstr "Кому: {emailTo}"
 msgid "To: {who}"
 msgstr "Кому: {who}"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/components/common/FlatList.tsx
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/home/HomePage.tsx
 #: src/features/inbox/InboxSide.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 #: src/features/reports/TrendsReport.tsx
 #: src/features/team/TeamPage.tsx
 msgid "Today"
@@ -21251,9 +21173,8 @@ msgstr "Корзина"
 msgid "Trash, never imported"
 msgstr "Корзина, никогда не импортируется"
 
-#: src/app/Sidebar.tsx
+#: src/app/places.tsx
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "Trends"
 msgstr "Динамика"
 
@@ -21263,7 +21184,6 @@ msgstr "Динамика"
 msgid "Trigger"
 msgstr "Триггер"
 
-#: src/app/Sidebar.tsx
 #: src/features/broadcasts/BroadcastsFrame.tsx
 #: src/features/broadcasts/Composer.tsx
 #: src/features/broadcasts/TriggeredHome.tsx
@@ -21323,7 +21243,6 @@ msgstr "Вторник"
 msgid "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
 msgstr "Turn feedback and roadmap ideas into GitHub or Linear issues. The issue's state then tells the customer where their feedback stands."
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Turn feedback into GitHub or Linear issues"
 msgstr "Turn feedback into GitHub or Linear issues"
@@ -21408,7 +21327,6 @@ msgstr "Введите название рабочего пространств�
 msgid "Type your e-mail address to confirm"
 msgstr "Введите свой адрес электронной почты для подтверждения"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Typed values on conversations and contacts"
 msgstr "Типизированные значения в беседах и контактах"
@@ -21752,7 +21670,6 @@ msgid "Up to 10 addresses. Press Enter after each one."
 msgstr "До 10 адресов. После каждого нажимайте Enter."
 
 #: src/features/reports/ReportPages.tsx
-#: src/features/reports/ReportsColumn.tsx
 msgid "Up to 13 months, by group"
 msgstr "До 13 месяцев, по группам"
 
@@ -21768,6 +21685,7 @@ msgstr "Обновить представление из этого списка
 msgid "Updated {seen}"
 msgstr "Обновлено {seen}"
 
+#: src/app/places.tsx
 #: src/features/status/IncidentDetail.tsx
 msgid "Updates"
 msgstr "Обновления"
@@ -22120,6 +22038,7 @@ msgstr "Открыть страницу ({openKey})"
 msgid "views"
 msgstr "просмотры"
 
+#: src/app/places.tsx
 #: src/features/docs/PagesTab.tsx
 msgid "Views"
 msgstr "Просмотры"
@@ -22392,7 +22311,6 @@ msgstr "Webhook secret for {revealName}"
 #: src/features/settings/audit/AuditLogPage.tsx
 #: src/features/settings/channels/Frame.tsx
 #: src/features/settings/DeveloperTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/webhooks/WebhookList.tsx
 #: src/features/settings/webhooks/WebhookPage.tsx
@@ -22573,12 +22491,10 @@ msgstr "Что уйдёт"
 msgid "What will you use Yuva for?"
 msgstr "Для чего вы будете использовать Yuva?"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "What you write often"
 msgstr "То, что вы часто пишете"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "What your e-mailed replies end with"
 msgstr "What your e-mailed replies end with"
@@ -22594,7 +22510,6 @@ msgid "What Yuva is for"
 msgstr "Для чего нужна Yuva"
 
 #: src/app/Palette.tsx
-#: src/app/Rail.tsx
 #: src/components/common/ShortcutSheet.tsx
 #: src/features/home/HomeSide.tsx
 #: src/features/settings/channels/chat/ChatSections.tsx
@@ -22692,7 +22607,6 @@ msgstr "Когда идея выйдет, вы ответите всем свя�
 msgid "When to notify me"
 msgstr "Когда меня уведомлять"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "When we let you know"
 msgstr "Когда мы сообщаем"
@@ -22797,7 +22711,6 @@ msgstr "Кто может отвечать"
 msgid "Who can use it"
 msgstr "Кто может использовать"
 
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Who changed access, keys and data"
 msgstr "Кто менял доступ, ключи и данные"
@@ -22927,6 +22840,10 @@ msgstr "Не будет сделано"
 msgid "words in the subject"
 msgstr "слова в теме"
 
+#: src/app/nav.tsx
+msgid "Work"
+msgstr "Работа"
+
 #: src/features/status/IncidentDetail.tsx
 msgid "Work is going on"
 msgstr "Идут работы"
@@ -22944,14 +22861,13 @@ msgstr "Работайте с диалогами из агента Cursor. Он 
 msgid "Working…"
 msgstr "Работа…"
 
+#: src/app/nav.tsx
 #: src/app/Palette.tsx
-#: src/app/Sidebar.tsx
 #: src/app/ViewsGroup.tsx
 #: src/components/common/WorkspaceSelector.tsx
 #: src/features/broadcasts/BroadcastAside.tsx
 #: src/features/oauth/ConsentPage.tsx
 #: src/features/settings/GeneralTabs.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 #: src/features/settings/workspace/RetentionForm.tsx
 #: src/features/settings/workspace/WorkspacePage.tsx
@@ -22966,19 +22882,13 @@ msgstr "Рабочее пространство и рассылки"
 msgid "Workspace name"
 msgstr "Название рабочего пространства"
 
-#: src/app/Sidebar.tsx
 #: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace settings"
 msgstr "Настройки рабочего пространства"
 
-#: src/app/Sidebar.tsx
 #: src/components/common/WorkspaceSelector.tsx
 msgid "Workspace: {name}"
 msgstr "Рабочее пространство: {name}"
-
-#: src/app/Sidebar.tsx
-msgid "Workspaces"
-msgstr "Рабочие пространства"
 
 #: src/features/settings/inboxes/InboxPage.tsx
 #: src/features/setup/previews.tsx
@@ -23069,7 +22979,6 @@ msgstr "Вчера"
 
 #: src/features/conversation/messages/Thread.tsx
 #: src/features/settings/connected-apps/ConnectedAppsPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "You"
 msgstr "Вы"
@@ -23281,7 +23190,6 @@ msgid "Your account is not in a group that may use Yuva. Ask your administrator 
 msgstr "Your account is not in a group that may use Yuva. Ask your administrator to add you."
 
 #: src/features/settings/addresses/AddressesPage.tsx
-#: src/features/settings/SettingsColumn.tsx
 #: src/features/settings/SettingsFrame.tsx
 msgid "Your addresses"
 msgstr "Ваши адреса"
@@ -23671,6 +23579,10 @@ msgstr "Yuva отключил этот эндпоинт {disabledAt}."
 #: src/features/settings/webhooks/sections.tsx
 msgid "Yuva turned this endpoint off."
 msgstr "Yuva отключил этот эндпоинт."
+
+#: src/app/Header.tsx
+msgid "Yuva, go home"
+msgstr "Yuva, на главную"
 
 #: src/components/common/text.ts
 msgid "Yuva's own notes cannot be changed."

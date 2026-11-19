@@ -20,7 +20,7 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
 import { Link, useNavigate } from "react-router"
 
 import { SearchError, isSearchError } from "@/components/common/SearchError"
@@ -136,15 +136,35 @@ export function isWaiting(c: ConversationListItem) {
 }
 
 let remembered: Chip = "waiting"
+let rememberedInbox = ""
 let focused = 0
+const placeListeners = new Set<() => void>()
+
+function subscribePlace(l: () => void) {
+  placeListeners.add(l)
+  return () => {
+    placeListeners.delete(l)
+  }
+}
 
 export function useRememberedChip(): Chip {
   const offered = useChips()
-  return offered.includes(remembered) ? remembered : "waiting"
+  const chip = useSyncExternalStore(subscribePlace, () => remembered)
+  return offered.includes(chip) ? chip : "waiting"
+}
+
+export function useRememberedInbox() {
+  return useSyncExternalStore(subscribePlace, () => rememberedInbox)
 }
 
 export function rememberChip(c: Chip) {
   remembered = c
+  placeListeners.forEach((l) => l())
+}
+
+export function rememberInbox(id: string) {
+  rememberedInbox = id
+  placeListeners.forEach((l) => l())
 }
 
 export function useChipLabels(): Record<Chip, string> {

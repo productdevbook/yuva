@@ -15,10 +15,8 @@ import {
   NavList,
   PageHeading,
   PageLayout,
-  PageSidebar,
   PageTop,
   SectionHeading,
-  SectionNav,
   toast,
   TopPortal,
   TopSep,
@@ -463,7 +461,7 @@ function ListInfo({ title, tab }: { title: string; tab: FeedbackTab }) {
   )
 }
 
-function FeedbackSidebar({
+function FeedbackFilters({
   tab,
   category,
   onTab,
@@ -475,55 +473,51 @@ function FeedbackSidebar({
   onCategory: (category: FeedbackCategoryFilter) => void
 }) {
   const { t } = useLingui()
-  const { canManage } = useSession()
   const [inboxId] = useInboxFilter()
   const counts = useCounts().data
   const resolved = useLoadedCount({ kind: ["feedback"], status: ["closed"], inbox_id: inboxId || undefined })
   const { types, open } = useFeedbackTypes(inboxId, category)
   const showCount = !inboxId && tab === "open"
   return (
-    <PageSidebar title={t`Feedback`} searchLabel={t`Search feedback`}>
-      <NavList label={t`Feedback`}>
-        <div data-testid="feedback-tabs">
-          <NavGroup
-            title={t`Status`}
-            items={[
-              {
-                key: "open",
-                label: t`Open`,
-                count: inboxId ? undefined : counts?.feedback,
-                hot: true,
-                current: tab === "open",
-                onSelect: () => onTab("open"),
-                testId: "feedback-tab-open",
-              },
-              {
-                key: "resolved",
-                label: t`Resolved`,
-                count: resolved,
-                current: tab === "resolved",
-                onSelect: () => onTab("resolved"),
-                testId: "feedback-tab-resolved",
-              },
-            ]}
-          />
-        </div>
-        <div data-testid="feedback-categories">
-          <NavGroup
-            title={t`Type`}
-            items={types.map((x) => ({
-              key: x.key,
-              label: x.key === "all" ? t`Every type` : x.name,
-              count: showCount ? open(x.key) : undefined,
-              current: category === x.key,
-              onSelect: () => onCategory(x.key),
-              testId: `feedback-category-${x.key}`,
-            }))}
-          />
-        </div>
-      </NavList>
-      {!canManage && <SectionNav />}
-    </PageSidebar>
+    <NavList label={t`Feedback`}>
+      <div data-testid="feedback-tabs">
+        <NavGroup
+          title={t`Status`}
+          items={[
+            {
+              key: "open",
+              label: t`Open`,
+              count: inboxId ? undefined : counts?.feedback,
+              hot: true,
+              current: tab === "open",
+              onSelect: () => onTab("open"),
+              testId: "feedback-tab-open",
+            },
+            {
+              key: "resolved",
+              label: t`Resolved`,
+              count: resolved,
+              current: tab === "resolved",
+              onSelect: () => onTab("resolved"),
+              testId: "feedback-tab-resolved",
+            },
+          ]}
+        />
+      </div>
+      <div data-testid="feedback-categories">
+        <NavGroup
+          title={t`Type`}
+          items={types.map((x) => ({
+            key: x.key,
+            label: x.key === "all" ? t`Every type` : x.name,
+            count: showCount ? open(x.key) : undefined,
+            current: category === x.key,
+            onSelect: () => onCategory(x.key),
+            testId: `feedback-category-${x.key}`,
+          }))}
+        />
+      </div>
+    </NavList>
   )
 }
 
@@ -592,7 +586,7 @@ export function FeedbackPage({ id }: { id: string | null }) {
     <PageLayout
       testId="feedback-page"
       label={t`Feedback`}
-      sidebar={<FeedbackSidebar tab={tab} category={category} onTab={pickTab} onCategory={pickCategory} />}
+      nav={<FeedbackFilters tab={tab} category={category} onTab={pickTab} onCategory={pickCategory} />}
       aside={
         <InfoColumn label={t`Details`}>
           {c ? <DetailInfo c={c} /> : !id && <ListInfo title={viewName} tab={tab} />}

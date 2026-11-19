@@ -16,9 +16,7 @@ import {
   NavList,
   PageHeading,
   PageLayout,
-  PageSidebar,
   PageTop,
-  SectionNav,
   toast,
   TopSep,
   UnreadBadge,
@@ -564,32 +562,29 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
       list.current?.querySelectorAll("[data-testid=contact-row]")[cursor]?.scrollIntoView({ block: "nearest" })
   }, [cursor])
 
-  const sidebar = (
-    <PageSidebar title={t`Contacts`} searchLabel={t`Search contacts`}>
-      <NavList label={t`Contacts`}>
-        <NavGroup
-          items={[
-            { key: "all", label: t`People`, to: tabTo("all"), current: tab === "all", testId: "contacts-filter-all" },
-            {
-              key: "recent",
-              label: t`Recently active`,
-              to: tabTo("recent"),
-              current: tab === "recent",
-              testId: "contacts-filter-recent",
-            },
-            {
-              key: "duplicates",
-              label: t`Duplicates`,
-              to: tabTo("duplicates"),
-              current: tab === "duplicates",
-              count: everyone.data && !everyone.hasNextPage ? pairs.length : undefined,
-              testId: "contacts-filter-duplicates",
-            },
-          ]}
-        />
-      </NavList>
-      {!canManage && <SectionNav />}
-    </PageSidebar>
+  const nav = (
+    <NavList label={t`Contacts`}>
+      <NavGroup
+        items={[
+          { key: "all", label: t`People`, to: tabTo("all"), current: tab === "all", testId: "contacts-filter-all" },
+          {
+            key: "recent",
+            label: t`Recently active`,
+            to: tabTo("recent"),
+            current: tab === "recent",
+            testId: "contacts-filter-recent",
+          },
+          {
+            key: "duplicates",
+            label: t`Duplicates`,
+            to: tabTo("duplicates"),
+            current: tab === "duplicates",
+            count: everyone.data && !everyone.hasNextPage ? pairs.length : undefined,
+            testId: "contacts-filter-duplicates",
+          },
+        ]}
+      />
+    </NavList>
   )
 
   const heading = (
@@ -833,7 +828,7 @@ export function ContactsPage({ contactId }: { contactId?: string }) {
     <PageLayout
       testId="contacts-page"
       label={t`Contacts`}
-      sidebar={sidebar}
+      nav={nav}
       aside={
         <InfoColumn label={t`Details`}>
           {contactId ? (

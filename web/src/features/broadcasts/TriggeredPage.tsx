@@ -437,7 +437,7 @@ export function TriggeredPage({ b }: { b: Broadcast }) {
   return (
     <DetailFrame
       testId="triggered-page"
-      place="triggered"
+
       wide
       back={backOf("triggered", views)}
       bar={{

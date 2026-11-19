@@ -21,17 +21,14 @@ import {
   NavList,
   PageHeading,
   PageLayout,
-  PageSidebar,
   PageTop,
   PersonAvatar,
-  SectionNav,
   TopSep,
   UnreadBadge,
   useDayLabel,
 } from "@/components/common"
 import { useEnumText } from "@/components/common/text"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
-import { useSession } from "@/lib/session"
 import { EmptyBox } from "@/components/common/EmptyBox"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -346,7 +343,6 @@ function FlatMentionRow({ item }: { item: Mention }) {
 
 export function MentionsPage() {
   const { t, i18n } = useLingui()
-  const { canManage } = useSession()
   const view = useMentionsView()
   const markAll = useMarkAllMentionsSeen()
   const dayLabel = useDayLabel()
@@ -364,33 +360,30 @@ export function MentionsPage() {
     <PageLayout
       testId="mentions-panel"
       label={t`Mentions`}
-      sidebar={
-        <PageSidebar title={t`Mentions`}>
-          <NavList label={t`Mentions`}>
-            <NavGroup
-              items={[
-                {
-                  key: "unread",
-                  label: t`Unread`,
-                  count: unseen,
-                  hot: true,
-                  current: tab === "unread",
-                  onSelect: () => setPicked("unread"),
-                  testId: "mentions-tab-unread",
-                },
-                {
-                  key: "all",
-                  label: t`All mentions`,
-                  count: inScope.length,
-                  current: tab === "all",
-                  onSelect: () => setPicked("all"),
-                  testId: "mentions-tab-all",
-                },
-              ]}
-            />
-          </NavList>
-          {!canManage && <SectionNav />}
-        </PageSidebar>
+      nav={
+        <NavList label={t`Mentions`}>
+          <NavGroup
+            items={[
+              {
+                key: "unread",
+                label: t`Unread`,
+                count: unseen,
+                hot: true,
+                current: tab === "unread",
+                onSelect: () => setPicked("unread"),
+                testId: "mentions-tab-unread",
+              },
+              {
+                key: "all",
+                label: t`All mentions`,
+                count: inScope.length,
+                current: tab === "all",
+                onSelect: () => setPicked("all"),
+                testId: "mentions-tab-all",
+              },
+            ]}
+          />
+        </NavList>
       }
       aside={
         <InfoColumn label={t`Details`}>

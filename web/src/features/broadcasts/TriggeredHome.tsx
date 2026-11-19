@@ -406,7 +406,6 @@ function FlatTriggered() {
   const sum = (pick: (b: Broadcast) => number) => items.reduce((x, b) => x + pick(b), 0)
   return (
     <BroadcastsLayout
-      current="triggered"
       sub={sub}
       testId="triggered-home"
       aside={

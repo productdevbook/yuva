@@ -9,7 +9,6 @@ import {
   InboxMark,
   InfoSection,
   KV,
-  NavGroup,
   PageHeading,
   PageTop as FlatTop,
   SectionPage,
@@ -36,6 +35,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Panel } from "@/features/analytics/parts"
 import { useInboxFilter } from "@/features/inbox/inboxFilter"
+import { useStats } from "@/features/inbox/queries"
 import { FrameTabs, look, PageTop } from "@/features/inbox/PageFrame"
 import {
   createdSince,
@@ -51,13 +51,17 @@ import { headClass, LoadProblem, ReportSkeleton, SlaBar, SlotsContext, ToolbarPo
 import { Face, headButton, ProductTag } from "@/features/settings/ui"
 import { useIsPhone } from "@/hooks/use-media-query"
 import { useNow } from "@/hooks/use-now"
-import { useTodayStats } from "@/features/reports/ReportsColumn"
 import type { ConversationListItem, Stats } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useInboxes, useMembers } from "@/lib/workspace"
 
 const RANGES = ["today", "7d", "30d"] as const
 type Range = (typeof RANGES)[number]
+
+function useTodayStats() {
+  const [inboxId] = useInboxFilter()
+  return useStats(inboxId)
+}
 
 function useRange(): Range {
   const [params] = useSearchParams()
@@ -354,17 +358,6 @@ export function ReportsPane() {
         <SectionPage
           title={t`Reports`}
           testId="reports"
-          nav={
-            <NavGroup
-              items={tabs.map((x) => ({
-                key: x.key,
-                label: x.label,
-                to: x.to,
-                current: x.key === tab,
-                testId: x.testId,
-              }))}
-            />
-          }
           aside={<ReportsAside trends={trends} csvReady={csv.ready} onCsv={() => setCsvOpen(true)} />}
         >
           <div className="@container flex min-w-0 flex-col">

@@ -71,6 +71,7 @@ export function HelpHome() {
   const { all, groups, pending, error } = useCenterChoice()
   const [create, dialog] = useCreateCenter()
   const [picked, setPicked] = useState("")
+  const [params] = useSearchParams()
   if (phone) {
     return (
       <PaneEmpty icon={LifeBuoyIcon} title={<Trans>Help centers</Trans>} testId="help-home">
@@ -82,7 +83,7 @@ export function HelpHome() {
     )
   }
   const first = groups.find((g) => g.center)?.center
-  if (first) return <Navigate to={centerLink(first.id)} replace />
+  if (first) return <Navigate to={centerLink(first.id, params.get("tab") ?? undefined)} replace />
   const target =
     all.find((g) => g.inbox.id === picked && !g.center) ?? groups.find((g) => !g.center) ?? all.find((g) => !g.center)
   if (!phone)

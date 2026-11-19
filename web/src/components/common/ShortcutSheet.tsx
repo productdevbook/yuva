@@ -721,7 +721,6 @@ export function ShortcutSheet({
         [k(SHORTCUTS.assistants), t`Assistants`],
         [[mod, "K"], t`Everything`],
         [[mod, ","], t`Settings`],
-        [[mod, "\\"], t`Collapse or expand the sidebar`],
         [[SHORTCUTS.help], t`This list`],
         [["Esc"], t`Close a panel or leave a field`],
       ],
